@@ -1,12 +1,12 @@
-<ng-container *ngIf="viewModel | async as vm">
-
+@if (viewModel | async; as vm) {
   <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
     <div class="icon-option">
-      <i *ngIf="vm.controlStatus.value" class="icon-preview {{ vm.previewCss }} {{ vm.controlStatus.value }}"></i>
+      @if (vm.controlStatus.value) {
+        <i class="icon-preview {{ vm.previewCss }} {{ vm.controlStatus.value }}"></i>
+      }
       <input matInput [formControlName]="config.fieldName" [placeholder]="vm.placeholder" [required]="vm.required"
         [matAutocomplete]="auto">
     </div>
-
     <mat-autocomplete #auto="matAutocomplete" [hideSingleSelectionIndicator]="true">
       <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
         [style.height.px]="vm.filteredIcons.length < 6 ? vm.filteredIcons.length * 48 : 240">
@@ -18,10 +18,7 @@
         </mat-option>
       </cdk-virtual-scroll-viewport>
     </mat-autocomplete>
-
     <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
-
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-
-</ng-container>
+}

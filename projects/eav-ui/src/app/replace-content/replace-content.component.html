@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">{{ vm.isAddMode ? 'Add Existing Item' : 'Replace Content Item' }}</div>
@@ -31,4 +31,4 @@
       <button mat-raised-button color="accent" [disabled]="!vm.isMatch" (click)="save()">Save</button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

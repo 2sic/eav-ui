@@ -1,10 +1,14 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="enableCode" tippy="Code" (click)="openCode()">
-    <mat-icon>code</mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="!enableCode">
-    <mat-icon>code</mat-icon>
-  </div>
+  @if (enableCode) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Code" (click)="openCode()">
+      <mat-icon>code</mat-icon>
+    </div>
+  }
+  @if (!enableCode) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon>code</mat-icon>
+    </div>
+  }
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

@@ -1,39 +1,51 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!view.EditInfo.DisableEdit && enableCode" tippy="Code"
-    (click)="openCode()">
-    <mat-icon>code</mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="view.EditInfo.DisableEdit || !enableCode">
-    <mat-icon>code</mat-icon>
-  </div>
+  @if (!view.EditInfo.DisableEdit && enableCode) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Code"
+      (click)="openCode()">
+      <mat-icon>code</mat-icon>
+    </div>
+  }
+  @if (view.EditInfo.DisableEdit || !enableCode) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon>code</mat-icon>
+    </div>
+  }
 
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!view.EditInfo.DisableMetadata" tippy="Metadata"
-    (click)="openMetadata()">
-    <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
-      local_offer
-    </mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="view.EditInfo.DisableMetadata">
-    <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
-      local_offer
-    </mat-icon>
-  </div>
+  @if (!view.EditInfo.DisableMetadata) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
+      (click)="openMetadata()">
+      <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
+        [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
+        local_offer
+      </mat-icon>
+    </div>
+  }
+  @if (view.EditInfo.DisableMetadata) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+        [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
+        local_offer
+      </mat-icon>
+    </div>
+  }
 
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!view.EditInfo.DisableEdit && enablePermissions"
-    tippy="Permissions" (click)="openPermissions()">
-    <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-      person
-    </mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="view.EditInfo.DisableEdit || !enablePermissions">
-    <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-      person
-    </mat-icon>
-  </div>
+  @if (!view.EditInfo.DisableEdit && enablePermissions) {
+    <div class="eav-grid-action-button highlight" matRipple
+      tippy="Permissions" (click)="openPermissions()">
+      <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
+        [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+        person
+      </mat-icon>
+    </div>
+  }
+  @if (view.EditInfo.DisableEdit || !enablePermissions) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+        [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+        person
+      </mat-icon>
+    </div>
+  }
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

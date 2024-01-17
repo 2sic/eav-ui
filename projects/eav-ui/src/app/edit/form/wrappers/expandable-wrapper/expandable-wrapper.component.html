@@ -43,32 +43,34 @@
     </div>
   </div>
 </div>
-<div class="c-ew__preview-holder" *ngIf="viewModel$ | async as vm">
-  <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : vm.controlStatus.value,
-    'mat-empty' : !vm.controlStatus.value,
-    'mat-error' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty) && !vm.controlStatus.disabled,
-    'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !vm.controlStatus.disabled,
-    'color__label-disabled' : vm.controlStatus.disabled,
-    'c-ew__preview-label--focused': vm.focused
-  }">
-    {{ vm.label }}
-    {{ vm.required ? '*': '' }}
-  </mat-label>
-  <div class="c-ew__preview" [ngClass]="{
-    'c-ew__preview--invalid' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty),
-    'c-ew__preview--disabled': vm.controlStatus.disabled,
-    'c-ew__preview--focused': vm.focused
-  }">
-    <div class="c-ew__preview-container">
-      <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
-        'c-ew__preview-content--disabled': vm.controlStatus.disabled
-      }" [ngStyle]="{
-        'min-height': vm.previewHeight.minHeight,
-        'max-height': vm.previewHeight.maxHeight
+@if (viewModel$ | async; as vm) {
+  <div class="c-ew__preview-holder">
+    <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : vm.controlStatus.value,
+      'mat-empty' : !vm.controlStatus.value,
+      'mat-error' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty) && !vm.controlStatus.disabled,
+      'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !vm.controlStatus.disabled,
+      'color__label-disabled' : vm.controlStatus.disabled,
+      'c-ew__preview-label--focused': vm.focused
       }">
+      {{ vm.label }}
+      {{ vm.required ? '*': '' }}
+    </mat-label>
+    <div class="c-ew__preview" [ngClass]="{
+      'c-ew__preview--invalid' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty),
+      'c-ew__preview--disabled': vm.controlStatus.disabled,
+      'c-ew__preview--focused': vm.focused
+      }">
+      <div class="c-ew__preview-container">
+        <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
+          'c-ew__preview-content--disabled': vm.controlStatus.disabled
+          }" [ngStyle]="{
+          'min-height': vm.previewHeight.minHeight,
+          'max-height': vm.previewHeight.maxHeight
+          }">
+        </div>
       </div>
     </div>
+    <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   </div>
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-</div>
+}

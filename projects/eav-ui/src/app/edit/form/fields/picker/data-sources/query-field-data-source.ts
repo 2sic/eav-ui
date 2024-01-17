@@ -180,11 +180,4 @@ export class QueryFieldDataSource extends DataSourceBase {
     entityInfo._information = information;
     return entityInfo;
   }
-
-  /** remove HTML tags that come from WYSIWYG */
-  private cleanStringFromWysiwyg(wysiwygString: string): string {
-    const div = document.createElement("div");
-    div.innerHTML = wysiwygString ?? '';
-    return div.innerText || '';
-  }
 }

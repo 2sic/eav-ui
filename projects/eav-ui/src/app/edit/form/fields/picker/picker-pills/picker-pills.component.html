@@ -1,32 +1,42 @@
-<div *ngIf="viewModel$ | async as vm" class="c-ew__preview-holder">
-  <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : vm.itemsNumber,
-    'mat-empty' : !vm.itemsNumber,
-    'mat-error' : vm.controlStatus.invalid && vm.controlStatus.touched && !config.initialDisabled,
-    'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !config.initialDisabled,
-    'color__label-disabled' : config.initialDisabled
-  }">
-    {{ vm.label }} {{ vm.required ? '*': '' }}
-  </mat-label>
-  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
-    [ngClass]="{
+@if (viewModel$ | async; as vm) {
+  <div class="c-ew__preview-holder">
+    <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : vm.itemsNumber,
+      'mat-empty' : !vm.itemsNumber,
+      'mat-error' : vm.controlStatus.invalid && vm.controlStatus.touched && !config.initialDisabled,
+      'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !config.initialDisabled,
+      'color__label-disabled' : config.initialDisabled
+      }">
+      {{ vm.label }} {{ vm.required ? '*': '' }}
+    </mat-label>
+    <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
+      [ngClass]="{
       'c-ew__preview--invalid' : vm.controlStatus.invalid && vm.controlStatus.touched,
       'c-ew__preview--disabled': config.initialDisabled
-    }">
-    <div [ngClass]="vm.itemsNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-list *ngIf="vm.itemsNumber" fxLayout="row" class="eav-list">
-          <mat-list-item role="listitem" *ngFor="let item of vm.selectedItems; trackBy: trackByFn" class="eav-list-item">
-            <span mat-line>{{ item.Text }}</span>
-          </mat-list-item>
-        </mat-list>
-        <span *ngIf="vm.itemsNumber > 3" class="eav-more-entities" [ngClass]="{'eav-more-entities-margin-right': vm.enableTextEntry}">
-          {{ vm.itemsNumber }}
-        </span>
-        <span *ngIf="vm.enableTextEntry" matSuffix class="eav-selection-suffix-inline">
-          <ng-content select="[freeTextButtons]"></ng-content>
-        </span>
+      }">
+      <div [ngClass]="vm.itemsNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          @if (vm.itemsNumber) {
+            <mat-list fxLayout="row" class="eav-list">
+              @for (item of vm.selectedItems; track trackByFn($index, item)) {
+                <mat-list-item role="listitem" class="eav-list-item">
+                  <span mat-line>{{ item.Text }}</span>
+                </mat-list-item>
+              }
+            </mat-list>
+          }
+          @if (vm.itemsNumber > 3) {
+            <span class="eav-more-entities" [ngClass]="{'eav-more-entities-margin-right': vm.enableTextEntry}">
+              {{ vm.itemsNumber }}
+            </span>
+          }
+          @if (vm.enableTextEntry) {
+            <span matSuffix class="eav-selection-suffix-inline">
+              <ng-content select="[freeTextButtons]"></ng-content>
+            </span>
+          }
+        </div>
       </div>
     </div>
   </div>
-</div>
+}

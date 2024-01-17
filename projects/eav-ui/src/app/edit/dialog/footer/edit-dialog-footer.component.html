@@ -17,12 +17,18 @@
     <div class="sxc-version">2sxc {{ sxcVer }}</div>
   </div>
 
-  <div class="debug-info-container" *ngIf="activeDebug != null">
-    <app-data-dump *ngIf="activeDebug === DebugTypes.Data"></app-data-dump>
-
-    <app-formula-designer *ngIf="activeDebug === DebugTypes.Formulas" [formBuilderRefs]="formBuilderRefs">
-    </app-formula-designer>
-
-    <app-logs-dump *ngIf="activeDebug === DebugTypes.Logs"></app-logs-dump>
-  </div>
+  @if (activeDebug != null) {
+    <div class="debug-info-container">
+      @if (activeDebug === DebugTypes.Data) {
+        <app-data-dump></app-data-dump>
+      }
+      @if (activeDebug === DebugTypes.Formulas) {
+        <app-formula-designer [formBuilderRefs]="formBuilderRefs">
+        </app-formula-designer>
+      }
+      @if (activeDebug === DebugTypes.Logs) {
+        <app-logs-dump></app-logs-dump>
+      }
+    </div>
+  }
 </mat-card>

@@ -1,75 +1,80 @@
 <div class="editor-active-explorer fancy-scrollbar-dark">
-  <div *ngFor="let section of snippets | keyvalue">
-
-    <div class="collapsible-header section" [tippy]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
-      tippyShowDelay="750" (click)="toggleSection(section.key)">
-      <mat-icon>
-        {{ toggledSections.includes(section.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
-      </mat-icon>
-      <span>{{ 'SourceEditorSnippets.' + section.key + '.Title' | translate }}</span>
-    </div>
-
-    <ng-container *ngIf="toggledSections.includes(section.key)">
-      <div *ngFor="let folder of section.value | keyvalue">
-
-        <div class="collapsible-header folder"
-          [tippy]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate" tippyShowDelay="750"
-          (click)="toggleFolder(folder.key)">
-          <mat-icon>
-            {{ toggledFolders.includes(folder.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
-          </mat-icon>
-          <span>{{ 'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Title' | translate }}</span>
-        </div>
-
-        <ng-container *ngIf="toggledFolders.includes(folder.key)">
-          <div class="snippet" *ngFor="let snippet of (folder.value | objectToArray)">
-
-            <div class="snippet-label">
-              <div matRipple class="text" [tippy]="snippet.snip" tippyShowDelay="750"
-                (click)="addSnippet(snippet.snip)">
-                {{ snippet.label }}
-              </div>
-              <mat-icon *ngIf="snippet.more" tippy="Show More" tippyShowDelay="750" (click)="toggleMore(snippet.key)">
-                {{ toggledMores.includes(snippet.key) ? 'more_vert' : 'more_horiz' }}
-              </mat-icon>
-              <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
-                (click)="toggleInfo(snippet.key)">info</mat-icon>
-            </div>
-
-            <div class="snippet-help" *ngIf="toggledInfos.includes(snippet.key)">
-              <div class="text" [innerHTML]="snippet.help | safeHtml"></div>
-              <div *ngFor="let link of snippet.links">
-                <a [href]="link.url" target="_blank">{{ link.name }}</a>
-              </div>
-            </div>
-
-            <ng-container *ngIf="toggledMores.includes(snippet.key)">
-              <div *ngFor="let more of (snippet.more | objectToArray)">
-
-                <div class="snippet-label">
-                  <div matRipple class="text text-more" [tippy]="more.snip" tippyShowDelay="750"
-                    (click)="addSnippet(more.snip)">
-                    {{ more.label }}
-                  </div>
-                  <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
-                    (click)="toggleInfo(more.key)">info</mat-icon>
-                </div>
-
-                <div class="snippet-help snippet-help-more" *ngIf="toggledInfos.includes(more.key)">
-                  <div class="text" [innerHTML]="more.help | safeHtml"></div>
-                  <div *ngFor="let link of more.links">
-                    <a [href]="link.url" target="_blank">{{ link.name }}</a>
-                  </div>
-                </div>
-
-              </div>
-            </ng-container>
-
-          </div>
-        </ng-container>
-
+  @for (section of snippets | keyvalue; track section) {
+    <div>
+      <div class="collapsible-header section" [tippy]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
+        tippyShowDelay="750" (click)="toggleSection(section.key)">
+        <mat-icon>
+          {{ toggledSections.includes(section.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+        </mat-icon>
+        <span>{{ 'SourceEditorSnippets.' + section.key + '.Title' | translate }}</span>
       </div>
-    </ng-container>
-
-  </div>
+      @if (toggledSections.includes(section.key)) {
+        @for (folder of section.value | keyvalue; track folder) {
+          <div>
+            <div class="collapsible-header folder"
+              [tippy]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate" tippyShowDelay="750"
+              (click)="toggleFolder(folder.key)">
+              <mat-icon>
+                {{ toggledFolders.includes(folder.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+              </mat-icon>
+              <span>{{ 'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Title' | translate }}</span>
+            </div>
+            @if (toggledFolders.includes(folder.key)) {
+              @for (snippet of (folder.value | objectToArray); track snippet) {
+                <div class="snippet">
+                  <div class="snippet-label">
+                    <div matRipple class="text" [tippy]="snippet.snip" tippyShowDelay="750"
+                      (click)="addSnippet(snippet.snip)">
+                      {{ snippet.label }}
+                    </div>
+                    @if (snippet.more) {
+                      <mat-icon tippy="Show More" tippyShowDelay="750" (click)="toggleMore(snippet.key)">
+                        {{ toggledMores.includes(snippet.key) ? 'more_vert' : 'more_horiz' }}
+                      </mat-icon>
+                    }
+                    <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
+                    (click)="toggleInfo(snippet.key)">info</mat-icon>
+                  </div>
+                  @if (toggledInfos.includes(snippet.key)) {
+                    <div class="snippet-help">
+                      <div class="text" [innerHTML]="snippet.help | safeHtml"></div>
+                      @for (link of snippet.links; track link) {
+                        <div>
+                          <a [href]="link.url" target="_blank">{{ link.name }}</a>
+                        </div>
+                      }
+                    </div>
+                  }
+                  @if (toggledMores.includes(snippet.key)) {
+                    @for (more of (snippet.more | objectToArray); track more) {
+                      <div>
+                        <div class="snippet-label">
+                          <div matRipple class="text text-more" [tippy]="more.snip" tippyShowDelay="750"
+                            (click)="addSnippet(more.snip)">
+                            {{ more.label }}
+                          </div>
+                          <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
+                          (click)="toggleInfo(more.key)">info</mat-icon>
+                        </div>
+                        @if (toggledInfos.includes(more.key)) {
+                          <div class="snippet-help snippet-help-more">
+                            <div class="text" [innerHTML]="more.help | safeHtml"></div>
+                            @for (link of more.links; track link) {
+                              <div>
+                                <a [href]="link.url" target="_blank">{{ link.name }}</a>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+      }
+    </div>
+  }
 </div>

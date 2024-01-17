@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-cards-box">
     <!-- Platform Info -->
     <mat-card class="eav-card">
@@ -10,15 +10,18 @@
         <mat-card-subtitle>What you are running</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="eav-info-row" *ngFor="let info of vm.systemInfos">
-          <div class="eav-info-row__label">{{ info.label }}:</div>
-          <div class="eav-info-row__value">
-            <span class="eav-info-row__value__span eav-click" [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
-            <ng-container *ngIf="info.link">
-              <a class="eav-info-row__link" [routerLink]="info.link.url">{{ info.link.label }}</a>
-            </ng-container>
+        @for (info of vm.systemInfos; track info) {
+          <div class="eav-info-row">
+            <div class="eav-info-row__label">{{ info.label }}:</div>
+            <div class="eav-info-row__value">
+              <span class="eav-info-row__value__span eav-click" [tippy]="info.value"
+                (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+              @if (info.link) {
+                <a class="eav-info-row__link" [routerLink]="info.link.url">{{ info.link.label }}</a>
+              }
+            </div>
           </div>
-        </div>
+        }
         <h4>Global Settings</h4>
         <p>
           This includes both pre-defined SystemSettings as well as custom Settings.
@@ -34,7 +37,6 @@
         </button>
       </mat-card-actions>
     </mat-card>
-    
     <!-- Site Info -->
     <mat-card class="eav-card">
       <mat-card-header>
@@ -45,19 +47,24 @@
         <mat-card-subtitle>The current Site you're on</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="eav-info-row" *ngFor="let info of vm.siteInfos">
-          <div class="eav-info-row__label">{{ info.label }}:</div>
-          <div class="eav-info-row__value">
-            <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
-            <ng-container *ngIf="info.link">
-              <a class="eav-info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">{{
-                info.link.label
-                }}</a>
-              <a class="eav-info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
-                [target]="info.link.target">{{ info.link.label }}</a>
-            </ng-container>
+        @for (info of vm.siteInfos; track info) {
+          <div class="eav-info-row">
+            <div class="eav-info-row__label">{{ info.label }}:</div>
+            <div class="eav-info-row__value">
+              <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+              @if (info.link) {
+                @if (info.link.target === 'angular') {
+                  <a class="eav-info-row__link" [routerLink]="info.link.url">{{
+                    info.link.label
+                    }}</a>
+                }
+                @if (info.link.target !== 'angular') {
+                  <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
+                }
+              }
+            </div>
           </div>
-        </div>
+        }
         <div class="card-content-separator"></div>
         <h4>Site Settings</h4>
         <p>
@@ -74,7 +81,6 @@
         </button>
       </mat-card-actions>
     </mat-card>
-    
     <!-- Performance / Lightspeed -->
     <mat-card class="eav-card">
       <mat-card-header>
@@ -86,17 +92,18 @@
       </mat-card-header>
       <mat-card-content>
         <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
-        <div *ngIf="vm.lsEnabled">
-          LightSpeed is enabled.
-          Configure it in each site/app as you need.
-        </div>
+        @if (vm.lsEnabled) {
+          <div>
+            LightSpeed is enabled.
+            Configure it in each site/app as you need.
+          </div>
+        }
       </mat-card-content>
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
       </mat-card-actions>
     </mat-card>
-    
     <!-- Security -->
     <mat-card class="eav-card">
       <mat-card-header>
@@ -108,17 +115,18 @@
       </mat-card-header>
       <mat-card-content>
         <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
-        <div *ngIf="vm.cspEnabled">
-          ContentSecurityPolicy is enabled.
-          Configure it in each site/app as you need.
-        </div>
+        @if (vm.cspEnabled) {
+          <div>
+            ContentSecurityPolicy is enabled.
+            Configure it in each site/app as you need.
+          </div>
+        }
       </mat-card-content>
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
       </mat-card-actions>
     </mat-card>
-    
     <!-- Insights -->
     <mat-card class="eav-card">
       <mat-card-header>
@@ -146,7 +154,8 @@
         <h4>Activate Page Level Logging</h4>
         <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
           <div>
-            This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the url.
+            This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the
+            url.
             It can only be activated for short periods of time.
           </div>
           <mat-form-field color="accent" class="eav-form-field">
@@ -154,11 +163,13 @@
             <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
               name="Duration" #duration="ngModel" [disabled]="vm.loading">
           </mat-form-field>
-          <ng-container *ngIf="duration.touched && duration.errors">
-            <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">
-              Only positive whole numbers
-            </app-field-hint>
-          </ng-container>
+          @if (duration.touched && duration.errors) {
+            @if (duration.errors.pattern) {
+              <app-field-hint [isError]="true">
+                Only positive whole numbers
+              </app-field-hint>
+            }
+          }
         </form>
       </mat-card-content>
       <div class="eav-card-space-div"></div>
@@ -168,7 +179,6 @@
         </button>
       </mat-card-actions>
     </mat-card>
-    
     <!-- Warnings -->
     <mat-card class="eav-card">
       <mat-card-header>
@@ -179,23 +189,28 @@
         <mat-card-subtitle>System and Code Warnings</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="eav-info-row" *ngFor="let info of vm.warningInfos">
-          <div class="eav-info-row__label eav-long">{{ info.label }}:</div>
-          <div class="eav-info-row__value">
-            <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
-            <ng-container *ngIf="info.link">
-              <a class="eav-info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">
-               {{info.link.label}}</a>
-              <a class="eav-info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
-                [target]="info.link.target">{{ info.link.label }}</a>
-            </ng-container>
+        @for (info of vm.warningInfos; track info) {
+          <div class="eav-info-row">
+            <div class="eav-info-row__label eav-long">{{ info.label }}:</div>
+            <div class="eav-info-row__value">
+              <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+              @if (info.link) {
+                @if (info.link.target === 'angular') {
+                  <a class="eav-info-row__link" [routerLink]="info.link.url">
+                    {{info.link.label}}</a>
+                }
+                @if (info.link.target !== 'angular') {
+                  <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
+                }
+              }
+            </div>
           </div>
-        </div>
+        }
       </mat-card-content>
       <div class="eav-card-space-div"></div>
     </mat-card>
   </div>
-</ng-container>
+}
 
 
 <ng-template #docsLink let-icon let-label let-link="link">

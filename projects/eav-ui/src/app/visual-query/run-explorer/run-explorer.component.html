@@ -1,76 +1,86 @@
-<div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="(pipelineModel$ | async) as pipelineModel">
-
-  <div class="wrapper">
-    <div class="actions">
-      <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
-        Save and run
-      </button>
-      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">
-        Run
-      </button>
-      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">
-        Save
-      </button>
-    </div>
-
-    <div class="parameters">
-      <div class="title">
-        <div>Query Parameters</div>
-        <div>
-          <button mat-icon-button tippy="Edit parameters" (click)="editPipeline()">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button tippy="Query Params Docs" (click)="openParamsHelp()">
-            <mat-icon>info</mat-icon>
-          </button>
-        </div>
+@if ((pipelineModel$ | async); as pipelineModel) {
+  <div class="editor-active-explorer fancy-scrollbar-dark">
+    <div class="wrapper">
+      <div class="actions">
+        <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
+          Save and run
+        </button>
+        <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">
+          Run
+        </button>
+        <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">
+          Save
+        </button>
       </div>
-      <ul class="values" *ngIf="pipelineModel.Pipeline.Params?.length">
-        <li *ngFor="let param of pipelineModel.Pipeline.Params?.split('\n')">
-          {{ param }}
-        </li>
-      </ul>
-    </div>
-
-    <div class="parameters">
-      <div class="title">Test Parameters</div>
-      <ul class="values" *ngIf="pipelineModel.Pipeline.TestParameters?.length">
-        <li *ngFor="let param of pipelineModel.Pipeline.TestParameters?.split('\n')">
-          {{ param }}
-        </li>
-      </ul>
-    </div>
-
-    <div class="parameters" *ngIf="visualDesignerData$ | async as visualDesignerData">
-      <span class="eav-slide-toggle-label">Show DataSource Params</span>
-      <mat-slide-toggle color="primary" [checked]="visualDesignerData.ShowDataSourceDetails"
-        (change)="showDataSourceDetails($event)"/>
-    </div>
-
-    <ng-container *ngIf="(warnings$ | async) as warnings">
-      <div class="warnings" *ngIf="warnings.length">
+      <div class="parameters">
         <div class="title">
-          <span>Warnings</span>
-          <mat-icon style="color: red">warning</mat-icon>
+          <div>Query Parameters</div>
+          <div>
+            <button mat-icon-button tippy="Edit parameters" (click)="editPipeline()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button tippy="Query Params Docs" (click)="openParamsHelp()">
+              <mat-icon>info</mat-icon>
+            </button>
+          </div>
         </div>
-        <ol class="values">
-          <li *ngFor="let warning of warnings" [innerHTML]="warning">
-          </li>
-        </ol>
+        @if (pipelineModel.Pipeline.Params?.length) {
+          <ul class="values">
+            @for (param of pipelineModel.Pipeline.Params?.split('\n'); track param) {
+              <li>
+                {{ param }}
+              </li>
+            }
+          </ul>
+        }
       </div>
-    </ng-container>
-
-    <div class="description" *ngIf="pipelineModel.Pipeline.Description">
-      <div class="title">Query Description</div>
-      <div>{{ pipelineModel.Pipeline.Description }}</div>
+      <div class="parameters">
+        <div class="title">Test Parameters</div>
+        @if (pipelineModel.Pipeline.TestParameters?.length) {
+          <ul class="values">
+            @for (param of pipelineModel.Pipeline.TestParameters?.split('\n'); track param) {
+              <li>
+                {{ param }}
+              </li>
+            }
+          </ul>
+        }
+      </div>
+      @if (visualDesignerData$ | async; as visualDesignerData) {
+        <div class="parameters">
+          <span class="eav-slide-toggle-label">Show DataSource Params</span>
+          <mat-slide-toggle color="primary" [checked]="visualDesignerData.ShowDataSourceDetails"
+            (change)="showDataSourceDetails($event)"/>
+          </div>
+        }
+      @if ((warnings$ | async); as warnings) {
+        @if (warnings.length) {
+          <div class="warnings">
+            <div class="title">
+              <span>Warnings</span>
+              <mat-icon style="color: red">warning</mat-icon>
+            </div>
+            <ol class="values">
+              @for (warning of warnings; track warning) {
+                <li [innerHTML]="warning">
+                </li>
+              }
+            </ol>
+          </div>
+        }
+      }
+      @if (pipelineModel.Pipeline.Description) {
+        <div class="description">
+          <div class="title">Query Description</div>
+          <div>{{ pipelineModel.Pipeline.Description }}</div>
+        </div>
+      }
+      <div class="footer-actions">
+        <button mat-raised-button class="action" (click)="openRestApi()">
+          <span>Use in JSON / REST API</span>
+          <mat-icon>code_curly</mat-icon>
+        </button>
+      </div>
     </div>
-
-    <div class="footer-actions">
-      <button mat-raised-button class="action" (click)="openRestApi()">
-        <span>Use in JSON / REST API</span>
-        <mat-icon>code_curly</mat-icon>
-      </button>
-    </div>
-
   </div>
-</div>
+}

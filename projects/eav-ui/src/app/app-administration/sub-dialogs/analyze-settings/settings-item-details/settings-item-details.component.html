@@ -1,21 +1,20 @@
-<div class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">
-      <div>{{ settingsItemKey }}</div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
+@if (viewModel$ | async; as vm) {
+  <div class="nav-component-wrapper">
+    <div mat-mdc-dialog-title>
+      <div class="dialog-title-box">
+        <div>{{ settingsItemKey }}</div>
+        <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <p class="dialog-description">
+      Here you can see where <code>{{ settingsItemKey }}</code> is configured.
+    </p>
+    <div class="grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="vm.stack" [gridOptions]="gridOptions">
+      </ag-grid-angular>
+      <div class="grid-more-actions-box"></div>
     </div>
   </div>
-
-  <p class="dialog-description">
-    Here you can see where <code>{{ settingsItemKey }}</code> is configured.
-  </p>
-
-  <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="vm.stack" [gridOptions]="gridOptions">
-    </ag-grid-angular>
-
-    <div class="grid-more-actions-box"></div>
-  </div>
-</div>
+}

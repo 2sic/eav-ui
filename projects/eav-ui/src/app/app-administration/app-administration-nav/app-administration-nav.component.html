@@ -1,89 +1,94 @@
-<ng-container appToggleDebug *ngIf="viewModel$ | async as vm">
-  <mat-toolbar>
-    <div class="toolbar-container">
-      <div>
-        <img (click)="sidenav.opened = !sidenav.opened" *ngIf="vm.dialogSettings?.Context.App.Icon"
-          [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
-      </div>
-      <div>
-        <ng-container *ngIf="
-              vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global
-            ">
+@if (viewModel$ | async; as vm) {
+  <div class="eav-dialog nav-component-wrapper eav-no-scrollbar" appToggleDebug>
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">
+        @if (vm.dialogSettings?.Context.App.Icon) {
+          <img class="eav-dialog-header__title__image"
+            [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'"/>
+        }
+        @if (vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global) {
           Global
-        </ng-container>
-        <ng-container *ngIf="
-              vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global
-            ">
+        }
+        @if (vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global) {
           {{ vm.dialogSettings?.Context.App.Name }}
-        </ng-container>
-        <span class="toolbar-admin">
-          Admin
-        </span>
+        }
+        Admin
       </div>
-
-      <div>
-        <xng-breadcrumb [separator]="emptyTemplate">
-          <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
-            <ng-container *ngIf="info === 'home' && last">Home</ng-container>
-            <ng-container *ngIf="last">{{ breadcrumb }}</ng-container>
-          </ng-container>
-        </xng-breadcrumb>
-        <ng-template #emptyTemplate></ng-template>
-      </div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
-
-    <span class="toolbar-spacer"></span>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar>
-  <mat-sidenav-container>
-
-    <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-      <div *ngFor="let item of navItems">
-        <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
-          class="app-menu-container" [tippy]="item.tippy">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <div class="link-text">{{ item.name }}</div>
-        </a>
-
-      </div>
-      <div class="sideNav-info">
-        <p>use App logo to show/hide menu</p>
-      </div>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
+    <div class="eav-dialog-tab-content nav-component-wrapper">
       <router-outlet></router-outlet>
-
-      <div class="container-content">
-        <app-getting-started *ngIf="vm.currentPath === 'home'"
-          [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
-        </app-getting-started>
-
-        <app-data *ngIf="vm.currentPath === 'data'"
-          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
-        </app-data>
-
-        <app-queries *ngIf="vm.currentPath === 'queries'"
-          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
-        </app-queries>
-
-        <app-views *ngIf="vm.currentPath === 'views'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
-          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
-          [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
-          [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
-        </app-views>
-
-        <app-web-api *ngIf="vm.currentPath === 'web-api'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
-        </app-web-api>
-
-        <app-app-configuration *ngIf="vm.currentPath === 'app'" [dialogSettings]="vm.dialogSettings">
-        </app-app-configuration>
-
-        <app-sync-configuration *ngIf="vm.currentPath === 'sync'" [dialogSettings]="vm.dialogSettings">
-        </app-sync-configuration>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</ng-container>
+      <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
+      @if (vm.dialogSettings && vm.tabIndex != null) {
+        <mat-tab-group class="mat-mdc-tab-group-max-height" dynamicHeight color="accent"
+          (selectedTabChange)="changeTab($event)"
+          [selectedIndex]="vm.tabIndex">
+          <mat-tab>
+            <div *matTabLabel class="mat-mdc-tab-label-box" tippy="App Info">
+              <mat-icon>info</mat-icon>
+              <span>Info</span>
+            </div>
+            <app-getting-started *matTabContent [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
+            </app-getting-started>
+          </mat-tab>
+          <mat-tab>
+            <div *matTabLabel class="mat-mdc-tab-label-box" tippy="Data / Content">
+              <mat-icon>menu</mat-icon>
+              <span>Data</span>
+            </div>
+            <app-data *matTabContent [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
+          </mat-tab>
+          @if (vm.dialogSettings.Context.Enable.Query) {
+            <mat-tab>
+              <div *matTabLabel class="mat-mdc-tab-label-box" tippy="Queries / Visual Query Designer">
+                <mat-icon>filter_list</mat-icon>
+                <span>Queries</span>
+              </div>
+              <app-queries *matTabContent [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
+              </app-queries>
+            </mat-tab>
+          }
+          <mat-tab>
+            <div *matTabLabel class="mat-mdc-tab-label-box" tippy="Views / Templates">
+              <mat-icon>layers</mat-icon>
+              <span>Views</span>
+            </div>
+            <app-views *matTabContent [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
+              [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
+              [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
+              [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
+            </app-views>
+          </mat-tab>
+          @if (vm.dialogSettings.Context.Enable.Query) {
+            <mat-tab>
+              <div *matTabLabel class="mat-mdc-tab-label-box" tippy="WebApi">
+                <mat-icon>offline_bolt</mat-icon>
+                <span>WebApi</span>
+              </div>
+              <app-web-api *matTabContent [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
+              </app-web-api>
+            </mat-tab>
+          }
+          <mat-tab>
+            <div *matTabLabel class="mat-mdc-tab-label-box" tippy="App Settings">
+              <mat-icon>settings_applications</mat-icon>
+              <span>App</span>
+            </div>
+            <app-app-configuration *matTabContent [dialogSettings]="vm.dialogSettings">
+            </app-app-configuration>
+          </mat-tab>
+          <mat-tab>
+            <div *matTabLabel class="mat-mdc-tab-label-box" tippy="App Export / Import">
+              <mat-icon>sync</mat-icon>
+              <span>Sync</span>
+            </div>
+            <app-sync-configuration *matTabContent [dialogSettings]="vm.dialogSettings">
+            </app-sync-configuration>
+          </mat-tab>
+        </mat-tab-group>
+      }
+    </div>
+  </div>
+}

@@ -1,26 +1,25 @@
-<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
-  <ag-grid-angular class="ag-theme-material" [rowData]="vm.views" [gridOptions]="gridOptions" appDragAndDrop
-    [allowedFileTypes]="'json'" (filesDropped)="importView($event)">
-  </ag-grid-angular>
-
-  <mat-dialog-actions class="eav-dialog-actions">
-    <div class="eav-dialog-actions-div">
-      <button mat-button class="eav-polymorph-button" tippy="Configure polymorphism" [disabled]="appIsInherited"
-        (click)="editPolymorphisms()">
-        <span class="eav-polymorph-button-span">
-          <img class="eav-polymorph-logo" [src]="polymorphLogo">
-          <span>Polymorphism {{ vm.polymorphStatus }}</span>
-        </span>
+@if (viewModel$ | async; as vm) {
+  <div class="grid-wrapper mat-tab-grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.views" [gridOptions]="gridOptions" appDragAndDrop
+      [allowedFileTypes]="'json'" (filesDropped)="importView($event)">
+    </ag-grid-angular>
+    <mat-dialog-actions class="eav-dialog-actions">
+      <div class="eav-dialog-actions-div">
+        <button mat-button class="eav-polymorph-button" tippy="Configure polymorphism" [disabled]="appIsInherited"
+          (click)="editPolymorphisms()">
+          <span class="eav-polymorph-button-span">
+            <img class="eav-polymorph-logo" [src]="polymorphLogo">
+            <span>Polymorphism {{ vm.polymorphStatus }}</span>
+          </span>
+        </button>
+        <button mat-button class="eav-button__with-icon" tippy="Import view" (click)="importView()">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>View</span>
+        </button>
+      </div>
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new view" (click)="editView(null)">
+        <mat-icon>add</mat-icon>
       </button>
-      
-      <button mat-button class="eav-button__with-icon" tippy="Import view" (click)="importView()">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>View</span>
-      </button>
-    </div>
-
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new view" (click)="editView(null)">
-      <mat-icon>add</mat-icon>
-    </button>
-  </mat-dialog-actions>
-</div>
+    </mat-dialog-actions>
+  </div>
+}

@@ -1,35 +1,41 @@
-<app-info-box type="info" *ngIf="data.scenario.useVirtual">
-  Virtual REST URLs are short. They will be resolved internally
-  to the full length (based on the dnn-version, current portal, etc.)
-  thanks to $2sxc JS API. This happens when you use the
-  <a href="https://docs.2sxc.org/specs/js/sxcewebapi.html" target="_blank">
-    $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
-  </a>
-  or if you use
-  <a href="https://go.2sxc.org/js-angular" target="_blank">
-    sxc-angular (npm package)
-  </a>
-  (which also passes url-resolving through $2sxc).
-</app-info-box>
+@if (data.scenario.useVirtual) {
+  <app-info-box type="info">
+    Virtual REST URLs are short. They will be resolved internally
+    to the full length (based on the dnn-version, current portal, etc.)
+    thanks to $2sxc JS API. This happens when you use the
+    <a href="https://docs.2sxc.org/specs/js/sxcewebapi.html" target="_blank">
+      $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
+    </a>
+    or if you use
+    <a href="https://go.2sxc.org/js-angular" target="_blank">
+      sxc-angular (npm package)
+    </a>
+    (which also passes url-resolving through $2sxc).
+  </app-info-box>
+}
 
-<app-info-box *ngIf="data.scenario.needsAnonymous && !data.permissionsHasAnonymous" type="warning">
-  To use the REST API from external, you usually will want to set some permissions for <code>Anonymous</code>.
-  As of now, no such permissions are configured.
-</app-info-box>
+@if (data.scenario.needsAnonymous && !data.permissionsHasAnonymous) {
+  <app-info-box type="warning">
+    To use the REST API from external, you usually will want to set some permissions for <code>Anonymous</code>.
+    As of now, no such permissions are configured.
+  </app-info-box>
+}
 
-<app-info-box *ngIf="data.scenario.needsAnonymous && data.permissionsHasAnonymous" type="alert">
-  It seems that you have some permissions configured for <code>Anonymous</code>.
-  This is correct if you plan on using the REST endpoints from externaly.
-  Please make sure that they are the ones you need, and that you don't accidentally open up too much.
-</app-info-box>
+@if (data.scenario.needsAnonymous && data.permissionsHasAnonymous) {
+  <app-info-box type="alert">
+    It seems that you have some permissions configured for <code>Anonymous</code>.
+    This is correct if you plan on using the REST endpoints from externaly.
+    Please make sure that they are the ones you need, and that you don't accidentally open up too much.
+  </app-info-box>
+}
 
 <p>
   The examples below use real values to make it easier to get started.
   The values used are the current content-type <code>{{ data.name }}</code>,
   the current Module ID <code>{{ data.moduleId }}</code>
   and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
-  <ng-container *ngIf="data.itemId">
+  @if (data.itemId) {
     The code also looked up an item of this type and will use it's ID <code>{{ data.itemId }}</code> in the
     examples.
-  </ng-container>
+  }
 </p>

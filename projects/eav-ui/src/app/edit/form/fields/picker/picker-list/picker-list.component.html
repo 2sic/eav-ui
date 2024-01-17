@@ -1,63 +1,71 @@
-<ng-container *ngIf="viewModel$ | async as vm">
-  <mat-label class="field-label" 
-    *ngIf="!vm.allowMultiValue" 
-    [ngClass]="{ 'disabled': vm.controlStatus.disabled }">
-    {{ vm.label }} {{ vm.required ? '*': '' }}
-  </mat-label>
-
-  <div cdkDropList *ngIf="vm.selectedItems.length > 0"
-    [cdkDropListDisabled]="!vm.allowMultiValue || vm.controlStatus.disabled" 
-    (cdkDropListDropped)="drop($event, vm.selectedItems)"
-    [ngClass]="{
-    'normal-list': !vm.allowMultiValue,
-    'dnd-list': vm.allowMultiValue
-  }">
-    <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
-    <div *ngFor="let item of vm.selectedItems; trackBy: trackByFn; let index = index" 
-      cdkDrag 
+@if (viewModel$ | async; as vm) {
+  @if (!vm.allowMultiValue) {
+    <mat-label class="field-label"
+      [ngClass]="{ 'disabled': vm.controlStatus.disabled }">
+      {{ vm.label }} {{ vm.required ? '*': '' }}
+    </mat-label>
+  }
+  @if (vm.selectedItems.length > 0) {
+    <div cdkDropList
+      [cdkDropListDisabled]="!vm.allowMultiValue || vm.controlStatus.disabled"
+      (cdkDropListDropped)="drop($event, vm.selectedItems)"
       [ngClass]="{
-      'normal-item': !vm.allowMultiValue,
-      'dnd-item': vm.allowMultiValue,
-      'disabled': vm.controlStatus.disabled
-    }">
-      <div class="item-title" [ngClass]="{ 'disabled': vm.controlStatus.disabled }">
-        <mat-icon class="item-title__icon" 
-          *ngIf="vm.allowMultiValue" 
-          [tippy]="'Fields.Entity.DragMove' | translate"
-          [tippyDisabled]="vm.controlStatus.disabled">
-          drag_handle
-        </mat-icon>
-        <span class="item-title__text" [tippy]="item._tooltip">
-          {{ item.Text }}
-        </span>
-      </div>
-      <div class="item-actions">
-        <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-        <button mat-icon-button class="eav-action-button"
-          *ngIf="vm.enableEdit && !item._disableEdit"
-          [tippy]="'Fields.Entity.Edit' | translate" 
-          [disabled]="config.initialDisabled" 
-          appMousedownStopPropagation
-          (click)="edit(item.Value, item.Id)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button class="eav-action-button"
-          *ngIf="vm.enableDelete && !item._disableDelete"
-          [tippy]="'Fields.Entity.Delete' | translate" 
-          [disabled]="vm.controlStatus.disabled" 
-          appMousedownStopPropagation
-          (click)="deleteItem(index, item.Value)">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button mat-icon-button class="eav-action-button"
-          *ngIf="vm.enableRemove" 
-          [tippy]="'Fields.Entity.Remove' | translate"
-          [disabled]="vm.controlStatus.disabled" 
-          appMousedownStopPropagation 
-          (click)="removeItem(index)">
-          <mat-icon>clear</mat-icon>
-        </button>
-      </div>
+      'normal-list': !vm.allowMultiValue,
+      'dnd-list': vm.allowMultiValue
+      }">
+      <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
+      @for (item of vm.selectedItems; track trackByFn(index, item); let index = $index) {
+        <div
+          cdkDrag
+          [ngClass]="{
+          'normal-item': !vm.allowMultiValue,
+          'dnd-item': vm.allowMultiValue,
+          'disabled': vm.controlStatus.disabled
+          }">
+          <div class="item-title" [ngClass]="{ 'disabled': vm.controlStatus.disabled }">
+            @if (vm.allowMultiValue) {
+              <mat-icon class="item-title__icon"
+                [tippy]="'Fields.Entity.DragMove' | translate"
+                [tippyDisabled]="vm.controlStatus.disabled">
+                drag_handle
+              </mat-icon>
+            }
+            <span class="item-title__text" [tippy]="item._tooltip">
+              {{ item.Text }}
+            </span>
+          </div>
+          <div class="item-actions">
+            <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
+            @if (vm.enableEdit && !item._disableEdit) {
+              <button mat-icon-button class="eav-action-button"
+                [tippy]="'Fields.Entity.Edit' | translate"
+                [disabled]="config.initialDisabled"
+                appMousedownStopPropagation
+                (click)="edit(item.Value, item.Id)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+            @if (vm.enableDelete && !item._disableDelete) {
+              <button mat-icon-button class="eav-action-button"
+                [tippy]="'Fields.Entity.Delete' | translate"
+                [disabled]="vm.controlStatus.disabled"
+                appMousedownStopPropagation
+                (click)="deleteItem(index, item.Value)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+            @if (vm.enableRemove) {
+              <button mat-icon-button class="eav-action-button"
+                [tippy]="'Fields.Entity.Remove' | translate"
+                [disabled]="vm.controlStatus.disabled"
+                appMousedownStopPropagation
+                (click)="removeItem(index)">
+                <mat-icon>clear</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      }
     </div>
-  </div>
-</ng-container>
+  }
+}

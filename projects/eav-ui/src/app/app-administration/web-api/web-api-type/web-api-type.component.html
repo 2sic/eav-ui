@@ -1,5 +1,7 @@
 <div class="icon-container">
-  <div class="eav-grid-action-button icon" tippy="WebApi is shared" *ngIf="value">
-    <mat-icon>share</mat-icon>
-  </div>
+  @if (value) {
+    <div class="eav-grid-action-button icon" tippy="WebApi is shared">
+      <mat-icon>share</mat-icon>
+    </div>
+  }
 </div>

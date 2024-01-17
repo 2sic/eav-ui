@@ -1,63 +1,67 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">{{'ManageContentList.Title' | translate}}</div>
     </div>
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>
-      
       <div class="dialog-component-content fancy-scrollbar-light" cdkScrollable>
-        <ng-container *ngIf="vm.header">
+        @if (vm.header) {
           <p>
             {{'ManageContentList.Description' | translate}}
           </p>
-      
           <p>
-            <ng-container *ngIf="vm.header.Type">
+            @if (vm.header.Type) {
               <span>{{ vm.header.Title }}</span>
               <button mat-icon-button tippy="Edit header" (click)="editHeader()">
                 <mat-icon>edit</mat-icon>
               </button>
-            </ng-container>
-            <ng-container *ngIf="!vm.header.Type">{{'ManageContentList.NoHeader' | translate}}</ng-container>
+            }
+            @if (!vm.header.Type) {
+              {{'ManageContentList.NoHeader' | translate}}
+            }
           </p>
-        </ng-container>
-      
-        <p class="eav-sort-title" *ngIf="vm.items && vm.items?.length < 25 ">
-          {{'ManageContentList.SortItems' | translate}}
-        </p>
-        <p class="eav-sort-title" *ngIf="vm.items?.length >= 25 ">
-          {{'ManageContentList.SortLotsOfItems' | translate}}
-        </p>
-      
+        }
+        @if (vm.items && vm.items?.length < 25 ) {
+          <p class="eav-sort-title">
+            {{'ManageContentList.SortItems' | translate}}
+          </p>
+        }
+        @if (vm.items?.length >= 25 ) {
+          <p class="eav-sort-title">
+            {{'ManageContentList.SortLotsOfItems' | translate}}
+          </p>
+        }
         <div class="eav-dnd-list" cdkDropList (cdkDropListDropped)="drop($event)">
-          <div *ngFor="let item of vm.items; trackBy: trackByFn" class="eav-dnd-item" cdkDrag>
-            <div class="eav-dnd-item__title">
-              <mat-icon class="eav-dnd-item__title-icon" tippy="Drag to reorder the list">drag_handle</mat-icon>
-              <span class="eav-dnd-item__title-text" tippy="{{ item.Title }} ({{ item.Id }})">
-                {{ item.Title }} ({{ item.Id }})
-              </span>
+          @for (item of vm.items; track trackByFn($index, item)) {
+            <div class="eav-dnd-item" cdkDrag>
+              <div class="eav-dnd-item__title">
+                <mat-icon class="eav-dnd-item__title-icon" tippy="Drag to reorder the list">drag_handle</mat-icon>
+                <span class="eav-dnd-item__title-text" tippy="{{ item.Title }} ({{ item.Id }})">
+                  {{ item.Title }} ({{ item.Id }})
+                </span>
+              </div>
+              <div>
+                <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
+                <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation
+                  [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
+                  <mat-icon>playlist_add</mat-icon>
+                </button>
+                <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation
+                  [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation
+                  [disabled]="reordered" (click)="remove(item)">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation
+                  [disabled]="item.Id === 0" (click)="editItem(item.Id)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
             </div>
-            <div>
-              <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
-              <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation
-                [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
-                <mat-icon>playlist_add</mat-icon>
-              </button>
-              <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation
-                [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
-                <mat-icon>add</mat-icon>
-              </button>
-              <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation
-                [disabled]="reordered" (click)="remove(item)">
-                <mat-icon>remove</mat-icon>
-              </button>
-              <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation
-                [disabled]="item.Id === 0" (click)="editItem(item.Id)">
-                <mat-icon>edit</mat-icon>
-              </button>
-            </div>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -69,4 +73,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

@@ -27,7 +27,7 @@
       <mat-card-content>
         <p>
           Create an package (zip) which can be installed in another site.
-        </p>    
+        </p>
       </mat-card-content>
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
@@ -77,36 +77,40 @@
           You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
           This file can then also be versioned using git.
         </p>
-        <p *ngIf="appStateAdvanced">
-          <br>
-          In Advanced mode you can also sync all the site files used by this app.
-          They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
-        </p>
-      </mat-card-content>
-      <app-feature-text-info *ngIf="appStateAdvanced" [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
-      <div class="eav-card-space-div"></div>
-      <mat-card-actions align="start">
-        <ng-container *ngIf="!appStateAdvanced">
-          <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
-            <mat-icon class="eav-icon">more_time</mat-icon>
-            <span>Save state</span>
-          </button>
-          <button mat-button class="eav-button__with-icon" (click)="resetApp(false)">
-            <mat-icon class="eav-icon">restore</mat-icon>
-            <span>Restore state</span>
-          </button>
-        </ng-container>
-        <ng-container *ngIf="appStateAdvanced">
-          <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
-            <mat-icon class="eav-icon">more_time</mat-icon>
-            <span>Save with Assets</span>
-          </button>
-          <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
-            <mat-icon class="eav-icon">restore</mat-icon>
-            <span>Restore with Assets</span>
-          </button>
-        </ng-container>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-</ng-container>
+        @if (appStateAdvanced) {
+          <p>
+            <br>
+              In Advanced mode you can also sync all the site files used by this app.
+              They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
+            </p>
+          }
+        </mat-card-content>
+        @if (appStateAdvanced) {
+          <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
+        }
+        <div class="eav-card-space-div"></div>
+        <mat-card-actions align="start">
+          @if (!appStateAdvanced) {
+            <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
+              <mat-icon class="eav-icon">more_time</mat-icon>
+              <span>Save state</span>
+            </button>
+            <button mat-button class="eav-button__with-icon" (click)="resetApp(false)">
+              <mat-icon class="eav-icon">restore</mat-icon>
+              <span>Restore state</span>
+            </button>
+          }
+          @if (appStateAdvanced) {
+            <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
+              <mat-icon class="eav-icon">more_time</mat-icon>
+              <span>Save with Assets</span>
+            </button>
+            <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
+              <mat-icon class="eav-icon">restore</mat-icon>
+              <span>Restore with Assets</span>
+            </button>
+          }
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </ng-container>

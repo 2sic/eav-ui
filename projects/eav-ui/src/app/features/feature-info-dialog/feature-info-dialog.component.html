@@ -1,30 +1,36 @@
-<mat-card *ngIf="viewModel$ | async as vm">
-  <mat-card-header>
-    <mat-card-title>{{ vm.feature.Name }}</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p [innerHtml]="vm.feature.Description | safeHtml"></p>
-    <div class="eav-info-row">
-      <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
-      <div class="eav-info-row__value">
-        <span>{{ (vm.feature.IsEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+@if (viewModel$ | async; as vm) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ vm.feature.Name }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p [innerHtml]="vm.feature.Description | safeHtml"></p>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
+        <div class="eav-info-row__value">
+          <span>{{ (vm.feature.IsEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+        </div>
       </div>
-    </div>
-    <div class="eav-info-row" *ngIf="vm.feature.NameId as id">
-      <div class="eav-info-row__label">ID:</div>
-      <div class="eav-info-row__value eav_click">
-        <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
-      </div>
-    </div>
-  </mat-card-content>
-  <mat-card-actions align="end">
-    <button *ngIf="vm.feature.Link as link" mat-raised-button color="accent"
-      class="eav-card-action-button" (click)="findOutMore(link)">
-      <mat-icon>open_in_new</mat-icon>
-      {{ "Features.FindOutMore" | translate }}
-    </button>
-    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
-      {{ "Features.Close" | translate }}
-    </button>
-  </mat-card-actions>
-</mat-card>
+      @if (vm.feature.NameId; as id) {
+        <div class="eav-info-row">
+          <div class="eav-info-row__label">ID:</div>
+          <div class="eav-info-row__value eav_click">
+            <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
+          </div>
+        </div>
+      }
+    </mat-card-content>
+    <mat-card-actions align="end">
+      @if (vm.feature.Link; as link) {
+        <button mat-raised-button color="accent"
+          class="eav-card-action-button" (click)="findOutMore(link)">
+          <mat-icon>open_in_new</mat-icon>
+          {{ "Features.FindOutMore" | translate }}
+        </button>
+      }
+      <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
+        {{ "Features.Close" | translate }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+}

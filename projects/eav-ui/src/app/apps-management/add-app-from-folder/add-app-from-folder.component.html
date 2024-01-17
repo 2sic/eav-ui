@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">Add App from Folder</div>
@@ -8,14 +8,18 @@
       <p>
         Select an app from the apps-folder which has been copied there (or git-cloned) but not installed yet.
       </p>
-      <p *ngIf="vm.pendingApps?.length == 0">
-        Nothing to show. All apps in the 2sxc folder are already installed.
-      </p>
-      <div *ngIf="vm.pendingApps?.length > 0">
-        <ag-grid-angular class="ag-theme-material eav-grid" [rowData]="vm.pendingApps"
-          [gridOptions]="gridOptions">
-        </ag-grid-angular>
-      </div>
+      @if (vm.pendingApps?.length == 0) {
+        <p>
+          Nothing to show. All apps in the 2sxc folder are already installed.
+        </p>
+      }
+      @if (vm.pendingApps?.length > 0) {
+        <div>
+          <ag-grid-angular class="ag-theme-material eav-grid" [rowData]="vm.pendingApps"
+            [gridOptions]="gridOptions">
+          </ag-grid-angular>
+        </div>
+      }
     </div>
     <mat-dialog-actions align="end">
       <button type="button" mat-raised-button (click)="closeDialog()">
@@ -27,4 +31,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

@@ -251,6 +251,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerData.source.deleteItem({ index, entityGuid });
   }
 
+  hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
+
   /** Needed later for tree implementation testing */
   treeControl = new FlatTreeControl<PickerTreeItem>(
     item => item.Level,
@@ -289,6 +291,4 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       }
     },
   );
-
-  hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
 }
