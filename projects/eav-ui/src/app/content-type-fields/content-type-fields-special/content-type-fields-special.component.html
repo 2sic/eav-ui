@@ -1,4 +1,8 @@
 <div class="icon-container">
-  <mat-icon *ngIf="hasFormulas" tippy="Has Formulas">functions</mat-icon>
-  <mat-icon *ngIf="isEphemeral" tippy="Ephemeral / Temporary, won't save">mobiledata_off</mat-icon>
+  @if (hasFormulas) {
+    <mat-icon tippy="Has Formulas">functions</mat-icon>
+  }
+  @if (isEphemeral) {
+    <mat-icon tippy="Ephemeral / Temporary, won't save">mobiledata_off</mat-icon>
+  }
 </div>

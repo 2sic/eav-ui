@@ -1,24 +1,26 @@
-<div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="viewModel$ | async as vm">
-
-  <div class="eav-show-advanced">
-    <span class="eav-slide-toggle-label">Show Advanced</span>
-    <mat-slide-toggle color="primary" (change)="toggleDifficulty($event)" />
-  </div>
-  
-
-  <ng-container *ngFor="let group of vm.sorted | keyvalue; trackBy: trackGroups">
-    <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
-      (click)="toggleItem(group.key)">
-      <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>
-      <span>{{ guiTypes[group.key].Label ?? guiTypes[group.key].Name ?? group.key }}</span>
+@if (viewModel$ | async; as vm) {
+  <div class="editor-active-explorer fancy-scrollbar-dark">
+    <div class="eav-show-advanced">
+      <span class="eav-slide-toggle-label">Show Advanced</span>
+      <mat-slide-toggle color="primary" (change)="toggleDifficulty($event)" />
     </div>
-
-    <div class="list" *ngIf="toggledItems.includes(group.key)">
-      <div class="list-item" *ngFor="let dataSource of group.value; trackBy: trackDataSources"
-        [tippy]="dataSource.UiHint || dataSource.Name" tippyShowDelay="750" (click)="addDataSource(dataSource)">
-        <mat-icon>{{ dataSource.Icon || guiTypes.Unknown.Icon }}</mat-icon>
-        <span>{{ dataSource.Name }}</span>
+    @for (group of vm.sorted | keyvalue; track trackGroups($index, group)) {
+      <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
+        (click)="toggleItem(group.key)">
+        <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>
+        <span>{{ guiTypes[group.key].Label ?? guiTypes[group.key].Name ?? group.key }}</span>
       </div>
-    </div>
-  </ng-container>
-</div>
+      @if (toggledItems.includes(group.key)) {
+        <div class="list">
+          @for (dataSource of group.value; track trackDataSources($index, dataSource)) {
+            <div class="list-item"
+              [tippy]="dataSource.UiHint || dataSource.Name" tippyShowDelay="750" (click)="addDataSource(dataSource)">
+              <mat-icon>{{ dataSource.Icon || guiTypes.Unknown.Icon }}</mat-icon>
+              <span>{{ dataSource.Name }}</span>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+}

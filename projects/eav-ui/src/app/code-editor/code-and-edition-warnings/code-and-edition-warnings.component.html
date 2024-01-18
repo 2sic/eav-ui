@@ -1,23 +1,27 @@
 <div class="messages">
-  <ng-container *ngIf="snackBarData.codeFile">
+  @if (snackBarData.codeFile) {
     <div>"{{ snackBarData.fileName }}" also has a code-behind file "{{ snackBarData.codeFile }}".</div>
     <br>
-  </ng-container>
+  }
 
-  <div *ngIf="snackBarData.otherEditions">
-    <ng-container *ngIf="snackBarData.edition">
-      You are editing "{{ snackBarData.edition }}" edition.
-    </ng-container>
-    There are {{ snackBarData.otherEditions }} other editions of "{{ snackBarData.fileName }}".
-    <ng-container *ngIf="!snackBarData.edition">
-      You may be editing an edition which is not the one you see.
-    </ng-container>
-    See <a href="https://go.2sxc.org/polymorphism" target="_blank">docs</a>.
-  </div>
+  @if (snackBarData.otherEditions) {
+    <div>
+      @if (snackBarData.edition) {
+        You are editing "{{ snackBarData.edition }}" edition.
+      }
+      There are {{ snackBarData.otherEditions }} other editions of "{{ snackBarData.fileName }}".
+      @if (!snackBarData.edition) {
+        You may be editing an edition which is not the one you see.
+      }
+      See <a href="https://go.2sxc.org/polymorphism" target="_blank">docs</a>.
+    </div>
+  }
 </div>
 
 <div class="actions">
-  <button mat-button color="primary" *ngIf="snackBarData.codeFile" (click)="openCodeBehind()">
-    Open code-behind file
-  </button>
+  @if (snackBarData.codeFile) {
+    <button mat-button color="primary" (click)="openCodeBehind()">
+      Open code-behind file
+    </button>
+  }
 </div>

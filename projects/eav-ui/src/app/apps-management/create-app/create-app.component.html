@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">Create App</div>
@@ -13,14 +13,18 @@
         <app-field-hint>
           App name will also be used for the folder
         </app-field-hint>
-        <ng-container *ngIf="form.controls.name.touched">
-          <app-field-hint *ngIf="form.controls.name.errors?.required" [isError]="true">
-            Required
-          </app-field-hint>
-          <app-field-hint *ngIf="form.controls.name.errors?.pattern" [isError]="true">
-            {{ appNameError }}
-          </app-field-hint>
-        </ng-container>
+        @if (form.controls.name.touched) {
+          @if (form.controls.name.errors?.required) {
+            <app-field-hint [isError]="true">
+              Required
+            </app-field-hint>
+          }
+          @if (form.controls.name.errors?.pattern) {
+            <app-field-hint [isError]="true">
+              {{ appNameError }}
+            </app-field-hint>
+          }
+        }
       </form>
     </div>
     <mat-dialog-actions align="end">
@@ -32,4 +36,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

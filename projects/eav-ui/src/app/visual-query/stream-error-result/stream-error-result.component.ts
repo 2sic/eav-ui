@@ -28,6 +28,6 @@ export class StreamErrorResultComponent implements OnInit {
   }
 
   openInsights() {
-    window.open(window.$2sxc.http.apiUrl('sys/insights/logs?key=web-api'), '_blank');
+    window.open(window.$2sxc.http.apiUrl('sys/insights/logs?key=web-api-query'), '_blank');
   }
 }

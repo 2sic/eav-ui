@@ -1,55 +1,55 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">Export app</div>
     </div>
     <div class="eav-dialog-content">
-      <mat-spinner *ngIf="vm.isExporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-    
+      @if (vm.isExporting) {
+        <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+      }
       <p>
         Pack the entire app to a <em>zip</em> folder which can be imported again to another site.
         For further help visit <a href="https://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
       </p>
-    
-      <div *ngIf="vm.appInfo">
-        <p class="eav-app-info__title">Specs</p>
-        <ul class="eav-app-info__content">
-          <li>Name: {{ vm.appInfo.Name }}</li>
-          <li>Guid: {{ vm.appInfo.Guid }}</li>
-          <li>Version: {{ vm.appInfo.Version }}</li>
-        </ul>
-    
-        <p class="eav-app-info__title">Contains</p>
-        <ul class="eav-app-info__content">
-          <li>{{ vm.appInfo.EntitiesCount }} entities</li>
-          <li>{{ vm.appInfo.LanguagesCount }} languages</li>
-          <li>
-            {{ vm.appInfo.TemplatesCount }} templates (Token: {{ vm.appInfo.HasTokenTemplates }}, Razor:
-            {{ vm.appInfo.HasRazorTemplates }})
-          </li>
-          <li>{{ vm.appInfo.TransferableFilesCount }} files to export</li>
-          <li>{{ vm.appInfo.FilesCount }} files in the app folder totally</li>
-        </ul>
-    
-        <div class="eav-options-wrapper">
-          <div class="oeav-ption-box">
-            <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid || vm.isExporting">
-              <span class="eav-option-box__text">
-                Include all content-groups to re-import the app in an exact copy of this site.
-                Only select this option when you copy an entire DNN site.
-              </span>
-            </mat-checkbox>
-          </div>
-          <div class="eav-option-box">
-            <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups || vm.isExporting">
-              <span class="eav-option-box__text">
-                Reset the app GUID to zero. You only need this option for special tutorial apps,
-                and usually must not select it.
-              </span>
-            </mat-checkbox>
+      @if (vm.appInfo) {
+        <div>
+          <p class="eav-app-info__title">Specs</p>
+          <ul class="eav-app-info__content">
+            <li>Name: {{ vm.appInfo.Name }}</li>
+            <li>Guid: {{ vm.appInfo.Guid }}</li>
+            <li>Version: {{ vm.appInfo.Version }}</li>
+          </ul>
+          <p class="eav-app-info__title">Contains</p>
+          <ul class="eav-app-info__content">
+            <li>{{ vm.appInfo.EntitiesCount }} entities</li>
+            <li>{{ vm.appInfo.LanguagesCount }} languages</li>
+            <li>
+              {{ vm.appInfo.TemplatesCount }} templates (Token: {{ vm.appInfo.HasTokenTemplates }}, Razor:
+              {{ vm.appInfo.HasRazorTemplates }})
+            </li>
+            <li>{{ vm.appInfo.TransferableFilesCount }} files to export</li>
+            <li>{{ vm.appInfo.FilesCount }} files in the app folder totally</li>
+          </ul>
+          <div class="eav-options-wrapper">
+            <div class="oeav-ption-box">
+              <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid || vm.isExporting">
+                <span class="eav-option-box__text">
+                  Include all content-groups to re-import the app in an exact copy of this site.
+                  Only select this option when you copy an entire DNN site.
+                </span>
+              </mat-checkbox>
+            </div>
+            <div class="eav-option-box">
+              <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups || vm.isExporting">
+                <span class="eav-option-box__text">
+                  Reset the app GUID to zero. You only need this option for special tutorial apps,
+                  and usually must not select it.
+                </span>
+              </mat-checkbox>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
     <mat-dialog-actions align="end">
       <button mat-raised-button [disabled]="vm.isExporting" (click)="closeDialog()">
@@ -60,4 +60,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

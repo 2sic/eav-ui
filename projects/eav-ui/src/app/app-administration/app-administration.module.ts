@@ -74,6 +74,9 @@ import { WebApiActionsComponent } from './web-api/web-api-actions/web-api-action
 import { WebApiTypeComponent } from './web-api/web-api-type/web-api-type.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationCardComponent } from './app-configuration/app-configuration-card/app-configuration-card.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatSidenavModule} from '@angular/material/sidenav';
+
 
 @NgModule({
   declarations: [
@@ -137,6 +140,8 @@ import { AppConfigurationCardComponent } from './app-configuration/app-configura
     MatBadgeModule,
     CreateFileDialogModule,
     FeaturesModule,
+    MatToolbarModule,
+    MatSidenavModule
   ],
   providers: [
     Context,

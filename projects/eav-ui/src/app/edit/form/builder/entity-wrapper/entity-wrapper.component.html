@@ -1,73 +1,77 @@
-<mat-card appearance="raised" *ngIf="viewModel$ | async as vm" class="eav-card-group-parent shadow-bottom-z-1">
-  <div class="eav-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
-
-    <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
-      <div fxLayoutAlign="start center" class="eav-card-title-group mat-headline-4">
-        <mat-icon class="title-arrow">
-          {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
-        </mat-icon>
-        <span class="title">
-          {{ vm.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
-        </span>
-      </div>
-    </div>
-
-    <button type="button" #noteTrigger mat-icon-button class="eav-note {{ vm.noteProps.triggerClass }}"
-      [disabled]="vm.readOnly" [tippy]="vm.noteProps.tooltip | translate"
-      [tippyDisabled]="vm.readOnly || !vm.noteProps.tooltip" [disableRipple]="vm.noteProps.itemNotSaved"
-      (pointerenter)="vm.noteProps.note ? toggleNote($event) : null"
-      (pointerleave)="vm.noteProps.note ? toggleNote($event) : null"
-      (click)="vm.noteProps.note ? toggleNote($event) : editNote()" *ngIf="vm.showNotes">
-      <mat-icon>{{ vm.noteProps.iconName }}</mat-icon>
-    </button>
-
-    <ng-template #noteTemplate>
-      <div class="eav-note-wrapper {{ vm.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
-        cdkDragBoundary="body" (pointerdown)="noteTouched = true">
-        <div class="eav-note-actions" cdkDragHandle>
-          <button mat-icon-button appMousedownStopPropagation (click)="editNote(vm.noteProps.note)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(vm.noteProps.note)">
-            <mat-icon>delete</mat-icon>
-          </button>
-          <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event)">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="eav-note-content eav-hide-scrollbar" [innerHtml]="vm.noteProps.noteHtml | safeHtml"></div>
-      </div>
-    </ng-template>
-
-    <mat-slide-toggle class="empty-slot-toggle" *ngIf="vm.slotCanBeEmpty" (change)="toggleSlotIsEmpty(vm.header)"
-      [checked]="!vm.slotIsEmpty" [disabled]="vm.readOnly || (vm.currentLanguage !== vm.defaultLanguage)"
-      [tippy]="(!vm.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-      [tippyDisabled]="vm.readOnly || (vm.currentLanguage !== vm.defaultLanguage)">
-    </mat-slide-toggle>
-
-    <div class="icon-box" [tippy]="vm.itemForTooltip" *ngIf="vm.showMetadataFor && vm.itemForTooltip">
-      <mat-icon>local_offer</mat-icon>
-    </div>
-
-    <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
-      *ngIf="eavService.eavConfig.enableHistory" [disabled]="vm.readOnly" (click)="openHistory()">
-      <mat-icon>history</mat-icon>
-    </button>
-
-    <app-entity-translate-menu fxLayoutAlign="end center" [entityGuid]="entityGuid">
-    </app-entity-translate-menu>
-  </div>
-
-  <mat-card-content class="eav-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
-    <div class="eav-layout-grid">
-      <div class="eav-layout-grid__inner">
-        <div class="eav-layout-grid__cell--span-12 mat-body-2" align="start" *ngIf="vm.editInstructions">
-          <div class="description" appChangeAnchorTarget [innerHtml]="vm.editInstructions | safeHtml"></div>
-        </div>
-        <div class="eav-layout-grid__cell--span-12">
-          <ng-container appFieldsBuilder [group]="group"></ng-container>
+@if (viewModel$ | async; as vm) {
+  <mat-card appearance="raised" class="eav-card-group-parent shadow-bottom-z-1">
+    <div class="eav-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
+      <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
+        <div fxLayoutAlign="start center" class="eav-card-title-group mat-headline-4">
+          <mat-icon class="title-arrow">
+            {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+          </mat-icon>
+          <span class="title">
+            {{ vm.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
+          </span>
         </div>
       </div>
+      @if (vm.showNotes) {
+        <button type="button" #noteTrigger mat-icon-button class="eav-note {{ vm.noteProps.triggerClass }}"
+          [disabled]="vm.readOnly" [tippy]="vm.noteProps.tooltip | translate"
+          [tippyDisabled]="vm.readOnly || !vm.noteProps.tooltip" [disableRipple]="vm.noteProps.itemNotSaved"
+          (pointerenter)="vm.noteProps.note ? toggleNote($event) : null"
+          (pointerleave)="vm.noteProps.note ? toggleNote($event) : null"
+          (click)="vm.noteProps.note ? toggleNote($event) : editNote()">
+          <mat-icon>{{ vm.noteProps.iconName }}</mat-icon>
+        </button>
+      }
+      <ng-template #noteTemplate>
+        <div class="eav-note-wrapper {{ vm.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+          cdkDragBoundary="body" (pointerdown)="noteTouched = true">
+          <div class="eav-note-actions" cdkDragHandle>
+            <button mat-icon-button appMousedownStopPropagation (click)="editNote(vm.noteProps.note)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(vm.noteProps.note)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="eav-note-content eav-hide-scrollbar" [innerHtml]="vm.noteProps.noteHtml | safeHtml"></div>
+        </div>
+      </ng-template>
+      @if (vm.slotCanBeEmpty) {
+        <mat-slide-toggle class="empty-slot-toggle" (change)="toggleSlotIsEmpty(vm.header)"
+          [checked]="!vm.slotIsEmpty" [disabled]="vm.readOnly || (vm.currentLanguage !== vm.defaultLanguage)"
+          [tippy]="(!vm.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
+          [tippyDisabled]="vm.readOnly || (vm.currentLanguage !== vm.defaultLanguage)">
+        </mat-slide-toggle>
+      }
+      @if (vm.showMetadataFor && vm.itemForTooltip) {
+        <div class="icon-box" [tippy]="vm.itemForTooltip">
+          <mat-icon>local_offer</mat-icon>
+        </div>
+      }
+      @if (eavService.eavConfig.enableHistory) {
+        <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
+          [disabled]="vm.readOnly" (click)="openHistory()">
+          <mat-icon>history</mat-icon>
+        </button>
+      }
+      <app-entity-translate-menu fxLayoutAlign="end center" [entityGuid]="entityGuid">
+      </app-entity-translate-menu>
     </div>
-  </mat-card-content>
-</mat-card>
+    <mat-card-content class="eav-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
+      <div class="eav-layout-grid">
+        <div class="eav-layout-grid__inner">
+          @if (vm.editInstructions) {
+            <div class="eav-layout-grid__cell--span-12 mat-body-2" align="start">
+              <div class="description" appChangeAnchorTarget [innerHtml]="vm.editInstructions | safeHtml"></div>
+            </div>
+          }
+          <div class="eav-layout-grid__cell--span-12">
+            <ng-container appFieldsBuilder [group]="group"></ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+}

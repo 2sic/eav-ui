@@ -1,11 +1,12 @@
-<ng-container *ngIf="viewModel | async as vm">
-  <ng-container *ngIf="vm.open">
-
+@if (viewModel | async; as vm) {
+  @if (vm.open) {
     <div class="fabs-box">
-      <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate" *ngIf="vm.buttonAdam"
-        [disabled]="vm.controlStatus.disabled" (click)="toggleAdam(false, false)">
-        <mat-icon svgIcon="apple-outlined"></mat-icon>
-      </button>
+      @if (vm.buttonAdam) {
+        <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
+          [disabled]="vm.controlStatus.disabled" (click)="toggleAdam(false, false)">
+          <mat-icon svgIcon="apple-outlined"></mat-icon>
+        </button>
+      }
       <button mat-mini-fab color="primary" [disabled]="!vm.adamItem?._imageConfigurationContentType"
         [ngClass]="{ 'metadata-exists': vm.adamItem?._imageConfigurationId > 0 }"
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
@@ -14,37 +15,47 @@
           [tippy]="(vm.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
           [tippyDisabled]="vm.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
       </button>
-      <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
-        *ngIf="vm.buttonPage" [disabled]="vm.controlStatus.disabled" (click)="openPagePicker()">
-        <mat-icon svgIcon="sitemap"></mat-icon>
-      </button>
-      <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
-        *ngIf="vm.buttonMore" [disabled]="vm.controlStatus.disabled" [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
+      @if (vm.buttonPage) {
+        <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
+          [disabled]="vm.controlStatus.disabled" (click)="openPagePicker()">
+          <mat-icon svgIcon="sitemap"></mat-icon>
+        </button>
+      }
+      @if (vm.buttonMore) {
+        <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
+          [disabled]="vm.controlStatus.disabled" [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      }
     </div>
-
     <mat-menu #menu="matMenu" class="menu-box">
       <ng-template matMenuContent>
-        <button mat-menu-item *ngIf="vm.showAdam" (click)="toggleAdam(false, false)">
-          <mat-icon svgIcon="apple-outlined"></mat-icon>
-          <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
-        </button>
-        <button mat-menu-item *ngIf="vm.showPagePicker" (click)="openPagePicker()">
-          <mat-icon svgIcon="sitemap"></mat-icon>
-          <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
-        </button>
-        <button mat-menu-item *ngIf="vm.showImageManager" (click)="toggleAdam(true, true)">
-          <mat-icon svgIcon="file-image"></mat-icon>
-          <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
-        </button>
-        <button mat-menu-item *ngIf="vm.showFileManager" (click)="toggleAdam(true, false)">
-          <mat-icon svgIcon="file"></mat-icon>
-          <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
-        </button>
+        @if (vm.showAdam) {
+          <button mat-menu-item (click)="toggleAdam(false, false)">
+            <mat-icon svgIcon="apple-outlined"></mat-icon>
+            <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+          </button>
+        }
+        @if (vm.showPagePicker) {
+          <button mat-menu-item (click)="openPagePicker()">
+            <mat-icon svgIcon="sitemap"></mat-icon>
+            <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+          </button>
+        }
+        @if (vm.showImageManager) {
+          <button mat-menu-item (click)="toggleAdam(true, true)">
+            <mat-icon svgIcon="file-image"></mat-icon>
+            <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+          </button>
+        }
+        @if (vm.showFileManager) {
+          <button mat-menu-item (click)="toggleAdam(true, false)">
+            <mat-icon svgIcon="file"></mat-icon>
+            <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+          </button>
+        }
       </ng-template>
     </mat-menu>
-
     <!-- content -->
     <div class="eav-layout-grid">
       <div class="eav-layout-grid__inner">
@@ -52,41 +63,50 @@
           <div class="hyperlink-input-link-wrapper">
             <!-- input -->
             <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-              <input matInput [formControlName]="config.fieldName"
-                [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
-                [placeholder]="vm.placeholder" [required]="vm.required" appPasteClipboardImage [config]="config"
-                [elementType]="'input'">
+              <input matInput [formControlName]="config.fieldName" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
+                tippyPlacement="top" [placeholder]="vm.placeholder" [required]="vm.required" appPasteClipboardImage
+                [config]="config" [elementType]="'input'">
               <mat-label>{{ vm.label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
-            <div *ngIf="vm.preview?.floatingText" class="hyperlink-floating">
-              <div class="hyperlink-floating__value">{{ vm.controlStatus.value }}</div>
-              <div class="hyperlink-floating__url-box">
-                <a [href]="vm.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.preview.url">
-                  <span>{{ vm.preview.floatingText }}</span>
+            @if (vm.preview?.floatingText) {
+              <div class="hyperlink-floating">
+                <div class="hyperlink-floating__value">{{ vm.controlStatus.value }}</div>
+                <div class="hyperlink-floating__url-box">
+                  <a [href]="vm.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.preview.url">
+                    <span>{{ vm.preview.floatingText }}</span>
+                  </a>
+                </div>
+              </div>
+            }
+          </div>
+          @if (vm.controlStatus.value && vm.preview) {
+            <div class="preview-wrapper">
+              <!-- image -->
+              @if (vm.preview.isImage) {
+                <a [href]="vm.preview.url" target="_blank">
+                  <div class="preview-image-box">
+                    <img [src]="vm.preview.previewUrl" class="preview-image" />
+                  </div>
                 </a>
-              </div>
-            </div>
+              }
+              <!-- icon -->
+              @if (!vm.preview.isImage) {
+              <a [href]="vm.preview.url" target="_blank" [tippy]="vm.preview.url" tippyPlacement="right">
+                <div class="preview-icon-box">
+                  @if (vm.preview.isKnownType) {
+                    <mat-icon [svgIcon]="vm.preview.icon"></mat-icon>
+                  }
+                  @if (!vm.preview.isKnownType) {
+                    <mat-icon [svgIcon]="vm.preview.icon"></mat-icon>
+                  }
+                </div>
+              </a>
+            }
           </div>
-          <div class="preview-wrapper" *ngIf="vm.controlStatus.value && vm.preview">
-            <!-- image -->
-            <a [href]="vm.preview.url" target="_blank" *ngIf="vm.preview.isImage">
-              <div class="preview-image-box">
-                <img [src]="vm.preview.previewUrl" class="preview-image" />
-              </div>
-            </a>
-            <!-- icon -->
-            <a [href]="vm.preview.url" target="_blank" [tippy]="vm.preview.url" tippyPlacement="right"
-              *ngIf="!vm.preview.isImage">
-              <div class="preview-icon-box">
-                <mat-icon *ngIf="vm.preview.isKnownType" [svgIcon]="vm.preview.icon"></mat-icon>
-                <mat-icon *ngIf="!vm.preview.isKnownType" [svgIcon]="vm.preview.icon"></mat-icon>
-              </div>
-            </a>
-          </div>
+          }
         </mat-card>
       </div>
     </div>
-
-  </ng-container>
-</ng-container>
+  }
+}

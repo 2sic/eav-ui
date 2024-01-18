@@ -40,6 +40,10 @@ ag-grid-angular:not(.grid-sorted):not(.grid-filtered) .is-in-group {
     padding-top: 24px;
   }
 
+  ag-grid-angular {
+    flex-grow: 1;
+  }
+
   .grid-fab {
     // position: absolute;
     // bottom: -8px;

@@ -1,12 +1,16 @@
-import { FieldSettings, UiPickerModeTree } from '../../../../../../../../edit-types';
+import { FieldSettings, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
+import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
+import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 
 export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeConstants.WIPEntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
+    let dataSources: EavEntity[] = [];
+    let pickerDisplayConfigurations: EavEntity[] = [];
     const fs: FieldSettings = { ...settings };
 
     /** Entity Default logic */
@@ -22,7 +26,6 @@ export class EntityPickerLogic extends FieldLogicBase {
 
     fs.Information ??= '';
     fs.Tooltip ??= '';
-    fs.MoreFields ??= '';
     fs.Label ??= '';
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
@@ -35,29 +38,31 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.EnableDelete = true;
     }
 
-    const dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
-    const dsAttributes = dataSources[0]?.Attributes;
-
-    console.log('SDV StringPickerLogic dataSources', dataSources);
+    if(fs.DataSources?.length > 0) 
+      dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
 
     /** Query datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceQuery') {
-      fs.DataSourceType = 'UiPickerSourceQuery';
+    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceQuery) {
+      fs.DataSourceType = PickerConfigModels.UiPickerSourceQuery;
+      const uiPickerSourceQuery = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceQuery;
 
-      fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
-      fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
-      fs.UrlParameters = dsAttributes['QueryParameters'].Values[0].Value ?? '';
+      fs.Query = uiPickerSourceQuery.Query ?? '';
+      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';
+      fs.UrlParameters = uiPickerSourceQuery.QueryParameters ?? '';
 
-      fs.Value = dsAttributes['Value'].Values[0].Value ?? '';
-      fs.Label = dsAttributes['Label'].Values[0].Value ?? '';
-      fs.EntityType = dsAttributes['CreateTypes'].Values[0].Value ?? '';
+      fs.Value = uiPickerSourceQuery.Value ?? '';
+      fs.Label = uiPickerSourceQuery.Label ?? '';
+      fs.EntityType = uiPickerSourceQuery.CreateTypes ?? '';
+
+      fs.MoreFields = uiPickerSourceQuery.MoreFields ?? '';
     }
 
     /** Entity datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceEntity') {
-      fs.DataSourceType = 'UiPickerSourceEntity';
+    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceEntity) {
+      fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
+      const uiPickerSourceEntity = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceEntity;
 
-      fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
+      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';
     }
 
     /** WIP functionalities */
@@ -72,28 +77,32 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.AllowMultiMax = 0;
     }
 
-    // fixedSettings.PickerDisplayMode ??= 'list';
-    // fixedSettings.PickerDisplayConfiguration ??= [];
+    fs.PickerDisplayMode ??= 'list';
+    fs.PickerDisplayConfiguration ??= [];
 
-    // USE CONTENT TYPE ITEM SERVICE TO GET THE SUBENTITIES
-    // if (fixedSettings.PickerDisplayMode === 'tree') {
-    //   const pickerTreeConfiguration: UiPickerModeTree = {
-    //     Title: 'Tree Picker Configuration',// nothing to implement
-    //     TreeRelationship: 'child-parent',
-    //     TreeBranchStream: 'Default',
-    //     TreeLeavesStream: 'Default',
-    //     TreeParentIdField: 'Id',
-    //     TreeChildIdField: 'Id',
-    //     TreeParentChildRefField: 'children',
-    //     TreeChildParentRefField: 'parent',
-    //     TreeShowRoot: true,
-    //     TreeDepthMax: 10,
-    //     TreeAllowSelectRoot: true,// implemented
-    //     TreeAllowSelectBranch: true,// implemented
-    //     TreeAllowSelectLeaves: true,// implemented
-    //   };
-    //   fixedSettings.PickerTreeConfiguration = pickerTreeConfiguration;
-    // }
+    if (fs.PickerDisplayConfiguration?.length > 0)
+      pickerDisplayConfigurations = tools.contentTypeItemService.getContentTypeItems(fs.PickerDisplayConfiguration);
+
+    if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigModels.UiPickerModeTree) {
+      const uiPickerModeTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
+      const pickerTreeConfiguration: UiPickerModeTree = {
+        Title: uiPickerModeTree.Title ?? '',
+        ConfigModel: PickerConfigModels.UiPickerModeTree,
+        TreeRelationship: uiPickerModeTree.TreeRelationship ?? 'parent-child',
+        TreeBranchesStream: uiPickerModeTree.TreeBranchesStream ?? 'Default',
+        TreeLeavesStream: uiPickerModeTree.TreeLeavesStream ?? 'Default',
+        TreeParentIdField: uiPickerModeTree.TreeParentIdField ?? 'Id',
+        TreeChildIdField: uiPickerModeTree.TreeChildIdField ?? 'Id',
+        TreeParentChildRefField: uiPickerModeTree.TreeParentChildRefField ?? 'Children',
+        TreeChildParentRefField: uiPickerModeTree.TreeChildParentRefField ?? 'Parent',
+        TreeShowRoot: uiPickerModeTree.TreeShowRoot ?? true, 
+        TreeDepthMax: uiPickerModeTree.TreeDepthMax ?? 10,
+        TreeAllowSelectRoot: uiPickerModeTree.TreeAllowSelectRoot ?? true,
+        TreeAllowSelectBranch: uiPickerModeTree.TreeAllowSelectBranch ?? true,
+        TreeAllowSelectLeaf: uiPickerModeTree.TreeAllowSelectLeaf ?? true,
+      };
+      fs.PickerTreeConfiguration = pickerTreeConfiguration;
+    }
 
     return fs;
   }

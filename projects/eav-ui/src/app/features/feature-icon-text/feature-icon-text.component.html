@@ -1,2 +1,4 @@
-<mat-icon class="feature-icon-text" *ngIf="show$ | async" [tippy]="'Features.NotActivated' | translate"
+@if (show$ | async) {
+  <mat-icon class="feature-icon-text" [tippy]="'Features.NotActivated' | translate"
   (click)="openDialog()">diamond</mat-icon>
+}

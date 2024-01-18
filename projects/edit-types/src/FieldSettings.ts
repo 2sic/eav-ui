@@ -310,14 +310,13 @@ export interface FieldSettings extends
   StringWysiwyg,
   EntityPicker,
   StringPicker,
-  InternalSettings
-{ }
+  InternalSettings { }
 
-export interface UiPickerSourceCustomList extends DataSource {
+export interface UiPickerSourceCustomList extends ConfigModel {
   Values: string;
 }
-  
-export interface UiPickerSourceQuery extends DataSource {
+
+export interface UiPickerSourceQuery extends ConfigModel {
   Query: string;
   QueryParameters: string;
   StreamName: string;
@@ -327,9 +326,9 @@ export interface UiPickerSourceQuery extends DataSource {
   MoreFields: string;
 }
 
-export interface UiPickerModeTree extends DataSource { 
+export interface UiPickerModeTree extends ConfigModel {
   TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
-  TreeBranchStream: string;
+  TreeBranchesStream: string;
   TreeLeavesStream: string;
   TreeParentIdField: string;
   TreeChildIdField: string;
@@ -341,11 +340,29 @@ export interface UiPickerModeTree extends DataSource {
 
   TreeAllowSelectRoot: boolean;
   TreeAllowSelectBranch: boolean;
-  TreeAllowSelectLeaves: boolean;
+  TreeAllowSelectLeaf: boolean;
 }
 
-interface DataSource {
+export interface UiPickerSourceQuery extends ConfigModel {
+  Query: string;
+  QueryParameters: string;
+  StreamName: string;
+  Label: string;
+  Value: string;
+  MoreFields: string;
+  CreateTypes: string;
+}
+
+export interface UiPickerSourceEntity extends ConfigModel {
+  ContentTypeNames: string;
+}
+
+export interface UiPickerSourceCustomList extends ConfigModel {
+  DropdownValues: string;
+}
+
+interface ConfigModel {
   Title: string;
 
-  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';// will need to become enum array a bit later
+  ConfigModel: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity' | 'UiPickerModeTree';
 }

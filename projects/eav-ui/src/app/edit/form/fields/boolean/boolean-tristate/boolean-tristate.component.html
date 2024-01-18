@@ -1,10 +1,14 @@
-<div *ngIf="viewModel$ | async as vm" [formGroup]="group">
-  <mat-slide-toggle [disabled]="vm.controlStatus.disabled" [checked]="vm.checked" (change)="updateValue()" [ngClass]="{
-    'toggle-false': vm.checked === false,
-    'toggle-true': vm.checked === true,
-    'toggle-null': vm.checked === null,
-    'changeable-label-tristate-mat-slide-toggle': vm.changeable
-  }"/>
-  <span class="eav-slide-toggle-label">{{ vm.label }}</span>
-  <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
-</div>
+@if (viewModel$ | async; as vm) {
+  <div [formGroup]="group">
+    <div class="eav-toggle-hitbox" (click)="updateValue()">
+      <mat-slide-toggle [disabled]="vm.controlStatus.disabled" [checked]="vm.checked" [ngClass]="{
+          'toggle-false': vm.checked === false,
+          'toggle-true': vm.checked === true,
+          'toggle-null': vm.checked === null,
+          'changeable-label-tristate-mat-slide-toggle': vm.changeable
+          }" />
+      <span class="eav-slide-toggle-label">{{ vm.label }}</span>
+    </div>
+    <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
+  </div>
+}

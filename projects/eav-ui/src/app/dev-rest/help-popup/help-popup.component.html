@@ -12,7 +12,9 @@
     {{ dialogData.body }}
   </p>
 
-  <p class="dialog-description" *ngIf="dialogData.notes">
-    <em>{{ dialogData.notes }}</em>
-  </p>
+  @if (dialogData.notes) {
+    <p class="dialog-description">
+      <em>{{ dialogData.notes }}</em>
+    </p>
+  }
 </div>

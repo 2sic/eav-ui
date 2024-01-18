@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">Register this System on 2sxc Patrons</div>
@@ -9,7 +9,8 @@
         You can just register for free to unlock some features.
         They are mainly enhancements for which we wish to contact you in case of critical security issues.
       </p>
-      <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank" style="width: 50%; float: right;"></a>
+      <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank"
+        style="width: 50%; float: right;"></a>
       <h2>Hero Mode: Support 2sxc, get Awesome Stuff</h2>
       <p>
         If you want to become a champion and pay a monthly contribution
@@ -19,19 +20,19 @@
       <p>
         Thanks for loving and supporting 2sxc 💖
       </p>
-      
       <h2>System Specs</h2>
-      <p *ngIf="vm.systemInfoSet">
-        <b>Status:</b> {{ vm.systemInfoSet.License.Owner ? "this system is registered to " +
-        vm.systemInfoSet.License.Owner : "this system is not yet registered" }}
-        <br>
-        <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-          (click)="copyToClipboard(vm.systemInfoSet.System.Fingerprint)"> {{ vm.systemInfoSet.System.Fingerprint
-          }}</span>
-        <br>
-        <br>
-      </p>
-
+      @if (vm.systemInfoSet) {
+        <p>
+          <b>Status:</b> {{ vm.systemInfoSet.License.Owner ? "this system is registered to " +
+          vm.systemInfoSet.License.Owner : "this system is not yet registered" }}
+          <br>
+          <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
+            (click)="copyToClipboard(vm.systemInfoSet.System.Fingerprint)"> {{ vm.systemInfoSet.System.Fingerprint
+            }}</span>
+          <br>
+          <br>
+        </p>
+      }
       <div class="eav-registration-cards">
         <mat-card class="eav-registration-cards__left">
           <mat-card-header>
@@ -48,18 +49,19 @@
             </p>
           </mat-card-content>
           <mat-card-actions align="start">
-            <button mat-button class="eav-button__with-icon" tippy="Register" *ngIf="vm.systemInfoSet"
-              (click)="openLicenseRegistration(vm.systemInfoSet)">
-              <mat-icon class="eav-icon">app_registration</mat-icon>
-              <span>Register</span>
-            </button>
+            @if (vm.systemInfoSet) {
+              <button mat-button class="eav-button__with-icon" tippy="Register"
+                (click)="openLicenseRegistration(vm.systemInfoSet)">
+                <mat-icon class="eav-icon">app_registration</mat-icon>
+                <span>Register</span>
+              </button>
+            }
             <button mat-button class="eav-button__with-icon" tippy="Retrieve license" (click)="retrieveLicense()">
               <mat-icon class="eav-icon">download_for_offline</mat-icon>
               <span>Retrieve license</span>
             </button>
           </mat-card-actions>
         </mat-card>
-        
         <mat-card class="eav-registration-cards__right">
           <mat-card-header>
             <div mat-card-avatar>
@@ -94,4 +96,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

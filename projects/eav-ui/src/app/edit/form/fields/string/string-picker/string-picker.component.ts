@@ -13,6 +13,7 @@ import { StringPickerLogic } from './string-picker-logic';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 
 @Component({
   selector: InputTypeConstants.WIPStringPicker,
@@ -76,7 +77,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       () => this.focusOnSearchComponent,
     );
 
-    if (this.settings$.value.DataSourceType === 'UiPickerSourceCustomList') {
+    if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceCustomList) {
       source = this.sourceFactory.createPickerStringSourceAdapter(
         state.disableAddNew$,
         this.fieldsSettingsService,
@@ -89,7 +90,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
-    } else if (this.settings$.value.DataSourceType === 'UiPickerSourceQuery') {
+    } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
@@ -104,7 +105,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
-    } else if (this.settings$.value.DataSourceType === 'UiPickerSourceEntity') { 
+    } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) { 
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
         this.fieldsSettingsService,

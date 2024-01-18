@@ -26,4 +26,16 @@ export class QueryService {
       { Guids: entitiesFilter },
     );
   }
+
+  getEntities(contentTypes: string[], itemIds: string[]): Observable<QueryStreams> {
+    const allParams = '&typeNames=' + (contentTypes?.join(',') ?? '')
+      + '&itemIds=' + (itemIds?.join(',') ?? '')
+      + '&includeGuid=true';
+    // trim initial & because it will always start with an & and it should't
+    const urlParams = allParams.substring(1);
+    return this.http.post<QueryStreams>(
+      this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/System.EntityPicker/Default?${urlParams}`),
+      /*{ Guids: entitiesFilter },*/{}
+    );
+  }
 }

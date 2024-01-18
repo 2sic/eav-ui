@@ -1,3 +1,3 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <textarea readonly class="fancy-scrollbar-light">{{ vm.items | json }}</textarea>
-</ng-container>
+}

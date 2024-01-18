@@ -27,6 +27,8 @@ import { ToggleDebugDirective } from './directives/toggle-debug.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
 import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-renderer.component';
+import { BreadcrumbModule } from 'xng-breadcrumb';
+
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
@@ -34,7 +36,7 @@ import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-render
     // AG Grid Components - started creation by 2dm to be more generic / less code 2023-06-19
     AgBoolIconRenderer,
 
-    
+
     EmptyRouteComponent,
     DialogEntryComponent,
     FieldHintComponent,
@@ -64,6 +66,7 @@ import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-render
     MatProgressSpinnerModule,
     MatButtonModule,
     MatDialogModule,
+    BreadcrumbModule,
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
@@ -84,6 +87,7 @@ import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-render
     EntityFilterComponent,
     MatInputAutofocusDirective,
     FileUploadDialogComponent,
+    BreadcrumbModule,
   ],
 })
 export class SharedComponentsModule { }

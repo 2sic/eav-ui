@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog nav-component-wrapper">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">
@@ -10,16 +10,26 @@
     </div>
     <div class="eav-dialog-content nav-component-wrapper">
       <p>
-        <ng-container *ngIf="!vm.itemFor">This item is not metadata for anything else.</ng-container>
-        <ng-container *ngIf="vm.itemFor">
+        @if (!vm.itemFor) {
+          This item is not metadata for anything else.
+        }
+        @if (vm.itemFor) {
           This item is metadata for:
           <br>Target: {{ vm.itemFor.Target }}
           <br>TargetType: {{ vm.itemFor.TargetType }}
-          <ng-container *ngIf="vm.itemFor.Number"><br>Number: {{ vm.itemFor.Number }}</ng-container>
-          <ng-container *ngIf="vm.itemFor.Guid"><br>Guid: {{ vm.itemFor.Guid }}</ng-container>
-          <ng-container *ngIf="vm.itemFor.String"><br>String: {{ vm.itemFor.String }}</ng-container>
-          <ng-container *ngIf="vm.itemFor.Title"><br>Title: {{ vm.itemFor.String }}</ng-container>
-        </ng-container>
+          @if (vm.itemFor.Number) {
+            <br>Number: {{ vm.itemFor.Number }}
+          }
+          @if (vm.itemFor.Guid) {
+            <br>Guid: {{ vm.itemFor.Guid }}
+          }
+          @if (vm.itemFor.String) {
+            <br>String: {{ vm.itemFor.String }}
+          }
+          @if (vm.itemFor.Title) {
+            <br>Title: {{ vm.itemFor.String }}
+          }
+        }
       </p>
       <router-outlet></router-outlet>
       <div class="grid-wrapper">
@@ -28,36 +38,40 @@
       </div>
     </div>
     <mat-dialog-actions align="end">
-      <button mat-fab mat-elevation-z24 class="grid-fab" *ngIf="vm.recommendations.length === 0"
-        tippy="Create a new metadata for this item" (click)="createMetadata()">
-        <mat-icon>add</mat-icon>
-      </button>
-  
-      <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': vm.fabOpen }" *ngIf="vm.recommendations.length > 0"
-        (openChange)="openChange($event)">
-        <eco-fab-speed-dial-trigger [spin]="true">
-          <button mat-fab>
-            <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
-          </button>
-        </eco-fab-speed-dial-trigger>
-        <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
-          <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type" (click)="createMetadata()">
-            <mat-icon>search</mat-icon>
-          </button>
-          <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" *ngFor="let recommendation of vm.recommendations" [attr.label]="recommendation.Title"
-            (click)="createMetadata(recommendation)">
-            <div *ngIf="recommendation.Icon; then svgIcon else matIcon"></div>
-            <ng-template #svgIcon>
-              <div style="color: white; fill: white;" [innerHTML]="recommendation.Icon | safeHtml" [matBadgeHidden]="recommendation.Enabled"
-                matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"
-                aria-hidden="false"></div>
-            </ng-template>
-            <ng-template #matIcon>
-              <mat-icon>add</mat-icon>
-            </ng-template>
-          </button>
-        </eco-fab-speed-dial-actions>
-      </eco-fab-speed-dial>
+      @if (vm.recommendations.length === 0) {
+        <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new metadata for this item"
+          (click)="createMetadata()">
+          <mat-icon>add</mat-icon>
+        </button>
+      }
+      @if (vm.recommendations.length > 0) {
+        <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': vm.fabOpen }"
+          (openChange)="openChange($event)">
+          <eco-fab-speed-dial-trigger [spin]="true">
+            <button mat-fab>
+              <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
+            </button>
+          </eco-fab-speed-dial-trigger>
+          <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
+            <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type"
+              (click)="createMetadata()">
+              <mat-icon>search</mat-icon>
+            </button>
+            @for (recommendation of vm.recommendations; track recommendation) {
+              <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" [attr.label]="recommendation.Title"
+                (click)="createMetadata(recommendation)">
+                @if (recommendation.Icon) {
+                  <div style="color: white; fill: white;" [innerHTML]="recommendation.Icon | safeHtml"
+                    [matBadgeHidden]="recommendation.Enabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎"
+                    matBadgePosition="below after" aria-hidden="false"></div>
+                } @else {
+                  <mat-icon>add</mat-icon>
+                }
+              </button>
+            }
+          </eco-fab-speed-dial-actions>
+        </eco-fab-speed-dial>
+      }
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

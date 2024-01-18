@@ -1,15 +1,19 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!field.EditInfo.DisableMetadata" tippy="Metadata"
-    (click)="openMetadata()">
-    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
+  @if (!field.EditInfo.DisableMetadata) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
+      (click)="openMetadata()">
+      <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
       matBadgePosition="below after" aria-hidden="false">local_offer</mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.DisableMetadata">
-    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">
-      local_offer
-    </mat-icon>
-  </div>
+    </div>
+  }
+  @if (field.EditInfo.DisableMetadata) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+        [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">
+        local_offer
+      </mat-icon>
+    </div>
+  }
 
   <!--
     TODO: @SDV pls enhance as follows
@@ -24,32 +28,40 @@
   -->
 
   <!-- *ngIf is necessary as empty mat icon still consumes some space-->
-  <div class="eav-grid-action-button highlight" *ngIf="shareOrInheritIcon() != ''" 
-    matRipple [tippy]="shareText()" (click)="shareOrInherit()">
-    <mat-icon aria-hidden="false">
-      {{ shareOrInheritIcon() }}
-    </mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled eav-hover-icon-div" *ngIf="shareOrInheritIcon() == ''" 
-    matRipple [tippy]="shareText()" (click)="shareOrInherit()">
-    <mat-icon aria-hidden="false" class="eav-hover-icon disabled">
-      share
-    </mat-icon>
-  </div>
+  @if (shareOrInheritIcon() != '') {
+    <div class="eav-grid-action-button highlight"
+      matRipple [tippy]="shareText()" (click)="shareOrInherit()">
+      <mat-icon aria-hidden="false">
+        {{ shareOrInheritIcon() }}
+      </mat-icon>
+    </div>
+  }
+  @if (shareOrInheritIcon() == '') {
+    <div class="eav-grid-action-button disabled eav-hover-icon-div"
+      matRipple [tippy]="shareText()" (click)="shareOrInherit()">
+      <mat-icon aria-hidden="false" class="eav-hover-icon disabled">
+        share
+      </mat-icon>
+    </div>
+  }
 
-  <div class="eav-grid-action-button highlight" matRipple tippy="Permissions"
-    *ngIf="!field.EditInfo.DisableEdit && enablePermissions" (click)="openPermissions()">
-    <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-      person
-    </mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.DisableEdit || !enablePermissions">
-    <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-      person
-    </mat-icon>
-  </div>
+  @if (!field.EditInfo.DisableEdit && enablePermissions) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Permissions"
+      (click)="openPermissions()">
+      <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
+        [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+        person
+      </mat-icon>
+    </div>
+  }
+  @if (field.EditInfo.DisableEdit || !enablePermissions) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+        [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+        person
+      </mat-icon>
+    </div>
+  }
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

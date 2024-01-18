@@ -217,7 +217,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     const form: EditForm = {
       items: Object.keys(field.ConfigTypes).map((t) => this.createItemDefinition(field, t))
     };
-    console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
+    // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }

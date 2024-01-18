@@ -20,13 +20,16 @@
 <p>
   The examples / code / permission infos will change based on the scenario you choose.
 </p>
-<ng-container *ngFor="let scenario of scenarios">
+@for (scenario of scenarios; track scenario) {
   <h4>Scenario: {{ scenario.name }}</h4>
   <p>
     {{ scenario.description }}
   </p>
-  <p *ngIf="scenario.notes">
-    <em>
-      {{ scenario.notes }}
-    </em>
-  </p>
+  @if (scenario.notes) {
+    <p>
+      <em>
+        {{ scenario.notes }}
+      </em>
+    </p>
+  }
+}

@@ -1,18 +1,22 @@
 <!--
-  This template is used for all entity like fields,
-  e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
+This template is used for all entity like fields,
+e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
-<ng-container *ngIf="viewModel$ | async as vm">
-  <app-picker-preview *ngIf="vm.showPreview" 
-    [pickerData]="pickerData"
-    [config]="config" 
-    [group]="group" 
-    [controlConfig]="controlConfig">
-  </app-picker-preview>
-  <app-picker-dialog *ngIf="!vm.showPreview" 
-    [pickerData]="pickerData"
-    [config]="config" 
-    [group]="group" 
-    [controlConfig]="controlConfig">
-  </app-picker-dialog>
-</ng-container>
+@if (viewModel$ | async; as vm) {
+  @if (vm.showPreview) {
+    <app-picker-preview
+      [pickerData]="pickerData"
+      [config]="config"
+      [group]="group"
+      [controlConfig]="controlConfig">
+    </app-picker-preview>
+  }
+  @if (!vm.showPreview) {
+    <app-picker-dialog
+      [pickerData]="pickerData"
+      [config]="config"
+      [group]="group"
+      [controlConfig]="controlConfig">
+    </app-picker-dialog>
+  }
+}

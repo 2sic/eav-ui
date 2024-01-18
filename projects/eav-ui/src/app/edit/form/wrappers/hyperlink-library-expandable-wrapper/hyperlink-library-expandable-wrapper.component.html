@@ -17,8 +17,8 @@
       <div
         class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-          value: (open$ | async) ? 'expanded' : 'closed',
-          params: { bottomPixels: calculateBottomPixels() }
+        value: (open$ | async) ? 'expanded' : 'closed',
+        params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
         <extended-fab-speed-dial class="adam">
@@ -47,58 +47,72 @@
 </div>
 
 <!-- preview -->
-<div class="c-ew__preview-holder" *ngIf="viewModel$ | async as vm">
-  <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
-    'mat-caption' : vm.itemsNumber > 0,
-    'mat-empty' : vm.itemsNumber === 0,
-    'mat-error' : vm.controlStatus.invalid && !config.initialDisabled,
-    'color__primary' : !vm.controlStatus.invalid && !config.initialDisabled,
-    'color__label-disabled' : config.initialDisabled
-  }">
-    {{ vm.label }} {{ vm.required ? '*': '' }}
-  </mat-label>
-  <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
-    [ngClass]="{
+@if (viewModel$ | async; as vm) {
+  <div class="c-ew__preview-holder">
+    <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
+      'mat-caption' : vm.itemsNumber > 0,
+      'mat-empty' : vm.itemsNumber === 0,
+      'mat-error' : vm.controlStatus.invalid && !config.initialDisabled,
+      'color__primary' : !vm.controlStatus.invalid && !config.initialDisabled,
+      'color__label-disabled' : config.initialDisabled
+      }">
+      {{ vm.label }} {{ vm.required ? '*': '' }}
+    </mat-label>
+    <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
+      [ngClass]="{
       'c-ew__preview--invalid': vm.controlStatus.invalid,
       'c-ew__preview--disabled': config.initialDisabled
-    }">
-    <div [ngClass]="vm.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
-        <ng-container *ngFor="let item of vm.items; trackBy: trackByFn">
-          <!-- folders -->
-          <div fxLayout="row" fxLayoutAlign="start start" *ngIf="item.IsFolder">
-            <div class="adam-browse-background-icon">
-              <mat-icon svgIcon="folder"></mat-icon>
-              <div class="adam-short-label mat-caption">{{ item.Name }}</div>
-            </div>
-          </div>
-          <!-- files -->
-          <div *ngIf="!item.IsFolder">
-            <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
-              <mat-icon *ngIf="item._isMaterialIcon">{{ item._icon }}</mat-icon>
-              <mat-icon *ngIf="!item._isMaterialIcon">{{ item._icon }}</mat-icon>
-              <div class="adam-short-label mat-caption">{{ item.Name }}</div>
-            </div>
-            <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
-              <img vm-dz-thumbnail="" alt="{{ item.Id }}:{{ item.Name }}" [src]="item.ThumbnailUrl">
-            </div>
-          </div>
-        </ng-container>
+      }">
+      <div [ngClass]="vm.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
+          @for (item of vm.items; track trackByFn($index, item)) {
+            <!-- folders -->
+            @if (item.IsFolder) {
+              <div fxLayout="row" fxLayoutAlign="start start">
+                <div class="adam-browse-background-icon">
+                  <mat-icon svgIcon="folder"></mat-icon>
+                  <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+                </div>
+              </div>
+            }
+            <!-- files -->
+            @if (!item.IsFolder) {
+              <div>
+                @if (item.Type !== 'image') {
+                  <div class="adam-browse-background-icon">
+                    @if (item._isMaterialIcon) {
+                      <mat-icon>{{ item._icon }}</mat-icon>
+                    }
+                    @if (!item._isMaterialIcon) {
+                      <mat-icon>{{ item._icon }}</mat-icon>
+                    }
+                    <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+                  </div>
+                }
+                @if (item.Type === 'image') {
+                  <div class="adam-browse-background-image">
+                    <img vm-dz-thumbnail="" alt="{{ item.Id }}:{{ item.Name }}" [src]="item.ThumbnailUrl">
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+    <!-- hints -->
+    <div class="mat-caption c-ew__preview-hint" fxLayout="row" fxLayoutAlign="start start">
+      <div class="c__helper-wrapper--left">
+        <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+      </div>
+      <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
+        <span>{{
+          vm.showAdamSponsor
+          ? ('Fields.Hyperlink.Default.Sponsor' | translate)
+          : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
+        }} </span>
+        <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
       </div>
     </div>
   </div>
-  <!-- hints -->
-  <div class="mat-caption c-ew__preview-hint" fxLayout="row" fxLayoutAlign="start start">
-    <div class="c__helper-wrapper--left">
-      <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-    </div>
-    <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
-      <span>{{
-        vm.showAdamSponsor
-        ? ('Fields.Hyperlink.Default.Sponsor' | translate)
-        : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
-        }} </span>
-      <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
-    </div>
-  </div>
-</div>
+}

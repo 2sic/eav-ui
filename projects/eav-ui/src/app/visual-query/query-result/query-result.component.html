@@ -2,9 +2,9 @@
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
       Query Results
-      <ng-container *ngIf="debugStream">
+      @if (debugStream) {
         for Stream: "{{ debugStream.name }}" on Source: "{{ debugStream.sourceName }}"
-      </ng-container>
+      }
     </div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
@@ -20,35 +20,48 @@
         <div *matTabLabel class="mat-tab-label-box" tippy="Results">
           <span>Results</span>
         </div>
-    
+
         <p class="eav-tab-description">
-          <ng-container *ngIf="top === 0">Showing All results</ng-container>
-          <ng-container *ngIf="top !== 0">Showing top {{ top }} results</ng-container>
-          <button mat-button *ngFor="let option of optionsForTop" (click)="show(option)">
-            Show
-            <ng-container *ngIf="option === 0">All</ng-container>
-            <ng-container *ngIf="option !== 0">{{ option }}</ng-container>
-          </button>
+          @if (top === 0) {
+            Showing All results
+          }
+          @if (top !== 0) {
+            Showing top {{ top }} results
+          }
+          @for (option of optionsForTop; track option) {
+            <button mat-button (click)="show(option)">
+              Show
+              @if (option === 0) {
+                All
+              }
+              @if (option !== 0) {
+                {{ option }}
+              }
+            </button>
+          }
         </p>
         <pre>{{ result | json }}</pre>
       </mat-tab>
-    
-      <mat-tab *ngIf="parameters?.length">
-        <div *matTabLabel class="mat-tab-label-box" tippy="Parameters">
-          <span>Parameters</span>
-        </div>
-    
-        <br />
-        <ul>
-          <li *ngFor="let param of parameters">{{ param }}</li>
-        </ul>
-      </mat-tab>
-    
+
+      @if (parameters?.length) {
+        <mat-tab>
+          <div *matTabLabel class="mat-tab-label-box" tippy="Parameters">
+            <span>Parameters</span>
+          </div>
+          <br />
+          <ul>
+            @for (param of parameters; track param) {
+              <li>{{ param }}</li>
+            }
+          </ul>
+        </mat-tab>
+      }
+
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" tippy="Sources">
           <span>Sources</span>
         </div>
-    
+
         <br />
         <table>
           <tr>
@@ -57,29 +70,35 @@
             <th>Configuration</th>
             <th>Error</th>
           </tr>
-          <tr *ngFor="let source of sources | keyvalue">
-            <td>
-              <div *ngIf="source.value.Definition?.Name">{{ source.value.Definition?.Name }}</div>
-              <pre>{{ source.value.Guid }}</pre>
-            </td>
-            <td>{{ source.value.Type }}</td>
-            <td>
-              <ol>
-                <li *ngFor="let config of source.value.Configuration | keyvalue">
-                  <b>{{ config.key }}</b>=<em>{{ config.value }}</em>
-                </li>
-              </ol>
-            </td>
-            <td>{{ source.value.Error }}</td>
-          </tr>
+          @for (source of sources | keyvalue; track source) {
+            <tr>
+              <td>
+                @if (source.value.Definition?.Name) {
+                  <div>{{ source.value.Definition?.Name }}</div>
+                }
+                <pre>{{ source.value.Guid }}</pre>
+              </td>
+              <td>{{ source.value.Type }}</td>
+              <td>
+                <ol>
+                  @for (config of source.value.Configuration | keyvalue; track config) {
+                    <li>
+                      <b>{{ config.key }}</b>=<em>{{ config.value }}</em>
+                    </li>
+                  }
+                </ol>
+              </td>
+              <td>{{ source.value.Error }}</td>
+            </tr>
+          }
         </table>
       </mat-tab>
-    
+
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" tippy="Streams">
           <span>Streams</span>
         </div>
-    
+
         <br />
         <table>
           <tr>
@@ -88,16 +107,18 @@
             <th>Items</th>
             <th>Error</th>
           </tr>
-          <tr *ngFor="let stream of streams">
-            <td>
-              <pre>{{ stream.Source + ":" + stream.SourceOut }}</pre>
-            </td>
-            <td>
-              <pre>{{ stream.Target + ":" + stream.TargetIn }}</pre>
-            </td>
-            <td>{{ stream.Count }}</td>
-            <td>{{ stream.Error }}</td>
-          </tr>
+          @for (stream of streams; track stream) {
+            <tr>
+              <td>
+                <pre>{{ stream.Source + ":" + stream.SourceOut }}</pre>
+              </td>
+              <td>
+                <pre>{{ stream.Target + ":" + stream.TargetIn }}</pre>
+              </td>
+              <td>{{ stream.Count }}</td>
+              <td>{{ stream.Error }}</td>
+            </tr>
+          }
         </table>
       </mat-tab>
     </mat-tab-group>

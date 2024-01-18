@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">Export Content and Templates from this App</div>
@@ -10,14 +10,15 @@
         To export the entire content of the app (for example when duplicating the entire site), go to the app export.
         For further help visit <a href="https://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
       </p>
-      
       <div class="eav-edit-input">
         <mat-form-field color="accent" class="eav-form-field">
           <mat-label>Scope</mat-label>
           <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
-            <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
-              {{ scopeOption.name }}
-            </mat-option>
+            @for (scopeOption of scopeOptions; track scopeOption) {
+              <mat-option [value]="scopeOption.value">
+                {{ scopeOption.name }}
+              </mat-option>
+            }
             <mat-option [value]="dropdownInsertValue">Other...</mat-option>
           </mat-select>
           <button mat-icon-button matTextSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
@@ -31,52 +32,62 @@
           <a appClickStopPropagation href="https://2sxc.org/help?tag=scope" target="_blank">see help</a>
         </app-field-hint>
       </div>
-    
-      <div *ngIf="contentInfo">
-        <ul class="eav-content-info__list eav-content-info__base">
-          <p class="eav-content-info__title">Content Types</p>
-          <li class="eav-content-info__item" *ngFor="let contentType of contentInfo.ContentTypes">
-            <div class="eav-option-box">
-              <mat-checkbox [(ngModel)]="contentType._export">
-                <span class="eav-option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
-              </mat-checkbox>
-            </div>
-    
-            <ul class="eav-content-info__list" *ngIf="contentType.Templates.length > 0">
-              <p class="eav-content-info__subtitle">Templates</p>
-              <li class="eav-content-info__item" *ngFor="let template of contentType.Templates">
+      @if (contentInfo) {
+        <div>
+          <ul class="eav-content-info__list eav-content-info__base">
+            <p class="eav-content-info__title">Content Types</p>
+            @for (contentType of contentInfo.ContentTypes; track contentType) {
+              <li class="eav-content-info__item">
+                <div class="eav-option-box">
+                  <mat-checkbox [(ngModel)]="contentType._export">
+                    <span class="eav-option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
+                  </mat-checkbox>
+                </div>
+                @if (contentType.Templates.length > 0) {
+                  <ul class="eav-content-info__list">
+                    <p class="eav-content-info__subtitle">Templates</p>
+                    @for (template of contentType.Templates; track template) {
+                      <li class="eav-content-info__item">
+                        <div class="eav-option-box">
+                          <mat-checkbox [(ngModel)]="template._export">
+                            <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
+                          </mat-checkbox>
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                }
+                @if (contentType.Entities.length > 0) {
+                  <ul class="eav-content-info__list">
+                    <p class="eav-content-info__subtitle">Entities</p>
+                    @for (entity of contentType.Entities; track entity) {
+                      <li class="eav-content-info__item">
+                        <div class="eav-option-box">
+                          <mat-checkbox [(ngModel)]="entity._export">
+                            <span class="eav-option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
+                          </mat-checkbox>
+                        </div>
+                      </li>
+                    }
+                  </ul>
+                }
+              </li>
+            }
+          </ul>
+          <ul class="eav-content-info__list eav-content-info__base">
+            <p class="eav-content-info__title">Templates Without Content Types</p>
+            @for (template of contentInfo.TemplatesWithoutContentTypes; track template) {
+              <li class="eav-content-info__item">
                 <div class="eav-option-box">
                   <mat-checkbox [(ngModel)]="template._export">
                     <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
                   </mat-checkbox>
                 </div>
               </li>
-            </ul>
-    
-            <ul class="eav-content-info__list" *ngIf="contentType.Entities.length > 0">
-              <p class="eav-content-info__subtitle">Entities</p>
-              <li class="eav-content-info__item" *ngFor="let entity of contentType.Entities">
-                <div class="eav-option-box">
-                  <mat-checkbox [(ngModel)]="entity._export">
-                    <span class="eav-option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
-                  </mat-checkbox>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-    
-        <ul class="eav-content-info__list eav-content-info__base">
-          <p class="eav-content-info__title">Templates Without Content Types</p>
-          <li class="eav-content-info__item" *ngFor="let template of contentInfo.TemplatesWithoutContentTypes">
-            <div class="eav-option-box">
-              <mat-checkbox [(ngModel)]="template._export">
-                <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
-              </mat-checkbox>
-            </div>
-          </li>
-        </ul>
-      </div>
+            }
+          </ul>
+        </div>
+      }
     </div>
     <mat-dialog-actions align="end">
       <button mat-raised-button [disabled]="vm.loading || vm.isExporting" (click)="closeDialog()">
@@ -87,4 +98,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

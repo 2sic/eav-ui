@@ -1,4 +1,8 @@
-<ng-container *ngIf="viewModel | async as vm">
-  <mat-spinner *ngIf="vm.loading" color="accent"></mat-spinner>
-  <app-connector [config]="config" [group]="group" *ngIf="!vm.loading && vm.isExpanded"></app-connector>
-</ng-container>
+@if (viewModel | async; as vm) {
+  @if (vm.loading) {
+    <mat-spinner color="accent"></mat-spinner>
+  }
+  @if (!vm.loading && vm.isExpanded) {
+    <app-connector [config]="config" [group]="group"></app-connector>
+  }
+}

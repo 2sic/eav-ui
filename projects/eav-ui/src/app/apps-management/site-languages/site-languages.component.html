@@ -1,6 +1,7 @@
-<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
-  <ag-grid-angular class="ag-theme-material" [rowData]="vm.languages" [gridOptions]="gridOptions">
-  </ag-grid-angular>
-
-  <mat-dialog-actions align="end"></mat-dialog-actions>
-</div>
+@if (viewModel$ | async; as vm) {
+  <div class="grid-wrapper mat-tab-grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.languages" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+    <mat-dialog-actions align="end"></mat-dialog-actions>
+  </div>
+}
