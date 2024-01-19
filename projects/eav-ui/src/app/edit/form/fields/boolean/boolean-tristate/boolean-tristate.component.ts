@@ -73,23 +73,25 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
     super.ngOnDestroy();
   }
 
-  updateValue() {
-    const currentValue: boolean | '' = this.control.value;
-    const reverseToogle = this.settings$.value.ReverseToggle;
+  updateValue(disabled: boolean) {
+    if (!disabled) {
+      const currentValue: boolean | '' = this.control.value;
+      const reverseToggle = this.settings$.value.ReverseToggle;
 
-    let nextValue: boolean;
-    switch (currentValue) {
-      case false:
-        nextValue = reverseToogle ? true : null;
-        break;
-      case '':
-      case null:
-        nextValue = reverseToogle ? false : true;
-        break;
-      case true:
-        nextValue = reverseToogle ? null : false;
-        break;
+      let nextValue: boolean;
+      switch (currentValue) {
+        case false:
+          nextValue = reverseToggle ? true : null;
+          break;
+        case '':
+        case null:
+          nextValue = reverseToggle ? false : true;
+          break;
+        case true:
+          nextValue = reverseToggle ? null : false;
+          break;
+      }
+      GeneralHelpers.patchControlValue(this.control, nextValue);
     }
-    GeneralHelpers.patchControlValue(this.control, nextValue);
   }
 }

@@ -72,8 +72,10 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
     super.ngOnDestroy();
   }
 
-  updateValue() {
-    const newValue = !this.control.value;
-    GeneralHelpers.patchControlValue(this.control, newValue);
+  updateValue(disabled: boolean) {
+    if (!disabled) {
+      const newValue = !this.control.value;
+      GeneralHelpers.patchControlValue(this.control, newValue);
+    }
   }
 }
