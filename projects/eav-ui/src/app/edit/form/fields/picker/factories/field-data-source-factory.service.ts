@@ -21,9 +21,9 @@ export class FieldDataSourceFactoryService {
     settings$: BehaviorSubject<FieldSettings>
   ): EntityFieldDataSource {
     return new EntityFieldDataSource(
+      settings$,
       this.queryService,
       this.entityCacheService,
-      settings$,
     );
   }
 
@@ -43,11 +43,11 @@ export class FieldDataSourceFactoryService {
     appId: string,
   ): QueryFieldDataSource {
     return new QueryFieldDataSource(
+      settings$,
       this.queryService,
       this.entityCacheService,
       this.stringQueryCacheService,
       this.translate,
-      settings$,
       isStringQuery,
       entityGuid,
       fieldName,

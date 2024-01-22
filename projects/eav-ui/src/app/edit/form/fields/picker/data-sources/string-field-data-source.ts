@@ -5,9 +5,9 @@ import { DataSourceBase } from './data-source-base';
 
 export class StringFieldDataSource extends DataSourceBase {
   constructor(
-    private settings$: BehaviorSubject<FieldSettings>,
+    protected settings$: BehaviorSubject<FieldSettings>,
   ) {
-    super();
+    super(settings$);
     this.loading$ = of(false);
 
     const preloaded = this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged());

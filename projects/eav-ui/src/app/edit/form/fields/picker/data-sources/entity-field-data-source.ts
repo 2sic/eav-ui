@@ -10,11 +10,11 @@ export class EntityFieldDataSource extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
 
   constructor(
+    protected settings$: BehaviorSubject<FieldSettings>,
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
-    private settings$: BehaviorSubject<FieldSettings>,
   ) {
-    super();
+    super(settings$);
 
     const typeName$ = this.contentTypeName$.pipe(distinctUntilChanged(), shareReplay(1));
 
@@ -22,7 +22,7 @@ export class EntityFieldDataSource extends DataSourceBase {
       typeName$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
     ]).pipe(
-      mergeMap(([typeName, _]) => this.queryService.getEntities([typeName], []).pipe(
+      mergeMap(([typeName, _]) => this.queryService.getEntities([typeName], [], this.calculateMoreFields()).pipe(
         map(data => {
           const items: PickerItem[] = data["Default"].map(entity => {
             return this.queryEntityMapping(entity)
@@ -55,7 +55,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     const overrides$ = combineLatest([typeName$, combinedGuids$]).pipe(
-      mergeMap(([typeName, guids]) => queryService.getEntities([typeName], guids).pipe(
+      mergeMap(([typeName, guids]) => queryService.getEntities([typeName], guids, this.calculateMoreFields()).pipe(
         map(data => {
           const items: PickerItem[] = data["Default"].map(entity => {
             return this.queryEntityMapping(entity)
