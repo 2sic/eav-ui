@@ -79,12 +79,12 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // not even sure if the guid would still be needed, as I assume the entityId
   // should always be available.
   // Must test all use cases and then probably simplify again.
-  editItem(editParams: { entityGuid: string, entityId: number }): void {
+  editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
     if (editParams)
       this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
     if (editParams?.entityGuid == null) {
-      const contentTypeName = this.contentType;
+      const contentTypeName = entityType ?? this.contentType;
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],

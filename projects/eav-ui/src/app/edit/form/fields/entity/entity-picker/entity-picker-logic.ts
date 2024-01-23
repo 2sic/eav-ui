@@ -47,12 +47,12 @@ export class EntityPickerLogic extends FieldLogicBase {
       const uiPickerSourceQuery = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceQuery;
 
       fs.Query = uiPickerSourceQuery.Query ?? '';
-      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';
+      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = uiPickerSourceQuery.QueryParameters ?? '';
 
       fs.Value = uiPickerSourceQuery.Value ?? '';
       fs.Label = uiPickerSourceQuery.Label ?? '';
-      fs.EntityType = uiPickerSourceQuery.CreateTypes ?? '';
+      fs.EntityType = uiPickerSourceQuery.CreateTypes ?? '';// possible multiple types
 
       fs.MoreFields = uiPickerSourceQuery.MoreFields ?? '';
     }
@@ -62,7 +62,7 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
       const uiPickerSourceEntity = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceEntity;
 
-      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';
+      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';// possible multiple types
     }
 
     /** WIP functionalities */

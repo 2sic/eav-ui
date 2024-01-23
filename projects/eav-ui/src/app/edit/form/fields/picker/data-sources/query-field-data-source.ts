@@ -11,17 +11,17 @@ export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
 
   constructor(
+    protected settings$: BehaviorSubject<FieldSettings>,
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     private translate: TranslateService,
-    private settings$: BehaviorSubject<FieldSettings>,
     private isStringQuery: boolean,
     private entityGuid: string,
     private fieldName: string,
     private appId: string,
   ) {
-    super();
+    super(settings$);
 
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
@@ -33,7 +33,7 @@ export class QueryFieldDataSource extends DataSourceBase {
       params$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll))
     ]).pipe(
-      mergeMap(([params, _]) => this.queryService.getAvailableEntities(queryUrl, true, params, []).pipe(
+      mergeMap(([params, _]) => this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), []).pipe(
         map(data => { return { data, loading: false }; }),
         startWith({ data: {} as QueryStreams, loading: true })
       )),
@@ -75,7 +75,7 @@ export class QueryFieldDataSource extends DataSourceBase {
     );
 
     const overrides$ = combineLatest([params$, combinedGuids$]).pipe(
-      mergeMap(([params, guids]) => this.queryService.getAvailableEntities(queryUrl, true, params, guids).pipe(
+      mergeMap(([params, guids]) => this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), guids).pipe(
         map(data => { return { data, loading: false }; }),
         startWith({ data: {} as QueryStreams, loading: true })
       )),
@@ -163,21 +163,5 @@ export class QueryFieldDataSource extends DataSourceBase {
       });
     // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;
-  }
-
-  /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
-  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
-    const settings = this.settings$.value;
-    const additionalFields = settings.MoreFields?.split(',') || [];
-    let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
-    let information = this.cleanStringFromWysiwyg(settings.Information);
-    additionalFields.forEach(field => {
-      entityInfo[field] = entity[field];
-      tooltip = tooltip.replace(`[Item:${field}]`, entity[field]);
-      information = information.replace(`[Item:${field}]`, entity[field]);
-    });
-    entityInfo._tooltip = tooltip;
-    entityInfo._information = information;
-    return entityInfo;
   }
 }

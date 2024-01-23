@@ -1,4 +1,4 @@
-import { FieldSettings, UiPickerModeTree, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
+import { FieldSettings, UiPickerSourceCustomList } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
@@ -26,7 +26,7 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceCustomList;
       const uiPickerSourceCustomList = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList;
 
-      fs.DropdownValuesFormat ??= 'value-label'; //currently not defined nowhere in the config
+      fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config
       fs.DropdownValues = uiPickerSourceCustomList.Values ?? '';
       fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
     }

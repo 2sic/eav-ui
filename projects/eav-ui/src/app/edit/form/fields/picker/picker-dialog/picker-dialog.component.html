@@ -24,13 +24,27 @@
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   <!-- add new entity -->
   @if (vm.showAddNewEntityButtonInDialog) {
-    <div fxLayout="row" fxLayoutAlign="end center">
-      <button mat-mini-fab color="accent"
-        [tippy]="'Fields.Entity.New' | translate"
-        [disabled]="vm.controlStatus.disabled || vm.disableAddNew"
-        (click)="openNewEntityDialog()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
+    @if (vm.entityTypes.length > 1) {
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate"
+          [disabled]="vm.controlStatus.disabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu">
+          <mat-icon>add</mat-icon>
+        </button>
+        <mat-menu #entityTypesMenu="matMenu">
+          @for (entityType of vm.entityTypes; track entityType) {
+            <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
+              <span>{{ entityType.label }}</span>
+            </button>
+          }
+        </mat-menu>
+      </div>
+    } @else {
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate"
+          [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    }
   }
 }
