@@ -2,6 +2,7 @@ import { PickerItem } from 'projects/edit-types/src/EntityInfo';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldSettings } from 'projects/edit-types';
+import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 
 export class DataSourceBase {
   public data$: Observable<PickerItem[]>;
@@ -34,6 +35,25 @@ export class DataSourceBase {
   prefetchEntityGuids(entityGuids: string[]): void {
     const guids = entityGuids.filter(GeneralHelpers.distinct);
     this.prefetchEntityGuids$.next(guids);
+  }
+
+  /** fill additional properties */
+  protected fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
+    const settings = this.settings$.value;
+    let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
+    let information = this.cleanStringFromWysiwyg(settings.Information);
+    Object.keys(entity).forEach(key => {
+      //this is because we use Value and Text as properties in PickerItem
+      if (key !== 'Value' && key !== 'Text')
+        entityInfo["_" + key] = entity[key];
+      else
+        entityInfo[key] = entity[key];
+      tooltip = tooltip.replace(`[Item:${key}]`, entity[key]);
+      information = information.replace(`[Item:${key}]`, entity[key]);
+    });
+    entityInfo._tooltip = tooltip;
+    entityInfo._information = information;
+    return entityInfo;
   }
 
   /** remove HTML tags that come from WYSIWYG */

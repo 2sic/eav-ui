@@ -164,20 +164,4 @@ export class QueryFieldDataSource extends DataSourceBase {
     // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;
   }
-
-  /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
-  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
-    const settings = this.settings$.value;
-    const additionalFields = settings.MoreFields?.split(',') || [];
-    let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
-    let information = this.cleanStringFromWysiwyg(settings.Information);
-    additionalFields.forEach(field => {
-      entityInfo[field] = entity[field];
-      tooltip = tooltip.replace(`[Item:${field}]`, entity[field]);
-      information = information.replace(`[Item:${field}]`, entity[field]);
-    });
-    entityInfo._tooltip = tooltip;
-    entityInfo._information = information;
-    return entityInfo;
-  }
 }
