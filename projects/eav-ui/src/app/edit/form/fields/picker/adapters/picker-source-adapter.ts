@@ -13,6 +13,6 @@ export interface PickerSourceAdapter {
   setPrefetchData(missingData: string[]): void;
   setOverrideData(missingData: string[]): void;
   deleteItem(props: DeleteEntityProps): void;
-  editItem(editParams: { entityGuid: string, entityId: number }): void;
+  editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
   fetchItems(): void;
 }

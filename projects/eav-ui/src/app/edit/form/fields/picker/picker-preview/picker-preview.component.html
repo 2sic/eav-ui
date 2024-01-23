@@ -47,11 +47,24 @@
     <div fxLayoutAlign="end end">
       <!-- create new entity to add to this list -->
       @if (vm.showAddNewEntityButton) {
-        <button mat-icon-button  class="eav-suffix-button"
-          [tippy]="'Fields.Entity.New' | translate"
-          [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog()">
-          <mat-icon>add_circle_outline</mat-icon>
-        </button>
+        @if (vm.entityTypes.length > 1) {
+          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Entity.New' | translate"
+            [disabled]="vm.controlStatus.disabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+          <mat-menu #entityTypesMenu="matMenu">
+            @for (entityType of vm.entityTypes; track entityType) {
+              <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
+                <span>{{ entityType.label }}</span>
+              </button>
+            }
+          </mat-menu>
+        } @else {
+          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Entity.New' | translate"
+            [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+        }
       }
       @if (vm.showGoToListDialogButton) {
         <button mat-icon-button class="eav-suffix-button"

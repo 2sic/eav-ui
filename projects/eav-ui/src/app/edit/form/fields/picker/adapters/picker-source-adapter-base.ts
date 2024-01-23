@@ -31,7 +31,7 @@ export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
 
   abstract deleteItem(props: DeleteEntityProps): void;
 
-  abstract editItem(editParams: { entityGuid: string, entityId: number }): void;
+  abstract editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
 
   abstract fetchItems(): void;
 }

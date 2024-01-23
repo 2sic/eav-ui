@@ -8,6 +8,7 @@ export interface EntityPickerPreviewViewModel {
   controlStatus: ControlStatus<string | string[]>;
   disableAddNew: boolean;
 
+  entityTypes: { label: string, guid: string }[];
   leavePlaceForButtons: boolean;
   showAddNewEntityButton: boolean;
   showGoToListDialogButton: boolean;
