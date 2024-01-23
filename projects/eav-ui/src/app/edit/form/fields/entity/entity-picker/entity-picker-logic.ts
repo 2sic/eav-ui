@@ -47,7 +47,7 @@ export class EntityPickerLogic extends FieldLogicBase {
       const uiPickerSourceQuery = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceQuery;
 
       fs.Query = uiPickerSourceQuery.Query ?? '';
-      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';
+      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = uiPickerSourceQuery.QueryParameters ?? '';
 
       fs.Value = uiPickerSourceQuery.Value ?? '';
