@@ -6,6 +6,7 @@ import { ControlStatus } from "../../../../shared/models";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { PickerStateAdapter } from "./picker-state-adapter";
 import { convertArrayToString } from "../picker.helpers";
+import { ContentTypesService } from "projects/eav-ui/src/app/app-administration/services/content-types.service";
 
 export class PickerStringStateAdapter extends PickerStateAdapter {
   constructor(
@@ -19,6 +20,7 @@ export class PickerStringStateAdapter extends PickerStateAdapter {
     public stringQueryCache$: Observable<QueryEntity[]>,
     public translate: TranslateService,
     public control: AbstractControl,
+    public contentTypesService: ContentTypesService,
     focusOnSearchComponent: () => void,
   ) {
     super(
@@ -32,6 +34,7 @@ export class PickerStringStateAdapter extends PickerStateAdapter {
       stringQueryCache$,
       translate,
       control,
+      contentTypesService,
       focusOnSearchComponent,
     );
   }

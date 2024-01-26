@@ -8,7 +8,6 @@ import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-buil
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
-import { ContentTypesService } from 'projects/eav-ui/src/app/app-administration/services';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -22,11 +21,9 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
   @Input() controlConfig: FieldControlConfig;
 
   viewModel$: Observable<EntityPickerDialogViewModel>;
-  entityTypes: { label: string, guid: string }[] = [];
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
-    private contentTypesService: ContentTypesService,
   ) {
     super();
   }
@@ -41,11 +38,6 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
 
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      tap(settings => {
-        this.entityTypes = settings.EntityType
-          ? settings.EntityType.split(',').map((guid: string) => ({ label: null, guid }))
-          : [];
-      }),
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableCreate: settings.EnableCreate,
@@ -85,11 +77,6 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
   }
 
   getEntityTypesData(): void {
-    if (this.entityTypes[0].label) { return; }
-    this.entityTypes.forEach(entityType => {
-      this.contentTypesService.retrieveContentType(entityType.guid).subscribe(
-        contentType => entityType.label = contentType.Label,
-      );
-    });
+    this.pickerData.state.getEntityTypesData();
   }
 }

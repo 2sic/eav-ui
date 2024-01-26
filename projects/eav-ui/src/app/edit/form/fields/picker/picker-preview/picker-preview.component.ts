@@ -22,12 +22,10 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   @Input() controlConfig: FieldControlConfig;
 
   viewModel$: Observable<EntityPickerPreviewViewModel>;
-  entityTypes: { label: string, guid: string }[] = [];
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
-    private contentTypesService: ContentTypesService,
   ) {
     super();
   }
@@ -40,11 +38,6 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
     const disableAddNew$ = state.disableAddNew$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      tap(settings => { 
-        this.entityTypes = settings.EntityType
-          ? settings.EntityType.split(',').map((guid: string) => ({ label: null, guid }))
-          : [];
-      }),
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableTextEntry: settings.EnableTextEntry,
@@ -95,11 +88,6 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   }
 
   getEntityTypesData(): void {
-    if(this.entityTypes[0].label) { return; }
-    this.entityTypes.forEach(entityType => {
-      this.contentTypesService.retrieveContentType(entityType.guid).subscribe(
-        contentType => entityType.label = contentType.Label,
-      );
-    });
+    this.pickerData.state.getEntityTypesData();
   }
 }

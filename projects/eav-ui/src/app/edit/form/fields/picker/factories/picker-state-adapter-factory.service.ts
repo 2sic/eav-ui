@@ -11,6 +11,7 @@ import { AbstractControl } from '@angular/forms';
 import { PickerStringStateAdapter } from '../adapters/picker-string-state-adapter';
 import { PickerEntityStateAdapter } from '../adapters/picker-entity-state-adapter';
 import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
+import { ContentTypesService } from 'projects/eav-ui/src/app/app-administration/services/content-types.service';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {
@@ -19,6 +20,7 @@ export class PickerStateAdapterFactoryService {
     private stringQueryCacheService: StringQueryCacheService,
     private translateService: TranslateService,
     private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
+    private contentTypesService: ContentTypesService,
   ) { }
 
   createPickerEntityStateAdapter(
@@ -44,6 +46,7 @@ export class PickerStateAdapterFactoryService {
       this.fieldDataSourceFactoryService,
       this.translateService,
       control,
+      this.contentTypesService,
       focusOnSearchComponent,
     );
 
@@ -76,6 +79,7 @@ export class PickerStateAdapterFactoryService {
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
       control,
+      this.contentTypesService,
       focusOnSearchComponent,
     );
 
@@ -108,6 +112,7 @@ export class PickerStateAdapterFactoryService {
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
       control,
+      this.contentTypesService,
       focusOnSearchComponent,
     );
 
