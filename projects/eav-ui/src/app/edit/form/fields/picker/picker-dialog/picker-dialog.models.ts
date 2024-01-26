@@ -6,6 +6,5 @@ export interface EntityPickerDialogViewModel {
   disableAddNew: boolean;
 
   // added for easier readability
-  entityTypes: { label: string, guid: string }[];
   showAddNewEntityButtonInDialog: boolean;
 }
