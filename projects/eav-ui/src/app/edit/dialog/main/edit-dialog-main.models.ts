@@ -32,6 +32,12 @@ export interface EditSettings {
 export interface EditSettingsDto {
   Values: Record<string, unknown>;
   Entities: EavEntityDto[];
+  /**
+   * ContentTypes which are additional settings.
+   * New v17 to help Pickers figure out the best title for new-entities.
+   * TODO: @SDV
+   */
+  ContentTypes: EavContentTypeDto[];
 }
 
 export interface SaveEavFormData extends EavPublishStatus {
