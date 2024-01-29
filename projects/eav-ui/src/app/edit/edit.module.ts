@@ -112,7 +112,6 @@ import { PickerTextToggleComponent } from './form/fields/picker/picker-text-togg
 import { FieldDataSourceFactoryService } from './form/fields/picker/factories/field-data-source-factory.service';
 import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity-picker.component';
 import { StringPickerComponent } from './form/fields/string/string-picker/string-picker.component';
-import { ContentTypesService } from '../app-administration/services';
 
 @NgModule({
     declarations: [
@@ -228,7 +227,6 @@ import { ContentTypesService } from '../app-administration/services';
     ],
     providers: [
         Context,
-        ContentTypesService,
         EavService,
         AdamService,
         EntityService,

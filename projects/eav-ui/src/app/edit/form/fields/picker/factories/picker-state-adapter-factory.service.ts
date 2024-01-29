@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
-import { EditRoutingService } from '../../../../shared/services';
+import { EavService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { FieldSettings } from 'projects/edit-types';
@@ -11,7 +11,6 @@ import { AbstractControl } from '@angular/forms';
 import { PickerStringStateAdapter } from '../adapters/picker-string-state-adapter';
 import { PickerEntityStateAdapter } from '../adapters/picker-entity-state-adapter';
 import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
-import { ContentTypesService } from 'projects/eav-ui/src/app/app-administration/services/content-types.service';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {
@@ -20,7 +19,7 @@ export class PickerStateAdapterFactoryService {
     private stringQueryCacheService: StringQueryCacheService,
     private translateService: TranslateService,
     private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-    private contentTypesService: ContentTypesService,
+    private eavService: EavService,
   ) { }
 
   createPickerEntityStateAdapter(
@@ -46,7 +45,7 @@ export class PickerStateAdapterFactoryService {
       this.fieldDataSourceFactoryService,
       this.translateService,
       control,
-      this.contentTypesService,
+      this.eavService,
       focusOnSearchComponent,
     );
 
@@ -79,7 +78,7 @@ export class PickerStateAdapterFactoryService {
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
       control,
-      this.contentTypesService,
+      this.eavService,
       focusOnSearchComponent,
     );
 
@@ -112,7 +111,7 @@ export class PickerStateAdapterFactoryService {
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
       control,
-      this.contentTypesService,
+      this.eavService,
       focusOnSearchComponent,
     );
 

@@ -9,7 +9,7 @@ import { convertArrayToString, convertValueToArray, equalizeSelectedItems } from
 import { DeleteEntityProps } from '../picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { ContentTypesService } from 'projects/eav-ui/src/app/app-administration/services/content-types.service';
+import { EavService } from '../../../../shared/services';
 
 export class PickerStateAdapter {
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
@@ -37,7 +37,7 @@ export class PickerStateAdapter {
     public stringQueryCache$: Observable<QueryEntity[]>,
     public translate: TranslateService,
     public control: AbstractControl,
-    public contentTypesService: ContentTypesService,
+    public eavService: EavService,
     private focusOnSearchComponent: () => void,
   ) { }
 
@@ -138,10 +138,10 @@ export class PickerStateAdapter {
 
   getEntityTypesData(): void {
     if (this.createEntityTypes[0].label) { return; }
+
     this.createEntityTypes.forEach(entityType => {
-      this.contentTypesService.retrieveContentType(entityType.guid).subscribe(
-        contentType => entityType.label = contentType.Label,
-      );
+      // console.log("SDV", this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid)?.Name);//for some we gwt guid, for some names... check
+      entityType.label = this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid)?.Name ?? entityType.guid + " (not found)";
     });
   }
 }

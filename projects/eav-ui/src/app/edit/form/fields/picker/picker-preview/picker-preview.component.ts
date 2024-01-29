@@ -8,7 +8,6 @@ import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerData } from '../picker-data';
-import { ContentTypesService } from 'projects/eav-ui/src/app/app-administration/services';
 
 @Component({
   selector: 'app-picker-preview',
