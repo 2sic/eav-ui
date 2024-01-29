@@ -138,10 +138,10 @@ export class PickerStateAdapter {
 
   getEntityTypesData(): void {
     if (this.createEntityTypes[0].label) { return; }
-
     this.createEntityTypes.forEach(entityType => {
-      // console.log("SDV", this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid)?.Name);//for some we gwt guid, for some names... check
-      entityType.label = this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid)?.Name ?? entityType.guid + " (not found)";
+      const ct = this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
+      entityType.label = ct?.Name ?? entityType.guid + " (not found)";
+      entityType.guid = ct?.Id ?? entityType.guid;
     });
   }
 }
