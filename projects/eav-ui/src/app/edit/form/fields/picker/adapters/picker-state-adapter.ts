@@ -46,8 +46,13 @@ export class PickerStateAdapter {
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.settings$.pipe(
         tap(settings => {
-          this.createEntityTypes = settings.EntityType
-            ? settings.EntityType.split(',').map((guid: string) => ({ label: null, guid }))
+          // TODO: this looks bad - side-effect in observable
+          const types = settings.EntityType;
+          this.createEntityTypes = types
+            ? types
+                // use either \n or , as delimiter
+                .split(types.indexOf('\n') > -1 ? '\n' : ',')
+                .map((guid: string) => ({ label: null, guid }))
             : [];
         }),
         map(settings => ({

@@ -47,7 +47,7 @@ export class PickerTextComponent implements OnInit {
       map(([
         controlStatus, freeTextMode, label, placeholder, required, separator,
       ]) => {
-        const isSeparatorNewLine = separator == '\\n';
+        const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
         const viewModel: EntityPickerTextViewModel = {
           controlStatus,
           freeTextMode,
