@@ -32,7 +32,7 @@ export class QueryService {
     const allParams = '&typeNames=' + (contentTypes?.join(',') ?? '')
       + '&itemIds=' + (itemIds?.join(',') ?? '')
       + '&includeGuid=true'//TODO: @SDV remove this when $select is respected
-      + '&$select=' + fields;
+      + '&$select=' + (fields ?? "" /* special catch to avoid the word "null" */);
     // trim initial & because it will always start with an & and it should't
     const urlParams = allParams.substring(1);
     return this.http.post<QueryStreams>(
