@@ -118,10 +118,18 @@
 }
 
 .eav-list {
-  overflow: hidden;
-  padding: 0;
-  // margin-top: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: hidden;
   flex: 1 1 auto;
+  // max-width: 78%;
+  max-height: 35px;
+  &-w-78 {
+    max-width: 78%;
+  }
+  &-w-90 {
+    max-width: 90%;
+  }
 }
 
 .eav-list-item {
