@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { PickerItem } from 'projects/edit-types';
 import { combineLatest, map, Observable } from 'rxjs';
-import { EntityPickerTextTemplateVars } from './picker-text.models';
+import { EntityPickerTextViewModel } from './picker-text.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { PickerData } from '../picker-data';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 
 @Component({
   selector: 'app-picker-text',
@@ -20,9 +21,11 @@ export class PickerTextComponent implements OnInit {
   selectedEntities: PickerItem[] = [];
 
   filteredEntities: PickerItem[] = [];
-  templateVars$: Observable<EntityPickerTextTemplateVars>;
+  viewModel$: Observable<EntityPickerTextViewModel>;
 
-  constructor() { }
+  constructor(
+    private fieldsSettingsService: FieldsSettingsService,
+  ) { }
 
   ngOnInit(): void {
     const state = this.pickerData.state;
@@ -34,20 +37,27 @@ export class PickerTextComponent implements OnInit {
     const placeholder$ = state.placeholder$;
     const required$ = state.required$;
 
-    this.templateVars$ = combineLatest([
-      controlStatus$, freeTextMode$, label$, placeholder$, required$
+    const separator$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+      map(settings => settings.Separator),
+    );
+
+    this.viewModel$ = combineLatest([
+      controlStatus$, freeTextMode$, label$, placeholder$, required$, separator$
     ]).pipe(
       map(([
-        controlStatus, freeTextMode, label, placeholder, required
+        controlStatus, freeTextMode, label, placeholder, required, separator,
       ]) => {
-        const templateVars: EntityPickerTextTemplateVars = {
+        const isSeparatorNewLine = separator == '\\n';
+        const viewModel: EntityPickerTextViewModel = {
           controlStatus,
           freeTextMode,
           label,
           placeholder,
           required,
+
+          isSeparatorNewLine,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

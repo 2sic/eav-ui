@@ -1,35 +1,35 @@
 <!-- This template is used for StringDropdown and NumberDropdown -->
 
-@if (templateVars$ | async; as data) {
+@if (viewModel$ | async; as vm) {
   <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
-    @if (!data.freeTextMode) {
-      <mat-select [formControlName]="config.fieldName" [required]="data.required"
-        [placeholder]="data.placeholder">
-        @for (option of data.dropdownOptions; track option) {
+    @if (!vm.freeTextMode) {
+      <mat-select [formControlName]="config.fieldName" [required]="vm.required"
+        [placeholder]="vm.placeholder">
+        @for (option of vm.dropdownOptions; track option) {
           <mat-option [value]="option.value">
             {{ option.label }}
           </mat-option>
         }
       </mat-select>
     }
-    @if (data.freeTextMode) {
+    @if (vm.freeTextMode) {
       <input matInput type="number" [formControlName]="config.fieldName"
-        [required]="data.required" [placeholder]="data.placeholder">
+        [required]="vm.required" [placeholder]="vm.placeholder">
     }
-    @if (data.enableTextEntry) {
+    @if (vm.enableTextEntry) {
       <div matSuffix class="selection-suffix">
-        <button mat-icon-button [ngClass]="{ 'active': !data.freeTextMode }"
-          [tippy]="'Fields.String.Dropdown' | translate" [disabled]="data.controlStatus.disabled"
+        <button mat-icon-button [ngClass]="{ 'active': !vm.freeTextMode }"
+          [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
           (click)="toggleFreeTextMode(false)">
           <mat-icon>search</mat-icon>
         </button>
-        <button mat-icon-button [ngClass]="{ 'active': data.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
-          [disabled]="data.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
+        <button mat-icon-button [ngClass]="{ 'active': vm.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
+          [disabled]="vm.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
           <mat-icon>text_fields</mat-icon>
         </button>
       </div>
     }
-    <mat-label>{{ data.label }}</mat-label>
+    <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 }

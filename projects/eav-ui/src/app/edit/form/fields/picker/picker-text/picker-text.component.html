@@ -1,11 +1,16 @@
-@if (templateVars$ | async; as data) {
+@if (viewModel$ | async; as vm) {
   <div fxLayout="row" fxLayoutAlign="start end">
     <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
-      <input matInput [required]="data.required" [formControlName]="config.fieldName" [placeholder]="data.placeholder">
+      @if (vm.isSeparatorNewLine) {
+        <textarea matInput [required]="vm.required" [formControlName]="config.fieldName"
+          [placeholder]="vm.placeholder"></textarea>
+      } @else {
+        <input matInput [required]="vm.required" [formControlName]="config.fieldName" [placeholder]="vm.placeholder">
+      }
       <div matSuffix class="eav-selection-suffix-inline">
         <ng-content select="[freeTextButtons]"></ng-content>
       </div>
-      <mat-label>{{ data.label }}</mat-label>
+      <mat-label>{{ vm.label }}</mat-label>
     </mat-form-field>
   </div>
 }

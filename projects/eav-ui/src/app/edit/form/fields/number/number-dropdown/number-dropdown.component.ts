@@ -6,7 +6,7 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { NumberDropdownLogic } from './number-dropdown-logic';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { Observable, BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs';
-import { NumberDropdownTemplateVars } from './number-dropdown.models';
+import { NumberDropdownViewModel } from './number-dropdown.models';
 
 @Component({
   selector: InputTypeConstants.NumberDropdown,
@@ -17,7 +17,7 @@ import { NumberDropdownTemplateVars } from './number-dropdown.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class NumberDropdownComponent extends BaseFieldComponent<number> implements OnInit, OnDestroy {
-  templateVars$: Observable<NumberDropdownTemplateVars>;
+  viewModel$: Observable<NumberDropdownViewModel>;
 
   private toggleFreeText$: BehaviorSubject<boolean>;
 
@@ -37,7 +37,7 @@ export class NumberDropdownComponent extends BaseFieldComponent<number> implemen
     );
     const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options), distinctUntilChanged());
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([enableTextEntry$, dropdownOptions$, freeTextMode$]),
     ]).pipe(
@@ -45,7 +45,7 @@ export class NumberDropdownComponent extends BaseFieldComponent<number> implemen
         [controlStatus, label, placeholder, required],
         [enableTextEntry, dropdownOptions, freeTextMode],
       ]) => {
-        const templateVars: NumberDropdownTemplateVars = {
+        const viewModel: NumberDropdownViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -54,7 +54,7 @@ export class NumberDropdownComponent extends BaseFieldComponent<number> implemen
           dropdownOptions,
           freeTextMode,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

@@ -12,7 +12,7 @@ export class ContentTypeService extends BaseDataService<EavContentType> {
   }
 
   addContentTypes(contentTypes1: EavContentTypeDto[]): void {
-    const contentTypes = contentTypes1.map(contentType1 => EavContentType.convert(contentType1));
+    const contentTypes = EavContentType.convertMany(contentTypes1);
     this.addManyToCache(contentTypes);
   }
 

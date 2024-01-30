@@ -22,8 +22,6 @@ export interface PickerSearchViewModel {
   filteredItems: PickerItem[];
 
   // added for easier readability
-  showEmpty: boolean;
-  hideDropdown: boolean;
   showItemEditButtons: boolean;
   isTreeDisplayMode: boolean;
 }

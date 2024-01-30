@@ -92,8 +92,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
         this.selectedItem$.next(selectedItem);
 
-        const showEmpty = !settings.EnableAddExisting && !(selectedItems.length > 1);
-        const hideDropdown = (!settings.AllowMultiValue && (selectedItems.length > 1)) || !settings.EnableAddExisting;
         const showItemEditButtons = selectedItem && this.showItemEditButtons;
         const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
@@ -133,8 +131,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           filteredItems,
 
           // additional properties for easier readability in the template
-          showEmpty,
-          hideDropdown,
           showItemEditButtons,
           isTreeDisplayMode,
         };

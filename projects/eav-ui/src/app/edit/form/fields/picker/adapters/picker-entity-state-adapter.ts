@@ -6,6 +6,7 @@ import { ControlStatus } from "../../../../shared/models";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { PickerStateAdapter } from "./picker-state-adapter";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
+import { EavService } from "../../../../shared/services";
 
 export class PickerEntityStateAdapter extends PickerStateAdapter {
   constructor(
@@ -20,6 +21,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
     public translate: TranslateService,
     public control: AbstractControl,
+    public eavService: EavService,
     focusOnSearchComponent: () => void,
   ) {
     super(
@@ -33,6 +35,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
       stringQueryCache$,
       translate,
       control,
+      eavService,
       focusOnSearchComponent,
     );
   }
