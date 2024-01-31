@@ -339,6 +339,24 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               targetOptions.push(targetOption);
             }
           }
+          /*
+          TODO: @SDV
+          for all picker types 
+          add formulas -> Field.ListItem.Label
+                          Field.ListItem.Tooltip
+                          Field.ListItem.Information
+                          Field.ListItem.HelpLink
+                          Field.ListItem.Disabled
+
+          Template for all new type formulas
+          v2((data, context, item) => {
+            return data.value;
+          });
+
+          old template for all of the rest
+
+          run formulas upon dropdowning the picker, upon each opening
+          */
 
           // targets for formulas
           const formulasForThisField = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
