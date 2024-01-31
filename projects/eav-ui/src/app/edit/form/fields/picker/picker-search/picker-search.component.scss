@@ -56,8 +56,15 @@
   flex: 1 1 auto;
 }
 
-// .eav-dropdown-option-info {
-// }
+.eav-picker-option .eav-dropdown-option-info {
+  display: none;
+  /* Initially hide the info div */
+}
+
+.eav-picker-option:hover .eav-dropdown-option-info {
+  display: block;
+  /* Display the info div when mat-option is hovered */
+}
 
 .eav-suffix-button {
   scale: calc(4/5);
