@@ -175,6 +175,7 @@ export interface HyperlinkLibrary extends Hyperlink {
  */
 export interface Entity extends All {
   EntityType: string;
+  CreateTypes: string;
   AllowMultiValue: boolean;
   EnableEdit: boolean;
   EnableCreate: boolean;
@@ -343,7 +344,7 @@ export interface UiPickerModeTree extends ConfigModel {
   TreeAllowSelectLeaf: boolean;
 }
 
-export interface UiPickerSourceQuery extends ConfigModel {
+export interface UiPickerSourceQuery extends PickerSource {
   Query: string;
   QueryParameters: string;
   StreamName: string;
@@ -353,12 +354,19 @@ export interface UiPickerSourceQuery extends ConfigModel {
   CreateTypes: string;
 }
 
-export interface UiPickerSourceEntity extends ConfigModel {
+export interface UiPickerSourceEntity extends PickerSource {
   ContentTypeNames: string;
+  CreateTypes: string;
+  MoreFields: string;
 }
 
-export interface UiPickerSourceCustomList extends ConfigModel {
+export interface UiPickerSourceCustomList extends PickerSource {
   DropdownValues: string;
+}
+
+interface PickerSource extends ConfigModel { 
+  ItemInformation: string;
+  ItemTooltip: string;
 }
 
 interface ConfigModel {
