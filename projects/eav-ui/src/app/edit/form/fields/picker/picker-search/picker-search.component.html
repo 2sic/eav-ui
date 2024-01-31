@@ -47,11 +47,11 @@
           @for (item of vm.filteredItems; track item) {
           <mat-option [value]="item.Value" class="eav-picker-option"
             [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)"
-            [tippy]="item.Tooltip" tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
+            [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip">
             <div class="eav-dropdown-option">
               <span>{{ item.Text ? item.Text : item.Value }}</span>
-              @if (item.Information) {
-                <mat-icon [tippy]="item.Information">info</mat-icon>
+              @if (item._information) {
+                <mat-icon [tippy]="item._information">info</mat-icon>
               }
             </div>
           </mat-option>
