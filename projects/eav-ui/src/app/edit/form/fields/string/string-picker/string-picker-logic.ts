@@ -16,8 +16,9 @@ export class StringPickerLogic extends FieldLogicBase {
     const fs = entityPickerLogic.update(settings, value, tools);
 
     fs.EnableTextEntry ??= false;
-    fs.Separator ??= '\\n';
-    
+    fs.Separator ??= '\n'; //'\\n';
+    if (fs.Separator == '\\n') fs.Separator = '\n'; //buggy temp double-slash-n
+
     if (fs.DataSources?.length > 0)
       dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
 
