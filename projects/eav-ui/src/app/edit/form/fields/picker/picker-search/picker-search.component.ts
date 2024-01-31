@@ -247,6 +247,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerData.source.deleteItem({ index, entityGuid });
   }
 
+  goToLink(helpLink: string): void {
+    window.open(helpLink, '_blank');
+  }
+
   hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
 
   /** Needed later for tree implementation testing */

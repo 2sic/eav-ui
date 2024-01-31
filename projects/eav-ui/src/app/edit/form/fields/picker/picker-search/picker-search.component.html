@@ -49,10 +49,15 @@
             [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)"
             [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip">
             <div class="eav-dropdown-option">
-              <span>{{ item.Text ? item.Text : item.Value }}</span>
-              @if (item._information) {
-                <mat-icon [tippy]="item._information">info</mat-icon>
-              }
+              <span class="eav-dropdown-option-text">{{ item.Text ? item.Text : item.Value }}</span>
+              <div class="eav-dropdown-option-info">
+                @if (item._helpLink) {
+                  <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
+                }
+                @if (item._information) {
+                  <mat-icon [tippy]="item._information" appClickStopPropagation>info</mat-icon>
+                }
+              </div>
             </div>
           </mat-option>
           }
