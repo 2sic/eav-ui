@@ -48,8 +48,8 @@ export class FieldMask {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
     if (value != null) {
+      value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
       if (this.eavConfig != null) {
         value = value.replace('[app:appid]', this.eavConfig.appId);
         value = value.replace('[app:zoneid]', this.eavConfig.zoneId);
