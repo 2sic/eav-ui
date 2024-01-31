@@ -41,7 +41,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
         AllowMultiValue: settings.AllowMultiValue,
         EnableTextEntry: settings.EnableTextEntry,
         EnableCreate: settings.EnableCreate,
-        EntityType: settings.EntityType,
+        CreateTypes: settings.CreateTypes,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -52,8 +52,8 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
       map(([
         selectedItems, freeTextMode, settings, controlStatus, disableAddNew
       ]) => {
-        const leavePlaceForButtons = (settings.EntityType && settings.EnableCreate) || settings.AllowMultiValue;
-        const showAddNewEntityButton = settings.EntityType && settings.EnableCreate;
+        const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
+        const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
         const showGoToListDialogButton = settings.AllowMultiValue;
 
         const viewModel: EntityPickerPreviewViewModel = {

@@ -47,7 +47,7 @@ export class PickerStateAdapter {
       this.settings$.pipe(
         tap(settings => {
           // TODO: this looks bad - side-effect in observable
-          const types = settings.EntityType;
+          const types = settings.CreateTypes;
           this.createEntityTypes = types
             ? types
                 // use either \n or , as delimiter
