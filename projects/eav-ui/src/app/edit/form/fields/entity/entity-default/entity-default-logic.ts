@@ -9,6 +9,7 @@ export class EntityDefaultLogic extends FieldLogicBase {
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EntityType ??= '';
+    fixedSettings.CreateTypes = fixedSettings.EntityType;
     fixedSettings.AllowMultiValue ??= false;
     fixedSettings.EnableEdit ??= true;
     fixedSettings.EnableCreate ??= true;
