@@ -189,6 +189,7 @@ export interface Entity extends All {
 
   Information: string;
   Tooltip: string;
+  HelpLink: string;
   MoreFields: string;
   Label: string;
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
@@ -367,6 +368,7 @@ export interface UiPickerSourceCustomList extends PickerSource {
 interface PickerSource extends ConfigModel { 
   ItemInformation: string;
   ItemTooltip: string;
+  ItemHelpLink: string;
 }
 
 interface ConfigModel {
