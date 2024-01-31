@@ -30,6 +30,9 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config
       fs.DropdownValues = uiPickerSourceCustomList.Values ?? '';
       fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
+
+      fs.Information = uiPickerSourceCustomList.ItemInformation ?? '';
+      fs.Tooltip = uiPickerSourceCustomList.ItemTooltip ?? '';
     }
 
     return fs;
