@@ -42,6 +42,7 @@ export class DataSourceBase {
     const settings = this.settings$.value;
     let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
     let information = this.cleanStringFromWysiwyg(settings.Information);
+    let helpLink = settings.HelpLink ?? '';
     Object.keys(entity).forEach(key => {
       //this is because we use Value and Text as properties in PickerItem
       if (key !== 'Value' && key !== 'Text')
@@ -50,9 +51,11 @@ export class DataSourceBase {
         entityInfo[key] = entity[key];
       tooltip = tooltip.replace(`[Item:${key}]`, entity[key]);
       information = information.replace(`[Item:${key}]`, entity[key]);
+      helpLink = helpLink.replace(`[Item:${key}]`, entity[key]);
     });
     entityInfo._tooltip = tooltip;
     entityInfo._information = information;
+    entityInfo._helpLink = helpLink;
     return entityInfo;
   }
 
