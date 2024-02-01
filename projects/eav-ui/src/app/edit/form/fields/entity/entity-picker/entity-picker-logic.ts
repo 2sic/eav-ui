@@ -53,10 +53,6 @@ export class EntityPickerLogic extends FieldLogicBase {
 
       fs.MoreFields = uiPickerSourceQuery.MoreFields ?? '';
 
-      // TODO: @SDV - LOOKS WRONG
-      // I believe it should be placed in an ItemInformation, not in the Information
-      // As it is only for an item, but Information (for the entire field) could still be a thing
-      // same applies to ToolTip, HelpLink etc.
       fs.ItemInformation = uiPickerSourceQuery.ItemInformation ?? '';
       fs.ItemTooltip = uiPickerSourceQuery.ItemTooltip ?? '';
       fs.ItemHelpLink = uiPickerSourceQuery.ItemHelpLink ?? '';
