@@ -25,21 +25,24 @@ export class TippyDirective implements OnChanges, OnDestroy {
   /** enable html in Tippy */
   @Input() tippyAllowHtml: boolean | null | undefined;
 
+  /** show arrow in Tippy - only respected on setup, changes ATM not handled */
+  @Input() tippyArrow: boolean | null | undefined;
+
   private tooltip: Instance<Props>;
 
   constructor(private elementRef: ElementRef<HTMLElement>) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Init Tooltip on first round
-    if (this.tooltip == null) {
+    if (this.tooltip == null)
       this.tooltip = tippy(this.elementRef.nativeElement, {
         animation: 'scale-subtle',
-        arrow: false,
+        arrow: !!this.tippyArrow,
         duration: [100, 50],
         placement: 'bottom',
         theme: '2sxc',
+        allowHTML: !!this.tippyAllowHtml,
       });
-    }
 
     if (changes['tippy'] != null)
       this.tooltip.setContent(this.tippy);
@@ -54,9 +57,6 @@ export class TippyDirective implements OnChanges, OnDestroy {
       const showDelay = typeof this.tippyShowDelay === 'number' ? this.tippyShowDelay : parseInt(this.tippyShowDelay, 10);
       this.tooltip.setProps({ delay: [showDelay, null] });
     }
-
-    if (changes['tippyAllowHtml'] != null)
-      this.tooltip.setProps({ allowHTML: this.tippyAllowHtml });
   }
 
   ngOnDestroy(): void {
