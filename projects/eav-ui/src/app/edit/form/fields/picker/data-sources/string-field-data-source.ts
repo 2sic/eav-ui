@@ -27,9 +27,9 @@ export class StringFieldDataSource extends DataSourceBase {
       Text: dropdownOption.label,
     };
     const settings = this.settings$.value;
-    entityInfo._tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
-    entityInfo._information = this.cleanStringFromWysiwyg(settings.Information);
-    entityInfo._helpLink = settings.HelpLink;
+    entityInfo._tooltip = this.cleanStringFromWysiwyg(settings.ItemTooltip);
+    entityInfo._information = this.cleanStringFromWysiwyg(settings.ItemInformation);
+    entityInfo._helpLink = settings.ItemHelpLink;
     return entityInfo;
   }
 }

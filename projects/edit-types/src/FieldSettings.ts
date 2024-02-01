@@ -187,9 +187,6 @@ export interface Entity extends All {
    */
   Prefill: string;
 
-  Information: string;
-  Tooltip: string;
-  HelpLink: string;
   MoreFields: string;
   Label: string;
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
@@ -268,6 +265,10 @@ export interface EntityPicker extends EntityQuery {
   PickerDisplayMode: 'list' | 'tree';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
+
+  ItemInformation: string;
+  ItemTooltip: string;
+  ItemHelpLink: string;
 
   DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }

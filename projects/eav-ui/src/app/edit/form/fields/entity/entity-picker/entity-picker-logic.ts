@@ -57,9 +57,9 @@ export class EntityPickerLogic extends FieldLogicBase {
       // I believe it should be placed in an ItemInformation, not in the Information
       // As it is only for an item, but Information (for the entire field) could still be a thing
       // same applies to ToolTip, HelpLink etc.
-      fs.Information = uiPickerSourceQuery.ItemInformation ?? '';
-      fs.Tooltip = uiPickerSourceQuery.ItemTooltip ?? '';
-      fs.HelpLink = uiPickerSourceQuery.ItemHelpLink ?? '';
+      fs.ItemInformation = uiPickerSourceQuery.ItemInformation ?? '';
+      fs.ItemTooltip = uiPickerSourceQuery.ItemTooltip ?? '';
+      fs.ItemHelpLink = uiPickerSourceQuery.ItemHelpLink ?? '';
     }
 
     /** Entity datasource */
@@ -71,9 +71,9 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.CreateTypes = uiPickerSourceEntity.CreateTypes ?? '';// possible multiple types
       fs.MoreFields = uiPickerSourceEntity.MoreFields ?? '';
 
-      fs.Information = uiPickerSourceEntity.ItemInformation ?? '';
-      fs.Tooltip = uiPickerSourceEntity.ItemTooltip ?? '';
-      fs.HelpLink = uiPickerSourceEntity.ItemHelpLink ?? '';
+      fs.ItemInformation = uiPickerSourceEntity.ItemInformation ?? '';
+      fs.ItemTooltip = uiPickerSourceEntity.ItemTooltip ?? '';
+      fs.ItemHelpLink = uiPickerSourceEntity.ItemHelpLink ?? '';
     }
 
     /** WIP functionalities */

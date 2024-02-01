@@ -40,9 +40,9 @@ export class DataSourceBase {
   /** fill additional properties */
   protected fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
     const settings = this.settings$.value;
-    let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
-    let information = this.cleanStringFromWysiwyg(settings.Information);
-    let helpLink = settings.HelpLink ?? '';
+    let tooltip = this.cleanStringFromWysiwyg(settings.ItemTooltip);
+    let information = this.cleanStringFromWysiwyg(settings.ItemInformation);
+    let helpLink = settings.ItemHelpLink ?? '';
     Object.keys(entity).forEach(key => {
       //this is because we use Value and Text as properties in PickerItem
       if (key !== 'Value' && key !== 'Text')

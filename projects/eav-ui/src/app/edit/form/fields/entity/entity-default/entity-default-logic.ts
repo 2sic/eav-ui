@@ -19,8 +19,6 @@ export class EntityDefaultLogic extends FieldLogicBase {
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // fixedSettings.IncludeParentApps ??= false;
 
-    fixedSettings.Information ??= '';
-    fixedSettings.Tooltip ??= '';
     fixedSettings.MoreFields ??= '';
     fixedSettings.Label ??= '';
 

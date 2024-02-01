@@ -31,9 +31,9 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.DropdownValues = uiPickerSourceCustomList.Values ?? '';
       fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
 
-      fs.Information = uiPickerSourceCustomList.ItemInformation ?? '';
-      fs.Tooltip = uiPickerSourceCustomList.ItemTooltip ?? '';
-      fs.HelpLink = uiPickerSourceCustomList.ItemHelpLink ?? '';
+      fs.ItemInformation = uiPickerSourceCustomList.ItemInformation ?? '';
+      fs.ItemTooltip = uiPickerSourceCustomList.ItemTooltip ?? '';
+      fs.ItemHelpLink = uiPickerSourceCustomList.ItemHelpLink ?? '';
     }
 
     return fs;
