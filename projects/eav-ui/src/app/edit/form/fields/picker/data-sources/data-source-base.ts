@@ -49,9 +49,16 @@ export class DataSourceBase {
         entityInfo["_" + key] = entity[key];
       else
         entityInfo[key] = entity[key];
-      tooltip = tooltip.replace(`[Item:${key}]`, entity[key]);
-      information = information.replace(`[Item:${key}]`, entity[key]);
-      helpLink = helpLink.replace(`[Item:${key}]`, entity[key]);
+
+      // must check for null and use '' instead
+      const value = entity[key] ?? '';
+
+      // replace all occurrences of [Item:Key] with value - should be case insensitive
+      const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
+      
+      tooltip = tooltip.replace(search, value);
+      information = information.replace(search, value);
+      helpLink = helpLink.replace(search, value);
     });
     entityInfo._tooltip = tooltip;
     entityInfo._information = information;
