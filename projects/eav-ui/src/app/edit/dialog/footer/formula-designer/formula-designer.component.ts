@@ -10,7 +10,7 @@ import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
-import { defaultFormulaNow } from '../../../formulas/formula.constants';
+import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
 import { FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
@@ -48,7 +48,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     fixedOverflowWidgets: true,
   };
   filename = `formula${this.eavService.eavConfig.formId}.js`;
-  placeholder = defaultFormulaNow;
   focused = false;
   viewModel$: Observable<FormulaDesignerViewModel>;
 
@@ -251,6 +250,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   private buildViewModel(): void {
+    const listItemTargets = ['Field.ListItem.Label', 'Field.ListItem.Disabled', 'Field.ListItem.Tooltip', 'Field.ListItem.Information', 'Field.ListItem.HelpLink'];
     const oldState = this.formulaDesignerService.getDesignerState();
     if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
       const entityGuid = this.formBuilderRefs.first.entityGuid;
@@ -305,6 +305,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               ),
               label: target.substring(target.lastIndexOf('.') + 1),
               target,
+              template: defaultFormulaNow,
             };
             targetOptions.push(targetOption);
           }
@@ -323,6 +324,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
                 ),
                 label: target.substring(target.lastIndexOf('.') + 1),
                 target: target as FormulaTarget,
+                template: defaultFormulaNow,
               };
               targetOptions.push(targetOption);
             }
@@ -335,6 +337,22 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
                 ),
                 label: target.substring(target.lastIndexOf('.') + 1),
                 target: target as FormulaTarget,
+                template: defaultFormulaNow,
+              };
+              targetOptions.push(targetOption);
+            }
+          }
+          if (inputType === InputTypeConstants.WIPEntityPicker
+            || inputType === InputTypeConstants.WIPStringPicker
+            || inputType === InputTypeConstants.WIPNumberPicker) {
+            for (const target of listItemTargets) {
+              const targetOption: TargetOption = {
+                hasFormula: formulas.some(
+                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
+                ),
+                label: target.substring(target.lastIndexOf('.') + 1),
+                target: target as FormulaTarget,
+                template: listItemFormulaNow,
               };
               targetOptions.push(targetOption);
             }
@@ -368,6 +386,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               hasFormula: true,
               label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
               target: formula.target,
+              template: defaultFormulaNow,
             };
             targetOptions.push(targetOption);
           }
@@ -381,6 +400,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               ),
               label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
               target: designer.target,
+              template: defaultFormulaNow,
             };
             targetOptions.push(targetOption);
           }
@@ -434,6 +454,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         [options, formula, dataSnippets, contextSnippets, typings, designer],
         [result, saving, isDeleted],
       ]) => {
+        const template = listItemTargets.includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
@@ -443,6 +464,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           dataSnippets,
           contextSnippets,
           typings,
+          template,
           result: result?.value,
           resultExists: result != null && !isDeleted,
           resultIsError: result?.isError ?? false,

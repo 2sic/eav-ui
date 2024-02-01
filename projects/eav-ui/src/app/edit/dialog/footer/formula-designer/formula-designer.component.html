@@ -64,7 +64,7 @@
         'focused': focused
         }">
         <mat-label class="label">Function</mat-label>
-        <app-monaco-editor class="editor" [filename]="filename" [value]="vm.formula?.source ?? placeholder"
+        <app-monaco-editor class="editor" [filename]="filename" [value]="vm.formula?.source ?? vm.template"
           [jsTypings]="vm.typings" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
           (focused)="onFocused()" (blurred)="onBlurred()">
         </app-monaco-editor>

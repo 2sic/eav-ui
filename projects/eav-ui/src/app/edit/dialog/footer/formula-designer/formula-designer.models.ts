@@ -11,6 +11,7 @@ export interface FormulaDesignerViewModel {
   dataSnippets: DesignerSnippet[];
   contextSnippets: DesignerSnippet[];
   typings: string;
+  template: string;
   result: FieldValue;
   resultExists: boolean;
   resultIsError: boolean;
