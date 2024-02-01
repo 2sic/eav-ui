@@ -31,7 +31,8 @@ export class FieldMask {
     private eavConfig?: EavConfig,
     private config?: FieldConfigSet,
   ) {
-    this.mask = mask;
+    this.mask = mask ?? '';
+    this.value = mask ?? '';// set value to be initially same as the mask so onChange doesn't run for the first time without reason
     this.model = model;
     this.fields = this.fieldList();
 
@@ -48,7 +49,7 @@ export class FieldMask {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    if (value) {
+    if (value.includes('[')) {
       value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
       if (this.eavConfig != null) {
         value = value.replace('[app:appid]', this.eavConfig.appId);
