@@ -55,7 +55,7 @@ export class EntityPickerLogic extends FieldLogicBase {
 
       fs.ItemInformation = uiPickerSourceQuery.ItemInformation ?? '';
       fs.ItemTooltip = uiPickerSourceQuery.ItemTooltip ?? '';
-      fs.ItemHelpLink = uiPickerSourceQuery.ItemHelpLink ?? '';
+      fs.ItemLink = uiPickerSourceQuery.ItemLink ?? '';
     }
 
     /** Entity datasource */
@@ -69,7 +69,7 @@ export class EntityPickerLogic extends FieldLogicBase {
 
       fs.ItemInformation = uiPickerSourceEntity.ItemInformation ?? '';
       fs.ItemTooltip = uiPickerSourceEntity.ItemTooltip ?? '';
-      fs.ItemHelpLink = uiPickerSourceEntity.ItemHelpLink ?? '';
+      fs.ItemLink = uiPickerSourceEntity.ItemLink ?? '';
     }
 
     /** WIP functionalities */

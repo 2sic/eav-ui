@@ -268,7 +268,7 @@ export interface EntityPicker extends EntityQuery {
 
   ItemInformation: string;
   ItemTooltip: string;
-  ItemHelpLink: string;
+  ItemLink: string;
 
   DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }
@@ -369,7 +369,7 @@ export interface UiPickerSourceCustomList extends PickerSource {
 interface PickerSource extends ConfigModel { 
   ItemInformation: string;
   ItemTooltip: string;
-  ItemHelpLink: string;
+  ItemLink: string;
 }
 
 interface ConfigModel {

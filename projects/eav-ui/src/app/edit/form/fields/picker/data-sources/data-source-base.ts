@@ -104,7 +104,7 @@ export class DataSourceBase {
     const settings = this.settings$.value;
     const tooltipMask = !!settings.ItemTooltip ? this.cleanStringFromWysiwyg(settings.ItemTooltip) : '';
     const infoMask = !!settings.ItemInformation ? this.cleanStringFromWysiwyg(settings.ItemInformation) : '';
-    const linkMask = settings.ItemHelpLink ?? '';
+    const linkMask = settings.ItemLink ?? '';
     const labelMask = settings.Label ?? '';
     const valueMask = settings.Value ?? '';
     const hasMask = (tooltipMask + infoMask + linkMask + labelMask).includes('[');

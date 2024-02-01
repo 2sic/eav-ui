@@ -29,7 +29,7 @@ export class StringFieldDataSource extends DataSourceBase {
     const settings = this.settings$.value;
     entityInfo._tooltip = this.cleanStringFromWysiwyg(settings.ItemTooltip);
     entityInfo._information = this.cleanStringFromWysiwyg(settings.ItemInformation);
-    entityInfo._helpLink = settings.ItemHelpLink;
+    entityInfo._helpLink = settings.ItemLink;
     return entityInfo;
   }
 }
