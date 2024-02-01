@@ -48,7 +48,7 @@ export class FieldMask {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    if (value != null) {
+    if (value) {
       value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
       if (this.eavConfig != null) {
         value = value.replace('[app:appid]', this.eavConfig.appId);
@@ -58,14 +58,12 @@ export class FieldMask {
         value = value.replace('[guid]', this.config.entityGuid);
         value = value.replace('[id]', this.config.entityId.toString());
       }
+      this.fields.forEach((e, i) => {
+        const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
+        const cleaned = this.preClean(e, replaceValue);
+        value = value.replace('[' + e.toLowerCase() + ']', cleaned);
+      });
     }
-    this.fields.forEach((e, i) => {
-      const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
-      const cleaned = this.preClean(e, replaceValue);
-      // TODO: @sdv - LOOKS fishy - value could be null/undefined! 
-      value = value.replace('[' + e.toLowerCase() + ']', cleaned);
-    });
-
     return value;
   }
 
