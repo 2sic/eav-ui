@@ -1,5 +1,5 @@
 import { EntityForPicker, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith, tap } from "rxjs";
+import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
@@ -25,7 +25,12 @@ export class QueryFieldDataSource extends DataSourceBase {
 
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
-    const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;//?fields=fieldName,...
+    
+    // If the configuration isn't complete, the query can be empty
+    const queryName = settings.Query;
+    const queryUrl = !!queryName
+      ? queryName.includes('/') ? settings.Query : `${settings.Query}/${streamName}`
+      : null;
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
 
@@ -33,10 +38,26 @@ export class QueryFieldDataSource extends DataSourceBase {
       params$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll))
     ]).pipe(
-      mergeMap(([params, _]) => this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), []).pipe(
-        map(data => { return { data, loading: false }; }),
-        startWith({ data: {} as QueryStreams, loading: true })
-      )),
+      mergeMap(([params, _]) => {
+        // If we don't have a query URL return a single item with a message
+        if (!queryUrl) {
+          return of({ data: {
+            'Default': [
+              {
+                Id: -1,
+                Text: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
+                Guid: null,
+              }
+            ] as QueryEntity[],
+          } as QueryStreams, loading: true });
+        }
+
+        // Default case, get the data
+        return this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), []).pipe(
+          map(data => { return { data, loading: false }; }),
+          startWith({ data: {} as QueryStreams, loading: true })
+        );
+      }),
       map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
