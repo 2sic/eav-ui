@@ -62,6 +62,7 @@ export class FieldMask {
     this.fields.forEach((e, i) => {
       const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
       const cleaned = this.preClean(e, replaceValue);
+      // TODO: @sdv - LOOKS fishy - value could be null/undefined! 
       value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
 
