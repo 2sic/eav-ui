@@ -347,7 +347,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
                 hasFormula: formulas.some(
                   f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
                 ),
-                label: target.substring(target.lastIndexOf('.') + 1),
+                label: "List Item " + target.substring(target.lastIndexOf('.') + 1),
                 target: target as FormulaTarget,
               };
               targetOptions.push(targetOption);
