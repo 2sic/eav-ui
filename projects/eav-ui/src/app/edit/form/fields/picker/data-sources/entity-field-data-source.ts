@@ -97,11 +97,6 @@ export class EntityFieldDataSource extends DataSourceBase {
   }
 
   private queryEntityMapping(entity: QueryEntity): PickerItem {
-    const entityInfo: PickerItem = {
-      Id: entity.Id,
-      Value: entity.Guid,
-      Text: entity.Title,
-    };
-    return this.fillEntityInfoMoreFields(entity, entityInfo);
+    return this.fillEntityInfoMoreFields(entity);
   }
 }

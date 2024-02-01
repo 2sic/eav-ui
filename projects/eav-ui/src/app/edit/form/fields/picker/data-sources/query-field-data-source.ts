@@ -54,7 +54,7 @@ export class QueryFieldDataSource extends DataSourceBase {
       }),
       map(entities => {
         if (this.isStringQuery) {
-          return entities.map(entity => this.stringQueryEntityMapping(entity as QueryEntity)) as PickerItem[];
+          return entities.map(entity => this.fillEntityInfoMoreFields(entity as QueryEntity));
         } else {
           return entities as PickerItem[];
         }
@@ -129,29 +129,8 @@ export class QueryFieldDataSource extends DataSourceBase {
       };
       return [errorItem];
     }
-    const items: PickerItem[] = data[streamName].map(entity => {
-      return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
-    });
+    const items: PickerItem[] = data[streamName].map(entity => this.fillEntityInfoMoreFields(entity));
     return this.setDisableEdit(items);
-  }
-
-  private queryEntityMapping(entity: QueryEntity): PickerItem {
-    const entityInfo: PickerItem = {
-      Id: entity.Id,
-      Value: entity.Guid,
-      Text: entity.Title,
-    };
-    return this.fillEntityInfoMoreFields(entity, entityInfo);
-  }
-
-  private stringQueryEntityMapping(entity: QueryEntity): PickerItem {
-    const settings = this.settings$.value;
-    const entityInfo: PickerItem = {
-      Id: entity.Id,
-      Value: entity[settings.Value] ? `${entity[settings.Value]}` : entity[settings.Value],
-      Text: entity[settings.Label] ? `${entity[settings.Label]}` : entity[settings.Label],
-    };
-    return this.fillEntityInfoMoreFields(entity, entityInfo);
   }
 
   private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {

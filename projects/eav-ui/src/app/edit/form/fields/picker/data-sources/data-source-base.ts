@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldSettings } from 'projects/edit-types';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { Title } from '@angular/platform-browser';
 
 export class DataSourceBase {
   public data$: Observable<PickerItem[]>;
@@ -38,18 +39,39 @@ export class DataSourceBase {
   }
 
   /** fill additional properties */
-  protected fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
-    const settings = this.settings$.value;
-    let tooltip = this.cleanStringFromWysiwyg(settings.ItemTooltip);
-    let information = this.cleanStringFromWysiwyg(settings.ItemInformation);
-    let helpLink = settings.ItemHelpLink ?? '';
-    Object.keys(entity).forEach(key => {
-      //this is because we use Value and Text as properties in PickerItem
-      if (key !== 'Value' && key !== 'Text')
-        entityInfo["_" + key] = entity[key];
-      else
-        entityInfo[key] = entity[key];
+  protected fillEntityInfoMoreFields(entity: QueryEntity): PickerItem {
+    // Check if we have masks, if yes
+    const masks = this.getMasks();
 
+    // Figure out Title Value if we don't use masks
+    const tempOfTitleKey = entity[masks.label];
+    let valueOfTitleKey = tempOfTitleKey ? `${tempOfTitleKey}` : tempOfTitleKey;
+    valueOfTitleKey = !!valueOfTitleKey ? valueOfTitleKey : entity.Title;
+
+    // Figure out Value to store if we don't use masks
+    const tempOfValueKey = entity[masks.value];
+    let valueOfValueKey = tempOfValueKey ? `${tempOfValueKey}` : tempOfValueKey;
+    valueOfValueKey = !!valueOfValueKey ? valueOfValueKey : entity.Guid;
+
+    // If we don't have masks, we are done
+    if (!masks.hasMask)
+      return {
+        Id: entity.Id,
+        data: entity,
+        Value: valueOfValueKey,
+        Text: valueOfTitleKey,
+        _tooltip: masks.tooltip,
+        _information: masks.info,
+        _helpLink: masks.link,
+      };
+
+    // Prepare the masks
+    let tooltip = masks.tooltip;
+    let information = masks.info;
+    let helpLink = masks.link;
+    let title = masks.label;
+
+    Object.keys(entity).forEach(key => {
       // must check for null and use '' instead
       const value = entity[key] ?? '';
 
@@ -59,12 +81,51 @@ export class DataSourceBase {
       tooltip = tooltip.replace(search, value);
       information = information.replace(search, value);
       helpLink = helpLink.replace(search, value);
+      title = title.replace(search, value);
     });
-    entityInfo._tooltip = tooltip;
-    entityInfo._information = information;
-    entityInfo._helpLink = helpLink;
-    return entityInfo;
+
+    // If the original was not a mask, look up the field
+    if (!masks.label.includes('['))
+      title = valueOfTitleKey;
+
+    return {
+      Id: entity.Id,
+      data: entity,
+      Value: valueOfValueKey,
+      Text: title,
+      _tooltip: tooltip,
+      _information: information,
+      _helpLink: helpLink,
+    } as PickerItem;
   }
+
+  private getMasks() {
+    if (!!this.masks) return this.masks;
+    const settings = this.settings$.value;
+    const tooltipMask = !!settings.ItemTooltip ? this.cleanStringFromWysiwyg(settings.ItemTooltip) : '';
+    const infoMask = !!settings.ItemInformation ? this.cleanStringFromWysiwyg(settings.ItemInformation) : '';
+    const linkMask = settings.ItemHelpLink ?? '';
+    const labelMask = settings.Label ?? '';
+    const valueMask = settings.Value ?? '';
+    const hasMask = (tooltipMask + infoMask + linkMask + labelMask).includes('[');
+    return this.masks = {
+      hasMask,
+      tooltip: tooltipMask,
+      info: infoMask,
+      link: linkMask,
+      label: labelMask,
+      value: valueMask,
+    }
+  }
+
+  private masks: {
+    hasMask: boolean;
+    tooltip: string;
+    info: string;
+    link: string;
+    label: string;
+    value: string;
+  };
 
   /** remove HTML tags that come from WYSIWYG */
   protected cleanStringFromWysiwyg(wysiwygString: string): string {
@@ -75,14 +136,14 @@ export class DataSourceBase {
 
   protected calculateMoreFields(): string {
     const settings = this.settings$.value;
-    const pickerTreeConfiguration = settings.PickerTreeConfiguration;
+    const treeConfig = settings.PickerTreeConfiguration;
     const moreFields = settings.MoreFields?.split(',') ?? [];
     const queryFields = [settings.Value, settings.Label];
     const treeFields = [
-      pickerTreeConfiguration?.TreeChildIdField,
-      pickerTreeConfiguration?.TreeParentIdField,
-      pickerTreeConfiguration?.TreeChildParentRefField,
-      pickerTreeConfiguration?.TreeParentChildRefField,
+      treeConfig?.TreeChildIdField,
+      treeConfig?.TreeParentIdField,
+      treeConfig?.TreeChildParentRefField,
+      treeConfig?.TreeParentChildRefField,
     ];
     const allFields = [...['Title', 'Id', 'Guid'], ...moreFields, ...queryFields, ...treeFields].filter(x => x?.length > 0).filter(GeneralHelpers.distinct);
     return allFields.join(',');
