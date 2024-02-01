@@ -305,7 +305,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               ),
               label: target.substring(target.lastIndexOf('.') + 1),
               target,
-              template: defaultFormulaNow,
             };
             targetOptions.push(targetOption);
           }
@@ -324,7 +323,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
                 ),
                 label: target.substring(target.lastIndexOf('.') + 1),
                 target: target as FormulaTarget,
-                template: defaultFormulaNow,
               };
               targetOptions.push(targetOption);
             }
@@ -337,7 +335,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
                 ),
                 label: target.substring(target.lastIndexOf('.') + 1),
                 target: target as FormulaTarget,
-                template: defaultFormulaNow,
               };
               targetOptions.push(targetOption);
             }
@@ -352,7 +349,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
                 ),
                 label: target.substring(target.lastIndexOf('.') + 1),
                 target: target as FormulaTarget,
-                template: listItemFormulaNow,
               };
               targetOptions.push(targetOption);
             }
@@ -386,7 +382,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               hasFormula: true,
               label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
               target: formula.target,
-              template: defaultFormulaNow,
             };
             targetOptions.push(targetOption);
           }
@@ -400,7 +395,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               ),
               label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
               target: designer.target,
-              template: defaultFormulaNow,
             };
             targetOptions.push(targetOption);
           }

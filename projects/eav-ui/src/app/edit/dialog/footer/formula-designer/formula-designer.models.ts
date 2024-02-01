@@ -42,7 +42,6 @@ export interface TargetOption {
   hasFormula: boolean;
   label: string;
   target: FormulaTarget;
-  template?: string;
 }
 
 export interface DesignerSnippet {
