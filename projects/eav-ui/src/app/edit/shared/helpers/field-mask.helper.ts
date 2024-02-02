@@ -31,7 +31,8 @@ export class FieldMask {
     private eavConfig?: EavConfig,
     private config?: FieldConfigSet,
   ) {
-    this.mask = mask;
+    this.mask = mask ?? '';
+    this.value = mask ?? '';// set value to be initially same as the mask so onChange doesn't run for the first time without reason
     this.model = model;
     this.fields = this.fieldList();
 
@@ -48,8 +49,8 @@ export class FieldMask {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
-    if (value != null) {
+    if (value.includes('[')) {
+      value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
       if (this.eavConfig != null) {
         value = value.replace('[app:appid]', this.eavConfig.appId);
         value = value.replace('[app:zoneid]', this.eavConfig.zoneId);
@@ -58,13 +59,12 @@ export class FieldMask {
         value = value.replace('[guid]', this.config.entityGuid);
         value = value.replace('[id]', this.config.entityId.toString());
       }
+      this.fields.forEach((e, i) => {
+        const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
+        const cleaned = this.preClean(e, replaceValue);
+        value = value.replace('[' + e.toLowerCase() + ']', cleaned);
+      });
     }
-    this.fields.forEach((e, i) => {
-      const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
-      const cleaned = this.preClean(e, replaceValue);
-      value = value.replace('[' + e.toLowerCase() + ']', cleaned);
-    });
-
     return value;
   }
 

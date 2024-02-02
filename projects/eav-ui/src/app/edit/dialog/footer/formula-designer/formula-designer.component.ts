@@ -10,7 +10,7 @@ import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
-import { defaultFormulaNow } from '../../../formulas/formula.constants';
+import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
 import { FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
@@ -28,6 +28,8 @@ import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helper
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
+
+  private listItemTargets = ['Field.ListItem.Label', 'Field.ListItem.Disabled', 'Field.ListItem.Tooltip', 'Field.ListItem.Information', 'Field.ListItem.HelpLink'];
 
   SelectTargets = SelectTargets;
   loadError = false;
@@ -48,7 +50,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     fixedOverflowWidgets: true,
   };
   filename = `formula${this.eavService.eavConfig.formId}.js`;
-  placeholder = defaultFormulaNow;
   focused = false;
   viewModel$: Observable<FormulaDesignerViewModel>;
 
@@ -144,7 +145,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
         this.formulaDesignerService.updateFormulaFromEditor(
-          designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false
+          designer.entityGuid, designer.fieldName, designer.target, this.listItemTargets.includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false
         );
       }
     }
@@ -339,6 +340,38 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               targetOptions.push(targetOption);
             }
           }
+          if (inputType === InputTypeConstants.WIPEntityPicker
+            || inputType === InputTypeConstants.WIPStringPicker
+            || inputType === InputTypeConstants.WIPNumberPicker) {
+            for (const target of this.listItemTargets) {
+              const targetOption: TargetOption = {
+                hasFormula: formulas.some(
+                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
+                ),
+                label: "List Item " + target.substring(target.lastIndexOf('.') + 1),
+                target: target as FormulaTarget,
+              };
+              targetOptions.push(targetOption);
+            }
+          }
+          /*
+          TODO: @SDV
+          for all picker types 
+          add formulas -> Field.ListItem.Label
+                          Field.ListItem.Tooltip
+                          Field.ListItem.Information
+                          Field.ListItem.HelpLink
+                          Field.ListItem.Disabled
+
+          Template for all new type formulas
+          v2((data, context, item) => {
+            return data.value;
+          });
+
+          old template for all of the rest
+
+          run formulas upon dropdowning the picker, upon each opening
+          */
 
           // targets for formulas
           const formulasForThisField = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
@@ -416,6 +449,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         [options, formula, dataSnippets, contextSnippets, typings, designer],
         [result, saving, isDeleted],
       ]) => {
+        const template = this.listItemTargets.includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
@@ -425,6 +459,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           dataSnippets,
           contextSnippets,
           typings,
+          template,
           result: result?.value,
           resultExists: result != null && !isDeleted,
           resultIsError: result?.isError ?? false,

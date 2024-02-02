@@ -26,6 +26,10 @@ export class StringFieldDataSource extends DataSourceBase {
       Value: dropdownOption.value as string,
       Text: dropdownOption.label,
     };
+    const settings = this.settings$.value;
+    entityInfo._tooltip = this.cleanStringFromWysiwyg(settings.ItemTooltip);
+    entityInfo._information = this.cleanStringFromWysiwyg(settings.ItemInformation);
+    entityInfo._helpLink = settings.ItemLink;
     return entityInfo;
   }
 }

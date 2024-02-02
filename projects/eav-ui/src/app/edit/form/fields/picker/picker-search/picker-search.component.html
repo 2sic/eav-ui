@@ -47,17 +47,24 @@
           @for (item of vm.filteredItems; track item) {
           <mat-option [value]="item.Value" class="eav-picker-option"
             [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)"
-            [tippy]="item.Tooltip" tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
+            [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
             <div class="eav-dropdown-option">
-              <span>{{ item.Text ? item.Text : item.Value }}</span>
-              @if (item.Information) {
-                <mat-icon [tippy]="item.Information">info</mat-icon>
-              }
+              <span class="eav-dropdown-option-text">{{ item.Text ? item.Text : item.Value }}</span>
+              <div class="eav-dropdown-option-info">
+                @if (item._helpLink) {
+                  <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
+                }
+                @if (item._information) {
+                  <mat-icon [tippy]="item._information" [tippyAllowHtml]="true" [tippyArrow]="true" appClickStopPropagation>info</mat-icon>
+                }
+              </div>
             </div>
           </mat-option>
           }
         </div>
       }
+
+      <!-- Tree Display Mode -->
       @if (vm.isTreeDisplayMode) {
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
           <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding>

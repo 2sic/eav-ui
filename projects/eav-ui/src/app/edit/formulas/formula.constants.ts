@@ -15,3 +15,9 @@ v2((data, context) => {
 });`;
 
 export const defaultFormulaNow = defaultFormulaV2;
+
+const listItemFormulaV2 = `v2((data, context, item) => {
+  return data.value;
+});`;
+
+export const listItemFormulaNow = listItemFormulaV2;

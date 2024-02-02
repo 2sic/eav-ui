@@ -19,8 +19,6 @@ export class PickerStateAdapter {
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
   public allowMultiValue$: Observable<boolean>;
-  public tooltip$: Observable<string>;
-  public information$: Observable<string>;
   public isDialog$: Observable<boolean>;
 
   public createEntityTypes: { label: string, guid: string }[] = [];
@@ -47,7 +45,7 @@ export class PickerStateAdapter {
       this.settings$.pipe(
         tap(settings => {
           // TODO: this looks bad - side-effect in observable
-          const types = settings.EntityType;
+          const types = settings.CreateTypes;
           this.createEntityTypes = types
             ? types
                 // use either \n or , as delimiter
@@ -67,8 +65,6 @@ export class PickerStateAdapter {
       ),
     );
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
-    this.tooltip$ = this.settings$.pipe(map(settings => settings.Tooltip), distinctUntilChanged());
-    this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());
     this.isDialog$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     this.shouldPickerListBeShown$ = combineLatest([
       this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedItems$

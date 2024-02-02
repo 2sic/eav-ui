@@ -41,7 +41,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableCreate: settings.EnableCreate,
-        EntityType: settings.EntityType,
+        CreateTypes: settings.CreateTypes,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -52,7 +52,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       map(([
         settings, controlStatus, freeTextMode, disableAddNew
       ]) => {
-        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue;
+        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
 
         const viewModel: EntityPickerDialogViewModel = {
           controlStatus,
