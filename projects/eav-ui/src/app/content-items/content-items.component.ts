@@ -117,7 +117,9 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
 
   private fetchColumns() {
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
-      const columnDefs = this.buildColumnDefs(columns);
+      // filter out ephemeral columns as they don't have data to show
+      const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
+      const columnDefs = this.buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
       if (this.gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
