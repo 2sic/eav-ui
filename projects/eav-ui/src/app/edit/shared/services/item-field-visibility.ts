@@ -1,5 +1,5 @@
 import { FieldSettings } from 'projects/edit-types';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
 export class ItemFieldVisibility {
@@ -19,7 +19,7 @@ export class ItemFieldVisibility {
         prev[f] = ruleIsShow;
         return prev;
       }, {} as Record<string, boolean>);
-    consoleLogAngular('ItemFieldVisibility', this.fields, 'default', this.defaultIsShow);
+    consoleLogEditForm('ItemFieldVisibility', this.fields, 'default', this.defaultIsShow);
   }
 
   hasRules(): boolean {

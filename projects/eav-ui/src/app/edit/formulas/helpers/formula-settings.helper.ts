@@ -1,6 +1,5 @@
 import { FieldSettings, FieldValue } from "projects/edit-types";
 import { InputType } from "../../../content-type-fields/models/input-type.model";
-import { consoleLogAngular } from "../../../shared/helpers/console-log-angular.helper";
 import { LanguageState } from "../../../shared/models/language-state";
 import { FieldLogicBase } from "../../form/shared/field-logic/field-logic-base";
 import { FieldLogicTools } from "../../form/shared/field-logic/field-logic-tools";
@@ -58,7 +57,7 @@ export class FormulaSettingsHelper {
 
     // update settings with respective FieldLogics
     const fixed = fieldLogic?.update(settingsCurrent, valueBefore, logicTools) ?? settingsCurrent;
-    // consoleLogAngular('fixed', JSON.parse(JSON.stringify(fixed)));
+    // consoleLogForm('fixed', JSON.parse(JSON.stringify(fixed)));
 
     return fixed;
   }

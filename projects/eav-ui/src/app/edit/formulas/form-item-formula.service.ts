@@ -63,7 +63,7 @@ export class FormItemFormulaService {
         // return true to make sure fieldProps are not updated yet
         return true;
       } else {
-        // consoleLogWebpack('Max value formula cycles reached');
+        // consoleLogEditForm('Max value formula cycles reached');
         return false;
       }
     }

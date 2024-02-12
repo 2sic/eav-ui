@@ -22,7 +22,7 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
-import { consoleLogAngular } from '../shared/helpers/console-log-angular.helper';
+import { consoleLogDev } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
@@ -137,7 +137,7 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
     this.gridApi$.value.setColumnDefs(columnDefs);
     if (filterModel) {
-      consoleLogAngular('Will try to apply filter:', filterModel);
+      consoleLogDev('Will try to apply filter:', filterModel);
       this.gridApi$.value.setFilterModel(filterModel);
     }
   }

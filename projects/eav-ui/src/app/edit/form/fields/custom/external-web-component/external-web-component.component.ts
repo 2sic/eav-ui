@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { consoleLogAngular } from '../../../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../../../shared/helpers/console-log-angular.helper';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -70,7 +70,7 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
   }
 
   private assetsLoaded() {
-    consoleLogAngular('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
+    consoleLogEditForm('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
     this.loading$.next(false);
   }
 }

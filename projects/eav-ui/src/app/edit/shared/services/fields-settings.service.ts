@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
@@ -127,7 +127,7 @@ export class FieldsSettingsService implements OnDestroy {
           mergeRaw.InputType = attribute.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          // consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
+          // consoleLogForm('merged', JSON.parse(JSON.stringify(settingsInitial)));
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
           const constantFieldParts: ConstantFieldParts = {
             logic,
@@ -155,7 +155,7 @@ export class FieldsSettingsService implements OnDestroy {
                 // Stop checking the current group if we found another group start/end
                 if (EmptyFieldHelpers.endsPreviousGroup(innerField.calculatedInputType.inputType)) return;
                 if (innerField.settingsInitial.VisibleDisabled == false) {
-                  consoleLogAngular('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
+                  consoleLogEditForm('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
                   groupField.settingsInitial.VisibleDisabled = false;
                   return;
                 }
@@ -271,7 +271,7 @@ export class FieldsSettingsService implements OnDestroy {
         }),
         filter(fieldsProps => !!fieldsProps),
       ).subscribe(fieldsProps => {
-        consoleLogAngular('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
+        consoleLogEditForm('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
         this.fieldsProps$.next(fieldsProps);
       })
     );

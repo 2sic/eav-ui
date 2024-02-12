@@ -3,7 +3,7 @@ import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewCon
 import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
-import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -94,7 +94,7 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
   }
 
   onUploadError(event: DropzoneType) {
-    consoleLogAngular('Dropzone upload error. Event:', event);
+    consoleLogEditForm('Dropzone upload error. Event:', event);
     alert(`Dropzone upload error. Event ${event}`);
     this.dropzoneRef.reset();
   }
@@ -106,10 +106,10 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();
       } else {
-        consoleLogAngular(`Upload failed because: ADAM reference doesn't exist`);
+        consoleLogEditForm(`Upload failed because: ADAM reference doesn't exist`);
       }
     } else {
-      consoleLogAngular(`Upload failed because: ${response.Error}`);
+      consoleLogEditForm(`Upload failed because: ${response.Error}`);
       alert(`Upload failed because: ${response.Error}`);
     }
     this.dropzoneRef.reset();

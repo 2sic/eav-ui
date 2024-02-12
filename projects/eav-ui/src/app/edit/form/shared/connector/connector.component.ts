@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
+import { consoleLogDev } from '../../../../shared/helpers/console-log-angular.helper';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
@@ -42,7 +42,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     const componentTag = history?.state?.componentTag || `field-${this.config.inputType}-dialog`;
-    consoleLogAngular('Connector created for:', componentTag);
+    consoleLogDev('Connector created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
       this.group,
@@ -66,7 +66,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    consoleLogAngular('Connector destroyed');
+    consoleLogDev('Connector destroyed');
     this.connectorCreator.destroy();
   }
 }
