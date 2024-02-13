@@ -11,11 +11,19 @@ export class StringFieldDataSource extends DataSourceBase {
     super(settings$, new EavLogger('StringFieldDataSource', false));
     this.loading$ = of(false);
 
-    const preloaded = this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged());
+    const preloaded = this.settings$.pipe(
+      map(settings => settings._options.map(option => this.stringEntityMapping(option))),
+      distinctUntilChanged()
+    );
+
+    // TODO: @STV - I don't think this combine latest makes sense,
+    // we probably never _wait_ for the getAll$ to be true - pls check/clean up
     this.data$ = combineLatest([
       this.getAll$.pipe(distinctUntilChanged()),
       preloaded,
-    ]).pipe(map(([_, preloaded]) => preloaded));
+    ]).pipe(
+      map(([_, preloaded]) => preloaded)
+    );
   }
 
   destroy(): void {
