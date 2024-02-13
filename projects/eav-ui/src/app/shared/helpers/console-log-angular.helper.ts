@@ -5,7 +5,8 @@ import { environment } from '../../../environments/environment';
  * 
  * When needed, add new keys for new "segments"
  */
-const enableLogging: Record<string, boolean> = {
+const enableLogging = {
+  always: true, // always active
   dev: false,
   store: false,
   editForm: false,
@@ -24,9 +25,14 @@ export function consoleLogEditForm(message?: any, ...optionalParams: any[]): voi
   consoleLogInternal('editForm', message, optionalParams)
 }
 
-/** Log to Dev - always active */
+/** Log to Dev */
 export function consoleLogDev(message?: any, ...optionalParams: any[]): void {
   consoleLogInternal('dev', message, optionalParams)
+}
+
+/** Log to Dev - always active */
+export function consoleLogAlways(message?: any, ...optionalParams: any[]): void {
+  consoleLogInternal('always', message, optionalParams)
 }
 
 
@@ -41,7 +47,8 @@ function consoleLogInternal(segment: keyof typeof enableLogging, message?: any, 
 
   if (environment.production) return;
 
-  console.groupCollapsed(`${segmentUpper} ${message}`, ...optionalParams);
+  const prefix = segment === 'always' ? '' : segmentUpper;
+  console.groupCollapsed(`${prefix} ${message}`, ...optionalParams);
   // tslint:disable-next-line:no-console
   console.trace();
   console.groupEnd();
