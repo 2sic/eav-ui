@@ -107,24 +107,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       next: ([data, loading, deleted]) => {
         const items = data.filter(item => !deleted.some(guid => guid === item.Value));
         if (loading) {
-          this.availableItems$.next([{
-            Text: this.translate.instant('Fields.Entity.Loading'),
-            Value: null,
-            _disableSelect: true,
-            _disableDelete: true,
-            _disableEdit: true,
-          }, ...items]);
+          this.availableItems$.next([this.placeholderItem('Fields.Entity.Loading'), ...items]);
         } else {
           this.availableItems$.next(items);
         }
       }, error: (error) => {
-        this.availableItems$.next([{
-          Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
-          Value: null,
-          _disableSelect: true,
-          _disableDelete: true,
-          _disableEdit: true,
-        }]);
+        this.availableItems$.next([this.placeholderItem('Fields.EntityQuery.QueryError', "-" + error.data)]);
       }
     }));
   }
@@ -157,14 +145,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.queryFieldDataSource.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
-      const errorItem: PickerItem = {
-        Text: this.translate.instant('Fields.EntityQuery.QueryNotDefined'),
-        Value: null,
-        _disableSelect: true,
-        _disableDelete: true,
-        _disableEdit: true,
-      };
-      this.availableItems$.next([errorItem]);
+      this.availableItems$.next([this.placeholderItem('Fields.EntityQuery.QueryNotDefined')]);
       return;
     }
 

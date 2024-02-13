@@ -27,7 +27,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
-    public translate: TranslateService,
+    translate: TranslateService,
     protected config: FieldConfigSet,
     protected group: FormGroup,
     public snackBar: MatSnackBar,
@@ -37,6 +37,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     logSpecs: EavLogger,
   ) {
     super(
+      translate,
       deleteCallback,
       logSpecs,
     );

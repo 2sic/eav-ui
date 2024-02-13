@@ -67,13 +67,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     ]).subscribe(([data, loading, deleted]) => {
       const items = data.filter(item => !deleted.some(guid => guid === item.Value));
       if (loading) {
-        this.availableItems$.next([{
-          Text: this.translate.instant('Fields.Entity.Loading'),
-          Value: null,
-          _disableSelect: true,
-          _disableDelete: true,
-          _disableEdit: true,
-        }, ...items]);
+        this.availableItems$.next([this.placeholderItem('Fields.Entity.Loading'), ...items]);
       } else {
         this.availableItems$.next(items);
       }
