@@ -44,7 +44,7 @@ import { StringPickerComponent } from '../../fields/string/string-picker/string-
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {

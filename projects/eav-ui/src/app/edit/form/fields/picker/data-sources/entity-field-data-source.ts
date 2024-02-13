@@ -7,7 +7,7 @@ import { QueryService } from "../../../../shared/services";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const debugThis = true;
+const logThis = false;
 
 export class EntityFieldDataSource extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
@@ -17,7 +17,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
   ) {
-    super(settings$, new EavLogger('EntityFieldDataSource', debugThis));
+    super(settings$, new EavLogger('EntityFieldDataSource', logThis));
 
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
@@ -166,8 +166,6 @@ export class EntityFieldDataSource extends DataSourceBase {
   }
 
   forceLoadGuids(entityGuids: string[]): void {
-    console.warn('2dm');
-    debugger;
     this.entityGuids$.next(entityGuids);
   }
 

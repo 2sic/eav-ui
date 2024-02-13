@@ -16,7 +16,7 @@ import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-s
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: InputTypeConstants.WIPStringPicker,

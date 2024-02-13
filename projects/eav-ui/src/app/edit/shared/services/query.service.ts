@@ -7,12 +7,12 @@ import { QueryStreams } from '../../form/fields/entity/entity-query/entity-query
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const debugThis = true;
+const logThis = false;
 
 @Injectable()
 export class QueryService extends ServiceBase {
   constructor(private http: HttpClient, private dnnContext: DnnContext, private context: Context) {
-    super(new EavLogger('QueryService', debugThis));
+    super(new EavLogger('QueryService', logThis));
   }
 
   getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {

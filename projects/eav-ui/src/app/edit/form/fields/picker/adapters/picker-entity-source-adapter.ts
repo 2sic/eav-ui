@@ -13,7 +13,7 @@ import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-ba
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
 
-const logThis = true;
+const logThis = false;
 
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   private entityFieldDataSource: EntityFieldDataSource;
