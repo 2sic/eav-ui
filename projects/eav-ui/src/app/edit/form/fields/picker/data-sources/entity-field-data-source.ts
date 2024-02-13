@@ -38,8 +38,8 @@ export class EntityFieldDataSource extends DataSourceBase {
     // Note that the backend should not be accessed till getAll$ is true
     // So the stream should be prefilled with an empty array
     // and shared
-    const allOfTypeLog = this.logger.rxTap('allOfType$');
-    const AllOfTypeGetEntitiesLog = this.logger.rxTap('allOfType$/getEntities');
+    const allOfTypeLog = this.logger.rxTap('allOfType$', { enabled: false });
+    const AllOfTypeGetEntitiesLog = this.logger.rxTap('allOfType$/getEntities', { enabled: false });
     const allOfType$ = combineLatest([
       typeName$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
@@ -69,7 +69,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     // Items to prefetch which were found in the cache
-    const prefetchInCacheLog = this.logger.rxTap('prefetchInCache$');
+    const prefetchInCacheLog = this.logger.rxTap('prefetchInCache$', { enabled: true });
     const prefetchInCache$ = this.prefetchEntityGuids$.pipe(
       prefetchInCacheLog.pipe(),
       distinctUntilChanged(),
@@ -83,7 +83,7 @@ export class EntityFieldDataSource extends DataSourceBase {
 
     // Check if anything should be prefetched but was missing
     // so we can retrieve it from the server
-    const prefetchNotFoundGuidsLog = this.logger.rxTap('prefetchNotFoundGuids$');
+    const prefetchNotFoundGuidsLog = this.logger.rxTap('prefetchNotFoundGuids$', { enabled: false });
     const prefetchNotFoundGuids$ = combineLatest([prefetchInCache$, this.prefetchEntityGuids$]).pipe(
       prefetchNotFoundGuidsLog.pipe(),
       // return guids from prefetchEntityGuids that are not in prefetch
@@ -140,7 +140,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     // Create the main data$ stream merging all, overrides and prefetches
-    const data$log = this.logger.rxTap('data$');
+    const data$log = this.logger.rxTap('data$', { enabled: false });
     this.data$ = combineLatest([prefetchInCache$, allOfType$, overrides$]).pipe(
       data$log.pipe(),
       map(([prefetch, all, overrides]) => {
@@ -165,7 +165,9 @@ export class EntityFieldDataSource extends DataSourceBase {
     this.contentTypeName$.next(contentTypeName);
   }
 
-  entityGuids(entityGuids: string[]): void {
+  forceLoadGuids(entityGuids: string[]): void {
+    console.warn('2dm');
+    debugger;
     this.entityGuids$.next(entityGuids);
   }
 

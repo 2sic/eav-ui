@@ -33,7 +33,7 @@ export abstract class DataSourceBase extends ServiceBase {
     this.getAll$.next(true);
   }
 
-  entityGuids(entityGuids: string[]): void {
+  forceLoadGuids(entityGuids: string[]): void {
     this.entityGuids$.next(entityGuids);
   }
 

@@ -137,8 +137,8 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.queryFieldDataSource.prefetchEntityGuids(missingData);
   }
 
-  setOverrideData(missingData: string[]): void {
-    this.queryFieldDataSource.entityGuids(missingData);
+  forceReloadData(missingData: string[]): void {
+    this.queryFieldDataSource.forceLoadGuids(missingData);
   }
 
   fetchItems(): void {

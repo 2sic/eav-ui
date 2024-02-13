@@ -34,7 +34,7 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
 
   abstract setPrefetchData(missingData: string[]): void;
 
-  abstract setOverrideData(missingData: string[]): void;
+  abstract forceReloadData(missingData: string[]): void;
 
   abstract deleteItem(props: DeleteEntityProps): void;
 

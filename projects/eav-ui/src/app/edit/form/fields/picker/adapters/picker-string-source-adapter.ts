@@ -66,7 +66,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     // should never be needed as we have synchronously all data in settings
   }
 
-  setOverrideData(missingData: string[]): void {
+  forceReloadData(missingData: string[]): void {
     // should never be needed as we can't add new data
   }
 

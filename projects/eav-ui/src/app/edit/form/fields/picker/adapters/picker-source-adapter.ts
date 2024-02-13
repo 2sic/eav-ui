@@ -11,7 +11,7 @@ export interface PickerSourceAdapter {
   destroy(): void;
   getDataFromSource(): Observable<PickerItem[]>;
   setPrefetchData(missingData: string[]): void;
-  setOverrideData(missingData: string[]): void;
+  forceReloadData(missingData: string[]): void;
   deleteItem(props: DeleteEntityProps): void;
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
   fetchItems(): void;
