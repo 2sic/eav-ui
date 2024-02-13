@@ -1,4 +1,5 @@
 import { consoleLogAlways } from '../helpers/console-log-angular.helper';
+import { RxTapDebug } from './rx-debug-dbg';
 
 export class EavLogger {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
@@ -16,5 +17,9 @@ export class EavLogger {
 
   qAdd(): (message: string, ...args: any[]) => void {
     return this.add.bind(this);
+  }
+
+  rxTap(name: string) {
+    return new RxTapDebug(this, name);
   }
 }
