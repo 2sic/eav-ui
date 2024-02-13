@@ -3,9 +3,10 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldSettings } from 'projects/edit-types';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
-import { Title } from '@angular/platform-browser';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-export class DataSourceBase {
+export abstract class DataSourceBase extends ServiceBase {
   public data$: Observable<PickerItem[]>;
   public loading$: Observable<boolean>;
 
@@ -16,7 +17,10 @@ export class DataSourceBase {
 
   constructor(
     protected settings$: BehaviorSubject<FieldSettings>,
-  ) { }
+    logSpecs: EavLogger,
+  ) {
+    super(logSpecs);
+  }
 
   destroy(): void { 
     this.prefetchEntityGuids$.complete();

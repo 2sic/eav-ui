@@ -6,6 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity, QueryStreams } from "../../entity/entity-query/entity-query.models";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
@@ -21,7 +22,7 @@ export class QueryFieldDataSource extends DataSourceBase {
     private fieldName: string,
     private appId: string,
   ) {
-    super(settings$);
+    super(settings$, new EavLogger('QueryFieldDataSource', false ));
 
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
