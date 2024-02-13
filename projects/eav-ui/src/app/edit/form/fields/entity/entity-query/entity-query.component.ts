@@ -45,10 +45,8 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (!this.isStringQuery) {
-      this.createPickerAdapters();
-      this.createViewModel();
-    }
+    if (!this.isStringQuery)
+      this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {
@@ -60,7 +58,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     super.ngOnDestroy();
   }
 
-  protected createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerEntityStateAdapter(
       this.control,
       this.config,

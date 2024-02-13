@@ -47,9 +47,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-    this.createViewModel();
+    this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {

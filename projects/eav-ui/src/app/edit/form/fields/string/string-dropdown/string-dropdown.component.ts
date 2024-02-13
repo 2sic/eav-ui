@@ -45,9 +45,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-    this.createViewModel();
+    this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {

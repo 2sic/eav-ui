@@ -47,10 +47,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (this.isStringQuery) {
-      this.createPickerAdapters();
-      this.createViewModel();
-    }
+    if (this.isStringQuery)
+      this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {
@@ -62,7 +60,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     super.ngOnDestroy();
   }
 
-  protected createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerStringStateAdapter(
       this.control,
       this.config,

@@ -53,9 +53,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-    this.createViewModel();
+    this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {
