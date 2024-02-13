@@ -11,11 +11,15 @@ import { FieldSettings } from "projects/edit-types";
 import { EntityService, EavService, EditRoutingService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   protected contentTypeMask: FieldMask;
   protected contentType: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
+
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
@@ -29,13 +33,17 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     public snackBar: MatSnackBar,
     public control: AbstractControl,
     // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,) {
+    public deleteCallback: (props: DeleteEntityProps) => void,
+    logSpecs: EavLogger,
+  ) {
     super(
-      deleteCallback
+      deleteCallback,
+      logSpecs,
     );
   }
 
-  init() {
+  init(callerName: string): void {
+    super.init(callerName);
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
     this.subscriptions.add(
       this.settings$.pipe(

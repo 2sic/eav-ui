@@ -14,6 +14,9 @@ import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-s
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.WIPStringPicker,
@@ -44,6 +47,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       entityCacheService,
       stringQueryCacheService,
     );
+    this.log = new EavLogger('StringPickerComponent', logThis);
     StringPickerLogic.importMe();
   }
 
@@ -121,7 +125,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     }
     
     state.init();
-    source.init();
+    source.init('StringPickerComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

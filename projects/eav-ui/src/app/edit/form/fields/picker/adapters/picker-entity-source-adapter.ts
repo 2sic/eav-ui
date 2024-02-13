@@ -10,6 +10,9 @@ import { DeleteEntityProps } from "../picker.models";
 import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   private entityFieldDataSource: EntityFieldDataSource;
@@ -47,11 +50,13 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
       control,
       // fetchAvailableEntities,
       deleteCallback,
+      new EavLogger('PickerEntitySourceAdapter', logThis),
     );
   }
 
-  init(): void {
-    super.init();
+  init(callerName: string): void {
+    this.logger.add('init');
+    super.init(callerName);
 
     this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource(this.settings$);
 

@@ -91,7 +91,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     );
 
     state.init();
-    source.init();
+    source.init('StringDropdownQueryComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

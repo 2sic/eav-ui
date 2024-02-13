@@ -6,7 +6,7 @@ export interface PickerSourceAdapter {
   availableItems$: BehaviorSubject<PickerItem[]>;
   editEntityGuid$: BehaviorSubject<string>;
 
-  init(): void;
+  init(callerName: string): void;
   onAfterViewInit(): void;
   destroy(): void;
   getDataFromSource(): Observable<PickerItem[]>;

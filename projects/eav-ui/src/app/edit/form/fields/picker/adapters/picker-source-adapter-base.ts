@@ -1,26 +1,31 @@
 import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DeleteEntityProps } from '../picker.models';
 import { PickerSourceAdapter } from './picker-source-adapter';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
+export abstract class PickerSourceAdapterBase extends ServiceBase implements PickerSourceAdapter {
   public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
-  protected subscriptions = new Subscription();
-
   constructor(
     public deleteCallback: (props: DeleteEntityProps) => void,
-  ) { }
+    logSpecs: EavLogger,
+  ) {
+    super(logSpecs);
+  }
 
-  init() { }
+  init(callerName: string) {
+    this.logger.add(`init(${callerName})`);
+  }
 
   onAfterViewInit(): void { }
 
   destroy() {
     this.availableItems$.complete();
     this.editEntityGuid$.complete();
-    this.subscriptions.unsubscribe();
+    super.destroy();
   }
 
   getDataFromSource(): Observable<PickerItem[]> { return null; }

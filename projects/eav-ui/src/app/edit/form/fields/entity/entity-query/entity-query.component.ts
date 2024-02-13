@@ -89,7 +89,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     );
 
     state.init();
-    source.init();
+    source.init('EntityQueryComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

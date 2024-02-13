@@ -85,7 +85,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     );
 
     state.init();
-    source.init();
+    source.init('StringDropdownComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

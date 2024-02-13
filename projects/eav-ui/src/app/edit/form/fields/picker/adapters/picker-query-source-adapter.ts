@@ -12,6 +12,9 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
@@ -60,11 +63,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       control,
       // fetchAvailableEntities,
       deleteCallback,
+      new EavLogger('PickerQuerySourceAdapter', logThis),
     );
   }
 
-  init(): void {
-    super.init();
+  init(callerName: string): void {
+    super.init(callerName);
 
     this.subscriptions.add(
       this.settings$.pipe(

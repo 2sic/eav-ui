@@ -13,6 +13,9 @@ import { PickerData } from '../../picker/picker-data';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.WIPEntityPicker,
@@ -41,6 +44,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       entityCacheService,
       stringQueryCacheService,
     );
+    this.log = new EavLogger('EntityPickerComponent', logThis);
     EntityPickerLogic.importMe();
   }
 
@@ -60,6 +64,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
   }
 
   private createPickerAdapters(): void {
+    this.log.add('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
     const state = this.stateFactory.createPickerEntityStateAdapter(
@@ -75,6 +80,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     );
 
     if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) {
+      this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
         this.fieldsSettingsService,
@@ -88,6 +94,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
     } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceQuery) {
+      this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
@@ -105,7 +112,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     }
 
     state.init();
-    source.init();
+    source.init('EntityPickerComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

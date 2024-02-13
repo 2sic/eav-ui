@@ -10,6 +10,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -38,6 +41,8 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       entityCacheService,
       stringQueryCacheService,
     );
+// console.warn('2dm');
+    this.log = new EavLogger('EntityDefaultComponent', logThis);
     EntityDefaultLogic.importMe();
   }
 
@@ -57,6 +62,15 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   private createPickerAdapters(): void {
+    this.log.add('createPickerAdapters');
+
+    // if (this.config.pickerData) {
+    //   console.warn('2dm config');
+    //   this.log.add('createPickerAdapters: pickerData already exists, will reuse');
+    //   this.pickerData = this.config.pickerData;
+    //   return;
+    // }
+
     const state = this.stateFactory.createPickerEntityStateAdapter(
       this.control,
       this.config,
@@ -83,11 +97,15 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     );
 
     state.init();
-    source.init();
+    source.init('EntityDefaultComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,
       this.translate,
     );
+
+    // console.warn('2dm config');
+    // this.log.add('createPickerAdapters: config', this.config);
+    // this.config.pickerData = this.pickerData;
   }
 }
