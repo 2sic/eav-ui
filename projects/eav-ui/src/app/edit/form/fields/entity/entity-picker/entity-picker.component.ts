@@ -63,7 +63,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 

@@ -46,6 +46,26 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.refreshOnChildClosed();
   }
 
+  initAdaptersAndViewModel(): void {
+    // First, create the Picker Adapter or reuse
+    // The reuse is a bit messy - reason is that there are two components (preview/dialog)
+    // which have the same services, and if one is created first, the service should be shared
+    if (this.config.pickerData) {
+      console.warn('2dm config');
+      this.log.add('createPickerAdapters: pickerData already exists, will reuse');
+      this.pickerData = this.config.pickerData;
+    } else {
+      // this method is overridden in each variant as of now
+      this.createPickerAdapters();
+      console.warn('2dm config');
+      this.log.add('createPickerAdapters: config', this.config);
+      this.config.pickerData = this.pickerData;
+    }
+
+    // Now create the View model
+    this.createViewModel();
+  }
+
   ngAfterViewInit(): void {
     this.pickerData.source.onAfterViewInit();
   }
@@ -54,6 +74,11 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.pickerData.destroy();
 
     super.ngOnDestroy();
+  }
+
+  /** Create the Picker Adapter - MUST be overridden in each inheriting class */
+  protected createPickerAdapters(): void {
+    throw new Error('Method not implemented. Must be overridden by inheriting class.');
   }
 
   createViewModel() {

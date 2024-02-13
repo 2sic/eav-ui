@@ -58,7 +58,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerStringStateAdapter(
       this.control,
       this.config,

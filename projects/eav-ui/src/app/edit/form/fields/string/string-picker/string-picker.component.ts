@@ -66,7 +66,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
     const state = this.stateFactory.createPickerStringStateAdapter(

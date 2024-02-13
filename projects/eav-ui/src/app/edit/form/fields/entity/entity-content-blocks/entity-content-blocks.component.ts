@@ -60,7 +60,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerStateAdapter(
       this.control,
       this.config,

@@ -41,16 +41,13 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       entityCacheService,
       stringQueryCacheService,
     );
-// console.warn('2dm');
     this.log = new EavLogger('EntityDefaultComponent', logThis);
     EntityDefaultLogic.importMe();
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-    this.createViewModel();
+    this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {
@@ -61,15 +58,9 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
 
-    // if (this.config.pickerData) {
-    //   console.warn('2dm config');
-    //   this.log.add('createPickerAdapters: pickerData already exists, will reuse');
-    //   this.pickerData = this.config.pickerData;
-    //   return;
-    // }
 
     const state = this.stateFactory.createPickerEntityStateAdapter(
       this.control,
@@ -104,8 +95,5 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.translate,
     );
 
-    // console.warn('2dm config');
-    // this.log.add('createPickerAdapters: config', this.config);
-    // this.config.pickerData = this.pickerData;
   }
 }
