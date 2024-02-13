@@ -11,6 +11,7 @@ import { EntityFieldDataSource } from "../data-sources/entity-field-data-source"
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { placeholderPickerItem } from './picker-source-adapter-base';
 
 const logThis = true;
 
@@ -67,7 +68,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     ]).subscribe(([data, loading, deleted]) => {
       const items = data.filter(item => !deleted.some(guid => guid === item.Value));
       if (loading) {
-        this.availableItems$.next([this.placeholderItem('Fields.Entity.Loading'), ...items]);
+        this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]);
       } else {
         this.availableItems$.next(items);
       }

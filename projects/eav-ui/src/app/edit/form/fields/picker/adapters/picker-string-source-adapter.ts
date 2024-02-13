@@ -27,7 +27,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
-    translate: TranslateService,
+    protected translate: TranslateService,
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
     protected config: FieldConfigSet,
     protected group: FormGroup,
@@ -37,7 +37,6 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
-      translate,
       deleteCallback,
       new EavLogger('PickerStringSourceAdapter', logThis),
     );

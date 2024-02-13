@@ -13,6 +13,7 @@ import { FieldDataSourceFactoryService } from "../factories/field-data-source-fa
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { placeholderPickerItem } from './picker-source-adapter-base';
 
 const logThis = false;
 
@@ -107,12 +108,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       next: ([data, loading, deleted]) => {
         const items = data.filter(item => !deleted.some(guid => guid === item.Value));
         if (loading) {
-          this.availableItems$.next([this.placeholderItem('Fields.Entity.Loading'), ...items]);
+          this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]);
         } else {
           this.availableItems$.next(items);
         }
       }, error: (error) => {
-        this.availableItems$.next([this.placeholderItem('Fields.EntityQuery.QueryError', "-" + error.data)]);
+        this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
       }
     }));
   }
@@ -145,7 +146,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.queryFieldDataSource.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
-      this.availableItems$.next([this.placeholderItem('Fields.EntityQuery.QueryNotDefined')]);
+      this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryNotDefined')]);
       return;
     }
 

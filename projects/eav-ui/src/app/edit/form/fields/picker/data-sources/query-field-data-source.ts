@@ -7,6 +7,7 @@ import { QueryEntity, QueryStreams } from "../../entity/entity-query/entity-quer
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 
 export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
@@ -131,26 +132,11 @@ export class QueryFieldDataSource extends DataSourceBase {
   }
 
   transformData(data: QueryStreams, streamName: string): PickerItem[] {
-    if (!data) {
-      const errorItem: PickerItem = {
-        Text: this.translate.instant('Fields.EntityQuery.QueryError'),
-        Value: null,
-        _disableSelect: true,
-        _disableDelete: true,
-        _disableEdit: true,
-      };
-      return [errorItem];
-    }
-    else if (!data[streamName]) {
-      const errorItem: PickerItem = {
-        Text: this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName,
-        Value: null,
-        _disableSelect: true,
-        _disableDelete: true,
-        _disableEdit: true,
-      };
-      return [errorItem];
-    }
+    if (!data)
+      return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
+    if (!data[streamName])
+      return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryStreamNotFound', ' ' + streamName)];
+    
     const items: PickerItem[] = data[streamName].map(entity => this.fillEntityInfoMoreFields(entity));
     return this.setDisableEdit(items);
   }

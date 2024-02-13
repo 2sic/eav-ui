@@ -11,7 +11,6 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
   constructor(
-    public translate: TranslateService,
     public deleteCallback: (props: DeleteEntityProps) => void,
     logSpecs: EavLogger,
   ) {
@@ -41,16 +40,16 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   abstract editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
 
   abstract fetchItems(): void;
+}
 
-  /** Generate a placeholder item to show in the menu in case of error or loading */
-  placeholderItem(i18nLabel: string, suffix?: string): PickerItem {
-    const item: PickerItem = {
-      Text: this.translate.instant(i18nLabel) + (suffix ?? ''),
-      Value: null,
-      _disableSelect: true,
-      _disableDelete: true,
-      _disableEdit: true,
-    };
-    return item;
-  }
+/** Generate a placeholder item to show in the menu in case of error or loading */
+export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
+  const item: PickerItem = {
+    Text: translate.instant(i18nLabel) + (suffix ?? ''),
+    Value: null,
+    _disableSelect: true,
+    _disableDelete: true,
+    _disableEdit: true,
+  };
+  return item;
 }

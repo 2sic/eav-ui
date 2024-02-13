@@ -13,8 +13,6 @@ import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = false;
-
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   protected contentTypeMask: FieldMask;
   protected contentType: string;
@@ -27,7 +25,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
-    translate: TranslateService,
+    protected translate: TranslateService,
     protected config: FieldConfigSet,
     protected group: FormGroup,
     public snackBar: MatSnackBar,
@@ -37,7 +35,6 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     logSpecs: EavLogger,
   ) {
     super(
-      translate,
       deleteCallback,
       logSpecs,
     );
