@@ -21,91 +21,100 @@ export class EntityFieldDataSource extends DataSourceBase {
 
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
-    // Note that logging will automatically be disabled if debugThis is false
-    const tn$log = this.logger.rxTap('typeName$');
+    // Note that logging is disabled if debugThis (above) is false or enabled: false
+    const typeNameLog = this.logger.rxTap('typeName$', { enabled: false });
 
-    // List of type names (comma separated) to prefetch
+    // List of type names (comma separated) to prefetch.
+    // This rarely changes, except when the name comes from a `[...]` token
     const typeName$ = this.contentTypeName$.pipe(
-      tn$log.pipe(),
+      typeNameLog.pipe(),
       distinctUntilChanged(),
-      tn$log.distinctUntilChanged(),
+      typeNameLog.distinctUntilChanged(),
       shareReplay(1),
-      tn$log.shareReplay(),
+      typeNameLog.shareReplay(),
     );
 
     // All the data which was retrieved from the server
     // Note that the backend should not be accessed till getAll$ is true
     // So the stream should be prefilled with an empty array
     // and shared
-    const all$log = this.logger.rxTap('all$');
-    const all$getEntities$log = this.logger.rxTap('all$/getEntities');
-    const all$ = combineLatest([
+    const allOfTypeLog = this.logger.rxTap('allOfType$');
+    const AllOfTypeGetEntitiesLog = this.logger.rxTap('allOfType$/getEntities');
+    const allOfType$ = combineLatest([
       typeName$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
     ]).pipe(
-      all$log.pipe(),
+      allOfTypeLog.pipe(),
       mergeMap(([typeName, _]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: [],
         fields: this.calculateMoreFields(),
         log: 'all$'
       }).pipe(
-        all$getEntities$log.pipe(),
+        AllOfTypeGetEntitiesLog.pipe(),
         map(data => {
           const items: PickerItem[] = data["Default"].map(entity => {
             return this.queryEntityMapping(entity)
           });
           return { data: items, loading: false };
         }),
-        all$getEntities$log.map('queryEntityMapping'),
+        AllOfTypeGetEntitiesLog.map('queryEntityMapping'),
         startWith({ data: [] as PickerItem[], loading: true }),
-        all$getEntities$log.read(),
+        AllOfTypeGetEntitiesLog.read(),
       )),
       startWith({ data: [] as PickerItem[], loading: false }),
-      all$log.read(),
+      allOfTypeLog.read(),
       shareReplay(1),
-      all$log.shareReplay(),
+      allOfTypeLog.shareReplay(),
     );
 
-    // List of guids to prefetch
-    const prefetch$log = this.logger.rxTap('prefetchInCache$');
+    // Items to prefetch which were found in the cache
+    const prefetchInCacheLog = this.logger.rxTap('prefetchInCache$');
     const prefetchInCache$ = this.prefetchEntityGuids$.pipe(
-      prefetch$log.pipe(),
+      prefetchInCacheLog.pipe(),
       distinctUntilChanged(),
       filter(entityGuids => entityGuids?.length > 0),
       mergeMap(entityGuids => this.entityCacheService.getEntities$(entityGuids)),
       startWith([] as PickerItem[]),
-      prefetch$log.read(),
+      prefetchInCacheLog.read(),
       shareReplay(1),
-      prefetch$log.shareReplay(),
+      prefetchInCacheLog.shareReplay(),
     );
 
     // Check if anything should be prefetched but was missing
     // so we can retrieve it from the server
-    const prefetchNotInCache$log = this.logger.rxTap('prefetchNotInCache$');
-    const prefetchNotInCache = combineLatest([prefetchInCache$, this.prefetchEntityGuids$]).pipe(
-      prefetchNotInCache$log.pipe(),
+    const prefetchNotFoundGuidsLog = this.logger.rxTap('prefetchNotFoundGuids$');
+    const prefetchNotFoundGuids$ = combineLatest([prefetchInCache$, this.prefetchEntityGuids$]).pipe(
+      prefetchNotFoundGuidsLog.pipe(),
       // return guids from prefetchEntityGuids that are not in prefetch
       map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
     );
 
-    const combinedGuids$log = this.logger.rxTap('combinedGuids$');
-    const combinedGuids$ = combineLatest([prefetchNotInCache, this.entityGuids$]).pipe(
-      combinedGuids$log.pipe(),
+    // These GUIDs should be force-loaded from the server
+    // This is a combination of the missing prefetches and the selected entityGuids
+    // TODO: this isn't quite right
+    // - atm it always loads all selected items, but it should only do this if they may have changed
+    // - to fix this, we need to know if the selected items have changed and probably place that in another list
+    const guidsToForceLoadLog = this.logger.rxTap('guidsToForceLoad$');
+    const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.entityGuids$]).pipe(
+      guidsToForceLoadLog.pipe(),
       map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
       filter(guids => guids?.length > 0),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
-      combinedGuids$log.distinctUntilChanged(),
+      guidsToForceLoadLog.distinctUntilChanged(),
     );
 
-    const overrides$log = this.logger.rxTap('overrides$');
-    const overrides$ = combineLatest([typeName$, combinedGuids$]).pipe(
-      overrides$log.pipe(),
+    // Load specific items as overrides
+    // to ensure that we always use the latest copy
+    // TODO: Not quite right yet - see guidsToForceLoad$
+    const overridesLog = this.logger.rxTap('overrides$');
+    const overrides$ = combineLatest([typeName$, guidsToForceLoad$]).pipe(
+      overridesLog.pipe(),
       mergeMap(([typeName, guids]) => queryService.getEntities({
         contentTypes: [typeName],
         itemIds: guids,
         fields: this.calculateMoreFields(),
-        log: 'overrides$'
+        log: overridesLog.name,
       }).pipe(
           map(data => {
             const items: PickerItem[] = data["Default"].map(entity => {
@@ -118,23 +127,27 @@ export class EntityFieldDataSource extends DataSourceBase {
       ),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
-      overrides$log.shareReplay(),
+      overridesLog.shareReplay(),
     );
 
-    const loading$log = this.logger.rxTap('loading$');
-    this.loading$ = combineLatest([all$, overrides$]).pipe(
+    // Create a loading$ stream to indicate if we are loading
+    const loading$log = this.logger.rxTap('loading$', { enabled: false });
+    this.loading$ = combineLatest([allOfType$, overrides$]).pipe(
       loading$log.pipe(),
       map(([all, overrides]) => all.loading || overrides.loading),
       distinctUntilChanged(),
       loading$log.distinctUntilChanged(),
     );
 
+    // Create the main data$ stream merging all, overrides and prefetches
     const data$log = this.logger.rxTap('data$');
-    this.data$ = combineLatest([all$, overrides$, prefetchInCache$]).pipe(
+    this.data$ = combineLatest([prefetchInCache$, allOfType$, overrides$]).pipe(
       data$log.pipe(),
-      map(([all, overrides, prefetch]) => {
-        // data always takes the last unique value in the array (should be most recent)
-        const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.Value, item])).values()];
+      map(([prefetch, all, overrides]) => {
+        // merge and take the last unique value in the array (should be most recent)
+        // it uses the Map and the `Value` property to ensure uniqueness
+        const combined = [...prefetch, ...all.data, ...overrides.data];
+        const data = [...new Map(combined.map(item => [item.Value, item])).values()];
         return data;
       }),
       shareReplay(1),

@@ -11,7 +11,7 @@ export class RxTapDebug {
    * @param name name of the stream we're logging
    * @param jsonify will JSON.stringify the data if true - this is much faster as the browser doesn't block the debugger as much 
    */
-  constructor(private logger: EavLogger, private name: string, private jsonify: boolean = true) {}
+  constructor(private logger: EavLogger, public name: string, private enabled = true, private jsonify: boolean = true) {}
 
   /**
    * Generate a rxjs tap function that logs the data with the current context
@@ -21,10 +21,13 @@ export class RxTapDebug {
    * @param message 
    * @returns 
    */
-  private generateFn<T>(key: string, subName?: unknown, message?: string) {
+  private generateFn<T>(key: string, subName?: unknown, message?: string): (source: Observable<T>) => Observable<T> {
+    // if not enabled, just return the original observable
+    if (!this.enabled || !this.logger.enabled) return (source: Observable<T>) => source;
+
     const label = `${this.name}/${key}${subName ? `-${subName}` : ''}`;
-    // create a counter for this function
     let counter = 0;
+    
     // return a function that takes an observable and returns an observable
     // and logs the data, and counts every access
     return (source: Observable<T>) =>

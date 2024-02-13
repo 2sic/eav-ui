@@ -19,7 +19,7 @@ export class EavLogger {
     return this.add.bind(this);
   }
 
-  rxTap(name: string) {
-    return new RxTapDebug(this, name);
+  rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }) {
+    return new RxTapDebug(this, name, enabled, jsonify);
   }
 }
