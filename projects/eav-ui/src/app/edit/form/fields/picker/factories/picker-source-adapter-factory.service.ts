@@ -12,9 +12,13 @@ import { PickerQuerySourceAdapter } from '../adapters/picker-query-source-adapte
 import { PickerEntitySourceAdapter } from '../adapters/picker-entity-source-adapter';
 import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
 import { PickerStringSourceAdapter } from '../adapters/picker-string-source-adapter';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 @Injectable()
-export class PickerSourceAdapterFactoryService {
+export class PickerSourceAdapterFactoryService extends ServiceBase {
   constructor(
     private eavService: EavService,
     private entityCacheService: EntityCacheService,
@@ -24,7 +28,9 @@ export class PickerSourceAdapterFactoryService {
     private stringQueryCacheService: StringQueryCacheService,
     private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
     private snackBar: MatSnackBar,
-  ) { }
+  ) {
+    super(new EavLogger('PickerSourceAdapterFactoryService', logThis));
+  }
 
   createPickerQuerySourceAdapter(
     error$: BehaviorSubject<string>,
@@ -38,6 +44,7 @@ export class PickerSourceAdapterFactoryService {
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerQuerySourceAdapter {
+    this.logger.add('createPickerQuerySourceAdapter');
     const pickerQuerySourceAdapter = new PickerQuerySourceAdapter(
       error$,
       disableAddNew$,
@@ -63,9 +70,9 @@ export class PickerSourceAdapterFactoryService {
     return pickerQuerySourceAdapter;
   }
 
-  initQuery(pickerQuerySourceAdapter: PickerQuerySourceAdapter): void {
-    pickerQuerySourceAdapter.init();
-  }
+  // initQuery(pickerQuerySourceAdapter: PickerQuerySourceAdapter): void {
+  //   pickerQuerySourceAdapter.init();
+  // }
 
   createPickerEntitySourceAdapter(
     disableAddNew$: BehaviorSubject<boolean>,
@@ -77,6 +84,7 @@ export class PickerSourceAdapterFactoryService {
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerEntitySourceAdapter {
+    this.logger.add('createPickerEntitySourceAdapter');
     const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
       disableAddNew$,
       fieldsSettingsService,
@@ -98,9 +106,9 @@ export class PickerSourceAdapterFactoryService {
     return pickerEntitySourceAdapter;
   }
 
-  initEntity(pickerEntitySourceAdapter: PickerEntitySourceAdapter): void {
-    pickerEntitySourceAdapter.init();
-  }
+  // initEntity(pickerEntitySourceAdapter: PickerEntitySourceAdapter): void {
+  //   pickerEntitySourceAdapter.init();
+  // }
 
   createPickerStringSourceAdapter(
     disableAddNew$: BehaviorSubject<boolean>,
@@ -112,6 +120,7 @@ export class PickerSourceAdapterFactoryService {
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerStringSourceAdapter {
+    this.logger.add('createPickerStringSourceAdapter');
     const pickerStringSourceAdapter = new PickerStringSourceAdapter(
       disableAddNew$,
       fieldsSettingsService,
@@ -133,7 +142,7 @@ export class PickerSourceAdapterFactoryService {
     return pickerStringSourceAdapter;
   }
 
-  initString(pickerStringSourceAdapter: PickerStringSourceAdapter): void {
-    pickerStringSourceAdapter.init();
-  }
+  // initString(pickerStringSourceAdapter: PickerStringSourceAdapter): void {
+  //   pickerStringSourceAdapter.init();
+  // }
 }

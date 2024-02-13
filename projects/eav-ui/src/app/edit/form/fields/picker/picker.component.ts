@@ -7,6 +7,9 @@ import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './picker.models';
 import { PickerData } from './picker-data';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
@@ -22,6 +25,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   isString: boolean;
 
   viewModel$: Observable<PickerViewModel>;
+
+  protected log: EavLogger = new EavLogger('PickerComponent', logThis);
 
   constructor(
     eavService: EavService,
