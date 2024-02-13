@@ -61,18 +61,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
 
-
-    const state = this.stateFactory.createPickerEntityStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    const state = this.stateFactory.createPickerEntityStateAdapter(this);
 
     const source = this.sourceFactory.createPickerEntitySourceAdapter(
       state.disableAddNew$,

@@ -59,17 +59,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerEntityStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    const state = this.stateFactory.createPickerEntityStateAdapter(this);
 
     const source = this.sourceFactory.createPickerQuerySourceAdapter(
       state.error$,

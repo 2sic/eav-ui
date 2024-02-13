@@ -33,7 +33,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     fieldsSettingsService: FieldsSettingsService,
     protected entityService: EntityService,
     public translate: TranslateService,
-    protected editRoutingService: EditRoutingService,
+    public editRoutingService: EditRoutingService,
     public entityCacheService: EntityCacheService,
     public stringQueryCacheService: StringQueryCacheService,
   ) {
@@ -42,22 +42,23 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   ngOnInit(): void {
     super.ngOnInit();
-
     this.refreshOnChildClosed();
   }
 
+  /**
+   * Initialize the Picker Adapter and View Model
+   * If the PickerData already exists, it will be reused
+   */
   initAdaptersAndViewModel(): void {
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
-    // which have the same services, and if one is created first, the service should be shared
+    // which have the same services, and if one is created first, the pickerData should be shared
     if (this.config.pickerData) {
-      console.warn('2dm config');
       this.log.add('createPickerAdapters: pickerData already exists, will reuse');
       this.pickerData = this.config.pickerData;
     } else {
       // this method is overridden in each variant as of now
       this.createPickerAdapters();
-      console.warn('2dm config');
       this.log.add('createPickerAdapters: config', this.config);
       this.config.pickerData = this.pickerData;
     }
@@ -83,14 +84,15 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   createViewModel() {
     this.viewModel$ = combineLatest([this.pickerData.state.allowMultiValue$])
-      .pipe(map(([allowMultiValue]) => {
-        // allowMultiValue is used to determine if we even use control with preview and dialog
-        const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
-        const viewModel: PickerViewModel = {
-          showPreview,
-        };
-        return viewModel;
-      }),
+      .pipe(
+        map(([allowMultiValue]) => {
+          // allowMultiValue is used to determine if we even use control with preview and dialog
+          const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
+          const viewModel: PickerViewModel = {
+            showPreview,
+          };
+          return viewModel;
+        }),
       );
   }
 

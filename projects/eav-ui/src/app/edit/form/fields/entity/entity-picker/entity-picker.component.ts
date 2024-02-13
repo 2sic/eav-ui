@@ -65,17 +65,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log.add('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    const state = this.stateFactory.createPickerEntityStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    const state = this.stateFactory.createPickerEntityStateAdapter(this);
 
     if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
