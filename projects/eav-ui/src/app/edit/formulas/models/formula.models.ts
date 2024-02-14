@@ -1,6 +1,6 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue, PickerItem } from '../../../../../../edit-types';
 import { FormValues } from '../../shared/models';
 import { FormulaResultRaw } from './formula-results.models';
 
@@ -42,7 +42,7 @@ export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
 export type FormulaFunctionDefault = () => FieldValue | FormulaResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental)
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental, item: PickerItem)
   => FieldValue | FormulaResultRaw;
 
 export const FormulaVersions = {
@@ -52,9 +52,24 @@ export const FormulaVersions = {
 
 export type FormulaVersion = typeof FormulaVersions[keyof typeof FormulaVersions];
 
+export const ListItemFormulaPrefix = 'Field.ListItem.';
+
 export const SettingsFormulaPrefix = 'Field.Settings.';
 
-export const FormulaTargets = {
+export const FormulaListItemTargets = {
+  ListItemLabel: `${ListItemFormulaPrefix}Label`,
+  ListItemDisabled: `${ListItemFormulaPrefix}Disabled`,
+  ListItemTooltip: `${ListItemFormulaPrefix}Tooltip`,
+  ListItemInformation: `${ListItemFormulaPrefix}Information`,
+  ListItemHelpLink: `${ListItemFormulaPrefix}HelpLink`,
+}
+
+export const FormulaOptionalTargets = {
+  Collapsed: `${SettingsFormulaPrefix}Collapsed`,
+  DropdownValues: `${SettingsFormulaPrefix}DropdownValues`,
+}
+
+export const FormulaDefaultTargets = {
   Disabled: `${SettingsFormulaPrefix}Disabled`,
   Name: `${SettingsFormulaPrefix}Name`,
   Notes: `${SettingsFormulaPrefix}Notes`,
@@ -62,6 +77,12 @@ export const FormulaTargets = {
   Value: 'Field.Value',
   Visible: `${SettingsFormulaPrefix}Visible`,
   Validation: 'Field.Validation',
+};
+
+export const FormulaTargets = {
+  ...FormulaDefaultTargets,
+  ...FormulaOptionalTargets,
+  ...FormulaListItemTargets,
 } as const;
 
 export interface FormulaFieldValidation {
@@ -77,6 +98,7 @@ export interface FormulaPropsV1 {
   data: FormulaV1Data;
   context: FormulaV1Context;
   experimental: FormulaV1Experimental;
+  item?: PickerItem; //@SDV possibly add PickerTreeItem also
 }
 
 export interface FormulaV1Data {
