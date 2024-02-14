@@ -57,7 +57,17 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.control = this.group.controls[this.config.fieldName];
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-    this.availableItems$ = source.availableItems$;
+    // TODO: @2dm - maybe there is even a more elegant way to do this
+    // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
+    if (false) {
+      this.subscription.add(
+        this.fieldsSettingsService.processPickerItems$(this.config.fieldName, source.availableItems$).subscribe((items) => this.availableItems$.next(items))
+      );
+    } else {
+      this.availableItems$ = source.availableItems$;
+    }
+    
+
     this.selectedItems$ = this.pickerData.selectedItems$;
 
     const freeTextMode$ = state.freeTextMode$;

@@ -100,12 +100,12 @@ export class FormulaDesignerService implements OnDestroy {
    * @param allowDraft 
    * @returns Filtered formula array
    */
-  getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget, allowDraft?: boolean): FormulaCacheItem[] {
+  getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
     return this.formulaCache$.value.filter(
       f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
-        && (target ? f.target === target : true)
+        && (target ? target?.find(target => f.target == target) : true)
         && (allowDraft ? true : !f.isDraft)
     );
   }
