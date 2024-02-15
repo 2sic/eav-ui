@@ -47,7 +47,6 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     ),
   ]).pipe(
     map(([paths, currentPath]) => {
-      console.log("x")
       if (paths == null) return;
       return currentPath;
     })

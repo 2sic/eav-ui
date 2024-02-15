@@ -35,7 +35,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   gridOptions = this.buildGridOptions();
 
   private refreshLicenses$ = new Subject<void>();
-  
+
   viewModel$: Observable<LicenseInfoViewModel>;
 
   constructor(
@@ -50,7 +50,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshLicenses$.next(); }));
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshLicenses$.next(); }));
     this.viewModel$ = //combineLatest([
       this.refreshLicenses$.pipe(
         startWith(undefined),
@@ -94,7 +94,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   }
 
   openRegistration(): void {
-    this.router.navigate([GoToRegistration.getUrl()], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToRegistration.getUrl()], { relativeTo: this.route.parent.firstChild });
   }
 
   private showFeatureDetails(feature: Feature): void {

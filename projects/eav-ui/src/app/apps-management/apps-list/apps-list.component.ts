@@ -61,7 +61,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
       share(),
     );
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshApps$.next(); }));
     this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
@@ -86,20 +86,20 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   createApp(): void {
-    this.router.navigate(['create'], { relativeTo: this.route.firstChild });
+    this.router.navigate(['create'], { relativeTo: this.route.parent.firstChild });
   }
 
   createInheritedApp(): void {
-    this.router.navigate(['create-inherited'], { relativeTo: this.route.firstChild });
+    this.router.navigate(['create-inherited'], { relativeTo: this.route.parent.firstChild });
   }
 
   addFromFolder(): void {
-    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.firstChild });
+    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.parent.firstChild });
   }
 
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
+    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
   }
 
   private deleteApp(app: App): void {
@@ -137,11 +137,11 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
 
   private openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private openApp(app: App): void {
-    this.router.navigate([app.Id.toString()], { relativeTo: this.route.firstChild });
+    this.router.navigate([app.Id.toString()], { relativeTo: this.route.parent.firstChild });
   }
 
   openLightSpeedFeatInfo() {

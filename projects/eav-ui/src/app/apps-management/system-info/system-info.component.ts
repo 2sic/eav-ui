@@ -55,7 +55,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => {
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
       this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();
@@ -86,6 +86,11 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
 
   openInsights() {
     window.open(window.$2sxc.http.apiUrl('sys/insights/help'), '_blank');
+  }
+
+
+   openSideNavPath(sideNavPath: string): void {
+    this.router.navigate([this.router.url.replace('system', '') + sideNavPath]);
   }
 
   activatePageLog(form: NgForm) {

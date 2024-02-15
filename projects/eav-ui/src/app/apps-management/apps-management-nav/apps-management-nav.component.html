@@ -1,68 +1,68 @@
 @if (viewModel$ | async; as vm) {
-  <mat-toolbar>
-    <div class="toolbar-container">
-      <!-- Mat Icon Menu -->
-        <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
-      <!-- App Name -->
-      <div>
-        <span>
-          Manage Zone {{ zoneId }}
-        </span>
-      </div>
-      <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
-      <xng-breadcrumb [separator]="emptyTemplate">
-        <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
-          @if (last) {
-            <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
-         {{ breadcrumb }}
-          }
-        </ng-container>
-      </xng-breadcrumb>
-      <ng-template #emptyTemplate></ng-template>
+<mat-toolbar>
+  <div class="toolbar-container">
+    <!-- Mat Icon Menu -->
+    <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened"
+      >menu</mat-icon
+    >
+    <!-- App Name -->
+    <div>
+      <span> Manage Zone {{ zoneId }} </span>
     </div>
-    <span class="toolbar-spacer"></span>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar>
-  <mat-sidenav-container>
+    <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
+    <xng-breadcrumb [separator]="emptyTemplate">
+      <ng-container
+        *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last"
+      >
+        @if (last) {
+        <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+        {{ breadcrumb }}
+        }
+      </ng-container>
+    </xng-breadcrumb>
+    <ng-template #emptyTemplate></ng-template>
+  </div>
+  <span class="toolbar-spacer"></span>
+  <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav
+    #sidenav
+    [mode]="smallScreen.matches ? 'over' : 'side'"
+    [opened]="sideNavOpened"
+  >
+    <!-- Sho Sidenav for each Item form navItems (filterd by dialogSettings in Ts) -->
+    @for (item of navItems; track item.path) {
+    <a
+      (click)="changeUrl(item.path)"
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      matRipple
+      class="app-menu-container"
+      [tippy]="item.tippy"
+    >
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <div class="link-text">{{ item.name }}</div>
+    </a>
+    }
+    <div class="sideNav-bottom-info">
+      <p>use Burger icon to show/hide menu</p>
+    </div>
+  </mat-sidenav>
 
-    <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-      <!-- Sho Sidenav for each Item form navItems (filterd by dialogSettings in Ts) -->
-      @for (item of navItems; track item.path) {
-      <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
-        class="app-menu-container" [tippy]="item.tippy">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <div class="link-text">{{ item.name }}</div>
-      </a>
-      }
-      <div class="sideNav-bottom-info">
-        <p>use Burger icon to show/hide menu</p>
-      </div>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
+  <mat-sidenav-content>
+    <div class="container-content">
       <router-outlet></router-outlet>
+    </div>
 
-      <!-- Show each Componenten by Path name -->
-      <div class="container-content">
-        @if (vm.currentPath === 'system') {
+    <!-- Remove after router outlet works -->
+        <!-- @if (vm.currentPath === 'system') {
         <app-system-info [dialogSettings]="vm.dialogSettings">
         </app-system-info>
-        }
+        } -->
 
-        @if (vm.currentPath === 'list') {
-        <app-apps-list ></app-apps-list>
-        }
-
-        @if (vm.currentPath === 'languages') {
-        <app-site-languages></app-site-languages>
-        }
-
-        @if (vm.currentPath === 'license') {
-          <app-license-info > </app-license-info>
-          }
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-  }
+  </mat-sidenav-content>
+</mat-sidenav-container>
+}

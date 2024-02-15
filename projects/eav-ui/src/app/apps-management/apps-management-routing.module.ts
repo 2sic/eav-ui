@@ -8,18 +8,22 @@ import { appsManagementDialog } from './apps-management-nav/apps-management-dial
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
 import { GoToRegistration } from './sub-dialogs/registration/go-to-registration';
+import { SystemInfoComponent } from './system-info/system-info.component';
+import { AppsListComponent } from './apps-list/apps-list.component';
+import { SiteLanguagesComponent } from './site-languages/site-languages.component';
+import { LicenseInfoComponent } from './licence-info/license-info.component';
 
 const appsManagementRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appsManagementDialog }, children: [
       { path: '', redirectTo: 'system', pathMatch: 'full' },
       {
-        path: 'system', component: EmptyRouteComponent, data: { title: 'System Info' , breadcrumb: 'System Info'}, children: [
+        path: 'system', component: SystemInfoComponent, data: { title: 'System Info' , breadcrumb: 'System Info'}, children: [
           GoToRegistration.getRoute()
         ]
       },
       {
-        path: 'list', component: EmptyRouteComponent, children: [
+        path: 'list', component: AppsListComponent, children: [
           {
             path: 'import',
             loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
@@ -42,9 +46,9 @@ const appsManagementRoutes: Routes = [
         ],
         data: { title: 'Apps in this Zone' , breadcrumb: 'Apps' },
       },
-      { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' , breadcrumb: 'Languages' } },
+      { path: 'languages', component: SiteLanguagesComponent, data: { title: 'Zone Languages' , breadcrumb: 'Languages' } },
       {
-        path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' }, children: [
+        path: 'license', component: LicenseInfoComponent, data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' }, children: [
           GoToRegistration.getRoute()
         ]
       },
