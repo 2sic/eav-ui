@@ -14,7 +14,7 @@ const appsManagementRoutes: Routes = [
     path: '', component: DialogEntryComponent, data: { dialog: appsManagementDialog }, children: [
       { path: '', redirectTo: 'system', pathMatch: 'full' },
       {
-        path: 'system', component: EmptyRouteComponent, data: { title: 'System Info' }, children: [
+        path: 'system', component: EmptyRouteComponent, data: { title: 'System Info' , breadcrumb: 'System Info'}, children: [
           GoToRegistration.getRoute()
         ]
       },
@@ -40,11 +40,11 @@ const appsManagementRoutes: Routes = [
             loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
         ],
-        data: { title: 'Apps in this Zone' },
+        data: { title: 'Apps in this Zone' , breadcrumb: 'Apps' },
       },
-      { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
+      { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' , breadcrumb: 'Languages' } },
       {
-        path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' }, children: [
+        path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' }, children: [
           GoToRegistration.getRoute()
         ]
       },
