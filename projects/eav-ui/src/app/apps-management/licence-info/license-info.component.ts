@@ -93,8 +93,9 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     return license.Guid;
   }
 
+
   openRegistration(): void {
-    this.router.navigate([GoToRegistration.getUrl()], { relativeTo: this.route.parent.firstChild });
+    this.router.navigate([this.router.url.replace('license', '') + "/registration"]);
   }
 
   private showFeatureDetails(feature: Feature): void {

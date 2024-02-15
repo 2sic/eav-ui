@@ -33,7 +33,6 @@
     [mode]="smallScreen.matches ? 'over' : 'side'"
     [opened]="sideNavOpened"
   >
-    <!-- Sho Sidenav for each Item form navItems (filterd by dialogSettings in Ts) -->
     @for (item of navItems; track item.path) {
     <a
       (click)="changeUrl(item.path)"
@@ -56,13 +55,6 @@
     <div class="container-content">
       <router-outlet></router-outlet>
     </div>
-
-    <!-- Remove after router outlet works -->
-        <!-- @if (vm.currentPath === 'system') {
-        <app-system-info [dialogSettings]="vm.dialogSettings">
-        </app-system-info>
-        } -->
-
   </mat-sidenav-content>
 </mat-sidenav-container>
 }

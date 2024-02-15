@@ -14,8 +14,8 @@ import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
-import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
+import { AppDialogConfigService } from '../../app-administration/services';
 
 declare const window: EavWindow;
 
@@ -25,7 +25,7 @@ declare const window: EavWindow;
   styleUrls: ['./system-info.component.scss'],
 })
 export class SystemInfoComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() dialogSettings: DialogSettings;
+  dialogSettings: DialogSettings;
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
@@ -43,6 +43,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
     private featuresService: FeaturesService,
+    private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
   }
@@ -51,6 +52,8 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
     this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
     this.loading$ = new BehaviorSubject<boolean>(false);
+
+    this.getDialogSettings();
 
     this.buildViewModel();
     this.getSystemInfo();
@@ -89,7 +92,12 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   }
 
 
-   openSideNavPath(sideNavPath: string): void {
+  openSideNavPath(sideNavPath: string): void {
+
+    // Url are /2/apps/system/registration, sideNavPath are only the last part of the url
+    if (sideNavPath.includes('registration'))
+    sideNavPath = 'registration';
+
     this.router.navigate([this.router.url.replace('system', '') + sideNavPath]);
   }
 
@@ -128,6 +136,12 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     });
   }
 
+  private getDialogSettings() {
+    this.appDialogConfigService.getShared$(0)/*.getDialogSettings(0)*/.subscribe(dialogSettings => {
+      this.dialogSettings = dialogSettings;
+    });
+  }
+
   private buildViewModel(): void {
     const systemInfos$ = this.systemInfoSet$.pipe(
       map(systemInfoSet => {
@@ -142,12 +156,12 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
               ? {
-                url: this.router.url + '/' + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + "registration",
                 label: 'manage',
                 target: 'angular',
               }
               : {
-                url: this.router.url + '/' + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + "registration",
                 label: 'register',
                 target: 'angular',
               },

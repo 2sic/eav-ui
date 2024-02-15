@@ -20,6 +20,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: 'System', path: 'system', icon: 'settings', tippy: 'System Info' },
+  { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
   { name: 'Apps', path: 'list', icon: 'star_border', tippy: 'Apps' },
   { name: 'Languages', path: 'languages', icon: 'translate', tippy: 'Languages' },
   { name: 'Extensions / Features', path: 'license', icon: 'tune', tippy: 'Extensions and Features' },
@@ -33,30 +34,24 @@ const navItems: NavItem[] = [
 export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
 
   zoneId = this.context.zoneId;
-  dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
-
-  private pathsArray$ = new BehaviorSubject<string[]>(undefined);
 
   private currentPath$ = combineLatest([
-    this.pathsArray$,
-
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map(() => this.route.snapshot.firstChild.url[0].path),
       startWith(this.route.snapshot.firstChild.url[0].path)
     ),
   ]).pipe(
-    map(([paths, currentPath]) => {
+    map(([paths]) => {
       if (paths == null) return;
-      return currentPath;
+      return paths;
     })
   );
 
   // Generate View Model
-  viewModel$ = combineLatest([this.dialogSettings$, this.currentPath$]).pipe(
-    map(([dialogSettings, currentPath]) => {
+  viewModel$ = combineLatest([ this.currentPath$]).pipe(
+    map(([currentPath]) => {
       return {
-        dialogSettings,
         currentPath,
       };
     })
@@ -72,19 +67,12 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     private context: Context,
-    private appDialogConfigService: AppDialogConfigService,
     private media: MediaMatcher
   ) {
     super(router, route);
    }
 
    ngOnInit() {
-    this.fetchDialogSettings();
-    this.subscription.add(
-      this.refreshOnChildClosedDeep().subscribe(() => {
-        this.fetchDialogSettings();
-      })
-    );
 
     this.smallScreen.addEventListener(
       'change',
@@ -93,7 +81,6 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   }
 
   ngOnDestroy() {
-    this.dialogSettings$.complete();
     super.ngOnDestroy();
   }
 
@@ -105,12 +92,4 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     this.router.navigate([path], { relativeTo: this.route });
   }
 
-  private fetchDialogSettings() {
-    this.appDialogConfigService.getShared$(0)/*.getDialogSettings(0)*/.subscribe(dialogSettings => {
-      this.dialogSettings$.next(dialogSettings);
-
-      this.pathsArray$.next(this.navItems.map((item) => item.path));
-
-    });
-  }
 }
