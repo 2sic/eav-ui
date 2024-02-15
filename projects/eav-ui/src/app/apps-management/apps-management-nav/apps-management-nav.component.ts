@@ -11,16 +11,21 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 
 
-interface NavItem {
+export interface NavItem {
   name: string;
   path: string;
   icon: string;
   tippy: string;
+  child?: NavItem[];
 }
 
 const navItems: NavItem[] = [
-  { name: 'System', path: 'system', icon: 'settings', tippy: 'System Info' },
-  { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
+  {
+    name: 'System', path: 'system', icon: 'settings', tippy: 'System Info', child: [
+      { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
+    ]
+  },
+  // { name: 'RegisterOld', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
   { name: 'Apps', path: 'list', icon: 'star_border', tippy: 'Apps' },
   { name: 'Languages', path: 'languages', icon: 'translate', tippy: 'Languages' },
   { name: 'Extensions / Features', path: 'license', icon: 'tune', tippy: 'Extensions and Features' },
@@ -49,7 +54,7 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   );
 
   // Generate View Model
-  viewModel$ = combineLatest([ this.currentPath$]).pipe(
+  viewModel$ = combineLatest([this.currentPath$]).pipe(
     map(([currentPath]) => {
       return {
         currentPath,
@@ -70,9 +75,9 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     private media: MediaMatcher
   ) {
     super(router, route);
-   }
+  }
 
-   ngOnInit() {
+  ngOnInit() {
 
     this.smallScreen.addEventListener(
       'change',

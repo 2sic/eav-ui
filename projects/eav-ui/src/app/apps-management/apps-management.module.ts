@@ -48,6 +48,8 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { FeaturesModule } from '../features/features.module';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import { AppManagementListItemComponent } from './apps-management-nav/app-management-list-item/app-management-list-item.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     ActiveFeaturesCountPipe,
     FeatureDetailsDialogComponent,
     RegistrationComponent,
+    AppManagementListItemComponent
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -96,7 +99,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatBadgeModule,
     FeaturesModule,
     MatToolbarModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [
     Context,

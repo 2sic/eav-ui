@@ -1,0 +1,38 @@
+.paddingLink a {
+  padding-left: 40px;
+}
+
+.active {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.app-menu-container {
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  transition: all 225ms ease-in-out;
+
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+  }
+
+  .link-text {
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 25px;
+  }
+
+  .mat-icon {
+    transition: all 225ms ease-in-out;
+
+    &.ml-auto {
+      margin-left: auto;
+    }
+  }
+
+  .open {
+    transform: rotate(180deg);
+  }
+}

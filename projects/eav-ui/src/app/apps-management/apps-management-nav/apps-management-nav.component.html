@@ -34,18 +34,9 @@
     [opened]="sideNavOpened"
   >
     @for (item of navItems; track item.path) {
-    <a
-      (click)="changeUrl(item.path)"
-      [routerLink]="item.path"
-      routerLinkActive="active"
-      matRipple
-      class="app-menu-container"
-      [tippy]="item.tippy"
-    >
-      <mat-icon>{{ item.icon }}</mat-icon>
-      <div class="link-text">{{ item.name }}</div>
-    </a>
+      <app-app-management-list-item [item]="item" ></app-app-management-list-item>
     }
+
     <div class="sideNav-bottom-info">
       <p>use Burger icon to show/hide menu</p>
     </div>
