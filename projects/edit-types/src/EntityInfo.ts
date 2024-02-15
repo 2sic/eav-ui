@@ -57,15 +57,17 @@ export interface PickerItem extends EntityForPicker {
    */
   _helpLink?: string;
 
-  /**
-   * The data that is added to the item in the dropdown through settings more fields.
-   */
-  [key: string]: any;
+  data?: {
+    [key: string]: any;  
+  }
 }
 
 export interface PickerTreeItem extends PickerItem {
   Level: number;
   Expandable: boolean;
+  // TODO: @SDV - CHECK IF THIS is correct, and if Parent is []
+  Children: PickerTreeItem[];
+  Parent: PickerTreeItem[];
 }
 
 export interface TreeItem {

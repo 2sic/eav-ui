@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { EavService, FieldsSettingsService } from '.';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
@@ -132,7 +132,7 @@ export class FieldsTranslateService {
         this.addItemAttributeValueHelper(fieldName, attributeValueTranslation.Value, currentLanguage, false);
       }
     } else {
-      consoleLogAngular(`${currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
+      consoleLogEditForm(`${currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
     }
   }
 

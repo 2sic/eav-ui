@@ -19,6 +19,7 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCac
 import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
+import { EavContentType } from '../models/eav/eav-content-type';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -83,7 +84,8 @@ export class EditInitializerService implements OnDestroy {
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
     const settingsAsEav = {
       ...loadDto.Settings,
-      Entities: EavEntity.convertMany(loadDto.Settings.Entities)
+      Entities: EavEntity.convertMany(loadDto.Settings.Entities),
+      ContentTypes: EavContentType.convertMany(loadDto.Settings.ContentTypes),
     };
     this.eavService.setEavConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 

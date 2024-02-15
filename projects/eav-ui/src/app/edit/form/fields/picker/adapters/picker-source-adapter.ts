@@ -6,13 +6,13 @@ export interface PickerSourceAdapter {
   availableItems$: BehaviorSubject<PickerItem[]>;
   editEntityGuid$: BehaviorSubject<string>;
 
-  init(): void;
+  init(callerName: string): void;
   onAfterViewInit(): void;
   destroy(): void;
   getDataFromSource(): Observable<PickerItem[]>;
   setPrefetchData(missingData: string[]): void;
-  setOverrideData(missingData: string[]): void;
+  forceReloadData(missingData: string[]): void;
   deleteItem(props: DeleteEntityProps): void;
-  editItem(editParams: { entityGuid: string, entityId: number }): void;
+  editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
   fetchItems(): void;
 }

@@ -14,8 +14,6 @@ export class EntityQueryLogic extends FieldLogicBase {
     fixedSettings.StreamName ||= 'Default';
     fixedSettings.UrlParameters ??= '';
 
-    fixedSettings.Information ??= '';
-    fixedSettings.Tooltip ??= '';
     fixedSettings.MoreFields ??= '';
     fixedSettings.Label ??= '';
 

@@ -10,7 +10,7 @@ export class EavContentType {
   Scope: string;
   Settings: EavEntityAttributes;
 
-  static convert(contentTypeDto: EavContentTypeDto): EavContentType {
+  static convertOne(contentTypeDto: EavContentTypeDto): EavContentType {
     const attributes = EavContentTypeAttribute.convertMany(contentTypeDto.Attributes);
     const metadata = EavEntity.convertMany(contentTypeDto.Metadata);
     const settings = EavEntityAttributes.mergeSettings(metadata);
@@ -25,5 +25,12 @@ export class EavContentType {
       Settings: settings,
     };
     return contentType;
+  }
+
+  static convertMany(contentTypesDto: EavContentTypeDto[]): EavContentType[] {
+    if (contentTypesDto == null) { return null; }
+
+    const contentTypes = contentTypesDto.map(contentTypeDto => EavContentType.convertOne(contentTypeDto));
+    return contentTypes;
   }
 }

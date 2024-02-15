@@ -175,6 +175,7 @@ export interface HyperlinkLibrary extends Hyperlink {
  */
 export interface Entity extends All {
   EntityType: string;
+  CreateTypes: string;
   AllowMultiValue: boolean;
   EnableEdit: boolean;
   EnableCreate: boolean;
@@ -186,8 +187,6 @@ export interface Entity extends All {
    */
   Prefill: string;
 
-  Information: string;
-  Tooltip: string;
   MoreFields: string;
   Label: string;
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
@@ -267,6 +266,10 @@ export interface EntityPicker extends EntityQuery {
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
 
+  ItemInformation: string;
+  ItemTooltip: string;
+  ItemLink: string;
+
   DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }
 
@@ -343,7 +346,7 @@ export interface UiPickerModeTree extends ConfigModel {
   TreeAllowSelectLeaf: boolean;
 }
 
-export interface UiPickerSourceQuery extends ConfigModel {
+export interface UiPickerSourceQuery extends PickerSource {
   Query: string;
   QueryParameters: string;
   StreamName: string;
@@ -353,12 +356,20 @@ export interface UiPickerSourceQuery extends ConfigModel {
   CreateTypes: string;
 }
 
-export interface UiPickerSourceEntity extends ConfigModel {
+export interface UiPickerSourceEntity extends PickerSource {
   ContentTypeNames: string;
+  CreateTypes: string;
+  MoreFields: string;
 }
 
-export interface UiPickerSourceCustomList extends ConfigModel {
+export interface UiPickerSourceCustomList extends PickerSource {
   DropdownValues: string;
+}
+
+interface PickerSource extends ConfigModel { 
+  ItemInformation: string;
+  ItemTooltip: string;
+  ItemLink: string;
 }
 
 interface ConfigModel {

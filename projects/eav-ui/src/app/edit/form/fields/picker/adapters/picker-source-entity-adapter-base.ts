@@ -11,11 +11,13 @@ import { FieldSettings } from "projects/edit-types";
 import { EntityService, EavService, EditRoutingService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   protected contentTypeMask: FieldMask;
   protected contentType: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
+
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
@@ -23,19 +25,23 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
-    public translate: TranslateService,
+    protected translate: TranslateService,
     protected config: FieldConfigSet,
     protected group: FormGroup,
     public snackBar: MatSnackBar,
     public control: AbstractControl,
     // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,) {
+    public deleteCallback: (props: DeleteEntityProps) => void,
+    logSpecs: EavLogger,
+  ) {
     super(
-      deleteCallback
+      deleteCallback,
+      logSpecs,
     );
   }
 
-  init() {
+  init(callerName: string): void {
+    super.init(callerName);
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
     this.subscriptions.add(
       this.settings$.pipe(
@@ -79,12 +85,12 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // not even sure if the guid would still be needed, as I assume the entityId
   // should always be available.
   // Must test all use cases and then probably simplify again.
-  editItem(editParams: { entityGuid: string, entityId: number }): void {
+  editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
     if (editParams)
       this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
     if (editParams?.entityGuid == null) {
-      const contentTypeName = this.contentType;
+      const contentTypeName = entityType ?? this.contentType;
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],

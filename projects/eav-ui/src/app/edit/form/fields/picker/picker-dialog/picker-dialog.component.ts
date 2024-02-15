@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { EntityPickerDialogViewModel } from './picker-dialog.models';
@@ -36,11 +36,12 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
     const disableAddNew$ = state.disableAddNew$;
     const controlStatus$ = state.controlStatus$;
 
+
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableCreate: settings.EnableCreate,
-        EntityType: settings.EntityType,
+        CreateTypes: settings.CreateTypes,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -49,9 +50,9 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       settings$, controlStatus$, freeTextMode$, disableAddNew$
     ]).pipe(
       map(([
-        settings, controlStatus, freeTextMode, disableAddNew,
+        settings, controlStatus, freeTextMode, disableAddNew
       ]) => {
-        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue;
+        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
 
         const viewModel: EntityPickerDialogViewModel = {
           controlStatus,
@@ -71,7 +72,11 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  openNewEntityDialog(): void {
-    this.pickerData.source.editItem(null);
+  openNewEntityDialog(entityType: string): void {
+    this.pickerData.source.editItem(null, entityType);
+  }
+
+  getEntityTypesData(): void {
+    this.pickerData.state.getEntityTypesData();
   }
 }

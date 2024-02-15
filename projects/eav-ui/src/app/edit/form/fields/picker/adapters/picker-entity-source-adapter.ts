@@ -10,6 +10,10 @@ import { DeleteEntityProps } from "../picker.models";
 import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { placeholderPickerItem } from './picker-source-adapter-base';
+
+const logThis = false;
 
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   private entityFieldDataSource: EntityFieldDataSource;
@@ -47,11 +51,13 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
       control,
       // fetchAvailableEntities,
       deleteCallback,
+      new EavLogger('PickerEntitySourceAdapter', logThis),
     );
   }
 
-  init(): void {
-    super.init();
+  init(callerName: string): void {
+    this.logger.add('init');
+    super.init(callerName);
 
     this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource(this.settings$);
 
@@ -62,13 +68,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     ]).subscribe(([data, loading, deleted]) => {
       const items = data.filter(item => !deleted.some(guid => guid === item.Value));
       if (loading) {
-        this.availableItems$.next([{
-          Text: this.translate.instant('Fields.Entity.Loading'),
-          Value: null,
-          _disableSelect: true,
-          _disableDelete: true,
-          _disableEdit: true,
-        }, ...items]);
+        this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]);
       } else {
         this.availableItems$.next(items);
       }
@@ -88,8 +88,8 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     this.entityFieldDataSource.prefetchEntityGuids(missingData);
   }
 
-  setOverrideData(missingData: string[]): void {
-    this.entityFieldDataSource.entityGuids(missingData);
+  forceReloadData(missingData: string[]): void {
+    this.entityFieldDataSource.forceLoadGuids(missingData);
   }
 
   destroy(): void {
@@ -100,6 +100,8 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   fetchItems(): void {
+    this.contentType = this.contentTypeMask.resolve();
+    this.entityFieldDataSource.contentType(this.contentType);
     this.entityFieldDataSource.getAll();
   }
 }

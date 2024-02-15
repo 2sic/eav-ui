@@ -1,6 +1,6 @@
 @if (viewModel$ | async; as vm) {
   <div [formGroup]="group">
-    <div class="eav-toggle-hitbox" (click)="updateValue()">
+    <div class="eav-toggle-hitbox" (click)="updateValue(vm.controlStatus.disabled)">
       <mat-slide-toggle [disabled]="vm.controlStatus.disabled" [checked]="vm.checked" [ngClass]="{
           'toggle-false': vm.checked === false,
           'toggle-true': vm.checked === true,

@@ -38,7 +38,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   ngAfterViewInit(): void {
     window.require.config({
       paths: {
-        vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs'],
+        vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.46.0/min/vs'],
       },
     });
 

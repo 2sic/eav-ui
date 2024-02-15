@@ -1,6 +1,6 @@
 import { FieldValue } from "projects/edit-types";
 import { InputType } from "../../content-type-fields/models/input-type.model";
-import { consoleLogAngular } from "../../shared/helpers/console-log-angular.helper";
+import { consoleLogEditForm } from "../../shared/helpers/console-log-angular.helper";
 import { FieldLogicTools } from "../form/shared/field-logic/field-logic-tools";
 import { EntityReader } from "../shared/helpers";
 import { FormValues, FieldsProps } from "../shared/models";
@@ -41,7 +41,7 @@ export class FormulaPromiseHandler {
     formulaCache: FormulaCacheItem,
     inputType: InputType,
   ) {
-    consoleLogAngular("formula promise", formulaCache.target, resultWithPromise);
+    consoleLogEditForm("formula promise", formulaCache.target, resultWithPromise);
     if (resultWithPromise.openInDesigner && resultWithPromise.stop === null) {
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
     }
@@ -74,7 +74,7 @@ export class FormulaPromiseHandler {
           valueUpdates[formulaCache.fieldName] = corrected.value;
 
         } else if (formulaCache.target.startsWith(SettingsFormulaPrefix)) {
-          consoleLogAngular("formula promise settings");
+          consoleLogEditForm("formula promise settings");
           const settingName = formulaCache.target.substring(SettingsFormulaPrefix.length);
           settingUpdate = queueItem.settingUpdates ?? [];
           const newSetting = { name: formulaCache.fieldName, settings: [{ settingName, value: result as FieldValue }] };

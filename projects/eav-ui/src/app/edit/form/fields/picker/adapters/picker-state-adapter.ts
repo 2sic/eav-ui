@@ -1,6 +1,6 @@
 import { TranslateService } from '@ngx-translate/core/public_api';
 import { PickerItem, FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { ControlStatus } from '../../../../shared/models';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
@@ -9,6 +9,7 @@ import { convertArrayToString, convertValueToArray, equalizeSelectedItems } from
 import { DeleteEntityProps } from '../picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { EavService } from '../../../../shared/services';
 
 export class PickerStateAdapter {
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
@@ -18,9 +19,9 @@ export class PickerStateAdapter {
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
   public allowMultiValue$: Observable<boolean>;
-  public tooltip$: Observable<string>;
-  public information$: Observable<string>;
   public isDialog$: Observable<boolean>;
+
+  public createEntityTypes: { label: string, guid: string }[] = [];
 
 
   constructor(
@@ -34,6 +35,7 @@ export class PickerStateAdapter {
     public stringQueryCache$: Observable<QueryEntity[]>,
     public translate: TranslateService,
     public control: AbstractControl,
+    public eavService: EavService,
     private focusOnSearchComponent: () => void,
   ) { }
 
@@ -41,6 +43,16 @@ export class PickerStateAdapter {
     this.selectedItems$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.settings$.pipe(
+        tap(settings => {
+          // TODO: this looks bad - side-effect in observable
+          const types = settings.CreateTypes;
+          this.createEntityTypes = types
+            ? types
+                // use either \n or , as delimiter
+                .split(types.indexOf('\n') > -1 ? '\n' : ',')
+                .map((guid: string) => ({ label: null, guid }))
+            : [];
+        }),
         map(settings => ({
           Separator: settings.Separator,
           Options: settings._options,
@@ -53,8 +65,6 @@ export class PickerStateAdapter {
       ),
     );
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
-    this.tooltip$ = this.settings$.pipe(map(settings => settings.Tooltip), distinctUntilChanged());
-    this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());
     this.isDialog$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     this.shouldPickerListBeShown$ = combineLatest([
       this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedItems$
@@ -125,5 +135,14 @@ export class PickerStateAdapter {
 
   toggleFreeTextMode(): void {
     this.freeTextMode$.next(!this.freeTextMode$.value);
+  }
+
+  getEntityTypesData(): void {
+    if (this.createEntityTypes[0].label) { return; }
+    this.createEntityTypes.forEach(entityType => {
+      const ct = this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
+      entityType.label = ct?.Name ?? entityType.guid + " (not found)";
+      entityType.guid = ct?.Id ?? entityType.guid;
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
@@ -41,7 +41,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
         AllowMultiValue: settings.AllowMultiValue,
         EnableTextEntry: settings.EnableTextEntry,
         EnableCreate: settings.EnableCreate,
-        EntityType: settings.EntityType,
+        CreateTypes: settings.CreateTypes,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -52,8 +52,8 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
       map(([
         selectedItems, freeTextMode, settings, controlStatus, disableAddNew
       ]) => {
-        const leavePlaceForButtons = (settings.EntityType && settings.EnableCreate) || settings.AllowMultiValue;
-        const showAddNewEntityButton = settings.EntityType && settings.EnableCreate;
+        const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
+        const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
         const showGoToListDialogButton = settings.AllowMultiValue;
 
         const viewModel: EntityPickerPreviewViewModel = {
@@ -77,12 +77,16 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
     super.ngOnDestroy();
   }
 
-  openNewEntityDialog(): void {
-    this.pickerData.source.editItem(null);
+  openNewEntityDialog(entityType: string): void {
+    this.pickerData.source.editItem(null, entityType);
   }
 
   expandDialog() {
     if (this.config.initialDisabled) { return; }
     this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
+  }
+
+  getEntityTypesData(): void {
+    this.pickerData.state.getEntityTypesData();
   }
 }

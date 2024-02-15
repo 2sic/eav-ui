@@ -1,7 +1,7 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
-import { consoleLogAngular } from '../helpers/console-log-angular.helper';
+import { consoleLogDev } from '../helpers/console-log-angular.helper';
 import { EavWindow } from '../models/eav-window.model';
 
 declare const window: EavWindow;
@@ -57,7 +57,7 @@ export class Context {
     // spm NOTE: I've given id to every context to make it easier to follow how things work
     if (!window.contextId) { window.contextId = 0; }
     this.id = window.contextId++;
-    consoleLogAngular('Context.constructor', this);
+    consoleLogDev('Context.constructor', this);
   }
 
   /**
@@ -68,7 +68,7 @@ export class Context {
     this.routeSnapshot = route && route.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
-    consoleLogAngular('Context.init', this, route);
+    consoleLogDev('Context.init', this, route);
   }
 
   initRoot() {
@@ -82,7 +82,7 @@ export class Context {
     }
 
     this.ready = true;
-    consoleLogAngular('Context.initRoot', this);
+    consoleLogDev('Context.initRoot', this);
   }
 
   private sessionNumber(name: string): number {

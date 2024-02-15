@@ -1,4 +1,4 @@
-import { FieldSettings, UiPickerModeTree, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
+import { FieldSettings, UiPickerSourceCustomList } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
@@ -16,8 +16,9 @@ export class StringPickerLogic extends FieldLogicBase {
     const fs = entityPickerLogic.update(settings, value, tools);
 
     fs.EnableTextEntry ??= false;
-    fs.Separator ??= '\\n';
-    
+    fs.Separator ??= '\n'; //'\\n';
+    if (fs.Separator == '\\n') fs.Separator = '\n'; //buggy temp double-slash-n
+
     if (fs.DataSources?.length > 0)
       dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
 
@@ -26,9 +27,13 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceCustomList;
       const uiPickerSourceCustomList = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList;
 
-      fs.DropdownValuesFormat ??= 'value-label'; //currently not defined nowhere in the config
+      fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config
       fs.DropdownValues = uiPickerSourceCustomList.Values ?? '';
       fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
+
+      fs.ItemInformation = uiPickerSourceCustomList.ItemInformation ?? '';
+      fs.ItemTooltip = uiPickerSourceCustomList.ItemTooltip ?? '';
+      fs.ItemLink = uiPickerSourceCustomList.ItemLink ?? '';
     }
 
     return fs;

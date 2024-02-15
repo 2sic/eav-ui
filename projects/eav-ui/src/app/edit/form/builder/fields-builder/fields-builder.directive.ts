@@ -41,9 +41,13 @@ import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { EntityPickerComponent } from '../../fields/entity/entity-picker/entity-picker.component';
 import { StringPickerComponent } from '../../fields/string/string-picker/string-picker.component';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 @Directive({ selector: '[appFieldsBuilder]' })
-export class FieldsBuilderDirective implements OnInit, OnDestroy {
+export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
   @Input() group: UntypedFormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
@@ -89,7 +93,9 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   constructor(
     private mainContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
-  ) { }
+  ) {
+    super(new EavLogger('FieldsBuilderDirective', logThis));
+  }
 
   ngOnInit() {
     // clear container
@@ -138,6 +144,8 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
+    this.logger.add('createComponent', fieldProps.calculatedInputType);
+
     let wrapperInfo = new WrapperInfo(null, containerRef);
     if (fieldProps.wrappers) {
       wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
@@ -149,21 +157,23 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
 
     // create component only if fieldMetadata exist
     const fieldMetadata: FieldMetadataModel = Reflect.getMetadata(FieldMetadataKey, componentType);
-    if (fieldMetadata == null) { return; }
+    if (fieldMetadata == null) return;
 
-    if (fieldMetadata.wrappers) {
+    // generate wrappers if they are defined
+    if (fieldMetadata.wrappers)
       wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldMetadata.wrappers, fieldConfig);
-    }
 
     // generate the real input field component
+    this.logger.add('createComponent - add component', componentType);
     this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, false);
 
-    if ((wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent) {
+    // generate the picker preview component if it exists
+    const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
+    if (pickerPreviewContainerRef != null) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
-      this.generateAndAttachField(previewType, (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent, fieldConfig, true);
+      this.logger.add('createComponent - add preview', previewType);
+      this.generateAndAttachField(previewType, pickerPreviewContainerRef, fieldConfig, true);
     }
-
-    // return ref;
   }
 
   private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean) {

@@ -14,7 +14,6 @@ export class EntityPickerLogic extends FieldLogicBase {
     const fs: FieldSettings = { ...settings };
 
     /** Entity Default logic */
-    fs.EntityType ??= '';
     fs.AllowMultiValue ??= false;
     fs.EnableEdit ??= true;
     fs.EnableCreate ??= true;
@@ -24,8 +23,6 @@ export class EntityPickerLogic extends FieldLogicBase {
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // fixedSettings.IncludeParentApps ??= false;
 
-    fs.Information ??= '';
-    fs.Tooltip ??= '';
     fs.Label ??= '';
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
@@ -47,14 +44,18 @@ export class EntityPickerLogic extends FieldLogicBase {
       const uiPickerSourceQuery = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceQuery;
 
       fs.Query = uiPickerSourceQuery.Query ?? '';
-      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';
+      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';// stream name could be multiple stream names
       fs.UrlParameters = uiPickerSourceQuery.QueryParameters ?? '';
 
       fs.Value = uiPickerSourceQuery.Value ?? '';
       fs.Label = uiPickerSourceQuery.Label ?? '';
-      fs.EntityType = uiPickerSourceQuery.CreateTypes ?? '';
+      fs.CreateTypes = uiPickerSourceQuery.CreateTypes ?? '';// possible multiple types
 
       fs.MoreFields = uiPickerSourceQuery.MoreFields ?? '';
+
+      fs.ItemInformation = uiPickerSourceQuery.ItemInformation ?? '';
+      fs.ItemTooltip = uiPickerSourceQuery.ItemTooltip ?? '';
+      fs.ItemLink = uiPickerSourceQuery.ItemLink ?? '';
     }
 
     /** Entity datasource */
@@ -62,7 +63,13 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
       const uiPickerSourceEntity = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceEntity;
 
-      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';
+      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';// possible multiple types
+      fs.CreateTypes = uiPickerSourceEntity.CreateTypes ?? '';// possible multiple types
+      fs.MoreFields = uiPickerSourceEntity.MoreFields ?? '';
+
+      fs.ItemInformation = uiPickerSourceEntity.ItemInformation ?? '';
+      fs.ItemTooltip = uiPickerSourceEntity.ItemTooltip ?? '';
+      fs.ItemLink = uiPickerSourceEntity.ItemLink ?? '';
     }
 
     /** WIP functionalities */

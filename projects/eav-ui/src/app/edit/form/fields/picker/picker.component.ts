@@ -7,6 +7,9 @@ import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './picker.models';
 import { PickerData } from './picker-data';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
@@ -23,12 +26,14 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   viewModel$: Observable<PickerViewModel>;
 
+  protected log: EavLogger = new EavLogger('PickerComponent', logThis);
+
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     protected entityService: EntityService,
     public translate: TranslateService,
-    protected editRoutingService: EditRoutingService,
+    public editRoutingService: EditRoutingService,
     public entityCacheService: EntityCacheService,
     public stringQueryCacheService: StringQueryCacheService,
   ) {
@@ -37,8 +42,29 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   ngOnInit(): void {
     super.ngOnInit();
-
     this.refreshOnChildClosed();
+  }
+
+  /**
+   * Initialize the Picker Adapter and View Model
+   * If the PickerData already exists, it will be reused
+   */
+  initAdaptersAndViewModel(): void {
+    // First, create the Picker Adapter or reuse
+    // The reuse is a bit messy - reason is that there are two components (preview/dialog)
+    // which have the same services, and if one is created first, the pickerData should be shared
+    if (this.config.pickerData) {
+      this.log.add('createPickerAdapters: pickerData already exists, will reuse');
+      this.pickerData = this.config.pickerData;
+    } else {
+      // this method is overridden in each variant as of now
+      this.createPickerAdapters();
+      this.log.add('createPickerAdapters: config', this.config);
+      this.config.pickerData = this.pickerData;
+    }
+
+    // Now create the View model
+    this.createViewModel();
   }
 
   ngAfterViewInit(): void {
@@ -51,16 +77,22 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     super.ngOnDestroy();
   }
 
+  /** Create the Picker Adapter - MUST be overridden in each inheriting class */
+  protected createPickerAdapters(): void {
+    throw new Error('Method not implemented. Must be overridden by inheriting class.');
+  }
+
   createViewModel() {
     this.viewModel$ = combineLatest([this.pickerData.state.allowMultiValue$])
-      .pipe(map(([allowMultiValue]) => {
-        // allowMultiValue is used to determine if we even use control with preview and dialog
-        const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
-        const viewModel: PickerViewModel = {
-          showPreview,
-        };
-        return viewModel;
-      }),
+      .pipe(
+        map(([allowMultiValue]) => {
+          // allowMultiValue is used to determine if we even use control with preview and dialog
+          const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
+          const viewModel: PickerViewModel = {
+            showPreview,
+          };
+          return viewModel;
+        }),
       );
   }
 
@@ -76,7 +108,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
         const newItemGuid = Object.keys(result)[0];
         if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
           this.pickerData.state.addSelected(newItemGuid);
-          this.pickerData.source.setOverrideData([newItemGuid]);
+          this.pickerData.source.forceReloadData([newItemGuid]);
         }
       })
     );
@@ -84,7 +116,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
         if (this.pickerData.source.editEntityGuid$.value)
-          this.pickerData.source.setOverrideData([this.pickerData.source.editEntityGuid$.value]);
+          this.pickerData.source.forceReloadData([this.pickerData.source.editEntityGuid$.value]);
       })
     );
   }

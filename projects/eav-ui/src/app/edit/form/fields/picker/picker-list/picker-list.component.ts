@@ -77,7 +77,7 @@ export class PickerListComponent implements OnInit {
   }
 
   edit(entityGuid: string, entityId: number): void {
-    this.pickerData.source.editItem({ entityGuid, entityId });
+    this.pickerData.source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
