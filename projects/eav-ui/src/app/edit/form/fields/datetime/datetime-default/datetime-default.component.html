@@ -10,14 +10,6 @@
     </mat-form-field>
   }
   @if (vm.useTimePicker) {
-    <!-- <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-      <input matInput [disabled]="vm.controlStatus.disabled" [ngxMatDatetimePicker]="picker" [placeholder]="vm.placeholder"
-        [required]="vm.required" [value]="vm.controlStatus.value" (dateChange)="updateValue($event)">
-      <mat-datepicker-toggle matTextSuffix [for]="$any(picker)" [tippy]="'Fields.DateTime.Open' | translate">
-      </mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #picker (opened)="pickerOpened()"></ngx-mat-datetime-picker>
-      <mat-label>{{ vm.label }}</mat-label>
-    </mat-form-field> -->
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
       <input matInput [disabled]="vm.controlStatus.disabled" [owlDateTime]="owlPicker" [placeholder]="vm.placeholder"
         [required]="vm.required" [value]="vm.controlStatus.value" (dateTimeChange)="updateValue($event)">
