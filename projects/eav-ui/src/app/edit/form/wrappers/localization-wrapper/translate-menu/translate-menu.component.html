@@ -1,32 +1,32 @@
 @if (viewModel$ | async; as vm) {
   @if (vm.currentLanguage !== vm.defaultLanguage) {
     <div fxLayoutAlign="end center">
-      <div fxLayoutAlign="end center" class="shared-languages-container" [ngClass]="vm.translationStateClass">
-        <div class="shared-languages mat-caption" [ngClass]="{ 'shared-languages--disabled': vm.disabled }">
+      <div fxLayoutAlign="end center" class="eav-shared-languages-container" [ngClass]="vm.translationStateClass">
+        <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': vm.disabled }">
           {{ vm.translationState.infoLabel ? (vm.translationState.infoLabel | translate:{ languages:
           vm.translationState.infoMessage }): '' }}
         </div>
-        <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="vm.readOnly || vm.disableTranslation">
-          <mat-icon class="translate-icon">translate</mat-icon>
+        <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu" [disabled]="vm.readOnly || vm.disableTranslation">
+          <mat-icon class="eav-translate-icon">translate</mat-icon>
         </button>
       </div>
       <mat-menu #menu="matMenu">
         <ng-template matMenuContent>
           <button mat-menu-item (click)="translate()"
-            [ngClass]="{ 'menu-item-selected': vm.translationState.linkType === TranslationLinks.Translate }">
+            [ngClass]="{ 'eav-menu-item-selected': vm.translationState.linkType === TranslationLinks.Translate }">
             {{ 'LangMenu.Translate' | translate }}
           </button>
           <button mat-menu-item (click)="openAutoTranslateMenuDialog(vm.translationState)"
-            [ngClass]="{ 'menu-item-selected': vm.translationState.linkType === TranslationLinks.Translate }">
+            [ngClass]="{ 'eav-menu-item-selected': vm.translationState.linkType === TranslationLinks.Translate }">
             {{ 'LangMenu.AutoTranslate' | translate }}
             <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
           </button>
           <button mat-menu-item (click)="dontTranslate()"
-            [ngClass]="{ 'menu-item-selected': vm.translationState.linkType === TranslationLinks.DontTranslate }">
+            [ngClass]="{ 'eav-menu-item-selected': vm.translationState.linkType === TranslationLinks.DontTranslate }">
             {{ 'LangMenu.NoTranslate' | translate }}
           </button>
           <button mat-menu-item (click)="openTranslateMenuDialog(vm.translationState)"
-            [ngClass]="{ 'menu-item-selected': vm.translationState.language !== '' }">
+            [ngClass]="{ 'eav-menu-item-selected': vm.translationState.language !== '' }">
             {{ 'LangMenu.Link' | translate }}
           </button>
         </ng-template>
