@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NavItem } from '../apps-management-nav.component';
 import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-app-management-list-item',
@@ -17,21 +18,10 @@ export class AppManagementListItemComponent implements OnInit {
   ngOnInit(): void {
 
     if (this.item.child?.length) {
-      this.router.events.subscribe((event: object) => {
-        if (
-          event instanceof NavigationEnd &&
-          this.item?.child?.some((child) => {
-            const x = event
-            x.url.includes(child.path)
-            console.log(x.url)
-            return (
-              Array.isArray(child.path) &&
-              child.path.includes(event.urlAfterRedirects.split('/')[1])
-            );
-          })
-        ) {
-          this.isOpenMenu = true;
-        }
+      this.router.events.subscribe(value => {
+        const currentRoute = this.router.url.toString();
+        const isOpen = this.item.child.some(child => currentRoute.includes(child.path));
+        this.isOpenMenu = isOpen;
       });
     }
   }
