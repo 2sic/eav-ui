@@ -1,13 +1,4 @@
-  @if (viewModel | async; as vm) {
-  <!-- HACK -->
-  @if (visible) {
-    <mat-form-field style="position: absolute; top: -10000px; left: -10000px; visibility: hidden;">
-      <input matInput [matDatepicker]="hiddenPicker">
-      <mat-datepicker-toggle matIconSuffix [for]="hiddenPicker"></mat-datepicker-toggle>
-      <mat-datepicker #hiddenPicker></mat-datepicker>
-    </mat-form-field>
-  }
-  <!-- /HACK -->
+@if (viewModel | async; as vm) {  
   @if (!vm.useTimePicker) {
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
       <input matInput [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker" [placeholder]="vm.placeholder"
@@ -19,12 +10,20 @@
     </mat-form-field>
   }
   @if (vm.useTimePicker) {
-    <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
+    <!-- <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
       <input matInput [disabled]="vm.controlStatus.disabled" [ngxMatDatetimePicker]="picker" [placeholder]="vm.placeholder"
         [required]="vm.required" [value]="vm.controlStatus.value" (dateChange)="updateValue($event)">
       <mat-datepicker-toggle matTextSuffix [for]="$any(picker)" [tippy]="'Fields.DateTime.Open' | translate">
       </mat-datepicker-toggle>
       <ngx-mat-datetime-picker #picker (opened)="pickerOpened()"></ngx-mat-datetime-picker>
+      <mat-label>{{ vm.label }}</mat-label>
+    </mat-form-field> -->
+    <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
+      <input matInput [disabled]="vm.controlStatus.disabled" [owlDateTime]="owlPicker" [placeholder]="vm.placeholder"
+        [required]="vm.required" [value]="vm.controlStatus.value" (dateTimeChange)="updateValue($event)">
+      <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" [tippy]="'Fields.DateTime.Open' | translate">
+      </mat-datepicker-toggle>
+      <owl-date-time #owlPicker></owl-date-time>
       <mat-label>{{ vm.label }}</mat-label>
     </mat-form-field>
   }

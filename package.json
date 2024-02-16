@@ -39,6 +39,8 @@
     "@angular/platform-browser": "^17.0.7",
     "@angular/platform-browser-dynamic": "^17.0.7",
     "@angular/router": "^17.0.7",
+    "@danielmoncada/angular-datetime-picker": "^17.0.0",
+    "@danielmoncada/angular-datetime-picker-dayjs-adapter": "^3.0.0",
     "@ecodev/fab-speed-dial": "^14.0.0",
     "@ngrx/data": "^17.0.1",
     "@ngrx/effects": "^17.0.1",

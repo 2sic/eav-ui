@@ -14,6 +14,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { DatetimeDefaultViewModel } from './datetime-default.models';
+import { DateTimeAdapter } from '@danielmoncada/angular-datetime-picker';
 
 @Component({
   selector: InputTypeConstants.DatetimeDefault,
@@ -26,16 +27,6 @@ import { DatetimeDefaultViewModel } from './datetime-default.models';
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimepicker<Dayjs>;
 
-  /** THIS IS A HACK 
-   * With Angular Material versions 16.2.X and next NgxMatDatetimepicker doesn't load CSS styles correctly 
-   * so we created a hidden picker to force load the styles.
-   * https://github.com/h2qutc/angular-material-components/issues/372#issuecomment-1819690056
-   * https://github.com/h2qutc/angular-material-components/issues/348#issuecomment-1842649500
-   * also possibly related with this issue -> https://github.com/h2qutc/angular-material-components/issues/356
-   */
-  @ViewChild('hiddenPicker') private readonly hiddenPicker: MatDatepicker<null>;
-  visible = true;
-
   viewModel: Observable<DatetimeDefaultViewModel>;
 
   constructor(
@@ -43,6 +34,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private matDayjsDateAdapter: MatDayjsDateAdapter,
+    private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
     private ngxMatDayjsDatetimeAdapter: NgxMatDayjsDatetimeAdapter,
     @Inject(NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS) private ngxMatDayjsDatetimeAdapterOptions?: NgxMatDayjsDatetimeAdapterOptions,
   ) {
@@ -50,6 +42,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
+    this.owlDayjsDateAdapter.setLocale(currentLang);
     this.ngxMatDayjsDatetimeAdapter.setLocale(currentLang);
   }
 
@@ -75,17 +68,6 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
         return viewModel;
       }),
     );
-  }
-  
-  /** HACK
-   * Force load CSS styles for NgxMatDatetimepicker.
-   */
-  ngAfterViewInit(): void {
-    if (this.hiddenPicker !== undefined) {
-      this.hiddenPicker.open();
-      this.hiddenPicker.close();
-      this.visible = false;
-    }
   }
 
   ngOnDestroy() {
