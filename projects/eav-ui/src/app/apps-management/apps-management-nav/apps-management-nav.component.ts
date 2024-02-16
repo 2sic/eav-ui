@@ -1,23 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
-import { DialogSettings } from '../../app-administration/models';
-import { AppDialogConfigService } from '../../app-administration/services';
+import {  combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-
-
-export interface NavItem {
-  name: string;
-  path: string;
-  icon: string;
-  tippy: string;
-  child?: NavItem[];
-}
+import { NavItem } from '../../shared/models/nav-item.model';
 
 const navItems: NavItem[] = [
   {

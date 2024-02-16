@@ -41,13 +41,15 @@
 
   <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
     <!-- Sho Sidenav for each Item form navItems (filterd by dialogSettings in Ts) -->
-    @for (item of navItems; track item.path) {
-    <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
-      class="app-menu-container" [tippy]="item.tippy">
-      <mat-icon>{{ item.icon }}</mat-icon>
-      <div class="link-text">{{ item.name }}</div>
+    @for (navItem of navItems; track navItem.path) {
+
+    <a (click)="changeUrl(navItem.path)" [routerLink]="navItem.path" routerLinkActive="active" matRipple
+      class="app-menu-container" [tippy]="navItem.tippy">
+      <mat-icon>{{ navItem.icon }}</mat-icon>
+      <div class="link-text">{{ navItem.name }}</div>
     </a>
     }
+
     <div class="sideNav-bottom-info">
       <p>use App logo to show/hide menu</p>
     </div>

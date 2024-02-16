@@ -141,7 +141,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     CreateFileDialogModule,
     FeaturesModule,
     MatToolbarModule,
-    MatSidenavModule
+    MatSidenavModule,
   ],
   providers: [
     Context,

@@ -33,8 +33,8 @@
     [mode]="smallScreen.matches ? 'over' : 'side'"
     [opened]="sideNavOpened"
   >
-    @for (item of navItems; track item.path) {
-      <app-app-management-list-item [item]="item" ></app-app-management-list-item>
+    @for (navItem of navItems; track navItem.path) {
+      <app-nav-item-list [navItem]="navItem" ></app-nav-item-list>
     }
 
     <div class="sideNav-bottom-info">

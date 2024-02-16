@@ -10,14 +10,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-
-/** Interface to store navigation object to configure menus */
-interface NavItem {
-  name: string;
-  path: string;
-  icon: string;
-  tippy: string;
-}
+import { NavItem } from '../../shared/models/nav-item.model';
 
 const navItems: NavItem[] = [
   { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },

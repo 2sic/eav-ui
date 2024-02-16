@@ -57,6 +57,17 @@ mat-sidenav-container {
   background-color: rgba(128, 128, 128, 0.1);
 }
 
+
+
+::ng-deep {
+  .xng-breadcrumb-separator {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+
+// @2dg remove after Add Ap-nav with nav-list componenten
 .app-menu-container {
   padding: 16px 32px;
   display: flex;
@@ -73,12 +84,5 @@ mat-sidenav-container {
     font-size: 18px;
     font-weight: 500;
     margin-left: 25px;
-  }
-}
-
-::ng-deep {
-  .xng-breadcrumb-separator {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
   }
 }
