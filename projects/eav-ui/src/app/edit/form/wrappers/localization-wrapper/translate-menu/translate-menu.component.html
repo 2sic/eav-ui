@@ -6,7 +6,8 @@
           {{ vm.translationState.infoLabel ? (vm.translationState.infoLabel | translate:{ languages:
           vm.translationState.infoMessage }): '' }}
         </div>
-        <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu" [disabled]="vm.readOnly || vm.disableTranslation">
+        <button mat-icon-button class="eav-translate-icon-button" [matMenuTriggerFor]="menu" [disabled]="vm.readOnly || vm.disableTranslation"
+          [ngClass]="{ 'hidden': hideTranslateButton }">
           <mat-icon class="eav-translate-icon">translate</mat-icon>
         </button>
       </div>

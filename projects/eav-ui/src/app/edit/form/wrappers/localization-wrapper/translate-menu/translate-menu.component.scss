@@ -50,6 +50,10 @@
   scale: calc(4/5);
   position: relative;
   top: -6px;
+
+  &.hidden {
+    visibility: hidden;
+  }
 }
 
 // .feature-item {

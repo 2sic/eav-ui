@@ -22,6 +22,7 @@ import { TranslateMenuViewModel } from './translate-menu.models';
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
+  @Input() hideTranslateButton: boolean;
 
   TranslationLinks = TranslationLinks;
   viewModel$: Observable<TranslateMenuViewModel>;
