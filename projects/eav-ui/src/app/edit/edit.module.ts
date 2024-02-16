@@ -1,4 +1,3 @@
-import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -225,7 +224,6 @@ export const OWL_DAYJS_FORMATS = {
         MatAutocompleteModule,
         MatListModule,
         MatProgressSpinnerModule,
-        NgxMatDatetimePickerModule,
         MatRippleModule,
         ScrollingModule,
         MonacoEditorModule,
