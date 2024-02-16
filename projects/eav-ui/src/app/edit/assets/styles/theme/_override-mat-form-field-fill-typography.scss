@@ -176,8 +176,9 @@
     background-color: $accent-color;
     color: white;
 
-    &.mat-button-disabled {
+    &.mat-mdc-icon-button:disabled {
       background-color: $editUI-label-disabled-color;
+      color: white;
     }
   }
 }
