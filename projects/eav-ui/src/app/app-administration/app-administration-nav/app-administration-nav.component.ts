@@ -3,7 +3,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
-import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
@@ -14,7 +13,7 @@ import { NavItem } from '../../shared/models/nav-item.model';
 
 const navItems: NavItem[] = [
   { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },
-  { name: 'Data', path: 'data', icon: 'menu', tippy: 'Data / Content' },
+  { name: 'Data', path: 'data/Default', icon: 'menu', tippy: 'Data / Content' },
   {
     name: 'Queries',
     path: 'queries',
@@ -116,7 +115,8 @@ export class AppAdministrationNavComponent
   }
 
   changeUrl(path: string) {
-    if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
+    // @2dg route to data/default ??
+    // if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
     this.router.navigate([path], { relativeTo: this.route });
   }
 

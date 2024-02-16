@@ -6,7 +6,7 @@ import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.com
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
 export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
-  
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,

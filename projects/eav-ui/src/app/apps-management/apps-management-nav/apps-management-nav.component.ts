@@ -1,16 +1,19 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {  combineLatest, filter, map, startWith } from 'rxjs';
+import {  BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { NavItem } from '../../shared/models/nav-item.model';
+import { DialogSettings } from '../../app-administration/models';
+import { AppDialogConfigService } from '../../app-administration/services';
 
 const navItems: NavItem[] = [
   {
     name: 'System', path: 'system', icon: 'settings', tippy: 'System Info', child: [
+      // { name: 'System Info', path: 'system', icon: 'settings', tippy: 'System Info' },
       { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
     ]
   },
@@ -28,6 +31,7 @@ const navItems: NavItem[] = [
 export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
 
   zoneId = this.context.zoneId;
+
 
   private currentPath$ = combineLatest([
     this.router.events.pipe(
@@ -61,12 +65,20 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     private context: Context,
-    private media: MediaMatcher
+    private media: MediaMatcher,
+    private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
   }
 
   ngOnInit() {
+
+    this.fetchDialogSettings();
+    this.subscription.add(
+      this.refreshOnChildClosedDeep().subscribe(() => {
+        this.fetchDialogSettings();
+      })
+    );
 
     this.smallScreen.addEventListener(
       'change',
@@ -84,6 +96,10 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
 
   changeUrl(path: string) {
     this.router.navigate([path], { relativeTo: this.route });
+  }
+
+  private fetchDialogSettings() {
+    this.appDialogConfigService.getShared$(0).subscribe();
   }
 
 }

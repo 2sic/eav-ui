@@ -25,7 +25,6 @@ declare const window: EavWindow;
   styleUrls: ['./system-info.component.scss'],
 })
 export class SystemInfoComponent extends BaseComponent implements OnInit, OnDestroy {
-  dialogSettings: DialogSettings;
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
@@ -43,7 +42,6 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
     private featuresService: FeaturesService,
-    private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
   }
@@ -52,9 +50,6 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
     this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
     this.loading$ = new BehaviorSubject<boolean>(false);
-
-    this.getDialogSettings();
-
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
@@ -78,13 +73,15 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   }
 
   openSiteSettings(): void {
-    const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
-    this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+    this.featuresService.getSitePrimaryApp$().subscribe(sitePrimaryApp => {
+      this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+    })
   }
 
   openGlobalSettings(): void {
-    const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
-    this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+    this.featuresService.getGlobalPrimaryApp$().subscribe(globalPrimaryApp => {
+      this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+    })
   }
 
   openInsights() {
@@ -136,11 +133,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     });
   }
 
-  private getDialogSettings() {
-    this.appDialogConfigService.getShared$(0)/*.getDialogSettings(0)*/.subscribe(dialogSettings => {
-      this.dialogSettings = dialogSettings;
-    });
-  }
+
 
   private buildViewModel(): void {
     const systemInfos$ = this.systemInfoSet$.pipe(
