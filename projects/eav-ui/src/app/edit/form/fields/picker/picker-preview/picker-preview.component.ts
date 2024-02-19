@@ -55,17 +55,18 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
         const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
         const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
         const showGoToListDialogButton = settings.AllowMultiValue;
+        const csDisabled = controlStatus.disabled;
 
         const viewModel: EntityPickerPreviewViewModel = {
           selectedItems,
           freeTextMode,
           enableTextEntry: settings.EnableTextEntry,
-          controlStatus,
           disableAddNew,
 
           leavePlaceForButtons,
           showAddNewEntityButton,
           showGoToListDialogButton,
+          csDisabled,
         };
 
         return viewModel;

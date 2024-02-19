@@ -8,7 +8,7 @@
           [group]="group">
           <app-picker-toggle-text freeTextButtons
             [pickerData]="pickerData"
-            [controlStatusDisabled]="vm.controlStatus.disabled"
+            [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
             [freeTextMode]="vm.freeTextMode">
           </app-picker-toggle-text>
@@ -24,7 +24,7 @@
           [showItemEditButtons]="true">
           <app-picker-toggle-text freeTextButtons
             [pickerData]="pickerData"
-            [controlStatusDisabled]="vm.controlStatus.disabled"
+            [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
             [freeTextMode]="vm.freeTextMode">
           </app-picker-toggle-text>
@@ -37,7 +37,7 @@
           [group]="group">
           <app-picker-toggle-text freeTextButtons
             [pickerData]="pickerData"
-            [controlStatusDisabled]="vm.controlStatus.disabled"
+            [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
             [freeTextMode]="vm.freeTextMode">
           </app-picker-toggle-text>
@@ -49,7 +49,7 @@
       @if (vm.showAddNewEntityButton) {
         @if (pickerData.state.createEntityTypes.length > 1) {
           <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Entity.New' | translate"
-            [disabled]="vm.controlStatus.disabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
+            [disabled]="vm.csDisabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
             (click)="getEntityTypesData()">
             <mat-icon>add_circle_outline</mat-icon>
           </button>
@@ -62,14 +62,14 @@
           </mat-menu>
         } @else {
           <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Entity.New' | translate"
-            [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
+            [disabled]="vm.csDisabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
             <mat-icon>add_circle_outline</mat-icon>
           </button>
         }
       }
       @if (vm.showGoToListDialogButton) {
         <button mat-icon-button class="eav-suffix-button"
-          [disabled]="vm.controlStatus.disabled"
+          [disabled]="vm.csDisabled"
           [tippy]="'Fields.Entity.OpenMultiselect' | translate"
           (click)="expandDialog()">
           <mat-icon>post_add</mat-icon>

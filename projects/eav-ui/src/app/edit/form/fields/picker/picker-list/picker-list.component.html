@@ -1,13 +1,13 @@
 @if (viewModel$ | async; as vm) {
   @if (!vm.allowMultiValue) {
     <mat-label class="field-label"
-      [ngClass]="{ 'disabled': vm.controlStatus.disabled }">
+      [ngClass]="{ 'disabled': vm.csDisabled }">
       {{ vm.label }} {{ vm.required ? '*': '' }}
     </mat-label>
   }
   @if (vm.selectedItems.length > 0) {
     <div cdkDropList
-      [cdkDropListDisabled]="!vm.allowMultiValue || vm.controlStatus.disabled"
+      [cdkDropListDisabled]="!vm.allowMultiValue || vm.csDisabled"
       (cdkDropListDropped)="drop($event, vm.selectedItems)"
       [ngClass]="{
       'normal-list': !vm.allowMultiValue,
@@ -20,13 +20,13 @@
           [ngClass]="{
           'normal-item': !vm.allowMultiValue,
           'dnd-item': vm.allowMultiValue,
-          'disabled': vm.controlStatus.disabled
+          'disabled': vm.csDisabled
           }">
-          <div class="item-title" [ngClass]="{ 'disabled': vm.controlStatus.disabled }">
+          <div class="item-title" [ngClass]="{ 'disabled': vm.csDisabled }">
             @if (vm.allowMultiValue) {
               <mat-icon class="item-title__icon"
                 [tippy]="'Fields.Entity.DragMove' | translate"
-                [tippyDisabled]="vm.controlStatus.disabled">
+                [tippyDisabled]="vm.csDisabled">
                 drag_handle
               </mat-icon>
             }
@@ -48,7 +48,7 @@
             @if (vm.enableDelete && !item._disableDelete) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Entity.Delete' | translate"
-                [disabled]="vm.controlStatus.disabled"
+                [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
                 (click)="deleteItem(index, item.Value)">
                 <mat-icon>delete</mat-icon>
@@ -57,7 +57,7 @@
             @if (vm.enableRemove) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Entity.Remove' | translate"
-                [disabled]="vm.controlStatus.disabled"
+                [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
                 (click)="removeItem(index)">
                 <mat-icon>clear</mat-icon>

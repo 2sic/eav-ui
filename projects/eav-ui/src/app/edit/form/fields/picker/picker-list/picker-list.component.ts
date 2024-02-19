@@ -48,6 +48,7 @@ export class PickerListComponent implements OnInit {
       map(([
         settings, label, required, controlStatus, selectedItems
       ]) => {
+        const csDisabled = controlStatus.disabled;
         const viewModel: EntityListViewModel = {
           allowMultiValue: settings.allowMultiValue,
           enableEdit: settings.enableEdit,
@@ -55,8 +56,9 @@ export class PickerListComponent implements OnInit {
           enableRemove: settings.enableRemove,
           label,
           required,
-          controlStatus,
           selectedItems,
+
+          csDisabled,
         };
         return viewModel;
       }),
