@@ -69,6 +69,7 @@
       }
       @if (vm.showGoToListDialogButton) {
         <button mat-icon-button class="eav-suffix-button"
+          [disabled]="vm.controlStatus.disabled"
           [tippy]="'Fields.Entity.OpenMultiselect' | translate"
           (click)="expandDialog()">
           <mat-icon>post_add</mat-icon>
