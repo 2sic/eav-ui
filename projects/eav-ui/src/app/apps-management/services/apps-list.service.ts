@@ -31,12 +31,13 @@ export class AppsListService {
     });
   }
 
-  create(name: string, inheritAppId?: number) {
+  create(name: string, inheritAppId?: number, templateId?: number) {
     return this.http.post<null>(this.apiUrl(webApiAppRoot + 'app'), {}, {
       params: {
         zoneId: this.context.zoneId.toString(),
         name,
         ...(inheritAppId != null && { inheritAppId }),
+        ...(templateId != null && { templateId }),
       },
     });
   }
