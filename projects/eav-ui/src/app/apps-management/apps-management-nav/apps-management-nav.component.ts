@@ -1,27 +1,24 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {  BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
+import { combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { NavItem } from '../../shared/models/nav-item.model';
-import { DialogSettings } from '../../app-administration/models';
 import { AppDialogConfigService } from '../../app-administration/services';
+import { AppsManagementNavItems } from './managment-nav-item.mockup';
 
-const navItems: NavItem[] = [
-  {
-    name: 'System', path: 'system', icon: 'settings', tippy: 'System Info', child: [
-      // { name: 'System Info', path: 'system', icon: 'settings', tippy: 'System Info' },
-      { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
-    ]
-  },
-  // { name: 'RegisterOld', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
-  { name: 'Apps', path: 'list', icon: 'star_border', tippy: 'Apps' },
-  { name: 'Languages', path: 'languages', icon: 'translate', tippy: 'Languages' },
-  { name: 'Extensions / Features', path: 'license', icon: 'tune', tippy: 'Extensions and Features' },
-];
+// const navItems: NavItem[] = [
+//   {
+//     name: 'System', path: 'system', icon: 'settings', tippy: 'System Info', child: [
+//       { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
+//     ]
+//   },
+//   { name: 'Apps', path: 'list', icon: 'star_border', tippy: 'Apps' },
+//   { name: 'Languages', path: 'languages', icon: 'translate', tippy: 'Languages' },
+//   { name: 'Extensions / Features', path: 'license', icon: 'tune', tippy: 'Extensions and Features' },
+// ];
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -58,7 +55,7 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
   @ViewChild('sidenav') sidenav!: MatSidenav;
   sideNavOpened = !this.smallScreen.matches;
-  navItems = navItems;
+  navItems = AppsManagementNavItems;
 
   constructor(
     protected router: Router,

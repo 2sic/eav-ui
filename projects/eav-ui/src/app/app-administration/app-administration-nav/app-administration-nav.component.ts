@@ -9,32 +9,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { NavItem } from '../../shared/models/nav-item.model';
-
-const navItems: NavItem[] = [
-  { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },
-  { name: 'Data', path: 'data/Default', icon: 'menu', tippy: 'Data / Content' },
-  {
-    name: 'Queries',
-    path: 'queries',
-    icon: 'filter_list',
-    tippy: 'Queries / Visual Query Designer',
-  },
-  {
-    name: 'Views',
-    path: 'views',
-    icon: 'layers',
-    tippy: 'Views / Templates',
-  },
-  { name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi' },
-  {
-    name: 'App',
-    path: 'app',
-    icon: 'settings_applications',
-    tippy: 'App Settings',
-  },
-  { name: 'Sync', path: 'sync', icon: 'sync', tippy: 'App Export / Import' },
-];
+import { AppsAdministationNavItems } from './administation-nav-item.mockup';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -78,7 +53,7 @@ export class AppAdministrationNavComponent
   sideNavOpened = !this.smallScreen.matches;
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
-  navItems = navItems;
+  navItems = AppsAdministationNavItems;
 
   constructor(
     protected router: Router,
