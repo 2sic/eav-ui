@@ -68,7 +68,7 @@ export class AppAdministrationNavComponent
   ngOnInit() {
     this.fetchDialogSettings();
     this.subscription.add(
-      this.refreshOnChildClosedDeep().subscribe(() => {
+      this.refreshOnChildClosedShallow().subscribe(() => {
         this.fetchDialogSettings();
       })
     );

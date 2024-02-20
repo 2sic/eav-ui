@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { FeaturesService } from '../../shared/services/features.service';
 import { map } from 'rxjs';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-getting-started',
@@ -9,13 +9,12 @@ import { map } from 'rxjs';
 })
 export class GettingStartedComponent {
 
-  gettingStartedUrl!: string;
+  gettingStartedUrl$ = this.appDialogConfigService.getShared$().pipe(map(
+    dialogSettings => dialogSettings.Context.App.GettingStartedUrl
+  ));
 
-  constructor(featuresService: FeaturesService) {
+  constructor(private appDialogConfigService: AppDialogConfigService)
+   {}
 
-    featuresService.getContext$().pipe(map(d => d.App.GettingStartedUrl)).subscribe(url => {
-      this.gettingStartedUrl = url;
-    });
-  }
 
 }

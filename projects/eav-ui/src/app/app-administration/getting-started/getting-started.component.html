@@ -1,1 +1,3 @@
-<iframe class="iframe" [src]="gettingStartedUrl | safeResourceUrl"></iframe>
+@if (gettingStartedUrl$ | async; as gettingStartedUrl) {
+  <iframe class="iframe" [src]="gettingStartedUrl | safeResourceUrl"></iframe>
+}

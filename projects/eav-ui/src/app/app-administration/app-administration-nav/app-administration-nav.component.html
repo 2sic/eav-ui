@@ -50,48 +50,6 @@
 
   <mat-sidenav-content>
     <router-outlet></router-outlet>
-    <!-- Show each Componenten by Path name -->
-    <div class="container-content">
-
-      <!-- @if (vm.currentPath === 'home') {
-      <app-getting-started [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
-      </app-getting-started>
-      } -->
-
-      @if (vm.currentPath === 'data') {
-      <app-data >
-      </app-data>
-      }
-
-      @if (vm.currentPath === 'queries') {
-      <app-queries >
-      </app-queries>
-      }
-
-      @if (vm.currentPath === 'views') {
-      <app-views [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
-        [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
-        [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
-        [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
-      </app-views>
-      }
-
-      @if (vm.currentPath === 'web-api') {
-      <app-web-api>
-      </app-web-api>
-      }
-
-      @if (vm.currentPath === 'app') {
-      <app-app-configuration>
-      </app-app-configuration>
-      }
-
-      @if (vm.currentPath === 'sync') {
-      <app-sync-configuration >
-      </app-sync-configuration>
-      }
-
-    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
 }

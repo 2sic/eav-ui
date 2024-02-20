@@ -133,8 +133,6 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     });
   }
 
-
-
   private buildViewModel(): void {
     const systemInfos$ = this.systemInfoSet$.pipe(
       map(systemInfoSet => {
