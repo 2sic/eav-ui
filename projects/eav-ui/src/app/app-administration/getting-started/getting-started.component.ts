@@ -1,16 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { FeaturesService } from '../../shared/services/features.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-getting-started',
   templateUrl: './getting-started.component.html',
   styleUrls: ['./getting-started.component.scss'],
 })
-export class GettingStartedComponent implements OnInit {
-  @Input() gettingStartedUrl: string;
+export class GettingStartedComponent {
 
-  constructor() { }
+  gettingStartedUrl!: string;
 
-  ngOnInit() {
+  constructor(featuresService: FeaturesService) {
+
+    featuresService.getContext$().pipe(map(d => d.App.GettingStartedUrl)).subscribe(url => {
+      this.gettingStartedUrl = url;
+    });
   }
 
 }

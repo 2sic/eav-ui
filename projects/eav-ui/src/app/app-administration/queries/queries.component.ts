@@ -20,6 +20,7 @@ import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
+import { FeaturesService } from '../../shared/services/features.service';
 
 @Component({
   selector: 'app-queries',
@@ -27,8 +28,7 @@ import { QueriesActionsComponent } from './queries-actions/queries-actions.compo
   styleUrls: ['./queries.component.scss'],
 })
 export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() enablePermissions: boolean;
-
+  enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
 
@@ -43,6 +43,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
+    private featuresService: FeaturesService
   ) {
     super(router, route);
    }
@@ -50,6 +51,9 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
   ngOnInit() {
     this.fetchQueries();
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchQueries(); }));
+    this.featuresService.getContext$().pipe(map(d => d.Enable.AppPermissions)).subscribe(data => {
+      this.enablePermissions = data;
+    });
   }
 
   ngOnDestroy() {

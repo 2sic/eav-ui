@@ -30,8 +30,8 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
 })
-export class AppConfigurationComponent extends BaseComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() dialogSettings: DialogSettings;
+export class AppConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
+  dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
@@ -61,10 +61,10 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     private appInternalsService: AppInternalsService,
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
-    appDialogConfigService: AppDialogConfigService,
+    private appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
     this.features.loadFromService(appDialogConfigService);
@@ -100,16 +100,26 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   ngOnInit() {
     this.fetchSettings();
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchSettings(); }));
-  }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.dialogSettings != null) {
-      const appScope = this.dialogSettings.Context.App.SettingsScope;
+    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+      this.dialogSettings = dialogSettings;
+      const appScope = dialogSettings.Context.App.SettingsScope;
       this.isGlobal = appScope === AppScopes.Global;
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
-    }
+    });
+
   }
+
+  // @2dg New with a Subscription, onChanges is not needed ?
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes.dialogSettings != null) {
+  //     const appScope = this.dialogSettings.Context.App.SettingsScope;
+  //     this.isGlobal = appScope === AppScopes.Global;
+  //     this.isPrimary = appScope === AppScopes.Site;
+  //     this.isApp = appScope === AppScopes.App;
+  //   }
+  // }
 
   ngOnDestroy() {
     this.snackBar.dismiss();

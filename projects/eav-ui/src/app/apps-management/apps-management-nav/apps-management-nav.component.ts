@@ -9,17 +9,6 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-item.mockup';
 
-// const navItems: NavItem[] = [
-//   {
-//     name: 'System', path: 'system', icon: 'settings', tippy: 'System Info', child: [
-//       { name: 'Register', path: 'registration', icon: 'how_to_reg', tippy: 'Register this System on 2sxc Patrons' },
-//     ]
-//   },
-//   { name: 'Apps', path: 'list', icon: 'star_border', tippy: 'Apps' },
-//   { name: 'Languages', path: 'languages', icon: 'translate', tippy: 'Languages' },
-//   { name: 'Extensions / Features', path: 'license', icon: 'tune', tippy: 'Extensions and Features' },
-// ];
-
 @Component({
   selector: 'app-apps-management-nav',
   templateUrl: './apps-management-nav.component.html',

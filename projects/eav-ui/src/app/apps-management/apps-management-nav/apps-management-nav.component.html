@@ -2,18 +2,14 @@
 <mat-toolbar>
   <div class="toolbar-container">
     <!-- Mat Icon Menu -->
-    <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened"
-      >menu</mat-icon
-    >
+    <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
     <!-- App Name -->
     <div>
       <span> Manage Zone {{ zoneId }} </span>
     </div>
     <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
     <xng-breadcrumb [separator]="emptyTemplate">
-      <ng-container
-        *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last"
-      >
+      <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
         @if (last) {
         <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
         {{ breadcrumb }}
@@ -28,13 +24,9 @@
   </button>
 </mat-toolbar>
 <mat-sidenav-container>
-  <mat-sidenav
-    #sidenav
-    [mode]="smallScreen.matches ? 'over' : 'side'"
-    [opened]="sideNavOpened"
-  >
+  <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
     @for (navItem of navItems; track navItem.path) {
-      <app-nav-item-list [navItem]="navItem" ></app-nav-item-list>
+    <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
     }
 
     <div class="sideNav-bottom-info">
@@ -49,5 +41,3 @@
   </mat-sidenav-content>
 </mat-sidenav-container>
 }
-
-

@@ -47,6 +47,9 @@ export class FeaturesService {
     return this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false));
   }
 
+  getContext$(){
+    return this.dialogContext$;
+  }
 
 
 

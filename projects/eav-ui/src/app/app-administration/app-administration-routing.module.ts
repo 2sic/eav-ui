@@ -18,12 +18,13 @@ import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialo
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
 import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
+import { GettingStartedComponent } from './getting-started/getting-started.component';
 
 const appAdministrationRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appAdministrationDialog }, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
+      { path: 'home', component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
       {
         path: 'data/:scope', component: EmptyRouteComponent, children: [
           {

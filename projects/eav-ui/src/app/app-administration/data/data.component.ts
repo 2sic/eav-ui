@@ -27,6 +27,7 @@ import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
+import { FeaturesService } from '../../shared/services/features.service';
 
 @Component({
   selector: 'app-data',
@@ -34,13 +35,13 @@ import { DataItemsParams } from './data-items/data-items.models';
   styleUrls: ['./data.component.scss'],
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() enablePermissions: boolean;
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
   scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
+  enablePermissions!: boolean;
 
   viewModel$ = combineLatest([this.contentTypes$, this.scope$, this.scopeOptions$, this.globalConfigService.getDebugEnabled$()]).pipe(
     map(([contentTypes, scope, scopeOptions, debugEnabled]) =>
@@ -54,14 +55,21 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private contentExportService: ContentExportService,
-  ) { 
+    private featuresService: FeaturesService
+  ) {
     super(router, route);
+
   }
 
   ngOnInit() {
     this.fetchScopes();
     this.refreshScopeOnRouteChange();
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchContentTypes(); }));
+
+
+    this.featuresService.getContext$().pipe(map(d => d.Enable.AppPermissions)).subscribe(data => {
+      this.enablePermissions = data;
+    });
   }
 
   ngOnDestroy() {

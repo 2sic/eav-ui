@@ -14,6 +14,7 @@ import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
+import { FeaturesService } from '../../shared/services/features.service';
 
 @Component({
   selector: 'app-web-api',
@@ -21,7 +22,7 @@ import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
   styleUrls: ['./web-api.component.scss'],
 })
 export class WebApiComponent implements OnInit, OnDestroy {
-  @Input() enableCode: boolean;
+  enableCode!: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -36,6 +37,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private featuresService: FeaturesService
   ) { }
 
   ngOnInit() {
@@ -43,6 +45,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.viewModel$ = combineLatest([this.webApis$]).pipe(
       map(([webApis]) => ({ webApis }))
     );
+
+    this.featuresService.getContext$().pipe(map(d => d.Enable.CodeEditor)).subscribe(data => {
+      this.enableCode = data;
+    });
+
   }
 
   ngOnDestroy() {
@@ -53,7 +60,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     // This FileLocationDialogComponent dialog is currently never going to be opened because it has been replaced by mat-menu
     // in the web-api.component.html template. If you want to use the dialog instead of the menu, you need to remove the
     // mat-menu and replace it with a button that opens the dialog with empty parameters.
-    // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if 
+    // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if
     // FileLocationDialogComponent dialog was used.
     // if (global == null) {
     //   const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
@@ -180,6 +187,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 }
 
-interface WebApiViewModel { 
+interface WebApiViewModel {
   webApis: WebApi[];
 }
