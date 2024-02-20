@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { ContentItem } from '../models/content-item.model';
 import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsStatusParams } from './content-items-status.models';
+import { EavForInAdminUi } from '../../edit/shared/models/eav';
 
 @Component({
   selector: 'app-content-items-status',
@@ -27,14 +28,15 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
 
     this.metadataCount = this.item.Metadata?.length ?? 0;
 
-    this.metadataTooltip = this.item.For
+    const mdf = this.item.For as EavForInAdminUi;
+    this.metadataTooltip = mdf
       ? 'This item is metadata for:'
-      + `\nTarget: ${this.item.For.Target}`
-      + `\nTargetType: ${this.item.For.TargetType}`
-      + (this.item.For.Number ? `\nNumber: ${this.item.For.Number}` : '')
-      + (this.item.For.String ? `\nString: ${this.item.For.String}` : '')
-      + (this.item.For.Guid ? `\nGuid: ${this.item.For.Guid}` : '')
-      + (this.item.For.Title ? `\nTitle: ${this.item.For.Title}` : '')
+      + `\nTarget: ${mdf.Target}`
+      + `\nTargetType: ${mdf.TargetType}`
+      + (mdf.KeyNumber ? `\nNumber: ${mdf.KeyNumber}` : '')
+      + (mdf.KeyString ? `\nString: ${mdf.KeyString}` : '')
+      + (mdf.KeyGuid ? `\nGuid: ${mdf.KeyGuid}` : '')
+      + (mdf.Title ? `\nTitle: ${mdf.Title}` : '')
       : 'This item is not metadata.';
     this.metadataTooltip += `\n\nThis item has ${this.metadataCount > 0 ? this.metadataCount : 'no'} other metadata ${this.metadataCount === 1 ? 'item' : 'items'} attached to it.`;
   }

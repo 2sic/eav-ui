@@ -1,4 +1,4 @@
-import { EavFor, EavType } from '../../edit/shared/models/eav';
+import { EavForInAdminUi, EavType } from '../../edit/shared/models/eav';
 
 export interface Metadata {
   Items: MetadataItem[];
@@ -31,7 +31,7 @@ export interface MetadataRecommendation {
 export interface MetadataViewModel {
   metadata: MetadataItem[];
   recommendations: MetadataRecommendation[];
-  itemFor?: EavFor;
+  itemFor?: EavForInAdminUi;
   fabOpen: boolean;
 }
 
