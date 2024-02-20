@@ -134,11 +134,18 @@ export class QueryFieldDataSource extends DataSourceBase {
   transformData(data: QueryStreams, streamName: string): PickerItem[] {
     if (!data)
       return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
-    if (!data[streamName])
-      return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryStreamNotFound', ' ' + streamName)];
-    
-    const items: PickerItem[] = data[streamName].map(entity => this.fillEntityInfoMoreFields(entity));
-    return this.setDisableEdit(items);
+
+    let items: PickerItem[] = [];
+    let errors: PickerItem[] = [];
+    streamName.split(',').forEach(stream => { 
+      if (!data[stream]) {
+        errors.push(placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryStreamNotFound', ' ' + stream));
+        return; // TODO: @SDV test if this acts like continue or break
+      }
+        
+      items = items.concat(data[stream].map(entity => this.fillEntityInfoMoreFields(entity)));
+    });
+    return [...errors, ...this.setDisableEdit(items)];
   }
 
   private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {
