@@ -62,6 +62,7 @@
     "MissingDefaultLangValue": "please create value in the default language {{languages}} before translating",
     "In": "in {{languages}}",
     "From": "from {{languages}}",
+    "NotTranslatable": "Not translatable",
     "SnackBar": {
       "Title": "⚠️ Warning: You are using a test account",
       "Body": "You are using a demo Google Account to translate. This can stop working at any time. <br>You <strong>must</strong> register your own API key. It's free for 500'000 words per month. See <a href='https://go.2sxc.org/translate-api-key' target='_blank'>docs</a>."

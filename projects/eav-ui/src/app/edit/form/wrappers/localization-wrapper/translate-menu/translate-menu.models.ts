@@ -7,12 +7,12 @@ export interface TranslationStateCore {
 }
 
 export interface TranslateMenuViewModel {
-  readOnly: boolean;
   currentLanguage: string;
   defaultLanguage: string;
   translationState: TranslationState;
   translationStateClass: string;
-  disableTranslation: boolean;
   disableAutoTranslation: boolean;
   disabled: boolean;
+
+  disableTranslateButton: boolean;
 }

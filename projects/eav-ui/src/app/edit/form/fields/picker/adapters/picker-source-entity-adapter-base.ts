@@ -14,6 +14,7 @@ import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
+  private createEntityTypes: string = '';
   protected contentTypeMask: FieldMask;
   protected contentType: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
@@ -45,12 +46,16 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
     this.subscriptions.add(
       this.settings$.pipe(
-        map(settings => settings.EntityType),
+        map(settings => ({
+          EntityType: settings.EntityType,
+          CreateEntityTypes: settings.CreateTypes,
+        })),
         distinctUntilChanged(),
-      ).subscribe(entityType => {
+      ).subscribe(settings => {
+        this.createEntityTypes = settings.CreateEntityTypes;
         this.contentTypeMask?.destroy();
         this.contentTypeMask = new FieldMask(
-          entityType,
+          settings.EntityType,
           this.group.controls,
           () => {
             this.availableItems$.next(null);
@@ -78,7 +83,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
 
   updateAddNew(): void {
     const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!contentTypeName);
+    this.disableAddNew$.next(!contentTypeName && !this.createEntityTypes);
   }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity

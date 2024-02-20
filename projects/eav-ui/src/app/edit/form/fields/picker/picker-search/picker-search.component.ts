@@ -120,6 +120,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           this.dataSource.data = filteredData;
         }
 
+        const csDisabled = controlStatus.disabled;
+
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
           allowMultiValue: settings.AllowMultiValue,
@@ -143,6 +145,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           // additional properties for easier readability in the template
           showItemEditButtons,
           isTreeDisplayMode,
+          csDisabled,
         };
         return viewModel;
       }),

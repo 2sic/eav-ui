@@ -1,4 +1,3 @@
-import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -25,7 +24,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Dayjs } from 'dayjs';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
@@ -101,7 +99,7 @@ import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapp
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
 import { PickerExpandableWrapperComponent } from './form/wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
 // tslint:disable-next-line: max-line-length
-import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
+import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { PickerPillsComponent } from './form/fields/picker/picker-pills/picker-pills.component';
@@ -112,6 +110,18 @@ import { PickerTextToggleComponent } from './form/fields/picker/picker-text-togg
 import { FieldDataSourceFactoryService } from './form/fields/picker/factories/field-data-source-factory.service';
 import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity-picker.component';
 import { StringPickerComponent } from './form/fields/string/string-picker/string-picker.component';
+import { OWL_DATE_TIME_FORMATS, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
+import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
+
+export const OWL_DAYJS_FORMATS = {
+    parseInput: 'l LT',
+    fullPickerInput: 'l LT',
+    datePickerInput: 'l',
+    timePickerInput: 'LT',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+};
 
 @NgModule({
     declarations: [
@@ -198,8 +208,6 @@ import { StringPickerComponent } from './form/fields/string/string-picker/string
         MatDatepickerModule,
         MatDayjsDateModule,
         MatDayjsModule,
-        NgxMatDayjsDatetimeModule,
-        NgxMatDayjsModule,
         MatCardModule,
         MatIconModule,
         MatMenuModule,
@@ -216,7 +224,6 @@ import { StringPickerComponent } from './form/fields/string/string-picker/string
         MatAutocompleteModule,
         MatListModule,
         MatProgressSpinnerModule,
-        NgxMatDatetimePickerModule,
         MatRippleModule,
         ScrollingModule,
         MonacoEditorModule,
@@ -224,6 +231,8 @@ import { StringPickerComponent } from './form/fields/string/string-picker/string
         ExtendedFabSpeedDialModule,
         FeaturesModule,
         FlexLayoutModule,
+        OwlDateTimeModule,
+        OwlDayJsDateTimeModule,
     ],
     providers: [
         Context,
@@ -233,8 +242,8 @@ import { StringPickerComponent } from './form/fields/string/string-picker/string
         QueryService,
         MatDayjsDateAdapter,
         { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-        NgxMatDayjsDatetimeAdapter,
-        { provide: NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
+        { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
         LoadIconsService,
         SourceService,
         ScriptsLoaderService,
