@@ -114,10 +114,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
         if (isTreeDisplayMode/*settings.PickerTreeConfiguration*/) {
           const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
-          const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
-            ? !availableItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.Id))
-            : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
-          this.dataSource.data = filteredData;
+          if (availableItems && availableItems[0]?.data != undefined) {
+            const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
+              ? !availableItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.Id))
+              : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
+            this.dataSource.data = filteredData;
+          }   
         }
 
         const csDisabled = controlStatus.disabled;
