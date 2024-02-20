@@ -57,7 +57,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchSettings(); }));
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
   }
 
   ngOnDestroy() {
@@ -74,7 +74,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
     const staticName = eavConstants.contentTypes.appConfiguration;
     this.contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
-      
+
       if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
       if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
       form = {
@@ -82,7 +82,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
       };
 
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
     });
   }
 
@@ -91,7 +91,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
       this.context.appId,
       `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.firstChild });
+    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
   }
 
   private fetchSettings() {

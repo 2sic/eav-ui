@@ -99,7 +99,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchSettings(); }));
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
 
     this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -176,14 +176,14 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       }
 
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
     });
   }
 
   openLightSpeed() {
     const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   openSiteSettings() {
@@ -197,22 +197,22 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   }
 
   config(staticName: string) {
-    this.router.navigate([`fields/${staticName}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`fields/${staticName}`], { relativeTo: this.route.parent.firstChild });
   }
 
   openPermissions() {
-    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.parent.firstChild });
   }
 
   openLanguagePermissions(enabled: boolean) {
     if (enabled)
-      this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
+      this.router.navigate(['language-permissions'], { relativeTo: this.route.parent.firstChild });
     else
       FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   analyze(part: AnalyzePart) {
-    this.router.navigate([`analyze/${part}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`analyze/${part}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private fetchSettings() {

@@ -24,6 +24,7 @@ import { ViewActionsParams } from './views-actions/views-actions.models';
 import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
+import { FeaturesService } from '../../shared/services/features.service';
 
 @Component({
   selector: 'app-views',
@@ -31,10 +32,10 @@ import { calculateViewType } from './views.helpers';
   styleUrls: ['./views.component.scss'],
 })
 export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() enableCode: boolean;
-  @Input() enablePermissions: boolean;
-  @Input() appIsGlobal: boolean;
-  @Input() appIsInherited: boolean;
+  enableCode: boolean;
+  enablePermissions: boolean;
+  appIsGlobal: boolean;
+  appIsInherited: boolean;
 
   views$ = new BehaviorSubject<View[]>(undefined);
   polymorphStatus$ = new BehaviorSubject(undefined);
@@ -42,7 +43,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
   private polymorphism: Polymorphism;
-  
+
   viewModel$: Observable<ViewsViewModel>;
 
   constructor(
@@ -51,6 +52,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
     private viewsService: ViewsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
+    private featuresService: FeaturesService
   ) {
     super(router, route);
    }
@@ -58,13 +60,20 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchTemplates();
     this.fetchPolymorphism();
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { 
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
       this.fetchTemplates();
       this.fetchPolymorphism();
     }));
     this.viewModel$ = combineLatest([this.views$, this.polymorphStatus$]).pipe(
       map(([views, polymorphStatus]) => ({ views, polymorphStatus }))
     );
+
+    this.featuresService.getContext$().subscribe(data => {
+      this.enableCode = data.Enable.CodeEditor
+      this.enablePermissions = data.Enable.AppPermissions
+      this.appIsGlobal = data.App.IsShared
+      this.appIsInherited = data.App.IsInherited
+    });
   }
 
   ngOnDestroy() {
@@ -75,7 +84,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
 
   importView(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
+    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
   }
 
   private fetchTemplates() {
@@ -108,7 +117,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   editPolymorphisms() {
@@ -122,7 +131,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private enableCodeGetter() {
@@ -134,7 +143,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private openUsage(view: View) {
-    this.router.navigate([`usage/${view.Guid}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`usage/${view.Guid}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private openCode(view: View) {
@@ -142,7 +151,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(view: View) {
-    this.router.navigate([GoToPermissions.getUrlEntity(view.Guid)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlEntity(view.Guid)], { relativeTo: this.route.parent.firstChild });
   }
 
   private openMetadata(view: View) {
@@ -150,7 +159,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       view.Guid,
       `Metadata for View: ${view.Name} (${view.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.firstChild });
+    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
   }
 
   private cloneView(view: View) {
@@ -158,7 +167,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [{ ContentTypeName: eavConstants.contentTypes.template, DuplicateEntity: view.Id }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private exportView(view: View) {
