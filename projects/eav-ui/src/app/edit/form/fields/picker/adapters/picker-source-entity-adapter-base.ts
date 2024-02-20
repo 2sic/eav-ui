@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model";
 import { DeleteEntityProps } from "../picker.models";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
-import { FieldMask } from "../../../../shared/helpers";
+import { FieldMask, GeneralHelpers } from "../../../../shared/helpers";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -50,7 +50,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
           EntityType: settings.EntityType,
           CreateEntityTypes: settings.CreateTypes,
         })),
-        distinctUntilChanged(),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
       ).subscribe(settings => {
         this.createEntityTypes = settings.CreateEntityTypes;
         this.contentTypeMask?.destroy();
