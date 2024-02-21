@@ -4,7 +4,7 @@
       @if (vm.controlStatus.value) {
         <i class="icon-preview {{ vm.previewCss }} {{ vm.controlStatus.value }}"></i>
       }
-      <input matInput [formControlName]="config.fieldName" [placeholder]="vm.placeholder" [required]="vm.required"
+      <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [placeholder]="vm.placeholder" [required]="vm.required"
         [matAutocomplete]="auto">
     </div>
     <mat-autocomplete #auto="matAutocomplete" [hideSingleSelectionIndicator]="true">

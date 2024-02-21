@@ -3,8 +3,8 @@
     <mat-form-field [formGroup]="group" class="eav-form-field" color="accent"
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }"
       (click)="filterSelectionList()">
-      <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableItems, vm.error)" [matAutocomplete]="auto"
-        [disabled]="vm.csDisabled || !vm.enableAddExisting"
+      <input matInput #autocomplete class="eav-translate-on-dblclick" [placeholder]="getPlaceholder(vm.availableItems, vm.error)" 
+        [matAutocomplete]="auto" [disabled]="vm.csDisabled || !vm.enableAddExisting"
         [value]="showSelectedItem ? vm.selectedItem?.Text : ''" (focus)="fetchEntities()" (blur)="markAsTouched()"
         (input)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"

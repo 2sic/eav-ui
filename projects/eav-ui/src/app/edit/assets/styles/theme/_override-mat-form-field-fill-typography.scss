@@ -56,6 +56,9 @@
   // .mat-mdc-form-field-infix {
   //   padding-bottom: 0px !important;
   // }
+  .eav-translate-on-dblclick:disabled {
+    pointer-events: none
+  }
 
   // Used so form-field doesn't have background color
   .mat-mdc-text-field-wrapper,

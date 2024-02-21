@@ -10,7 +10,7 @@
       [jsonSchema]="vm.jsonSchema" [jsonComments]="vm.jsonComments" (focused)="onFocused()" (blurred)="onBlurred()">
     </app-monaco-editor>
     @if (!vm.controlStatus.value && vm.placeholder) {
-      <input class="placeholder" [placeholder]="vm.placeholder">
+      <input class="placeholder eav-translate-on-dblclick" [placeholder]="vm.placeholder">
     }
   </div>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
