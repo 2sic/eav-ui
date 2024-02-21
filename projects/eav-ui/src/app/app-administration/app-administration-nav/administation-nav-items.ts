@@ -6,7 +6,7 @@ export const AppsAdministationNavItems: NavItem[] = [
   { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },
   {
     name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', tippy: 'Data / Content', child: [
-      { name: 'Copilot', path: 'copilot', icon: 'support_agent', tippy: 'Autogenerate content types ' },
+      { name: 'Copilot (beta)', path: 'copilot', icon: 'support_agent', tippy: 'Autogenerate content types ' },
     ]
   },
   {
