@@ -10,7 +10,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppsAdministationNavItems } from './administation-nav-item.mockup';
-import { eavConstants } from '../../shared/constants/eav.constants';
+
 
 @Component({
   selector: 'app-app-administration-nav',
