@@ -103,10 +103,11 @@ export class AppAdministrationNavComponent
     this.dialogRef.close();
   }
 
-  changeUrl(path: string) {
-    if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
-    this.router.navigate([path], { relativeTo: this.route });
-  }
+  // @2dg not longer in use with new routing SideNav
+  // changeUrl(path: string) {
+  //   // if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
+  //   // this.router.navigate([path], { relativeTo: this.route });
+  // }
 
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {

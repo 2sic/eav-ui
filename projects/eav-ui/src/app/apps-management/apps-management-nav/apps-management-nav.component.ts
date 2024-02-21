@@ -80,9 +80,10 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     this.dialogRef.close();
   }
 
-  changeUrl(path: string) {
-    this.router.navigate([path], { relativeTo: this.route });
-  }
+  // @2dg not longer in use with new routing SideNav
+  // changeUrl(path: string) {
+  //   this.router.navigate([path], { relativeTo: this.route });
+  // }
 
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$(0).subscribe();
