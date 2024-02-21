@@ -9,7 +9,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AppsAdministationNavItems } from './administation-nav-item.mockup';
+import { AppsAdministationNavItems } from './administation-nav-items';
 
 
 @Component({
@@ -68,10 +68,6 @@ export class AppAdministrationNavComponent
   }
 
   ngOnInit() {
-    this.matcher = this.media.matchMedia('(min-width: 1000px)');
-
-    this.matcher.addEventListener('change', this.myListener);
-
 
     this.fetchDialogSettings();
     this.subscription.add(
@@ -80,16 +76,13 @@ export class AppAdministrationNavComponent
       })
     );
 
-
-
     this.smallScreen.addEventListener(
       'change',
-      (c) => (this.sidenav.opened = !c.matches)
+      (c) => (
+        this.sidenav.opened = !c.matches,
+        this.sidenav.mode = c.matches ? 'over' : 'side'
+      )
     );
-  }
-
-  myListener(event: { matches: any; }) {
-    console.log(event.matches ? 'match' : 'no match');
   }
 
   ngOnDestroy() {

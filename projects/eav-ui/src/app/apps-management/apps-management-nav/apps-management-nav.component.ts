@@ -7,7 +7,7 @@ import { Context } from '../../shared/services/context';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppDialogConfigService } from '../../app-administration/services';
-import { AppsManagementNavItems } from './managment-nav-item.mockup';
+import { AppsManagementNavItems } from './managment-nav-items';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -44,6 +44,7 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
   @ViewChild('sidenav') sidenav!: MatSidenav;
   sideNavOpened = !this.smallScreen.matches;
+
   navItems = AppsManagementNavItems;
 
   constructor(
@@ -68,7 +69,10 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
 
     this.smallScreen.addEventListener(
       'change',
-      (c) => (this.sidenav.opened = !c.matches)
+      (c) => (
+        this.sidenav.opened = !c.matches,
+        this.sidenav.mode = c.matches ? 'over' : 'side'
+      )
     );
   }
 
