@@ -100,7 +100,7 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Queries' , breadcrumb: "Queries" },
       },
-      { path: 'copilot', component: DataCopilotComponent, data: { title: 'CoPilot', breadcrumb: 'CoPilot', } },
+      { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
       {
         path: 'views', component: ViewsComponent, children: [
           {
