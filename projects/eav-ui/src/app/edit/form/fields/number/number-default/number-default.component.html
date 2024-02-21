@@ -1,6 +1,6 @@
 @if (viewModel | async; as vm) {
   <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-    <input matInput type="number" [formControlName]="config.fieldName" [required]="vm.required"
+    <input matInput type="number" class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [required]="vm.required"
       [placeholder]="vm.placeholder" [min]="vm.min" [max]="vm.max">
     <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>

@@ -76,8 +76,8 @@
           <mat-form-field color="accent" class="eav-form-field" [ngClass]="{
               'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched
               }">
-            <input matInput [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
-              [placeholder]="vm.placeholder" (change)="setValue($event)" [disabled]="vm.controlStatus.disabled"
+            <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" 
+              tippyPlacement="top" [placeholder]="vm.placeholder" (change)="setValue($event)" [disabled]="vm.controlStatus.disabled"
               (blur)="markAsTouched()" [value]="vm.controlStatus.value" (keyup)="setValue($event)" appPasteClipboardImage
               [config]="config" [elementType]="'input'">
             @if (vm.buttonAdam || vm.buttonPage) {
