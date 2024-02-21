@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, startWith, take, tap } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { EavFor } from '../edit/shared/models/eav';
@@ -21,7 +21,7 @@ import { MetadataActionsComponent } from './metadata-actions/metadata-actions.co
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
+import { MetadataDto, MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
 import { FeatureComponentBase } from '../features/shared/base-feature.component';
 
 @Component({
@@ -32,8 +32,7 @@ import { FeatureComponentBase } from '../features/shared/base-feature.component'
 export class MetadataComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
-  private metadata$ = new BehaviorSubject<MetadataItem[]>([]);
-  private recommendations$ = new BehaviorSubject<MetadataRecommendation[]>([]);
+  private metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
   private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
   private fabOpen$ = new BehaviorSubject(false);
   private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
@@ -64,14 +63,14 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
     this.fetchMetadata();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchMetadata(); }));
 
-    const filteredRecommendations$ = combineLatest([this.metadata$, this.recommendations$]).pipe(
-      map(([metadataItems, recommendations]) =>
-        recommendations.filter(r => metadataItems.filter(i => i._Type.Id === r.Id).length < r.Count)),
+    const filteredRecs$ = this.metadataSet$.pipe(
+      map((set) => set.Recommendations.filter(r => set.Items.filter(i => i._Type.Id === r.Id).length < r.Count)),
     );
-    this.viewModel$ = combineLatest([this.metadata$, filteredRecommendations$, this.itemFor$, this.fabOpen$]).pipe(
+
+    this.viewModel$ = combineLatest([this.metadataSet$, filteredRecs$, this.itemFor$, this.fabOpen$]).pipe(
       map(([metadata, recommendations, itemFor, fabOpen]) => {
         const viewModel: MetadataViewModel = {
-          metadata,
+          metadata: metadata.Items,
           recommendations,
           itemFor,
           fabOpen,
@@ -82,8 +81,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy() {
-    this.metadata$.complete();
-    this.recommendations$.complete();
+    this.metadataSet$.complete();
     this.itemFor$.complete();
     this.fabOpen$.complete();
     super.ngOnDestroy();
@@ -170,21 +168,19 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
 
   private fetchMetadata() {
     this.metadataService.getMetadata(this.targetType, this.keyType, this.key).pipe(
+      take(1),
       map(metadata => {
-        metadata.Recommendations.forEach(recommendation => {
-          if (recommendation.Icon?.startsWith('base64:')) {
-            recommendation.Icon = recommendation.Icon.replace('base64:', '');
-            recommendation.Icon = window.atob(recommendation.Icon);
+        metadata.Recommendations.forEach(r => {
+          if (r.Icon?.startsWith('base64:')) {
+            r.Icon = r.Icon.replace('base64:', '');
+            r.Icon = window.atob(r.Icon);
             // used for coloring black icons to white
-            recommendation.Icon = recommendation.Icon.replace('fill="#000000"', 'fill="#ffffff"');
+            r.Icon = r.Icon.replace('fill="#000000"', 'fill="#ffffff"');
           }
         });
         return metadata;
-      }),
-      tap(metadata => {
-        this.metadata$.next(metadata.Items);
-        this.recommendations$.next(metadata.Recommendations);
-      })).subscribe();
+      })
+    ).subscribe(this.metadataSet$);
   }
 
   private editMetadata(metadata: MetadataItem) {
@@ -200,7 +196,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
         entityTitle: metadata.Title,
-        message: this.recommendations$.value.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
+        message: this.metadataSet$.value.Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
       const confirmationDialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
         autoFocus: false,

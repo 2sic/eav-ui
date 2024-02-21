@@ -1,11 +1,11 @@
 import { ContentItem } from "../../content-items/models/content-item.model";
 import { Field } from "../../content-type-fields/models/field.model";
-import { Metadata } from "../../metadata"
+import { MetadataDto } from "../../metadata"
 
 export interface AppInternals {
   EntityLists: EntityLists,
   FieldAll: FieldAll;
-  MetadataList: Metadata,
+  MetadataList: MetadataDto,
 }
 
 interface EntityLists {

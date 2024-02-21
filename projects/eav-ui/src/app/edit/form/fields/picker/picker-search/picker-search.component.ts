@@ -114,10 +114,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
         if (isTreeDisplayMode/*settings.PickerTreeConfiguration*/) {
           const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
-          const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
-            ? !availableItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.Id))
-            : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
-          this.dataSource.data = filteredData;
+          if (availableItems && availableItems[0]?.data != undefined) {
+            const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
+              ? !availableItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.Id))
+              : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
+            this.dataSource.data = filteredData;
+          }   
         }
 
         const csDisabled = controlStatus.disabled;
@@ -278,7 +280,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       return {
         Level: Level,
         Expandable: (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
-          ? !!(item as TreeItem)[treeConfig?.TreeParentChildRefField] && (item as TreeItem)[treeConfig?.TreeParentChildRefField].length > 0
+          ? !!(item as TreeItem).data[treeConfig?.TreeParentChildRefField] && (item as TreeItem).data[treeConfig?.TreeParentChildRefField].length > 0
           : this.availableItems$.value.filter(x => {
             if (x.data[treeConfig?.TreeChildParentRefField] != undefined)
               return x.data[treeConfig?.TreeChildParentRefField][0]?.Id == item?.Id;//check if this Id is something variable
@@ -294,7 +296,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     (item) => {
       const treeConfig = this.pickerTreeConfiguration;
       if (treeConfig?.TreeRelationship == 'parent-child') {
-        return (item as TreeItem)[treeConfig?.TreeParentChildRefField].map((x: any) => {
+        return (item as TreeItem).data[treeConfig?.TreeParentChildRefField].map((x: any) => {
           const child = this.availableItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
           return child;
         });

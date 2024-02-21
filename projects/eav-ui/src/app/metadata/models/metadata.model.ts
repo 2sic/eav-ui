@@ -1,6 +1,14 @@
-import { EavFor, EavType } from '../../edit/shared/models/eav';
+import { EavFor, EavForInAdminUi, EavType } from '../../edit/shared/models/eav';
 
-export interface Metadata {
+/**
+ * MetadataDto - information as provided by the server
+ */
+export interface MetadataDto {
+  /**
+   * 2024-02-20 2dm - the target address of the current item, for creating new metadata _for_ this item.
+   * IMHO not in use ATM.
+   */
+  For: EavFor;
   Items: MetadataItem[];
   Recommendations: MetadataRecommendation[];
 }
@@ -31,7 +39,7 @@ export interface MetadataRecommendation {
 export interface MetadataViewModel {
   metadata: MetadataItem[];
   recommendations: MetadataRecommendation[];
-  itemFor?: EavFor;
+  itemFor?: EavForInAdminUi;
   fabOpen: boolean;
 }
 
