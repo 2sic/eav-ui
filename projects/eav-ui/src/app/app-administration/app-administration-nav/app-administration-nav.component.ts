@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, startWith, tap } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -18,8 +18,7 @@ import { AppsAdministationNavItems } from './administation-nav-item.mockup';
 })
 export class AppAdministrationNavComponent
   extends BaseComponent
-  implements OnInit, OnDestroy
-{
+  implements OnInit, OnDestroy {
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
@@ -55,6 +54,8 @@ export class AppAdministrationNavComponent
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
   navItems = AppsAdministationNavItems;
 
+  matcher!: MediaQueryList;
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -66,6 +67,11 @@ export class AppAdministrationNavComponent
   }
 
   ngOnInit() {
+    this.matcher = this.media.matchMedia('(min-width: 1000px)');
+
+    this.matcher.addEventListener('change', this.myListener);
+
+
     this.fetchDialogSettings();
     this.subscription.add(
       this.refreshOnChildClosedShallow().subscribe(() => {
@@ -73,10 +79,16 @@ export class AppAdministrationNavComponent
       })
     );
 
+
+
     this.smallScreen.addEventListener(
       'change',
       (c) => (this.sidenav.opened = !c.matches)
     );
+  }
+
+  myListener(event: { matches: any; }) {
+    console.log(event.matches ? 'match' : 'no match');
   }
 
   ngOnDestroy() {
@@ -84,6 +96,7 @@ export class AppAdministrationNavComponent
     this.pathsArray$.complete();
     super.ngOnDestroy();
   }
+
 
   closeDialog() {
     this.dialogRef.close();

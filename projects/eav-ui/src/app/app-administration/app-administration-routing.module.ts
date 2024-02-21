@@ -25,6 +25,7 @@ import { ViewsComponent } from './views/views.component';
 import { QueriesComponent } from './queries/queries.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
+import { DataCopilotComponent } from './data-copilot/data-copilot.component';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -99,6 +100,7 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Queries' , breadcrumb: "Queries" },
       },
+      { path: 'copilot', component: DataCopilotComponent, data: { title: 'CoPilot', breadcrumb: 'CoPilot', } },
       {
         path: 'views', component: ViewsComponent, children: [
           {
