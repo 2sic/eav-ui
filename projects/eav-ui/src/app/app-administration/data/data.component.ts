@@ -158,10 +158,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   changeScope(newScope: string) {
+    console.log("trigger")
     if (newScope === dropdownInsertValue) {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
     }
-    this.router.navigate([`data/${newScope}`], { relativeTo: this.route });
+    this.router.navigate(['..', newScope], { relativeTo: this.route });
   }
 
   private enablePermissionsGetter() {
