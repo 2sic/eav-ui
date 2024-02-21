@@ -35,6 +35,10 @@ mat-toolbar {
 mat-sidenav-container {
   height: 100vh;
 
+  // mat-sidenav-content{
+  //   background-color: white;
+  // }
+
   // Sidenave
   mat-sidenav {
     width: 295px;
@@ -57,11 +61,13 @@ mat-sidenav-container {
   background-color: rgba(128, 128, 128, 0.1);
 }
 
-
-
 ::ng-deep {
   .xng-breadcrumb-separator {
     margin-left: 0 !important;
     margin-right: 0 !important;
+  }
+
+  .mat-drawer-container {
+    background-color: transparent !important;
   }
 }
