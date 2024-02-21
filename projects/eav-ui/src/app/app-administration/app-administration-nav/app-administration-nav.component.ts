@@ -104,7 +104,7 @@ export class AppAdministrationNavComponent
 
   changeUrl(path: string) {
     // @2dg route to data/default ??
-    // if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
+    if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
     this.router.navigate([path], { relativeTo: this.route });
   }
 
