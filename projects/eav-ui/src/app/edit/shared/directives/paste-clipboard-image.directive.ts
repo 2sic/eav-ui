@@ -6,7 +6,7 @@ import { BehaviorSubject, distinctUntilChanged, pipe, Subscription } from 'rxjs'
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
@@ -63,7 +63,7 @@ export class PasteClipboardImageDirective extends BaseSubsinkComponent implement
 
   private handleImage(event: CustomEvent) {
     if (this.pasteImageEnabled$.value) {
-      consoleLogAngular('PASTE IMAGE', 'event:', event);
+      consoleLogEditForm('PASTE IMAGE', 'event:', event);
       // todo: convert png to jpg to reduce file size
       const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
       this.config.dropzone.uploadFile(image);

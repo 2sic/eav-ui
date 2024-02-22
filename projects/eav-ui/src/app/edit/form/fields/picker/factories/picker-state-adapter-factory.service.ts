@@ -11,6 +11,7 @@ import { AbstractControl } from '@angular/forms';
 import { PickerStringStateAdapter } from '../adapters/picker-string-state-adapter';
 import { PickerEntityStateAdapter } from '../adapters/picker-entity-state-adapter';
 import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
+import { PickerComponent } from '../picker.component';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {
@@ -22,7 +23,21 @@ export class PickerStateAdapterFactoryService {
     private eavService: EavService,
   ) { }
 
-  createPickerEntityStateAdapter(
+  createPickerEntityStateAdapter(component: PickerComponent): PickerEntityStateAdapter{
+    return this.createPickerEntityStateAdapterInternal(
+      component.control,
+      component.config,
+      component.settings$,
+      component.editRoutingService,
+      component.controlStatus$,
+      component.label$,
+      component.placeholder$,
+      component.required$,
+      () => component.focusOnSearchComponent,
+    )
+  }
+
+  private createPickerEntityStateAdapterInternal(
     control: AbstractControl,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,

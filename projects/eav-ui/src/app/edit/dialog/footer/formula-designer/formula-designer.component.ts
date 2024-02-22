@@ -12,7 +12,7 @@ import { FormBuilderComponent } from '../../../form/builder/form-builder/form-bu
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
-import { FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
+import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, SettingsFormulaPrefix, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
@@ -28,8 +28,6 @@ import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helper
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
-
-  private listItemTargets = ['Field.ListItem.Label', 'Field.ListItem.Disabled', 'Field.ListItem.Tooltip', 'Field.ListItem.Information', 'Field.ListItem.HelpLink'];
 
   SelectTargets = SelectTargets;
   loadError = false;
@@ -145,7 +143,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
         this.formulaDesignerService.updateFormulaFromEditor(
-          designer.entityGuid, designer.fieldName, designer.target, this.listItemTargets.includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false
+          designer.entityGuid, designer.fieldName, designer.target, Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false
         );
       }
     }
@@ -299,7 +297,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         const targetOptions: TargetOption[] = [];
         if (designer.entityGuid != null && designer.fieldName != null) {
           // default targets
-          for (const target of Object.values(FormulaTargets)) {
+          for (const target of Object.values(FormulaDefaultTargets)) {
             const targetOption: TargetOption = {
               hasFormula: formulas.some(
                 f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
@@ -317,7 +315,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
           const inputType = attribute.InputType;
           if (EmptyFieldHelpers.isGroupStart(inputType)) {
-            for (const target of ['Field.Settings.Collapsed']) {
+            for (const target of [FormulaOptionalTargets.Collapsed]) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(
                   f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
@@ -329,7 +327,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
             }
           }
           if (inputType === InputTypeConstants.StringDropdown || inputType === InputTypeConstants.NumberDropdown) {
-            for (const target of ['Field.Settings.DropdownValues']) {
+            for (const target of [FormulaOptionalTargets.DropdownValues]) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(
                   f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
@@ -343,7 +341,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           if (inputType === InputTypeConstants.WIPEntityPicker
             || inputType === InputTypeConstants.WIPStringPicker
             || inputType === InputTypeConstants.WIPNumberPicker) {
-            for (const target of this.listItemTargets) {
+            for (const target of Object.values(FormulaListItemTargets)) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(
                   f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
@@ -449,7 +447,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         [options, formula, dataSnippets, contextSnippets, typings, designer],
         [result, saving, isDeleted],
       ]) => {
-        const template = this.listItemTargets.includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
+        const template = Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,

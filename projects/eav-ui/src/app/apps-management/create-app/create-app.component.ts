@@ -17,6 +17,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   form: UntypedFormGroup;
   loading$: BehaviorSubject<boolean>;
   appNameError = appNameError;
+  appTemplateId = '1';
 
   viewModel$: Observable<CreateAppViewModel>;
 
@@ -30,8 +31,8 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.viewModel$ = combineLatest([this.loading$]).pipe(
-      map(([loading]) => ({ loading })),
+    this.viewModel$ = this.loading$.pipe(
+      map((loading) => ({ loading })),
     );
   }
 
@@ -47,8 +48,12 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     this.form.disable();
     this.loading$.next(true);
     const name = this.form.controls.name.value?.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs;
+    const appTemplateId = Number(this.appTemplateId);
+    // console.warn('2dm: name', name, this.appTemplateId);
+    // return;
+    
     this.snackBar.open('Creating app...');
-    this.appsListService.create(name).subscribe({
+    this.appsListService.create(name, null, appTemplateId).subscribe({
       error: () => {
         this.form.enable();
         this.loading$.next(false);

@@ -13,6 +13,7 @@
 @include mat.core();
 @import '@ag-grid-community/styles/ag-grid.css';
 @import '@ag-grid-community/styles/ag-theme-material.css';
+@import "@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 
 @import './styles/variables.scss';
 @import './styles/theme.scss';

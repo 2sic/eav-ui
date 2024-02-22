@@ -291,6 +291,7 @@ export interface StringPicker extends StringDropdown {
 interface InternalSettings {
   _disabledBecauseOfTranslation?: boolean;
   _isDialog?: boolean;
+  _currentRequired?: boolean;
 }
 
 export interface FieldSettings extends

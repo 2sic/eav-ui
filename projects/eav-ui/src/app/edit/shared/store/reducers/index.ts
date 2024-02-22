@@ -1,6 +1,6 @@
 import { Action, ActionReducer, ActionReducerMap, MetaReducer, } from '@ngrx/store';
 import { environment } from '../../../../../environments/environment';
-import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
+import { consoleLogStore } from '../../../../shared/helpers/console-log-angular.helper';
 
 // tslint:disable-next-line:no-empty-interface
 export interface EavState {
@@ -9,7 +9,7 @@ export interface EavState {
 /** Console log all actions */
 export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState> {
   return (state: EavState, action: Action): EavState => {
-    consoleLogAngular('[STORE] state:', state, 'action:', action);
+    consoleLogStore('state:', state, 'action:', action);
     return reducer(state, action);
   };
 }

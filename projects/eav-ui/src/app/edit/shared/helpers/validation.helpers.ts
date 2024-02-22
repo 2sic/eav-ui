@@ -51,7 +51,7 @@ export class ValidationHelpers {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
-      if (!settings.Required) { return null; }
+      if (!settings._currentRequired) { return null; }
 
       return Validators.required(control);
     };
@@ -62,7 +62,7 @@ export class ValidationHelpers {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
-      if (!settings.Required) { return null; }
+      if (!settings._currentRequired) { return null; }
 
       return (control as AdamControl).adamItems === 0 ? { required: true } : null;
     };

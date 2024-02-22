@@ -1,48 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, startWith, tap } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
-import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { AppsAdministationNavItems } from './administation-nav-items';
 
-/** Interface to store navigation object to configure menus */
-interface NavItem {
-  name: string;
-  path: string;
-  icon: string;
-  tippy: string;
-}
-
-const navItems: NavItem[] = [
-  { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },
-  { name: 'Data', path: 'data', icon: 'menu', tippy: 'Data / Content' },
-  {
-    name: 'Queries',
-    path: 'queries',
-    icon: 'filter_list',
-    tippy: 'Queries / Visual Query Designer',
-  },
-  {
-    name: 'Views',
-    path: 'views',
-    icon: 'layers',
-    tippy: 'Views / Templates',
-  },
-  { name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi' },
-  {
-    name: 'App',
-    path: 'app',
-    icon: 'settings_applications',
-    tippy: 'App Settings',
-  },
-  { name: 'Sync', path: 'sync', icon: 'sync', tippy: 'App Export / Import' },
-];
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -51,8 +19,7 @@ const navItems: NavItem[] = [
 })
 export class AppAdministrationNavComponent
   extends BaseComponent
-  implements OnInit, OnDestroy
-{
+  implements OnInit, OnDestroy {
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
@@ -86,7 +53,9 @@ export class AppAdministrationNavComponent
   sideNavOpened = !this.smallScreen.matches;
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
-  navItems = navItems;
+  navItems = AppsAdministationNavItems;
+
+  matcher!: MediaQueryList;
 
   constructor(
     protected router: Router,
@@ -99,16 +68,20 @@ export class AppAdministrationNavComponent
   }
 
   ngOnInit() {
+
     this.fetchDialogSettings();
     this.subscription.add(
-      this.refreshOnChildClosedDeep().subscribe(() => {
+      this.refreshOnChildClosedShallow().subscribe(() => {
         this.fetchDialogSettings();
       })
     );
 
     this.smallScreen.addEventListener(
       'change',
-      (c) => (this.sidenav.opened = !c.matches)
+      (c) => (
+        this.sidenav.opened = !c.matches,
+        this.sidenav.mode = c.matches ? 'over' : 'side'
+      )
     );
   }
 
@@ -118,14 +91,16 @@ export class AppAdministrationNavComponent
     super.ngOnDestroy();
   }
 
+
   closeDialog() {
     this.dialogRef.close();
   }
 
-  changeUrl(path: string) {
-    if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
-    this.router.navigate([path], { relativeTo: this.route });
-  }
+  // @2dg not longer in use with new routing SideNav
+  // changeUrl(path: string) {
+  //   // if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
+  //   // this.router.navigate([path], { relativeTo: this.route });
+  // }
 
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {

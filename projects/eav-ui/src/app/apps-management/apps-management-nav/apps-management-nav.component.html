@@ -1,47 +1,43 @@
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog nav-component-wrapper eav-no-scrollbar" appToggleDebug>
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">
-        Manage Zone {{ zoneId }}
-      </div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
+<mat-toolbar>
+  <div class="toolbar-container">
+    <!-- Mat Icon Menu -->
+    <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
+    <!-- App Name -->
+    <div>
+      <span> Manage Zone {{ zoneId }} </span>
     </div>
-    <div class="eav-dialog-tab-content nav-component-wrapper">
-      <router-outlet></router-outlet>
-      <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-      <mat-tab-group class="mat-mdc-tab-group-max-height" dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
-        [selectedIndex]="vm.tabIndex">
-        <mat-tab>
-          <div *matTabLabel class="mat-tab-label-box" tippy="System Info">
-            <mat-icon>settings</mat-icon>
-            <span>System</span>
-          </div>
-          <app-system-info *matTabContent [dialogSettings]="vm.dialogSettings"></app-system-info>
-        </mat-tab>
-        <mat-tab>
-          <div *matTabLabel class="mat-tab-label-box" tippy="Apps">
-            <mat-icon>star_border</mat-icon>
-            <span>Apps</span>
-          </div>
-          <app-apps-list *matTabContent></app-apps-list>
-        </mat-tab>
-        <mat-tab>
-          <div *matTabLabel class="mat-tab-label-box" tippy="Languages">
-            <mat-icon>translate</mat-icon>
-            <span>Languages</span>
-          </div>
-          <app-site-languages *matTabContent></app-site-languages>
-        </mat-tab>
-        <mat-tab>
-          <div *matTabLabel class="mat-tab-label-box" tippy="Extensions and Features">
-            <mat-icon>tune</mat-icon>
-            <span>Extensions / Features</span>
-          </div>
-          <app-license-info *matTabContent></app-license-info>
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+    <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
+    <xng-breadcrumb [separator]="emptyTemplate">
+      <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
+        @if (last) {
+        <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+        {{ breadcrumb }}
+        }
+      </ng-container>
+    </xng-breadcrumb>
+    <ng-template #emptyTemplate></ng-template>
   </div>
+  <span class="toolbar-spacer"></span>
+  <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
+    @for (navItem of navItems; track navItem.path) {
+    <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
+    }
+
+    <div class="sideNav-bottom-info">
+      <p>use Burger icon to show/hide menu</p>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="container-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 }

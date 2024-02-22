@@ -1,5 +1,4 @@
 import { PickerItem } from 'projects/edit-types';
-import { ControlStatus } from '../../../../shared/models/control-status.model';
 
 export interface EntityListViewModel {
   allowMultiValue: boolean;
@@ -9,7 +8,8 @@ export interface EntityListViewModel {
   selectedItems: PickerItem[];
   label: string;
   required: boolean;
-  controlStatus: ControlStatus<string | string[]>;
+
+  csDisabled: boolean;
 }
 
 export interface ReorderIndexes {

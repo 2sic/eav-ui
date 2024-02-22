@@ -22,6 +22,7 @@ import { TranslateMenuViewModel } from './translate-menu.models';
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
+  @Input() hideTranslateButton: boolean;
 
   TranslationLinks = TranslationLinks;
   viewModel$: Observable<TranslateMenuViewModel>;
@@ -61,15 +62,16 @@ export class TranslateMenuComponent implements OnInit {
       readOnly$, currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
     ]).pipe(
       map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
+        const disableTranslateButton = readOnly.isReadOnly || disableTranslation;
         const viewModel: TranslateMenuViewModel = {
-          readOnly: readOnly.isReadOnly,
           currentLanguage,
           defaultLanguage,
           translationState,
           translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
-          disableTranslation,
           disableAutoTranslation,
           disabled,
+
+          disableTranslateButton,
         };
         return viewModel;
       }),

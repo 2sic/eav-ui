@@ -1,0 +1,11 @@
+<a (click)="isOpenMenu = !isOpenMenu" [routerLink]="navItem.path" routerLinkActive="active" matRipple class="app-menu-container" [tippy]="navItem.tippy">
+  <mat-icon>{{ navItem.icon }}</mat-icon>
+  <div class="link-text">{{ navItem.name }}</div>
+  <mat-icon *ngIf="navItem.child" [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more </mat-icon>
+</a>
+
+<div class="paddingLink" *ngIf="isOpenMenu">
+  @for (child of navItem.child ; track child.path) {
+  <app-nav-item-list [navItem]="child"></app-nav-item-list>
+  }
+</div>

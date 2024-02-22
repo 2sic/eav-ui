@@ -25,6 +25,23 @@
             </app-field-hint>
           }
         }
+        <br>
+
+        <mat-form-field color="accent" class="eav-form-field">
+          <mat-label>Template</mat-label>
+          <mat-select required="true" [(value)]="appTemplateId">
+            <mat-option value="0">
+              Basic empty app without instructions
+            </mat-option>
+            <mat-option value="1">
+              Basic app with instructions
+            </mat-option>
+          </mat-select>
+          <!-- <mat-hint>
+            Select a template for the new app.
+          </mat-hint> -->
+        </mat-form-field>
+
       </form>
     </div>
     <mat-dialog-actions align="end">

@@ -45,9 +45,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-    this.createViewModel();
+    this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {
@@ -58,7 +56,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerStringStateAdapter(
       this.control,
       this.config,
@@ -85,7 +83,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     );
 
     state.init();
-    source.init();
+    source.init('StringDropdownComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

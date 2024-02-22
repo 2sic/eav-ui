@@ -34,6 +34,10 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.ItemInformation = uiPickerSourceCustomList.ItemInformation ?? '';
       fs.ItemTooltip = uiPickerSourceCustomList.ItemTooltip ?? '';
       fs.ItemLink = uiPickerSourceCustomList.ItemLink ?? '';
+
+      fs.EnableEdit = false;
+      fs.EnableCreate = false;
+      fs.EnableDelete = false;
     }
 
     return fs;

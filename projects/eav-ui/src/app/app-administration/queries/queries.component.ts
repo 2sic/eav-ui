@@ -20,6 +20,7 @@ import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
+import { FeaturesService } from '../../shared/services/features.service';
 
 @Component({
   selector: 'app-queries',
@@ -27,8 +28,7 @@ import { QueriesActionsComponent } from './queries-actions/queries-actions.compo
   styleUrls: ['./queries.component.scss'],
 })
 export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() enablePermissions: boolean;
-
+  enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
 
@@ -43,13 +43,17 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
+    private featuresService: FeaturesService
   ) {
     super(router, route);
    }
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchQueries(); }));
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchQueries(); }));
+    this.featuresService.getContext$().pipe(map(d => d.Enable.AppPermissions)).subscribe(data => {
+      this.enablePermissions = data;
+    });
   }
 
   ngOnDestroy() {
@@ -65,7 +69,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
 
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
+    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
   }
 
   /**
@@ -80,7 +84,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       case QueryActions.Metadata:
         return this.openMetadata(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.getUrlQuery(query.Guid)], { relativeTo: this.route.firstChild });
+        return this.router.navigate([GoToDevRest.getUrlQuery(query.Guid)], { relativeTo: this.route.parent.firstChild });
       case QueryActions.Clone:
         return this.cloneQuery(query);
       case QueryActions.Permissions:
@@ -104,7 +108,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private enablePermissionsGetter() {
@@ -121,7 +125,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       query.Guid,
       `Metadata for Query: ${query.Name} (${query.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.firstChild });
+    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
   }
 
   private cloneQuery(query: Query) {
@@ -133,7 +137,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate([GoToPermissions.getUrlEntity(query.Guid)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlEntity(query.Guid)], { relativeTo: this.route.parent.firstChild });
   }
 
   private exportQuery(query: Query) {

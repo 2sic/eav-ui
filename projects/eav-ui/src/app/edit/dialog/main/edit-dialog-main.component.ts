@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { consoleLogDev } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { MetadataDecorators } from '../../shared/constants';
@@ -179,12 +179,12 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
         IsPublished: publishStatus.IsPublished,
         DraftShouldBranch: publishStatus.DraftShouldBranch,
       };
-      consoleLogAngular('SAVE FORM DATA:', saveFormData);
+      consoleLogDev('SAVE FORM DATA:', saveFormData);
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
       this.eavService.saveFormData(saveFormData, this.eavService.eavConfig.partOfPage).subscribe({
         next: result => {
-          consoleLogAngular('SAVED!, result:', result, 'close:', close);
+          consoleLogDev('SAVED!, result:', result, 'close:', close);
           this.itemService.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
           this.formsStateService.formsDirty$.next(false);
@@ -194,7 +194,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
           }
         },
         error: err => {
-          consoleLogAngular('SAVE FAILED:', err);
+          consoleLogDev('SAVE FAILED:', err);
           this.snackBar.open('Error', null, { duration: 2000 });
         },
       });

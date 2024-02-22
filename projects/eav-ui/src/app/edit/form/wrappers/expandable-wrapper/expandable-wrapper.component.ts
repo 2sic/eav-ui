@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, fromEvent, map, Observable, share, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
-import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
@@ -120,7 +120,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     );
 
     const componentTag = `field-${this.config.inputType}`;
-    consoleLogAngular('ExpandableWrapper created for:', componentTag);
+    consoleLogEditForm('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
       this.group,
@@ -148,7 +148,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   }
 
   ngOnDestroy() {
-    consoleLogAngular('ExpandableWrapper destroyed');
+    consoleLogEditForm('ExpandableWrapper destroyed');
     this.adamDisabled$.complete();
     this.connectorCreator.destroy();
     this.dropzoneDraggingHelper.detach();

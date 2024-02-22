@@ -1,7 +1,7 @@
 @if (viewModel | async; as vm) {
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-      <mat-select [formControlName]="config.fieldName" [required]="vm.required">
+      <mat-select [formControlName]="config.fieldName" [required]="vm.required" class="eav-translate-on-dblclick">
         <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
         @for (file of vm.templateOptions; track file) {
           <mat-option [value]="file">

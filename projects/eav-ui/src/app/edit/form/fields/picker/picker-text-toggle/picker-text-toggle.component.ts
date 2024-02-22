@@ -8,7 +8,7 @@ import { PickerData } from '../picker-data';
 })
 export class PickerTextToggleComponent implements OnInit {
   @Input() pickerData: PickerData;
-  @Input() controlStatusDisabled: boolean;
+  @Input() csDisabled: boolean;
   @Input() allowText: boolean;
   @Input() freeTextMode: boolean;
 

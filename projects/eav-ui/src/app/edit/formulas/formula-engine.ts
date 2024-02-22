@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings, FieldValue } from 'projects/edit-types';
+import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeatureSummary } from '../../features/models';
@@ -13,7 +13,7 @@ import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageServ
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTargets, FormulaVersions } from './models/formula.models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
 import { FormulaSettingsHelper } from './helpers/formula-settings.helper';
 import { FieldLogicBase } from '../form/shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
@@ -60,6 +60,60 @@ export class FormulaEngine implements OnDestroy {
     this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
   }
 
+  // TODO: 2dm -> Here we call all list item formulas on some picker for each item
+  /**
+   * Used for running all list item formulas for a given attribute/field.
+   * @param entityGuid 
+   * @param entityId 
+   * @param attribute 
+   * @param formValues 
+   * @param inputType 
+   * @param settingsInitial 
+   * @param settingsCurrent 
+   * @param itemIdWithPrefill 
+   * @param availableItems 
+   * @returns List of processed picker items
+   */
+  runAllListItemsFormulas(
+    entityGuid: string,
+    entityId: number,
+    attribute: EavContentTypeAttribute,
+    formValues: FormValues,
+    inputType: InputType,
+    settingsInitial: FieldSettings,
+    settingsCurrent: FieldSettings,
+    itemIdWithPrefill: ItemIdentifierShared,
+    availableItems: PickerItem[],
+  ): PickerItem[] {
+    const formulas = this.formulaDesignerService.getFormulas(entityGuid, attribute.Name, Object.values(FormulaListItemTargets), false)
+      .filter(f => !f.stopFormula);
+    if (formulas.length === 0) { return availableItems; }
+    for (const formula of formulas) {
+      for (const item of availableItems) {
+        const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill, item);
+
+        switch (formula.target) {
+          case FormulaTargets.ListItemLabel:
+            item.Text = formulaResult.value as string;
+            break;
+          case FormulaTargets.ListItemDisabled:
+            item._disableSelect = formulaResult.value as boolean;
+            break;
+          case FormulaTargets.ListItemTooltip:
+            item._tooltip = formulaResult.value as string;
+            break;
+          case FormulaTargets.ListItemInformation:
+            item._information = formulaResult.value as string;
+            break;
+          case FormulaTargets.ListItemHelpLink:
+            item._helpLink = formulaResult.value as string;
+            break;
+        }
+      }
+    }
+    return availableItems;
+  }
+
   /**
    * Used for running all formulas for a given attribute/field.
    * @param entityGuid 
@@ -98,7 +152,8 @@ export class FormulaEngine implements OnDestroy {
     valueBefore: FieldValue,
     logicTools: FieldLogicTools,
   ): RunFormulasResult {
-    const formulas = this.formulaDesignerService.getFormulas(entityGuid, attribute.Name, null, false)
+    //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
+    const formulas = this.formulaDesignerService.getFormulas(entityGuid, attribute.Name, Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets)), false)
       .filter(f => !f.stopFormula);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
@@ -189,6 +244,7 @@ export class FormulaEngine implements OnDestroy {
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
+    item?: PickerItem
   ): FormulaResultRaw {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
@@ -221,7 +277,7 @@ export class FormulaEngine implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
+          const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);//TODO: @2dm -> Should I even pass item here? as this is for V1 formulas
           const isArray = formulaV1Result && Array.isArray(formulaV1Result) && (formulaV1Result as any).every((r: any) => typeof r === 'string');
           if (typeof formulaV1Result === 'string'
             || typeof formulaV1Result === 'number'
@@ -252,7 +308,7 @@ export class FormulaEngine implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const formulaV2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
+          const formulaV2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item); //TODO: @2dm -> Added item as last argument so if ew use experimental anywhere nothing breaks
           const valueV2 = FormulaValueCorrections.correctAllValues(formula.target, formulaV2Result, inputType);
           valueV2.openInDesigner = isOpenInDesigner;
           if (valueV2.value === undefined && valueV2.promise)

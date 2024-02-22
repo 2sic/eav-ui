@@ -6,6 +6,7 @@ import { BaseComponent } from '../../shared/components/base-component/base.compo
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-sync-configuration',
@@ -13,7 +14,8 @@ import { ImportAppPartsService } from '../services/import-app-parts.service';
   styleUrls: ['./sync-configuration.component.scss'],
 })
 export class SyncConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() dialogSettings: DialogSettings;
+  dialogSettings: DialogSettings;
+
 
   public appStateAdvanced = false;
 
@@ -23,11 +25,17 @@ export class SyncConfigurationComponent extends BaseComponent implements OnInit,
     private exportAppService: ExportAppService,
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
+    private appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
+
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+      this.dialogSettings = dialogSettings;
+    });
+  }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
@@ -35,15 +43,15 @@ export class SyncConfigurationComponent extends BaseComponent implements OnInit,
   }
 
   exportApp() {
-    this.router.navigate([`export`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`export`], { relativeTo: this.route.parent.firstChild });
   }
 
   exportParts() {
-    this.router.navigate([`export/parts`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`export/parts`], { relativeTo: this.route.parent.firstChild });
   }
 
   importParts() {
-    this.router.navigate([`import/parts`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`import/parts`], { relativeTo: this.route.parent.firstChild });
   }
 
   exportAppXml(withFiles: boolean) {

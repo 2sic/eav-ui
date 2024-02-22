@@ -18,6 +18,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
+  hideTranslateButton: boolean = true;
 
   constructor(
     eavService: EavService,
@@ -49,5 +50,9 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
     if (isExpanded) { return; }
 
     this.translateMenu.translate();
+  }
+
+  toggleTranslateButtonVisibility(hide: boolean) {
+    this.hideTranslateButton = hide;
   }
 }

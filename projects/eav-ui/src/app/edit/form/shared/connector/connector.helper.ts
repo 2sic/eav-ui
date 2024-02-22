@@ -82,7 +82,7 @@ export class ConnectorHelper {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
         connector.field.placeholder = settings.Placeholder;
-        connector.field.required = settings.Required;
+        connector.field.required = settings._currentRequired;
       })
     );
     return connector;
@@ -151,7 +151,7 @@ export class ConnectorHelper {
       placeholder: settings.Placeholder,
       inputType: this.config.inputType,
       type: this.config.type,
-      required: settings.Required,
+      required: settings._currentRequired,
       disabled: this.config.initialDisabled,
       settings,
     };

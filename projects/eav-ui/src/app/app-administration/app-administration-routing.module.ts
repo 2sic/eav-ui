@@ -18,14 +18,22 @@ import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialo
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
 import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
+import { GettingStartedComponent } from './getting-started/getting-started.component';
+import { SyncConfigurationComponent } from './sync-configuration/sync-configuration.component';
+import { DataComponent } from './data/data.component';
+import { ViewsComponent } from './views/views.component';
+import { QueriesComponent } from './queries/queries.component';
+import { WebApiComponent } from './web-api/web-api.component';
+import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
+import { DataCopilotComponent } from './data-copilot/data-copilot.component';
 
 const appAdministrationRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appAdministrationDialog }, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
+      { path: 'home', component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
       {
-        path: 'data/:scope', component: EmptyRouteComponent, children: [
+        path: 'data/:scope', component: DataComponent, children: [
           {
             path: 'import',
             component: DialogEntryComponent,
@@ -75,7 +83,7 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Data', breadcrumb: "Data" },
       },
       {
-        path: 'queries', component: EmptyRouteComponent, children: [
+        path: 'queries', component: QueriesComponent, children: [
           {
             path: 'import',
             component: DialogEntryComponent,
@@ -92,8 +100,9 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Queries' , breadcrumb: "Queries" },
       },
+      { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
       {
-        path: 'views', component: EmptyRouteComponent, children: [
+        path: 'views', component: ViewsComponent, children: [
           {
             path: 'import',
             component: DialogEntryComponent,
@@ -115,12 +124,12 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Views', breadcrumb: "Views" },
       },
       {
-        path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi', breadcrumb: "WebApi"  }, children: [
+        path: 'web-api', component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi"  }, children: [
           GoToDevRest.route,
         ],
       },
       {
-        path: 'app', component: EmptyRouteComponent, data: { title: 'Manage App', breadcrumb: "Manage App" }, children: [
+        path: 'app', component: AppConfigurationComponent, data: { title: 'Manage App', breadcrumb: "Manage App" }, children: [
           ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
@@ -154,7 +163,7 @@ const appAdministrationRoutes: Routes = [
         ],
       },
       {
-        path: 'sync', component: EmptyRouteComponent, data: { title: 'Sync', breadcrumb:"Sync" }, children: [
+        path: 'sync', component: SyncConfigurationComponent, data: { title: 'Sync', breadcrumb:"Sync" }, children: [
           ...GoToMetadata.getRoutes(),
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },

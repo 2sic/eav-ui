@@ -34,7 +34,23 @@ export class FeaturesService {
     );
   }
 
+  // new 2dg
+  getSitePrimaryApp$(){
+    return this.dialogContext$.pipe(map(dc => dc?.Site.PrimaryApp));
+  }
+
+  getGlobalPrimaryApp$(){
+    return this.dialogContext$.pipe(map(dc => dc?.System.PrimaryApp));
+  }
+
   isEnabled$(nameId: string) {
     return this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false));
   }
+
+  getContext$(){
+    return this.dialogContext$;
+  }
+
+
+
 }

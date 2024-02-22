@@ -1,7 +1,7 @@
 @import "../../../../assets/styles/variables.scss";
 @import "../../../../assets/styles/theme/material-colors.scss";
 
-.menu-item-selected {
+.eav-menu-item-selected {
   background: $edit-ui-selected-option;
 }
 
@@ -27,10 +27,10 @@
   }
 }
 
-.shared-languages {
+.eav-shared-languages {
   position: relative;
   left: -6px;
-  top: -1px;
+  top: -22px;
   padding: 0px 4px 0 6px;
   white-space: nowrap;
   overflow: hidden;
@@ -42,13 +42,18 @@
   &--disabled {
     color: rgba($editUI-foreground-color, 0.24);
   }
+
+  font-size: 12px;
 }
 
-.translate-icon {
-  font-size: 20px;
-  height: 20px;
-  width: 20px;
-  line-height: 20px;
+.eav-translate-icon-button {
+  scale: calc(4/5);
+  position: relative;
+  top: -20px;
+
+  &.hidden {
+    visibility: hidden;
+  }
 }
 
 // .feature-item {

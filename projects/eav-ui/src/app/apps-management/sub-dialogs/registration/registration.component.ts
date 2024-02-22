@@ -53,9 +53,9 @@ export class RegistrationComponent implements OnInit {
     );
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
+  // closeDialog() {
+  //   this.dialogRef.close();
+  // }
 
   copyToClipboard(text: string): void {
     copyToClipboard(text);

@@ -6,7 +6,7 @@
     <img (click)="sidenav.opened = !sidenav.opened"
       [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
     } @else {
-      <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
+    <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
     }
     <!-- App Name -->
     <div>
@@ -24,8 +24,8 @@
     <xng-breadcrumb [separator]="emptyTemplate">
       <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
         @if (last) {
-          <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
-       {{ breadcrumb }}
+        <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+        {{ breadcrumb }}
         }
       </ng-container>
     </xng-breadcrumb>
@@ -39,13 +39,8 @@
 <mat-sidenav-container>
 
   <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-    <!-- Sho Sidenav for each Item form navItems (filterd by dialogSettings in Ts) -->
-    @for (item of navItems; track item.path) {
-    <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
-      class="app-menu-container" [tippy]="item.tippy">
-      <mat-icon>{{ item.icon }}</mat-icon>
-      <div class="link-text">{{ item.name }}</div>
-    </a>
+    @for (navItem of navItems; track navItem.path) {
+    <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
     }
     <div class="sideNav-bottom-info">
       <p>use App logo to show/hide menu</p>
@@ -54,48 +49,6 @@
 
   <mat-sidenav-content>
     <router-outlet></router-outlet>
-    <!-- Show each Componenten by Path name -->
-    <div class="container-content">
-
-      @if (vm.currentPath === 'home') {
-      <app-getting-started [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
-      </app-getting-started>
-      }
-
-      @if (vm.currentPath === 'data') {
-      <app-data [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
-      </app-data>
-      }
-
-      @if (vm.currentPath === 'queries') {
-      <app-queries [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
-      </app-queries>
-      }
-
-      @if (vm.currentPath === 'views') {
-      <app-views [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
-        [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
-        [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
-        [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
-      </app-views>
-      }
-
-      @if (vm.currentPath === 'web-api') {
-      <app-web-api [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
-      </app-web-api>
-      }
-
-      @if (vm.currentPath === 'app') {
-      <app-app-configuration [dialogSettings]="vm.dialogSettings">
-      </app-app-configuration>
-      }
-
-      @if (vm.currentPath === 'sync') {
-      <app-sync-configuration [dialogSettings]="vm.dialogSettings">
-      </app-sync-configuration>
-      }
-
-    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
 }

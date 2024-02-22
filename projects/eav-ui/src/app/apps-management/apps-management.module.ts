@@ -46,6 +46,9 @@ import { AppNameShowComponent } from './add-app-from-folder/app-name-show/app-na
 import { CheckboxCellComponent } from './add-app-from-folder/checkbox-cell/checkbox-cell.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { FeaturesModule } from '../features/features.module';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -92,7 +95,10 @@ import { FeaturesModule } from '../features/features.module';
     MatSnackBarModule,
     MatExpansionModule,
     MatBadgeModule,
-    FeaturesModule
+    FeaturesModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [
     Context,

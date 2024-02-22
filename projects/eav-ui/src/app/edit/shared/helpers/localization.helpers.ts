@@ -1,5 +1,5 @@
 import { FieldValue } from '../../../../../../edit-types';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { BestValueMode, BestValueModes } from '../constants';
 import { FormValues } from '../models';
 import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';
@@ -143,7 +143,7 @@ export class LocalizationHelpers {
           };
           eavAttributes[attributeKey] = newValues;
         } else { // else add new value with dimension languageKey
-          consoleLogAngular('saveAttributeValues add values ', newItemValue);
+          consoleLogEditForm('saveAttributeValues add values ', newItemValue);
           const newEavValue = EavValue.create(newItemValue, [EavDimension.create(languageKey)]);
           const newAttribute: EavValues<any> = {
             ...allAttributes[attributeKey],

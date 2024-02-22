@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model";
 import { DeleteEntityProps } from "../picker.models";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
-import { FieldMask } from "../../../../shared/helpers";
+import { FieldMask, GeneralHelpers } from "../../../../shared/helpers";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -11,11 +11,14 @@ import { FieldSettings } from "projects/edit-types";
 import { EntityService, EavService, EditRoutingService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
+  private createEntityTypes: string = '';
   protected contentTypeMask: FieldMask;
   protected contentType: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
+
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
@@ -23,28 +26,36 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
-    public translate: TranslateService,
+    protected translate: TranslateService,
     protected config: FieldConfigSet,
     protected group: FormGroup,
     public snackBar: MatSnackBar,
     public control: AbstractControl,
     // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,) {
+    public deleteCallback: (props: DeleteEntityProps) => void,
+    logSpecs: EavLogger,
+  ) {
     super(
-      deleteCallback
+      deleteCallback,
+      logSpecs,
     );
   }
 
-  init() {
+  init(callerName: string): void {
+    super.init(callerName);
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
     this.subscriptions.add(
       this.settings$.pipe(
-        map(settings => settings.EntityType),
-        distinctUntilChanged(),
-      ).subscribe(entityType => {
+        map(settings => ({
+          EntityType: settings.EntityType,
+          CreateEntityTypes: settings.CreateTypes,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(settings => {
+        this.createEntityTypes = settings.CreateEntityTypes;
         this.contentTypeMask?.destroy();
         this.contentTypeMask = new FieldMask(
-          entityType,
+          settings.EntityType,
           this.group.controls,
           () => {
             this.availableItems$.next(null);
@@ -72,7 +83,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
 
   updateAddNew(): void {
     const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!contentTypeName);
+    this.disableAddNew$.next(!contentTypeName && !this.createEntityTypes);
   }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity

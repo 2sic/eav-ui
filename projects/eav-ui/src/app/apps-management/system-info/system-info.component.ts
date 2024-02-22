@@ -14,8 +14,8 @@ import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
-import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
+import { AppDialogConfigService } from '../../app-administration/services';
 
 declare const window: EavWindow;
 
@@ -25,7 +25,6 @@ declare const window: EavWindow;
   styleUrls: ['./system-info.component.scss'],
 })
 export class SystemInfoComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() dialogSettings: DialogSettings;
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
@@ -51,11 +50,10 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
     this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
     this.loading$ = new BehaviorSubject<boolean>(false);
-
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => {
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
       this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();
@@ -75,17 +73,29 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   }
 
   openSiteSettings(): void {
-    const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
-    this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+    this.featuresService.getSitePrimaryApp$().subscribe(sitePrimaryApp => {
+      this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+    })
   }
 
   openGlobalSettings(): void {
-    const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
-    this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+    this.featuresService.getGlobalPrimaryApp$().subscribe(globalPrimaryApp => {
+      this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+    })
   }
 
   openInsights() {
     window.open(window.$2sxc.http.apiUrl('sys/insights/help'), '_blank');
+  }
+
+
+  openSideNavPath(sideNavPath: string): void {
+
+    // Url are /2/apps/system/registration, sideNavPath are only the last part of the url
+    if (sideNavPath.includes('registration'))
+    sideNavPath = 'registration';
+
+    this.router.navigate([this.router.url.replace('system', '') + sideNavPath]);
   }
 
   activatePageLog(form: NgForm) {
@@ -137,12 +147,12 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
               ? {
-                url: this.router.url + '/' + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + "registration",
                 label: 'manage',
                 target: 'angular',
               }
               : {
-                url: this.router.url + '/' + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + "registration",
                 label: 'register',
                 target: 'angular',
               },

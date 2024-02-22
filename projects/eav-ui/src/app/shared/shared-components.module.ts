@@ -28,6 +28,8 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
 import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
+import { NavItemListComponent } from './components/nav-item-list/nav-item-list.component';
+
 
 
 /** Stuff that is shared and only has to be initialized once */
@@ -53,6 +55,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     EntityFilterComponent,
     MatInputAutofocusDirective,
     FileUploadDialogComponent,
+    NavItemListComponent
   ],
   imports: [
     RouterModule,
@@ -67,6 +70,8 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     MatButtonModule,
     MatDialogModule,
     BreadcrumbModule,
+
+
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
@@ -88,6 +93,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     MatInputAutofocusDirective,
     FileUploadDialogComponent,
     BreadcrumbModule,
+    NavItemListComponent
   ],
 })
 export class SharedComponentsModule { }

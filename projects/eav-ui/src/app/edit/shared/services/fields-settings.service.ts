@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subject, Subscription } from 'rxjs';
 import { EavService } from '.';
-import { FieldSettings } from '../../../../../../edit-types';
-import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { FieldSettings, PickerItem } from '../../../../../../edit-types';
+import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
@@ -20,6 +20,8 @@ import { FormItemFormulaService } from '../../formulas/form-item-formula.service
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
 import { ItemFieldVisibility } from './item-field-visibility';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
+import { EavContentType, EavEntityAttributes } from '../models/eav';
+import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 
 
 /**
@@ -34,6 +36,15 @@ export class FieldsSettingsService implements OnDestroy {
   public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
   private itemFieldVisibility: ItemFieldVisibility;
+
+  private contentType$ = new Observable<EavContentType>();
+  private itemAttributes$ = new Observable<EavEntityAttributes>();
+  private entityReader$ = new Observable<EntityReader>();
+  private constantFieldParts$ = new Observable<ConstantFieldParts[]>();
+  private itemHeader$ = new Observable<ItemIdentifierHeader>();
+  private entityGuid: string;
+  private entityId: number;
+
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -62,18 +73,19 @@ export class FieldsSettingsService implements OnDestroy {
 
   init(entityGuid: string): void {
     this.subscription = new Subscription();
+    this.entityGuid = entityGuid;
 
     const item = this.itemService.getItem(entityGuid);
     this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-    const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
+    this.contentType$ = this.contentTypeService.getContentType$(contentTypeId);
     // todo: @STV unsure why we have a stream for the header, isn't it the same as item.Header?
     // pls find out and either clarify or fix
-    const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
-    const entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
+    this.itemHeader$ = this.itemService.getItemHeader$(entityGuid);
+    this.entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
 
     this.subscription.add(
-      combineLatest([contentType$, itemHeader$, entityReader$]).pipe(
+      combineLatest([this.contentType$, this.itemHeader$, this.entityReader$]).pipe(
         map(([contentType, itemHeader, entityReader]) => {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
             entityReader.flattenAll<ContentTypeSettings>(contentType.Metadata),
@@ -91,9 +103,10 @@ export class FieldsSettingsService implements OnDestroy {
 
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const entityId = item.Entity.Id;
+    this.entityId = entityId;
 
     const eavConfig = this.eavService.eavConfig;
-    const constantFieldParts$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
+    this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
         // When merging metadata, the primary language must be the real primary, not the current
         const mdMerger = new EntityReader(eavConfig.lang, entityReader.defaultLanguage);
@@ -127,7 +140,7 @@ export class FieldsSettingsService implements OnDestroy {
           mergeRaw.InputType = attribute.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          // consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
+          // consoleLogForm('merged', JSON.parse(JSON.stringify(settingsInitial)));
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
           const constantFieldParts: ConstantFieldParts = {
             logic,
@@ -155,7 +168,7 @@ export class FieldsSettingsService implements OnDestroy {
                 // Stop checking the current group if we found another group start/end
                 if (EmptyFieldHelpers.endsPreviousGroup(innerField.calculatedInputType.inputType)) return;
                 if (innerField.settingsInitial.VisibleDisabled == false) {
-                  consoleLogAngular('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
+                  consoleLogEditForm('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
                   groupField.settingsInitial.VisibleDisabled = false;
                   return;
                 }
@@ -169,14 +182,14 @@ export class FieldsSettingsService implements OnDestroy {
       })
     );
 
-    const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
+    this.itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
     this.subscription.add(
       combineLatest([
-        contentType$, itemAttributes$, itemHeader$, entityReader$,
-        formReadOnly$, this.forceRefreshSettings$, debugEnabled$, constantFieldParts$
+        this.contentType$, this.itemAttributes$, this.itemHeader$, this.entityReader$,
+        formReadOnly$, this.forceRefreshSettings$, debugEnabled$, this.constantFieldParts$
       ]).pipe(
         map(([
           contentType, itemAttributes, itemHeader, entityReader,
@@ -271,10 +284,41 @@ export class FieldsSettingsService implements OnDestroy {
         }),
         filter(fieldsProps => !!fieldsProps),
       ).subscribe(fieldsProps => {
-        consoleLogAngular('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
+        consoleLogEditForm('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
         this.fieldsProps$.next(fieldsProps);
       })
     );
+  }
+
+  //TODO: @2dm -> Here we call the formula engine to process the picker items
+  //TODO: @SDV -> Possible issue here as all pickers use same instance of this service, when we have multiple pickers we could get data crosscontamination
+  //           -> Consider multiple streams (one for each picker)
+  processPickerItems$(fieldName: string, availableItems$: BehaviorSubject<PickerItem[]>): Observable<PickerItem[]> {
+    return combineLatest([
+      availableItems$, this.contentType$, this.itemAttributes$, this.entityReader$, this.constantFieldParts$, this.itemHeader$,
+    ]).pipe(map(([
+        availableItems, contentType, itemAttributes, entityReader, constantFieldParts, itemHeader
+      ]) => {
+        const attribute = contentType.Attributes.find(a => a.Name === fieldName);
+        const formValues: FormValues = {};
+        for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
+          formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
+        }
+        const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
+        let latestSettings: FieldSettings;
+        if (constantFieldPart.currentLanguage == this.latestFieldProps[attribute.Name]?.currentLanguage) {
+          latestSettings = this.latestFieldProps[attribute.Name]?.settings
+            ?? { ...constantFieldPart.settingsInitial };
+        } else {
+          latestSettings = { ...constantFieldPart.settingsInitial };
+        }
+        return this.formulaEngine.runAllListItemsFormulas(
+          this.entityGuid, this.entityId, attribute, formValues,
+          constantFieldPart.inputType, constantFieldPart.settingsInitial, latestSettings,
+          itemHeader, availableItems
+        );
+      }
+    ));
   }
 
   /**

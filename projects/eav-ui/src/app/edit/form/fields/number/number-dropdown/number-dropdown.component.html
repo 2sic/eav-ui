@@ -3,7 +3,7 @@
 @if (viewModel$ | async; as vm) {
   <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
     @if (!vm.freeTextMode) {
-      <mat-select [formControlName]="config.fieldName" [required]="vm.required"
+      <mat-select class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [required]="vm.required"
         [placeholder]="vm.placeholder">
         @for (option of vm.dropdownOptions; track option) {
           <mat-option [value]="option.value">

@@ -17,7 +17,9 @@
               <span class="eav-info-row__value__span eav-click" [tippy]="info.value"
                 (click)="copyToClipboard(info.value)">{{ info.value }}</span>
               @if (info.link) {
-                <a class="eav-info-row__link" [routerLink]="info.link.url">{{ info.link.label }}</a>
+                <a class="eav-info-row__link" [routerLink]="['/']" (click)="openSideNavPath(info.link.url)">
+                  {{ info.link.label }}
+                </a>
               }
             </div>
           </div>
@@ -54,9 +56,9 @@
               <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
               @if (info.link) {
                 @if (info.link.target === 'angular') {
-                  <a class="eav-info-row__link" [routerLink]="info.link.url">{{
-                    info.link.label
-                    }}</a>
+                  <a [routerLink]="['/']" class="eav-info-row__link" (click)="openSideNavPath(info.link.url)" >
+                  {{info.link.label }}
+                  </a>
                 }
                 @if (info.link.target !== 'angular') {
                   <a class="eav-info-row__link" [href]="info.link.url" [target]="info.link.target">{{ info.link.label }}</a>
@@ -219,3 +221,5 @@
     <span>{{ label }}</span>
   </a>
 </ng-template>
+
+<router-outlet></router-outlet>

@@ -6,6 +6,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity, QueryStreams } from "../../entity/entity-query/entity-query.models";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 
 export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
@@ -21,7 +23,7 @@ export class QueryFieldDataSource extends DataSourceBase {
     private fieldName: string,
     private appId: string,
   ) {
-    super(settings$);
+    super(settings$, new EavLogger('QueryFieldDataSource', false ));
 
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
@@ -130,28 +132,20 @@ export class QueryFieldDataSource extends DataSourceBase {
   }
 
   transformData(data: QueryStreams, streamName: string): PickerItem[] {
-    if (!data) {
-      const errorItem: PickerItem = {
-        Text: this.translate.instant('Fields.EntityQuery.QueryError'),
-        Value: null,
-        _disableSelect: true,
-        _disableDelete: true,
-        _disableEdit: true,
-      };
-      return [errorItem];
-    }
-    else if (!data[streamName]) {
-      const errorItem: PickerItem = {
-        Text: this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName,
-        Value: null,
-        _disableSelect: true,
-        _disableDelete: true,
-        _disableEdit: true,
-      };
-      return [errorItem];
-    }
-    const items: PickerItem[] = data[streamName].map(entity => this.fillEntityInfoMoreFields(entity));
-    return this.setDisableEdit(items);
+    if (!data)
+      return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
+
+    let items: PickerItem[] = [];
+    let errors: PickerItem[] = [];
+    streamName.split(',').forEach(stream => { 
+      if (!data[stream]) {
+        errors.push(placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryStreamNotFound', ' ' + stream));
+        return; // TODO: @SDV test if this acts like continue or break
+      }
+        
+      items = items.concat(data[stream].map(entity => this.fillEntityInfoMoreFields(entity)));
+    });
+    return [...errors, ...this.setDisableEdit(items)];
   }
 
   private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {

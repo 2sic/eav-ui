@@ -89,7 +89,10 @@ export class PickerStateAdapter {
     switch (action) {
       case 'add':
         const guid = value as string;
-        valueArray.push(guid);
+        if(this.settings$.value.AllowMultiValue)
+          valueArray.push(guid);
+        else
+          valueArray = [guid];
         break;
       case 'delete':
         const index = value as number;

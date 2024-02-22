@@ -12,6 +12,10 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { placeholderPickerItem } from './picker-source-adapter-base';
+
+const logThis = false;
 
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
@@ -60,11 +64,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       control,
       // fetchAvailableEntities,
       deleteCallback,
+      new EavLogger('PickerQuerySourceAdapter', logThis),
     );
   }
 
-  init(): void {
-    super.init();
+  init(callerName: string): void {
+    super.init(callerName);
 
     this.subscriptions.add(
       this.settings$.pipe(
@@ -103,24 +108,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       next: ([data, loading, deleted]) => {
         const items = data.filter(item => !deleted.some(guid => guid === item.Value));
         if (loading) {
-          this.availableItems$.next([{
-            Text: this.translate.instant('Fields.Entity.Loading'),
-            Value: null,
-            _disableSelect: true,
-            _disableDelete: true,
-            _disableEdit: true,
-          }, ...items]);
+          this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]);
         } else {
           this.availableItems$.next(items);
         }
       }, error: (error) => {
-        this.availableItems$.next([{
-          Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
-          Value: null,
-          _disableSelect: true,
-          _disableDelete: true,
-          _disableEdit: true,
-        }]);
+        this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
       }
     }));
   }
@@ -145,22 +138,15 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.queryFieldDataSource.prefetchEntityGuids(missingData);
   }
 
-  setOverrideData(missingData: string[]): void {
-    this.queryFieldDataSource.entityGuids(missingData);
+  forceReloadData(missingData: string[]): void {
+    this.queryFieldDataSource.forceLoadGuids(missingData);
   }
 
   fetchItems(): void {
     this.queryFieldDataSource.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
-      const errorItem: PickerItem = {
-        Text: this.translate.instant('Fields.EntityQuery.QueryNotDefined'),
-        Value: null,
-        _disableSelect: true,
-        _disableDelete: true,
-        _disableEdit: true,
-      };
-      this.availableItems$.next([errorItem]);
+      this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryNotDefined')]);
       return;
     }
 

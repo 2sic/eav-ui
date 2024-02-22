@@ -2,7 +2,7 @@ import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -23,6 +23,9 @@ import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
+import { EavLogger } from '../../shared/logging/eav-logger';
+
+const logThis = false;
 
 @Component({
   selector: 'app-apps-list',
@@ -40,6 +43,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
 
   viewModel$: Observable<AppsListViewModel>;
 
+  private log = new EavLogger('AppsListComponent', logThis);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -56,13 +61,21 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
+    const appsLog = this.log.rxTap('apps$');
     this.apps$ = this.refreshApps$.pipe(
+      appsLog.pipe(),
       startWith(undefined),
       switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
-      share(),
+      shareReplay(1),
+      appsLog.shareReplay(),
     );
-    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
-    this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
+
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshApps$.next(); }));
+
+    const isAddFromFolderEnabledLog = this.log.rxTap('isAddFromFolderEnabled$');
+    this.isAddFromFolderEnabled$ = this.featuresService
+      .isEnabled$(FeatureNames.AppSyncWithSiteFiles)
+      .pipe(isAddFromFolderEnabledLog.pipe(), isAddFromFolderEnabledLog.shareReplay());
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
       map(([apps, fabOpen, isAddFromFolderEnabled]) => {
@@ -86,20 +99,20 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   createApp(): void {
-    this.router.navigate(['create'], { relativeTo: this.route.firstChild });
+    this.router.navigate(['create'], { relativeTo: this.route.parent.firstChild });
   }
 
   createInheritedApp(): void {
-    this.router.navigate(['create-inherited'], { relativeTo: this.route.firstChild });
+    this.router.navigate(['create-inherited'], { relativeTo: this.route.parent.firstChild });
   }
 
   addFromFolder(): void {
-    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.firstChild });
+    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.parent.firstChild });
   }
 
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
+    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
   }
 
   private deleteApp(app: App): void {
@@ -137,11 +150,11 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
 
   private openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private openApp(app: App): void {
-    this.router.navigate([app.Id.toString()], { relativeTo: this.route.firstChild });
+    this.router.navigate([app.Id.toString()], { relativeTo: this.route.parent.firstChild });
   }
 
   openLightSpeedFeatInfo() {

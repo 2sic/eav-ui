@@ -1,0 +1,73 @@
+mat-toolbar {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex: 1 0 74px;
+
+  .toolbar-container {
+    display: flex;
+    align-items: center;
+    .menu-container {
+      margin-right: 16px;
+      cursor: pointer;
+    }
+    img {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 16px 0;
+      margin-right: 16px;
+      user-select: none;
+      text-shadow: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+}
+
+mat-sidenav-container {
+  height: 100vh;
+
+  // mat-sidenav-content{
+  //   background-color: white;
+  // }
+
+  // Sidenave
+  mat-sidenav {
+    width: 295px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    .sideNav-bottom-info {
+      position: absolute;
+      bottom: 0px;
+      text-align: center;
+      width: 100%;
+      font-size: 12px;
+    }
+  }
+}
+
+.container-content {
+  height: 100%;
+}
+
+.active {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+::ng-deep {
+  .xng-breadcrumb-separator {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .mat-drawer-container {
+    background-color: transparent !important;
+  }
+}

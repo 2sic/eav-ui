@@ -10,6 +10,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,
@@ -38,14 +41,13 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       entityCacheService,
       stringQueryCacheService,
     );
+    this.log = new EavLogger('EntityContentBlockComponent', logThis);
     EntityContentBlocksLogic.importMe();
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-    this.createViewModel();
+    this.initAdaptersAndViewModel();
   }
 
   ngAfterViewInit(): void {
@@ -56,7 +58,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void {
+  protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerStateAdapter(
       this.control,
       this.config,
@@ -83,7 +85,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     );
 
     state.init();
-    source.init();
+    source.init('EntityContentBlockComponent.createPickerAdapters');
     this.pickerData = new PickerData(
       state,
       source,

@@ -56,6 +56,9 @@
   // .mat-mdc-form-field-infix {
   //   padding-bottom: 0px !important;
   // }
+  .eav-translate-on-dblclick:disabled {
+    pointer-events: none
+  }
 
   // Used so form-field doesn't have background color
   .mat-mdc-text-field-wrapper,
@@ -176,8 +179,9 @@
     background-color: $accent-color;
     color: white;
 
-    &.mat-button-disabled {
+    &.mat-mdc-icon-button:disabled {
       background-color: $editUI-label-disabled-color;
+      color: white;
     }
   }
 }

@@ -6,7 +6,7 @@ import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.com
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
 export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
-  
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -18,15 +18,16 @@ export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
     super.ngOnDestroy();
   }
 
-  protected refreshOnChildClosedDeep() {
-    return this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      startWith(!!this.route.snapshot.firstChild.firstChild),
-      map(() => !!this.route.snapshot.firstChild.firstChild),
-      pairwise(),
-      filter(([hadChild, hasChild]) => hadChild && !hasChild),
-    )
-  }
+  // TODO @2dg not longer in use after refactoring SideNav with Routing
+  // protected refreshOnChildClosedDeep() {
+  //   return this.router.events.pipe(
+  //     filter(event => event instanceof NavigationEnd),
+  //     startWith(!!this.route.snapshot.firstChild.firstChild),
+  //     map(() => !!this.route.snapshot.firstChild.firstChild),
+  //     pairwise(),
+  //     filter(([hadChild, hasChild]) => hadChild && !hasChild),
+  //   )
+  // }
 
   protected refreshOnChildClosedShallow() {
     return this.router.events.pipe(

@@ -9,3 +9,10 @@
     margin-top: 2px;
   }
 }
+
+// Only for Temp in Use
+::ng-deep {
+  .mat-drawer-container {
+    background-color: #fafafa !important;
+  }
+}
