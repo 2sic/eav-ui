@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AllScenarios, DevRestQueryViewModel } from '../..';
 
 @Component({
-  selector: 'app-dev-query-introduction',
-  templateUrl: './introduction.component.html',
+    selector: 'app-dev-query-introduction',
+    templateUrl: './introduction.component.html',
+    standalone: true,
 })
 export class DevRestQueryIntroductionComponent implements OnInit {
 

@@ -3,11 +3,26 @@ import { MatDialog } from '@angular/material/dialog';
 import { HelpPopupComponent } from '..';
 import { HelpPopupData } from '../help-popup/help-popup.models';
 import { Scenario } from '../scenarios';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
 @Component({
-  selector: 'app-selector-with-help',
-  templateUrl: './selector-with-help.component.html',
-  styleUrls: ['../header-selector.scss'],
+    selector: 'app-selector-with-help',
+    templateUrl: './selector-with-help.component.html',
+    styleUrls: ['../header-selector.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        TippyStandaloneDirective,
+        MatIconModule,
+    ],
 })
 export class SelectorWithHelpComponent implements OnInit {
   @Input() label: string;

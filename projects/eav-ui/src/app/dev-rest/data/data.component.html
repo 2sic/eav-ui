@@ -1,4 +1,5 @@
 @if (viewModel$ | async; as vm) {
+<div class="eav-dialog eav-no-scrollbar">
   <div mat-mdc-dialog-title>
     <div class="dialog-title-box">
       <div>Using REST with Data of <code>{{ vm.name }}</code></div>
@@ -7,50 +8,53 @@
       </button>
     </div>
   </div>
-  <router-outlet></router-outlet>
-  <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="vm.scenario.key"
-    (valueChange)="changeScenario($event)">
-  </app-selector-with-help>
-  <mat-tab-group dynamicHeight color="accent"
-    class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
-    <!-- Introduction -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
-        <mat-icon>emoji_objects</mat-icon>
-        <span>Introduction</span>
-      </div>
-      <app-dev-data-introduction [data]="vm"></app-dev-data-introduction>
-      <app-dev-rest-tab-introduction [data]="vm"></app-dev-rest-tab-introduction>
-    </mat-tab>
-    <!-- Absolute / Virtual URLs -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box"
-        [tippy]="(vm.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
-        <mat-icon svgIcon="code-curly"></mat-icon>
-        <span>Call {{ vm.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
-      </div>
-      <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
-      <!-- REST Tab showing the urls and code snippets -->
-      <app-dev-rest-urls-and-code [data]="vm"></app-dev-rest-urls-and-code>
-    </mat-tab>
-    <!-- Permissions explained -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
-        <mat-icon>person</mat-icon>
-        <span>Permissions ({{ vm.permissions.length }})</span>
-        @if (!vm.permissions.length) {
+  <div class="eav-dialog-content">
+    <router-outlet></router-outlet>
+    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="vm.scenario.key"
+      (valueChange)="changeScenario($event)">
+    </app-selector-with-help>
+    <mat-tab-group dynamicHeight color="accent"
+      class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
+      <!-- Introduction -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
+          <mat-icon>emoji_objects</mat-icon>
+          <span>Introduction</span>
+        </div>
+        <app-dev-data-introduction [data]="vm"></app-dev-data-introduction>
+        <app-dev-rest-tab-introduction [data]="vm"></app-dev-rest-tab-introduction>
+      </mat-tab>
+      <!-- Absolute / Virtual URLs -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box"
+          [tippy]="(vm.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
+          <mat-icon svgIcon="code-curly"></mat-icon>
+          <span>Call {{ vm.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
+        </div>
+        <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
+        <!-- REST Tab showing the urls and code snippets -->
+        <app-dev-rest-urls-and-code [data]="vm"></app-dev-rest-urls-and-code>
+      </mat-tab>
+      <!-- Permissions explained -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
+          <mat-icon>person</mat-icon>
+          <span>Permissions ({{ vm.permissions.length }})</span>
+          @if (!vm.permissions.length) {
           <mat-icon>warning</mat-icon>
-        }
-      </div>
-      <app-dev-rest-tab-permissions [data]="vm"></app-dev-rest-tab-permissions>
-    </mat-tab>
-    <!-- HTTP Headers Explained -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
-        <mat-icon>perm_device_information</mat-icon>
-        <span>HTTP headers & &nbsp;<code>/auto/</code></span>
-      </div>
-      <app-dev-rest-tab-headers [data]="vm"></app-dev-rest-tab-headers>
-    </mat-tab>
-  </mat-tab-group>
+          }
+        </div>
+        <app-dev-rest-tab-permissions [data]="vm"></app-dev-rest-tab-permissions>
+      </mat-tab>
+      <!-- HTTP Headers Explained -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
+          <mat-icon>perm_device_information</mat-icon>
+          <span>HTTP headers & &nbsp;<code>/auto/</code></span>
+        </div>
+        <app-dev-rest-tab-headers [data]="vm"></app-dev-rest-tab-headers>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
 }

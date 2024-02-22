@@ -1,26 +1,63 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { PickerItem } from '../../../../../edit-types';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
-import { EntityService } from '../../edit/shared/services';
+import { EavService, EntityService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
 import { GoToDevRest } from '../go-to-dev-rest';
 import { DevRestDataViewModel } from './data-template-vars';
+import { AsyncPipe } from '@angular/common';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
+import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
+import { DevRestDataIntroductionComponent } from './introduction/introduction.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { EntitiesService } from '../../content-items/services/entities.service';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 
 @Component({
-  selector: 'app-dev-rest-data',
-  templateUrl: './data.component.html',
-  styleUrls: ['../dev-rest-all.scss'],
-  // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
-  preserveWhitespaces: true,
+    selector: 'app-dev-rest-data',
+    templateUrl: './data.component.html',
+    styleUrls: ['../dev-rest-all.scss'],
+    // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
+    preserveWhitespaces: true,
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        TippyStandaloneDirective,
+        MatIconModule,
+        RouterOutlet,
+        SelectorWithHelpComponent,
+        MatTabsModule,
+        DevRestDataIntroductionComponent,
+        DevRestTabIntroductionComponent,
+        DevRestTabExamplesComponent,
+        DevRestUrlsAndCodeComponent,
+        DevRestTabPermissionsComponent,
+        DevRestHttpHeadersComponent,
+        AsyncPipe,
+    ],
+    providers: [
+      PermissionsService,
+      EntitiesService,
+      EntityService,
+      AppDialogConfigService,
+      ContentTypesService,
+      EavService,
+    ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

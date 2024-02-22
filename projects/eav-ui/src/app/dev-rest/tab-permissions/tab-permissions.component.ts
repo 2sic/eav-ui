@@ -5,10 +5,23 @@ import { DevRestBaseViewModel } from '..';
 import { Permission } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
 @Component({
-  selector: 'app-dev-rest-tab-permissions',
-  templateUrl: './tab-permissions.component.html',
+    selector: 'app-dev-rest-tab-permissions',
+    templateUrl: './tab-permissions.component.html',
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        TippyStandaloneDirective,
+        MatIconModule,
+        MatBadgeModule,
+        AgGridModule,
+    ],
 })
 export class DevRestTabPermissionsComponent {
   @Input() data: DevRestBaseViewModel;

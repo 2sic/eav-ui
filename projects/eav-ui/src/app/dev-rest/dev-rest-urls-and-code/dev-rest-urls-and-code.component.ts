@@ -3,11 +3,18 @@ import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DevRestBaseViewModel, DevRestDataViewModel } from '..';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
+import { InfoBoxComponent } from '../info-box/info-box.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
 @Component({
-  selector: 'app-dev-rest-urls-and-code',
-  templateUrl: './dev-rest-urls-and-code.component.html',
-  styleUrls: ['./dev-rest-urls-and-code.component.scss']
+    selector: 'app-dev-rest-urls-and-code',
+    templateUrl: './dev-rest-urls-and-code.component.html',
+    styleUrls: ['./dev-rest-urls-and-code.component.scss'],
+    standalone: true,
+    imports: [MatExpansionModule, MatButtonModule, TippyStandaloneDirective, MatIconModule, InfoBoxComponent]
 })
 export class DevRestUrlsAndCodeComponent {
   @Input() data: DevRestBaseViewModel;

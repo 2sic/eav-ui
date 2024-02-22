@@ -4,10 +4,13 @@ import { defaultGridOptions } from '../../../shared/constants/default-grid-optio
 import { DevRestApiViewModel } from '../api-template-vars';
 import { TrueFalseComponent } from '../true-false/true-false.component';
 import { TrueFalseParams } from '../true-false/true-false.models';
+import { AgGridModule } from '@ag-grid-community/angular';
 
 @Component({
-  selector: 'app-dev-api-permissions',
-  templateUrl: './permissions.component.html',
+    selector: 'app-dev-api-permissions',
+    templateUrl: './permissions.component.html',
+    standalone: true,
+    imports: [AgGridModule],
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   @Input() data: DevRestApiViewModel;
