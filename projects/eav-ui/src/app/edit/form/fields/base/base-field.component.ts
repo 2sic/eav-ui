@@ -53,7 +53,7 @@ export class BaseFieldComponent<T = FieldValue> extends BaseSubsinkComponent imp
     );
     this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
-    this.required$ = this.settings$.pipe(map(settings => settings.Required), distinctUntilChanged());
+    this.required$ = this.settings$.pipe(map(settings => settings._currentRequired), distinctUntilChanged());
   }
 
   ngOnDestroy() {

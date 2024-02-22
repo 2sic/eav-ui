@@ -43,7 +43,7 @@ export class FormulaSettingsHelper {
     logicTools: FieldLogicTools,
   ): FieldSettings {
     settingsCurrent.Name = settingsCurrent.Name || attribute.Name;
-    settingsCurrent.Required = ValidationHelpers.isRequired(settingsCurrent);
+    settingsCurrent._currentRequired = ValidationHelpers.isRequired(settingsCurrent);
     const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
       contentTypeMetadata, fieldInputType, attributeValues, languages.defaultLanguage, attribute.Metadata,
     );
