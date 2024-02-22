@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
@@ -13,11 +13,27 @@ import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
 import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { FeaturesModule } from '../../features/features.module';
 
 @Component({
-  selector: 'app-add-app-from-folder',
-  templateUrl: './add-app-from-folder.component.html',
-  styleUrls: ['./add-app-from-folder.component.scss'],
+    selector: 'app-add-app-from-folder',
+    templateUrl: './add-app-from-folder.component.html',
+    styleUrls: ['./add-app-from-folder.component.scss'],
+    standalone: true,
+    imports: [
+        FeaturesModule,
+        AgGridModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+    ],
+    providers: [
+        AppsListService,
+        FeaturesService,
+    ]
 })
 export class AddAppFromFolderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -36,15 +52,15 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private featuresService: FeaturesService,
-  ) { 
+  ) {
     super();
   }
-  
+
   ngOnInit(): void {
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
       .pipe(distinctUntilChanged())
       .subscribe(this.isAddFromFolderEnabled$)
-    ); 
+    );
     this.viewModel$ = combineLatest([
       this.refreshApps$.pipe(
         startWith(undefined),
@@ -59,7 +75,7 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
   ngOnDestroy(): void {
     this.refreshApps$.complete();
     super.ngOnDestroy();
-  } 
+  }
 
   closeDialog(): void {
     this.dialogRef.close();

@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap, tap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -9,11 +9,26 @@ import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
 import { SiteLanguagesStatusComponent } from './site-languages-status/site-languages-status.component';
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
+import { AsyncPipe } from '@angular/common';
+import { MatDialogActions } from '@angular/material/dialog';
+import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
 
 @Component({
   selector: 'app-site-languages',
   templateUrl: './site-languages.component.html',
   styleUrls: ['./site-languages.component.scss'],
+  standalone: true,
+  imports: [
+    AgGridModule,
+    MatDialogActions,
+    AsyncPipe,
+     // TODO:: 2dg import AgGridAngular from '@ag-grid-community/angular';
+    // AgGridAngular
+  ],
+  providers: [
+    ZoneService,
+    AgGridAngular,
+  ],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
@@ -25,17 +40,21 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
   constructor(private zoneService: ZoneService) { }
 
   ngOnInit(): void {
+
     this.viewModel$ = combineLatest([
       this.refreshLanguages$.pipe(
         startWith(undefined),
         switchMap(() => this.zoneService.getLanguages().pipe(catchError(() => of(undefined)))),
-        share(),
+        share()
       )
     ]).pipe(
       map(([languages]) => {
+        // console.log('Languages:', languages);
         return { languages };
-      }),
+      })
     );
+
+    this.viewModel$.subscribe(d => console.log(d));
   }
 
   ngOnDestroy(): void {

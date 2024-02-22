@@ -1,8 +1,8 @@
-import { AgGridAngular } from '@ag-grid-community/angular';
+import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
@@ -13,8 +13,6 @@ import { IdFieldParams } from '../../shared/components/id-field/id-field.models'
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { Feature } from '../../features/models/feature.model';
 import { License } from '../models/license.model';
-import { FeaturesConfigService } from '../services/features-config.service';
-import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason.component';
@@ -22,11 +20,40 @@ import { FeaturesListEnabledComponent } from './features-list-enabled/features-l
 import { FeaturesStatusComponent } from './features-status/features-status.component';
 import { FeaturesStatusParams } from './features-status/features-status.models';
 import { ExpirationExtension } from '../../features/expiration-extension';
+import { ActiveFeaturesCountPipe } from './active-features-count.pipe';
+import { LicensesOrderPipe } from './licenses-order.pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { AgGridHeightDirective } from './ag-grid-height.directive';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { AppDialogConfigService } from '../../app-administration/services';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { FeaturesConfigService } from '../services/features-config.service';
 
 @Component({
   selector: 'app-license-info',
   templateUrl: './license-info.component.html',
   styleUrls: ['./license-info.component.scss'],
+  standalone: true,
+  imports: [
+    MatExpansionModule,
+    MatIconModule,
+    NgClass,
+    AgGridModule,
+    AgGridHeightDirective,
+    MatDialogActions,
+    MatButtonModule,
+    RouterOutlet,
+    AsyncPipe,
+    LicensesOrderPipe,
+    ActiveFeaturesCountPipe,
+    TippyStandaloneDirective,
+  ],
+  providers: [
+    FeaturesConfigService,
+    // AppDialogConfigService,
+  ]
 })
 export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
@@ -44,17 +71,23 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    // appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
   }
 
   ngOnInit(): void {
+
+    // TODO:: 2dg not working
+    this.featuresConfigService.getLicenses().subscribe(d => console.log("test feature service", d));
+
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshLicenses$.next(); }));
     this.viewModel$ = //combineLatest([
       this.refreshLicenses$.pipe(
         startWith(undefined),
         switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
+        tap(d => console.log("tet")),
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests
@@ -68,6 +101,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
 
         // Expand the data to have pre-calculated texts/states
         map(licenses => licenses.map(l => {
+          console.log("trigger")
           // const expandedFeatures = l.Features.map(f => ExpirationExtension.expandFeature(f));
           return ({
             ...ExpirationExtension.expandLicense(l),
@@ -78,10 +112,10 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
         // Share the resulting stream with all subscribers
         share(),
       )
-    //])
-    .pipe(
-      map((licenses) => ({ licenses })),
-    );
+        //])
+        .pipe(
+          map((licenses) => ({ licenses })),
+        );
   }
 
   ngOnDestroy(): void {

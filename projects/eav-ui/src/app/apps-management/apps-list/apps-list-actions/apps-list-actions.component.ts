@@ -3,11 +3,24 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { App } from '../../models/app.model';
 import { AppsListActionsParams } from './apps-list-actions.models';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatRippleModule } from '@angular/material/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-apps-list-actions',
-  templateUrl: './apps-list-actions.component.html',
-  styleUrls: ['./apps-list-actions.component.scss'],
+    selector: 'app-apps-list-actions',
+    templateUrl: './apps-list-actions.component.html',
+    styleUrls: ['./apps-list-actions.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatRippleModule,
+        MatMenuModule,
+    ],
 })
 export class AppsListActionsComponent implements ICellRendererAngularComp {
   app: App;

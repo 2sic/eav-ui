@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, ReplaySubject } from 'rxjs';
 import { AppDialogConfigService } from '../../app-administration/services';
-import { FeatureSummary } from '../../features/models/feature-summary.model';
 import { DialogContext } from '../models/dialog-settings.model';
 
 @Injectable({ providedIn: 'root' })
@@ -44,6 +43,8 @@ export class FeaturesService {
   }
 
   isEnabled$(nameId: string) {
+    console.log('2dg', nameId)
+    this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false)).subscribe(d => console.log('2dg', d));
     return this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false));
   }
 
