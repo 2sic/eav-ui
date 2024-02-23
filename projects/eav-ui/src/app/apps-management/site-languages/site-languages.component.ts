@@ -11,8 +11,9 @@ import { SiteLanguagesStatusComponent } from './site-languages-status/site-langu
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
 import { AsyncPipe } from '@angular/common';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
-// import { AgGridAngular } from '@ag-grid-angular';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 
 @Component({
   selector: 'app-site-languages',
@@ -20,15 +21,12 @@ import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
   styleUrls: ['./site-languages.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
     MatDialogActions,
     AsyncPipe,
-     // TODO:: 2dg import AgGridAngular from '@ag-grid-community/angular';
-     AgGridAngular,
+    AgGridModule,
   ],
   providers: [
     ZoneService,
-    // AgGridAngular,
   ],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
@@ -38,7 +36,9 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<SiteLanguagesViewModel>;
 
-  constructor(private zoneService: ZoneService) { }
+  constructor(private zoneService: ZoneService) {
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
+  }
 
   ngOnInit(): void {
 
@@ -50,12 +50,9 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
       )
     ]).pipe(
       map(([languages]) => {
-        // console.log('Languages:', languages);
         return { languages };
       })
     );
-
-    this.viewModel$.subscribe(d => console.log(d));
   }
 
   ngOnDestroy(): void {

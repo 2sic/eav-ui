@@ -32,6 +32,8 @@ import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedD
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { AppDialogConfigService } from '../../app-administration/services';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 
 const logThis = false;
 
@@ -87,6 +89,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
+    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
   }
 
   ngOnInit(): void {
