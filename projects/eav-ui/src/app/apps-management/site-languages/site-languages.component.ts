@@ -12,6 +12,7 @@ import { SiteLanguagesStatusParams } from './site-languages-status/site-language
 import { AsyncPipe } from '@angular/common';
 import { MatDialogActions } from '@angular/material/dialog';
 import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
+// import { AgGridAngular } from '@ag-grid-angular';
 
 @Component({
   selector: 'app-site-languages',
@@ -23,11 +24,11 @@ import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
     MatDialogActions,
     AsyncPipe,
      // TODO:: 2dg import AgGridAngular from '@ag-grid-community/angular';
-    // AgGridAngular
+     AgGridAngular,
   ],
   providers: [
     ZoneService,
-    AgGridAngular,
+    // AgGridAngular,
   ],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
