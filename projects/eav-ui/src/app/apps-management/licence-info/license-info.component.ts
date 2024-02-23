@@ -27,7 +27,6 @@ import { AgGridHeightDirective } from './ag-grid-height.directive';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 import { FeaturesConfigService } from '../services/features-config.service';
 
@@ -52,7 +51,6 @@ import { FeaturesConfigService } from '../services/features-config.service';
   ],
   providers: [
     FeaturesConfigService,
-    // AppDialogConfigService,
   ]
 })
 export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -72,22 +70,16 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-    // appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
   }
 
   ngOnInit(): void {
-
-    // TODO:: 2dg not working
-    this.featuresConfigService.getLicenses().subscribe(d => console.log("test feature service", d));
-
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshLicenses$.next(); }));
     this.viewModel$ = //combineLatest([
       this.refreshLicenses$.pipe(
         startWith(undefined),
         switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
-        tap(d => console.log("tet")),
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests
@@ -101,7 +93,6 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
 
         // Expand the data to have pre-calculated texts/states
         map(licenses => licenses.map(l => {
-          console.log("trigger")
           // const expandedFeatures = l.Features.map(f => ExpirationExtension.expandFeature(f));
           return ({
             ...ExpirationExtension.expandLicense(l),
