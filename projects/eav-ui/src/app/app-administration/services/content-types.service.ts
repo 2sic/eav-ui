@@ -17,7 +17,7 @@ export class ContentTypesService {
     return this.dnnContext.$2sxc.http.apiUrl(name);
   }
 
-  retrieveContentType(staticName: string) {
+  retrieveContentType(staticName: string){
     return this.http.get<ContentType>(this.apiUrl(webApiTypeRoot + 'get'), {
       params: { appId: this.context.appId.toString(), contentTypeId: staticName }
     });

@@ -26,6 +26,8 @@ import { QueriesComponent } from './queries/queries.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { DataCopilotComponent } from './data-copilot/data-copilot.component';
+import { DataRestApiComponent } from './data-rest-api/data-rest-api.component';
+import { QueriesRestApiComponent } from './queries-rest-api/queries-rest-api.component';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -100,7 +102,9 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Queries' , breadcrumb: "Queries" },
       },
+      { path: 'restapiquerie', component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', } },
       { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
+      { path: 'restapidata', component: DataRestApiComponent, data: { title: 'Rest-Api Data', breadcrumb: 'Rest-Api Data', } },
       {
         path: 'views', component: ViewsComponent, children: [
           {

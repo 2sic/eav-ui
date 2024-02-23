@@ -1,0 +1,16 @@
+<form [formGroup]="contentTypeForm">
+  <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+    <mat-label>Select an Edition</mat-label>
+    <mat-select formControlName="contentType" (valueChange)="openRestApi($event)">
+      @if (contentTypes$ | async; as contentTypes) {
+        @for (contentType of contentTypes.sort() ; track contentType) {
+        <mat-option [value]="contentType.Label">
+          {{ contentType.Label }}
+        </mat-option>
+        }
+      }
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<app-dev-rest-data [contentTypeInput$]="contentType$"></app-dev-rest-data>

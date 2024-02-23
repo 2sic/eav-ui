@@ -1,8 +1,8 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { Component, HostBinding, OnDestroy } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { combineLatest, filter, map, share, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { PickerItem } from '../../../../../edit-types';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
@@ -25,42 +25,45 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { ContentType } from '../../app-administration/models';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 
 @Component({
-    selector: 'app-dev-rest-data',
-    templateUrl: './data.component.html',
-    styleUrls: ['../dev-rest-all.scss'],
-    // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
-    preserveWhitespaces: true,
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        TippyStandaloneDirective,
-        MatIconModule,
-        RouterOutlet,
-        SelectorWithHelpComponent,
-        MatTabsModule,
-        DevRestDataIntroductionComponent,
-        DevRestTabIntroductionComponent,
-        DevRestTabExamplesComponent,
-        DevRestUrlsAndCodeComponent,
-        DevRestTabPermissionsComponent,
-        DevRestHttpHeadersComponent,
-        AsyncPipe,
-    ],
-    providers: [
-      PermissionsService,
-      EntitiesService,
-      EntityService,
-      AppDialogConfigService,
-      ContentTypesService,
-      EavService,
-    ],
+  selector: 'app-dev-rest-data',
+  templateUrl: './data.component.html',
+  styleUrls: ['../dev-rest-all.scss'],
+  // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
+  preserveWhitespaces: true,
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    TippyStandaloneDirective,
+    MatIconModule,
+    RouterOutlet,
+    SelectorWithHelpComponent,
+    MatTabsModule,
+    DevRestDataIntroductionComponent,
+    DevRestTabIntroductionComponent,
+    DevRestTabExamplesComponent,
+    DevRestUrlsAndCodeComponent,
+    DevRestTabPermissionsComponent,
+    DevRestHttpHeadersComponent,
+    AsyncPipe,
+  ],
+  providers: [
+    PermissionsService,
+    EntitiesService,
+    EntityService,
+    AppDialogConfigService,
+    ContentTypesService,
+    EavService,
+  ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
   constructor(
     dialogRef: MatDialogRef<DevRestDataComponent>,
@@ -77,12 +80,22 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
 
-    // Build ContentType Stream
-    const contentType$ = route.paramMap.pipe(
-      map(pm => pm.get(GoToDevRest.paramTypeName)),
-      switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
-      share()
-    );
+    // this.contentTypeInput$.subscribe(d => console.log(d))
+
+    let contentType$
+
+    if (router.url.includes("restapidata")) {
+      contentType$ = this.contentTypeInput$;
+    } else {
+      // Build ContentType Stream
+      contentType$ = route.paramMap.pipe(
+        map(pm => pm.get(GoToDevRest.paramTypeName)),
+        switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
+        share()
+      );
+    }
+
+    if (!contentType$) return;
 
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again

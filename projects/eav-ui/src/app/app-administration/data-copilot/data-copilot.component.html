@@ -21,15 +21,8 @@
         Editions are managed in the <code>/App_Data/app.json</code> file.
       </p>
 
-      <!--
-      TODO: @2dg
-      - get data from backend /admin/code/editions?appId=... ?? 404 Error
-      - note that '' is a valid value - the root
-      - default value should always be '' (the root)
-      -->
-
       <form [formGroup]="editionForm">
-        <mat-form-field appearance="fill" color="accent" class="eav-form-field eav-scope-dropdown">
+        <mat-form-field appearance="fill" color="accent" style="width: 100%;">
           <mat-label>Select an Edition</mat-label>
           <mat-select formControlName="edition">
             @if (editions$ | async; as editions) {
