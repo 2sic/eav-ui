@@ -88,8 +88,6 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
       this.getSystemInfo();
       this.getLanguages();
     }));
-    console.log("trigger")
-    this.viewModel$.subscribe(d => console.log(d))
   }
 
   ngOnDestroy(): void {
