@@ -15,7 +15,7 @@ import { NgModule } from '@angular/core';
   // TODO:: @2dg moduleName: ModuleNames, new with gridId: string, not tested
 export class SxcGridModule {
   constructor() {
-    if (!ModuleRegistry.__isRegistered(ModuleNames.ClientSideRowModelModule, 'grid')) {
+    if (!ModuleRegistry.isRegistered(ModuleNames.ClientSideRowModelModule)) {
       ModuleRegistry.register(ClientSideRowModelModule);
     }
   }

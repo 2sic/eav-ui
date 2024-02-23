@@ -43,8 +43,6 @@ export class FeaturesService {
   }
 
   isEnabled$(nameId: string) {
-    console.log('2dg', nameId)
-    this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false)).subscribe(d => console.log('2dg', d));
     return this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false));
   }
 
