@@ -3,6 +3,7 @@ export interface NavItem {
   name: string;
   path: string;
   icon: string;
+  svgIcon: boolean;
   tippy: string;
   child?: NavItem[];
 }
