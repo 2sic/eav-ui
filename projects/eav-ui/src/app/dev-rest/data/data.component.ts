@@ -80,22 +80,11 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
 
-    // this.contentTypeInput$.subscribe(d => console.log(d))
-
-    let contentType$
-
-    if (router.url.includes("restapidata")) {
-      contentType$ = this.contentTypeInput$;
-    } else {
-      // Build ContentType Stream
-      contentType$ = route.paramMap.pipe(
-        map(pm => pm.get(GoToDevRest.paramTypeName)),
-        switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
-        share()
-      );
-    }
-
-    if (!contentType$) return;
+    const contentType$ = route.paramMap.pipe(
+      map(pm => pm.get(GoToDevRest.paramTypeName)),
+      switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
+      share()
+    );
 
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again

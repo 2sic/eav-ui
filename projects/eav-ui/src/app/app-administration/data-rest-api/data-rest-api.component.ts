@@ -9,12 +9,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { DevRestDataComponent } from '../../dev-rest/data/data.component';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-data-rest-api',
   standalone: true,
   imports: [MatSelectModule, MatButtonModule,
-    MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestDataComponent],
+    MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestDataComponent, RouterOutlet],
   providers: [ContentTypesService],
   templateUrl: './data-rest-api.component.html',
   styleUrl: './data-rest-api.component.scss'
@@ -22,43 +23,32 @@ import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 export class DataRestApiComponent {
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
-  contentType$ = new BehaviorSubject<ContentType>(undefined);
+  contentTypes: ContentType[] = [];
 
   contentTypeForm: FormGroup;
 
-  constructor(private contentTypesService: ContentTypesService, private fb: FormBuilder,) { }
+
+  constructor(private contentTypesService: ContentTypesService, private fb: FormBuilder,
+  private router: Router) { }
 
   ngOnInit() {
-
+    this.fetchData();
     this.contentTypeForm = this.fb.group({
       contentType: ['']
     });
+    // Test Log
+  }
 
+  fetchData() {
     this.contentTypesService.retrieveContentTypes("Default").subscribe(
       (contentTypes: ContentType[]) => {
         this.contentTypes$.next(contentTypes);
-      },
-      (error) => {
-        console.error("Fehler beim Abrufen der Inhaltsarten:", error);
       }
     );
   }
 
   openRestApi(event: string): void {
-    if (!event) return; // Sicherstellen, dass event definiert ist und nicht leer ist
-
-    this.contentTypes$.pipe(
-      map((contentTypes: ContentType[]) => {
-        const foundContentType = contentTypes.find((contentType: ContentType) => {
-          return contentType.Label === event;
-        });
-
-        if (foundContentType) {
-          this.contentType$.next(foundContentType);
-        }
-      })
-    )
-
+    if (!event) return;
+    this.router.navigate([`/data/${event}`]);
   }
 }
-

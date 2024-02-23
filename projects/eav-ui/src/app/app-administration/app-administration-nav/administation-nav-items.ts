@@ -17,7 +17,7 @@ export const AppsAdministationNavItems: NavItem[] = [
     svgIcon: false,
     tippy: 'Queries / Visual Query Designer',
     child: [
-      { name: 'Rest-Api', path: 'restapiquerie', icon: 'code-curly', svgIcon: true, tippy: 'Rest-Api Queries' },
+      { name: 'Rest-Api', path: 'restapiquery', icon: 'code-curly', svgIcon: true, tippy: 'Rest-Api Queries' },
     ]
   },
   {
