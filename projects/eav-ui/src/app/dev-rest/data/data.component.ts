@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, Input, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { PickerItem } from '../../../../../edit-types';
@@ -65,6 +65,8 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
 
   @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
+  isSideNavContent: boolean;
+
   constructor(
     dialogRef: MatDialogRef<DevRestDataComponent>,
     router: Router,
@@ -79,6 +81,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     dnnContext: DnnContext,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
+    this.isSideNavContent = this.router.url.includes('restapidata');
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),

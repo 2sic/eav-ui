@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { DevRestDataComponent } from '../../dev-rest/data/data.component';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-data-rest-api',
@@ -27,28 +27,38 @@ export class DataRestApiComponent {
 
   contentTypeForm: FormGroup;
 
-
   constructor(private contentTypesService: ContentTypesService, private fb: FormBuilder,
-  private router: Router) { }
+    private router: Router, private route: ActivatedRoute,) { }
 
   ngOnInit() {
     this.fetchData();
     this.contentTypeForm = this.fb.group({
       contentType: ['']
     });
-    // Test Log
+
   }
 
   fetchData() {
     this.contentTypesService.retrieveContentTypes("Default").subscribe(
       (contentTypes: ContentType[]) => {
         this.contentTypes$.next(contentTypes);
+
+        // When Route are reloade and have some StaticName in the Route
+        const urlSegments = this.router.url.split('/');
+        const urlStaticName = urlSegments[urlSegments.length - 1]
+
+        const selectedContentType = contentTypes.find(contentType => contentType.StaticName === urlStaticName);
+        if (selectedContentType) {
+          this.contentTypeForm.get('contentType').setValue(selectedContentType.StaticName);
+        }
+
       }
     );
   }
 
   openRestApi(event: string): void {
     if (!event) return;
-    this.router.navigate([`/data/${event}`]);
+    this.router.navigate([`${event}`], { relativeTo: this.route.parent.firstChild });
   }
+
 }

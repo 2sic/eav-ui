@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Query } from '../models';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-queries-rest-api',
@@ -27,6 +27,7 @@ export class QueriesRestApiComponent {
   queryTypeForm: FormGroup;
 
   constructor(private fb: FormBuilder, private pipelinesService: PipelinesService, private router: Router
+    , private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -39,13 +40,22 @@ export class QueriesRestApiComponent {
 
   fetchQueries() {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
-      console.log(queries);
       this.queryTypes$.next(queries);
+
+       // When Route are reloade and have some Guid in the Route
+       const urlSegments = this.router.url.split('/');
+       const urlGuidName = urlSegments[urlSegments.length - 1]
+
+       const selectedContentType = queries.find(query => query.Guid === urlGuidName);
+       if (selectedContentType) {
+         this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
+       }
+
     });
   }
 
   openRestApi(event: string): void {
     if (!event) return;
-    this.router.navigate([`/query/${event}`]);
+    this.router.navigate([`${event}`], { relativeTo: this.route.parent.firstChild });
   }
 }

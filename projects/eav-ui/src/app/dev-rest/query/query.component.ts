@@ -67,6 +67,8 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   /** Test values for stream names */
   streamNames$ = new BehaviorSubject<string>('Default');
 
+  isSideNavContent: boolean;
+
   constructor(
     appDialogConfigService: AppDialogConfigService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
@@ -79,6 +81,8 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
     dnnContext: DnnContext,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
+
+    this.isSideNavContent = this.router.url.includes('restapiquery');
 
     // build Query Stream
     const query$ = combineLatest([

@@ -1,13 +1,13 @@
-<h1>Test</h1>
-
 @if (viewModel$ | async; as vm) {
 <div class="eav-dialog eav-no-scrollbar">
   <div mat-mdc-dialog-title>
     <div class="dialog-title-box">
       <div>Using REST with Data of <code>{{ vm.name }}</code></div>
+      @if (!isSideNavContent){
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
+      }
     </div>
   </div>
   <div class="eav-dialog-content">

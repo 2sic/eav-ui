@@ -88,17 +88,23 @@ const appAdministrationRoutes: Routes = [
       },
       { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
       {
-        path: 'restapidata', component: DataRestApiComponent, data: {
-          title: 'Rest-Api Data', breadcrumb: 'Rest-Api Data',
-          // TODO:: @2dg test route from dev-rest
-          chilrend: [
-            {
-              path: `data/:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent, children: [
-                GoToPermissions.route,
-              ]
+        path: 'restapidata',
+        component: DataRestApiComponent,
+        data: {
+          title: 'Rest-Api Data',
+          breadcrumb: 'Rest-Api Data'
+        },
+        children: [
+          {
+            path: `:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent,
+            data: {
+              breadcrumb: 'Rest-Api Data'
             },
-          ]
-        }
+            children: [
+              GoToPermissions.route,
+            ]
+          },
+        ]
       },
       {
         path: 'queries', component: QueriesComponent, children: [
@@ -120,10 +126,11 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: 'restapiquery', component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', },
-          // TODO:: @2dg test route from dev-rest
         children: [
           {
-            path: `query/:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent, children: [
+            path: `:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent,
+            data: { breadcrumb: 'Rest-Api Queries', },
+            children: [
               GoToPermissions.route,
             ]
           },

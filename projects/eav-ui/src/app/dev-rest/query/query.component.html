@@ -1,12 +1,13 @@
-<h1>Query Test 2dg</h1>
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog eav-no-scrollbar">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">Using REST with Query <code>{{ vm.name }}</code></div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+<div class="eav-dialog eav-no-scrollbar">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Using REST with Query <code>{{ vm.name }}</code></div>
+    @if (!isSideNavContent){
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+    }
+  </div>
   <div class="eav-dialog-content">
     <router-outlet></router-outlet>
     <!-- Template below this line -->
@@ -52,7 +53,7 @@
           <mat-icon>person</mat-icon>
           <span>Permissions ({{ vm.permissions.length }})</span>
           @if (!vm.permissions.length) {
-            <mat-icon>warning</mat-icon>
+          <mat-icon>warning</mat-icon>
           }
         </div>
         <app-dev-rest-tab-permissions [data]="vm"></app-dev-rest-tab-permissions>
