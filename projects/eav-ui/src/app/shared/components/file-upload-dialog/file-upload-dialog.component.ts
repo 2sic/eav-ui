@@ -7,7 +7,7 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadT
 import { AppInstallSettingsService } from '../../services/getting-started.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Context } from '../../services/context';
-import { CrossWindowMessage, InstallPackage, InstallSettings, InstalledApp, SpecsForInstaller } from '../../models/installer-models';
+import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { InstallerService } from '../../services/installer.service';
 
 @Component({
@@ -67,7 +67,6 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     filter((evt: MessageEvent) => evt.origin === "https://2sxc.org"),
     // Get data from event.
     map((evt: MessageEvent) => {
-      console.log('SDV debug evt', evt);
       try {
         return JSON.parse(evt.data) as CrossWindowMessage;
       } catch (e) {
@@ -109,11 +108,12 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
         const specsMsg: SpecsForInstaller = {
           action: 'specs',
           data: {
-            installedApps: this.settings.installedApps.map(app => ((app as InstalledApp).guid)),
-            rules: this.settings.rules,
+            //currently not used
+            installedApps: this.settings.installedApps,//.map(app => ((app as InstalledApp).guid)),
+            //currently used to forbid already installed apps
+            rules: this.settings.installedApps.map(app => ({ target: 'guid', appGuid: app.guid, mode: 'f', url: '' })),//this.settings.rules,
           },
         };
-        console.log('SDV specsMsg', specsMsg);
         const specsJson = JSON.stringify(specsMsg);
         winFrame.contentWindow.postMessage(specsJson, '*');
         console.log('debug: just sent specs message:' + specsJson, specsMsg, winFrame);

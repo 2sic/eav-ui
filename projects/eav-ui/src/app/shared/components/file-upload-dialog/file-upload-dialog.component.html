@@ -64,19 +64,17 @@
         }
       }
     </div>
-    @if (!vm.showAppCatalog) {
-      <mat-dialog-actions align="end">
-        @if (!vm.result?.Success) {
-          <button mat-raised-button (click)="closeDialog()">Cancel</button>
-          <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
-            (click)="upload()">
-            Upload
-          </button>
-        }
-        @if (vm.result?.Success) {
-          <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
-        }
-      </mat-dialog-actions>
-    }
+    <mat-dialog-actions align="end">
+      @if (!vm.result?.Success) {
+        <button mat-raised-button (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
+          (click)="upload()">
+          Upload
+        </button>
+      }
+      @if (vm.result?.Success) {
+        <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
+      }
+    </mat-dialog-actions>
   </div>
 }

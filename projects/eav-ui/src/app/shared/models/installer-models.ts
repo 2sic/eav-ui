@@ -1,6 +1,6 @@
 // copied from 2sxc-ui app/installer
 export interface InstallSpecs {
-  installedApps?: InstalledApp[] | string[];
+  installedApps?: InstalledApp[];// | string[];
   rules?: InstallRule[];
 }
 
