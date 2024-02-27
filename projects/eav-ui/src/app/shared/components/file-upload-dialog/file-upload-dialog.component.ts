@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Observable, catchError, combineLatest, debounceTime, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
 import { AppInstallSettingsService } from '../../services/getting-started.service';
@@ -43,13 +43,12 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     private snackBar: MatSnackBar,
     private installSettingsService: AppInstallSettingsService,
     private installerService: InstallerService,
-    // private importAppService: ImportAppService,
     private sanitizer: DomSanitizer,
     private context: Context,
   ) { 
     super();
 
-    // copied from 2sxc-ui
+    // copied from 2sxc-ui app/installer
     this.subscription.add(
       this.installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
@@ -60,7 +59,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
   }
 
   private alreadyProcessing = false;
-  // copied from 2sxc-ui
+  // copied from 2sxc-ui app/installer
   // Initial Observable to monitor messages
   private messages$ = fromEvent(window, 'message').pipe(
     // Ensure only one installation is processed.
@@ -100,7 +99,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     // copied from 2sxc-ui
     this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
 
-    // copied from 2sxc-ui
+    // copied from 2sxc-ui app/installer
     this.subscription.add(this.messages$.pipe(
       // Verify it's for this action
       filter(data => data.action === 'specs'),
@@ -121,7 +120,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
       }),
     ).subscribe());
 
-    // copied from 2sxc-ui
+    // copied from 2sxc-ui app/installer
     // Subscription to listen to 'install' messages
     this.subscription.add(this.messages$.pipe(
       filter(data => data.action === 'install'),

@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InstallPackage } from '../models/installer-models';
 
+// copied from 2sxc-ui app/installer
 @Injectable()
-// copied from 2sxc-ui
 export class InstallerService {
 
   constructor(

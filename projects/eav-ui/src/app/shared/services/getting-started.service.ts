@@ -5,8 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { InstallSettings } from '../models/installer-models';
 
+// copied from 2sxc-ui app/installer
 @Injectable()
-// copied from 2sxc-ui
 export class AppInstallSettingsService {
 
   private installSettingsSubject: Subject<InstallSettings> = new Subject<InstallSettings>();
