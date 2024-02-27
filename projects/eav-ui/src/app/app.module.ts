@@ -19,6 +19,8 @@ import { paramsInitFactory } from './params-init.factory';
 import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.interceptor';
 import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interceptor';
 import { Context } from './shared/services/context';
+import { AppInstallSettingsService } from './shared/services/getting-started.service';
+import { InstallerService } from './shared/services/installer.service';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { Context } from './shared/services/context';
     Context,
     Title,
     AppIconsService,
+    AppInstallSettingsService,// copied from 2sxc-ui
+    InstallerService,// copied from 2sxc-ui
   ],
   bootstrap: [AppComponent],
 })
