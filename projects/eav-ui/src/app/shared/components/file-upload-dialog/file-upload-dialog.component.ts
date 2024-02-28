@@ -142,12 +142,12 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
       switchMap(packages => {
         this.alreadyProcessing = true;
         this.showProgress = true;
-        this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.detectChanges(); //without this spinner is not shown
         return this.installerService.installPackages(packages, p => this.currentPackage = p);
       }),
       tap(() => {
         this.showProgress = false;
-        this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.detectChanges(); //without this spinner is not removed (though window reload will remove it anyway) so maybe unnecessary
         alert('Installation complete 👍');
         window.top.location.reload();
       }),
@@ -155,7 +155,7 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
         console.error('Error: ', error);
         this.showProgress = false;
         this.alreadyProcessing = false;
-        this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.detectChanges(); //without this spinner is not removed
         const errorMsg = `An error occurred: Package ${this.currentPackage.displayName}
 
 ${error.error?.Message ?? error.error?.message ?? ''}
