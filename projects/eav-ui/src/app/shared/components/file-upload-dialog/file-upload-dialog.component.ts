@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
@@ -31,7 +31,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
 
   viewModel$: Observable<FileUploadDialogViewModel>;
 
-  showProgress: boolean;
+  showProgress: boolean = false;
   currentPackage: InstallPackage;
   remoteInstallerUrl = '';
   ready = false;
@@ -45,6 +45,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     private installerService: InstallerService,
     private sanitizer: DomSanitizer,
     private context: Context,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { 
     super();
 
@@ -141,10 +142,12 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
       switchMap(packages => {
         this.alreadyProcessing = true;
         this.showProgress = true;
-          return this.installerService.installPackages(packages, p => this.currentPackage = p);
+        this.changeDetectorRef.detectChanges();
+        return this.installerService.installPackages(packages, p => this.currentPackage = p);
       }),
       tap(() => {
         this.showProgress = false;
+        this.changeDetectorRef.detectChanges();
         alert('Installation complete 👍');
         window.top.location.reload();
       }),
@@ -152,6 +155,7 @@ This takes about 10 seconds per package. Don't reload the page while it's instal
         console.error('Error: ', error);
         this.showProgress = false;
         this.alreadyProcessing = false;
+        this.changeDetectorRef.detectChanges();
         const errorMsg = `An error occurred: Package ${this.currentPackage.displayName}
 
 ${error.error?.Message ?? error.error?.message ?? ''}
