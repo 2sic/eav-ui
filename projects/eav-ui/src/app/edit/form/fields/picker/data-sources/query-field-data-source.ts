@@ -143,7 +143,7 @@ export class QueryFieldDataSource extends DataSourceBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.fillEntityInfoMoreFields(entity)));
+      items = items.concat(data[stream].map(entity => this.fillEntityInfoMoreFields(entity, stream)));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }

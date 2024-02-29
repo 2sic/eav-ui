@@ -112,7 +112,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
 
-        if (isTreeDisplayMode/*settings.PickerTreeConfiguration*/) {
+        // TODO: @SDV -> tree expand by default and test search (search has to show parents)
+        // info/help buttons alignment
+        // fix 2dm issue with tree
+        if (isTreeDisplayMode) {
           const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
           if (availableItems && availableItems[0]?.data != undefined) {
             const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
@@ -197,9 +200,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   onOpened(): void {
     this.autocompleteRef.nativeElement.value = '';
+    // this.treeControl.expandAll();
   }
 
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
+    // this.treeControl.expandAll();
     if (this.showSelectedItem) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
@@ -277,33 +282,47 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
     (item, Level) => {
       const treeConfig = this.pickerTreeConfiguration;
+      const cpRef = treeConfig?.TreeChildParentRefField;
+      const pcRef = treeConfig?.TreeParentChildRefField;
+      const cId = treeConfig?.TreeChildIdField;
+      const pId = treeConfig?.TreeParentIdField;
+      const cStreamName = treeConfig?.TreeLeavesStream;
+      const pStreamName = treeConfig?.TreeBranchesStream;
       return {
         Level: Level,
-        Expandable: (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
-          ? !!(item as TreeItem).data[treeConfig?.TreeParentChildRefField] && (item as TreeItem).data[treeConfig?.TreeParentChildRefField].length > 0
-          : this.availableItems$.value.filter(x => {
-            if (x.data[treeConfig?.TreeChildParentRefField] != undefined)
-              return x.data[treeConfig?.TreeChildParentRefField][0]?.Id == item?.Id;//check if this Id is something variable
-            }).length > 0,
+        Expandable: (treeConfig?.TreeRelationship == 'parent-child')
+          ? this.availableItems$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item)
+          && !!item.data[pcRef] && item.data[pcRef].length > 0
+          : this.availableItems$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item)
+          && !!this.availableItems$.value.find(x => {
+            if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
+              return x.data[cpRef][0][pId] == item[pId]
+          }),
         Value: item.Value,
         Text: item.Text,
-        Parent: (item as TreeItem)[treeConfig?.TreeChildParentRefField],
-        Children: (item as TreeItem)[treeConfig?.TreeParentChildRefField],
+        Parent: item[cpRef],
+        Children: item[pcRef],
       };
     },
     (item) => { return item.Level; },
     (item) => { return item.Expandable; },
     (item) => {
       const treeConfig = this.pickerTreeConfiguration;
+      const cpRef = treeConfig?.TreeChildParentRefField;
+      const pcRef = treeConfig?.TreeParentChildRefField;
+      const cId = treeConfig?.TreeChildIdField;
+      const pId = treeConfig?.TreeParentIdField;
+      const cStreamName = treeConfig?.TreeLeavesStream;
+      const pStreamName = treeConfig?.TreeBranchesStream;
       if (treeConfig?.TreeRelationship == 'parent-child') {
-        return (item as TreeItem).data[treeConfig?.TreeParentChildRefField].map((x: any) => {
+        return item.data[pcRef].map((x: any) => {
           const child = this.availableItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
           return child;
         });
       } else if (treeConfig?.TreeRelationship == 'child-parent') {
         return this.availableItems$.value.filter(x => {
-          if (x.data[treeConfig?.TreeChildParentRefField] != undefined)
-            return x.data[treeConfig?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
+          if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
+            return x.data[cpRef][0][pId] == item[pId];
         });
       }
     },

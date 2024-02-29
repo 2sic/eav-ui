@@ -43,7 +43,7 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   /** fill additional properties */
-  protected fillEntityInfoMoreFields(entity: QueryEntity): PickerItem {
+  protected fillEntityInfoMoreFields(entity: QueryEntity, streamName?: string): PickerItem {
     // Check if we have masks, if yes
     const masks = this.getMasks();
 
@@ -67,6 +67,7 @@ export abstract class DataSourceBase extends ServiceBase {
         _tooltip: masks.tooltip,
         _information: masks.info,
         _helpLink: masks.link,
+        _streamName: streamName ?? null,
       };
 
     // Prepare the masks
@@ -100,6 +101,7 @@ export abstract class DataSourceBase extends ServiceBase {
       _tooltip: tooltip,
       _information: information,
       _helpLink: helpLink,
+      _streamName: streamName ?? null,
     } as PickerItem;
   }
 
