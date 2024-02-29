@@ -302,6 +302,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         Text: item.Text,
         Parent: item[cpRef],
         Children: item[pcRef],
+        _tooltip: item._tooltip,
+        _information: item._information,
+        _helpLink: item._helpLink,
       };
     },
     (item) => { return item.Level; },
