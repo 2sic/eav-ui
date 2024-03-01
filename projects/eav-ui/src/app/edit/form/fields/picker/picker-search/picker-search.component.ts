@@ -40,6 +40,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private selectedItems$ = new Observable<PickerItem[]>;
   private selectedItem$ = new BehaviorSubject<PickerItem>(null);
   private newValue: string = null;
+  private isTreeDisplayMode: boolean = false;
 
   private filter$ = new BehaviorSubject(false);
 
@@ -93,7 +94,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     );
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.selectedItems$, this.availableItems$, error$,
-      controlStatus$, freeTextMode$, label$, required$, this.filter$
+      controlStatus$, freeTextMode$, label$, required$, this.filter$,
     ]).pipe(
       map(([
         debugEnabled, settings, selectedItems, availableItems, error,
@@ -103,7 +104,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         this.selectedItem$.next(selectedItem);
 
         const showItemEditButtons = selectedItem && this.showItemEditButtons;
-        const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
+        this.isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const filteredItems = !elemValue ? availableItems : availableItems?.filter(option =>
@@ -113,9 +114,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         );
 
         // TODO: @SDV -> tree expand by default and test search (search has to show parents)
-        // info/help buttons alignment
-        // fix 2dm issue with tree
-        if (isTreeDisplayMode) {
+        if (this.isTreeDisplayMode) {
           const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
           if (availableItems && availableItems[0]?.data != undefined) {
             const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
@@ -149,7 +148,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
           // additional properties for easier readability in the template
           showItemEditButtons,
-          isTreeDisplayMode,
+          isTreeDisplayMode: this.isTreeDisplayMode,
           csDisabled,
         };
         return viewModel;
@@ -180,7 +179,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       if (this.selectedItem$.value?.Value == value) {
         returnValue = this.selectedItem$.value?.Text;
       } else {
-        returnValue = value as string;
+        returnValue = value + " *";
       }
     }
     return returnValue;
@@ -200,11 +199,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   onOpened(): void {
     this.autocompleteRef.nativeElement.value = '';
-    // this.treeControl.expandAll();
+    if (this.isTreeDisplayMode) {
+      this.autocompleteRef.nativeElement.blur();
+    }
+      
   }
 
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
-    // this.treeControl.expandAll();
     if (this.showSelectedItem) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;

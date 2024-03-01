@@ -42,8 +42,8 @@
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)" [hideSingleSelectionIndicator]="true"
       (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedItem)"
       (closed)="onClosed(vm.selectedItems, vm.selectedItem)" (opened)="onOpened()">
+      <!-- List Display Mode -->
       @if (!vm.isTreeDisplayMode) {
-        <div>
           @for (item of vm.filteredItems; track item) {
           <mat-option [value]="item.Value" class="eav-picker-option"
             [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)"
@@ -61,7 +61,6 @@
             </div>
           </mat-option>
           }
-        </div>
       }
 
       <!-- Tree Display Mode -->
