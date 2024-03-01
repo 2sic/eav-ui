@@ -68,7 +68,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       this.availableItems$ = source.availableItems$;
     }
     
-
     this.selectedItems$ = this.pickerData.selectedItems$;
 
     const freeTextMode$ = state.freeTextMode$;
@@ -200,7 +199,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   onOpened(): void {
     this.autocompleteRef.nativeElement.value = '';
     if (this.isTreeDisplayMode) {
-      this.autocompleteRef.nativeElement.blur();
+      this.autocompleteRef.nativeElement.blur();//needed so tree reacts to the first click
     }
       
   }
