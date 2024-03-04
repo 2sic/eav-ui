@@ -28,6 +28,7 @@ import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
 import { FeaturesService } from '../../shared/services/features.service';
+import { ScopeDetailsDto } from '../models/scopedetails.dto';
 
 @Component({
   selector: 'app-data',
@@ -40,7 +41,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   scope$ = new BehaviorSubject<string>(undefined);
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
-  scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
+  scopeOptions$ = new BehaviorSubject<ScopeDetailsDto[]>([]);
   gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
@@ -135,18 +136,23 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private fetchScopes() {
-    this.contentTypesService.getScopes().subscribe(scopeOptions => {
+    this.contentTypesService.getScopesV2().subscribe(scopeList => {
       // Merge the new scopes with the existing ones - in case there were manual scopes added
-      const newScopes = [...this.scopeOptions$.value];
-      scopeOptions.forEach(scopeOption => {
-        const existing = newScopes.find(scope => scope.value === scopeOption.value);
-        if (existing) {
-          existing.name = scopeOption.name;
-        } else {
-          newScopes.push(scopeOption);
-        }
+      // If old scope list had a manual scope which the server didn't send, re-add it here
+      const manual = this.scopeOptions$.value
+        .filter(sOld => scopeList.find(sNew => sNew.name === sOld.name) == null);
+
+      // Add a nice label to each scope containing count-information of types
+      const withNiceLabel = scopeList.map(s => {
+        let countInfo = !s.typesInherited
+          ? `${s.typesTotal} types`               // only not-inherited
+          : (s.typesInherited == s.typesTotal)
+            ? s.typesInherited + ' sys types'     // only inherited
+            : `${s.typesTotal} types / ${s.typesInherited} system`;
+        return ({ ...s, label: s.name + ` - ${countInfo}` });
       });
-      this.scopeOptions$.next(newScopes);
+
+      this.scopeOptions$.next([...withNiceLabel, ...manual]);
     });
   }
 
@@ -260,10 +266,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         this.scope$.next(scope);
 
         // If we can't find the scope in the list of options, add it as it was entered manually
-        if (!this.scopeOptions$.value.map(option => option.value).includes(scope)) {
-          const newScopeOption: ScopeOption = {
+        if (!this.scopeOptions$.value.map(option => option.name).includes(scope)) {
+          const newScopeOption: ScopeDetailsDto = {
             name: scope,
-            value: scope,
+            label: scope,
+            typesTotal: 0,
+            typesInherited: 0,
+            typesOfApp: 0,
           };
           this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
         }
