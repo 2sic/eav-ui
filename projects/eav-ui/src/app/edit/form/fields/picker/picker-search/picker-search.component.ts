@@ -40,6 +40,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private selectedItems$ = new Observable<PickerItem[]>;
   private selectedItem$ = new BehaviorSubject<PickerItem>(null);
   private newValue: string = null;
+  private isTreeDisplayMode: boolean = false;
 
   private filter$ = new BehaviorSubject(false);
 
@@ -67,7 +68,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       this.availableItems$ = source.availableItems$;
     }
     
-
     this.selectedItems$ = this.pickerData.selectedItems$;
 
     const freeTextMode$ = state.freeTextMode$;
@@ -93,7 +93,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     );
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.selectedItems$, this.availableItems$, error$,
-      controlStatus$, freeTextMode$, label$, required$, this.filter$
+      controlStatus$, freeTextMode$, label$, required$, this.filter$,
     ]).pipe(
       map(([
         debugEnabled, settings, selectedItems, availableItems, error,
@@ -103,7 +103,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         this.selectedItem$.next(selectedItem);
 
         const showItemEditButtons = selectedItem && this.showItemEditButtons;
-        const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
+        this.isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const filteredItems = !elemValue ? availableItems : availableItems?.filter(option =>
@@ -112,7 +112,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
 
-        if (isTreeDisplayMode/*settings.PickerTreeConfiguration*/) {
+        // TODO: @SDV -> tree expand by default and test search (search has to show parents)
+        if (this.isTreeDisplayMode) {
           const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
           if (availableItems && availableItems[0]?.data != undefined) {
             const filteredData = availableItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
@@ -146,7 +147,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
           // additional properties for easier readability in the template
           showItemEditButtons,
-          isTreeDisplayMode,
+          isTreeDisplayMode: this.isTreeDisplayMode,
           csDisabled,
         };
         return viewModel;
@@ -177,7 +178,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       if (this.selectedItem$.value?.Value == value) {
         returnValue = this.selectedItem$.value?.Text;
       } else {
-        returnValue = value as string;
+        returnValue = value + " *";
       }
     }
     return returnValue;
@@ -197,6 +198,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   onOpened(): void {
     this.autocompleteRef.nativeElement.value = '';
+    if (this.isTreeDisplayMode) {
+      this.autocompleteRef.nativeElement.blur();//needed so tree reacts to the first click
+    }
+      
   }
 
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
@@ -277,33 +282,50 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
     (item, Level) => {
       const treeConfig = this.pickerTreeConfiguration;
+      const cpRef = treeConfig?.TreeChildParentRefField;
+      const pcRef = treeConfig?.TreeParentChildRefField;
+      const cId = treeConfig?.TreeChildIdField;
+      const pId = treeConfig?.TreeParentIdField;
+      const cStreamName = treeConfig?.TreeLeavesStream;
+      const pStreamName = treeConfig?.TreeBranchesStream;
       return {
         Level: Level,
-        Expandable: (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
-          ? !!(item as TreeItem).data[treeConfig?.TreeParentChildRefField] && (item as TreeItem).data[treeConfig?.TreeParentChildRefField].length > 0
-          : this.availableItems$.value.filter(x => {
-            if (x.data[treeConfig?.TreeChildParentRefField] != undefined)
-              return x.data[treeConfig?.TreeChildParentRefField][0]?.Id == item?.Id;//check if this Id is something variable
-            }).length > 0,
+        Expandable: (treeConfig?.TreeRelationship == 'parent-child')
+          ? this.availableItems$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item)
+          && !!item.data[pcRef] && item.data[pcRef].length > 0
+          : this.availableItems$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item)
+          && !!this.availableItems$.value.find(x => {
+            if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
+              return x.data[cpRef][0][pId] == item[pId]
+          }),
         Value: item.Value,
         Text: item.Text,
-        Parent: (item as TreeItem)[treeConfig?.TreeChildParentRefField],
-        Children: (item as TreeItem)[treeConfig?.TreeParentChildRefField],
+        Parent: item[cpRef],
+        Children: item[pcRef],
+        _tooltip: item._tooltip,
+        _information: item._information,
+        _helpLink: item._helpLink,
       };
     },
     (item) => { return item.Level; },
     (item) => { return item.Expandable; },
     (item) => {
       const treeConfig = this.pickerTreeConfiguration;
+      const cpRef = treeConfig?.TreeChildParentRefField;
+      const pcRef = treeConfig?.TreeParentChildRefField;
+      const cId = treeConfig?.TreeChildIdField;
+      const pId = treeConfig?.TreeParentIdField;
+      const cStreamName = treeConfig?.TreeLeavesStream;
+      const pStreamName = treeConfig?.TreeBranchesStream;
       if (treeConfig?.TreeRelationship == 'parent-child') {
-        return (item as TreeItem).data[treeConfig?.TreeParentChildRefField].map((x: any) => {
+        return item.data[pcRef].map((x: any) => {
           const child = this.availableItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
           return child;
         });
       } else if (treeConfig?.TreeRelationship == 'child-parent') {
         return this.availableItems$.value.filter(x => {
-          if (x.data[treeConfig?.TreeChildParentRefField] != undefined)
-            return x.data[treeConfig?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
+          if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
+            return x.data[cpRef][0][pId] == item[pId];
         });
       }
     },

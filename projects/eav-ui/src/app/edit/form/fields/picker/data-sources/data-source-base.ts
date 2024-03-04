@@ -43,19 +43,20 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   /** fill additional properties */
-  protected fillEntityInfoMoreFields(entity: QueryEntity): PickerItem {
+  protected fillEntityInfoMoreFields(entity: QueryEntity, streamName?: string): PickerItem {
     // Check if we have masks, if yes
     const masks = this.getMasks();
-
-    // Figure out Title Value if we don't use masks
-    const tempOfTitleKey = entity[masks.label];
-    let valueOfTitleKey = tempOfTitleKey ? `${tempOfTitleKey}` : tempOfTitleKey;
-    valueOfTitleKey = !!valueOfTitleKey ? valueOfTitleKey : entity.Title;
 
     // Figure out Value to store if we don't use masks
     const tempOfValueKey = entity[masks.value];
     let valueOfValueKey = tempOfValueKey ? `${tempOfValueKey}` : tempOfValueKey;
     valueOfValueKey = !!valueOfValueKey ? valueOfValueKey : entity.Guid;
+
+    // Figure out Title Value if we don't use masks
+    const tempOfTitleKey = entity[masks.label];
+    let valueOfTitleKey = tempOfTitleKey ? `${tempOfTitleKey}` : tempOfTitleKey;
+    // If the title is empty, use the value with asterisk
+    valueOfTitleKey = !!valueOfTitleKey ? valueOfTitleKey : entity.Title !== '' ? entity.Title : valueOfValueKey + ' *';
 
     // If we don't have masks, we are done
     if (!masks.hasMask)
@@ -67,6 +68,7 @@ export abstract class DataSourceBase extends ServiceBase {
         _tooltip: masks.tooltip,
         _information: masks.info,
         _helpLink: masks.link,
+        _streamName: streamName ?? null,
       };
 
     // Prepare the masks
@@ -100,6 +102,7 @@ export abstract class DataSourceBase extends ServiceBase {
       _tooltip: tooltip,
       _information: information,
       _helpLink: helpLink,
+      _streamName: streamName ?? null,
     } as PickerItem;
   }
 

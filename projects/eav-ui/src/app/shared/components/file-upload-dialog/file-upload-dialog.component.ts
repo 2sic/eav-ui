@@ -1,9 +1,14 @@
-import { Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Observable, Subscription, combineLatest, filter, fromEvent, map, take } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
+import { AppInstallSettingsService } from '../../services/getting-started.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Context } from '../../services/context';
+import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
+import { InstallerService } from '../../services/installer.service';
 
 @Component({
   selector: 'app-file-upload-dialog',
@@ -26,36 +31,53 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
 
   viewModel$: Observable<FileUploadDialogViewModel>;
 
+  showProgress: boolean = false;
+  currentPackage: InstallPackage;
+  remoteInstallerUrl = '';
+  ready = false;
+  settings: InstallSettings;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
     private dialogRef: MatDialogRef<FileUploadDialogComponent>,
     private snackBar: MatSnackBar,
+    private installSettingsService: AppInstallSettingsService,
+    private installerService: InstallerService,
+    private sanitizer: DomSanitizer,
+    private context: Context,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { 
     super();
+
+    // copied from 2sxc-ui app/installer
+    this.subscription.add(
+      this.installSettingsService.settings$.subscribe(settings => {
+        this.settings = settings;
+        this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
+        this.ready = true;
+      })
+    );
   }
 
-  // private alreadyProcessing = false;
-
-  // // Initial Observable to monitor messages
-  // private messages$ = fromEvent(window, 'message').pipe(
-
-  //   // Ensure only one installation is processed.
-  //   filter(() => !this.alreadyProcessing),
-
-  //   // Get data from event.
-  //   map((evt: MessageEvent) => {
-  //     try {
-  //       return JSON.parse(evt.data) as CrossWindowMessage;
-  //     } catch (e) {
-  //       console.error('error procesing message. Message was ' + evt.data, e);
-  //       return void 0;
-  //     }
-  //   }),
-
-  //   // Check if data is valid and the moduleID matches
-  //   filter(data => data && Number(data.moduleId) === Config.moduleId()),
-  // );
+  private alreadyProcessing = false;
+  // copied from 2sxc-ui app/installer
+  // Initial Observable to monitor messages
+  private messages$ = fromEvent(window, 'message').pipe(
+    // Ensure only one installation is processed.
+    filter(() => !this.alreadyProcessing),
+    filter((evt: MessageEvent) => evt.origin === "https://2sxc.org"),
+    // Get data from event.
+    map((evt: MessageEvent) => {
+      try {
+        return JSON.parse(evt.data) as CrossWindowMessage;
+      } catch (e) {
+        console.error('error procesing message. Message was ' + evt.data, e);
+        return void 0;
+      }
+    }),
+    // Check if data is valid and the moduleID matches
+    filter(data => data && Number(data.moduleId) === this.context.moduleId),
+  );
 
   ngOnInit(): void {
     this.subscription.add(
@@ -74,16 +96,78 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
       this.uploading$, this.files$, this.result$, this.showAppCatalog$,
     ]).pipe(map(([uploading, files, result, showAppCatalog]) => ({ uploading, files, result, showAppCatalog })));
 
-    // const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
-    // const specsMsg: SpecsForInstaller = {
-    //   action: 'specs',
-    //   data: {
-    //     installedApps: this.settings.installedApps,
-    //     rules: this.settings.rules,
-    //   },
-    // };
-    // const specsJson = JSON.stringify(specsMsg);
-    // winFrame.contentWindow.postMessage(specsJson, '*');
+    // copied from 2sxc-ui
+    this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
+
+    // copied from 2sxc-ui app/installer
+    this.subscription.add(this.messages$.pipe(
+      // Verify it's for this action
+      filter(data => data.action === 'specs'),
+      // Send message to iframe
+      tap(() => {
+        const winFrame = this.installerWindow.nativeElement as HTMLIFrameElement;
+        const specsMsg: SpecsForInstaller = {
+          action: 'specs',
+          data: {
+            //currently not used
+            installedApps: this.settings.installedApps,//.map(app => ((app as InstalledApp).guid)),
+            //currently used to forbid already installed apps
+            rules: this.settings.installedApps.map(app => ({ target: 'guid', appGuid: app.guid, mode: 'f', url: '' })),//this.settings.rules,
+          },
+        };
+        const specsJson = JSON.stringify(specsMsg);
+        winFrame.contentWindow.postMessage(specsJson, '*');
+        console.log('debug: just sent specs message:' + specsJson, specsMsg, winFrame);
+      }),
+    ).subscribe());
+
+    // copied from 2sxc-ui app/installer
+    // Subscription to listen to 'install' messages
+    this.subscription.add(this.messages$.pipe(
+      filter(data => data.action === 'install'),
+      // Get packages from data.
+      map(data => Object.values(data.packages)),
+      // Show confirm dialog.
+      filter(packages => {
+        const packagesDisplayNames = packages
+          .reduce((t, c) => `${t} - ${c.displayName}\n`, '');
+
+        const msg = `Do you want to install these packages?
+
+${packagesDisplayNames}
+This takes about 10 seconds per package. Don't reload the page while it's installing.`;
+        return confirm(msg);
+      }),
+      // Install the packages one at a time
+      switchMap(packages => {
+        this.alreadyProcessing = true;
+        this.showProgress = true;
+        this.changeDetectorRef.detectChanges(); //without this spinner is not shown
+        return this.installerService.installPackages(packages, p => this.currentPackage = p);
+      }),
+      tap(() => {
+        this.showProgress = false;
+        this.changeDetectorRef.detectChanges(); //without this spinner is not removed (though window reload will remove it anyway) so maybe unnecessary
+        alert('Installation complete 👍');
+        window.top.location.reload();
+      }),
+      catchError(error => {
+        console.error('Error: ', error);
+        this.showProgress = false;
+        this.alreadyProcessing = false;
+        this.changeDetectorRef.detectChanges(); //without this spinner is not removed
+        const errorMsg = `An error occurred: Package ${this.currentPackage.displayName}
+
+${error.error?.Message ?? error.error?.message ?? ''}
+
+${error.message}
+
+Please try again later or check how to manually install content-templates: https://azing.org/2sxc/r/0O4OymoA`;
+        alert(errorMsg);
+        return of(error);
+      }),
+    ).subscribe());
+
   }
 
   ngOnDestroy(): void {
@@ -142,38 +226,4 @@ interface FileUploadDialogViewModel {
   files: File[];
   result: FileUploadResult;
   showAppCatalog: boolean;
-}
-
-interface SpecsForInstaller {
-  action: 'specs';
-  data: InstallSpecs;
-}
-
-interface InstallSpecs {
-  installedApps?: InstalledApp[];
-  rules?: InstallRule[];
-}
-
-interface InstalledApp {
-  name: string;
-  version: string;
-  guid: string;
-}
-
-interface InstallRule {
-  target: string;
-  mode: string;
-  appGuid: string;
-  url: string;
-}
-
-interface CrossWindowMessage {
-  action: string;
-  moduleId: string | number; // probably string, must safely convert to Number()
-  packages: InstallPackage[];
-}
-
-interface InstallPackage {
-  displayName: string;
-  url: string;
 }
