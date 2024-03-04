@@ -38,6 +38,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
+
+  /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
   scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
@@ -134,6 +136,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private fetchScopes() {
     this.contentTypesService.getScopes().subscribe(scopeOptions => {
+      // Merge the new scopes with the existing ones - in case there were manual scopes added
       const newScopes = [...this.scopeOptions$.value];
       scopeOptions.forEach(scopeOption => {
         const existing = newScopes.find(scope => scope.value === scopeOption.value);
@@ -239,6 +242,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Refreshes the scope when the route changes.
+   * ...also adds a scope name if the route scope is not found in the list of possible scopes.
+   * This is to allow an admin to enter a custom scope.
+   * Note 2024-03-04 2dm - not sure if this auto-add feature is still needed though...
+   */
   private refreshScopeOnRouteChange() {
     this.subscription.add(
       this.router.events.pipe(
@@ -249,6 +258,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
       ).subscribe(scope => {
         this.scope$.next(scope);
+
+        // If we can't find the scope in the list of options, add it as it was entered manually
         if (!this.scopeOptions$.value.map(option => option.value).includes(scope)) {
           const newScopeOption: ScopeOption = {
             name: scope,
