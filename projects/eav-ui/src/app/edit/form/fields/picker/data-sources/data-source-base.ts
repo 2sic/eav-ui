@@ -151,22 +151,34 @@ export abstract class DataSourceBase extends ServiceBase {
       treeConfig?.TreeChildParentRefField,
       treeConfig?.TreeParentChildRefField,
     ];
-    
-    // @STV - pls improve system here.
-    // Basically some of the parts can be a simple field name, like "Color" - these should be used 1:1
-    // but others could have a string such as "[Item:Color] - [Item:Title]"
-    // these should be extracted, so then we have "Color" and "Title"
-    // Note that this extraction should probably happen in every field (before merging into one long string).
-    // and in the end, we should deduplicate the fields
 
-    // How to test
-    // Create any picker field - eg. string-picker and then try to load the possible DataSourceConfigurations
-    // That has some fields (but there could be others) which are not simple field names
-    // ATM the url is broken, like this: .../app/auto/query/System.UiPickers/Default?includeGuid=true&appId=770&$select=Title,Id,Guid,Description,[Item:Title]%20([Item:Id])
-    // but of course it should be .../app/auto/query/System.UiPickers/Default?includeGuid=true&appId=770&$select=Title,Id,Guid,Description
-    // so in this example, all fields are already listed, but it should of course also work with additional values which are not already in the field list
+    const allFields = [...['Title', 'Id', 'Guid'], ...moreFields, ...queryFields, ...treeFields]
+      .filter(x => x?.length > 0)
+      // extraction should happen in every field
+      .map(field => this.parseFields(field)).flat()
+      // and in the end, we should deduplicate the fields
+      .filter(GeneralHelpers.distinct);
 
-    const allFields = [...['Title', 'Id', 'Guid'], ...moreFields, ...queryFields, ...treeFields].filter(x => x?.length > 0).filter(GeneralHelpers.distinct);
+    // merging into one long string
     return allFields.join(',');
+  }
+
+  parseFields(input: string): string[] {
+    const fields: string[] = [];
+  
+    // 1.) some input parts could have a string such as "[Item:Color] - [Item:Title]"
+    // these should be extracted, so then we have "Color" and "Title"
+    const regex = /\[Item:(\S.*?)\]/gi;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(input)) !== null) {
+      const trimmedMatch = match[1].trim();
+      if (trimmedMatch) fields.push(trimmedMatch);
+    }
+
+    // 2.) or input parts can be a simple field name, like "Color" - these should be used 1:1
+    // so nothing to do, just return input
+    if (fields.length === 0) fields.push(input);   
+  
+    return fields;
   }
 }
