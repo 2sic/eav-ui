@@ -241,7 +241,7 @@ export const OWL_DAYJS_FORMATS = {
         EntityService,
         QueryService,
         MatDayjsDateAdapter,
-        { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } }, // useUtc = false, to configure 'neutral' time in mat-datepicker
         { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
         { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
         LoadIconsService,

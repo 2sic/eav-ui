@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker 
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -32,6 +33,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
     super(eavService, fieldsSettingsService);
+    dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
@@ -51,7 +53,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
         [useTimePicker],
       ]) => {     
         const viewModel: DatetimeDefaultViewModel = {
-          controlStatus,
+          controlStatus: { ...controlStatus, value: controlStatus.value.replace('Z', '') }, // remove Z - to get 'neutral' time for OwlDateTime picker 
           label,
           placeholder,
           required,
@@ -67,7 +69,8 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
-    const newValue = event.value != null ? event.value.toJSON() : null;
+    // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker 
+    const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
     GeneralHelpers.patchControlValue(this.control, newValue);
   }
 }
