@@ -156,6 +156,7 @@ export abstract class DataSourceBase extends ServiceBase {
     // Basically some of the parts can be a simple field name, like "Color" - these should be used 1:1
     // but others could have a string such as "[Item:Color] - [Item:Title]"
     // these should be extracted, so then we have "Color" and "Title"
+    // Note that this extraction should probably happen in every field (before merging into one long string).
     // and in the end, we should deduplicate the fields
 
     // How to test
