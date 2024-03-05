@@ -151,6 +151,20 @@ export abstract class DataSourceBase extends ServiceBase {
       treeConfig?.TreeChildParentRefField,
       treeConfig?.TreeParentChildRefField,
     ];
+    
+    // @STV - pls improve system here.
+    // Basically some of the parts can be a simple field name, like "Color" - these should be used 1:1
+    // but others could have a string such as "[Item:Color] - [Item:Title]"
+    // these should be extracted, so then we have "Color" and "Title"
+    // and in the end, we should deduplicate the fields
+
+    // How to test
+    // Create any picker field - eg. string-picker and then try to load the possible DataSourceConfigurations
+    // That has some fields (but there could be others) which are not simple field names
+    // ATM the url is broken, like this: .../app/auto/query/System.UiPickers/Default?includeGuid=true&appId=770&$select=Title,Id,Guid,Description,[Item:Title]%20([Item:Id])
+    // but of course it should be .../app/auto/query/System.UiPickers/Default?includeGuid=true&appId=770&$select=Title,Id,Guid,Description
+    // so in this example, all fields are already listed, but it should of course also work with additional values which are not already in the field list
+
     const allFields = [...['Title', 'Id', 'Guid'], ...moreFields, ...queryFields, ...treeFields].filter(x => x?.length > 0).filter(GeneralHelpers.distinct);
     return allFields.join(',');
   }
