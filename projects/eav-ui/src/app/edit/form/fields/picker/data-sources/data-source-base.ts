@@ -151,22 +151,28 @@ export abstract class DataSourceBase extends ServiceBase {
       treeConfig?.TreeChildParentRefField,
       treeConfig?.TreeParentChildRefField,
     ];
-
-    const allFields = [...['Title', 'Id', 'Guid'], ...moreFields, ...queryFields, ...treeFields]
-      .filter(x => x?.length > 0)
+    const combinedFields = [...['Title', 'Id', 'Guid'], ...moreFields, ...queryFields, ...treeFields]
       // extraction should happen in every field
-      .map(field => this.parseFields(field)).flat()
-      // and in the end, we should deduplicate the fields
+      .map(field => this.parseFields(field, true)).flat();
+
+    const stringFields = [settings.ItemTooltip, settings.ItemInformation, settings.ItemLink]
+      .map(field => this.parseFields(field, false)).flat();
+
+    // in the end, we should deduplicate the fields
+    const allFields = [...combinedFields, ...stringFields]
       .filter(GeneralHelpers.distinct);
 
     // merging into one long string
     return allFields.join(',');
   }
 
-  parseFields(input: string): string[] {
+  parseFields(input: string, enableSimpleFields: boolean = true): string[] {
     const fields: string[] = [];
+
+    // 1.) skip processing on null or empty
+    if (!(input?.trim().length > 0)) return fields;
   
-    // 1.) some input parts could have a string such as "[Item:Color] - [Item:Title]"
+    // 2.) some input parts could have a string such as "[Item:Color] - [Item:Title]"
     // these should be extracted, so then we have "Color" and "Title"
     const regex = /\[Item:(\S.*?)\]/gi;
     let match: RegExpExecArray | null;
@@ -175,9 +181,9 @@ export abstract class DataSourceBase extends ServiceBase {
       if (trimmedMatch) fields.push(trimmedMatch);
     }
 
-    // 2.) or input parts can be a simple field name, like "Color" - these should be used 1:1
+    // 3.) optionaly, when input parts is simple field name, like "Color" - these should be used 1:1
     // so nothing to do, just return input
-    if (fields.length === 0) fields.push(input);   
+    if (enableSimpleFields && fields.length === 0) fields.push(input);   
   
     return fields;
   }
