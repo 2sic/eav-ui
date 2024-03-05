@@ -13,7 +13,6 @@ export abstract class DataSourceBase extends ServiceBase {
   protected getAll$ = new BehaviorSubject<boolean>(false);
   protected entityGuids$ = new BehaviorSubject<string[]>([]);
   protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
-  protected subscriptions = new Subscription();
 
   constructor(
     protected settings$: BehaviorSubject<FieldSettings>,
@@ -22,11 +21,11 @@ export abstract class DataSourceBase extends ServiceBase {
     super(logSpecs);
   }
 
-  destroy(): void { 
+  destroy(): void {
     this.prefetchEntityGuids$.complete();
     this.entityGuids$.complete();
     this.getAll$.complete();
-    this.subscriptions.unsubscribe();
+    super.destroy();
   }
 
   getAll(): void {
