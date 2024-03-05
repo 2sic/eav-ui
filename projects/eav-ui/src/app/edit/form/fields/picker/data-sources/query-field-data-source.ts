@@ -42,7 +42,7 @@ export class QueryFieldDataSource extends DataSourceBase {
     ]).pipe(
       mergeMap(([params, _]) => {
         // If we don't have a query URL return a single item with a message
-        if (!queryUrl) {
+        if (!queryUrl)
           return of({ data: {
             'Default': [
               {
@@ -52,7 +52,6 @@ export class QueryFieldDataSource extends DataSourceBase {
               }
             ] as QueryEntity[],
           } as QueryStreams, loading: true });
-        }
 
         // Default case, get the data
         return this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), []).pipe(

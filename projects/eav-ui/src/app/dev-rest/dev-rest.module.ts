@@ -18,7 +18,7 @@ import { AppDialogConfigService } from '../app-administration/services/app-dialo
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
-import { EavService, EntityService } from '../edit/shared/services';
+import { EavService, EntityService, QueryService } from '../edit/shared/services';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -96,6 +96,7 @@ import { DevRestTabPermissionsComponent } from './tab-permissions/tab-permission
     MetadataService,
     EntitiesService,
     EntityService,
+    QueryService,
     PipelinesService,
     EavService,
     SourceService,
