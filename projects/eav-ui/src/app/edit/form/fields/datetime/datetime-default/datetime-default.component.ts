@@ -53,7 +53,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
         [useTimePicker],
       ]) => {     
         const viewModel: DatetimeDefaultViewModel = {
-          controlStatus: { ...controlStatus, value: controlStatus.value.replace('Z', '') }, // remove Z - to get 'neutral' time for OwlDateTime picker 
+          controlStatus: { ...controlStatus, value: controlStatus.value?.replace('Z', '') }, // remove Z - to get 'neutral' time for OwlDateTime picker 
           label,
           placeholder,
           required,
