@@ -94,10 +94,9 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   }
 
   private fetchPages(): void {
-    const query = 'System.Pages';
     const stream = 'Default';
     const params = 'includehidden=true';
-    this.queryService.getAvailableEntities(`${query}/${stream}`, true, params, null).subscribe({
+    this.queryService.getAvailableEntities(`System.Pages/Default`, true, params, null).subscribe({
       next: (data) => {
         if (!data) {
           console.error(this.translate.instant('Fields.EntityQuery.QueryError'));
