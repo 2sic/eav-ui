@@ -5,7 +5,6 @@ import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
@@ -96,7 +95,8 @@ const appAdministrationRoutes: Routes = [
         },
         children: [
           {
-            path: `:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent,
+            path: `:${GoToDevRest.paramTypeName}`,
+            component: DevRestDataComponent,
             data: {
               breadcrumb: 'Rest-Api Data'
             },
