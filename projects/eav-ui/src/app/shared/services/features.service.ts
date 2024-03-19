@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, ReplaySubject } from 'rxjs';
 import { AppDialogConfigService } from '../../app-administration/services';
-import { FeatureSummary } from '../../features/models/feature-summary.model';
 import { DialogContext } from '../models/dialog-settings.model';
 
 @Injectable({ providedIn: 'root' })

@@ -11,6 +11,8 @@ import { NgModule } from '@angular/core';
     AgGridModule,
   ],
 })
+  // Change AgGridModule Version to 31.1.1, new with
+  // TODO:: @2dg moduleName: ModuleNames, new with gridId: string, not tested
 export class SxcGridModule {
   constructor() {
     if (!ModuleRegistry.isRegistered(ModuleNames.ClientSideRowModelModule)) {

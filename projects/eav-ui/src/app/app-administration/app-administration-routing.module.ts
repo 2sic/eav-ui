@@ -26,6 +26,10 @@ import { QueriesComponent } from './queries/queries.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { DataCopilotComponent } from './data-copilot/data-copilot.component';
+import { DataRestApiComponent } from './data-rest-api/data-rest-api.component';
+import { QueriesRestApiComponent } from './queries-rest-api/queries-rest-api.component';
+import { DevRestDataComponent } from '../dev-rest/data/data.component';
+import { DevRestQueryComponent } from '../dev-rest/query/query.component';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -82,6 +86,26 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Data', breadcrumb: "Data" },
       },
+      { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
+      {
+        path: 'restapidata',
+        component: DataRestApiComponent,
+        data: {
+          title: 'Rest-Api Data',
+          breadcrumb: 'Rest-Api Data'
+        },
+        children: [
+          {
+            path: `:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent,
+            data: {
+              breadcrumb: 'Rest-Api Data'
+            },
+            children: [
+              GoToPermissions.route,
+            ]
+          },
+        ]
+      },
       {
         path: 'queries', component: QueriesComponent, children: [
           {
@@ -98,9 +122,20 @@ const appAdministrationRoutes: Routes = [
           { ...GoToPermissions.route, data: { title: 'Query Permissions' } },
           GoToDevRest.route,
         ],
-        data: { title: 'App Queries' , breadcrumb: "Queries" },
+        data: { title: 'App Queries', breadcrumb: "Queries" },
       },
-      { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
+      {
+        path: 'restapiquery', component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', },
+        children: [
+          {
+            path: `:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent,
+            data: { breadcrumb: 'Rest-Api Queries', },
+            children: [
+              GoToPermissions.route,
+            ]
+          },
+        ]
+      },
       {
         path: 'views', component: ViewsComponent, children: [
           {
@@ -124,7 +159,7 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Views', breadcrumb: "Views" },
       },
       {
-        path: 'web-api', component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi"  }, children: [
+        path: 'web-api', component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi" }, children: [
           GoToDevRest.route,
         ],
       },
@@ -163,7 +198,7 @@ const appAdministrationRoutes: Routes = [
         ],
       },
       {
-        path: 'sync', component: SyncConfigurationComponent, data: { title: 'Sync', breadcrumb:"Sync" }, children: [
+        path: 'sync', component: SyncConfigurationComponent, data: { title: 'Sync', breadcrumb: "Sync" }, children: [
           ...GoToMetadata.getRoutes(),
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },

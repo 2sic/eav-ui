@@ -1,15 +1,40 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
 import { AppsListService } from '../services/apps-list.service';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-create-app',
-  templateUrl: './create-app.component.html',
-  styleUrls: ['./create-app.component.scss'],
+    selector: 'app-create-app',
+    templateUrl: './create-app.component.html',
+    styleUrls: ['./create-app.component.scss'],
+    standalone: true,
+    imports: [
+        RouterOutlet,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        SharedComponentsModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+    ],
+    providers: [
+        AppsListService,
+    ]
 })
 export class CreateAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -51,7 +76,7 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     const appTemplateId = Number(this.appTemplateId);
     // console.warn('2dm: name', name, this.appTemplateId);
     // return;
-    
+
     this.snackBar.open('Creating app...');
     this.appsListService.create(name, null, appTemplateId).subscribe({
       error: () => {

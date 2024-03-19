@@ -1,5 +1,5 @@
 <div class="selector">
-  <mat-form-field color="accent" class="eav-form-field selector__dropdown">
+  <mat-form-field color="accent" class="selector__dropdown">
     <mat-label>{{ label }}</mat-label>
     <mat-select [value]="value" (selectionChange)="selectionChange($event.value)">
       @for (item of items; track item) {

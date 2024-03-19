@@ -4,10 +4,14 @@ import { WebApiAction, WebApiActionParameters } from '../../../app-administratio
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { TrueFalseComponent } from '../true-false/true-false.component';
 import { TrueFalseParams } from '../true-false/true-false.models';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-dev-rest-api-action-params',
-  templateUrl: './action-params.component.html',
+    selector: 'app-dev-rest-api-action-params',
+    templateUrl: './action-params.component.html',
+    standalone: true,
+    imports: [MatIconModule, AgGridModule],
 })
 export class DevRestApiActionParamsComponent {
   @Input() data: WebApiAction;

@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, share } from 'rxjs';
 import { GoToDevRest } from '..';
 import { AppDialogConfigService, PipelinesService } from '../../app-administration/services';
@@ -11,13 +11,52 @@ import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
 import { generateQueryCalls } from './query-samples';
 import { DevRestQueryViewModel } from './query-template-vars';
+import { AsyncPipe } from '@angular/common';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
+import { DevRestTabPermissionsComponent } from '../tab-permissions/tab-permissions.component';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
+import { DevRestQueryIntroductionComponent } from './introduction/introduction.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { EntitiesService } from '../../content-items/services/entities.service';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
 @Component({
-  selector: 'app-dev-rest-query',
-  templateUrl: './query.component.html',
-  styleUrls: [/*'./query.component.scss',*/ '../dev-rest-all.scss'],
+    selector: 'app-dev-rest-query',
+    templateUrl: './query.component.html',
+    styleUrls: [/*'./query.component.scss',*/ '../dev-rest-all.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        TippyStandaloneDirective,
+        MatIconModule,
+        RouterOutlet,
+        SelectorWithHelpComponent,
+        MatTabsModule,
+        DevRestQueryIntroductionComponent,
+        DevRestTabIntroductionComponent,
+        DevRestTabExamplesComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        DevRestUrlsAndCodeComponent,
+        DevRestTabPermissionsComponent,
+        DevRestHttpHeadersComponent,
+        AsyncPipe,
+    ],
+    providers: [
+      PermissionsService,
+      EntitiesService,
+      AppDialogConfigService,
+      PipelinesService,
+    ],
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -27,6 +66,8 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
 
   /** Test values for stream names */
   streamNames$ = new BehaviorSubject<string>('Default');
+
+  isSideNavContent: boolean;
 
   constructor(
     appDialogConfigService: AppDialogConfigService,
@@ -40,6 +81,8 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
     dnnContext: DnnContext,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
+
+    this.isSideNavContent = this.router.url.includes('restapiquery');
 
     // build Query Stream
     const query$ = combineLatest([

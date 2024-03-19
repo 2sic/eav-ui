@@ -31,7 +31,6 @@ interface Edition {
 })
 export class DataCopilotComponent {
 
-  editions: string[] = [];
   editionForm: FormGroup;
   webApiEditions: string = 'admin/code/getEditions';
   webApiGeneratedCode: string = 'admin/code/generateDataModels';

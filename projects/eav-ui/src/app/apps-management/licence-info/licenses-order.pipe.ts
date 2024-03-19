@@ -1,7 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { License } from '../models/license.model';
 
-@Pipe({ name: 'licensesOrder' })
+@Pipe({
+    name: 'licensesOrder',
+    standalone: true
+})
 export class LicensesOrderPipe implements PipeTransform {
 
   transform(licenses: License[]): any {

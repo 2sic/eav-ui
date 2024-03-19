@@ -1,7 +1,7 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
@@ -18,19 +18,49 @@ import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 import { EavLogger } from '../../shared/logging/eav-logger';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { AppDialogConfigService } from '../../app-administration/services';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 
 const logThis = false;
 
 @Component({
-  selector: 'app-apps-list',
-  templateUrl: './apps-list.component.html',
-  styleUrls: ['./apps-list.component.scss'],
+    selector: 'app-apps-list',
+    templateUrl: './apps-list.component.html',
+    styleUrls: ['./apps-list.component.scss'],
+    standalone: true,
+    imports: [
+        AgGridModule,
+        SharedComponentsModule,
+        MatDialogActions,
+        EcoFabSpeedDialComponent,
+        NgClass,
+        EcoFabSpeedDialTriggerComponent,
+        MatButtonModule,
+        MatIconModule,
+        EcoFabSpeedDialActionsComponent,
+        MatBadgeModule,
+        RouterOutlet,
+        AsyncPipe,
+    ],
+    providers: [
+        AppsListService,
+        FeaturesService,
+        AppDialogConfigService,
+    ],
 })
 export class AppsListComponent extends BaseComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
@@ -55,9 +85,11 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
+    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
   }
 
   ngOnInit(): void {

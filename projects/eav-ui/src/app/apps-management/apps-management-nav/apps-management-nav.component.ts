@@ -1,18 +1,39 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { Context } from '../../shared/services/context';
-import { MatSidenav } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-items';
+import { AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { BreadcrumbModule } from 'xng-breadcrumb';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-apps-management-nav',
-  templateUrl: './apps-management-nav.component.html',
-  styleUrls: ['./apps-management-nav.component.scss'],
+    selector: 'app-apps-management-nav',
+    templateUrl: './apps-management-nav.component.html',
+    styleUrls: ['./apps-management-nav.component.scss'],
+    standalone: true,
+    imports: [
+        MatToolbarModule,
+        MatIconModule,
+        BreadcrumbModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatSidenavModule,
+        RouterOutlet,
+        AsyncPipe,
+    ],
+    providers: [
+        AppDialogConfigService,
+        Context,
+    ]
 })
 export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -59,7 +80,6 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   }
 
   ngOnInit() {
-
     this.fetchDialogSettings();
     this.subscription.add(
       this.refreshOnChildClosedShallow().subscribe(() => {

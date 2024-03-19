@@ -1,15 +1,38 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-create-inherited-app',
-  templateUrl: './create-inherited-app.component.html',
-  styleUrls: ['./create-inherited-app.component.scss'],
+    selector: 'app-create-inherited-app',
+    templateUrl: './create-inherited-app.component.html',
+    styleUrls: ['./create-inherited-app.component.scss'],
+    standalone: true,
+    imports: [
+        RouterOutlet,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        SharedComponentsModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+    ],
+    providers: [
+        AppsListService,
+    ]
 })
 export class CreateInheritedAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -88,7 +111,7 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
   }
 }
 
-interface CreateInheritedAppViewModel { 
+interface CreateInheritedAppViewModel {
   loading: boolean;
   inheritableApps: App[] | undefined | null;
 }

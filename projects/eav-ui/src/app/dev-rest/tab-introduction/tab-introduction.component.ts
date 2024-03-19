@@ -3,8 +3,9 @@ import { AllScenarios, DevRestDataViewModel } from '..';
 import { DevRestBaseViewModel } from '../base-template-vars';
 
 @Component({
-  selector: 'app-dev-rest-tab-introduction',
-  templateUrl: './tab-introduction.component.html',
+    selector: 'app-dev-rest-tab-introduction',
+    templateUrl: './tab-introduction.component.html',
+    standalone: true,
 })
 export class DevRestTabIntroductionComponent implements OnInit {
 

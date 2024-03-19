@@ -6,7 +6,12 @@ import { EavWindow } from '../models/eav-window.model';
 
 declare const window: EavWindow;
 
-/** The context provides information */
+/** The context provides information
+ * Context is used to display information about the current app in various depths.
+ * In other words, if you open another app in a deeper dialog in the app on Apps Management
+ * (the component is deeper), you get the information from this app and not the initial app.
+ */
+
 @Injectable()
 export class Context {
 
@@ -101,7 +106,6 @@ export class Context {
   private routeNum(name: string): number {
     // catch case where state is null, like when the recursive parent is in use
     if (this.routeSnapshot == null) { return null; }
-
     const paramName = name.substring(prefix.length);
     const result = this.routeSnapshot.paramMap.get(paramName);
     if (result !== null) {

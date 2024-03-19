@@ -1,5 +1,5 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, map } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
@@ -8,11 +8,30 @@ import { ContentTypesService } from '../app-administration/services/content-type
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
 import { ContentImportService } from './services/content-import.service';
+import { AsyncPipe } from '@angular/common';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 
 @Component({
-  selector: 'app-content-import',
-  templateUrl: './content-import.component.html',
-  styleUrls: ['./content-import.component.scss'],
+    selector: 'app-content-import',
+    templateUrl: './content-import.component.html',
+    styleUrls: ['./content-import.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        FormsModule,
+        MatButtonModule,
+        MatRadioModule,
+        MatDialogActions,
+        AsyncPipe,
+    ],
+    providers: [
+        ContentImportService,
+        ContentTypesService,
+        AppDialogConfigService,
+    ],
 })
 export class ContentImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

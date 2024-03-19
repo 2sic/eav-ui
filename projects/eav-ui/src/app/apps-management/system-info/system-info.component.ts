@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
 import { FeatureNames } from '../../features/feature-names';
@@ -15,6 +15,14 @@ import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FeaturesModule } from '../../features/features.module';
+import { MatButtonModule } from '@angular/material/button';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { AppDialogConfigService } from '../../app-administration/services';
 
 declare const window: EavWindow;
@@ -23,6 +31,28 @@ declare const window: EavWindow;
   selector: 'app-system-info',
   templateUrl: './system-info.component.html',
   styleUrls: ['./system-info.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    SharedComponentsModule,
+    RouterLink,
+    NgTemplateOutlet,
+    MatButtonModule,
+    FeaturesModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    RouterOutlet,
+    AsyncPipe,
+  ],
+  providers: [
+    ZoneService,
+    DialogService,
+    SxcInsightsService,
+    FeaturesService,
+    AppDialogConfigService,
+  ],
 })
 export class SystemInfoComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -37,15 +67,15 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private zoneService: ZoneService,
     private snackBar: MatSnackBar,
+    private zoneService: ZoneService,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
     private featuresService: FeaturesService,
+    appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
   }
-
   ngOnInit(): void {
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
     this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
@@ -93,7 +123,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
 
     // Url are /2/apps/system/registration, sideNavPath are only the last part of the url
     if (sideNavPath.includes('registration'))
-    sideNavPath = 'registration';
+      sideNavPath = 'registration';
 
     this.router.navigate([this.router.url.replace('system', '') + sideNavPath]);
   }
@@ -243,7 +273,6 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
           lsEnabled,
           cspEnabled
         };
-        // console.log('2dm VM', viewModel);
         return viewModel;
       }),
     );

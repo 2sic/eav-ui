@@ -1,14 +1,16 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SiteLanguage } from '../../models/site-language.model';
 import { SiteLanguagesStatusParams } from './site-languages-status.models';
 
 @Component({
-  selector: 'app-site-languages-status',
-  templateUrl: './site-languages-status.component.html',
-  styleUrls: ['./site-languages-status.component.scss'],
+    selector: 'app-site-languages-status',
+    templateUrl: './site-languages-status.component.html',
+    styleUrls: ['./site-languages-status.component.scss'],
+    standalone: true,
+    imports: [MatSlideToggleModule],
 })
 export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {
   value: boolean;

@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
@@ -9,11 +9,35 @@ import { CompareWith } from './models/compare-with.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-item-history',
-  templateUrl: './item-history.component.html',
-  styleUrls: ['./item-history.component.scss'],
+    selector: 'app-item-history',
+    templateUrl: './item-history.component.html',
+    styleUrls: ['./item-history.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatExpansionModule,
+        MatPaginatorModule,
+        AsyncPipe,
+        DatePipe,
+    ],
+    providers: [
+        VersionsService,
+    ],
 })
 export class ItemHistoryComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

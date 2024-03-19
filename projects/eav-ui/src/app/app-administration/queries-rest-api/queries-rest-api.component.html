@@ -1,0 +1,16 @@
+<form [formGroup]="queryTypeForm">
+  <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+    <mat-label>Select an Query</mat-label>
+    <mat-select formControlName="queryType" (valueChange)="openRestApi($event)">
+      @if (queryTypes$ | async; as contentTypes) {
+        @for (contentType of contentTypes.sort() ; track contentType) {
+        <mat-option [value]="contentType.Guid">
+          {{ contentType.Name }}
+        </mat-option>
+        }
+      }
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<router-outlet></router-outlet>
