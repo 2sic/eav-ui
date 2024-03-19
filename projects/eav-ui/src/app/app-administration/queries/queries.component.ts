@@ -84,7 +84,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       case QueryActions.Metadata:
         return this.openMetadata(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.getUrlQuery(query.Guid)], { relativeTo: this.route.parent.firstChild });
+        return this.router.navigate([GoToDevRest.getUrlQueryInAdmin(query.Guid)], { relativeTo: this.route.parent.firstChild });
       case QueryActions.Clone:
         return this.cloneQuery(query);
       case QueryActions.Permissions:

@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { QueryService } from '../../edit/shared/services/query.service';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
@@ -67,6 +68,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   /** Test values for stream names */
   streamNames$ = new BehaviorSubject<string>('Default');
 
+  /** This is necessary, because the Query-Rest can still be opened from the Visual-Query as a dialog */
   isSideNavContent: boolean;
 
   constructor(
@@ -82,7 +84,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
 
-    this.isSideNavContent = this.router.url.includes('restapiquery');
+    this.isSideNavContent = this.router.url.includes(GoToDevRest.routeQuery);
 
     // build Query Stream
     const query$ = combineLatest([

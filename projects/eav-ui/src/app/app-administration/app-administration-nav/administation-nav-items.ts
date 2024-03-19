@@ -1,5 +1,6 @@
 import { NavItem } from "../../shared/models/nav-item.model";
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { GoToDevRest } from '../../dev-rest';
 
 export const AppsAdministationNavItems: NavItem[] = [
 
@@ -7,7 +8,7 @@ export const AppsAdministationNavItems: NavItem[] = [
   {
     name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', svgIcon: false, tippy: 'Data / Content', child: [
       { name: 'Copilot (beta)', path: 'copilot', icon: 'support_agent', svgIcon: false, tippy: 'Autogenerate content types ' },
-      { name: 'Rest-Api', path: 'restapidata', icon: 'code-curly', svgIcon: true, tippy: 'Rest-Api Data ' },
+      { name: 'Rest-Api', path: GoToDevRest.routeData, icon: 'code-curly', svgIcon: true, tippy: 'Rest-Api Data ' },
     ]
   },
   {
@@ -17,7 +18,7 @@ export const AppsAdministationNavItems: NavItem[] = [
     svgIcon: false,
     tippy: 'Queries / Visual Query Designer',
     child: [
-      { name: 'Rest-Api', path: 'restapiquery', icon: 'code-curly', svgIcon: true, tippy: 'Rest-Api Queries' },
+      { name: 'Rest-Api', path: GoToDevRest.routeQuery, icon: 'code-curly', svgIcon: true, tippy: 'Rest-Api Queries' },
     ]
   },
   {

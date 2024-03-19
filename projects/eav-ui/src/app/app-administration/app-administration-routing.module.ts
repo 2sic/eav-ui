@@ -88,7 +88,7 @@ const appAdministrationRoutes: Routes = [
       },
       { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
       {
-        path: 'restapidata',
+        path: GoToDevRest.routeData,
         component: DataRestApiComponent,
         data: {
           title: 'Rest-Api Data',
@@ -125,7 +125,7 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Queries', breadcrumb: "Queries" },
       },
       {
-        path: 'restapiquery', component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', },
+        path: GoToDevRest.routeQuery, component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', },
         children: [
           {
             path: `:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent,

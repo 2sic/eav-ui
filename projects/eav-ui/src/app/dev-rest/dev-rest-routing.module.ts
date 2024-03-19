@@ -16,6 +16,7 @@ const routes: Routes = [
           GoToPermissions.route,
         ]
       },
+      /* This route is used in Visual Query to open REST as Dialog */
       {
         path: `query/:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent, children: [
           GoToPermissions.route,
