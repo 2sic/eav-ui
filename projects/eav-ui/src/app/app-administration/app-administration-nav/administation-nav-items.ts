@@ -1,6 +1,6 @@
 import { NavItem } from "../../shared/models/nav-item.model";
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { GoToCopilot } from '../data-copilot/go-to-copilot';
+import { GoToCopilot } from '../copilot/go-to-copilot';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 
 export const AppsAdministrationNavItems: NavItem[] = [

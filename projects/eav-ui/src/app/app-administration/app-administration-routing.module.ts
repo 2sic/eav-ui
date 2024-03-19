@@ -24,12 +24,13 @@ import { ViewsComponent } from './views/views.component';
 import { QueriesComponent } from './queries/queries.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
-import { DataCopilotComponent } from './data-copilot/data-copilot.component';
+import { DataCopilotComponent } from './copilot/data-copilot/data-copilot.component';
 import { DataRestApiComponent } from './data-rest-api/data-rest-api.component';
 import { QueriesRestApiComponent } from './queries-rest-api/queries-rest-api.component';
 import { DevRestDataComponent } from '../dev-rest/data/data.component';
 import { DevRestQueryComponent } from '../dev-rest/query/query.component';
-import { GoToCopilot } from './data-copilot/go-to-copilot';
+import { GoToCopilot } from './copilot/go-to-copilot';
+import { ViewCopilotComponent } from './copilot/view-copilot/view-copilot.component';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -89,7 +90,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: `data-${GoToCopilot.route}`,
         component: DataCopilotComponent,
-        data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', }
+        data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)' }
       },
       {
         path: GoToDevRest.routeData,
@@ -165,6 +166,11 @@ const appAdministrationRoutes: Routes = [
           ...GoToMetadata.getRoutes(),
         ],
         data: { title: 'App Views', breadcrumb: "Views" },
+      },
+      {
+        path: `views-${GoToCopilot.route}`,
+        component: ViewCopilotComponent,
+        data: { title: 'Copilot', breadcrumb: '2sxc View Copilot (beta)' }
       },
       {
         path: 'web-api', component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi" }, children: [

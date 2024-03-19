@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,37 +9,40 @@ import { map, take } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RichResult } from '../../shared/models/rich-result';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CopilotService } from '../copilot/copilot-service';
+import { CopilotService } from './copilot-service';
 import { SharedComponentsModule } from "../../shared/shared-components.module";
 
 @Component({
-    selector: 'app-data-copilot',
+    selector: 'app-copilot-generator',
     standalone: true,
     providers: [
-        CopilotService
+      CopilotService
     ],
-    templateUrl: './data-copilot.component.html',
-    styleUrl: './data-copilot.component.scss',
+    templateUrl: './copilot-generator.component.html',
     imports: [
-        MatSelectModule,
-        MatButtonModule,
-        MatCardModule,
-        MatIconModule,
-        CommonModule,
-        SharedComponentsModule
+      MatSelectModule,
+      MatButtonModule,
+      MatCardModule,
+      MatIconModule,
+      CommonModule,
+      SharedComponentsModule
     ]
 })
-export class DataCopilotComponent {
+export class CopilotGeneratorComponent {
 
-  webApiEditions: string = 'admin/code/getEditions';
+  @Input() outputType: string;
+
+  @Input() title?: string = 'Copilot Generator (beta)';
+
   webApiGeneratedCode: string = 'admin/code/generateDataModels';
   editions$ = this.copilotSvc.getEditions();
 
-  generators$ = this.copilotSvc.getGenerators();
+  generators$ = this.copilotSvc.getGenerators()
+    .pipe(
+      map((gens) => gens.filter(g => g.outputType === this.outputType))
+    );
 
   selectedGenerator$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)));
-
-  // generatorHtml$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)?.descriptionHtml ?? ''));
 
   selectedGenerator = '';
   selectedEdition = '';
@@ -52,9 +55,11 @@ export class DataCopilotComponent {
     ) {}
 
   ngOnInit(): void {
-
+    this.generators$.pipe(take(1)).subscribe(gens => {
+      this.selectedGenerator = gens[0]?.name ?? '';
+    });
     this.copilotSvc.specs.pipe(take(1)).subscribe(specs => {
-      this.selectedGenerator = specs.generators[0]?.name ?? '';
+      // this.selectedGenerator = specs.generators[0]?.name ?? '';
       this.selectedEdition = specs.editions.find(e => e.isDefault)?.name ?? '';
     });
   }
