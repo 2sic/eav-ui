@@ -5,27 +5,29 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { Context } from '../../shared/services/context';
-import { take } from 'rxjs';
+import { map, take } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RichResult } from '../../shared/models/rich-result';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopilotService } from '../copilot/copilot-service';
+import { SharedComponentsModule } from "../../shared/shared-components.module";
 
 @Component({
-  selector: 'app-data-copilot',
-  standalone: true,
-  imports: [
-    MatSelectModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    CommonModule,
-  ],
-  providers: [
-    CopilotService
-  ],
-  templateUrl: './data-copilot.component.html',
-  styleUrl: './data-copilot.component.scss'
+    selector: 'app-data-copilot',
+    standalone: true,
+    providers: [
+        CopilotService
+    ],
+    templateUrl: './data-copilot.component.html',
+    styleUrl: './data-copilot.component.scss',
+    imports: [
+        MatSelectModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        CommonModule,
+        SharedComponentsModule
+    ]
 })
 export class DataCopilotComponent {
 
@@ -34,6 +36,10 @@ export class DataCopilotComponent {
   editions$ = this.copilotSvc.getEditions();
 
   generators$ = this.copilotSvc.getGenerators();
+
+  selectedGenerator$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)));
+
+  // generatorHtml$ = this.generators$.pipe(map(gens => gens.find(g => g.name === this.selectedGenerator)?.descriptionHtml ?? ''));
 
   selectedGenerator = '';
   selectedEdition = '';

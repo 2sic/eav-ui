@@ -13,48 +13,48 @@
       <mat-icon>support_agent</mat-icon>
     </mat-card-header>
     <mat-card-content>
-      <p>
-        This tool will generate <code>[TypeName].Generated.cs</code> files in the <code>AppCode/Data</code> folder.
-      </p>
-      <p>
-        Select the edition to generate code for.
-        Editions are managed in the <code>/App_Data/app.json</code> file.
-        See <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
-      </p>
-
+      
+      <br>
       <!-- Generator select -->
-      <mat-form-field appearance="fill" color="accent" style="width: 100%;">
-        <mat-label>Generator</mat-label>
-        <mat-select required [(value)]="selectedGenerator">
-          <mat-select-trigger>
-            {{ selectedGenerator }}
-          </mat-select-trigger>
-          @if (generators$ | async; as generators) {
-            @for (generator of generators.sort() ; track generator) {
-              <mat-option [value]="generator.name">
-                <strong>{{ generator.name }} {{ generator.version }}</strong><br>
-                {{ generator.description }}
-              </mat-option>
-            }
+      @if (generators$ | async; as generators) {
+        <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+          <mat-label>Generator</mat-label>
+          <mat-select required [(value)]="selectedGenerator">
+            <mat-select-trigger>
+              {{ selectedGenerator }}
+            </mat-select-trigger>
+              @for (generator of generators.sort() ; track generator) {
+                <mat-option [value]="generator.name">
+                  <strong>{{ generator.name }} v{{ generator.version }}</strong><br>
+                  {{ generator.description }}
+                </mat-option>
+              }
+          </mat-select>
+          @if (selectedGenerator$ | async; as selectedGenerator) {
+            <mat-hint [innerHTML]="selectedGenerator.descriptionHtml"></mat-hint>
           }
-        </mat-select>
-      </mat-form-field>
-      <br>
-      <br>
+        </mat-form-field>
+        <br>
+      }
 
+      <br>
       <!-- Edition select -->
-      <mat-form-field appearance="fill" color="accent" style="width: 100%;">
-        <mat-label>Select an Edition</mat-label>
-        <mat-select required [(value)]="selectedEdition">
-          @if (editions$ | async; as editions) {
-            @for (edition of editions.sort() ; track edition) {
-              <mat-option [value]="edition.name">
-                <strong>{{ edition.label }}</strong> ({{ edition.description }})
-              </mat-option>
-            }
-          }
-        </mat-select>
-      </mat-form-field>
+      @if (editions$ | async; as editions) {
+        <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+          <mat-label>Select an Edition to generate code for</mat-label>
+          <mat-select required [(value)]="selectedEdition">
+              @for (edition of editions.sort() ; track edition) {
+                <mat-option [value]="edition.name">
+                  <strong>{{ edition.label }}</strong> ({{ edition.description }})
+                </mat-option>
+              }
+          </mat-select>
+          <mat-hint>
+            Editions are managed in the <code>/App_Data/app.json</code> file.
+            See <a href="https://go.2sxc.org/app-json" target="_blank">docs</a>.
+          </mat-hint>
+        </mat-form-field>
+      }
 
     </mat-card-content>
     <div class="eav-card-space-div"></div>
