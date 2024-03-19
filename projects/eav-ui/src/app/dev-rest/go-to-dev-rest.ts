@@ -7,6 +7,23 @@ export class GoToDevRest {
   static routeQuery = 'restapiquery';
   static routeData = 'restapidata';
 
+  static navLabel = 'Rest-Api';
+  static icon = 'code-curly';
+
+  static routeDataDefinition = {
+    name: GoToDevRest.navLabel,
+    icon: GoToDevRest.icon,
+    svgIcon: true,
+    path: GoToDevRest.routeData
+  };
+
+  static routeQueryDefinition = {
+    name: GoToDevRest.navLabel,
+    icon: GoToDevRest.icon,
+    svgIcon: true,
+    path: GoToDevRest.routeQuery
+  };
+
   static paramTypeName: 'contentTypeStaticName';
   static paramQuery: 'queryGuid';
   static paramApiPath: 'webApiPath';

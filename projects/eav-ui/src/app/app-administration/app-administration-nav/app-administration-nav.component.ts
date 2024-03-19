@@ -9,7 +9,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AppsAdministationNavItems } from './administation-nav-items';
+import { AppsAdministrationNavItems } from './administation-nav-items';
 
 
 @Component({
@@ -53,7 +53,7 @@ export class AppAdministrationNavComponent
   sideNavOpened = !this.smallScreen.matches;
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
-  navItems = AppsAdministationNavItems;
+  navItems = AppsAdministrationNavItems;
 
   matcher!: MediaQueryList;
 

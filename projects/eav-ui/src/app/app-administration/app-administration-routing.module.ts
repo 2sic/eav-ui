@@ -29,6 +29,7 @@ import { DataRestApiComponent } from './data-rest-api/data-rest-api.component';
 import { QueriesRestApiComponent } from './queries-rest-api/queries-rest-api.component';
 import { DevRestDataComponent } from '../dev-rest/data/data.component';
 import { DevRestQueryComponent } from '../dev-rest/query/query.component';
+import { GoToCopilot } from './data-copilot/go-to-copilot';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -85,7 +86,11 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Data', breadcrumb: "Data" },
       },
-      { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
+      {
+        path: `data-${GoToCopilot.route}`,
+        component: DataCopilotComponent,
+        data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', }
+      },
       {
         path: GoToDevRest.routeData,
         component: DataRestApiComponent,
@@ -143,7 +148,10 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: importViewDialog, title: 'Import View' },
           },
-          { path: 'usage/:guid', component: DialogEntryComponent, data: { dialog: viewsUsageDialog } },
+          {
+            path: 'usage/:guid',
+            component: DialogEntryComponent,
+            data: { dialog: viewsUsageDialog } },
           {
             matcher: edit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
