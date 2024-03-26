@@ -16,7 +16,7 @@ export class QueryService extends ServiceBase {
   }
 
   getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
-    this.logger.add('getAvailableEntities', 'queryUrl', queryUrl, 'includeGuid', includeGuid, 'params', params, 'fields', fields, 'entitiesFilter', entitiesFilter);
+    this.log.add('getAvailableEntities', 'queryUrl', queryUrl, 'includeGuid', includeGuid, 'params', params, 'fields', fields, 'entitiesFilter', entitiesFilter);
     // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
     const hasParams = !!params;
     const paramsLower = params?.toLocaleLowerCase() ?? '';
@@ -36,7 +36,7 @@ export class QueryService extends ServiceBase {
   }
 
   getEntities({ contentTypes, itemIds, fields, log }: { contentTypes: string[]; itemIds: string[]; fields: string; log: string }): Observable<QueryStreams> {
-    this.logger.add(`getEntities(${log})`, 'contentTypes', contentTypes, 'itemIds', itemIds, 'fields', fields);
+    this.log.add(`getEntities(${log})`, 'contentTypes', contentTypes, 'itemIds', itemIds, 'fields', fields);
     const allParams = '&typeNames=' + (contentTypes?.join(',') ?? '')
       + '&itemIds=' + (itemIds?.join(',') ?? '')
       + '&includeGuid=true'//TODO: @SDV remove this when $select is respected

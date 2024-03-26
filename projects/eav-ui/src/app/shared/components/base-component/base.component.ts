@@ -11,10 +11,10 @@ export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    public logger?: EavLogger
+    public log?: EavLogger
   ) {
     super();
-    this.logger ??= new EavLogger('BaseComponent', false);
+    this.log ??= new EavLogger('BaseComponent', false);
   }
 
   ngOnDestroy() {

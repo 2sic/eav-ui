@@ -56,7 +56,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   init(callerName: string): void {
-    this.logger.add('init');
+    this.log.add('init');
     super.init(callerName);
 
     this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource(this.settings$);

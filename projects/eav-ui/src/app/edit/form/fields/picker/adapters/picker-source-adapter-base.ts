@@ -18,7 +18,7 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   }
 
   init(callerName: string) {
-    this.logger.add(`init(${callerName})`);
+    this.log.add(`init(${callerName})`);
   }
 
   onAfterViewInit(): void { }

@@ -44,7 +44,7 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerQuerySourceAdapter {
-    this.logger.add('createPickerQuerySourceAdapter');
+    this.log.add('createPickerQuerySourceAdapter');
     const pickerQuerySourceAdapter = new PickerQuerySourceAdapter(
       error$,
       disableAddNew$,
@@ -84,7 +84,7 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerEntitySourceAdapter {
-    this.logger.add('createPickerEntitySourceAdapter');
+    this.log.add('createPickerEntitySourceAdapter');
     const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
       disableAddNew$,
       fieldsSettingsService,
@@ -120,7 +120,7 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerStringSourceAdapter {
-    this.logger.add('createPickerStringSourceAdapter');
+    this.log.add('createPickerStringSourceAdapter');
     const pickerStringSourceAdapter = new PickerStringSourceAdapter(
       disableAddNew$,
       fieldsSettingsService,

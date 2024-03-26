@@ -26,7 +26,7 @@ export class FieldDataSourceFactoryService extends ServiceBase {
   createEntityFieldDataSource(
     settings$: BehaviorSubject<FieldSettings>
   ): EntityFieldDataSource {
-    this.logger.add('createEntityFieldDataSource', 'settings$', settings$);
+    this.log.add('createEntityFieldDataSource', 'settings$', settings$);
     return new EntityFieldDataSource(
       settings$,
       this.queryService,
@@ -37,7 +37,7 @@ export class FieldDataSourceFactoryService extends ServiceBase {
   createStringFieldDataSource(
     settings$: BehaviorSubject<FieldSettings>
   ): StringFieldDataSource {
-    this.logger.add('createStringFieldDataSource', 'settings$', settings$);
+    this.log.add('createStringFieldDataSource', 'settings$', settings$);
     return new StringFieldDataSource(
       settings$,
     );
@@ -50,7 +50,7 @@ export class FieldDataSourceFactoryService extends ServiceBase {
     fieldName: string,
     appId: string,
   ): QueryFieldDataSource {
-    this.logger.add('createQueryFieldDataSource', 'settings$', settings$);
+    this.log.add('createQueryFieldDataSource', 'settings$', settings$);
     return new QueryFieldDataSource(
       settings$,
       this.queryService,

@@ -22,7 +22,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
     // Note that logging is disabled if debugThis (above) is false or enabled: false
-    const typeNameLog = this.logger.rxTap('typeName$', { enabled: false });
+    const typeNameLog = this.log.rxTap('typeName$', { enabled: false });
 
     // List of type names (comma separated) to prefetch.
     // This rarely changes, except when the name comes from a `[...]` token
@@ -38,8 +38,8 @@ export class EntityFieldDataSource extends DataSourceBase {
     // Note that the backend should not be accessed till getAll$ is true
     // So the stream should be prefilled with an empty array
     // and shared
-    const allOfTypeLog = this.logger.rxTap('allOfType$', { enabled: false });
-    const AllOfTypeGetEntitiesLog = this.logger.rxTap('allOfType$/getEntities', { enabled: false });
+    const allOfTypeLog = this.log.rxTap('allOfType$', { enabled: false });
+    const AllOfTypeGetEntitiesLog = this.log.rxTap('allOfType$/getEntities', { enabled: false });
     const allOfType$ = combineLatest([
       typeName$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
@@ -69,7 +69,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     // Items to prefetch which were found in the cache
-    const prefetchInCacheLog = this.logger.rxTap('prefetchInCache$', { enabled: true });
+    const prefetchInCacheLog = this.log.rxTap('prefetchInCache$', { enabled: true });
     const prefetchInCache$ = this.prefetchEntityGuids$.pipe(
       prefetchInCacheLog.pipe(),
       distinctUntilChanged(),
@@ -83,7 +83,7 @@ export class EntityFieldDataSource extends DataSourceBase {
 
     // Check if anything should be prefetched but was missing
     // so we can retrieve it from the server
-    const prefetchNotFoundGuidsLog = this.logger.rxTap('prefetchNotFoundGuids$', { enabled: false });
+    const prefetchNotFoundGuidsLog = this.log.rxTap('prefetchNotFoundGuids$', { enabled: false });
     const prefetchNotFoundGuids$ = combineLatest([prefetchInCache$, this.prefetchEntityGuids$]).pipe(
       prefetchNotFoundGuidsLog.pipe(),
       // return guids from prefetchEntityGuids that are not in prefetch
@@ -95,7 +95,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     // TODO: this isn't quite right
     // - atm it always loads all selected items, but it should only do this if they may have changed
     // - to fix this, we need to know if the selected items have changed and probably place that in another list
-    const guidsToForceLoadLog = this.logger.rxTap('guidsToForceLoad$');
+    const guidsToForceLoadLog = this.log.rxTap('guidsToForceLoad$');
     const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.entityGuids$]).pipe(
       guidsToForceLoadLog.pipe(),
       map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
@@ -107,7 +107,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     // Load specific items as overrides
     // to ensure that we always use the latest copy
     // TODO: Not quite right yet - see guidsToForceLoad$
-    const overridesLog = this.logger.rxTap('overrides$');
+    const overridesLog = this.log.rxTap('overrides$');
     const overrides$ = combineLatest([typeName$, guidsToForceLoad$]).pipe(
       overridesLog.pipe(),
       mergeMap(([typeName, guids]) => queryService.getEntities({
@@ -131,7 +131,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     // Create a loading$ stream to indicate if we are loading
-    const loading$log = this.logger.rxTap('loading$', { enabled: false });
+    const loading$log = this.log.rxTap('loading$', { enabled: false });
     this.loading$ = combineLatest([allOfType$, overrides$]).pipe(
       loading$log.pipe(),
       map(([all, overrides]) => all.loading || overrides.loading),
@@ -140,7 +140,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     // Create the main data$ stream merging all, overrides and prefetches
-    const data$log = this.logger.rxTap('data$', { enabled: false });
+    const data$log = this.log.rxTap('data$', { enabled: false });
     this.data$ = combineLatest([prefetchInCache$, allOfType$, overrides$]).pipe(
       data$log.pipe(),
       map(([prefetch, all, overrides]) => {

@@ -35,7 +35,7 @@ export class AppAdminMainComponent extends BaseComponent implements OnInit, OnDe
     private media: MediaMatcher
   ) {
     super(router, route, new EavLogger('AppAdminMainComponent', logThis));
-    this.logger.add('constructor', 'appDialogConfigService', appDialogConfigService);
+    this.log.add('constructor', 'appDialogConfigService', appDialogConfigService);
   }
   
   AppScopes = AppScopes;

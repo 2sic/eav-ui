@@ -65,7 +65,7 @@ export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestr
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
-    this.logger.add(`Open dialog(initContext: ${dialogConfig.initContext})`, dialogConfig.name, 'Context id:', this.context.logger.svcId, 'Context:', this.context);
+    this.log.add(`Open dialog(initContext: ${dialogConfig.initContext})`, dialogConfig.name, 'Context id:', this.context.log.svcId, 'Context:', this.context);
     if (dialogConfig.initContext) {
       this.context.init(this.route);
     }

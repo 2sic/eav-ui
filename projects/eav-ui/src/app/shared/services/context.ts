@@ -62,7 +62,7 @@ export class Context extends ServiceBase {
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
     super(new EavLogger('Context', logThis));
-    this.logger.add('constructor', 'parentContext', parentContext, 'parentId', parentContext?.id);
+    this.log.add('constructor', 'parentContext', parentContext, 'parentId', parentContext?.id);
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
@@ -76,16 +76,16 @@ export class Context extends ServiceBase {
    * It ensures that within that module, the context has the values given by the route
    */
   init(route: ActivatedRoute) {
-    this.logger.add('init', 'route', route);
+    this.log.add('init', 'route', route);
     this.routeSnapshot = route?.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
-    this.logger.add('init done', this, 'appId', this.appId, 'zoneId', this.zoneId, 'contentBlockId', this.contentBlockId, 'moduleId', this.moduleId);
+    this.log.add('init done', this, 'appId', this.appId, 'zoneId', this.zoneId, 'contentBlockId', this.contentBlockId, 'moduleId', this.moduleId);
     consoleLogDev('Context.init', this, route);
   }
 
   initRoot() {
-    this.logger.add('initRoot');
+    this.log.add('initRoot');
     this._zoneId = this.sessionNumber(keyZoneId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
     this._moduleId = this.sessionNumber(keyModuleId);
