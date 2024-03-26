@@ -103,7 +103,7 @@ export class AppAdministrationNavComponent
   // }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

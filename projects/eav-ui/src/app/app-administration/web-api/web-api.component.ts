@@ -14,7 +14,7 @@ import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
-import { FeaturesService } from '../../shared/services/features.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-web-api',
@@ -37,7 +37,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private featuresService: FeaturesService
+    private dialogConfigSvc: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
@@ -46,8 +46,8 @@ export class WebApiComponent implements OnInit, OnDestroy {
       map(([webApis]) => ({ webApis }))
     );
 
-    this.featuresService.getContext$().pipe(map(d => d.Enable.CodeEditor)).subscribe(data => {
-      this.enableCode = data;
+    this.dialogConfigSvc.getCurrent$().subscribe(settings => {
+      this.enableCode = settings.Context.Enable.CodeEditor;
     });
 
   }

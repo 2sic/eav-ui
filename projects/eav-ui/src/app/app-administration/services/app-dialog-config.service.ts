@@ -1,46 +1,74 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
 import { FeaturesService } from '../../shared/services/features.service';
+import { ServiceBase } from '../../shared/services/service-base';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { DialogContextSiteApp } from '../../shared/models/dialog-context.models';
 
-const webApiDialogRoot = 'admin/dialog/';
+const logThis = true;
+
+const webApiSettings = 'admin/dialog/settings';
+
 
 @Injectable()
-export class AppDialogConfigService {
+export class AppDialogConfigService extends ServiceBase implements OnDestroy {
   constructor(
     private http: HttpClient,
     private context: Context,
-    private dnnContext: DnnContext,
+    // private dnnContext: DnnContext,
     private globalConfigService: GlobalConfigService,
     featuresService: FeaturesService,
   ) {
+    super(new EavLogger('AppDialogConfigService', logThis));
     featuresService.loadFromService(this);
+  }
+
+  ngOnDestroy(): void {
+    super.destroy();
+    // TODO: probably should add an onDestroy and ensure all subscriptions in dialogSettings$ are killed
   }
 
   private dialogSettings$: Record<number, Observable<DialogSettings>> = {};
 
-  getShared$(appId?: number) {
-    appId ??= this.context.appId;
-    if (!this.dialogSettings$[appId])
-      this.dialogSettings$[appId] = this.getDialogSettings(appId).pipe(shareReplay({ refCount: false }));
-    return this.dialogSettings$[appId];
-    // TODO: probably should add an onDestroy and ensure all subscriptions are killed
+  getCurrent$(): Observable<DialogSettings> {
+    const appId = this.context.appId;
+    this.logger.add('getCurrent$', 'appId', appId);
+    return this.getShared$(appId);
   }
 
-  getDialogSettings(appId?: number) {
-    return this.http.get<DialogSettings>(this.dnnContext.$2sxc.http.apiUrl(webApiDialogRoot + 'settings'), {
+    // new 2dg
+    getSitePrimaryApp$(): Observable<DialogContextSiteApp> {
+      return this.getCurrent$().pipe(map(dc => dc?.Context.Site.PrimaryApp));
+    }
+  
+    getGlobalPrimaryApp$(): Observable<DialogContextSiteApp> {
+      return this.getCurrent$().pipe(map(dc => dc?.Context.System.PrimaryApp));
+    }
+  
+
+  getShared$(appId: number): Observable<DialogSettings> {
+    const appIdToUse = appId;
+    this.logger.add('getShared$', 'appId', appId, 'appIdToUse', appIdToUse);
+    // if (!this.dialogSettings$[appIdToUse])
+    this.dialogSettings$[appIdToUse] ??= this.getDialogSettings(appIdToUse, 'getShared$').pipe(shareReplay({ refCount: false }));
+    return this.dialogSettings$[appIdToUse];
+  }
+
+  getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
+    this.logger.add('getDialogSettings', 'appId', appId, 'reqBy', reqBy);
+    return this.http.get<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.context.appId.toString() },
     }).pipe(
-      map(dialogSettings => {
-        dialogSettings.Context.Language.List = dialogSettings.Context.Language.List.filter(language => language.IsEnabled);
-        return dialogSettings;
+      map(dlgSettings => {
+        dlgSettings.Context.Language.List = dlgSettings.Context.Language.List.filter(language => language.IsEnabled);
+        return dlgSettings;
       }),
-      tap(dialogSettings => {
-        this.globalConfigService.allowDebug(dialogSettings.Context.Enable.DebugMode);
+      tap(dlgSettings => {
+        this.globalConfigService.allowDebug(dlgSettings.Context.Enable.DebugMode);
       }),
     );
   }

@@ -16,24 +16,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-    selector: 'app-apps-management-nav',
-    templateUrl: './apps-management-nav.component.html',
-    styleUrls: ['./apps-management-nav.component.scss'],
-    standalone: true,
-    imports: [
-        MatToolbarModule,
-        MatIconModule,
-        BreadcrumbModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatSidenavModule,
-        RouterOutlet,
-        AsyncPipe,
-    ],
-    providers: [
-        AppDialogConfigService,
-        Context,
-    ]
+  selector: 'app-apps-management-nav',
+  templateUrl: './apps-management-nav.component.html',
+  styleUrls: ['./apps-management-nav.component.scss'],
+  standalone: true,
+  imports: [
+    MatToolbarModule,
+    MatIconModule,
+    BreadcrumbModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatSidenavModule,
+    RouterOutlet,
+    AsyncPipe,
+  ],
+  providers: [
+    AppDialogConfigService,
+    // Don't inject context here, it should inherit from the parent
+    // Context,
+  ]
 })
 export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
 

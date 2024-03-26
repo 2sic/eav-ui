@@ -1,6 +1,6 @@
 import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 
 @Directive()

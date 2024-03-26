@@ -20,7 +20,7 @@ import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
-import { FeaturesService } from '../../shared/services/features.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-queries',
@@ -43,7 +43,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-    private featuresService: FeaturesService
+    private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
    }
@@ -51,8 +51,8 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
   ngOnInit() {
     this.fetchQueries();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchQueries(); }));
-    this.featuresService.getContext$().pipe(map(d => d.Enable.AppPermissions)).subscribe(data => {
-      this.enablePermissions = data;
+    this.dialogConfigSvc.getCurrent$().subscribe(settings => {
+      this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
   }
 

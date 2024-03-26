@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
@@ -15,7 +15,7 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
-import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -27,8 +27,8 @@ import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
-import { FeaturesService } from '../../shared/services/features.service';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
+import { AppDialogConfigService } from '../services';
 
 @Component({
   selector: 'app-data',
@@ -58,7 +58,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private contentExportService: ContentExportService,
-    private featuresService: FeaturesService
+    private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
 
@@ -69,9 +69,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.refreshScopeOnRouteChange();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchContentTypes(); }));
 
-
-    this.featuresService.getContext$().pipe(map(d => d.Enable.AppPermissions)).subscribe(data => {
-      this.enablePermissions = data;
+    this.dialogConfigSvc.getCurrent$().subscribe(data => {
+      this.enablePermissions = data.Context.Enable.AppPermissions;
     });
   }
 

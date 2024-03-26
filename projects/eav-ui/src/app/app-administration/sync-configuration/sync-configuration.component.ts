@@ -32,7 +32,7 @@ export class SyncConfigurationComponent extends BaseComponent implements OnInit,
   }
 
   ngOnInit() {
-    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
     });
   }

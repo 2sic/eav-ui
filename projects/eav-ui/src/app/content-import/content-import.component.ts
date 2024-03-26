@@ -80,7 +80,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading$.next(true);
     const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
-    const dialogSettings$ = this.appDialogConfigService.getShared$(); // .getDialogSettings();
+    const dialogSettings$ = this.appDialogConfigService.getCurrent$();
     forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
       this.contentType$.next(contentType);
       this.formValues = {
