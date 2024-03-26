@@ -9,7 +9,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AppsAdministrationNavItems } from './administation-nav-items';
+import { AppsAdministrationNavItems } from './administration-nav-items';
 
 
 @Component({

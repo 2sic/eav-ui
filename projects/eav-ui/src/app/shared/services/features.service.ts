@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, ReplaySubject, take } from 'rxjs';
+import { map, Observable, ReplaySubject } from 'rxjs';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { DialogContext } from '../models/dialog-settings.model';
 import { ServiceBase } from './service-base';
