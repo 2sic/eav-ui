@@ -5,7 +5,7 @@ import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
+import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
@@ -34,7 +34,10 @@ import { ViewCopilotComponent } from './copilot/view-copilot/view-copilot.compon
 
 const appAdministrationRoutes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: appAdministrationDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: appAdministrationDialog },
+    children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
       {

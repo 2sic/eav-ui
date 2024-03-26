@@ -7,7 +7,7 @@ export const appAdministrationDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { AppAdministrationNavComponent } = await import('./app-administration-nav.component');
+    const { AppAdministrationNavComponent } = await import('./app-admin-main.component');
     return AppAdministrationNavComponent;
   }
 };

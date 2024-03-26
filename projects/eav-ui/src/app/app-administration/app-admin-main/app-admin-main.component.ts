@@ -9,13 +9,13 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AppsAdministrationNavItems } from './administration-nav-items';
+import { AppAdminMenu } from './app-admin-menu';
 
 
 @Component({
-  selector: 'app-app-administration-nav',
-  templateUrl: './app-administration-nav.component.html',
-  styleUrls: ['./app-administration-nav.component.scss'],
+  selector: 'app-app-admin-main',
+  templateUrl: './app-admin-main.component.html',
+  styleUrls: ['./app-admin-main.component.scss'],
 })
 export class AppAdministrationNavComponent
   extends BaseComponent
@@ -53,7 +53,7 @@ export class AppAdministrationNavComponent
   sideNavOpened = !this.smallScreen.matches;
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
-  navItems = AppsAdministrationNavItems;
+  navItems = AppAdminMenu;
 
   matcher!: MediaQueryList;
 

@@ -3,7 +3,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { GoToCopilot } from '../copilot/go-to-copilot';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 
-export const AppsAdministrationNavItems: NavItem[] = [
+export const AppAdminMenu: NavItem[] = [
 
   { name: 'Info', path: 'home', icon: 'info', svgIcon: false, tippy: 'App Info' },
   {
