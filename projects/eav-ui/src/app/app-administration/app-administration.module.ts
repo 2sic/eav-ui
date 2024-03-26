@@ -29,7 +29,7 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { AppAdministrationNavComponent } from './app-admin-main/app-admin-main.component';
+import { AppAdminMainComponent } from './app-admin-main/app-admin-main.component';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { SyncConfigurationComponent } from './sync-configuration/sync-configuration.component';
@@ -81,7 +81,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 @NgModule({
   declarations: [
     GettingStartedComponent,
-    AppAdministrationNavComponent,
+    AppAdminMainComponent,
     DataComponent,
     QueriesComponent,
     ViewsComponent,

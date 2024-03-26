@@ -35,17 +35,24 @@ import { ViewCopilotComponent } from './copilot/view-copilot/view-copilot.compon
 const appAdministrationRoutes: Routes = [
   {
     path: '',
-    component: DialogEntryComponent,
-    data: { dialog: appAdministrationDialog },
+    // experimental 2dm
+    // ...DialogEntryComponent.routeFor(appAdministrationDialog),
+    component: DialogEntryComponent, data: { dialog: appAdministrationDialog },
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
+      {
+        path: '', redirectTo: 'home', pathMatch: 'full'
+      },
+      {
+        path: 'home',
+        component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', }
+      },
       {
         path: 'data/:scope', component: DataComponent, children: [
           {
             path: 'import',
-            component: DialogEntryComponent,
-            data: { dialog: importContentTypeDialog, title: 'Import Content Type' },
+            // experimental 2dm
+            // ...DialogEntryComponent.routeFor(importContentTypeDialog, { title: 'Import Content Type' }),
+            component: DialogEntryComponent, data: { dialog: importContentTypeDialog, title: 'Import Content Type' },
           },
           {
             path: 'items/:contentTypeStaticName',
@@ -176,12 +183,16 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'Copilot', breadcrumb: '2sxc View Copilot (beta)' }
       },
       {
-        path: 'web-api', component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi" }, children: [
+        path: 'web-api',
+        component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi" },
+        children: [
           GoToDevRest.route,
         ],
       },
       {
-        path: 'app', component: AppConfigurationComponent, data: { title: 'Manage App', breadcrumb: "Manage App" }, children: [
+        path: 'app',
+        component: AppConfigurationComponent, data: { title: 'Manage App', breadcrumb: "Manage App" },
+        children: [
           ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
@@ -198,7 +209,9 @@ const appAdministrationRoutes: Routes = [
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
           {
-            path: 'language-permissions', component: DialogEntryComponent, data: { dialog: languagePermissionsDialog, title: 'Language Permissions' }, children: [
+            path: 'language-permissions',
+            component: DialogEntryComponent, data: { dialog: languagePermissionsDialog, title: 'Language Permissions' },
+            children: [
               { ...GoToPermissions.route, data: { title: 'Language Permissions' } },
             ],
           },
@@ -207,8 +220,7 @@ const appAdministrationRoutes: Routes = [
             path: 'analyze/:part', component: DialogEntryComponent, data: { dialog: analyzeSettingsDialog, title: 'Analyze Settings / Resources' }, children: [
               {
                 path: 'details/:view/:settingsItemKey',
-                component: DialogEntryComponent,
-                data: { dialog: settingsItemDetailsDialog, title: 'Settings / Resources Item Details' },
+                component: DialogEntryComponent, data: { dialog: settingsItemDetailsDialog, title: 'Settings / Resources Item Details' },
               },
             ],
           },
