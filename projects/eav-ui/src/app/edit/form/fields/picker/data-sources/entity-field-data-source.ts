@@ -6,9 +6,11 @@ import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { Injectable } from '@angular/core';
 
-const logThis = false;
+const logThis = true;
 
+@Injectable()
 export class EntityFieldDataSource extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
 
@@ -20,6 +22,7 @@ export class EntityFieldDataSource extends DataSourceBase {
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): void {
+    this.log.add('setup', 'settings$', settings$);
     super.setup(settings$);
 
     // Logging helper for the stream typeName$

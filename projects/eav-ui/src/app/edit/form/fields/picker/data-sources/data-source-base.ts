@@ -19,14 +19,11 @@ export abstract class DataSourceBase extends ServiceBase {
 
   protected settings$: BehaviorSubject<FieldSettings>;
 
-  constructor(
-    // protected settings$: BehaviorSubject<FieldSettings>,
-    logSpecs: EavLogger,
-  ) {
+  constructor(logSpecs: EavLogger) {
     super(logSpecs);
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>) {
+  protected setup(settings$: BehaviorSubject<FieldSettings>) {
     this.settings$ = settings$;
   }
 
