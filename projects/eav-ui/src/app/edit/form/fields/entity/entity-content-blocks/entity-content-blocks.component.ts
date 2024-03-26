@@ -6,7 +6,7 @@ import { EntityCacheService, StringQueryCacheService } from '../../../../shared/
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
-import { PickerComponent } from '../../picker/picker.component';
+import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
@@ -18,6 +18,7 @@ const logThis = false;
   selector: InputTypeConstants.EntityContentBlocks,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
+  providers: pickerProviders,
 })
 @FieldMetadata({})
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {

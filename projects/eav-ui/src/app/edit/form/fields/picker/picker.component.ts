@@ -8,13 +8,35 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './picker.models';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
+import { FieldDataSourceFactoryService } from './factories/field-data-source-factory.service';
+import { StringFieldDataSource } from './data-sources/string-field-data-source';
+import { QueryFieldDataSource } from './data-sources/query-field-data-source';
+import { PickerSourceAdapterFactoryService } from './factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from './factories/picker-state-adapter-factory.service';
 
 const logThis = false;
+
+/**
+ * These providers must be added to all the picker controls.
+ * This is important, so that they get a new instance of the services.
+ * Otherwise the end up sharing the same instance of the service.
+ * ...and when opened the second time, they will show an empty dropdown.
+ */
+export const pickerProviders = [
+  PickerSourceAdapterFactoryService,
+  PickerStateAdapterFactoryService,
+  FieldDataSourceFactoryService,
+  StringFieldDataSource,
+  EntityFieldDataSource,
+  QueryFieldDataSource,
+];
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
   templateUrl: './picker.component.html',
   styleUrls: ['./picker.component.scss'],
+  providers: pickerProviders,
 })
 // @FieldMetadata({})
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {

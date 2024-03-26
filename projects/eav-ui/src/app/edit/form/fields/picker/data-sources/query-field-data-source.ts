@@ -8,7 +8,11 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
+import { Injectable } from '@angular/core';
 
+const logThis = true;
+
+@Injectable()
 export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
 
@@ -17,17 +21,29 @@ export class QueryFieldDataSource extends DataSourceBase {
     private entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     private translate: TranslateService,
-    private isStringQuery: boolean,
-    private entityGuid: string,
-    private fieldName: string,
-    private appId: string,
   ) {
-    super(new EavLogger('QueryFieldDataSource', false ));
+    super(new EavLogger('QueryFieldDataSource', logThis));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): void {
+  // private isStringQuery: boolean;
+  // private entityGuid: string;
+  // private fieldName: string;
+  private appId: string;
+
+  setupQuery(
+    settings$: BehaviorSubject<FieldSettings>,
+    isStringQuery: boolean,
+    entityGuid: string,
+    fieldName: string,
+    appId: string
+  ): void {
+    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId);
+    // this.isStringQuery = isStringQuery;
+    // this.entityGuid = entityGuid;
+    // this.fieldName = fieldName;
+    this.appId = appId;
     super.setup(settings$);
-    const settings = this.settings$.value;
+    const settings = settings$.value;
     const streamName = settings.StreamName;
     
     // If the configuration isn't complete, the query can be empty
@@ -72,14 +88,14 @@ export class QueryFieldDataSource extends DataSourceBase {
       distinctUntilChanged(),
       filter(entityGuids => entityGuids?.length > 0),
       mergeMap(entityGuids => {
-        if (this.isStringQuery) {
-          return this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName);
+        if (/*this.*/isStringQuery) {
+          return this.stringQueryCacheService.getEntities$(/*this.*/entityGuid, /* this. */fieldName);
         } else {
           return this.entityCacheService.getEntities$(entityGuids);
         }
       }),
       map(entities => {
-        if (this.isStringQuery) {
+        if (/*this. */isStringQuery) {
           return entities.map(entity => this.entity2PickerItem(entity as QueryEntity));
         } else {
           return entities as PickerItem[];
@@ -129,7 +145,6 @@ export class QueryFieldDataSource extends DataSourceBase {
 
   destroy(): void {
     this.params$.complete();
-
     super.destroy();
   }
 

@@ -70,8 +70,6 @@ import { NumberDefaultComponent } from './form/fields/number/number-default/numb
 import { NumberDropdownComponent } from './form/fields/number/number-dropdown/number-dropdown.component';
 import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
 import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
-import { PickerSourceAdapterFactoryService } from './form/fields/picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from './form/fields/picker/factories/picker-state-adapter-factory.service';
 import { PickerComponent } from './form/fields/picker/picker.component';
 import { StringDefaultComponent } from './form/fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from './form/fields/string/string-dropdown-query/string-dropdown-query.component';
@@ -107,12 +105,10 @@ import { PickerTextComponent } from './form/fields/picker/picker-text/picker-tex
 import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
 import { PickerTextToggleComponent } from './form/fields/picker/picker-text-toggle/picker-text-toggle.component';
-import { FieldDataSourceFactoryService } from './form/fields/picker/factories/field-data-source-factory.service';
 import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity-picker.component';
 import { StringPickerComponent } from './form/fields/string/string-picker/string-picker.component';
 import { OWL_DATE_TIME_FORMATS, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
-import { StringFieldDataSource } from './form/fields/picker/data-sources/string-field-data-source';
 
 export const OWL_DAYJS_FORMATS = {
     parseInput: 'l LT',
@@ -252,11 +248,6 @@ export const OWL_DAYJS_FORMATS = {
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
         { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
         { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
-        PickerSourceAdapterFactoryService,
-        PickerStateAdapterFactoryService,
-        FieldDataSourceFactoryService,
-
-        StringFieldDataSource,
     ],
 })
 export class EditModule { }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
-import { PickerComponent } from '../../picker/picker.component';
+import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
 import { EavService, FieldsSettingsService, EntityService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
@@ -21,6 +21,7 @@ const logThis = false;
   selector: InputTypeConstants.WIPEntityPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
+  providers: pickerProviders,
 })
 @FieldMetadata({})
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {

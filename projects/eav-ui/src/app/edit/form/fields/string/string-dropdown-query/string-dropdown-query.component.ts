@@ -10,11 +10,13 @@ import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { pickerProviders } from '../../picker/picker.component';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
+  providers: pickerProviders,
 })
 @FieldMetadata({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
