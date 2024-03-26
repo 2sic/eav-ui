@@ -38,6 +38,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     stringQueryCacheService: StringQueryCacheService,
     private sourceFactory: PickerSourceAdapterFactoryService,
     private stateFactory: PickerStateAdapterFactoryService,
+    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
   ) {
     super(
       eavService,
@@ -83,25 +84,22 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     var dataSourceType = this.settings$.value.DataSourceType;
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList) {
-      source = this.sourceFactory.createPickerStringSourceAdapter(
+      source = this.pickerStringSourceAdapterRaw.setupString(
+        state.settings$,
         state.disableAddNew$,
         this.config,
-        state.settings$,
         this.group,
-        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
-        // this.fieldsSettingsService,
         true,
 
         state.control,
         this.config,
         state.settings$,
-        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
@@ -109,12 +107,9 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) { 
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
-        // this.fieldsSettingsService,
-
         state.control,
         this.config,
         state.settings$,
-        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)

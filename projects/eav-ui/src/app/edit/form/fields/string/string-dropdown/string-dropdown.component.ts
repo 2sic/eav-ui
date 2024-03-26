@@ -6,10 +6,10 @@ import { PickerComponent, pickerProviders } from '../../picker/picker.component'
 import { TranslateService } from '@ngx-translate/core';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
@@ -29,8 +29,8 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private sourceFactory: PickerSourceAdapterFactoryService,
     private stateFactory: PickerStateAdapterFactoryService,
+    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
   ) {
     super(
       eavService,
@@ -70,14 +70,14 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       () => this.focusOnSearchComponent,
     );
 
-    const source = this.sourceFactory.createPickerStringSourceAdapter(
+    const source = this.pickerStringSourceAdapterRaw.setupString(
+      state.settings$,
       state.disableAddNew$,
       this.config,
-      state.settings$,
       this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)
     );
+;
 
     state.init();
     source.init('StringDropdownComponent.createPickerAdapters');
