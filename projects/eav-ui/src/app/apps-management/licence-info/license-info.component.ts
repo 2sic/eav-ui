@@ -29,6 +29,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 import { FeaturesConfigService } from '../services/features-config.service';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 
 @Component({
   selector: 'app-license-info',
@@ -72,6 +74,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
+    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
   }
 
   ngOnInit(): void {
