@@ -1,12 +1,9 @@
-import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, PickerItem } from "projects/edit-types";
+import { PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
-import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { DeleteEntityProps } from "../picker.models";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
@@ -24,48 +21,24 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
-    // public error$: BehaviorSubject<string> = new BehaviorSubject(''),
-    // public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-
     public fieldsSettingsService: FieldsSettingsService, // DI
     public queryService: QueryService, // DI
     public stringQueryCacheService: StringQueryCacheService, // DI
-
-    // public isStringQuery: boolean,
-
-    // Below this is needed for base class
-    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-
     public entityCacheService: EntityCacheService, // DI
     public entityService: EntityService, // DI
     public eavService: EavService, // DI
     public editRoutingService: EditRoutingService, // DI
     public translate: TranslateService, // DI
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService, // DI
-
-    // protected config: FieldConfigSet,
-    // protected group: FormGroup,
-
     public snackBar: MatSnackBar, // DI
-    // public control: AbstractControl,
-
-    // // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    // public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
-      // disableAddNew$,
-      // settings$,
       entityCacheService,
       entityService,
       eavService,
       editRoutingService,
       translate,
-      // config,
-      // group,
       snackBar,
-      // control,
-      // // fetchAvailableEntities,
-      // deleteCallback,
       new EavLogger('PickerQuerySourceAdapter', logThis),
     );
   }

@@ -20,23 +20,15 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
   constructor(
-    // public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
     public entityCacheService: EntityCacheService,  // DI
     public entityService: EntityService, // DI
     public eavService: EavService, // DI
     public editRoutingService: EditRoutingService, // DI
     protected translate: TranslateService, // DI
-    // protected config: FieldConfigSet, 
-    // protected group: FormGroup,
     public snackBar: MatSnackBar,
-    // public control: AbstractControl,
-    // // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    // public deleteCallback: (props: DeleteEntityProps) => void,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
-    // this.setup(deleteCallback);
   }
 
   disableAddNew$: BehaviorSubject<boolean>;
