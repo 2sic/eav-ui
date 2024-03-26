@@ -85,12 +85,8 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList) {
       source = this.sourceFactory.createPickerStringSourceAdapter(
         state.disableAddNew$,
-        // this.fieldsSettingsService,
-
-        // state.control,
         this.config,
         state.settings$,
-        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
@@ -99,13 +95,13 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
-        this.fieldsSettingsService,
+        // this.fieldsSettingsService,
         true,
 
         state.control,
         this.config,
         state.settings$,
-        this.editRoutingService,
+        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
@@ -113,12 +109,12 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) { 
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
-        this.fieldsSettingsService,
+        // this.fieldsSettingsService,
 
         state.control,
         this.config,
         state.settings$,
-        this.editRoutingService,
+        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)

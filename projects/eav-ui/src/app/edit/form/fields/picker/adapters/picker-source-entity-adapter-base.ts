@@ -20,23 +20,48 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
   constructor(
-    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-    public entityCacheService: EntityCacheService,
-    public entityService: EntityService,
-    public eavService: EavService,
-    public editRoutingService: EditRoutingService,
-    protected translate: TranslateService,
-    protected config: FieldConfigSet,
-    protected group: FormGroup,
+    // public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
+    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
+    public entityCacheService: EntityCacheService,  // DI
+    public entityService: EntityService, // DI
+    public eavService: EavService, // DI
+    public editRoutingService: EditRoutingService, // DI
+    protected translate: TranslateService, // DI
+    // protected config: FieldConfigSet, 
+    // protected group: FormGroup,
     public snackBar: MatSnackBar,
-    public control: AbstractControl,
-    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,
+    // public control: AbstractControl,
+    // // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
+    // public deleteCallback: (props: DeleteEntityProps) => void,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
-    this.setup(deleteCallback);
+    // this.setup(deleteCallback);
+  }
+
+  disableAddNew$: BehaviorSubject<boolean>;
+  settings$: BehaviorSubject<FieldSettings>;
+  protected config: FieldConfigSet;
+  protected group: FormGroup;
+  public control: AbstractControl;
+
+  public setupShared(
+    settings$: BehaviorSubject<FieldSettings>,
+    config: FieldConfigSet,
+    group: FormGroup,
+    control: AbstractControl,
+    disableAddNew$: BehaviorSubject<boolean>,
+    deleteCallback: (props: DeleteEntityProps) => void,
+  ): this {
+    this.log.add('setupShared');
+    this.settings$ = settings$;
+    this.config = config;
+    this.group = group;
+    this.control = control;
+    this.disableAddNew$ = disableAddNew$;
+    super.setup(deleteCallback);
+
+    return this;
   }
 
   init(callerName: string): void {

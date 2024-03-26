@@ -66,12 +66,12 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
 
     const source = this.sourceFactory.createPickerEntitySourceAdapter(
       state.disableAddNew$,
-      this.fieldsSettingsService,
+      // this.fieldsSettingsService,
 
       state.control,
       this.config,
       state.settings$,
-      this.editRoutingService,
+      // this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)

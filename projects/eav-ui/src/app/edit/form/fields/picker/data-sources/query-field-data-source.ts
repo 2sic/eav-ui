@@ -10,7 +10,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class QueryFieldDataSource extends DataSourceBase {

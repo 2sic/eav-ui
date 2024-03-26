@@ -1,10 +1,6 @@
-import { FormGroup, AbstractControl } from "@angular/forms";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { TranslateService } from "@ngx-translate/core";
+import { FormGroup } from "@angular/forms";
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
-import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
-import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
 import { DeleteEntityProps } from "../picker.models";
@@ -19,27 +15,8 @@ const logThis = true;
 export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
   private stringFieldDataSource: StringFieldDataSource;
 
-  constructor(
-    // public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-// public fieldsSettingsService: FieldsSettingsService, // DI?
-
-    // Below this is needed for base class
-    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-// public entityCacheService: EntityCacheService, // DI
-// public entityService: EntityService, // DI
-// public eavService: EavService, // DI
-// public editRoutingService: EditRoutingService, // DI
-// protected translate: TranslateService, // DI
-    public fieldDataSourceFactoryService: FieldDataSourceFactoryService, // DI
-    // protected config: FieldConfigSet,
-    // protected group: FormGroup,
-// public snackBar: MatSnackBar, // DI
-    // public control: AbstractControl,
-    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    // public deleteCallback: (props: DeleteEntityProps) => void,
-  ) {
+  constructor(private fieldDataSourceFactoryService: FieldDataSourceFactoryService) {
     super(new EavLogger('PickerStringSourceAdapter', logThis));
-    //this.setup(deleteCallback);
   }
 
   public settings$: BehaviorSubject<FieldSettings>;

@@ -72,12 +72,12 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
-        this.fieldsSettingsService,
+        // this.fieldsSettingsService,
 
         state.control,
         this.config,
         state.settings$,
-        this.editRoutingService,
+        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
@@ -87,13 +87,13 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
-        this.fieldsSettingsService,
+        // this.fieldsSettingsService,
         false,
 
         state.control,
         this.config,
         state.settings$,
-        this.editRoutingService,
+        // this.editRoutingService,
         this.group,
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)

@@ -15,6 +15,8 @@ import { QueryFieldDataSource } from './data-sources/query-field-data-source';
 import { PickerSourceAdapterFactoryService } from './factories/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from './factories/picker-state-adapter-factory.service';
 import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
+import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
+import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
 
 const logThis = false;
 
@@ -33,6 +35,8 @@ export const pickerProviders = [
   QueryFieldDataSource,
 
   PickerStringSourceAdapter,
+  PickerEntitySourceAdapter,
+  PickerQuerySourceAdapter,
 ];
 
 @Component({

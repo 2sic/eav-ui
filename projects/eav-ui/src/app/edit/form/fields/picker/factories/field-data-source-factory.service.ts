@@ -7,7 +7,7 @@ import { QueryFieldDataSource } from '../data-sources/query-field-data-source';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 // Note: This was refactored by 2dm 2024-03-26
 // Goal is to also make the adapters DI compliant

@@ -8,7 +8,7 @@ import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class EntityFieldDataSource extends DataSourceBase {

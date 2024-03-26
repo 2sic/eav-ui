@@ -21,14 +21,14 @@ const logThis = false;
 export class PickerSourceAdapterFactoryService extends ServiceBase {
   constructor(
     private injector: Injector,
-    private eavService: EavService,
-    private entityCacheService: EntityCacheService,
-    private entityService: EntityService,
-    private translate: TranslateService,
-    private queryService: QueryService,
-    private stringQueryCacheService: StringQueryCacheService,
-    private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-    private snackBar: MatSnackBar,
+    // private eavService: EavService,
+    // private entityCacheService: EntityCacheService,
+    // private entityService: EntityService,
+    // private translate: TranslateService,
+    // private queryService: QueryService,
+    // private stringQueryCacheService: StringQueryCacheService,
+    // private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
+    // private snackBar: MatSnackBar,
   ) {
     super(new EavLogger('PickerSourceAdapterFactoryService', logThis));
   }
@@ -36,37 +36,50 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
   createPickerQuerySourceAdapter(
     error$: BehaviorSubject<string>,
     disableAddNew$: BehaviorSubject<boolean>,
-    fieldsSettingsService: FieldsSettingsService,
+    // fieldsSettingsService: FieldsSettingsService,
     isStringQuery: boolean,
     control: AbstractControl,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,
-    editRoutingService: EditRoutingService,
+    // editRoutingService: EditRoutingService,
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerQuerySourceAdapter {
     this.log.add('createPickerQuerySourceAdapter');
-    const pickerQuerySourceAdapter = new PickerQuerySourceAdapter(
-      error$,
-      disableAddNew$,
-      fieldsSettingsService,
-      this.queryService,
-      this.stringQueryCacheService,
-      isStringQuery,
+    const pickerQuerySourceAdapter = this.injector.get(PickerQuerySourceAdapter);
+    // const pickerQuerySourceAdapter = new PickerQuerySourceAdapter(
+    //   // error$,
+    //   // disableAddNew$,
+    //   fieldsSettingsService,
+    //   this.queryService,
+    //   this.stringQueryCacheService,
+    //   // isStringQuery,
 
+    //   // settings$,
+    //   this.entityCacheService,
+    //   this.entityService,
+    //   this.eavService,
+    //   editRoutingService,
+    //   this.translate,
+    //   this.fieldDataSourceFactoryService,
+    //   // config,
+    //   // group,
+    //   this.snackBar,
+    //   // control,
+    //   // deleteCallback,
+    // );
+    pickerQuerySourceAdapter.setupShared(
       settings$,
-      this.entityCacheService,
-      this.entityService,
-      this.eavService,
-      editRoutingService,
-      this.translate,
-      this.fieldDataSourceFactoryService,
       config,
       group,
-      this.snackBar,
       control,
+      disableAddNew$,
       deleteCallback,
+    ).setupQuery(
+      error$,
+      isStringQuery,
     );
+
 
     return pickerQuerySourceAdapter;
   }
@@ -77,53 +90,18 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
 
   createPickerEntitySourceAdapter(
     disableAddNew$: BehaviorSubject<boolean>,
-    fieldsSettingsService: FieldsSettingsService,
-    control: AbstractControl,
-    config: FieldConfigSet,
-    settings$: BehaviorSubject<FieldSettings>,
-    editRoutingService: EditRoutingService,
-    group: FormGroup,
-    deleteCallback: (props: DeleteEntityProps) => void,
-  ): PickerEntitySourceAdapter {
-    this.log.add('createPickerEntitySourceAdapter');
-    const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
-      disableAddNew$,
-      fieldsSettingsService,
-
-      settings$,
-      this.entityCacheService,
-      this.entityService,
-      this.eavService,
-      editRoutingService,
-      this.translate,
-      this.fieldDataSourceFactoryService,
-      config,
-      group,
-      this.snackBar,
-      control,
-      deleteCallback,
-    );
-
-    return pickerEntitySourceAdapter;
-  }
-
-  // initEntity(pickerEntitySourceAdapter: PickerEntitySourceAdapter): void {
-  //   pickerEntitySourceAdapter.init();
-  // }
-
-  createPickerStringSourceAdapter(
-    disableAddNew$: BehaviorSubject<boolean>,
     // fieldsSettingsService: FieldsSettingsService,
-    // control: AbstractControl,
+    control: AbstractControl,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,
     // editRoutingService: EditRoutingService,
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
-  ): PickerStringSourceAdapter {
-    this.log.add('createPickerStringSourceAdapter');
-    const pickerStringSourceAdapter = this.injector.get(PickerStringSourceAdapter);
-    // const pickerStringSourceAdapter = new PickerStringSourceAdapter(
+  ): PickerEntitySourceAdapter {
+    this.log.add('createPickerEntitySourceAdapter');
+    const pickerEntitySourceAdapter = this.injector.get(PickerEntitySourceAdapter);
+    this.log.add('createPickerEntitySourceAdapter', 'got pickerEntitySourceAdapter');
+    // const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
     //   // disableAddNew$,
     //   fieldsSettingsService,
 
@@ -140,6 +118,31 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
     //   // control,
     //   // deleteCallback,
     // );
+    pickerEntitySourceAdapter.setupShared(
+      settings$,
+      config,
+      group,
+      control,
+      disableAddNew$,
+      deleteCallback,
+    )
+
+    return pickerEntitySourceAdapter;
+  }
+
+  // initEntity(pickerEntitySourceAdapter: PickerEntitySourceAdapter): void {
+  //   pickerEntitySourceAdapter.init();
+  // }
+
+  createPickerStringSourceAdapter(
+    disableAddNew$: BehaviorSubject<boolean>,
+    config: FieldConfigSet,
+    settings$: BehaviorSubject<FieldSettings>,
+    group: FormGroup,
+    deleteCallback: (props: DeleteEntityProps) => void,
+  ): PickerStringSourceAdapter {
+    this.log.add('createPickerStringSourceAdapter');
+    const pickerStringSourceAdapter = this.injector.get(PickerStringSourceAdapter);
     pickerStringSourceAdapter.setupString(settings$, disableAddNew$, config, group, deleteCallback);
 
     return pickerStringSourceAdapter;

@@ -78,13 +78,13 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     const source = this.sourceFactory.createPickerQuerySourceAdapter(
       state.error$,
       state.disableAddNew$,
-      this.fieldsSettingsService,
+      // this.fieldsSettingsService,
       this.isStringQuery,
 
       state.control,
       this.config,
       state.settings$,
-      this.editRoutingService,
+      // this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)

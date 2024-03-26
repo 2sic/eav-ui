@@ -12,45 +12,47 @@ import { FieldDataSourceFactoryService } from "../factories/field-data-source-fa
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
+import { Injectable } from '@angular/core';
 
-const logThis = false;
+const logThis = true;
 
+@Injectable()
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   private entityFieldDataSource: EntityFieldDataSource;
 
   constructor(
-    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
+    // public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public fieldsSettingsService: FieldsSettingsService,
 
     // Below this is needed for base class
-    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
+    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
     public entityCacheService: EntityCacheService,
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-    protected config: FieldConfigSet,
-    protected group: FormGroup,
+    // protected config: FieldConfigSet,
+    // protected group: FormGroup,
     public snackBar: MatSnackBar,
-    public control: AbstractControl,
+    // public control: AbstractControl,
     // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,
+    // public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
-      disableAddNew$,
-      settings$,
+      // disableAddNew$,
+      // settings$,
       entityCacheService,
       entityService,
       eavService,
       editRoutingService,
       translate,
-      config,
-      group,
+      // config,
+      // group,
       snackBar,
-      control,
-      // fetchAvailableEntities,
-      deleteCallback,
+      // control,
+      // // fetchAvailableEntities,
+      // deleteCallback,
       new EavLogger('PickerEntitySourceAdapter', logThis),
     );
   }

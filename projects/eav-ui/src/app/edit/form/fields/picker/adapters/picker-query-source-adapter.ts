@@ -14,58 +14,75 @@ import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
+import { Injectable } from '@angular/core';
 
-const logThis = false;
+const logThis = true;
 
+@Injectable()
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
   private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
-    public error$: BehaviorSubject<string> = new BehaviorSubject(''),
-    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
+    // public error$: BehaviorSubject<string> = new BehaviorSubject(''),
+    // public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
 
-    public fieldsSettingsService: FieldsSettingsService,
-    public queryService: QueryService,
-    public stringQueryCacheService: StringQueryCacheService,
+    public fieldsSettingsService: FieldsSettingsService, // DI
+    public queryService: QueryService, // DI
+    public stringQueryCacheService: StringQueryCacheService, // DI
 
-    public isStringQuery: boolean,
+    // public isStringQuery: boolean,
 
     // Below this is needed for base class
-    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
+    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
 
-    public entityCacheService: EntityCacheService,
-    public entityService: EntityService,
-    public eavService: EavService,
-    public editRoutingService: EditRoutingService,
-    public translate: TranslateService,
-    public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
+    public entityCacheService: EntityCacheService, // DI
+    public entityService: EntityService, // DI
+    public eavService: EavService, // DI
+    public editRoutingService: EditRoutingService, // DI
+    public translate: TranslateService, // DI
+    public fieldDataSourceFactoryService: FieldDataSourceFactoryService, // DI
 
-    protected config: FieldConfigSet,
-    protected group: FormGroup,
+    // protected config: FieldConfigSet,
+    // protected group: FormGroup,
 
-    public snackBar: MatSnackBar,
-    public control: AbstractControl,
+    public snackBar: MatSnackBar, // DI
+    // public control: AbstractControl,
 
-    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,
+    // // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
+    // public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
-      disableAddNew$,
-      settings$,
+      // disableAddNew$,
+      // settings$,
       entityCacheService,
       entityService,
       eavService,
       editRoutingService,
       translate,
-      config,
-      group,
+      // config,
+      // group,
       snackBar,
-      control,
-      // fetchAvailableEntities,
-      deleteCallback,
+      // control,
+      // // fetchAvailableEntities,
+      // deleteCallback,
       new EavLogger('PickerQuerySourceAdapter', logThis),
     );
+  }
+
+  private error$: BehaviorSubject<string>;
+  private isStringQuery: boolean;
+
+  public setupQuery(
+    error$: BehaviorSubject<string>,
+    isStringQuery: boolean,
+  ): this {
+
+    this.log.add('setupQuery');
+    this.error$ = error$;
+    this.isStringQuery = isStringQuery;
+    
+    return this;
   }
 
   init(callerName: string): void {
