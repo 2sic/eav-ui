@@ -13,11 +13,14 @@ export class EntityFieldDataSource extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
 
   constructor(
-    protected settings$: BehaviorSubject<FieldSettings>,
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
   ) {
-    super(settings$, new EavLogger('EntityFieldDataSource', logThis));
+    super(new EavLogger('EntityFieldDataSource', logThis));
+  }
+
+  setup(settings$: BehaviorSubject<FieldSettings>): void {
+    super.setup(settings$);
 
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
@@ -48,7 +51,7 @@ export class EntityFieldDataSource extends DataSourceBase {
       mergeMap(([typeName, _]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: [],
-        fields: this.calculateMoreFields(),
+        fields: this.fieldsToRetrieve(this.settings$.value),
         log: 'all$'
       }).pipe(
         AllOfTypeGetEntitiesLog.pipe(),
@@ -110,10 +113,10 @@ export class EntityFieldDataSource extends DataSourceBase {
     const overridesLog = this.log.rxTap('overrides$');
     const overrides$ = combineLatest([typeName$, guidsToForceLoad$]).pipe(
       overridesLog.pipe(),
-      mergeMap(([typeName, guids]) => queryService.getEntities({
+      mergeMap(([typeName, guids]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: guids,
-        fields: this.calculateMoreFields(),
+        fields: this.fieldsToRetrieve(this.settings$.value),
         log: overridesLog.name,
       }).pipe(
           map(data => {
@@ -170,6 +173,6 @@ export class EntityFieldDataSource extends DataSourceBase {
   }
 
   private queryEntityMapping(entity: QueryEntity): PickerItem {
-    return this.fillEntityInfoMoreFields(entity);
+    return this.entity2PickerItem(entity);
   }
 }

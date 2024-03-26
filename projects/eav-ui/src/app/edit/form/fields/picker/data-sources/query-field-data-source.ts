@@ -13,7 +13,6 @@ export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
 
   constructor(
-    protected settings$: BehaviorSubject<FieldSettings>,
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
@@ -23,8 +22,11 @@ export class QueryFieldDataSource extends DataSourceBase {
     private fieldName: string,
     private appId: string,
   ) {
-    super(settings$, new EavLogger('QueryFieldDataSource', false ));
+    super(new EavLogger('QueryFieldDataSource', false ));
+  }
 
+  setup(settings$: BehaviorSubject<FieldSettings>): void {
+    super.setup(settings$);
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
     
@@ -54,10 +56,12 @@ export class QueryFieldDataSource extends DataSourceBase {
           } as QueryStreams, loading: true });
 
         // Default case, get the data
-        return this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), []).pipe(
-          map(data => { return { data, loading: false }; }),
-          startWith({ data: {} as QueryStreams, loading: true })
-        );
+        return this.queryService
+          .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), [])
+          .pipe(
+            map(data => { return { data, loading: false }; }),
+            startWith({ data: {} as QueryStreams, loading: true })
+          );
       }),
       map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
       startWith({ data: [] as PickerItem[], loading: false }),
@@ -76,7 +80,7 @@ export class QueryFieldDataSource extends DataSourceBase {
       }),
       map(entities => {
         if (this.isStringQuery) {
-          return entities.map(entity => this.fillEntityInfoMoreFields(entity as QueryEntity));
+          return entities.map(entity => this.entity2PickerItem(entity as QueryEntity));
         } else {
           return entities as PickerItem[];
         }
@@ -97,10 +101,13 @@ export class QueryFieldDataSource extends DataSourceBase {
     );
 
     const overrides$ = combineLatest([params$, combinedGuids$]).pipe(
-      mergeMap(([params, guids]) => this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), guids).pipe(
-        map(data => { return { data, loading: false }; }),
-        startWith({ data: {} as QueryStreams, loading: true })
-      )),
+      mergeMap(([params, guids]) => this.queryService
+        .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), guids)
+        .pipe(
+          map(data => { return { data, loading: false }; }),
+          startWith({ data: {} as QueryStreams, loading: true })
+        )
+      ),
       map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
@@ -142,7 +149,7 @@ export class QueryFieldDataSource extends DataSourceBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.fillEntityInfoMoreFields(entity, stream)));
+      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream)));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }

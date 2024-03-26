@@ -79,7 +79,9 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       () => this.focusOnSearchComponent,
     );
 
-    if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceCustomList) {
+    var dataSourceType = this.settings$.value.DataSourceType; // ?? PickerConfigModels.UiPickerSourceCustomList;
+
+    if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList) {
       source = this.sourceFactory.createPickerStringSourceAdapter(
         state.disableAddNew$,
         this.fieldsSettingsService,
@@ -92,7 +94,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
-    } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceQuery) {
+    } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
@@ -107,7 +109,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
-    } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) { 
+    } else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) { 
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
         this.fieldsSettingsService,

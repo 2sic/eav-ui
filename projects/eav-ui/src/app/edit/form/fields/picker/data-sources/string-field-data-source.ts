@@ -2,13 +2,16 @@ import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, of } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { Injectable } from '@angular/core';
 
-
+@Injectable()
 export class StringFieldDataSource extends DataSourceBase {
-  constructor(
-    protected settings$: BehaviorSubject<FieldSettings>,
-  ) {
-    super(settings$, new EavLogger('StringFieldDataSource', false));
+  constructor() {
+    super(new EavLogger('StringFieldDataSource', false));
+  }
+
+  setup(settings$: BehaviorSubject<FieldSettings>): void {
+    super.setup(settings$);
     this.loading$ = of(false);
 
     const preloaded = this.settings$.pipe(
@@ -36,8 +39,8 @@ export class StringFieldDataSource extends DataSourceBase {
       Text: dropdownOption.label,
     };
     const settings = this.settings$.value;
-    entityInfo._tooltip = this.cleanStringFromWysiwyg(settings.ItemTooltip);
-    entityInfo._information = this.cleanStringFromWysiwyg(settings.ItemInformation);
+    entityInfo._tooltip = this.helpers.cleanStringFromWysiwyg(settings.ItemTooltip);
+    entityInfo._information = this.helpers.cleanStringFromWysiwyg(settings.ItemInformation);
     entityInfo._helpLink = settings.ItemLink;
     return entityInfo;
   }

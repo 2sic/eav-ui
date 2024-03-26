@@ -112,6 +112,7 @@ import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity
 import { StringPickerComponent } from './form/fields/string/string-picker/string-picker.component';
 import { OWL_DATE_TIME_FORMATS, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
+import { StringFieldDataSource } from './form/fields/picker/data-sources/string-field-data-source';
 
 export const OWL_DAYJS_FORMATS = {
     parseInput: 'l LT',
@@ -254,6 +255,8 @@ export const OWL_DAYJS_FORMATS = {
         PickerSourceAdapterFactoryService,
         PickerStateAdapterFactoryService,
         FieldDataSourceFactoryService,
+
+        StringFieldDataSource,
     ],
 })
 export class EditModule { }
