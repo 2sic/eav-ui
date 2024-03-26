@@ -81,15 +81,17 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       () => this.focusOnSearchComponent,
     );
 
-    var dataSourceType = this.settings$.value.DataSourceType;
+    const dataSourceType = this.settings$.value.DataSourceType;
+    const isEmpty = !dataSourceType;
 
-    if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList) {
+    if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
       source = this.pickerStringSourceAdapterRaw.setupString(
         state.settings$,
         state.disableAddNew$,
         this.config,
         this.group,
-        (props: DeleteEntityProps) => state.doAfterDelete(props)
+        (props: DeleteEntityProps) => state.doAfterDelete(props),
+        isEmpty,
       );
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       source = this.sourceFactory.createPickerQuerySourceAdapter(

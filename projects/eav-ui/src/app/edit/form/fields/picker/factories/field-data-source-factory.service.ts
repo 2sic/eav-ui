@@ -2,7 +2,6 @@ import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from 'projects/edit-types';
 import { EntityFieldDataSource } from '../data-sources/entity-field-data-source';
-import { StringFieldDataSource } from '../data-sources/string-field-data-source';
 import { QueryFieldDataSource } from '../data-sources/query-field-data-source';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -25,12 +24,6 @@ export class FieldDataSourceFactoryService extends ServiceBase {
     return ds;
   }
 
-  createStringFieldDataSource(settings$: BehaviorSubject<FieldSettings>): StringFieldDataSource {
-    this.log.add('createStringFieldDataSource', 'settings$', settings$);
-    const ds = this.injector.get(StringFieldDataSource);
-    ds.setup(settings$);
-    return ds;
-  }
 
   createQueryFieldDataSource(
     settings$: BehaviorSubject<FieldSettings>,

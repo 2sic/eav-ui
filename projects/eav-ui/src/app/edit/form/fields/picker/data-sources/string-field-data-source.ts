@@ -10,7 +10,7 @@ export class StringFieldDataSource extends DataSourceBase {
     super(new EavLogger('StringFieldDataSource', false));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): void {
+  setup(settings$: BehaviorSubject<FieldSettings>): this {
     super.setup(settings$);
     this.loading$ = of(false);
 
@@ -27,6 +27,7 @@ export class StringFieldDataSource extends DataSourceBase {
     ]).pipe(
       map(([_, preloaded]) => preloaded)
     );
+    return this;
   }
 
   destroy(): void {

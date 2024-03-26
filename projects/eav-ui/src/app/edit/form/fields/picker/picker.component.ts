@@ -17,6 +17,7 @@ import { PickerStateAdapterFactoryService } from './factories/picker-state-adapt
 import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
 import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
 import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
+import { PickerDataSourceEmpty } from './data-sources/picker-data-source-empty';
 
 const logThis = false;
 
@@ -33,6 +34,7 @@ export const pickerProviders = [
   StringFieldDataSource,
   EntityFieldDataSource,
   QueryFieldDataSource,
+  PickerDataSourceEmpty,
 
   PickerStringSourceAdapter,
   PickerEntitySourceAdapter,
