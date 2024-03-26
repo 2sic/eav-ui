@@ -8,7 +8,7 @@ import { EavLogger } from '../logging/eav-logger';
 
 declare const window: EavWindow;
 
-const logThis = true;
+const logThis = false;
 
 /** The context provides information
  * Context is used to display information about the current app in various depths.

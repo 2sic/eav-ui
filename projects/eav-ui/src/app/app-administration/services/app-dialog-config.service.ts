@@ -9,7 +9,7 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { DialogContextSiteApp } from '../../shared/models/dialog-context.models';
 
-const logThis = true;
+const logThis = false;
 
 const webApiSettings = 'admin/dialog/settings';
 

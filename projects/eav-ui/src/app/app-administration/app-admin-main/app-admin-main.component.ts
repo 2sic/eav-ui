@@ -12,7 +12,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AppAdminMenu } from './app-admin-menu';
 import { EavLogger } from '../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: 'app-app-admin-main',

@@ -6,7 +6,7 @@ import { ServiceBase } from './service-base';
 import { EavLogger } from '../logging/eav-logger';
 import { FeatureSummary } from '../../features/models/feature-summary.model';
 
-const logThis = true;
+const logThis = false;
 
 /**
  * Singleton Service to provide information about enabled/disabled features.
