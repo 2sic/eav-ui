@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,6 +20,7 @@ const logThis = false;
 @Injectable()
 export class PickerSourceAdapterFactoryService extends ServiceBase {
   constructor(
+    private injector: Injector,
     private eavService: EavService,
     private entityCacheService: EntityCacheService,
     private entityService: EntityService,
@@ -112,32 +113,34 @@ export class PickerSourceAdapterFactoryService extends ServiceBase {
 
   createPickerStringSourceAdapter(
     disableAddNew$: BehaviorSubject<boolean>,
-    fieldsSettingsService: FieldsSettingsService,
-    control: AbstractControl,
+    // fieldsSettingsService: FieldsSettingsService,
+    // control: AbstractControl,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,
-    editRoutingService: EditRoutingService,
+    // editRoutingService: EditRoutingService,
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerStringSourceAdapter {
     this.log.add('createPickerStringSourceAdapter');
-    const pickerStringSourceAdapter = new PickerStringSourceAdapter(
-      disableAddNew$,
-      fieldsSettingsService,
+    const pickerStringSourceAdapter = this.injector.get(PickerStringSourceAdapter);
+    // const pickerStringSourceAdapter = new PickerStringSourceAdapter(
+    //   // disableAddNew$,
+    //   fieldsSettingsService,
 
-      settings$,
-      this.entityCacheService,
-      this.entityService,
-      this.eavService,
-      editRoutingService,
-      this.translate,
-      this.fieldDataSourceFactoryService,
-      config,
-      group,
-      this.snackBar,
-      control,
-      deleteCallback,
-    );
+    //   // settings$,
+    //   this.entityCacheService,
+    //   this.entityService,
+    //   this.eavService,
+    //   editRoutingService,
+    //   this.translate,
+    //   this.fieldDataSourceFactoryService,
+    //   // config,
+    //   // group,
+    //   this.snackBar,
+    //   // control,
+    //   // deleteCallback,
+    // );
+    pickerStringSourceAdapter.setupString(settings$, disableAddNew$, config, group, deleteCallback);
 
     return pickerStringSourceAdapter;
   }

@@ -35,10 +35,8 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     public deleteCallback: (props: DeleteEntityProps) => void,
     logSpecs: EavLogger,
   ) {
-    super(
-      deleteCallback,
-      logSpecs,
-    );
+    super(logSpecs);
+    this.setup(deleteCallback);
   }
 
   init(callerName: string): void {

@@ -72,12 +72,12 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
     const source = this.sourceFactory.createPickerStringSourceAdapter(
       state.disableAddNew$,
-      this.fieldsSettingsService,
+      // this.fieldsSettingsService,
 
-      state.control,
+      // state.control,
       this.config,
       state.settings$,
-      this.editRoutingService,
+      // this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)

@@ -30,7 +30,7 @@ export class StringFieldDataSource extends DataSourceBase {
   }
 
   destroy(): void {
-    this.subscriptions.unsubscribe();
+    super.destroy();
   }
 
   private stringEntityMapping(dropdownOption: DropdownOption): PickerItem {

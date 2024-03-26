@@ -163,7 +163,6 @@ export class EntityFieldDataSource extends DataSourceBase {
 
   destroy(): void {
     this.contentTypeName$.complete();
-    
     super.destroy();
   }
 
