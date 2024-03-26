@@ -24,6 +24,7 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
     featuresService: FeaturesService,
   ) {
     super(new EavLogger('AppDialogConfigService', logThis));
+    this.logger.add('using context #', this.context.logger.svcId);
     featuresService.loadFromService(this);
   }
 
@@ -51,11 +52,10 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
   
 
   getShared$(appId: number): Observable<DialogSettings> {
-    const appIdToUse = appId;
-    this.logger.add('getShared$', 'appId', appId, 'appIdToUse', appIdToUse);
+    this.logger.add('getShared$', 'appId', appId);
     // if (!this.dialogSettings$[appIdToUse])
-    this.dialogSettings$[appIdToUse] ??= this.getDialogSettings(appIdToUse, 'getShared$').pipe(shareReplay({ refCount: false }));
-    return this.dialogSettings$[appIdToUse];
+    this.dialogSettings$[appId] ??= this.getDialogSettings(appId, 'getShared$').pipe(shareReplay({ refCount: false }));
+    return this.dialogSettings$[appId];
   }
 
   getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {

@@ -32,7 +32,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   ],
   providers: [
     AppDialogConfigService,
-    // Don't inject context here, it should inherit from the parent
+    // Don't inject context here, it should inherit from the root
     // Context,
   ]
 })

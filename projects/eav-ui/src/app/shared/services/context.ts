@@ -3,8 +3,12 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
 import { consoleLogDev } from '../helpers/console-log-angular.helper';
 import { EavWindow } from '../models/eav-window.model';
+import { ServiceBase } from './service-base';
+import { EavLogger } from '../logging/eav-logger';
 
 declare const window: EavWindow;
+
+const logThis = true;
 
 /** The context provides information
  * Context is used to display information about the current app in various depths.
@@ -13,7 +17,7 @@ declare const window: EavWindow;
  */
 
 @Injectable()
-export class Context {
+export class Context extends ServiceBase {
 
   /** Id of current context */
   public id: number;
@@ -57,6 +61,8 @@ export class Context {
   private _moduleId: number;
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
+    super(new EavLogger('Context', logThis));
+    this.logger.add('constructor', 'parentContext', parentContext, 'parentId', parentContext?.id);
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
@@ -66,17 +72,20 @@ export class Context {
   }
 
   /**
-   * This is the initializer at entry-componets of modules.
+   * This is the initializer at entry-components of modules.
    * It ensures that within that module, the context has the values given by the route
    */
   init(route: ActivatedRoute) {
-    this.routeSnapshot = route && route.snapshot;
+    this.logger.add('init', 'route', route);
+    this.routeSnapshot = route?.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
+    this.logger.add('init done', this, 'appId', this.appId, 'zoneId', this.zoneId, 'contentBlockId', this.contentBlockId, 'moduleId', this.moduleId);
     consoleLogDev('Context.init', this, route);
   }
 
   initRoot() {
+    this.logger.add('initRoot');
     this._zoneId = this.sessionNumber(keyZoneId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
     this._moduleId = this.sessionNumber(keyModuleId);

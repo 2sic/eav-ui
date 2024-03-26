@@ -6,7 +6,7 @@ export class ServiceBase
 {
   protected subscriptions = new Subscription();
 
-  constructor(protected logger: EavLogger) {
+  constructor(public logger: EavLogger) {
   }
 
   destroy() {
