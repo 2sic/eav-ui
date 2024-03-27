@@ -52,9 +52,9 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   /** fill additional properties */
-  protected entity2PickerItem(entity: QueryEntity, streamName?: string): PickerItem {
+  protected entity2PickerItem(entity: QueryEntity, streamName: string | null, mustUseGuid: boolean): PickerItem {
     this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log.enabled);
-    return this.masks.entity2PickerItem(entity, streamName, /* mustUseGuid: */ true);
+    return this.masks.entity2PickerItem(entity, streamName, mustUseGuid);
   }
   private masks: DataSourceMasksHelper;
 

@@ -175,6 +175,6 @@ export class EntityFieldDataSource extends DataSourceBase {
   }
 
   private queryEntityMapping(entity: QueryEntity): PickerItem {
-    return this.entity2PickerItem(entity);
+    return this.entity2PickerItem(entity, null, /* mustUseGuid: */ true);
   }
 }

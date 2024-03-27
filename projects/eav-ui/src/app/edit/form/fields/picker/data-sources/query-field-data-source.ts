@@ -82,7 +82,7 @@ export class QueryFieldDataSource extends DataSourceBase {
           );
       }),
       lAll.map('before'),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
       lAll.map('after'),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
@@ -93,15 +93,15 @@ export class QueryFieldDataSource extends DataSourceBase {
       distinctUntilChanged(),
       filter(entityGuids => entityGuids?.length > 0),
       mergeMap(entityGuids => {
-        if (/*this.*/isStringQuery) {
-          return this.stringQueryCacheService.getEntities$(/*this.*/entityGuid, /* this. */fieldName);
+        if (isStringQuery) {
+          return this.stringQueryCacheService.getEntities$(entityGuid, fieldName);
         } else {
           return this.entityCacheService.getEntities$(entityGuids);
         }
       }),
       map(entities => {
-        if (/*this. */isStringQuery) {
-          return entities.map(entity => this.entity2PickerItem(entity as QueryEntity));
+        if (isStringQuery) {
+          return entities.map(entity => this.entity2PickerItem(entity as QueryEntity, null, /* mustUseGuid: */ !isStringQuery));
         } else {
           return entities as PickerItem[];
         }
@@ -129,7 +129,7 @@ export class QueryFieldDataSource extends DataSourceBase {
           startWith({ data: {} as QueryStreams, loading: true })
         )
       ),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
     );
@@ -159,7 +159,7 @@ export class QueryFieldDataSource extends DataSourceBase {
     this.params$.next(params);
   }
 
-  transformData(data: QueryStreams, streamName: string): PickerItem[] {
+  transformData(data: QueryStreams, streamName: string | null, mustUseGuid: boolean): PickerItem[] {
     this.log.add('transformData', 'data', data, 'streamName', streamName);
     if (!data)
       return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
@@ -172,7 +172,7 @@ export class QueryFieldDataSource extends DataSourceBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream)));
+      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, mustUseGuid)));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }
