@@ -56,6 +56,7 @@ export class PickerStateAdapter extends ServiceBase {
 
   public setupFromComponent(component: PickerComponent): this  {
     this.log.add('setupFromComponent');
+    this.log.inherit(component.log);
     return this.setupShared(
       component.settings$,
       component.config,

@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { EavService, FieldsSettingsService, EntityService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { EntityPickerLogic } from './entity-picker-logic';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';

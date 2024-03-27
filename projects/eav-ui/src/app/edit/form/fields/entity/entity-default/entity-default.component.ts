@@ -5,7 +5,6 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
@@ -65,10 +64,8 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
 
-    // const state = this.stateFactory.createPickerEntityStateAdapter(this);
     const state = this.stateRaw.setupFromComponent(this);
 
-    // this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
     this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
 
     const source = this.sourceFactory.createPickerEntitySourceAdapter(

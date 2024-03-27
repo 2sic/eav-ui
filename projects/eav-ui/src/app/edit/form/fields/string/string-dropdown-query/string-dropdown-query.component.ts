@@ -6,12 +6,12 @@ import { EntityCacheService, StringQueryCacheService } from '../../../../shared/
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { pickerProviders } from '../../picker/picker.component';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
+import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -31,8 +31,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     sourceFactory: PickerSourceAdapterFactoryService,
-    private stateFactory: PickerStateAdapterFactoryService,
     stateRaw: PickerEntityStateAdapter,
+    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
   ) {
     super(
       eavService,
@@ -57,27 +57,10 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     // this.initAdaptersAndViewModel();
   }
 
-  // ngAfterViewInit(): void {
-  //   super.ngAfterViewInit();
-  // }
-
-
-  // ngOnDestroy(): void {
-  //   super.ngOnDestroy();
-  // }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerStringStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    this.log.add('createPickerAdapters');
+    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
 
     const source = this.sourceFactory.createPickerQuerySourceAdapter(
       state.error$,

@@ -12,7 +12,6 @@ import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
 import { StringFieldDataSource } from './data-sources/string-field-data-source';
 import { QueryFieldDataSource } from './data-sources/query-field-data-source';
 import { PickerSourceAdapterFactoryService } from './factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from './factories/picker-state-adapter-factory.service';
 import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
 import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
 import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
@@ -31,7 +30,7 @@ const logThis = false;
  */
 export const pickerProviders = [
   PickerSourceAdapterFactoryService,
-  PickerStateAdapterFactoryService,
+  // PickerStateAdapterFactoryService,
   StringFieldDataSource,
   EntityFieldDataSource,
   QueryFieldDataSource,
@@ -61,7 +60,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   viewModel$: Observable<PickerViewModel>;
 
-  protected log: EavLogger = new EavLogger('PickerComponent', logThis);
+  public log: EavLogger = new EavLogger('PickerComponent', logThis);
 
   constructor(
     eavService: EavService,

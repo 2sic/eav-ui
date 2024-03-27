@@ -5,14 +5,14 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerStateAdapter } from '../../picker/adapters/picker-state-adapter';
 
-const logThis = false;
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,
@@ -32,7 +32,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private sourceFactory: PickerSourceAdapterFactoryService,
-    private stateFactory: PickerStateAdapterFactoryService,
+    private pickerStateAdapterRaw: PickerStateAdapter,
   ) {
     super(
       eavService,
@@ -43,6 +43,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       stringQueryCacheService,
     );
     this.log = new EavLogger('EntityContentBlockComponent', logThis);
+    this.log.add('constructor');
     EntityContentBlocksLogic.importMe();
   }
 
@@ -60,26 +61,14 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    this.log.add('createPickerAdapters');
+    const state = this.pickerStateAdapterRaw.setupFromComponent(this);
 
     const source = this.sourceFactory.createPickerEntitySourceAdapter(
       state.disableAddNew$,
-      // this.fieldsSettingsService,
-
       state.control,
       this.config,
       state.settings$,
-      // this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)

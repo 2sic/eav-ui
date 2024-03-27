@@ -8,13 +8,13 @@ import { EntityCacheService, StringQueryCacheService } from '../../../../shared/
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { StringPickerLogic } from './string-picker-logic';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
 
 const logThis = false;
 
@@ -37,8 +37,8 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private sourceFactory: PickerSourceAdapterFactoryService,
-    private stateFactory: PickerStateAdapterFactoryService,
     private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
+    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
   ) {
     super(
       eavService,
@@ -67,19 +67,11 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
+    this.log.add('createPickerAdapters');
+
     let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    const state = this.stateFactory.createPickerStringStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
 
     const dataSourceType = this.settings$.value.DataSourceType;
     const isEmpty = !dataSourceType;
