@@ -6,10 +6,9 @@ import { Subscription } from 'rxjs';
 // tslint:disable-next-line:directive-class-suffix
 export class BaseSubsinkComponent implements OnDestroy {
   // @2SDV TODO: rename to subscriptions
-  protected subscription: Subscription;
+  protected subscription = new Subscription();
 
   constructor() {
-    this.subscription = new Subscription();
   }
 
   ngOnDestroy() {
