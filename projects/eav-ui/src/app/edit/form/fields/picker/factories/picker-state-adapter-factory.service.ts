@@ -18,6 +18,70 @@ export class PickerStateAdapterFactoryService {
   //   return this.injector.get(PickerEntityStateAdapter).setupFromComponent(component);
   // }
 
+  
+  createPickerEntityStateAdapter(component: PickerComponent): PickerEntityStateAdapter{
+    return this.createPickerEntityStateAdapterInternal(
+      component.control,
+      component.config,
+      component.settings$,
+      component.editRoutingService,
+      component.controlStatus$,
+      component.label$,
+      component.placeholder$,
+      component.required$,
+      () => component.focusOnSearchComponent,
+    )
+  }
+
+  private createPickerEntityStateAdapterInternal(
+    control: AbstractControl,
+    config: FieldConfigSet,
+    settings$: BehaviorSubject<FieldSettings>,
+    editRoutingService: EditRoutingService,
+    controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
+    label$: Observable<string>,
+    placeholder$: Observable<string>,
+    required$: Observable<boolean>,
+    focusOnSearchComponent: () => void,
+  ): PickerEntityStateAdapter {
+    const pickerEntityStateAdapter = this.injector.get(PickerEntityStateAdapter)
+    // const pickerEntityStateAdapter = new PickerEntityStateAdapter(
+    //   // settings$,
+    //   // controlStatus$,
+    //   // editRoutingService.isExpanded$(config.index, config.entityGuid),
+    //   // label$,
+    //   // placeholder$,
+    //   // required$,
+    //   // this.entityCacheService.getEntities$(),
+    //   // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+    //   // this.fieldDataSourceFactoryService,
+    //   // // this.translateService,
+    //   // control,
+    //   this.eavService,
+    //   // focusOnSearchComponent,
+    //   this.entityCacheService,
+    //   this.stringQueryCacheService,
+    // )
+    .setupShared(
+      settings$,
+      config,
+      controlStatus$,
+      editRoutingService.isExpanded$(config.index, config.entityGuid),
+      label$,
+      placeholder$,
+      required$,
+      // this.entityCacheService.getEntities$(),
+      // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+      // this.fieldDataSourceFactoryService,
+      // this.translateService,
+      control,
+      // this.eavService,
+      focusOnSearchComponent,
+    );
+
+    return pickerEntityStateAdapter;
+  }
+
   createPickerStringStateAdapter(
     control: AbstractControl,
     config: FieldConfigSet,

@@ -13,7 +13,7 @@ import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
-const logThis = false;
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -32,7 +32,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private sourceFactory: PickerSourceAdapterFactoryService,
-    // private stateFactory: PickerStateAdapterFactoryService,
+    private stateFactory: PickerStateAdapterFactoryService,
     private stateRaw: PickerEntityStateAdapter,
   ) {
     super(
@@ -45,6 +45,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       stringQueryCacheService,
     );
     this.log = new EavLogger('EntityDefaultComponent', logThis);
+    this.log.add('constructor');
     EntityDefaultLogic.importMe();
   }
 
@@ -64,7 +65,8 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
 
-    const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
+    const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    // const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
 
     const source = this.sourceFactory.createPickerEntitySourceAdapter(
       state.disableAddNew$,

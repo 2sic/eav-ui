@@ -16,7 +16,7 @@ import { PickerConfigModels } from '../../picker/constants/picker-config-model.c
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
-const logThis = false;
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.WIPEntityPicker,
@@ -48,6 +48,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       stringQueryCacheService,
     );
     this.log = new EavLogger('EntityPickerComponent', logThis);
+    this.log.add('constructor');
     EntityPickerLogic.importMe();
   }
 

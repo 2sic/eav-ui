@@ -88,6 +88,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    * If the PickerData already exists, it will be reused
    */
   initAdaptersAndViewModel(): void {
+    this.log.add('initAdaptersAndViewModel');
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
@@ -121,6 +122,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   createViewModel() {
+    this.log.add('createViewModel');
     this.viewModel$ = combineLatest([this.pickerData.state.allowMultiValue$])
       .pipe(
         map(([allowMultiValue]) => {
