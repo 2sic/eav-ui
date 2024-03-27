@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { StringPickerLogic } from './string-picker-logic';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
@@ -36,9 +35,10 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private sourceFactory: PickerSourceAdapterFactoryService,
     private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
     private pickerStringStateAdapterRaw: PickerStringStateAdapter,
+    private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
+    private querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
       eavService,
@@ -51,6 +51,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     );
     this.log = new EavLogger('StringPickerComponent', logThis);
     StringPickerLogic.importMe();
+    this.isStringQuery = true;
   }
 
   ngOnInit(): void {
@@ -85,30 +86,12 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         (props: DeleteEntityProps) => state.doAfterDelete(props),
         isEmpty,
       );
-    } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
-      source = this.sourceFactory.createPickerQuerySourceAdapter(
-        state.error$,
-        state.disableAddNew$,
-        true,
-
-        state.control,
-        this.config,
-        state.settings$,
-        this.group,
-        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-        (props: DeleteEntityProps) => state.doAfterDelete(props)
-      );
-    } else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) { 
-      source = this.sourceFactory.createPickerEntitySourceAdapter(
-        state.disableAddNew$,
-        state.control,
-        this.config,
-        state.settings$,
-        this.group,
-        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-        (props: DeleteEntityProps) => state.doAfterDelete(props)
-      );
     }
+    else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery)
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
+    else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
+      source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+
     
     state.init();
     source.init('StringPickerComponent.createPickerAdapters');

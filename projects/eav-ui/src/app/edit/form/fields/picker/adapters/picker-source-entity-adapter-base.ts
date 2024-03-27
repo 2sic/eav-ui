@@ -12,6 +12,8 @@ import { EntityService, EavService, EditRoutingService } from "../../../../share
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerStateAdapter } from './picker-state-adapter';
+import { PickerComponent } from '../picker.component';
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   private createEntityTypes: string = '';
@@ -37,6 +39,22 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   protected config: FieldConfigSet;
   protected group: FormGroup;
   public control: AbstractControl;
+
+  public setupFromComponent(
+    component: PickerComponent,
+    state: PickerStateAdapter,
+  ): this  {
+    this.log.add('setupFromComponent');
+    this.log.inherit(component.log);
+    return this.setupShared(
+      component.settings$,
+      component.config,
+      component.group,
+      component.control,
+      state.disableAddNew$,
+      (props: DeleteEntityProps) => state.doAfterDelete(props),
+    );
+  }
 
   public setupShared(
     settings$: BehaviorSubject<FieldSettings>,

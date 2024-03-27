@@ -4,13 +4,12 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
-import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStateAdapter } from '../../picker/adapters/picker-state-adapter';
+import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 
 const logThis = true;
 
@@ -31,8 +30,8 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private sourceFactory: PickerSourceAdapterFactoryService,
     private pickerStateAdapterRaw: PickerStateAdapter,
+    private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
   ) {
     super(
       eavService,
@@ -64,15 +63,18 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     this.log.add('createPickerAdapters');
     const state = this.pickerStateAdapterRaw.setupFromComponent(this);
 
-    const source = this.sourceFactory.createPickerEntitySourceAdapter(
-      state.disableAddNew$,
-      state.control,
-      this.config,
-      state.settings$,
-      this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
-    );
+    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+    // const source = this.sourceFactory.createPickerEntitySourceAdapter(
+    //   this,
+    //   state,
+    //   // state.disableAddNew$,
+    //   // state.control,
+    //   // this.config,
+    //   // state.settings$,
+    //   // this.group,
+    //   // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+    //   // (props: DeleteEntityProps) => state.doAfterDelete(props)
+    // );
 
     state.init();
     source.init('EntityContentBlockComponent.createPickerAdapters');

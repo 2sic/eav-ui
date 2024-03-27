@@ -5,13 +5,12 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
-import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { pickerProviders } from '../../picker/picker.component';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -30,9 +29,9 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    sourceFactory: PickerSourceAdapterFactoryService,
     stateRaw: PickerEntityStateAdapter,
     private pickerStringStateAdapterRaw: PickerStringStateAdapter,
+    querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
       eavService,
@@ -42,19 +41,11 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       editRoutingService,
       entityCacheService,
       stringQueryCacheService,
-      sourceFactory,
-      // stateFactory,
       stateRaw,
+      querySourceAdapterRaw,
     );
     StringDropdownQueryLogic.importMe();
     this.isStringQuery = true;
-  }
-
-  ngOnInit(): void {
-    super.ngOnInit();
-    // already done by base...
-    // if (this.isStringQuery)
-    // this.initAdaptersAndViewModel();
   }
 
 
@@ -62,18 +53,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     this.log.add('createPickerAdapters');
     const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
 
-    const source = this.sourceFactory.createPickerQuerySourceAdapter(
-      state.error$,
-      state.disableAddNew$,
-      this.isStringQuery,
-
-      state.control,
-      this.config,
-      state.settings$,
-      this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
-    );
+    const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
+      .setupQuery(state.error$);
 
     state.init();
     source.init('StringDropdownQueryComponent.createPickerAdapters');

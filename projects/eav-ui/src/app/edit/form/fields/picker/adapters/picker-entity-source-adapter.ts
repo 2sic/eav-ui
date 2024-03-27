@@ -10,7 +10,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 
-const logThis = false;
+const logThis = true;
 
 @Injectable()
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {

@@ -4,8 +4,6 @@ import { PickerComponent, pickerProviders } from '../../picker/picker.component'
 import { TranslateService } from '@ngx-translate/core';
 import { EavService, FieldsSettingsService, EntityService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { DeleteEntityProps } from '../../picker/picker.models';
 import { EntityPickerLogic } from './entity-picker-logic';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerData } from '../../picker/picker-data';
@@ -33,9 +31,9 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private sourceFactory: PickerSourceAdapterFactoryService,
-    // private stateFactory: PickerStateAdapterFactoryService,
     private stateRaw: PickerEntityStateAdapter,
+    private entitySourceAdapterRaw: PickerEntitySourceAdapter,
+    private querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
       eavService,
@@ -61,7 +59,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log.add('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    // const state = this.stateFactory.createPickerEntityStateAdapter(this);
     const state = this.stateRaw.setupFromComponent(this);
 
     const dataSourceType = this.settings$.value.DataSourceType;
@@ -69,29 +66,11 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
-      source = this.sourceFactory.createPickerEntitySourceAdapter(
-        state.disableAddNew$,
-        state.control,
-        this.config,
-        state.settings$,
-        this.group,
-        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-        (props: DeleteEntityProps) => state.doAfterDelete(props)
-      );
+      source = this.entitySourceAdapterRaw.setupFromComponent(this, state);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
       this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
-      source = this.sourceFactory.createPickerQuerySourceAdapter(
-        state.error$,
-        state.disableAddNew$,
-        this.isStringQuery,
-        state.control,
-        this.config,
-        state.settings$,
-        this.group,
-        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-        (props: DeleteEntityProps) => state.doAfterDelete(props)
-      );
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
     }
 
     state.init();

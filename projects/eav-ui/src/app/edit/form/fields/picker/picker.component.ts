@@ -11,7 +11,6 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
 import { StringFieldDataSource } from './data-sources/string-field-data-source';
 import { QueryFieldDataSource } from './data-sources/query-field-data-source';
-import { PickerSourceAdapterFactoryService } from './factories/picker-source-adapter-factory.service';
 import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
 import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
 import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
@@ -29,8 +28,6 @@ const logThis = false;
  * ...and when opened the second time, they will show an empty dropdown.
  */
 export const pickerProviders = [
-  PickerSourceAdapterFactoryService,
-  // PickerStateAdapterFactoryService,
   StringFieldDataSource,
   EntityFieldDataSource,
   QueryFieldDataSource,

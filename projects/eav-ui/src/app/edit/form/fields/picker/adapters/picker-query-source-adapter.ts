@@ -11,6 +11,8 @@ import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-ba
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
+import { PickerComponent } from '../picker.component';
+import { PickerStateAdapter } from './picker-state-adapter';
 
 const logThis = true;
 
@@ -20,16 +22,16 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   // private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
-    public fieldsSettingsService: FieldsSettingsService, // DI
-    public queryService: QueryService, // DI
-    public stringQueryCacheService: StringQueryCacheService, // DI
-    public entityCacheService: EntityCacheService, // DI
-    public entityService: EntityService, // DI
-    public eavService: EavService, // DI
-    public editRoutingService: EditRoutingService, // DI
-    public translate: TranslateService, // DI
-    public snackBar: MatSnackBar, // DI
-    private queryFieldDataSource: QueryFieldDataSource, // DI
+    public fieldsSettingsService: FieldsSettingsService,
+    public queryService: QueryService,
+    public stringQueryCacheService: StringQueryCacheService,
+    public entityCacheService: EntityCacheService,
+    public entityService: EntityService,
+    public eavService: EavService,
+    public editRoutingService: EditRoutingService,
+    public translate: TranslateService,
+    public snackBar: MatSnackBar,
+    private queryFieldDataSource: QueryFieldDataSource,
   ) {
     super(
       entityCacheService,
@@ -45,15 +47,20 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private error$: BehaviorSubject<string>;
   private isStringQuery: boolean;
 
+  public /* override */ setupFromComponent(component: PickerComponent, state: PickerStateAdapter): this {
+    this.log.add('setupFromComponent');
+    super.setupFromComponent(component, state);
+    this.isStringQuery = component.isStringQuery;
+    return this;
+  }
+
+
   public setupQuery(
     error$: BehaviorSubject<string>,
-    isStringQuery: boolean,
   ): this {
 
-    this.log.add('setupQuery', isStringQuery);
+    this.log.add('setupQuery');
     this.error$ = error$;
-    this.isStringQuery = isStringQuery;
-    
     return this;
   }
 
