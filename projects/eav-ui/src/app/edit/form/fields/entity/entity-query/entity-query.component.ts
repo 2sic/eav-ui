@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
@@ -25,22 +24,15 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    entityService: EntityService,
-    translate: TranslateService,
+    protected translate: TranslateService,
     editRoutingService: EditRoutingService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
     private stateRaw: PickerEntityStateAdapter,
     protected querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
       eavService,
       fieldsSettingsService,
-      entityService,
-      translate,
       editRoutingService,
-      entityCacheService,
-      stringQueryCacheService,
     );
     this.log = new EavLogger('EntityQueryComponent', logThis);
     this.log.add('constructor');

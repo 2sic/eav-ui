@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
@@ -24,11 +23,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
     stateRaw: PickerEntityStateAdapter,
     private pickerStringStateAdapterRaw: PickerStringStateAdapter,
     querySourceAdapterRaw: PickerQuerySourceAdapter,
@@ -36,11 +32,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     super(
       eavService,
       fieldsSettingsService,
-      entityService,
       translate,
       editRoutingService,
-      entityCacheService,
-      stringQueryCacheService,
       stateRaw,
       querySourceAdapterRaw,
     );

@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { StringPickerLogic } from './string-picker-logic';
@@ -30,11 +29,8 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    entityService: EntityService,
-    translate: TranslateService,
+    private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
     private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
     private pickerStringStateAdapterRaw: PickerStringStateAdapter,
     private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
@@ -43,11 +39,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     super(
       eavService,
       fieldsSettingsService,
-      entityService,
-      translate,
       editRoutingService,
-      entityCacheService,
-      stringQueryCacheService,
     );
     this.log = new EavLogger('StringPickerComponent', logThis);
     StringPickerLogic.importMe();

@@ -1,8 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { map, Observable } from 'rxjs';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './picker.models';
@@ -48,7 +46,6 @@ export const pickerProviders = [
   styleUrls: ['./picker.component.scss'],
   providers: pickerProviders,
 })
-// @FieldMetadata({})
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
@@ -62,11 +59,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    protected entityService: EntityService,
-    public translate: TranslateService,
     public editRoutingService: EditRoutingService,
-    public entityCacheService: EntityCacheService,
-    public stringQueryCacheService: StringQueryCacheService,
   ) {
     super(eavService, fieldsSettingsService);
   }
