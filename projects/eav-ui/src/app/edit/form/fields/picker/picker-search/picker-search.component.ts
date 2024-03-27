@@ -16,7 +16,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: 'app-picker-search',

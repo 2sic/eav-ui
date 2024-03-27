@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
@@ -16,11 +16,12 @@ import { PickerComponent } from '../picker.component';
 @Injectable()
 export class PickerStateAdapterFactoryService {
   constructor(
-    private entityCacheService: EntityCacheService,
-    private stringQueryCacheService: StringQueryCacheService,
-    private translateService: TranslateService,
-    private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-    private eavService: EavService,
+    private injector: Injector,
+    // private entityCacheService: EntityCacheService,
+    // private stringQueryCacheService: StringQueryCacheService,
+    // private translateService: TranslateService,
+    // private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
+    // private eavService: EavService,
   ) { }
 
   createPickerEntityStateAdapter(component: PickerComponent): PickerEntityStateAdapter{
@@ -48,19 +49,38 @@ export class PickerStateAdapterFactoryService {
     required$: Observable<boolean>,
     focusOnSearchComponent: () => void,
   ): PickerEntityStateAdapter {
-    const pickerEntityStateAdapter = new PickerEntityStateAdapter(
+    const pickerEntityStateAdapter = this.injector.get(PickerEntityStateAdapter)
+    // const pickerEntityStateAdapter = new PickerEntityStateAdapter(
+    //   // settings$,
+    //   // controlStatus$,
+    //   // editRoutingService.isExpanded$(config.index, config.entityGuid),
+    //   // label$,
+    //   // placeholder$,
+    //   // required$,
+    //   // this.entityCacheService.getEntities$(),
+    //   // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+    //   // this.fieldDataSourceFactoryService,
+    //   // // this.translateService,
+    //   // control,
+    //   this.eavService,
+    //   // focusOnSearchComponent,
+    //   this.entityCacheService,
+    //   this.stringQueryCacheService,
+    // )
+    .setupShared(
       settings$,
+      config,
       controlStatus$,
       editRoutingService.isExpanded$(config.index, config.entityGuid),
       label$,
       placeholder$,
       required$,
-      this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
-      this.fieldDataSourceFactoryService,
-      this.translateService,
+      // this.entityCacheService.getEntities$(),
+      // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+      // this.fieldDataSourceFactoryService,
+      // this.translateService,
       control,
-      this.eavService,
+      // this.eavService,
       focusOnSearchComponent,
     );
 
@@ -82,18 +102,34 @@ export class PickerStateAdapterFactoryService {
     required$: Observable<boolean>,
     focusOnSearchComponent: () => void,
   ): PickerStringStateAdapter {
-    const pickerStringStateAdapter = new PickerStringStateAdapter(
+    const pickerStringStateAdapter = this.injector.get(PickerStringStateAdapter)
+    // const pickerStringStateAdapter = new PickerStringStateAdapter(
+    //   // settings$,
+    //   // controlStatus$,
+    //   // editRoutingService.isExpanded$(config.index, config.entityGuid),
+    //   // label$,
+    //   // placeholder$,
+    //   // required$,
+    //   // this.entityCacheService.getEntities$(),
+    //   // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+    //   // // this.translateService,
+    //   // control,
+    //   this.eavService,
+    //   // focusOnSearchComponent,
+    //   this.entityCacheService,
+    //   this.stringQueryCacheService,
+    // )
+    .setupShared(
       settings$,
+      config,
       controlStatus$,
       editRoutingService.isExpanded$(config.index, config.entityGuid),
       label$,
       placeholder$,
       required$,
-      this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
-      this.translateService,
+      // this.entityCacheService.getEntities$(),
+      // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       control,
-      this.eavService,
       focusOnSearchComponent,
     );
 
@@ -115,18 +151,34 @@ export class PickerStateAdapterFactoryService {
     required$: Observable<boolean>,
     focusOnSearchComponent: () => void,
   ): PickerStateAdapter {
-    const pickerStateAdapter = new PickerStateAdapter(
+    const pickerStateAdapter = this.injector.get(PickerStateAdapter)
+    // const pickerStateAdapter = new PickerStateAdapter(
+    //   // settings$,
+    //   // controlStatus$,
+    //   // editRoutingService.isExpanded$(config.index, config.entityGuid),
+    //   // label$,
+    //   // placeholder$,
+    //   // required$,
+    //   // this.entityCacheService.getEntities$(),
+    //   // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+    //   // // this.translateService,
+    //   // control,
+    //   this.eavService,
+    //   // focusOnSearchComponent,
+    //   this.entityCacheService,
+    //   this.stringQueryCacheService,
+    // )
+    .setupShared(
       settings$,
+      config,
       controlStatus$,
       editRoutingService.isExpanded$(config.index, config.entityGuid),
       label$,
       placeholder$,
       required$,
-      this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
-      this.translateService,
+      // this.entityCacheService.getEntities$(),
+      // this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       control,
-      this.eavService,
       focusOnSearchComponent,
     );
 

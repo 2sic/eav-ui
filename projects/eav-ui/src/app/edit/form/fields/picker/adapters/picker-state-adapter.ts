@@ -10,12 +10,22 @@ import { DeleteEntityProps } from '../picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { EavService } from '../../../../shared/services';
+import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { Injectable, Optional } from '@angular/core';
 
-export class PickerStateAdapter {
+const logThis = true;
+
+@Injectable()
+export class PickerStateAdapter extends ServiceBase {
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
+  // TODO: doesn't seem to be in use, but probably should?
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
   public allowMultiValue$: Observable<boolean>;
@@ -23,21 +33,68 @@ export class PickerStateAdapter {
 
   public createEntityTypes: { label: string, guid: string }[] = [];
 
-
   constructor(
-    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-    public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
-    public isExpanded$: Observable<boolean>,
-    public label$: Observable<string>,
-    public placeholder$: Observable<string>,
-    public required$: Observable<boolean>,
-    public cacheItems$: Observable<PickerItem[]>,
-    public stringQueryCache$: Observable<QueryEntity[]>,
-    public translate: TranslateService,
-    public control: AbstractControl,
+    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
+    // public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
+    // public isExpanded$: Observable<boolean>,
+    // public label$: Observable<string>,
+    // public placeholder$: Observable<string>,
+    // public required$: Observable<boolean>,
+    // public cacheItems$: Observable<PickerItem[]>,
+    // public stringQueryCache$: Observable<QueryEntity[]>,
+    // // public translate: TranslateService,
+    // public control: AbstractControl,
     public eavService: EavService,
-    private focusOnSearchComponent: () => void,
-  ) { }
+    // private focusOnSearchComponent: () => void,
+    entityCacheService: EntityCacheService,
+    private stringQueryCacheService: StringQueryCacheService,
+    @Optional() logger: EavLogger = null,
+  ) {
+    super(logger ?? new EavLogger('PickerStateAdapter', logThis));
+    this.cacheItems$ = entityCacheService.getEntities$();
+  }
+
+  public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
+  public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
+  public isExpanded$: Observable<boolean>;
+  public label$: Observable<string>;
+  public placeholder$: Observable<string>;
+  public required$: Observable<boolean>;
+  public cacheItems$: Observable<PickerItem[]>;
+  public stringQueryCache$: Observable<QueryEntity[]>;
+  // public translate: TranslateService,
+  public control: AbstractControl;
+  // public eavService: EavService;
+  private focusOnSearchComponent: () => void;
+
+  public setupShared(
+    settings$: BehaviorSubject<FieldSettings>,
+    config: FieldConfigSet,
+    controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
+    isExpanded$: Observable<boolean>,
+    label$: Observable<string>,
+    placeholder$: Observable<string>,
+    required$: Observable<boolean>,
+    // cacheItems$: Observable<PickerItem[]>,
+    // stringQueryCache$: Observable<QueryEntity[]>,
+    control: AbstractControl,
+    focusOnSearchComponent: () => void,
+  ): this {
+    this.log.add('setupShared');
+    this.settings$ = settings$;
+    this.controlStatus$ = controlStatus$;
+    this.isExpanded$ = isExpanded$;
+    this.label$ = label$;
+    this.placeholder$ = placeholder$;
+    this.required$ = required$;
+    // this.cacheItems$ = cacheItems$;
+    this.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);// stringQueryCache$;
+    this.control = control;
+    this.focusOnSearchComponent = focusOnSearchComponent;
+
+    return this;
+  }
+
 
   init() {
     this.selectedItems$ = combineLatest([

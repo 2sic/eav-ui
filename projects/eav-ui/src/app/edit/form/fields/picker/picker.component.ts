@@ -18,6 +18,9 @@ import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapt
 import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
 import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
 import { PickerDataSourceEmpty } from './data-sources/picker-data-source-empty';
+import { PickerStateAdapter } from './adapters/picker-state-adapter';
+import { PickerEntityStateAdapter } from './adapters/picker-entity-state-adapter';
+import { PickerStringStateAdapter } from './adapters/picker-string-state-adapter';
 
 const logThis = false;
 
@@ -39,6 +42,10 @@ export const pickerProviders = [
   PickerStringSourceAdapter,
   PickerEntitySourceAdapter,
   PickerQuerySourceAdapter,
+
+  PickerStateAdapter,
+  PickerStringStateAdapter,
+  PickerEntityStateAdapter,
 ];
 
 @Component({
