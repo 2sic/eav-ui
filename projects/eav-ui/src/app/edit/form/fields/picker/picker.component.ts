@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../base/base-field.component';
@@ -9,7 +9,6 @@ import { PickerViewModel } from './picker.models';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
-import { FieldDataSourceFactoryService } from './factories/field-data-source-factory.service';
 import { StringFieldDataSource } from './data-sources/string-field-data-source';
 import { QueryFieldDataSource } from './data-sources/query-field-data-source';
 import { PickerSourceAdapterFactoryService } from './factories/picker-source-adapter-factory.service';
@@ -33,7 +32,6 @@ const logThis = false;
 export const pickerProviders = [
   PickerSourceAdapterFactoryService,
   PickerStateAdapterFactoryService,
-  FieldDataSourceFactoryService,
   StringFieldDataSource,
   EntityFieldDataSource,
   QueryFieldDataSource,

@@ -6,7 +6,6 @@ import { EntityService, EavService, EditRoutingService, FieldsSettingsService, Q
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
-import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -29,7 +28,6 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     public eavService: EavService, // DI
     public editRoutingService: EditRoutingService, // DI
     public translate: TranslateService, // DI
-    public fieldDataSourceFactoryService: FieldDataSourceFactoryService, // DI
     public snackBar: MatSnackBar, // DI
     private queryFieldDataSource: QueryFieldDataSource, // DI
   ) {

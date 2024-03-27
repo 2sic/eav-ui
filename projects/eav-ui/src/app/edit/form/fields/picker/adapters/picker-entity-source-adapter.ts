@@ -5,7 +5,6 @@ import { Observable, combineLatest } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
-import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
@@ -15,7 +14,6 @@ const logThis = false;
 
 @Injectable()
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
-  private entityFieldDataSource: EntityFieldDataSource;
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
@@ -24,8 +22,8 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
-    public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
     public snackBar: MatSnackBar,
+    private entityFieldDataSource: EntityFieldDataSource,
   ) {
     super(
       entityCacheService,
@@ -42,7 +40,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     this.log.add('init');
     super.init(callerName);
 
-    this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource(this.settings$);
+    this.entityFieldDataSource.setup(this.settings$);
 
     this.subscriptions.add(combineLatest([
       this.entityFieldDataSource.data$,
