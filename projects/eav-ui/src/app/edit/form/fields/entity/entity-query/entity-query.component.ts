@@ -10,6 +10,7 @@ import { PickerComponent, pickerProviders } from '../../picker/picker.component'
 import { EntityQueryLogic } from './entity-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
@@ -30,6 +31,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     stringQueryCacheService: StringQueryCacheService,
     protected sourceFactory: PickerSourceAdapterFactoryService,
     protected stateFactory: PickerStateAdapterFactoryService,
+    private stateRaw: PickerEntityStateAdapter,
   ) {
     super(
       eavService,
@@ -60,7 +62,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
 
     const source = this.sourceFactory.createPickerQuerySourceAdapter(
       state.error$,

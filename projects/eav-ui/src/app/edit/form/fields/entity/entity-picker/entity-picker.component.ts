@@ -14,6 +14,7 @@ import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-sou
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
 const logThis = false;
 
@@ -34,7 +35,8 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private sourceFactory: PickerSourceAdapterFactoryService,
-    private stateFactory: PickerStateAdapterFactoryService,
+    // private stateFactory: PickerStateAdapterFactoryService,
+    private stateRaw: PickerEntityStateAdapter,
   ) {
     super(
       eavService,
@@ -66,7 +68,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log.add('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
 
     if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');

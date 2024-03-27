@@ -11,6 +11,7 @@ import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { pickerProviders } from '../../picker/picker.component';
+import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -31,6 +32,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     stringQueryCacheService: StringQueryCacheService,
     sourceFactory: PickerSourceAdapterFactoryService,
     stateFactory: PickerStateAdapterFactoryService,
+    stateRaw: PickerEntityStateAdapter,
   ) {
     super(
       eavService,
@@ -41,7 +43,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       entityCacheService,
       stringQueryCacheService,
       sourceFactory,
-      stateFactory
+      stateFactory,
+      stateRaw,
     );
     StringDropdownQueryLogic.importMe();
     this.isStringQuery = true;

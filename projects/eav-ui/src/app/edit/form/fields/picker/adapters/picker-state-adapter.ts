@@ -1,4 +1,3 @@
-import { TranslateService } from '@ngx-translate/core/public_api';
 import { PickerItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -16,6 +15,7 @@ import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Optional } from '@angular/core';
+import { PickerComponent } from '../picker.component';
 
 const logThis = true;
 
@@ -34,18 +34,7 @@ export class PickerStateAdapter extends ServiceBase {
   public createEntityTypes: { label: string, guid: string }[] = [];
 
   constructor(
-    // public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-    // public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
-    // public isExpanded$: Observable<boolean>,
-    // public label$: Observable<string>,
-    // public placeholder$: Observable<string>,
-    // public required$: Observable<boolean>,
-    // public cacheItems$: Observable<PickerItem[]>,
-    // public stringQueryCache$: Observable<QueryEntity[]>,
-    // // public translate: TranslateService,
-    // public control: AbstractControl,
     public eavService: EavService,
-    // private focusOnSearchComponent: () => void,
     entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     @Optional() logger: EavLogger = null,
@@ -62,10 +51,22 @@ export class PickerStateAdapter extends ServiceBase {
   public required$: Observable<boolean>;
   public cacheItems$: Observable<PickerItem[]>;
   public stringQueryCache$: Observable<QueryEntity[]>;
-  // public translate: TranslateService,
   public control: AbstractControl;
-  // public eavService: EavService;
   private focusOnSearchComponent: () => void;
+
+  public setupFromComponent(component: PickerComponent): this  {
+    return this.setupShared(
+      component.settings$,
+      component.config,
+      component.controlStatus$,
+      component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
+      component.label$,
+      component.placeholder$,
+      component.required$,
+      component.control,
+      () => component.focusOnSearchComponent,
+    );
+  }
 
   public setupShared(
     settings$: BehaviorSubject<FieldSettings>,
@@ -75,8 +76,6 @@ export class PickerStateAdapter extends ServiceBase {
     label$: Observable<string>,
     placeholder$: Observable<string>,
     required$: Observable<boolean>,
-    // cacheItems$: Observable<PickerItem[]>,
-    // stringQueryCache$: Observable<QueryEntity[]>,
     control: AbstractControl,
     focusOnSearchComponent: () => void,
   ): this {
@@ -87,8 +86,7 @@ export class PickerStateAdapter extends ServiceBase {
     this.label$ = label$;
     this.placeholder$ = placeholder$;
     this.required$ = required$;
-    // this.cacheItems$ = cacheItems$;
-    this.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);// stringQueryCache$;
+    this.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);
     this.control = control;
     this.focusOnSearchComponent = focusOnSearchComponent;
 
@@ -97,6 +95,7 @@ export class PickerStateAdapter extends ServiceBase {
 
 
   init() {
+    this.log.add('init');
     this.selectedItems$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.settings$.pipe(
@@ -133,6 +132,7 @@ export class PickerStateAdapter extends ServiceBase {
   }
 
   destroy() {
+    this.log.add('destroy');
     this.settings$.complete();
     this.controlStatus$.complete();
     this.disableAddNew$.complete();
