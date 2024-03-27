@@ -55,6 +55,7 @@ export class PickerStateAdapter extends ServiceBase {
   private focusOnSearchComponent: () => void;
 
   public setupFromComponent(component: PickerComponent): this  {
+    this.log.add('setupFromComponent');
     return this.setupShared(
       component.settings$,
       component.config,
@@ -129,6 +130,13 @@ export class PickerStateAdapter extends ServiceBase {
     ]) => {
       return !freeTextMode && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue)) && (!allowMultiValue || (allowMultiValue && isExpanded));
     }));
+
+    // log a lot
+    this.allowMultiValue$.subscribe(allowMultiValue => this.log.add('allowMultiValue', allowMultiValue));
+    this.isDialog$.subscribe(isDialog => this.log.add('isDialog', isDialog));
+    this.selectedItems$.subscribe(selectedItems => this.log.add('selectedItems', selectedItems));
+    this.shouldPickerListBeShown$.subscribe(shouldPickerListBeShown => this.log.add('shouldPickerListBeShown', shouldPickerListBeShown));
+
   }
 
   destroy() {

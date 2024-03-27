@@ -10,7 +10,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 
-const logThis = false;
+const logThis = true;
 
 @Injectable()
 export class QueryFieldDataSource extends DataSourceBase {
@@ -37,10 +37,8 @@ export class QueryFieldDataSource extends DataSourceBase {
     fieldName: string,
     appId: string
   ): void {
-    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId);
-    // this.isStringQuery = isStringQuery;
-    // this.entityGuid = entityGuid;
-    // this.fieldName = fieldName;
+    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isStringQuery', isStringQuery, 'entityGuid', entityGuid, 'fieldName', fieldName);
+
     this.appId = appId;
     super.setup(settings$);
     const settings = settings$.value;
@@ -54,10 +52,12 @@ export class QueryFieldDataSource extends DataSourceBase {
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
 
+    const lAll = this.log.rxTap('all$', { enabled: true });
     const all$ = combineLatest([
       params$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll))
     ]).pipe(
+      lAll.pipe(),
       mergeMap(([params, _]) => {
         // If we don't have a query URL return a single item with a message
         if (!queryUrl)
@@ -72,16 +72,21 @@ export class QueryFieldDataSource extends DataSourceBase {
           } as QueryStreams, loading: true });
 
         // Default case, get the data
+        const lGetQs = this.log.rxTap('queryService', { enabled: true });
         return this.queryService
           .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), [])
           .pipe(
+            lGetQs.pipe(),
             map(data => { return { data, loading: false }; }),
             startWith({ data: {} as QueryStreams, loading: true })
           );
       }),
+      lAll.map('before'),
       map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
+      lAll.map('after'),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
+      lAll.shareReplay(),
     );
 
     const prefetch$ = this.prefetchEntityGuids$.pipe(
@@ -133,7 +138,9 @@ export class QueryFieldDataSource extends DataSourceBase {
       map(([all, overrides]) => all.loading || overrides.loading),
     );
 
+    const lData = this.log.rxTap('data$', { enabled: true });
     this.data$ = combineLatest([all$, overrides$, prefetch$]).pipe(
+      lData.pipe(),
       map(([all, overrides, prefetch]) => {
         // data always takes the last unique value in the array (should be most recent)
         const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.Value, item])).values()];
@@ -153,6 +160,7 @@ export class QueryFieldDataSource extends DataSourceBase {
   }
 
   transformData(data: QueryStreams, streamName: string): PickerItem[] {
+    this.log.add('transformData', 'data', data, 'streamName', streamName);
     if (!data)
       return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
 

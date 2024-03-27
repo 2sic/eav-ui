@@ -2,20 +2,25 @@ import { FieldSettings, PickerItem } from 'projects/edit-types';
 import { DataSourceHelpers } from './data-source-helpers';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { DataSourceMasks } from './data-source-masks';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
+const logThis = true;
 /**
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.
  */
-export class DataSourceMasksHelper {
-  constructor(private settings: FieldSettings) { }
+export class DataSourceMasksHelper extends ServiceBase {
+  constructor(private settings: FieldSettings, enableLog = logThis) {
+    super(new EavLogger('DataSourceMasksHelper', enableLog));
+  }
 
   private helpers = new DataSourceHelpers();
 
   private masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem(entity: QueryEntity, streamName?: string): PickerItem {
+  entity2PickerItem(entity: QueryEntity, streamName: string | undefined, mustUseGuid: boolean): PickerItem {
     // Check if we have masks, if yes
     const masks = this.getMasks(this.settings);
 
@@ -23,6 +28,8 @@ export class DataSourceMasksHelper {
     const maybeValue = entity[masks.value];
     let valueFieldValue = maybeValue ? `${maybeValue}` : maybeValue;
     valueFieldValue = !!valueFieldValue ? valueFieldValue : entity.Guid;
+    if (mustUseGuid)
+      valueFieldValue = entity.Guid; // If we must use the Guid, use the Guid
 
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
     const maybeTitle = entity[masks.label];
@@ -34,8 +41,8 @@ export class DataSourceMasksHelper {
         : valueFieldValue + ' *'; // If there is not even a title, use the value with asterisk
 
     // If we don't have masks, we are done
-    if (!masks.hasMask)
-      return {
+    if (!masks.hasMask) {
+      const result: PickerItem = {
         Id: entity.Id,
         data: entity,
         Value: valueFieldValue,
@@ -45,6 +52,9 @@ export class DataSourceMasksHelper {
         _helpLink: masks.link,
         _streamName: streamName ?? null,
       };
+      this.log.add('entity2PickerItem - no masks', result);
+      return result;
+    }
 
     // Prepare the masks
     const { title, tooltip, information, helpLink } = this.parseMasks(masks, entity);
@@ -88,7 +98,9 @@ export class DataSourceMasksHelper {
 
   getMasks(settings: FieldSettings) {
     if (!!this.masks) return this.masks;
-    return this.masks = this.buildMasks(settings);
+    this.masks = this.buildMasks(settings);
+    this.log.add('getMasks', this.masks);
+    return this.masks;
   }
 
   private buildMasks(settings: FieldSettings): DataSourceMasks {

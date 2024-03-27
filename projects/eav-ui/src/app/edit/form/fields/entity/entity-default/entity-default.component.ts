@@ -32,7 +32,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private sourceFactory: PickerSourceAdapterFactoryService,
-    private stateFactory: PickerStateAdapterFactoryService,
+    // private stateFactory: PickerStateAdapterFactoryService,
     private stateRaw: PickerEntityStateAdapter,
   ) {
     super(
@@ -65,17 +65,17 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
 
-    const state = this.stateFactory.createPickerEntityStateAdapter(this);
-    // const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
+    // const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    const state = this.stateRaw.setupFromComponent(this);
+
+    // this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
+    this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
 
     const source = this.sourceFactory.createPickerEntitySourceAdapter(
       state.disableAddNew$,
-      // this.fieldsSettingsService,
-
       state.control,
       this.config,
       state.settings$,
-      // this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)

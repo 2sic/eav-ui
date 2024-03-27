@@ -6,7 +6,7 @@ import { EntityCacheService } from '../../../../shared/store/ngrx-data/entity-ca
 import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerStringStateAdapter extends PickerStateAdapter {

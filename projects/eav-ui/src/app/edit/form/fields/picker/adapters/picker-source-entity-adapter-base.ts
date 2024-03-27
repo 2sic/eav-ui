@@ -29,6 +29,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
+    this.log.add('constructor');
   }
 
   disableAddNew$: BehaviorSubject<boolean>;
@@ -93,10 +94,12 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   onAfterViewInit(): void {
+    this.log.add('onAfterViewInit');
     this.contentType = this.contentTypeMask.resolve();
   }
 
   updateAddNew(): void {
+    this.log.add('updateAddNew');
     const contentTypeName = this.contentTypeMask.resolve();
     this.disableAddNew$.next(!contentTypeName && !this.createEntityTypes);
   }
@@ -106,6 +109,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
+    this.log.add('editItem', editParams);
     if (editParams)
       this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
@@ -131,6 +135,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   deleteItem(props: DeleteEntityProps): void {
+    this.log.add('deleteItem', props);
     const entity = this.availableItems$.value.find(item => item.Value === props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;
@@ -174,6 +179,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
    * new 11.11.03
    */
   private getPrefill(): Record<string, string> {
+    this.log.add('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
       const prefillMask =

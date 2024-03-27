@@ -23,6 +23,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
   }
 
   protected createNewValue(valueArray: string[]): string | string[] {
+    this.log.add('createNewValue', valueArray);
     return valueArray;
   }
 }

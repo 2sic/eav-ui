@@ -11,6 +11,9 @@ import { EntityQueryLogic } from './entity-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
@@ -30,7 +33,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     protected sourceFactory: PickerSourceAdapterFactoryService,
-    protected stateFactory: PickerStateAdapterFactoryService,
+    // protected stateFactory: PickerStateAdapterFactoryService,
     private stateRaw: PickerEntityStateAdapter,
   ) {
     super(
@@ -42,34 +45,29 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       entityCacheService,
       stringQueryCacheService,
     );
+    this.log = new EavLogger('EntityQueryComponent', logThis);
+    this.log.add('constructor');
     EntityQueryLogic.importMe();
     this.isStringQuery = false;
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (!this.isStringQuery)
-      this.initAdaptersAndViewModel();
-  }
-
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
+    // if (!this.isStringQuery)
+    this.initAdaptersAndViewModel();
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerEntityStateAdapter(this);
-    // const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
+    this.log.add('createPickerAdapters');
+    // const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    const state = this.stateRaw.setupFromComponent(this);
 
+    this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
+    this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
     const source = this.sourceFactory.createPickerQuerySourceAdapter(
       state.error$,
       state.disableAddNew$,
       this.isStringQuery,
-
       state.control,
       this.config,
       state.settings$,

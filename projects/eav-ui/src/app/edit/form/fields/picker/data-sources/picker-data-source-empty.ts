@@ -4,7 +4,7 @@ import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 
-const logThis = true;
+const logThis = false;
 
 /**
  * This is the data-source we plan to attach when a picker is not configured.

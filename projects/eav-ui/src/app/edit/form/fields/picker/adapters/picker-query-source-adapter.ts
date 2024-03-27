@@ -13,12 +13,12 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 
-const logThis = false;
+const logThis = true;
 
 @Injectable()
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
-  private queryFieldDataSource: QueryFieldDataSource;
+  // private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService, // DI
@@ -31,6 +31,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     public translate: TranslateService, // DI
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService, // DI
     public snackBar: MatSnackBar, // DI
+    private queryFieldDataSource: QueryFieldDataSource, // DI
   ) {
     super(
       entityCacheService,
@@ -51,7 +52,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     isStringQuery: boolean,
   ): this {
 
-    this.log.add('setupQuery');
+    this.log.add('setupQuery', isStringQuery);
     this.error$ = error$;
     this.isStringQuery = isStringQuery;
     
@@ -80,13 +81,23 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       })
     );
 
-    this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
+    this.log.add('init - isStringQuery', this.isStringQuery);
+
+    this.queryFieldDataSource.setupQuery(
       this.settings$,
       this.isStringQuery,
       this.config.entityGuid,
       this.config.fieldName,
       this.eavService.eavConfig.appId,
     );
+
+    // this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
+    //   this.settings$,
+    //   this.isStringQuery,
+    //   this.config.entityGuid,
+    //   this.config.fieldName,
+    //   this.eavService.eavConfig.appId,
+    // );
 
     this.flushAvailableEntities();
 
@@ -102,7 +113,8 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
         } else {
           this.availableItems$.next(items);
         }
-      }, error: (error) => {
+      },
+      error: (error) => {
         this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
       }
     }));
@@ -133,6 +145,11 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   fetchItems(): void {
+    this.log.add('fetchItems');
+    // this.contentType = this.contentTypeMask.resolve();
+    // console.warn('2dm content-type', this.contentType);
+    // this.entityFieldDataSource.contentType(this.contentType);
+
     this.queryFieldDataSource.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
@@ -144,6 +161,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   flushAvailableEntities(): void {
+    this.log.add('flushAvailableEntities, isStringQuery', this.isStringQuery);
     if (!this.isStringQuery) {
       this.subscriptions.add(
         this.settings$.pipe(

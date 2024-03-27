@@ -50,6 +50,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log = new EavLogger('EntityPickerComponent', logThis);
     this.log.add('constructor');
     EntityPickerLogic.importMe();
+    this.isStringQuery = false;
   }
 
   ngOnInit(): void {
@@ -57,21 +58,17 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.initAdaptersAndViewModel();
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
-
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.add('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    const state = this.stateRaw.setupFromComponent(this); // this.stateFactory.createPickerEntityStateAdapter(this);
+    // const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    const state = this.stateRaw.setupFromComponent(this);
 
-    if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) {
+    const dataSourceType = this.settings$.value.DataSourceType;
+    this.log.add('createPickerAdapters: dataSourceType', dataSourceType);
+
+    if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
@@ -82,12 +79,13 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
-    } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceQuery) {
+    } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
+      this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
-        false,
+        this.isStringQuery,
         state.control,
         this.config,
         state.settings$,

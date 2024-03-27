@@ -60,7 +60,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   pickerData: PickerData;
   isStringQuery: boolean;
-  isString: boolean;
 
   viewModel$: Observable<PickerViewModel>;
 
@@ -79,6 +78,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngOnInit(): void {
+    this.log.add('ngOnInit');
     super.ngOnInit();
     this.refreshOnChildClosed();
   }
@@ -107,12 +107,13 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngAfterViewInit(): void {
+    this.log.add('ngAfterViewInit');
     this.pickerData.source.onAfterViewInit();
   }
 
   ngOnDestroy(): void {
+    this.log.add('ngOnDestroy');
     this.pickerData.destroy();
-
     super.ngOnDestroy();
   }
 
@@ -121,11 +122,11 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     throw new Error('Method not implemented. Must be overridden by inheriting class.');
   }
 
-  createViewModel() {
+  createViewModel(): void {
     this.log.add('createViewModel');
-    this.viewModel$ = combineLatest([this.pickerData.state.allowMultiValue$])
+    this.viewModel$ = this.pickerData.state.allowMultiValue$
       .pipe(
-        map(([allowMultiValue]) => {
+        map(allowMultiValue => {
           // allowMultiValue is used to determine if we even use control with preview and dialog
           const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
           const viewModel: PickerViewModel = {

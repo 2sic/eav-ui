@@ -31,7 +31,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     sourceFactory: PickerSourceAdapterFactoryService,
-    stateFactory: PickerStateAdapterFactoryService,
+    private stateFactory: PickerStateAdapterFactoryService,
     stateRaw: PickerEntityStateAdapter,
   ) {
     super(
@@ -43,7 +43,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       entityCacheService,
       stringQueryCacheService,
       sourceFactory,
-      stateFactory,
+      // stateFactory,
       stateRaw,
     );
     StringDropdownQueryLogic.importMe();
@@ -52,18 +52,19 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (this.isStringQuery)
-      this.initAdaptersAndViewModel();
+    // already done by base...
+    // if (this.isStringQuery)
+    // this.initAdaptersAndViewModel();
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
+  // ngAfterViewInit(): void {
+  //   super.ngAfterViewInit();
+  // }
 
 
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
+  // ngOnDestroy(): void {
+  //   super.ngOnDestroy();
+  // }
 
   protected /* FYI: override */ createPickerAdapters(): void {
     const state = this.stateFactory.createPickerStringStateAdapter(
