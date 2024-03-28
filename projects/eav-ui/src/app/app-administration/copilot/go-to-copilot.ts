@@ -3,7 +3,7 @@ export class GoToCopilot {
 
   static routeDefinition(part: string) {
     return {
-      name: 'Copilot (beta)',
+      name: 'Copilot',
       icon: 'support_agent',
       svgIcon: false,
       path: `${part}-${GoToCopilot.route}`

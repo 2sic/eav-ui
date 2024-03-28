@@ -100,7 +100,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: `data-${GoToCopilot.route}`,
         component: DataCopilotComponent,
-        data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)' }
+        data: { title: 'Copilot', breadcrumb: '2sxc Copilot' }
       },
       {
         path: GoToDevRest.routeData,
@@ -180,7 +180,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: `views-${GoToCopilot.route}`,
         component: ViewCopilotComponent,
-        data: { title: 'Copilot', breadcrumb: '2sxc View Copilot (beta)' }
+        data: { title: 'Copilot', breadcrumb: '2sxc View Copilot' }
       },
       {
         path: 'web-api',

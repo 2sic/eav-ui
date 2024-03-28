@@ -32,7 +32,7 @@ export class CopilotGeneratorComponent {
 
   @Input() outputType: string;
 
-  @Input() title?: string = 'Copilot Generator (beta)';
+  @Input() title?: string = 'Copilot Generator';
 
   webApiGeneratedCode: string = 'admin/code/generateDataModels';
   editions$ = this.copilotSvc.getEditions();
