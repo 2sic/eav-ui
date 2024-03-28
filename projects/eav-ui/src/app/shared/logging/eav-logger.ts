@@ -9,6 +9,10 @@ export class EavLogger {
 
   }
 
+  inherit(log: EavLogger) {
+    this.enabled = log.enabled;
+  }
+
   /** Special 'a' = add log helper to better diagnose what is happening */
   add(message: string, ...args: any[]): void {
     if (!this.enabled) return;

@@ -189,8 +189,6 @@ export interface Entity extends All {
 
   MoreFields: string;
   Label: string;
-  // 2dm 2023-01-22 #maybeSupportIncludeParentApps
-  // IncludeParentApps: boolean;
 }
 
 /**

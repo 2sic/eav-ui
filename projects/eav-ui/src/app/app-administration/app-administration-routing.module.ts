@@ -5,8 +5,7 @@ import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
+import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-config';
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
@@ -25,19 +24,35 @@ import { ViewsComponent } from './views/views.component';
 import { QueriesComponent } from './queries/queries.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
-import { DataCopilotComponent } from './data-copilot/data-copilot.component';
+import { DataCopilotComponent } from './copilot/data-copilot/data-copilot.component';
+import { DataRestApiComponent } from './data-rest-api/data-rest-api.component';
+import { QueriesRestApiComponent } from './queries-rest-api/queries-rest-api.component';
+import { DevRestDataComponent } from '../dev-rest/data/data.component';
+import { DevRestQueryComponent } from '../dev-rest/query/query.component';
+import { GoToCopilot } from './copilot/go-to-copilot';
+import { ViewCopilotComponent } from './copilot/view-copilot/view-copilot.component';
 
 const appAdministrationRoutes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: appAdministrationDialog }, children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
+    path: '',
+    // experimental 2dm
+    // ...DialogEntryComponent.routeFor(appAdministrationDialog),
+    component: DialogEntryComponent, data: { dialog: appAdministrationDialog },
+    children: [
+      {
+        path: '', redirectTo: 'home', pathMatch: 'full'
+      },
+      {
+        path: 'home',
+        component: GettingStartedComponent, data: { title: 'App Home', breadcrumb: 'Info', }
+      },
       {
         path: 'data/:scope', component: DataComponent, children: [
           {
             path: 'import',
-            component: DialogEntryComponent,
-            data: { dialog: importContentTypeDialog, title: 'Import Content Type' },
+            // experimental 2dm
+            // ...DialogEntryComponent.routeFor(importContentTypeDialog, { title: 'Import Content Type' }),
+            component: DialogEntryComponent, data: { dialog: importContentTypeDialog, title: 'Import Content Type' },
           },
           {
             path: 'items/:contentTypeStaticName',
@@ -83,6 +98,31 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Data', breadcrumb: "Data" },
       },
       {
+        path: `data-${GoToCopilot.route}`,
+        component: DataCopilotComponent,
+        data: { title: 'Copilot', breadcrumb: '2sxc Copilot' }
+      },
+      {
+        path: GoToDevRest.routeData,
+        component: DataRestApiComponent,
+        data: {
+          title: 'Rest-Api Data',
+          breadcrumb: 'Rest-Api Data'
+        },
+        children: [
+          {
+            path: `:${GoToDevRest.paramTypeName}`,
+            component: DevRestDataComponent,
+            data: {
+              breadcrumb: 'Rest-Api Data'
+            },
+            children: [
+              GoToPermissions.route,
+            ]
+          },
+        ]
+      },
+      {
         path: 'queries', component: QueriesComponent, children: [
           {
             path: 'import',
@@ -98,9 +138,20 @@ const appAdministrationRoutes: Routes = [
           { ...GoToPermissions.route, data: { title: 'Query Permissions' } },
           GoToDevRest.route,
         ],
-        data: { title: 'App Queries' , breadcrumb: "Queries" },
+        data: { title: 'App Queries', breadcrumb: "Queries" },
       },
-      { path: 'copilot', component: DataCopilotComponent, data: { title: 'Copilot', breadcrumb: '2sxc Copilot (beta)', } },
+      {
+        path: GoToDevRest.routeQuery, component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', },
+        children: [
+          {
+            path: `:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent,
+            data: { breadcrumb: 'Rest-Api Queries', },
+            children: [
+              GoToPermissions.route,
+            ]
+          },
+        ]
+      },
       {
         path: 'views', component: ViewsComponent, children: [
           {
@@ -108,7 +159,10 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: importViewDialog, title: 'Import View' },
           },
-          { path: 'usage/:guid', component: DialogEntryComponent, data: { dialog: viewsUsageDialog } },
+          {
+            path: 'usage/:guid',
+            component: DialogEntryComponent,
+            data: { dialog: viewsUsageDialog } },
           {
             matcher: edit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
@@ -124,12 +178,21 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Views', breadcrumb: "Views" },
       },
       {
-        path: 'web-api', component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi"  }, children: [
+        path: `views-${GoToCopilot.route}`,
+        component: ViewCopilotComponent,
+        data: { title: 'Copilot', breadcrumb: '2sxc View Copilot' }
+      },
+      {
+        path: 'web-api',
+        component: WebApiComponent, data: { title: 'App WebApi', breadcrumb: "WebApi" },
+        children: [
           GoToDevRest.route,
         ],
       },
       {
-        path: 'app', component: AppConfigurationComponent, data: { title: 'Manage App', breadcrumb: "Manage App" }, children: [
+        path: 'app',
+        component: AppConfigurationComponent, data: { title: 'Manage App', breadcrumb: "Manage App" },
+        children: [
           ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
@@ -146,7 +209,9 @@ const appAdministrationRoutes: Routes = [
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
           {
-            path: 'language-permissions', component: DialogEntryComponent, data: { dialog: languagePermissionsDialog, title: 'Language Permissions' }, children: [
+            path: 'language-permissions',
+            component: DialogEntryComponent, data: { dialog: languagePermissionsDialog, title: 'Language Permissions' },
+            children: [
               { ...GoToPermissions.route, data: { title: 'Language Permissions' } },
             ],
           },
@@ -155,15 +220,14 @@ const appAdministrationRoutes: Routes = [
             path: 'analyze/:part', component: DialogEntryComponent, data: { dialog: analyzeSettingsDialog, title: 'Analyze Settings / Resources' }, children: [
               {
                 path: 'details/:view/:settingsItemKey',
-                component: DialogEntryComponent,
-                data: { dialog: settingsItemDetailsDialog, title: 'Settings / Resources Item Details' },
+                component: DialogEntryComponent, data: { dialog: settingsItemDetailsDialog, title: 'Settings / Resources Item Details' },
               },
             ],
           },
         ],
       },
       {
-        path: 'sync', component: SyncConfigurationComponent, data: { title: 'Sync', breadcrumb:"Sync" }, children: [
+        path: 'sync', component: SyncConfigurationComponent, data: { title: 'Sync', breadcrumb: "Sync" }, children: [
           ...GoToMetadata.getRoutes(),
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },

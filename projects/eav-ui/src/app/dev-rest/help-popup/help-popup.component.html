@@ -1,20 +1,21 @@
-<div mat-mdc-dialog-title>
-  <div class="dialog-title-box">
-    <div>{{ dialogData.name }}</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
+<div class="eav-dialog eav-no-scrollbar">
+  <div mat-mdc-dialog-title>
+    <div class="dialog-title-box">
+      <div>{{ dialogData.name }}</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
-</div>
-
-<div class="dialog-component-content fancy-scrollbar-light">
-  <p class="dialog-description">
-    {{ dialogData.body }}
-  </p>
-
-  @if (dialogData.notes) {
+  <div class="eav-dialog-content">
     <p class="dialog-description">
-      <em>{{ dialogData.notes }}</em>
+      {{ dialogData.body }}
     </p>
-  }
+
+    @if (dialogData.notes) {
+      <p class="dialog-description">
+        <em>{{ dialogData.notes }}</em>
+      </p>
+    }
+  </div>
 </div>

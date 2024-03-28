@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap, tap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -9,11 +9,25 @@ import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
 import { SiteLanguagesStatusComponent } from './site-languages-status/site-languages-status.component';
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
+import { AsyncPipe } from '@angular/common';
+import { MatDialogActions } from '@angular/material/dialog';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 
 @Component({
   selector: 'app-site-languages',
   templateUrl: './site-languages.component.html',
   styleUrls: ['./site-languages.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogActions,
+    AsyncPipe,
+    AgGridModule,
+  ],
+  providers: [
+    ZoneService,
+  ],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
@@ -22,19 +36,22 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<SiteLanguagesViewModel>;
 
-  constructor(private zoneService: ZoneService) { }
+  constructor(private zoneService: ZoneService) {
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
+  }
 
   ngOnInit(): void {
+
     this.viewModel$ = combineLatest([
       this.refreshLanguages$.pipe(
         startWith(undefined),
         switchMap(() => this.zoneService.getLanguages().pipe(catchError(() => of(undefined)))),
-        share(),
+        share()
       )
     ]).pipe(
       map(([languages]) => {
         return { languages };
-      }),
+      })
     );
   }
 

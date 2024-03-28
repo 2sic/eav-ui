@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
@@ -8,11 +8,34 @@ import { ContentTypesService } from '../app-administration/services/content-type
 import { Language } from '../edit/shared/models';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-content-export',
-  templateUrl: './content-export.component.html',
-  styleUrls: ['./content-export.component.scss'],
+    selector: 'app-content-export',
+    templateUrl: './content-export.component.html',
+    styleUrls: ['./content-export.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatRadioModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+    ],
+    providers: [
+        ContentExportService,
+        ContentTypesService,
+        AppDialogConfigService,
+    ],
 })
 export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -43,7 +66,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading$.next(true);
     const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
-    const dialogSettings$ = this.appDialogConfigService.getShared$(); // .getDialogSettings();
+    const dialogSettings$ = this.appDialogConfigService.getCurrent$();
     forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
       this.contentType$.next(contentType);
       this.languages = dialogSettings.Context.Language.List;

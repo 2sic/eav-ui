@@ -8,24 +8,40 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
+import { Injectable } from '@angular/core';
 
+const logThis = true;
+
+@Injectable()
 export class QueryFieldDataSource extends DataSourceBase {
   private params$ = new Subject<string>();
 
   constructor(
-    protected settings$: BehaviorSubject<FieldSettings>,
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     private translate: TranslateService,
-    private isStringQuery: boolean,
-    private entityGuid: string,
-    private fieldName: string,
-    private appId: string,
   ) {
-    super(settings$, new EavLogger('QueryFieldDataSource', false ));
+    super(new EavLogger('QueryFieldDataSource', logThis));
+  }
 
-    const settings = this.settings$.value;
+  // private isStringQuery: boolean;
+  // private entityGuid: string;
+  // private fieldName: string;
+  private appId: string;
+
+  setupQuery(
+    settings$: BehaviorSubject<FieldSettings>,
+    isStringQuery: boolean,
+    entityGuid: string,
+    fieldName: string,
+    appId: string
+  ): void {
+    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isStringQuery', isStringQuery, 'entityGuid', entityGuid, 'fieldName', fieldName);
+
+    this.appId = appId;
+    super.setup(settings$);
+    const settings = settings$.value;
     const streamName = settings.StreamName;
     
     // If the configuration isn't complete, the query can be empty
@@ -36,13 +52,15 @@ export class QueryFieldDataSource extends DataSourceBase {
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
 
+    const lAll = this.log.rxTap('all$', { enabled: true });
     const all$ = combineLatest([
       params$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll))
     ]).pipe(
+      lAll.pipe(),
       mergeMap(([params, _]) => {
         // If we don't have a query URL return a single item with a message
-        if (!queryUrl) {
+        if (!queryUrl)
           return of({ data: {
             'Default': [
               {
@@ -52,32 +70,38 @@ export class QueryFieldDataSource extends DataSourceBase {
               }
             ] as QueryEntity[],
           } as QueryStreams, loading: true });
-        }
 
         // Default case, get the data
-        return this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), []).pipe(
-          map(data => { return { data, loading: false }; }),
-          startWith({ data: {} as QueryStreams, loading: true })
-        );
+        const lGetQs = this.log.rxTap('queryService', { enabled: true });
+        return this.queryService
+          .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), [])
+          .pipe(
+            lGetQs.pipe(),
+            map(data => { return { data, loading: false }; }),
+            startWith({ data: {} as QueryStreams, loading: true })
+          );
       }),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
+      lAll.map('before'),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
+      lAll.map('after'),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
+      lAll.shareReplay(),
     );
 
     const prefetch$ = this.prefetchEntityGuids$.pipe(
       distinctUntilChanged(),
       filter(entityGuids => entityGuids?.length > 0),
       mergeMap(entityGuids => {
-        if (this.isStringQuery) {
-          return this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName);
+        if (isStringQuery) {
+          return this.stringQueryCacheService.getEntities$(entityGuid, fieldName);
         } else {
           return this.entityCacheService.getEntities$(entityGuids);
         }
       }),
       map(entities => {
-        if (this.isStringQuery) {
-          return entities.map(entity => this.fillEntityInfoMoreFields(entity as QueryEntity));
+        if (isStringQuery) {
+          return entities.map(entity => this.entity2PickerItem(entity as QueryEntity, null, /* mustUseGuid: */ !isStringQuery));
         } else {
           return entities as PickerItem[];
         }
@@ -98,11 +122,14 @@ export class QueryFieldDataSource extends DataSourceBase {
     );
 
     const overrides$ = combineLatest([params$, combinedGuids$]).pipe(
-      mergeMap(([params, guids]) => this.queryService.getAvailableEntities(queryUrl, true, params, this.calculateMoreFields(), guids).pipe(
-        map(data => { return { data, loading: false }; }),
-        startWith({ data: {} as QueryStreams, loading: true })
-      )),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName) } }),
+      mergeMap(([params, guids]) => this.queryService
+        .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), guids)
+        .pipe(
+          map(data => { return { data, loading: false }; }),
+          startWith({ data: {} as QueryStreams, loading: true })
+        )
+      ),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
     );
@@ -111,7 +138,9 @@ export class QueryFieldDataSource extends DataSourceBase {
       map(([all, overrides]) => all.loading || overrides.loading),
     );
 
+    const lData = this.log.rxTap('data$', { enabled: true });
     this.data$ = combineLatest([all$, overrides$, prefetch$]).pipe(
+      lData.pipe(),
       map(([all, overrides, prefetch]) => {
         // data always takes the last unique value in the array (should be most recent)
         const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.Value, item])).values()];
@@ -123,7 +152,6 @@ export class QueryFieldDataSource extends DataSourceBase {
 
   destroy(): void {
     this.params$.complete();
-
     super.destroy();
   }
 
@@ -131,7 +159,8 @@ export class QueryFieldDataSource extends DataSourceBase {
     this.params$.next(params);
   }
 
-  transformData(data: QueryStreams, streamName: string): PickerItem[] {
+  transformData(data: QueryStreams, streamName: string | null, mustUseGuid: boolean): PickerItem[] {
+    this.log.add('transformData', 'data', data, 'streamName', streamName);
     if (!data)
       return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
 
@@ -143,7 +172,7 @@ export class QueryFieldDataSource extends DataSourceBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.fillEntityInfoMoreFields(entity, stream)));
+      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, mustUseGuid)));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }

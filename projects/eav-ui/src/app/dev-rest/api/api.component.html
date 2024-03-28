@@ -13,7 +13,7 @@
         <app-selector-with-help style="display: block; max-width: 100%;" label="Choose Scenario" [items]="scenarios"
           [value]="vm.scenario.key" (valueChange)="changeScenario($event)">
         </app-selector-with-help>
-        <mat-form-field color="accent" class="eav-form-field" style="width: 360px; max-width: calc(100% - 40px);">
+        <mat-form-field color="accent" style="width: 360px; max-width: calc(100% - 40px);">
           <mat-label>Select an Action on the Controller</mat-label>
           <mat-select [value]="vm.selected?.name" (selectionChange)="updateAction($event.value)">
             @for (action of vm.details.actions; track action) {

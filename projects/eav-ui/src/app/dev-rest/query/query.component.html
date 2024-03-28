@@ -1,68 +1,72 @@
 @if (viewModel$ | async; as vm) {
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">
-      <div>Using REST with Query <code>{{ vm.name }}</code></div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
+<div class="eav-dialog eav-no-scrollbar">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Using REST with Query:&nbsp; <code>{{ vm.name }}</code></div>
+    @if (!isSideNavContent){
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+    }
   </div>
-  <router-outlet></router-outlet>
-  <!-- Template below this line -->
-  <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="vm.scenario.key"
-    (valueChange)="changeScenario($event)">
-  </app-selector-with-help>
-  <mat-tab-group dynamicHeight color="accent"
-    class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
-    <!-- Introduction -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
-        <mat-icon>emoji_objects</mat-icon>
-        <span>Introduction</span>
-      </div>
-      <app-dev-query-introduction [data]="vm"></app-dev-query-introduction>
-      <app-dev-rest-tab-introduction [data]="vm"></app-dev-rest-tab-introduction>
-    </mat-tab>
-    <!-- Absolute / Virtual URLs -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box"
-        [tippy]="(vm.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
-        <mat-icon>code_curly</mat-icon>
-        <span>Call {{ vm.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
-      </div>
-      <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
-      <!-- Custom Parameters for calling -->
-      <div class="params-form">
-        <mat-form-field color="accent">
-          <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
-          <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
-        </mat-form-field>
-        <mat-form-field color="accent">
-          <mat-label>Additional Url Parameters</mat-label>
-          <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
-        </mat-form-field>
-      </div>
-      <!-- REST Tab showing the urls and code snippets -->
-      <app-dev-rest-urls-and-code [data]="vm"></app-dev-rest-urls-and-code>
-    </mat-tab>
-    <!-- Permissions explained -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
-        <mat-icon>person</mat-icon>
-        <span>Permissions ({{ vm.permissions.length }})</span>
-        @if (!vm.permissions.length) {
+  <div class="eav-dialog-content">
+    <router-outlet></router-outlet>
+    <!-- Template below this line -->
+    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="vm.scenario.key"
+      (valueChange)="changeScenario($event)">
+    </app-selector-with-help>
+    <mat-tab-group dynamicHeight color="accent"
+      class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
+      <!-- Introduction -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
+          <mat-icon>emoji_objects</mat-icon>
+          <span>Introduction</span>
+        </div>
+        <app-dev-query-introduction [data]="vm"></app-dev-query-introduction>
+        <app-dev-rest-tab-introduction [data]="vm"></app-dev-rest-tab-introduction>
+      </mat-tab>
+      <!-- Absolute / Virtual URLs -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box"
+          [tippy]="(vm.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
+          <mat-icon>code_curly</mat-icon>
+          <span>Call {{ vm.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
+        </div>
+        <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
+        <!-- Custom Parameters for calling -->
+        <div class="params-form">
+          <mat-form-field color="accent">
+            <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
+            <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
+          </mat-form-field>
+          <mat-form-field color="accent">
+            <mat-label>Additional Url Parameters</mat-label>
+            <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
+          </mat-form-field>
+        </div>
+        <!-- REST Tab showing the urls and code snippets -->
+        <app-dev-rest-urls-and-code [data]="vm"></app-dev-rest-urls-and-code>
+      </mat-tab>
+      <!-- Permissions explained -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
+          <mat-icon>person</mat-icon>
+          <span>Permissions ({{ vm.permissions.length }})</span>
+          @if (!vm.permissions.length) {
           <mat-icon>warning</mat-icon>
-        }
-      </div>
-      <app-dev-rest-tab-permissions [data]="vm"></app-dev-rest-tab-permissions>
-    </mat-tab>
-    <!-- HTTP Headers Explained -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
-        <mat-icon>perm_device_information</mat-icon>
-        <span>HTTP headers & &nbsp;<code>/auto/</code></span>
-      </div>
-      <app-dev-rest-tab-headers [data]="vm"></app-dev-rest-tab-headers>
-    </mat-tab>
-  </mat-tab-group>
+          }
+        </div>
+        <app-dev-rest-tab-permissions [data]="vm"></app-dev-rest-tab-permissions>
+      </mat-tab>
+      <!-- HTTP Headers Explained -->
+      <mat-tab>
+        <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
+          <mat-icon>perm_device_information</mat-icon>
+          <span>HTTP headers & &nbsp;<code>/auto/</code></span>
+        </div>
+        <app-dev-rest-tab-headers [data]="vm"></app-dev-rest-tab-headers>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
 }

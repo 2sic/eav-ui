@@ -1,6 +1,6 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -24,7 +24,7 @@ import { ViewActionsParams } from './views-actions/views-actions.models';
 import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
-import { FeaturesService } from '../../shared/services/features.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-views',
@@ -52,7 +52,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
     private viewsService: ViewsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-    private featuresService: FeaturesService
+    private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
    }
@@ -68,11 +68,12 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       map(([views, polymorphStatus]) => ({ views, polymorphStatus }))
     );
 
-    this.featuresService.getContext$().subscribe(data => {
-      this.enableCode = data.Enable.CodeEditor
-      this.enablePermissions = data.Enable.AppPermissions
-      this.appIsGlobal = data.App.IsShared
-      this.appIsInherited = data.App.IsInherited
+    this.dialogConfigSvc.getCurrent$().subscribe(data => {
+      var ctx = data.Context;
+      this.enableCode = ctx.Enable.CodeEditor
+      this.enablePermissions = ctx.Enable.AppPermissions
+      this.appIsGlobal = ctx.App.IsShared
+      this.appIsInherited = ctx.App.IsInherited
     });
   }
 

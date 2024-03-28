@@ -1,7 +1,8 @@
 import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
+import { EavLogger } from '../../logging/eav-logger';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
@@ -10,8 +11,10 @@ export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
+    public log?: EavLogger
   ) {
     super();
+    this.log ??= new EavLogger('BaseComponent', false);
   }
 
   ngOnDestroy() {

@@ -3,12 +3,21 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
 import { consoleLogDev } from '../helpers/console-log-angular.helper';
 import { EavWindow } from '../models/eav-window.model';
+import { ServiceBase } from './service-base';
+import { EavLogger } from '../logging/eav-logger';
 
 declare const window: EavWindow;
 
-/** The context provides information */
+const logThis = false;
+
+/** The context provides information
+ * Context is used to display information about the current app in various depths.
+ * In other words, if you open another app in a deeper dialog in the app on Apps Management
+ * (the component is deeper), you get the information from this app and not the initial app.
+ */
+
 @Injectable()
-export class Context {
+export class Context extends ServiceBase {
 
   /** Id of current context */
   public id: number;
@@ -52,6 +61,8 @@ export class Context {
   private _moduleId: number;
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
+    super(new EavLogger('Context', logThis));
+    this.log.add('constructor', 'parentContext', parentContext, 'parentId', parentContext?.id);
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
@@ -61,17 +72,20 @@ export class Context {
   }
 
   /**
-   * This is the initializer at entry-componets of modules.
+   * This is the initializer at entry-components of modules.
    * It ensures that within that module, the context has the values given by the route
    */
   init(route: ActivatedRoute) {
-    this.routeSnapshot = route && route.snapshot;
+    this.log.add('init', 'route', route);
+    this.routeSnapshot = route?.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
+    this.log.add('init done', this, 'appId', this.appId, 'zoneId', this.zoneId, 'contentBlockId', this.contentBlockId, 'moduleId', this.moduleId);
     consoleLogDev('Context.init', this, route);
   }
 
   initRoot() {
+    this.log.add('initRoot');
     this._zoneId = this.sessionNumber(keyZoneId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
     this._moduleId = this.sessionNumber(keyModuleId);
@@ -101,7 +115,6 @@ export class Context {
   private routeNum(name: string): number {
     // catch case where state is null, like when the recursive parent is in use
     if (this.routeSnapshot == null) { return null; }
-
     const paramName = name.substring(prefix.length);
     const result = this.routeSnapshot.paramMap.get(paramName);
     if (result !== null) {

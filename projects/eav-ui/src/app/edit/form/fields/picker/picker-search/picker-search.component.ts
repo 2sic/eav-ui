@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { PickerItem, PickerTreeItem, TreeItem, UiPickerModeTree } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -14,6 +14,9 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
 import { PickerData } from '../picker-data';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 @Component({
   selector: 'app-picker-search',
@@ -43,6 +46,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private isTreeDisplayMode: boolean = false;
 
   private filter$ = new BehaviorSubject(false);
+
+  private log = new EavLogger('PickerSearchComponent', logThis);
 
   constructor(
     private translate: TranslateService,
@@ -77,7 +82,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const required$ = state.required$;
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+    const setLog = this.log.rxTap('settings$');
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+      setLog.pipe(),
+      // tap(() => console.log('2dm')),
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableAddExisting: settings.EnableAddExisting,
@@ -90,11 +98,20 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         PickerTreeConfiguration: settings.PickerTreeConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
+      setLog.distinctUntilChanged(),
     );
+
+    const testLog = this.log.rxTap('test$');
+    combineLatest([/*debugEnabled$, settings$, this.selectedItems$, */ this.availableItems$,]).pipe(
+      testLog.pipe(),
+    ).subscribe();
+
+    const vmLog = this.log.rxTap('viewModel$');
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.selectedItems$, this.availableItems$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.filter$,
     ]).pipe(
+      vmLog.pipe(),
       map(([
         debugEnabled, settings, selectedItems, availableItems, error,
         controlStatus, freeTextMode, label, required, filter

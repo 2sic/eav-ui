@@ -3,11 +3,17 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { FeatureDetailsDialogData } from './feature-details-dialog.models';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-feature-details-dialog',
-  templateUrl: './feature-details-dialog.component.html',
-  styleUrls: ['./feature-details-dialog.component.scss']
+    selector: 'app-feature-details-dialog',
+    templateUrl: './feature-details-dialog.component.html',
+    styleUrls: ['./feature-details-dialog.component.scss'],
+    standalone: true,
+    imports: [MatCardModule, SharedComponentsModule, MatButtonModule, MatIconModule]
 })
 export class FeatureDetailsDialogComponent {
 

@@ -65,13 +65,10 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getShared$() /*.getDialogSettings() */.pipe(
-      tap(
-        dialogSettings => {
-          this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);
-          this.translate.use(dialogSettings.Context.Language.Current.split('-')[0]);
-        })
-    ).subscribe();
+    this.appDialogConfigService.getCurrent$().subscribe(dialogSettings => {
+      this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);
+      this.translate.use(dialogSettings.Context.Language.Current.split('-')[0]);
+    });
   }
 
   closeDialog() {

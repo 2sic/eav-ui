@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, Subscription, switchMap} from 'rxjs';
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from 'rxjs';
 import { GlobalConfigService } from '../../../edit/shared/store/ngrx-data/global-config.service';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
@@ -11,11 +11,20 @@ import { ZoneService } from '../../services/zone.service';
 
 // Images/Icons
 import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss']
+  styleUrls: ['./registration.component.scss'],
+  standalone: true,
+  imports: [SharedComponentsModule, MatCardModule, MatIconModule, MatButtonModule, AsyncPipe],
+  providers: [ZoneService, FeaturesConfigService],
+
 })
 export class RegistrationComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
@@ -15,7 +15,7 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
-import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -27,7 +27,8 @@ import { DataFieldsComponent } from './data-fields/data-fields.component';
 import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
-import { FeaturesService } from '../../shared/services/features.service';
+import { ScopeDetailsDto } from '../models/scopedetails.dto';
+import { AppDialogConfigService } from '../services';
 
 @Component({
   selector: 'app-data',
@@ -38,7 +39,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
-  scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
+
+  /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
+  scopeOptions$ = new BehaviorSubject<ScopeDetailsDto[]>([]);
   gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
@@ -55,7 +58,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private contentExportService: ContentExportService,
-    private featuresService: FeaturesService
+    private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
 
@@ -66,9 +69,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.refreshScopeOnRouteChange();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchContentTypes(); }));
 
-
-    this.featuresService.getContext$().pipe(map(d => d.Enable.AppPermissions)).subscribe(data => {
-      this.enablePermissions = data;
+    this.dialogConfigSvc.getCurrent$().subscribe(data => {
+      this.enablePermissions = data.Context.Enable.AppPermissions;
     });
   }
 
@@ -133,17 +135,23 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private fetchScopes() {
-    this.contentTypesService.getScopes().subscribe(scopeOptions => {
-      const newScopes = [...this.scopeOptions$.value];
-      scopeOptions.forEach(scopeOption => {
-        const existing = newScopes.find(scope => scope.value === scopeOption.value);
-        if (existing) {
-          existing.name = scopeOption.name;
-        } else {
-          newScopes.push(scopeOption);
-        }
+    this.contentTypesService.getScopesV2().subscribe(scopeList => {
+      // Merge the new scopes with the existing ones - in case there were manual scopes added
+      // If old scope list had a manual scope which the server didn't send, re-add it here
+      const manual = this.scopeOptions$.value
+        .filter(sOld => scopeList.find(sNew => sNew.name === sOld.name) == null);
+
+      // Add a nice label to each scope containing count-information of types
+      const withNiceLabel = scopeList.map(s => {
+        let countInfo = !s.typesInherited
+          ? `${s.typesTotal} types`               // only not-inherited
+          : (s.typesInherited == s.typesTotal)
+            ? s.typesInherited + ' sys types'     // only inherited
+            : `${s.typesTotal} types / ${s.typesInherited} system`;
+        return ({ ...s, label: s.name + ` - ${countInfo}` });
       });
-      this.scopeOptions$.next(newScopes);
+
+      this.scopeOptions$.next([...withNiceLabel, ...manual]);
     });
   }
 
@@ -239,6 +247,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Refreshes the scope when the route changes.
+   * ...also adds a scope name if the route scope is not found in the list of possible scopes.
+   * This is to allow an admin to enter a custom scope.
+   * Note 2024-03-04 2dm - not sure if this auto-add feature is still needed though...
+   */
   private refreshScopeOnRouteChange() {
     this.subscription.add(
       this.router.events.pipe(
@@ -249,10 +263,15 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
       ).subscribe(scope => {
         this.scope$.next(scope);
-        if (!this.scopeOptions$.value.map(option => option.value).includes(scope)) {
-          const newScopeOption: ScopeOption = {
+
+        // If we can't find the scope in the list of options, add it as it was entered manually
+        if (!this.scopeOptions$.value.map(option => option.name).includes(scope)) {
+          const newScopeOption: ScopeDetailsDto = {
             name: scope,
-            value: scope,
+            label: scope,
+            typesTotal: 0,
+            typesInherited: 0,
+            typesOfApp: 0,
           };
           this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
         }

@@ -10,15 +10,18 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
-  constructor(
-    public deleteCallback: (props: DeleteEntityProps) => void,
-    logSpecs: EavLogger,
-  ) {
+  public deleteCallback: (props: DeleteEntityProps) => void;
+
+  constructor(logSpecs: EavLogger) {
     super(logSpecs);
   }
 
+  protected setup(deleteCallback: (props: DeleteEntityProps) => void): void { 
+    this.deleteCallback = deleteCallback;
+  }
+
   init(callerName: string) {
-    this.logger.add(`init(${callerName})`);
+    this.log.add(`init(${callerName})`);
   }
 
   onAfterViewInit(): void { }

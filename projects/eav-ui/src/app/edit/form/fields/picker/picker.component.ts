@@ -1,46 +1,71 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, map, Observable } from 'rxjs';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
+import { map, Observable } from 'rxjs';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './picker.models';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
+import { StringFieldDataSource } from './data-sources/string-field-data-source';
+import { QueryFieldDataSource } from './data-sources/query-field-data-source';
+import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
+import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
+import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
+import { PickerDataSourceEmpty } from './data-sources/picker-data-source-empty';
+import { PickerStateAdapter } from './adapters/picker-state-adapter';
+import { PickerEntityStateAdapter } from './adapters/picker-entity-state-adapter';
+import { PickerStringStateAdapter } from './adapters/picker-string-state-adapter';
 
 const logThis = false;
+
+/**
+ * These providers must be added to all the picker controls.
+ * This is important, so that they get a new instance of the services.
+ * Otherwise the end up sharing the same instance of the service.
+ * ...and when opened the second time, they will show an empty dropdown.
+ */
+export const pickerProviders = [
+  StringFieldDataSource,
+  EntityFieldDataSource,
+  QueryFieldDataSource,
+  PickerDataSourceEmpty,
+
+  PickerStringSourceAdapter,
+  PickerEntitySourceAdapter,
+  PickerQuerySourceAdapter,
+
+  PickerStateAdapter,
+  PickerStringStateAdapter,
+  PickerEntityStateAdapter,
+];
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
   templateUrl: './picker.component.html',
   styleUrls: ['./picker.component.scss'],
+  providers: pickerProviders,
 })
-// @FieldMetadata({})
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   pickerData: PickerData;
   isStringQuery: boolean;
-  isString: boolean;
 
   viewModel$: Observable<PickerViewModel>;
 
-  protected log: EavLogger = new EavLogger('PickerComponent', logThis);
+  public log: EavLogger = new EavLogger('PickerComponent', logThis);
 
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    protected entityService: EntityService,
-    public translate: TranslateService,
     public editRoutingService: EditRoutingService,
-    public entityCacheService: EntityCacheService,
-    public stringQueryCacheService: StringQueryCacheService,
   ) {
     super(eavService, fieldsSettingsService);
   }
 
   ngOnInit(): void {
+    this.log.add('ngOnInit');
     super.ngOnInit();
     this.refreshOnChildClosed();
   }
@@ -50,6 +75,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    * If the PickerData already exists, it will be reused
    */
   initAdaptersAndViewModel(): void {
+    this.log.add('initAdaptersAndViewModel');
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
@@ -68,12 +94,13 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngAfterViewInit(): void {
+    this.log.add('ngAfterViewInit');
     this.pickerData.source.onAfterViewInit();
   }
 
   ngOnDestroy(): void {
+    this.log.add('ngOnDestroy');
     this.pickerData.destroy();
-
     super.ngOnDestroy();
   }
 
@@ -82,10 +109,11 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     throw new Error('Method not implemented. Must be overridden by inheriting class.');
   }
 
-  createViewModel() {
-    this.viewModel$ = combineLatest([this.pickerData.state.allowMultiValue$])
+  createViewModel(): void {
+    this.log.add('createViewModel');
+    this.viewModel$ = this.pickerData.state.allowMultiValue$
       .pipe(
-        map(([allowMultiValue]) => {
+        map(allowMultiValue => {
           // allowMultiValue is used to determine if we even use control with preview and dialog
           const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
           const viewModel: PickerViewModel = {

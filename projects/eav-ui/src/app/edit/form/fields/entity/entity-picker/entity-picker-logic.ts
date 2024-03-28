@@ -4,6 +4,7 @@ import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
+import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 
 export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeConstants.WIPEntityPicker;
@@ -11,19 +12,8 @@ export class EntityPickerLogic extends FieldLogicBase {
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     let dataSources: EavEntity[] = [];
     let pickerDisplayConfigurations: EavEntity[] = [];
-    const fs: FieldSettings = { ...settings };
-
-    /** Entity Default logic */
-    fs.AllowMultiValue ??= false;
-    fs.EnableEdit ??= true;
-    fs.EnableCreate ??= true;
-    fs.EnableAddExisting ??= true;
-    fs.EnableRemove ??= true;
-    fs.EnableDelete ??= false;
-    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
-    // fixedSettings.IncludeParentApps ??= false;
-
-    fs.Label ??= '';
+    
+    const fs = EntityDefaultLogic.setDefaultSettings({ ...settings });
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
       // tslint:disable-next-line: max-line-length

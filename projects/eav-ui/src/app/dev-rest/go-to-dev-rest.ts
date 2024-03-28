@@ -4,6 +4,26 @@ import { ContentType, WebApi } from '../app-administration/models';
 const base = 'restapi';
 
 export class GoToDevRest {
+  static routeQuery = 'restapiquery';
+  static routeData = 'restapidata';
+
+  static navLabel = 'Rest-Api';
+  static icon = 'code-curly';
+
+  static routeDataDefinition = {
+    name: GoToDevRest.navLabel,
+    icon: GoToDevRest.icon,
+    svgIcon: true,
+    path: GoToDevRest.routeData
+  };
+
+  static routeQueryDefinition = {
+    name: GoToDevRest.navLabel,
+    icon: GoToDevRest.icon,
+    svgIcon: true,
+    path: GoToDevRest.routeQuery
+  };
+
   static paramTypeName: 'contentTypeStaticName';
   static paramQuery: 'queryGuid';
   static paramApiPath: 'webApiPath';
@@ -12,12 +32,22 @@ export class GoToDevRest {
     loadChildren: () => import('./dev-rest.module').then(m => m.DevRestModule),
   };
 
+  // todo: setup not quite elegant, using relative route. Should be refactored to use absolute route
+  /** Route to Data REST - for use in Admin-List */
   static getUrlData(contentType: ContentType): string {
-    return `${base}/data/${contentType.StaticName}`;
+    return `../../${GoToDevRest.routeData}/${contentType.StaticName}`;
+    // return `${base}/data/${contentType.StaticName}`;
   }
 
-  static getUrlQuery(guid: string): string {
+  /** Route to Query REST in dialog mode - for visual query */
+  static getUrlQueryDialog(guid: string): string {
     return `${base}/query/${guid}`;
+  }
+
+  // todo: setup not quite elegant, using relative route. Should be refactored to use absolute route
+  /** Route to Query in Admin UI - for use in Admin-List */
+  static getUrlQueryInAdmin(guid: string): string {
+    return `../${GoToDevRest.routeQuery}/${guid}`;
   }
 
   static getUrlWebApi(api: WebApi): string {

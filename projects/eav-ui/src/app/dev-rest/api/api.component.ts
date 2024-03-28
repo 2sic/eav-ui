@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap, take } from 'rxjs';
 import { DevRestBase } from '..';
 import { AppDialogConfigService } from '../../app-administration/services';
@@ -10,13 +10,57 @@ import { Context } from '../../shared/services/context';
 import { GoToDevRest } from '../go-to-dev-rest';
 import { generateWebApiCalls } from './api-samples';
 import { DevRestApiViewModel } from './api-template-vars';
+import { AsyncPipe } from '@angular/common';
+import { DevRestHttpHeadersComponent } from '../tab-headers/tab-headers.component';
+import { DevRestApiPermissionsComponent } from './permissions/permissions.component';
+import { DevRestUrlsAndCodeComponent } from '../dev-rest-urls-and-code/dev-rest-urls-and-code.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { DevRestApiActionParamsComponent } from './action-params/action-params.component';
+import { DevRestTabExamplesComponent } from '../tab-examples/tab-examples.component';
+import { DevRestTabIntroductionComponent } from '../tab-introduction/tab-introduction.component';
+import { DevRestApiIntroductionComponent } from './introduction/introduction.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
 const pathToApi = 'app/{appname}/api/{controller}/{action}';
 
 @Component({
-  selector: 'app-dev-rest-api',
-  templateUrl: './api.component.html',
-  styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
+    selector: 'app-dev-rest-api',
+    templateUrl: './api.component.html',
+    styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        TippyStandaloneDirective,
+        MatIconModule,
+        RouterOutlet,
+        SelectorWithHelpComponent,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatTabsModule,
+        DevRestApiIntroductionComponent,
+        DevRestTabIntroductionComponent,
+        DevRestTabExamplesComponent,
+        DevRestApiActionParamsComponent,
+        MatExpansionModule,
+        MatInputModule,
+        DevRestUrlsAndCodeComponent,
+        DevRestApiPermissionsComponent,
+        DevRestHttpHeadersComponent,
+        AsyncPipe,
+    ],
+    providers: [
+      SourceService,
+      AppDialogConfigService,
+    ],
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

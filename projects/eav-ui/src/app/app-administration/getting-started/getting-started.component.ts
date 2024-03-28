@@ -9,7 +9,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
 })
 export class GettingStartedComponent {
 
-  gettingStartedUrl$ = this.appDialogConfigService.getShared$().pipe(map(
+  gettingStartedUrl$ = this.appDialogConfigService.getCurrent$().pipe(map(
     dialogSettings => dialogSettings.Context.App.GettingStartedUrl
   ));
 

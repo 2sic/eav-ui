@@ -14,7 +14,7 @@
           </app-picker-toggle-text>
         </app-picker-pills>
       }
-      @if (vm.selectedItems.length < 2 && !vm.freeTextMode) {
+      @if (vm.selectedItems.length <= 1 && !vm.freeTextMode) {
         <app-picker-search
           [pickerData]="pickerData"
           [config]="config"

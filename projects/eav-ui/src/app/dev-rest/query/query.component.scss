@@ -6,3 +6,24 @@
     margin-left: 8px;
   }
 }
+
+.eav-dialog-content {
+  margin: 0;
+  padding: 0;
+  max-height: $edit-ui-dialog-max-height;
+  background-color: rgba(0, 0, 0, 0.06);
+
+  @media (max-width: 600px) {
+    max-height: $edit-ui-dialog-max-height-mobile;
+  }
+
+  // override for expandable field header to be visible on safari
+  // as main dialog header was above it otherwise
+  &.hide-header-height-fix {
+    max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height}) !important;
+
+    @media (max-width: 600px) {
+      max-height: calc(#{$edit-ui-dialog-max-height-mobile} + #{$edit-ui-dialog-header-max-height}) !important;
+    }
+  }
+}
