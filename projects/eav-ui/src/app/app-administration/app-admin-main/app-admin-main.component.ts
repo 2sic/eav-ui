@@ -37,7 +37,7 @@ export class AppAdminMainComponent extends BaseComponent implements OnInit, OnDe
     super(router, route, new EavLogger('AppAdminMainComponent', logThis));
     this.log.add('constructor', 'appDialogConfigService', appDialogConfigService);
   }
-  
+
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
@@ -77,7 +77,6 @@ export class AppAdminMainComponent extends BaseComponent implements OnInit, OnDe
 
 
   ngOnInit() {
-
     this.fetchDialogSettings();
     this.subscription.add(
       this.refreshOnChildClosedShallow().subscribe(() => {
