@@ -1,18 +1,22 @@
-import { Observable, Subscription, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
+import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
 import { PickerSourceAdapter } from "./adapters/picker-source-adapter";
 import { PickerStateAdapter } from "./adapters/picker-state-adapter";
 import { PickerItem } from 'projects/edit-types';
 import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
 import { TranslateService } from '@ngx-translate/core';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-export class PickerData {
+const logThis = false;
+
+export class PickerData extends ServiceBase {
   public selectedItems$ = new Observable<PickerItem[]>;
-  private subscriptions = new Subscription();
   constructor(
     public state: PickerStateAdapter,
     public source: PickerSourceAdapter,
     private translate: TranslateService,
   ) {
+    super(new EavLogger('PickerData', false));
     // TODO: @SDV include this take(1) and remove this.subscriptions after fixing an issue of why 
     // labels don't show on on picker list (or picker search if we added new items in picker list...)
 
@@ -39,9 +43,9 @@ export class PickerData {
   }
 
   destroy() {
-    this.subscriptions.unsubscribe();
     this.source.destroy();
     this.state.destroy();
+    super.destroy();
   }
 
   private createUIModel(

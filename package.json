@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "17.02.00",
+  "version": "17.06.01",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
     "prod-main": "ng build --configuration production --plugin ~./build-helpers/external-source-maps-main.js",
     "build-prepare": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",
     "build-languages": "node ./build-helpers/build-languages",
-    "docs-prepare": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s"
+    "docs-prepare": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s",
+    "ci": "npm ci --legacy-peer-deps"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^14.7.1",

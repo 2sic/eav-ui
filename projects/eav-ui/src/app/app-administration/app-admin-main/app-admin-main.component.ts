@@ -9,17 +9,35 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AppsAdministationNavItems } from './administation-nav-items';
+import { AppAdminMenu } from './app-admin-menu';
+import { EavLogger } from '../../shared/logging/eav-logger';
 
+const logThis = false;
 
 @Component({
-  selector: 'app-app-administration-nav',
-  templateUrl: './app-administration-nav.component.html',
-  styleUrls: ['./app-administration-nav.component.scss'],
+  selector: 'app-app-admin-main',
+  templateUrl: './app-admin-main.component.html',
+  styleUrls: ['./app-admin-main.component.scss'],
+  providers: [
+    // Must have a new config service here, to restart with new settings
+    // which are injected into it from the context
+    // Because of standalone-components, it's not enough to have it in the module-definition
+    AppDialogConfigService,
+  ],
 })
-export class AppAdministrationNavComponent
-  extends BaseComponent
-  implements OnInit, OnDestroy {
+export class AppAdminMainComponent extends BaseComponent implements OnInit, OnDestroy {
+
+  constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
+    private dialogRef: MatDialogRef<AppAdminMainComponent>,
+    private appDialogConfigService: AppDialogConfigService,
+    private media: MediaMatcher
+  ) {
+    super(router, route, new EavLogger('AppAdminMainComponent', logThis));
+    this.log.add('constructor', 'appDialogConfigService', appDialogConfigService);
+  }
+
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
@@ -53,22 +71,12 @@ export class AppAdministrationNavComponent
   sideNavOpened = !this.smallScreen.matches;
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
-  navItems = AppsAdministationNavItems;
+  navItems = AppAdminMenu;
 
   matcher!: MediaQueryList;
 
-  constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
-    private appDialogConfigService: AppDialogConfigService,
-    private media: MediaMatcher
-  ) {
-    super(router, route);
-  }
 
   ngOnInit() {
-
     this.fetchDialogSettings();
     this.subscription.add(
       this.refreshOnChildClosedShallow().subscribe(() => {
@@ -103,7 +111,7 @@ export class AppAdministrationNavComponent
   // }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

@@ -1,20 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerComponent } from '../../picker/picker.component';
+import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
+import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
+  providers: pickerProviders,
 })
 @FieldMetadata({
   // wrappers: [WrappersConstants.LocalizationWrapper],
@@ -23,22 +23,15 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    entityService: EntityService,
-    translate: TranslateService,
+    private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
-    private sourceFactory: PickerSourceAdapterFactoryService,
-    private stateFactory: PickerStateAdapterFactoryService,
+    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
+    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
   ) {
     super(
       eavService,
       fieldsSettingsService,
-      entityService,
-      translate,
       editRoutingService,
-      entityCacheService,
-      stringQueryCacheService,
     );
     EntityDefaultLogic.importMe();
   }
@@ -57,30 +50,17 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerStringStateAdapter(
-      this.control,
-      this.config,
-      this.settings$,
-      this.editRoutingService,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-      () => this.focusOnSearchComponent,
-    );
+    this.log.add('createPickerAdapters');
+    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
 
-    const source = this.sourceFactory.createPickerStringSourceAdapter(
-      state.disableAddNew$,
-      this.fieldsSettingsService,
-
-      state.control,
-      this.config,
+    const source = this.pickerStringSourceAdapterRaw.setupString(
       state.settings$,
-      this.editRoutingService,
+      state.disableAddNew$,
+      this.config,
       this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => state.doAfterDelete(props)
     );
+;
 
     state.init();
     source.init('StringDropdownComponent.createPickerAdapters');

@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'r
 import { generateApiCalls } from '..';
 import { PickerItem } from '../../../../../edit-types';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
-import { EavService, EntityService } from '../../edit/shared/services';
+import { EavService, EntityService, QueryService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -58,6 +58,8 @@ const pathToContent = 'app/{appname}/data/{typename}';
     AppDialogConfigService,
     ContentTypesService,
     EavService,
+    // WIP - should be self-declared by the EntitiesService
+    QueryService,
   ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
@@ -65,7 +67,8 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
 
   @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
-  isSideNavContent: boolean;
+  // wip - probably no use case where it's a dialog
+  // isSideNavContent: boolean;
 
   constructor(
     dialogRef: MatDialogRef<DevRestDataComponent>,
@@ -81,7 +84,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     dnnContext: DnnContext,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
-    this.isSideNavContent = this.router.url.includes('restapidata');
+    // this.isSideNavContent = this.router.url.includes(GoToDevRest.routeData);
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),

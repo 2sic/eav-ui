@@ -20,8 +20,8 @@
         </button>
         <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
         @if (uploadType == UploadTypes.App) {
-          <button mat-raised-button class="eav-app-catalog-button"
-            tippy="Open app catalog" (click)="showAppCatalog()"><!-- [disabled]="vm.uploading" -->
+          <button mat-raised-button class="eav-app-catalog-button" [disabled]="vm.uploading"
+            tippy="Open app catalog" (click)="showAppCatalog()">
             Get recommended Apps from Catalog
           </button>
         }
@@ -50,24 +50,28 @@
         </div>
       }
       @if (uploadType == UploadTypes.App && vm.showAppCatalog) {
-        <iframe #installerWindow class="eav-app-catalog-iframe"
-          src="//gettingstarted.2sxc.org/router.aspx?Platform=Dnn&amp;SysVersion=9.6.1&amp;SxcVersion=16.07.01&amp;destination=autoconfigureapp&amp;ModuleId=1197&amp;SiteId=16&amp;ZoneID=17&amp;DefaultLanguage=en-us&amp;CurrentLanguage=en-us&amp;SysGuid=DB92DBFC-0C60-4101-93C6-803C2FE244B6&amp;AppId=&amp;fp=c2b7fabe7d51a0a0f6484d72bc119c8bf2d14b8ad29b30696a9148f9845a766c">
-        </iframe>
+        @if (ready) {
+          <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
+        }
+        @if (showProgress) {
+          <div class="eav-progress">
+            <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+            <span>Installing {{ currentPackage?.displayName }}..</span>
+          </div>
+        }
       }
     </div>
-    @if (!vm.showAppCatalog) {
-      <mat-dialog-actions align="end">
-        @if (!vm.result?.Success) {
-          <button mat-raised-button (click)="closeDialog()">Cancel</button>
-          <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
-            (click)="upload()">
-            Upload
-          </button>
-        }
-        @if (vm.result?.Success) {
-          <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
-        }
-      </mat-dialog-actions>
-    }
+    <mat-dialog-actions align="end">
+      @if (!vm.result?.Success) {
+        <button mat-raised-button (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
+          (click)="upload()">
+          Upload
+        </button>
+      }
+      @if (vm.result?.Success) {
+        <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
+      }
+    </mat-dialog-actions>
   </div>
 }

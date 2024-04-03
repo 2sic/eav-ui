@@ -57,6 +57,13 @@ export interface PickerItem extends EntityForPicker {
    */
   _helpLink?: string;
 
+  /**
+   * The streamName is used for tree config when we have data from multiple streams and they have same Ids.
+   * This property does not come from the server, but must be added by code from the settings.
+   * That's why it has an underscore.
+   */
+  _streamName?: string;
+
   data?: {
     [key: string]: any;  
   }

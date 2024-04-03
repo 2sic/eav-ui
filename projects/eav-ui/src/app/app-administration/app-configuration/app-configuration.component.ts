@@ -101,7 +101,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.fetchSettings();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
 
-    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
       const appScope = dialogSettings.Context.App.SettingsScope;
       this.isGlobal = appScope === AppScopes.Global;

@@ -46,7 +46,7 @@ export class DevRestBase<ViewModelType> extends BaseSubsinkComponent implements 
 
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
-    this.dialogSettings$ = appDialogConfigService.getShared$(); // .getDialogSettings().pipe(share());
+    this.dialogSettings$ = appDialogConfigService.getCurrent$();
 
   }
 

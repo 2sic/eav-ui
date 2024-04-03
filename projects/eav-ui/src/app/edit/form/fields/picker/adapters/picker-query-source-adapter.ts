@@ -1,71 +1,67 @@
-import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, PickerItem } from "projects/edit-types";
+import { PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
-import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { DeleteEntityProps } from "../picker.models";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
-import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
+import { Injectable } from '@angular/core';
+import { PickerComponent } from '../picker.component';
+import { PickerStateAdapter } from './picker-state-adapter';
 
-const logThis = false;
+const logThis = true;
 
+@Injectable()
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
-  private queryFieldDataSource: QueryFieldDataSource;
+  // private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
-    public error$: BehaviorSubject<string> = new BehaviorSubject(''),
-    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-
     public fieldsSettingsService: FieldsSettingsService,
     public queryService: QueryService,
     public stringQueryCacheService: StringQueryCacheService,
-
-    public isStringQuery: boolean,
-
-    // Below this is needed for base class
-    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-
     public entityCacheService: EntityCacheService,
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
-    public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-
-    protected config: FieldConfigSet,
-    protected group: FormGroup,
-
     public snackBar: MatSnackBar,
-    public control: AbstractControl,
-
-    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,
+    private queryFieldDataSource: QueryFieldDataSource,
   ) {
     super(
-      disableAddNew$,
-      settings$,
       entityCacheService,
       entityService,
       eavService,
       editRoutingService,
       translate,
-      config,
-      group,
       snackBar,
-      control,
-      // fetchAvailableEntities,
-      deleteCallback,
       new EavLogger('PickerQuerySourceAdapter', logThis),
     );
+  }
+
+  private error$: BehaviorSubject<string>;
+  private isStringQuery: boolean;
+
+  public /* override */ setupFromComponent(component: PickerComponent, state: PickerStateAdapter): this {
+    this.log.add('setupFromComponent');
+    super.setupFromComponent(component, state);
+    this.isStringQuery = component.isStringQuery;
+    return this;
+  }
+
+
+  public setupQuery(
+    error$: BehaviorSubject<string>,
+  ): this {
+
+    this.log.add('setupQuery');
+    this.error$ = error$;
+    return this;
   }
 
   init(callerName: string): void {
@@ -90,13 +86,23 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       })
     );
 
-    this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
+    this.log.add('init - isStringQuery', this.isStringQuery);
+
+    this.queryFieldDataSource.setupQuery(
       this.settings$,
       this.isStringQuery,
       this.config.entityGuid,
       this.config.fieldName,
       this.eavService.eavConfig.appId,
     );
+
+    // this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
+    //   this.settings$,
+    //   this.isStringQuery,
+    //   this.config.entityGuid,
+    //   this.config.fieldName,
+    //   this.eavService.eavConfig.appId,
+    // );
 
     this.flushAvailableEntities();
 
@@ -112,7 +118,8 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
         } else {
           this.availableItems$.next(items);
         }
-      }, error: (error) => {
+      },
+      error: (error) => {
         this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
       }
     }));
@@ -143,6 +150,11 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   fetchItems(): void {
+    this.log.add('fetchItems');
+    // this.contentType = this.contentTypeMask.resolve();
+    // console.warn('2dm content-type', this.contentType);
+    // this.entityFieldDataSource.contentType(this.contentType);
+
     this.queryFieldDataSource.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
@@ -154,6 +166,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   flushAvailableEntities(): void {
+    this.log.add('flushAvailableEntities, isStringQuery', this.isStringQuery);
     if (!this.isStringQuery) {
       this.subscriptions.add(
         this.settings$.pipe(

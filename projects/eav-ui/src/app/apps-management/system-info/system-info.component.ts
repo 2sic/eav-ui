@@ -1,9 +1,8 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { DialogSettings } from '../../app-administration/models';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
@@ -72,7 +71,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
     private featuresService: FeaturesService,
-    appDialogConfigService: AppDialogConfigService
+    private dialogSettings: AppDialogConfigService,
   ) {
     super(router, route);
   }
@@ -103,13 +102,13 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   }
 
   openSiteSettings(): void {
-    this.featuresService.getSitePrimaryApp$().subscribe(sitePrimaryApp => {
+    this.dialogSettings.getSitePrimaryApp$().subscribe(sitePrimaryApp => {
       this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
     })
   }
 
   openGlobalSettings(): void {
-    this.featuresService.getGlobalPrimaryApp$().subscribe(globalPrimaryApp => {
+    this.dialogSettings.getGlobalPrimaryApp$().subscribe(globalPrimaryApp => {
       this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
     })
   }

@@ -12,6 +12,8 @@ import { EntityService, EavService, EditRoutingService } from "../../../../share
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerStateAdapter } from './picker-state-adapter';
+import { PickerComponent } from '../picker.component';
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   private createEntityTypes: string = '';
@@ -20,25 +22,57 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
   constructor(
-    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-    public entityCacheService: EntityCacheService,
-    public entityService: EntityService,
-    public eavService: EavService,
-    public editRoutingService: EditRoutingService,
-    protected translate: TranslateService,
-    protected config: FieldConfigSet,
-    protected group: FormGroup,
+    public entityCacheService: EntityCacheService,  // DI
+    public entityService: EntityService, // DI
+    public eavService: EavService, // DI
+    public editRoutingService: EditRoutingService, // DI
+    protected translate: TranslateService, // DI
     public snackBar: MatSnackBar,
-    public control: AbstractControl,
-    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
-    public deleteCallback: (props: DeleteEntityProps) => void,
     logSpecs: EavLogger,
   ) {
-    super(
-      deleteCallback,
-      logSpecs,
+    super(logSpecs);
+    this.log.add('constructor');
+  }
+
+  disableAddNew$: BehaviorSubject<boolean>;
+  settings$: BehaviorSubject<FieldSettings>;
+  protected config: FieldConfigSet;
+  protected group: FormGroup;
+  public control: AbstractControl;
+
+  public setupFromComponent(
+    component: PickerComponent,
+    state: PickerStateAdapter,
+  ): this  {
+    this.log.add('setupFromComponent');
+    this.log.inherit(component.log);
+    return this.setupShared(
+      component.settings$,
+      component.config,
+      component.group,
+      component.control,
+      state.disableAddNew$,
+      (props: DeleteEntityProps) => state.doAfterDelete(props),
     );
+  }
+
+  public setupShared(
+    settings$: BehaviorSubject<FieldSettings>,
+    config: FieldConfigSet,
+    group: FormGroup,
+    control: AbstractControl,
+    disableAddNew$: BehaviorSubject<boolean>,
+    deleteCallback: (props: DeleteEntityProps) => void,
+  ): this {
+    this.log.add('setupShared');
+    this.settings$ = settings$;
+    this.config = config;
+    this.group = group;
+    this.control = control;
+    this.disableAddNew$ = disableAddNew$;
+    super.setup(deleteCallback);
+
+    return this;
   }
 
   init(callerName: string): void {
@@ -78,10 +112,12 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   onAfterViewInit(): void {
+    this.log.add('onAfterViewInit');
     this.contentType = this.contentTypeMask.resolve();
   }
 
   updateAddNew(): void {
+    this.log.add('updateAddNew');
     const contentTypeName = this.contentTypeMask.resolve();
     this.disableAddNew$.next(!contentTypeName && !this.createEntityTypes);
   }
@@ -91,6 +127,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
+    this.log.add('editItem', editParams);
     if (editParams)
       this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
@@ -116,6 +153,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   deleteItem(props: DeleteEntityProps): void {
+    this.log.add('deleteItem', props);
     const entity = this.availableItems$.value.find(item => item.Value === props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;
@@ -159,6 +197,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
    * new 11.11.03
    */
   private getPrefill(): Record<string, string> {
+    this.log.add('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
       const prefillMask =

@@ -8,8 +8,8 @@
         <mat-form-field color="accent" class="eav-form-field eav-scope-dropdown">
           <mat-select [ngModel]="vm.scope" name="Scope" (ngModelChange)="changeScope($event)">
             @for (scopeOption of (vm.scopeOptions); track scopeOption) {
-              <mat-option [value]="scopeOption.value">
-                {{ 'Scope: ' + scopeOption.name }}
+              <mat-option [value]="scopeOption.name">
+                {{ 'Scope: ' + scopeOption.label }}
               </mat-option>
             }
             <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>

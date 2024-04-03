@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { NavItem } from '../../models/nav-item.model';
-import { filter, map } from 'rxjs';
-
 
 @Component({
   selector: 'app-nav-item-list',
@@ -20,44 +18,18 @@ export class NavItemListComponent implements OnInit {
 
   openChildMenu() {
     if (this.navItem.child?.length) {
-      let found = false;
-      // TODO:: Any
+
       this.router.events.subscribe((event: any) => {
-        if (
-          event.routerEvent instanceof NavigationEnd &&
-          !found
-        ) {
+        if (event.routerEvent instanceof NavigationEnd) {
+
           const urlSegments = event.routerEvent.urlAfterRedirects.split('/');
-          found = this.navItem?.child?.some((child) => {
-            return urlSegments.some((segment: string) => segment === child.path);
-          });
-          if (found) {
+
+          const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
+          if (matchingChild) {
             this.isOpenMenu = true;
           }
         }
       });
     }
   }
-
-  // TODO:: Typed works not
-  // openChildMenu() {
-  //   if (this.navItem.child?.length) {
-  //     let found = false;
-  //     // TODO:: any
-  //     this.router.events.subscribe((event: any) => {
-  //       if (
-  //         event.routerEvent instanceof NavigationEnd &&
-  //         !found
-  //       ) {
-  //         const urlSegments = event.routerEvent.urlAfterRedirects.split('/');
-  //         found = this.navItem?.child?.some((child) => {
-  //           return urlSegments.some((segment: string) => segment === child.path);
-  //         });
-  //         if (found) {
-  //           this.isOpenMenu = true;
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
 }

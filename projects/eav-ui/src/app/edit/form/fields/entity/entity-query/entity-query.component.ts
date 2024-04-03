@@ -1,20 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
-import { PickerComponent } from '../../picker/picker.component';
+import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
-import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
+import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
+  providers: pickerProviders,
 })
 @FieldMetadata({})
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
@@ -22,59 +24,36 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    entityService: EntityService,
-    translate: TranslateService,
+    protected translate: TranslateService,
     editRoutingService: EditRoutingService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
-    protected sourceFactory: PickerSourceAdapterFactoryService,
-    protected stateFactory: PickerStateAdapterFactoryService,
+    private stateRaw: PickerEntityStateAdapter,
+    protected querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
       eavService,
       fieldsSettingsService,
-      entityService,
-      translate,
       editRoutingService,
-      entityCacheService,
-      stringQueryCacheService,
     );
+    this.log = new EavLogger('EntityQueryComponent', logThis);
+    this.log.add('constructor');
     EntityQueryLogic.importMe();
     this.isStringQuery = false;
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (!this.isStringQuery)
-      this.initAdaptersAndViewModel();
-  }
-
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
+    // always do this
+    this.initAdaptersAndViewModel();
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    const state = this.stateFactory.createPickerEntityStateAdapter(this);
+    this.log.add('createPickerAdapters');
+    const state = this.stateRaw.setupFromComponent(this);
 
-    const source = this.sourceFactory.createPickerQuerySourceAdapter(
-      state.error$,
-      state.disableAddNew$,
-      this.fieldsSettingsService,
-      this.isStringQuery,
-
-      state.control,
-      this.config,
-      state.settings$,
-      this.editRoutingService,
-      this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
-    );
+    this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
+    this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
+    const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
+      .setupQuery(state.error$);
 
     state.init();
     source.init('EntityQueryComponent.createPickerAdapters');

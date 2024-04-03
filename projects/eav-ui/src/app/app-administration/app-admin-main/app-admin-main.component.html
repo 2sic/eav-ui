@@ -9,7 +9,7 @@
     <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
     }
     <!-- App Name -->
-    <div>
+    <div class="d-flex">
       @if (vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global) {
       Global
       }
@@ -17,10 +17,13 @@
       {{ vm.dialogSettings?.Context.App.Name }}
       }
       <span>
+        <span class="mat-icon-admin">
+          <mat-icon>settings</mat-icon>
+        </span>
         Admin
       </span>
     </div>
-    <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
+    <!-- Breadcrumb in the Toolbar after show Img and Aoo Name -->
     <xng-breadcrumb [separator]="emptyTemplate">
       <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
         @if (last) {

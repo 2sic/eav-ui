@@ -7,20 +7,12 @@ export class EntityDefaultLogic extends FieldLogicBase {
   name = InputTypeConstants.EntityDefault;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+    
+    const fixedSettings = EntityDefaultLogic.setDefaultSettings({ ...settings });
+    
     fixedSettings.EntityType ??= '';
     fixedSettings.CreateTypes = fixedSettings.EntityType;
-    fixedSettings.AllowMultiValue ??= false;
-    fixedSettings.EnableEdit ??= true;
-    fixedSettings.EnableCreate ??= true;
-    fixedSettings.EnableAddExisting ??= true;
-    fixedSettings.EnableRemove ??= true;
-    fixedSettings.EnableDelete ??= false;
-    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
-    // fixedSettings.IncludeParentApps ??= false;
-
     fixedSettings.MoreFields ??= '';
-    fixedSettings.Label ??= '';
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
       // tslint:disable-next-line: max-line-length
@@ -33,6 +25,17 @@ export class EntityDefaultLogic extends FieldLogicBase {
     }
 
     return fixedSettings;
+  }
+
+  static setDefaultSettings(settings: FieldSettings): FieldSettings {
+    settings.AllowMultiValue ??= false;
+    settings.EnableEdit ??= true;
+    settings.EnableCreate ??= true;
+    settings.EnableAddExisting ??= true;
+    settings.EnableRemove ??= true;
+    settings.EnableDelete ??= false;
+    settings.Label ??= '';
+    return settings;
   }
 }
 

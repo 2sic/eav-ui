@@ -14,8 +14,15 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-data-rest-api',
   standalone: true,
-  imports: [MatSelectModule, MatButtonModule,
-    MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestDataComponent, RouterOutlet],
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    DevRestDataComponent,
+    RouterOutlet],
   providers: [ContentTypesService],
   templateUrl: './data-rest-api.component.html',
   styleUrl: './data-rest-api.component.scss'

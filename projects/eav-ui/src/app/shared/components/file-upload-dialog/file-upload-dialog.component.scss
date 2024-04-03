@@ -12,3 +12,24 @@
   height: 500px;
   border: none;
 }
+
+.eav-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, .8);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+
+  mat-progress-spinner {
+    margin: 0 auto;
+  }
+
+  span {
+    line-height: 48px;
+  }
+}

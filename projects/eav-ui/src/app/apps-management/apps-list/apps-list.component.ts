@@ -38,29 +38,29 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 const logThis = false;
 
 @Component({
-    selector: 'app-apps-list',
-    templateUrl: './apps-list.component.html',
-    styleUrls: ['./apps-list.component.scss'],
-    standalone: true,
-    imports: [
-        AgGridModule,
-        SharedComponentsModule,
-        MatDialogActions,
-        EcoFabSpeedDialComponent,
-        NgClass,
-        EcoFabSpeedDialTriggerComponent,
-        MatButtonModule,
-        MatIconModule,
-        EcoFabSpeedDialActionsComponent,
-        MatBadgeModule,
-        RouterOutlet,
-        AsyncPipe,
-    ],
-    providers: [
-        AppsListService,
-        FeaturesService,
-        AppDialogConfigService,
-    ],
+  selector: 'app-apps-list',
+  templateUrl: './apps-list.component.html',
+  styleUrls: ['./apps-list.component.scss'],
+  standalone: true,
+  imports: [
+    AgGridModule,
+    SharedComponentsModule,
+    MatDialogActions,
+    EcoFabSpeedDialComponent,
+    NgClass,
+    EcoFabSpeedDialTriggerComponent,
+    MatButtonModule,
+    MatIconModule,
+    EcoFabSpeedDialActionsComponent,
+    MatBadgeModule,
+    RouterOutlet,
+    AsyncPipe,
+  ],
+  providers: [
+    AppsListService,
+    FeaturesService,
+    AppDialogConfigService,
+  ],
 })
 export class AppsListComponent extends BaseComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
@@ -72,8 +72,6 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   private refreshApps$ = new Subject<void>();
 
   viewModel$: Observable<AppsListViewModel>;
-
-  private log = new EavLogger('AppsListComponent', logThis);
 
   constructor(
     protected router: Router,
@@ -88,7 +86,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     private changeDetectorRef: ChangeDetectorRef,
     appDialogConfigService: AppDialogConfigService
   ) {
-    super(router, route);
+    super(router, route, new EavLogger('AppsListComponent', logThis));
     ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
   }
 
