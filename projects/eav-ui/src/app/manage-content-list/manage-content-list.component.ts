@@ -1,8 +1,8 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
@@ -10,13 +10,32 @@ import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 import { AppDialogConfigService } from '../app-administration/services';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BaseComponent } from '../shared/components/base-component/base.component';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
-  selector: 'app-manage-content-list',
-  templateUrl: './manage-content-list.component.html',
-  styleUrls: ['./manage-content-list.component.scss'],
+    selector: 'app-manage-content-list',
+    templateUrl: './manage-content-list.component.html',
+    styleUrls: ['./manage-content-list.component.scss'],
+    standalone: true,
+    imports: [
+        RouterOutlet,
+        CdkScrollable,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        CdkDropList,
+        CdkDrag,
+        MatDialogActions,
+        AsyncPipe,
+        TranslateModule,
+    ],
+    providers: [ContentGroupService, AppDialogConfigService]
 })
 export class ManageContentListComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -52,7 +71,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     this.fetchList();
     this.fetchHeader();
     this.fetchDialogSettings();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
       this.fetchList(true);
       this.fetchHeader();
     }));
@@ -137,7 +156,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
   remove(item: GroupHeader) {
     if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) { return; }
     this.snackBar.open('Removing...');
-    this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => { 
+    this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => {
       this.snackBar.open('Removed', null, { duration: 2000 });
       this.fetchList();
     });
