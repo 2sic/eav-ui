@@ -6,7 +6,7 @@
   <mat-icon>{{ navItem.icon }}</mat-icon>
   }
   <div class="link-text">{{ navItem.name }}</div>
-  <mat-icon *ngIf="navItem.child"  [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more
+  <mat-icon *ngIf="navItem.child" [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more
   </mat-icon>
 </a>
 
