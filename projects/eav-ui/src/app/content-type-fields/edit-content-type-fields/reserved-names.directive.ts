@@ -3,8 +3,9 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@an
 import { ReservedNames } from '../models/reserved-names.model';
 
 @Directive({
-  selector: '[appReservedNames]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true }],
+    selector: '[appReservedNames]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true }],
+    standalone: true,
 })
 export class ReservedNamesValidatorDirective implements Validator {
   @Input('appReservedNames') reservedNames: ReservedNames = {};

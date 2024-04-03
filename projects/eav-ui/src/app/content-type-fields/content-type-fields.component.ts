@@ -1,9 +1,9 @@
 // tslint:disable-next-line:max-line-length
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -27,11 +27,27 @@ import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 
 @Component({
-  selector: 'app-content-type-fields',
-  templateUrl: './content-type-fields.component.html',
-  styleUrls: ['./content-type-fields.component.scss'],
+    selector: 'app-content-type-fields',
+    templateUrl: './content-type-fields.component.html',
+    styleUrls: ['./content-type-fields.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        AgGridModule,
+        NgClass,
+        MatDialogActions,
+        AsyncPipe,
+    ],
 })
 export class ContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);

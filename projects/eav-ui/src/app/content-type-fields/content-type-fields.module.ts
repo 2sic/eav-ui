@@ -32,43 +32,16 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FeaturesModule } from '../features/features.module';
 
 @NgModule({
-  declarations: [
-    ContentTypeFieldsComponent,
-    ContentTypeFieldsTitleComponent,
-    ContentTypeFieldsInputTypeComponent,
-    ContentTypeFieldsActionsComponent,
-    EditContentTypeFieldsComponent,
-    ContentTypeFieldsTypeComponent,
-    ContentTypeFieldsSpecialComponent,
-    ReservedNamesValidatorDirective,
-    AddSharingFieldsComponent,
-    ShareOrInheritDialogComponent,
-  ],
   imports: [
-    CommonModule,
     ContentTypeFieldsRoutingModule,
-    SharedComponentsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    SxcGridModule,
-    FormsModule,
-    MatInputModule,
-    MatSelectModule,
-    MatRippleModule,
-    MatSnackBarModule,
-    MatMenuModule,
-    MatBadgeModule,
-    MatTableModule,
-    MatCardModule,
-    TranslateModule,
-    FeaturesModule,
   ],
   providers: [
     Context,
     ContentTypesService,
     ContentTypesFieldsService,
-    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
+
+    // @2dg, no impact of style since angular 16+
+    // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
   ]
 })
 export class ContentTypeFieldsModule { }

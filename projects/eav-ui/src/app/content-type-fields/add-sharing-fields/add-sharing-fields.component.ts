@@ -1,23 +1,34 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray, pipe } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormsModule } from '@angular/forms';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { FeaturesModule } from '../../features/features.module';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-add-sharing-fields',
-  templateUrl: './add-sharing-fields.component.html',
-  styleUrls: ['./add-sharing-fields.component.scss']
+    selector: 'app-add-sharing-fields',
+    templateUrl: './add-sharing-fields.component.html',
+    styleUrls: ['./add-sharing-fields.component.scss'],
+    standalone: true,
+    imports: [MatCardModule, MatTableModule, MatButtonModule, FormsModule, MatFormFieldModule, MatInputModule, ReservedNamesValidatorDirective, SharedComponentsModule, MatDialogActions, FeaturesModule, AsyncPipe, TranslateModule]
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

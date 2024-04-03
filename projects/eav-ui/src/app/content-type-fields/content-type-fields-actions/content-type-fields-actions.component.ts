@@ -6,11 +6,24 @@ import { InputTypeConstants } from '../constants/input-type.constants';
 import { Field } from '../models/field.model';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-content-type-fields-actions',
-  templateUrl: './content-type-fields-actions.component.html',
-  styleUrls: ['./content-type-fields-actions.component.scss'],
+    selector: 'app-content-type-fields-actions',
+    templateUrl: './content-type-fields-actions.component.html',
+    styleUrls: ['./content-type-fields-actions.component.scss'],
+    standalone: true,
+    imports: [
+        MatRippleModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+    ],
 })
 export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent implements ICellRendererAngularComp, OnDestroy {
   field: Field;
