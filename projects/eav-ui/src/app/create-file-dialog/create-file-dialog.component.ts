@@ -1,5 +1,5 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
 import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
@@ -9,11 +9,22 @@ import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 import { SanitizeHelper } from '../edit/shared/helpers';
 import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SharedComponentsModule } from '../shared/shared-components.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-create-file-dialog',
   templateUrl: './create-file-dialog.component.html',
-  styleUrls: ['./create-file-dialog.component.scss']
+  styleUrls: ['./create-file-dialog.component.scss'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, SharedComponentsModule, MatProgressSpinnerModule, MatButtonModule, NgClass, AsyncPipe],
+  providers: [SourceService],
 })
 export class CreateFileDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
