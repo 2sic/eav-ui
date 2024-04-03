@@ -12,14 +12,25 @@ import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
 @Component({
-  selector: 'app-plumb-editor',
-  templateUrl: './plumb-editor.component.html',
-  styles: [':host { display: block; width: 100%; height: 100%; }'],
-  styleUrls: ['./plumb-editor.component.scss'],
+    selector: 'app-plumb-editor',
+    templateUrl: './plumb-editor.component.html',
+    styles: [':host { display: block; width: 100%; height: 100%; }'],
+    styleUrls: ['./plumb-editor.component.scss'],
+    standalone: true,
+    imports: [
+        NgStyle,
+        NgClass,
+        MatIconModule,
+        SharedComponentsModule,
+        AsyncPipe,
+    ],
 })
 export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;

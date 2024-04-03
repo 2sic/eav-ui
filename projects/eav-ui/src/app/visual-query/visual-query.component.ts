@@ -1,14 +1,29 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Context } from '../shared/services/context';
 import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
 import { VisualQueryService } from './services/visual-query.service';
+import { AddExplorerComponent } from './add-explorer/add-explorer.component';
+import { RunExplorerComponent } from './run-explorer/run-explorer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { NgClass } from '@angular/common';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 
 @Component({
-  selector: 'app-visual-query',
-  templateUrl: './visual-query.component.html',
-  styleUrls: ['./visual-query.component.scss'],
-  providers: [VisualQueryService],
+    selector: 'app-visual-query',
+    templateUrl: './visual-query.component.html',
+    styleUrls: ['./visual-query.component.scss'],
+    providers: [VisualQueryService],
+    standalone: true,
+    imports: [
+        RouterOutlet,
+        SharedComponentsModule,
+        NgClass,
+        MatIconModule,
+        RunExplorerComponent,
+        AddExplorerComponent,
+        PlumbEditorComponent,
+    ],
 })
 export class VisualQueryComponent implements OnInit {
   @ViewChild(PlumbEditorComponent) plumbEditor: PlumbEditorComponent;

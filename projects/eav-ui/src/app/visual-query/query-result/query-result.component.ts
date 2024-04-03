@@ -3,11 +3,25 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DebugStreamInfo, PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models';
 import { VisualQueryService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
+import { JsonPipe, KeyValuePipe } from '@angular/common';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-query-result',
-  templateUrl: './query-result.component.html',
-  styleUrls: ['./query-result.component.scss'],
+    selector: 'app-query-result',
+    templateUrl: './query-result.component.html',
+    styleUrls: ['./query-result.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatTabsModule,
+        JsonPipe,
+        KeyValuePipe,
+    ],
 })
 export class QueryResultComponent implements OnInit {
   parameters: string[];
