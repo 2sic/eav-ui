@@ -30,16 +30,20 @@ import { MatCardModule } from '@angular/material/card';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeaturesModule } from '../features/features.module';
+import { ContentItemsService } from '../content-items/services/content-items.service';
 
 @NgModule({
   imports: [
     ContentTypeFieldsRoutingModule,
+    SxcGridModule,
+    TranslateModule,
+    FeaturesModule,
   ],
   providers: [
     Context,
     ContentTypesService,
     ContentTypesFieldsService,
-
+    ContentItemsService,
     // @2dg, no impact of style since angular 16+
     // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
   ]
