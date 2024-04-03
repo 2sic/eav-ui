@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 // import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MetadataRoutingModule } from './metadata-routing.module';
 import { Context } from '../shared/services/context';
+import { FeatureDetailService } from '../features/services/feature-detail.service';
 @NgModule({
   imports: [
     MetadataRoutingModule,

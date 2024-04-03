@@ -5,11 +5,24 @@ import { ContentItem } from '../models/content-item.model';
 import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsStatusParams } from './content-items-status.models';
 import { EavForInAdminUi } from '../../edit/shared/models/eav';
+import { MatBadgeModule } from '@angular/material/badge';
+import { NgClass } from '@angular/common';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-content-items-status',
-  templateUrl: './content-items-status.component.html',
-  styleUrls: ['./content-items-status.component.scss'],
+    selector: 'app-content-items-status',
+    templateUrl: './content-items-status.component.html',
+    styleUrls: ['./content-items-status.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatIconModule,
+        MatRippleModule,
+        NgClass,
+        MatBadgeModule,
+    ],
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   value: PubMeta;

@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith, Subscription } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
@@ -14,11 +14,21 @@ import { ContentItem } from '../models/content-item.model';
 import { ContentItemsService } from '../services/content-items.service';
 import { MetadataDialogViewModel, MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
 import { metadataKeyValidator } from './metadata-key.validator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-create-metadata-dialog',
-  templateUrl: './create-metadata-dialog.component.html',
-  styleUrls: ['./create-metadata-dialog.component.scss']
+    selector: 'app-create-metadata-dialog',
+    templateUrl: './create-metadata-dialog.component.html',
+    styleUrls: ['./create-metadata-dialog.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, SharedComponentsModule, NgTemplateOutlet, MatButtonModule, NgClass, MatIconModule, MatDialogActions, MatSlideToggleModule, AsyncPipe]
 })
 export class CreateMetadataDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

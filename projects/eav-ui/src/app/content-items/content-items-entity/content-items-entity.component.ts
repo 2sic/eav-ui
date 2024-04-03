@@ -2,11 +2,14 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ExtendedColDef } from '../models/extended-col-def.model';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-content-items-entity',
-  templateUrl: './content-items-entity.component.html',
-  styleUrls: ['./content-items-entity.component.scss'],
+    selector: 'app-content-items-entity',
+    templateUrl: './content-items-entity.component.html',
+    styleUrls: ['./content-items-entity.component.scss'],
+    standalone: true,
+    imports: [SharedComponentsModule],
 })
 export class ContentItemsEntityComponent implements ICellRendererAngularComp {
   encodedValue: string;

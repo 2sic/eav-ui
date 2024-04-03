@@ -3,11 +3,22 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsActionsParams } from './content-items-actions.models';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-content-items-actions',
-  templateUrl: './content-items-actions.component.html',
-  styleUrls: ['./content-items-actions.component.scss'],
+    selector: 'app-content-items-actions',
+    templateUrl: './content-items-actions.component.html',
+    styleUrls: ['./content-items-actions.component.scss'],
+    standalone: true,
+    imports: [
+        MatRippleModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatMenuModule,
+    ],
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
   item: ContentItem;
