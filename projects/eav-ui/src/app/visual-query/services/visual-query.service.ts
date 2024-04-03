@@ -9,6 +9,7 @@ import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
+import { QueryDefinitionService } from './query-definition.service';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -19,7 +20,6 @@ import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
-import { QueryDefinitionService } from './query-definition.service';
 
 @Injectable()
 export class VisualQueryService extends BaseComponent implements OnDestroy {
@@ -45,7 +45,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -59,7 +59,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
       if (this.refreshPipeline || this.refreshDataSourceConfigs) {
         this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
       }
