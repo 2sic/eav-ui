@@ -7,6 +7,7 @@ import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
+import { FeatureDetailService } from '../features/services/feature-detail.service';
 @NgModule({
   imports: [
     SxcGridModule,

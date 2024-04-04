@@ -8,7 +8,7 @@ import { FeatureDetailService } from '../features/services/feature-detail.servic
     MetadataRoutingModule,
   ],
   providers: [
-    // Is use in the top level of Compontent tree
+    // Is use in the top level of Component tree
     Context,
     // @2dg, no impact of style since angular 16+
     // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },

@@ -30,27 +30,28 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { FeatureDetailService } from '../features/services/feature-detail.service';
 
 @Component({
-    selector: 'app-metadata',
-    templateUrl: './metadata.component.html',
-    styleUrls: ['./metadata.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        RouterOutlet,
-        AgGridModule,
-        MatDialogActions,
-        EcoFabSpeedDialComponent,
-        NgClass,
-        EcoFabSpeedDialTriggerComponent,
-        EcoFabSpeedDialActionsComponent,
-        MatBadgeModule,
-        AsyncPipe,
-    ],
-    providers: [EntitiesService, MetadataService]
+  selector: 'app-metadata',
+  templateUrl: './metadata.component.html',
+  styleUrls: ['./metadata.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    MatDialogActions,
+    EcoFabSpeedDialComponent,
+    NgClass,
+    EcoFabSpeedDialTriggerComponent,
+    EcoFabSpeedDialActionsComponent,
+    MatBadgeModule,
+    AsyncPipe,
+  ],
+  providers: [EntitiesService, MetadataService, FeatureDetailService]
 })
 export class MetadataComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
