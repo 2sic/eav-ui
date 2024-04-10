@@ -6,11 +6,29 @@ import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
 import { calculateTreeAppShared } from './code-templates.helpers';
 import { appSharedRoot, CreateTemplateParams } from './code-templates.models';
+import { SortItemsPipe } from './order-items.pipe';
+import { DepthPaddingPipe } from './depth-padding.pipe';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-code-templates',
-  templateUrl: './code-templates.component.html',
-  styleUrls: ['./code-templates.component.scss'],
+    selector: 'app-code-templates',
+    templateUrl: './code-templates.component.html',
+    styleUrls: ['./code-templates.component.scss'],
+    standalone: true,
+    imports: [
+        NgTemplateOutlet,
+        NgClass,
+        SharedComponentsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        DepthPaddingPipe,
+        SortItemsPipe,
+    ],
 })
 export class CodeTemplatesComponent implements OnChanges {
   @Input() view?: SourceView;

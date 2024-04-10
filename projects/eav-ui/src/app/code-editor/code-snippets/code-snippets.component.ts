@@ -1,11 +1,26 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GeneralHelpers } from '../../edit/shared/helpers';
 import { SnippetsSets } from '../models/snippet.model';
+import { ObjectToArrayPipe } from './object-to-array.pipe';
+import { TranslateModule } from '@ngx-translate/core';
+import { KeyValuePipe } from '@angular/common';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-code-snippets',
-  templateUrl: './code-snippets.component.html',
-  styleUrls: ['./code-snippets.component.scss'],
+    selector: 'app-code-snippets',
+    templateUrl: './code-snippets.component.html',
+    styleUrls: ['./code-snippets.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatIconModule,
+        MatRippleModule,
+        KeyValuePipe,
+        TranslateModule,
+        ObjectToArrayPipe,
+    ],
 })
 export class CodeSnippetsComponent {
   @Input() snippets: SnippetsSets;

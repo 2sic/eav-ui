@@ -21,11 +21,31 @@ import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MonacoEditorComponent as MonacoEditorComponent_1 } from '../monaco-editor/monaco-editor.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
+import { CodeTemplatesComponent } from './code-templates/code-templates.component';
+import { MatIconModule } from '@angular/material/icon';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 
 @Component({
-  selector: 'app-code-editor',
-  templateUrl: './code-editor.component.html',
-  styleUrls: ['./code-editor.component.scss'],
+    selector: 'app-code-editor',
+    templateUrl: './code-editor.component.html',
+    styleUrls: ['./code-editor.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        NgClass,
+        MatIconModule,
+        CodeTemplatesComponent,
+        CodeSnippetsComponent,
+        MatProgressSpinnerModule,
+        MonacoEditorComponent_1,
+        MatButtonModule,
+        AsyncPipe,
+    ],
 })
 export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
