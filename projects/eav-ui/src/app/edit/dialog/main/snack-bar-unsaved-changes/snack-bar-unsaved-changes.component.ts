@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UpperCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout/flex';
-
 @Component({
     selector: 'app-snack-bar-unsaved-changes',
     templateUrl: './snack-bar-unsaved-changes.component.html',
