@@ -39,6 +39,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogActions } from '@angular/material/dialog';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-data',
@@ -57,6 +58,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
         MatIconModule,
         RouterOutlet,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {

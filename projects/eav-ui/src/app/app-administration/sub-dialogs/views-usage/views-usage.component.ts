@@ -17,6 +17,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-views-usage',
@@ -30,6 +31,7 @@ import { SharedComponentsModule } from '../../../shared/shared-components.module
         RouterOutlet,
         AgGridModule,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {

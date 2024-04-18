@@ -27,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-queries',
@@ -41,6 +42,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
         MatIconModule,
         RouterOutlet,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {

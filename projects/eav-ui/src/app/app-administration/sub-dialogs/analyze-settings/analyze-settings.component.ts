@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-analyze-settings',
@@ -38,6 +39,7 @@ import { MatButtonModule } from '@angular/material/button';
         MatOptionModule,
         AgGridModule,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {

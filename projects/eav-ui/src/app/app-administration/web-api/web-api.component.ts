@@ -21,6 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-web-api',
@@ -36,6 +37,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
         MatIconModule,
         RouterOutlet,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class WebApiComponent implements OnInit, OnDestroy {

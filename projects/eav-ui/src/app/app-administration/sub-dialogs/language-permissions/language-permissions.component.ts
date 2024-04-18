@@ -17,6 +17,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-language-permissions',
@@ -31,6 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
         AgGridModule,
         MatDialogActions,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class LanguagePermissionsComponent extends BaseComponent implements OnInit, OnDestroy {

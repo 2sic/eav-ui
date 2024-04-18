@@ -12,6 +12,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
     selector: 'app-settings-item-details',
@@ -24,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule,
         AgGridModule,
         AsyncPipe,
+        SxcGridModule,
     ],
 })
 export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
@@ -99,6 +101,6 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   }
 }
 
-interface SettingsItemDetailsViewModel { 
+interface SettingsItemDetailsViewModel {
   stack: SettingsStackItem[];
 }
