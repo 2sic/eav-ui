@@ -6,9 +6,10 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 
 @Component({
-  selector: InputTypeConstants.CustomDefault,
-  templateUrl: './custom-default.component.html',
-  styleUrls: ['./custom-default.component.scss'],
+    selector: InputTypeConstants.CustomDefault,
+    templateUrl: './custom-default.component.html',
+    styleUrls: ['./custom-default.component.scss'],
+    standalone: true,
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

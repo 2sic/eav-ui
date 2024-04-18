@@ -5,11 +5,29 @@ import { EavService, FormsStateService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditDialogHeaderViewModel } from './edit-dialog-header.models';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { LanguageSwitcherComponent } from './language-switcher/language-switcher.component';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-edit-dialog-header',
-  templateUrl: './edit-dialog-header.component.html',
-  styleUrls: ['./edit-dialog-header.component.scss'],
+    selector: 'app-edit-dialog-header',
+    templateUrl: './edit-dialog-header.component.html',
+    styleUrls: ['./edit-dialog-header.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        LanguageSwitcherComponent,
+        AsyncPipe,
+        UpperCasePipe,
+        TranslateModule,
+    ],
 })
 export class EditDialogHeaderComponent implements OnInit {
   @Input() disabled: boolean;

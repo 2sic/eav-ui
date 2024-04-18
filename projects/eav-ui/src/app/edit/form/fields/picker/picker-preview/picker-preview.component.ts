@@ -8,11 +8,38 @@ import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerData } from '../picker-data';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { PickerTextComponent } from '../picker-text/picker-text.component';
+import { PickerSearchComponent } from '../picker-search/picker-search.component';
+import { PickerTextToggleComponent } from '../picker-text-toggle/picker-text-toggle.component';
+import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'app-picker-preview',
-  templateUrl: './picker-preview.component.html',
-  styleUrls: ['./picker-preview.component.scss'],
+    selector: 'app-picker-preview',
+    templateUrl: './picker-preview.component.html',
+    styleUrls: ['./picker-preview.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        PickerPillsComponent,
+        PickerTextToggleComponent,
+        PickerSearchComponent,
+        PickerTextComponent,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatMenuModule,
+        MatIconModule,
+        FieldHelperTextComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PickerPreviewComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @Input() pickerData: PickerData;

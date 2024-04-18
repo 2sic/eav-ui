@@ -13,14 +13,23 @@ import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-s
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { AsyncPipe } from '@angular/common';
+import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
 
 @Component({
-  selector: InputTypeConstants.WIPStringPicker,
-  templateUrl: '../../picker/picker.component.html',
-  styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
+    selector: InputTypeConstants.WIPStringPicker,
+    templateUrl: '../../picker/picker.component.html',
+    styleUrls: ['../../picker/picker.component.scss'],
+    providers: pickerProviders,
+    standalone: true,
+    imports: [
+        PickerPreviewComponent,
+        PickerDialogComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   // wrappers: [WrappersConstants.LocalizationWrapper],

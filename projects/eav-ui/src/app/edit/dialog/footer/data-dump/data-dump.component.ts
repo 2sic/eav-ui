@@ -3,11 +3,14 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { EavService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
 import { DataDumpViewModel } from './data-dump.component.models';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-data-dump',
-  templateUrl: './data-dump.component.html',
-  styleUrls: ['./data-dump.component.scss'],
+    selector: 'app-data-dump',
+    templateUrl: './data-dump.component.html',
+    styleUrls: ['./data-dump.component.scss'],
+    standalone: true,
+    imports: [AsyncPipe, JsonPipe],
 })
 export class DataDumpComponent implements OnInit {
   viewModel$: Observable<DataDumpViewModel>;

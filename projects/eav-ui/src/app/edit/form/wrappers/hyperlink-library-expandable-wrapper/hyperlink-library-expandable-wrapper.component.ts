@@ -10,12 +10,42 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { HyperlinkLibraryExpandableViewModel } from './hyperlink-library-expandable-wrapper.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
+import { FieldHelperTextComponent } from '../../shared/field-helper-text/field-helper-text.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRippleModule } from '@angular/material/core';
+import { ExtendedFabSpeedDialModule } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
-  templateUrl: './hyperlink-library-expandable-wrapper.component.html',
-  styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
+    selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
+    templateUrl: './hyperlink-library-expandable-wrapper.component.html',
+    styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        FlexModule,
+        MatCardModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        ExtendedFabSpeedDialModule,
+        MatRippleModule,
+        MatFormFieldModule,
+        FieldHelperTextComponent,
+        FeatureIconTextComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {

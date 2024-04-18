@@ -5,11 +5,23 @@ import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
+import { AdamHintComponent } from './adam-hint/adam-hint.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
 
 @Component({
-  selector: WrappersConstants.AdamWrapper,
-  templateUrl: './adam-wrapper.component.html',
-  styleUrls: ['./adam-wrapper.component.scss'],
+    selector: WrappersConstants.AdamWrapper,
+    templateUrl: './adam-wrapper.component.html',
+    styleUrls: ['./adam-wrapper.component.scss'],
+    standalone: true,
+    imports: [
+        AdamBrowserComponent,
+        NgClass,
+        ExtendedModule,
+        AdamHintComponent,
+        AsyncPipe,
+    ],
 })
 export class AdamWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

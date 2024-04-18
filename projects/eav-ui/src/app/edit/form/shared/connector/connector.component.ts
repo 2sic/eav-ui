@@ -11,9 +11,10 @@ import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.mo
 import { ConnectorHelper } from './connector.helper';
 
 @Component({
-  selector: 'app-connector',
-  templateUrl: './connector.component.html',
-  styleUrls: ['./connector.component.scss'],
+    selector: 'app-connector',
+    templateUrl: './connector.component.html',
+    styleUrls: ['./connector.component.scss'],
+    standalone: true,
 })
 export class ConnectorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customElContainer') private customElContainerRef: ElementRef;

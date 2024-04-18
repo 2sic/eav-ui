@@ -5,11 +5,29 @@ import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldsSettingsService } from '../../../shared/services';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { FieldHelperTextViewModel } from './field-helper-text.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-field-helper-text',
-  templateUrl: './field-helper-text.component.html',
-  styleUrls: ['./field-helper-text.component.scss'],
+    selector: 'app-field-helper-text',
+    templateUrl: './field-helper-text.component.html',
+    styleUrls: ['./field-helper-text.component.scss'],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        MatFormFieldModule,
+        FlexModule,
+        ChangeAnchorTargetDirective,
+        SharedComponentsModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;

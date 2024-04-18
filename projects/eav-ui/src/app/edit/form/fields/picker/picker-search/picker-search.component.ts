@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { TranslateService } from '@ngx-translate/core';
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem, PickerTreeItem, TreeItem, UiPickerModeTree } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -12,16 +12,41 @@ import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-buil
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { MatOptionModule } from '@angular/material/core';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 const logThis = false;
 
 @Component({
-  selector: 'app-picker-search',
-  templateUrl: './picker-search.component.html',
-  styleUrls: ['./picker-search.component.scss'],
+    selector: 'app-picker-search',
+    templateUrl: './picker-search.component.html',
+    styleUrls: ['./picker-search.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        ExtendedModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatIconModule,
+        SharedComponentsModule,
+        MatOptionModule,
+        MatTreeModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;

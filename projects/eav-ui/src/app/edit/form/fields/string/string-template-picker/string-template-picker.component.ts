@@ -11,11 +11,35 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { templateTypes } from './string-template-picker.constants';
 import { StringTemplatePickerViewModel } from './string-template-picker.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: InputTypeConstants.StringTemplatePicker,
-  templateUrl: './string-template-picker.component.html',
-  styleUrls: ['./string-template-picker.component.scss'],
+    selector: InputTypeConstants.StringTemplatePicker,
+    templateUrl: './string-template-picker.component.html',
+    styleUrls: ['./string-template-picker.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        FieldHelperTextComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

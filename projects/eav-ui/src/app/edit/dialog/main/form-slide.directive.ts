@@ -4,7 +4,10 @@ import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-co
 import { EavService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 
-@Directive({ selector: '[appFormSlide]' })
+@Directive({
+    selector: '[appFormSlide]',
+    standalone: true
+})
 export class FormSlideDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
 
   constructor(

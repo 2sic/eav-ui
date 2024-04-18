@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -14,12 +14,19 @@ import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { FieldValue } from 'projects/edit-types';
 import { FieldLogicWithValueInit } from '../../shared/field-logic/field-logic-with-init';
 import { FieldLogicManager } from '../../shared/field-logic/field-logic-manager';
+import { EntityWrapperComponent } from '../entity-wrapper/entity-wrapper.component';
 
 @Component({
-  selector: 'app-form-builder',
-  templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss'],
-  providers: [FieldsSettingsService, FieldsTranslateService, FormItemFormulaService, FormulaEngine, FormulaPromiseHandler],
+    selector: 'app-form-builder',
+    templateUrl: './form-builder.component.html',
+    styleUrls: ['./form-builder.component.scss'],
+    providers: [FieldsSettingsService, FieldsTranslateService, FormItemFormulaService, FormulaEngine, FormulaPromiseHandler],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        EntityWrapperComponent,
+    ],
 })
 export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;

@@ -8,11 +8,29 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDefaultLogic } from './string-default-logic';
 import { StringDefaultViewModel } from './string-default.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: InputTypeConstants.StringDefault,
-  templateUrl: './string-default.component.html',
-  styleUrls: ['./string-default.component.scss'],
+    selector: InputTypeConstants.StringDefault,
+    templateUrl: './string-default.component.html',
+    styleUrls: ['./string-default.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        ExtendedModule,
+        MatInputModule,
+        NgStyle,
+        FieldHelperTextComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

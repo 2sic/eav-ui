@@ -11,11 +11,40 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultViewModel } from './hyperlink-default.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { PasteClipboardImageDirective } from '../../../../shared/directives/paste-clipboard-image.directive';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: InputTypeConstants.HyperlinkDefault,
-  templateUrl: './hyperlink-default.component.html',
-  styleUrls: ['./hyperlink-default.component.scss'],
+    selector: InputTypeConstants.HyperlinkDefault,
+    templateUrl: './hyperlink-default.component.html',
+    styleUrls: ['./hyperlink-default.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        NgClass,
+        ExtendedModule,
+        MatMenuModule,
+        MatCardModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        PasteClipboardImageDirective,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 @FieldMetadata({
   wrappers: [

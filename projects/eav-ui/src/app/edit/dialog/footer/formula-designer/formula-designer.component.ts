@@ -20,11 +20,42 @@ import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helpers';
+import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
+import { MatMenuModule } from '@angular/material/menu';
+import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-formula-designer',
-  templateUrl: './formula-designer.component.html',
-  styleUrls: ['./formula-designer.component.scss'],
+    selector: 'app-formula-designer',
+    templateUrl: './formula-designer.component.html',
+    styleUrls: ['./formula-designer.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        NgClass,
+        ExtendedModule,
+        MatInputModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MonacoEditorComponent,
+        MatMenuModule,
+        AsyncPipe,
+        JsonPipe,
+        SnippetLabelSizePipe,
+    ],
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;

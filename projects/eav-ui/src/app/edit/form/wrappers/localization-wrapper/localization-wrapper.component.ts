@@ -6,11 +6,20 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: WrappersConstants.LocalizationWrapper,
-  templateUrl: './localization-wrapper.component.html',
-  styleUrls: ['./localization-wrapper.component.scss'],
+    selector: WrappersConstants.LocalizationWrapper,
+    templateUrl: './localization-wrapper.component.html',
+    styleUrls: ['./localization-wrapper.component.scss'],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        TranslateMenuComponent,
+        AsyncPipe,
+    ],
 })
 export class LocalizationWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

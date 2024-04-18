@@ -1,27 +1,7 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatRippleModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
-import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -32,7 +12,6 @@ import { FeaturesModule } from '../features/features.module';
 import { MonacoEditorModule } from '../monaco-editor';
 import { ExtendedFabSpeedDialModule } from '../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { Context } from '../shared/services/context';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { buildTranslateConfiguration } from '../shared/translation';
 import { translateLoaderFactory } from '../shared/translation/translate-loader-factory';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
@@ -97,7 +76,6 @@ import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapp
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
 import { PickerExpandableWrapperComponent } from './form/wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
 // tslint:disable-next-line: max-line-length
-import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { PickerPillsComponent } from './form/fields/picker/picker-pills/picker-pills.component';
@@ -110,144 +88,123 @@ import { StringPickerComponent } from './form/fields/string/string-picker/string
 import { OWL_DATE_TIME_FORMATS, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 
-export const OWL_DAYJS_FORMATS = {
-    parseInput: 'l LT',
-    fullPickerInput: 'l LT',
-    datePickerInput: 'l',
-    timePickerInput: 'LT',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-};
+// const OWL_DAYJS_FORMATS = {
+//   parseInput: 'l LT',
+//   fullPickerInput: 'l LT',
+//   datePickerInput: 'l',
+//   timePickerInput: 'LT',
+//   monthYearLabel: 'MMM YYYY',
+//   dateA11yLabel: 'LL',
+//   monthYearA11yLabel: 'MMMM YYYY',
+// };
 
 @NgModule({
-    declarations: [
-        EditEntryComponent,
-        EditDialogMainComponent,
-        EditDialogHeaderComponent,
-        EditDialogFooterComponent,
-        DataDumpComponent,
-        FormulaDesignerComponent,
-        LogsDumpComponent,
-        FormSlideDirective,
-        FieldsBuilderDirective,
-        FormBuilderComponent,
-        EntityWrapperComponent,
-        CollapsibleWrapperComponent,
-        StringDefaultComponent,
-        StringUrlPathComponent,
-        StringDropdownComponent,
-        StringDropdownQueryComponent,
-        StringFontIconPickerComponent,
-        StringTemplatePickerComponent,
-        BooleanDefaultComponent,
-        BooleanTristateComponent,
-        DatetimeDefaultComponent,
-        EmptyDefaultComponent,
-        NumberDefaultComponent,
-        LocalizationWrapperComponent,
-        PickerComponent,
-        HyperlinkDefaultComponent,
-        AdamBrowserComponent,
-        AdamHintComponent,
-        AdamWrapperComponent,
-        HyperlinkLibraryComponent,
-        LanguageSwitcherComponent,
-        PasteClipboardImageDirective,
-        ChangeAnchorTargetDirective,
-        HiddenWrapperComponent,
-        PagePickerComponent,
-        PublishStatusDialogComponent,
-        ExpandableWrapperComponent,
-        SnackBarUnsavedChangesComponent,
-        SnackBarSaveErrorsComponent,
-        SnackBarWarningDemoComponent,
-        FieldHelperTextComponent,
-        EntityTranslateMenuComponent,
-        TranslateMenuComponent,
-        TranslateMenuDialogComponent,
-        AutoTranslateMenuDialogComponent,
-        AutoTranslateDisabledWarningDialog,
-        PickerExpandableWrapperComponent,
-        PickerListComponent,
-        PickerSearchComponent,
-        PickerDialogComponent,
-        PickerPreviewComponent,
-        PickerTextComponent,
-        PickerTextToggleComponent,
-        PickerPillsComponent,
-        EntityQueryComponent,
-        EntityDefaultComponent,
-        HyperlinkDefaultExpandableWrapperComponent,
-        DropzoneWrapperComponent,
-        HyperlinkLibraryExpandableWrapperComponent,
-        EntityContentBlockComponent,
-        ExternalWebComponentComponent,
-        ConnectorComponent,
-        CustomDefaultComponent,
-        CustomJsonEditorComponent,
-        NumberDropdownComponent,
-        EmptyMessageComponent,
-        SnippetLabelSizePipe,
-        EntityPickerComponent,
-        StringPickerComponent,
-    ],
-    imports: [
-        EditRoutingModule,
-        SharedComponentsModule,
-        CommonModule,
-        TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
-        RouterModule,
-        MatButtonModule,
-        MatInputModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        MatDatepickerModule,
-        MatDayjsDateModule,
-        MatDayjsModule,
-        MatCardModule,
-        MatIconModule,
-        MatMenuModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatDividerModule,
-        MatBadgeModule,
-        MatTreeModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatSlideToggleModule,
-        DragDropModule,
-        DropzoneModule,
-        MatAutocompleteModule,
-        MatListModule,
-        MatProgressSpinnerModule,
-        MatRippleModule,
-        ScrollingModule,
-        MonacoEditorModule,
-        CreateFileDialogModule,
-        ExtendedFabSpeedDialModule,
-        FeaturesModule,
-        FlexLayoutModule,
-        OwlDateTimeModule,
-        OwlDayJsDateTimeModule,
-    ],
-    providers: [
-        Context,
-        EavService,
-        AdamService,
-        EntityService,
-        QueryService,
-        MatDayjsDateAdapter,
-        { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } }, // useUtc = false, to configure 'neutral' time in mat-datepicker
-        { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
-        { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-        LoadIconsService,
-        SourceService,
-        ScriptsLoaderService,
-        EntitiesService,
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
-        { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
-        { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
-    ],
+  imports: [
+    EditRoutingModule,
+    RouterModule,
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+
+    DragDropModule,
+    DropzoneModule,
+    ScrollingModule,
+    MonacoEditorModule,
+    CreateFileDialogModule,
+    ExtendedFabSpeedDialModule,
+    FeaturesModule,
+    FlexLayoutModule,
+    OwlDateTimeModule,
+    OwlDayJsDateTimeModule,
+    EditEntryComponent,
+    EditDialogMainComponent,
+    EditDialogHeaderComponent,
+    EditDialogFooterComponent,
+    DataDumpComponent,
+    FormulaDesignerComponent,
+    LogsDumpComponent,
+    FormSlideDirective,
+    FieldsBuilderDirective,
+    FormBuilderComponent,
+    EntityWrapperComponent,
+    CollapsibleWrapperComponent,
+    StringDefaultComponent,
+    StringUrlPathComponent,
+    StringDropdownComponent,
+    StringDropdownQueryComponent,
+    StringFontIconPickerComponent,
+    StringTemplatePickerComponent,
+    BooleanDefaultComponent,
+    BooleanTristateComponent,
+    DatetimeDefaultComponent,
+    EmptyDefaultComponent,
+    NumberDefaultComponent,
+    LocalizationWrapperComponent,
+    PickerComponent,
+    HyperlinkDefaultComponent,
+    AdamBrowserComponent,
+    AdamHintComponent,
+    AdamWrapperComponent,
+    HyperlinkLibraryComponent,
+    LanguageSwitcherComponent,
+    PasteClipboardImageDirective,
+    ChangeAnchorTargetDirective,
+    HiddenWrapperComponent,
+    PagePickerComponent,
+    PublishStatusDialogComponent,
+    ExpandableWrapperComponent,
+    SnackBarUnsavedChangesComponent,
+    SnackBarSaveErrorsComponent,
+    SnackBarWarningDemoComponent,
+    FieldHelperTextComponent,
+    EntityTranslateMenuComponent,
+    TranslateMenuComponent,
+    TranslateMenuDialogComponent,
+    AutoTranslateMenuDialogComponent,
+    AutoTranslateDisabledWarningDialog,
+    PickerExpandableWrapperComponent,
+    PickerListComponent,
+    PickerSearchComponent,
+    PickerDialogComponent,
+    PickerPreviewComponent,
+    PickerTextComponent,
+    PickerTextToggleComponent,
+    PickerPillsComponent,
+    EntityQueryComponent,
+    EntityDefaultComponent,
+    HyperlinkDefaultExpandableWrapperComponent,
+    DropzoneWrapperComponent,
+    HyperlinkLibraryExpandableWrapperComponent,
+    EntityContentBlockComponent,
+    ExternalWebComponentComponent,
+    ConnectorComponent,
+    CustomDefaultComponent,
+    CustomJsonEditorComponent,
+    NumberDropdownComponent,
+    EmptyMessageComponent,
+    SnippetLabelSizePipe,
+    EntityPickerComponent,
+    StringPickerComponent,
+  ],
+  providers: [
+    Context,
+    EavService,
+    AdamService,
+    EntityService,
+    QueryService,
+
+    LoadIconsService,
+    SourceService,
+    ScriptsLoaderService,
+    EntitiesService,
+
+    // @2dg, move in to datetime component
+    // MatDayjsDateAdapter,
+    // { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },
+    // { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
+    // { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+    // @2dg, no impact of style since angular 16+
+    // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
+    // { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
+    // { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
+  ],
 })
 export class EditModule { }

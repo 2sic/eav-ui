@@ -12,12 +12,47 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { HyperlinkDefaultExpandableViewModel } from './hyperlink-default-expandable-wrapper.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
+import { FieldHelperTextComponent } from '../../shared/field-helper-text/field-helper-text.component';
+import { PasteClipboardImageDirective } from '../../../shared/directives/paste-clipboard-image.directive';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRippleModule } from '@angular/material/core';
+import { ExtendedFabSpeedDialModule } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
-  templateUrl: './hyperlink-default-expandable-wrapper.component.html',
-  styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
+    selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
+    templateUrl: './hyperlink-default-expandable-wrapper.component.html',
+    styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        FlexModule,
+        MatCardModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        ExtendedFabSpeedDialModule,
+        MatRippleModule,
+        NgStyle,
+        MatFormFieldModule,
+        MatInputModule,
+        PasteClipboardImageDirective,
+        FieldHelperTextComponent,
+        FeatureIconTextComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {

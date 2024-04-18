@@ -8,11 +8,20 @@ import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomGpsLogic } from './custom-gps-logic';
 import { ExternalWebComponentViewModel } from './external-web-component.models';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
+import { AsyncPipe } from '@angular/common';
+import { ConnectorComponent } from '../../../shared/connector/connector.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: InputTypeConstants.ExternalWebComponent,
-  templateUrl: './external-web-component.component.html',
-  styleUrls: ['./external-web-component.component.scss'],
+    selector: InputTypeConstants.ExternalWebComponent,
+    templateUrl: './external-web-component.component.html',
+    styleUrls: ['./external-web-component.component.scss'],
+    standalone: true,
+    imports: [
+        MatProgressSpinnerModule,
+        ConnectorComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({})
 export class ExternalWebComponentComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {

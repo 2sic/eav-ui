@@ -9,12 +9,21 @@ import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { AsyncPipe } from '@angular/common';
+import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 @Component({
-  selector: InputTypeConstants.StringDropdown,
-  templateUrl: '../../picker/picker.component.html',
-  styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
+    selector: InputTypeConstants.StringDropdown,
+    templateUrl: '../../picker/picker.component.html',
+    styleUrls: ['../../picker/picker.component.scss'],
+    providers: pickerProviders,
+    standalone: true,
+    imports: [
+        PickerPreviewComponent,
+        PickerDialogComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   // wrappers: [WrappersConstants.LocalizationWrapper],

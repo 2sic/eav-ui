@@ -5,12 +5,38 @@ import { EavService, EditRoutingService, FieldsSettingsService, FormsStateServic
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatRippleModule } from '@angular/material/core';
+import { ExtendedFabSpeedDialModule } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: WrappersConstants.PickerExpandableWrapper,
-  templateUrl: './picker-expandable-wrapper.component.html',
-  styleUrls: ['./picker-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation],
+    selector: WrappersConstants.PickerExpandableWrapper,
+    templateUrl: './picker-expandable-wrapper.component.html',
+    styleUrls: ['./picker-expandable-wrapper.component.scss'],
+    animations: [ContentExpandAnimation],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        FlexModule,
+        MatCardModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        CdkScrollable,
+        ExtendedFabSpeedDialModule,
+        MatRippleModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PickerExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

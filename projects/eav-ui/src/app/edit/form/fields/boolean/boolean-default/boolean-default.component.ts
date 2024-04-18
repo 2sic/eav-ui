@@ -8,11 +8,26 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
 import { BooleanDefaultViewModel } from './boolean-default.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: InputTypeConstants.BooleanDefault,
-  templateUrl: './boolean-default.component.html',
-  styleUrls: ['./boolean-default.component.scss'],
+    selector: InputTypeConstants.BooleanDefault,
+    templateUrl: './boolean-default.component.html',
+    styleUrls: ['./boolean-default.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatSlideToggleModule,
+        NgClass,
+        ExtendedModule,
+        FieldHelperTextComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

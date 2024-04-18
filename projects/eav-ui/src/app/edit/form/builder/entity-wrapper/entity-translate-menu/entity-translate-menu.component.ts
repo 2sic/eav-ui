@@ -9,11 +9,29 @@ import { AutoTranslateMenuDialogComponent } from '../../../wrappers/localization
 import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
 import { FieldConfigSet } from '../../fields-builder/field-config-set.model';
 import { EntityTranslateMenuViewModel } from './entity-translate-menu.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'app-entity-translate-menu',
-  templateUrl: './entity-translate-menu.component.html',
-  styleUrls: ['./entity-translate-menu.component.scss'],
+    selector: 'app-entity-translate-menu',
+    templateUrl: './entity-translate-menu.component.html',
+    styleUrls: ['./entity-translate-menu.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        FeatureIconIndicatorComponent,
+        AsyncPipe,
+        UpperCasePipe,
+        TranslateModule,
+    ],
 })
 export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;

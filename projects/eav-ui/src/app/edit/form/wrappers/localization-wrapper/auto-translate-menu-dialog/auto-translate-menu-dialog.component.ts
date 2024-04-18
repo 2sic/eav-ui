@@ -14,11 +14,31 @@ import { TranslateMenuDialogData, TranslateMenuDialogViewModel } from '../transl
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { EditApiKeyPaths } from './../../../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from './../../../../../shared/models/dialog-context.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+import { FeatureTextInfoComponent } from '../../../../../features/feature-text-info/feature-text-info.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-auto-translate-menu-dialog',
-  templateUrl: './auto-translate-menu-dialog.component.html',
-  styleUrls: ['./auto-translate-menu-dialog.component.scss'],
+    selector: 'app-auto-translate-menu-dialog',
+    templateUrl: './auto-translate-menu-dialog.component.html',
+    styleUrls: ['./auto-translate-menu-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        FeatureTextInfoComponent,
+        MatListModule,
+        NgClass,
+        ExtendedModule,
+        MatIconModule,
+        SharedComponentsModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;

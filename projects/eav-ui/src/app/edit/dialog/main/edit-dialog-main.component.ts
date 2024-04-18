@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
@@ -22,12 +22,39 @@ import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-s
 import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
+import { ExtendedFabSpeedDialModule } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
+import { FormSlideDirective } from './form-slide.directive';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-edit-dialog-main',
-  templateUrl: './edit-dialog-main.component.html',
-  styleUrls: ['./edit-dialog-main.component.scss'],
-  providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
+    selector: 'app-edit-dialog-main',
+    templateUrl: './edit-dialog-main.component.html',
+    styleUrls: ['./edit-dialog-main.component.scss'],
+    providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatDialogActions,
+        NgClass,
+        ExtendedModule,
+        EditDialogHeaderComponent,
+        CdkScrollable,
+        FormSlideDirective,
+        FormBuilderComponent,
+        ExtendedFabSpeedDialModule,
+        MatRippleModule,
+        MatIconModule,
+        EditDialogFooterComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;

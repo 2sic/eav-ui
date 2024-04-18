@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { DropzoneDirective } from 'ngx-dropzone-wrapper';
+import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
@@ -9,11 +9,20 @@ import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: WrappersConstants.DropzoneWrapper,
-  templateUrl: './dropzone-wrapper.component.html',
-  styleUrls: ['./dropzone-wrapper.component.scss'],
+    selector: WrappersConstants.DropzoneWrapper,
+    templateUrl: './dropzone-wrapper.component.html',
+    styleUrls: ['./dropzone-wrapper.component.scss'],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        DropzoneModule,
+        AsyncPipe,
+    ],
 })
 export class DropzoneWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
