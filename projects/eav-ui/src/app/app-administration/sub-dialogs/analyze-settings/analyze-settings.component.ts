@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { View } from '../../models';
@@ -12,11 +12,33 @@ import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-r
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, AnalyzeSettingsViewModel, SettingsStackItem } from './analyze-settings.models';
+import { AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-analyze-settings',
-  templateUrl: './analyze-settings.component.html',
-  styleUrls: ['./analyze-settings.component.scss'],
+    selector: 'app-analyze-settings',
+    templateUrl: './analyze-settings.component.html',
+    styleUrls: ['./analyze-settings.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        RouterOutlet,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        AgGridModule,
+        AsyncPipe,
+    ],
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;

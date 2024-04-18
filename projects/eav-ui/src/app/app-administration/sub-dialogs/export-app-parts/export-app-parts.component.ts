@@ -1,16 +1,38 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
+import { AsyncPipe } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-export-app-parts',
-  templateUrl: './export-app-parts.component.html',
-  styleUrls: ['./export-app-parts.component.scss'],
+    selector: 'app-export-app-parts',
+    templateUrl: './export-app-parts.component.html',
+    styleUrls: ['./export-app-parts.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatDialogActions,
+        AsyncPipe,
+    ],
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

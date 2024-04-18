@@ -74,12 +74,36 @@ import { WebApiActionsComponent } from './web-api/web-api-actions/web-api-action
 import { WebApiTypeComponent } from './web-api/web-api-type/web-api-type.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationCardComponent } from './app-configuration/app-configuration-card/app-configuration-card.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatSidenavModule} from '@angular/material/sidenav';
-
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
-  declarations: [
+  imports: [
+    AppAdministrationRoutingModule,
+    SharedComponentsModule,
+    MatDialogModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    SxcGridModule,
+    MatTabsModule,
+    FormsModule,
+    MatInputModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
+    MatExpansionModule,
+    MatCardModule,
+    MatRippleModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatMenuModule,
+    MatBadgeModule,
+    CreateFileDialogModule,
+    FeaturesModule,
+    MatToolbarModule,
+    MatSidenavModule,
     GettingStartedComponent,
     AppAdminMainComponent,
     DataComponent,
@@ -116,33 +140,6 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     LanguagesPermissionsActionsComponent,
     WebApiTypeComponent,
   ],
-  imports: [
-    AppAdministrationRoutingModule,
-    SharedComponentsModule,
-    MatDialogModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    SxcGridModule,
-    MatTabsModule,
-    FormsModule,
-    MatInputModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatProgressSpinnerModule,
-    MatCheckboxModule,
-    MatExpansionModule,
-    MatCardModule,
-    MatRippleModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatMenuModule,
-    MatBadgeModule,
-    CreateFileDialogModule,
-    FeaturesModule,
-    MatToolbarModule,
-    MatSidenavModule,
-  ],
   providers: [
     Context,
     AppDialogConfigService,
@@ -161,8 +158,11 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     ContentTypesFieldsService,
     MetadataService,
     ZoneService,
-    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
-    { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
+
+    // @2dg, no impact of style since angular 16+
+    // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
+    // { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
+
   ],
 })
 export class AppAdministrationModule { }

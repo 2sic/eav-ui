@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
@@ -24,11 +24,32 @@ import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { MatBadgeModule } from '@angular/material/badge';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-app-configuration',
-  templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss'],
+    selector: 'app-app-configuration',
+    templateUrl: './app-configuration.component.html',
+    styleUrls: ['./app-configuration.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatBadgeModule,
+        NgTemplateOutlet,
+        AppConfigurationCardComponent,
+        FeatureTextInfoComponent,
+        RouterOutlet,
+        AsyncPipe,
+    ],
 })
 export class AppConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;

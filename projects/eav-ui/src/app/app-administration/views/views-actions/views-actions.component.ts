@@ -3,11 +3,24 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { View } from '../../models/view.model';
 import { ViewActionsParams } from './views-actions.models';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-views-actions',
-  templateUrl: './views-actions.component.html',
-  styleUrls: ['./views-actions.component.scss'],
+    selector: 'app-views-actions',
+    templateUrl: './views-actions.component.html',
+    styleUrls: ['./views-actions.component.scss'],
+    standalone: true,
+    imports: [
+        MatRippleModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+    ],
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
   view: View;

@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
@@ -12,11 +12,26 @@ import { IdFieldParams } from '../../../shared/components/id-field/id-field.mode
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
+import { AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-language-permissions',
-  templateUrl: './language-permissions.component.html',
-  styleUrls: ['./language-permissions.component.scss'],
+    selector: 'app-language-permissions',
+    templateUrl: './language-permissions.component.html',
+    styleUrls: ['./language-permissions.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        RouterOutlet,
+        AgGridModule,
+        MatDialogActions,
+        AsyncPipe,
+    ],
 })
 export class LanguagePermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;

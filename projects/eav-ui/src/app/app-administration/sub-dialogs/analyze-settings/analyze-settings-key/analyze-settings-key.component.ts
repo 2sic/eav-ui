@@ -3,11 +3,15 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-analyze-settings-key',
-  templateUrl: './analyze-settings-key.component.html',
-  styleUrls: ['./analyze-settings-key.component.scss'],
+    selector: 'app-analyze-settings-key',
+    templateUrl: './analyze-settings-key.component.html',
+    styleUrls: ['./analyze-settings-key.component.scss'],
+    standalone: true,
+    imports: [MatRippleModule, SharedComponentsModule],
 })
 export class AnalyzeSettingsKeyComponent implements ICellRendererAngularComp {
   key: string;

@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { ViewUsageData } from '../../models/view-usage-data.model';
@@ -12,11 +12,25 @@ import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClass
 import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
 import { buildData } from './views-usage.helpers';
+import { AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-views-usage',
-  templateUrl: './views-usage.component.html',
-  styleUrls: ['./views-usage.component.scss'],
+    selector: 'app-views-usage',
+    templateUrl: './views-usage.component.html',
+    styleUrls: ['./views-usage.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        AgGridModule,
+        AsyncPipe,
+    ],
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewUsage$ = new BehaviorSubject<ViewUsage>(undefined);

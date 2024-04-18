@@ -7,11 +7,24 @@ import { defaultGridOptions } from '../../../../shared/constants/default-grid-op
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
+import { AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-settings-item-details',
-  templateUrl: './settings-item-details.component.html',
-  styleUrls: ['./settings-item-details.component.scss'],
+    selector: 'app-settings-item-details',
+    templateUrl: './settings-item-details.component.html',
+    styleUrls: ['./settings-item-details.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        SharedComponentsModule,
+        MatIconModule,
+        AgGridModule,
+        AsyncPipe,
+    ],
 })
 export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;

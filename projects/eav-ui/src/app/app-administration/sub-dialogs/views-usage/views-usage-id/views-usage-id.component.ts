@@ -3,11 +3,20 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-views-usage-id',
-  templateUrl: './views-usage-id.component.html',
-  styleUrls: ['./views-usage-id.component.scss'],
+    selector: 'app-views-usage-id',
+    templateUrl: './views-usage-id.component.html',
+    styleUrls: ['./views-usage-id.component.scss'],
+    standalone: true,
+    imports: [
+        MatRippleModule,
+        SharedComponentsModule,
+        MatIconModule,
+    ],
 })
 export class ViewsUsageIdComponent implements ICellRendererAngularComp {
   tooltip: string;

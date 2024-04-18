@@ -1,8 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../../create-file-dialog';
@@ -15,11 +15,28 @@ import { WebApiActionsComponent } from './web-api-actions/web-api-actions.compon
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { AgGridModule } from '@ag-grid-community/angular';
 
 @Component({
-  selector: 'app-web-api',
-  templateUrl: './web-api.component.html',
-  styleUrls: ['./web-api.component.scss'],
+    selector: 'app-web-api',
+    templateUrl: './web-api.component.html',
+    styleUrls: ['./web-api.component.scss'],
+    standalone: true,
+    imports: [
+        AgGridModule,
+        MatDialogActions,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatMenuModule,
+        MatIconModule,
+        RouterOutlet,
+        AsyncPipe,
+    ],
 })
 export class WebApiComponent implements OnInit, OnDestroy {
   enableCode!: boolean;
