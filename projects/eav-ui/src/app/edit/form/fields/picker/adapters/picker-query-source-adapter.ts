@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerStateAdapter } from './picker-state-adapter';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {

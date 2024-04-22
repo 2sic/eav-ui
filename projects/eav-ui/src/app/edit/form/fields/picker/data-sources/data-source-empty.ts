@@ -13,7 +13,7 @@ const logThis = false;
 @Injectable()
 export class DataSourceEmpty extends DataSourceBase {
   constructor() {
-    super(new EavLogger('PickerDataSourceEmpty', logThis));
+    super(new EavLogger('DataSourceEmpty', logThis));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {

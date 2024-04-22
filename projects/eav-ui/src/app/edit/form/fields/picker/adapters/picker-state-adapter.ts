@@ -17,7 +17,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Optional } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerStateAdapter extends ServiceBase {

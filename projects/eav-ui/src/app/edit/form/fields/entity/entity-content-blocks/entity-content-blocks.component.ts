@@ -10,7 +10,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStateAdapter } from '../../picker/adapters/picker-state-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,

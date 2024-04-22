@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class DataSourceString extends DataSourceBase {
   constructor() {
-    super(new EavLogger('StringFieldDataSource', false));
+    super(new EavLogger('DataSourceString', false));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {
