@@ -104,7 +104,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
               () => { tog(imgR); }),
               // wip, doesn't work
               onSetup: (api: any /* ToolbarButtonInstanceApi */) => {
-                console.log('2dm, api', api);
+                // console.log('2dm, api', api);
               },
            })
           ),
