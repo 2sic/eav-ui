@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 const logThis = false;
 
 @Injectable()
-export class EntityFieldDataSource extends DataSourceBase {
+export class DataSourceEntity extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
 
   constructor(

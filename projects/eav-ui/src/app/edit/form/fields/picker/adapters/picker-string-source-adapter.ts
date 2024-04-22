@@ -4,11 +4,11 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
 import { DeleteEntityProps } from "../picker.models";
-import { StringFieldDataSource } from "../data-sources/string-field-data-source";
+import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { DataSourceBase } from '../data-sources/data-source-base';
-import { PickerDataSourceEmpty } from '../data-sources/picker-data-source-empty';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 
@@ -17,8 +17,8 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
   private dataSource: DataSourceBase;
 
   constructor(
-    private stringFieldDataSource: StringFieldDataSource,
-    private pickerDataSourceEmpty: PickerDataSourceEmpty,
+    private stringFieldDataSource: DataSourceString,
+    private pickerDataSourceEmpty: DataSourceEmpty,
   ) {
     super(new EavLogger('PickerStringSourceAdapter', logThis));
   }

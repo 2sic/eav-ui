@@ -5,7 +5,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class StringFieldDataSource extends DataSourceBase {
+export class DataSourceString extends DataSourceBase {
   constructor() {
     super(new EavLogger('StringFieldDataSource', false));
   }

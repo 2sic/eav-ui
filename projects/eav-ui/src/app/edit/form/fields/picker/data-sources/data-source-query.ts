@@ -13,7 +13,7 @@ import { Injectable } from '@angular/core';
 const logThis = true;
 
 @Injectable()
-export class QueryFieldDataSource extends DataSourceBase {
+export class DataSourceQuery extends DataSourceBase {
   private params$ = new Subject<string>();
 
   constructor(

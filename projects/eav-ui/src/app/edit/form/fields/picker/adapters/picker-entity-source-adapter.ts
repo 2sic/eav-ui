@@ -4,7 +4,7 @@ import { PickerItem } from "projects/edit-types";
 import { Observable, combineLatest } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
-import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
+import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
@@ -23,7 +23,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public snackBar: MatSnackBar,
-    private entityFieldDataSource: EntityFieldDataSource,
+    private entityFieldDataSource: DataSourceEntity,
   ) {
     super(
       entityCacheService,

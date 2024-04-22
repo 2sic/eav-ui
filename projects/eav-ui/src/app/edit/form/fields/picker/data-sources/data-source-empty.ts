@@ -11,7 +11,7 @@ const logThis = false;
  * It should only show the information that it's not configured.
  */
 @Injectable()
-export class PickerDataSourceEmpty extends DataSourceBase {
+export class DataSourceEmpty extends DataSourceBase {
   constructor() {
     super(new EavLogger('PickerDataSourceEmpty', logThis));
   }
