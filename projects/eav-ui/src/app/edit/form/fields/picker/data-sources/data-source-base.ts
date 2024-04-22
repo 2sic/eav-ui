@@ -10,11 +10,25 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 
 export abstract class DataSourceBase extends ServiceBase {
+  /** Stream containing the data */
   public data$: Observable<PickerItem[]>;
+
+  /** Stream containing loading-status */
   public loading$: Observable<boolean>;
 
+  /** Toggle to trigger a full refresh. */
   protected getAll$ = new BehaviorSubject<boolean>(false);
-  protected entityGuids$ = new BehaviorSubject<string[]>([]);
+
+  /**
+   * Force refresh of the entities with these guids.
+   * Typically for entities which are added or updated.
+   * Once an entity has run through any modification, it's safer to refresh it.
+   * Since it's difficult to know which ones have been cached or not,
+   * for now we'll just keep on retrieving all on each backend access.
+   * In future we may enhance this, but we must be sure that previous retrievals are preserved.
+   */
+  protected guidsToRefresh$ = new BehaviorSubject<string[]>([]);
+
   protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
 
   protected settings$: BehaviorSubject<FieldSettings>;
@@ -29,7 +43,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   destroy(): void {
     this.prefetchEntityGuids$.complete();
-    this.entityGuids$.complete();
+    this.guidsToRefresh$.complete();
     this.getAll$.complete();
     super.destroy();
   }
@@ -42,8 +56,10 @@ export abstract class DataSourceBase extends ServiceBase {
     this.getAll$.next(true);
   }
 
-  forceLoadGuids(entityGuids: string[]): void {
-    this.entityGuids$.next(entityGuids);
+  addToRefresh(additionalGuids: string[]): void {
+    const merged = [...this.guidsToRefresh$.value, ...additionalGuids].filter(GeneralHelpers.distinct);
+    this.log.add('forceLoadGuids', 'before', this.guidsToRefresh$.value, 'after', additionalGuids, 'merged', merged);
+    this.guidsToRefresh$.next(merged);
   }
 
   initPrefetch(entityGuids: string[]): void {

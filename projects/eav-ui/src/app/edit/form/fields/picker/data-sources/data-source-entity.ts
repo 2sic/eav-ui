@@ -103,9 +103,9 @@ export class DataSourceEntity extends DataSourceBase {
     // - atm it always loads all selected items, but it should only do this if they may have changed
     // - to fix this, we need to know if the selected items have changed and probably place that in another list
     const logGuidsToForceLoad = this.log.rxTap('guidsToForceLoad$', { enabled: true });
-    const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.entityGuids$]).pipe(
+    const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.guidsToRefresh$]).pipe(
       logGuidsToForceLoad.pipe(),
-      map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
+      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(GeneralHelpers.distinct)),
       filter(guids => guids?.length > 0),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
       logGuidsToForceLoad.distinctUntilChanged(),
@@ -169,10 +169,6 @@ export class DataSourceEntity extends DataSourceBase {
 
   contentType(contentTypeName: string): void {
     this.contentTypeName$.next(contentTypeName);
-  }
-
-  forceLoadGuids(entityGuids: string[]): void {
-    this.entityGuids$.next(entityGuids);
   }
 
   private queryEntityMapping(entity: QueryEntity): PickerItem {

@@ -117,7 +117,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   forceReloadData(missingData: string[]): void {
-    this.dataSource.forceLoadGuids(missingData);
+    this.dataSource.addToRefresh(missingData);
   }
 
 

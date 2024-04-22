@@ -115,8 +115,8 @@ export class DataSourceQuery extends DataSourceBase {
       map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
     );
 
-    let combinedGuids$ = combineLatest([missingInPrefetch$, this.entityGuids$]).pipe(
-      map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
+    let combinedGuids$ = combineLatest([missingInPrefetch$, this.guidsToRefresh$]).pipe(
+      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(GeneralHelpers.distinct)),
       filter(guids => guids?.length > 0),
       // distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
