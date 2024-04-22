@@ -23,7 +23,7 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
         tooltip: 'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
         onAction: () => { this.editor.insertContent(`<hr class="${RichSpecs.ContentSplitterClass} ${cs.class}"/>`); },
         onSetup: (api) => {
-          console.log('2dm, api', api);
+          // console.log('2dm, api', api);
           api.setActive(editor.formatter.match(cs.class));
           const changed = editor.formatter.formatChanged(cs.class, (state) => api.setActive(state));
           return () => changed.unbind();
