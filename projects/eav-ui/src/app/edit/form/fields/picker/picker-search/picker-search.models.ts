@@ -12,7 +12,7 @@ export interface PickerSearchViewModel {
   enableReselect: boolean;
   pickerTreeConfiguration: UiPickerModeTree;
   selectedItems: PickerItem[];
-  availableItems: PickerItem[];
+  options: PickerItem[];
   error: string;
   controlStatus: ControlStatus<string | string[]>;
   freeTextMode: boolean;

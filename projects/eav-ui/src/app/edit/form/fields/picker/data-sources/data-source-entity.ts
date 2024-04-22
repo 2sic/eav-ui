@@ -9,6 +9,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 
 const logThis = true;
+const logChildren = false;
 
 @Injectable()
 export class DataSourceEntity extends DataSourceBase {
@@ -18,7 +19,7 @@ export class DataSourceEntity extends DataSourceBase {
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
   ) {
-    super(new EavLogger('DataSourceEntity', logThis));
+    super(new EavLogger('DataSourceEntity', logThis, logChildren));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): void {
@@ -75,7 +76,7 @@ export class DataSourceEntity extends DataSourceBase {
     );
 
     // Items to prefetch which were found in the cache
-    const logPrefetchInCache = this.log.rxTap('prefetchInCache$', { enabled: true });
+    const logPrefetchInCache = this.log.rxTap('prefetchInCache$', { enabled: false });
     const prefetchInCache$ = this.prefetchEntityGuids$.pipe(
       logPrefetchInCache.pipe(),
       distinctUntilChanged(),
@@ -101,7 +102,7 @@ export class DataSourceEntity extends DataSourceBase {
     // TODO: this isn't quite right
     // - atm it always loads all selected items, but it should only do this if they may have changed
     // - to fix this, we need to know if the selected items have changed and probably place that in another list
-    const logGuidsToForceLoad = this.log.rxTap('guidsToForceLoad$');
+    const logGuidsToForceLoad = this.log.rxTap('guidsToForceLoad$', { enabled: true });
     const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.entityGuids$]).pipe(
       logGuidsToForceLoad.pipe(),
       map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),

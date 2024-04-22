@@ -7,7 +7,12 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';
 
 export abstract class PickerSourceAdapterBase extends ServiceBase implements PickerSourceAdapter {
-  public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
+  /**
+   * The options to show.
+   * Can be different from the underlying data, since it may have error or loading-entries.
+   */
+  public optionsOrHints$ = new BehaviorSubject<PickerItem[]>(null);
+
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
@@ -27,14 +32,14 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   onAfterViewInit(): void { }
 
   destroy() {
-    this.availableItems$.complete();
+    this.optionsOrHints$.complete();
     this.editEntityGuid$.complete();
     super.destroy();
   }
 
-  getDataFromSource(): Observable<PickerItem[]> { return null; }
+  abstract getDataFromSource(): Observable<PickerItem[]>;
 
-  abstract setPrefetchData(missingData: string[]): void;
+  abstract initPrefetch(prefetchGuids: string[]): void;
 
   abstract forceReloadData(missingData: string[]): void;
 

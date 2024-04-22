@@ -54,7 +54,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
 
     const l = this.log.rxTap('data$');
     this.subscriptions.add(
-      this.dataSource.data$.pipe(l.pipe()).subscribe(this.availableItems$)
+      this.dataSource.data$.pipe(l.pipe()).subscribe(this.optionsOrHints$)
     );
   }
 
@@ -68,7 +68,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     return this.dataSource.data$;
   }
 
-  setPrefetchData(missingData: string[]): void {
+  initPrefetch(prefetchGuids: string[]): void {
     // should never be needed as we have synchronously all data in settings
   }
 
@@ -78,7 +78,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
 
   fetchItems(): void {
     this.dataSource.getAll();
-    this.subscriptions.add(this.dataSource.data$.subscribe(this.availableItems$));
+    this.subscriptions.add(this.dataSource.data$.subscribe(this.optionsOrHints$));
   }
 
   deleteItem(props: DeleteEntityProps): void {

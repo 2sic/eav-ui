@@ -27,7 +27,7 @@ export class PickerData extends ServiceBase {
     // previous code
     // this.subscriptions.add(state.selectedItems$/*.pipe(take(1))*/.subscribe(items => {
     this.subscriptions.add(state.selectedItems$.pipe(take(1)).subscribe(items => {
-      source.setPrefetchData(items.map(item => item.Value));
+      source.initPrefetch(items.map(item => item.Value));
     }));
 
     this.selectedItems$ = combineLatest([

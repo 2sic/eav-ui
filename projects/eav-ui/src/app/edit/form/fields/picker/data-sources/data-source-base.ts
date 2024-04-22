@@ -46,14 +46,14 @@ export abstract class DataSourceBase extends ServiceBase {
     this.entityGuids$.next(entityGuids);
   }
 
-  prefetchEntityGuids(entityGuids: string[]): void {
+  initPrefetch(entityGuids: string[]): void {
     const guids = entityGuids.filter(GeneralHelpers.distinct);
     this.prefetchEntityGuids$.next(guids);
   }
 
   /** fill additional properties */
   protected entity2PickerItem(entity: QueryEntity, streamName: string | null, mustUseGuid: boolean): PickerItem {
-    this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log.enabled);
+    this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log.enableChildren);
     return this.masks.entity2PickerItem(entity, streamName, mustUseGuid);
   }
   private masks: DataSourceMasksHelper;

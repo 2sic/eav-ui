@@ -1,6 +1,5 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
@@ -19,7 +18,6 @@ const logThis = false;
 @Injectable()
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
-  // private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
@@ -31,7 +29,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public snackBar: MatSnackBar,
-    private queryFieldDataSource: DataSourceQuery,
+    private dsQuery: DataSourceQuery,
   ) {
     super(
       entityCacheService,
@@ -40,6 +38,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       editRoutingService,
       translate,
       snackBar,
+      dsQuery,
       new EavLogger('PickerQuerySourceAdapter', logThis),
     );
   }
@@ -76,19 +75,19 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
         this.paramsMask = new FieldMask(
           urlParameters,
           this.group.controls,
-          () => { this.availableItems$.next(null); },
+          () => { this.optionsOrHints$.next(null); },
           null,
           this.eavService.eavConfig,
           this.config,
         );
 
-        this.availableItems$.next(null);
+        this.optionsOrHints$.next(null);
       })
     );
 
     this.log.add('init - isStringQuery', this.isStringQuery);
 
-    this.queryFieldDataSource.setupQuery(
+    this.dsQuery.setupQuery(
       this.settings$,
       this.isStringQuery,
       this.config.entityGuid,
@@ -107,46 +106,32 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.flushAvailableEntities();
 
     this.subscriptions.add(combineLatest([
-      this.queryFieldDataSource.data$,
-      this.queryFieldDataSource.loading$,
+      this.dataSource.data$,
+      this.dataSource.loading$,
       this.deletedItemGuids$,
     ]).subscribe({
       next: ([data, loading, deleted]) => {
         const items = data.filter(item => !deleted.some(guid => guid === item.Value));
-        if (loading) {
-          this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]);
-        } else {
-          this.availableItems$.next(items);
-        }
+        this.optionsOrHints$.next(loading
+          ? [placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]
+          : items
+        );
       },
       error: (error) => {
-        this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
+        this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
       }
     }));
   }
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.queryFieldDataSource.params(this.paramsMask.resolve());
+    this.dsQuery.params(this.paramsMask.resolve());
   }
 
   destroy(): void {
     this.paramsMask?.destroy();
     this.error$.complete();
-    this.queryFieldDataSource.destroy();
     super.destroy();
-  }
-
-  getDataFromSource(): Observable<PickerItem[]> {
-    return this.queryFieldDataSource.data$;
-  }
-
-  setPrefetchData(missingData: string[]): void {
-    this.queryFieldDataSource.prefetchEntityGuids(missingData);
-  }
-
-  forceReloadData(missingData: string[]): void {
-    this.queryFieldDataSource.forceLoadGuids(missingData);
   }
 
   fetchItems(): void {
@@ -155,14 +140,14 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     // console.warn('2dm content-type', this.contentType);
     // this.entityFieldDataSource.contentType(this.contentType);
 
-    this.queryFieldDataSource.params(this.paramsMask.resolve());
+    this.dsQuery.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
-      this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryNotDefined')]);
+      this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryNotDefined')]);
       return;
     }
 
-    this.queryFieldDataSource.getAll();
+    this.dsQuery.getAll();
   }
 
   flushAvailableEntities(): void {
@@ -176,7 +161,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
           })),
           distinctUntilChanged(GeneralHelpers.objectsEqual),
         ).subscribe(() => {
-          this.availableItems$.next(null);
+          this.optionsOrHints$.next(null);
         })
       );
     } else {
@@ -188,7 +173,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
           })),
           distinctUntilChanged(GeneralHelpers.objectsEqual),
         ).subscribe(() => {
-          this.availableItems$.next(null);
+          this.optionsOrHints$.next(null);
         })
       );
     }
