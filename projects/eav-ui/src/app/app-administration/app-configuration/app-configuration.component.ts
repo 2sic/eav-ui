@@ -32,24 +32,26 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
-    selector: 'app-app-configuration',
-    templateUrl: './app-configuration.component.html',
-    styleUrls: ['./app-configuration.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatBadgeModule,
-        NgTemplateOutlet,
-        AppConfigurationCardComponent,
-        FeatureTextInfoComponent,
-        RouterOutlet,
-        AsyncPipe,
-    ],
+  selector: 'app-app-configuration',
+  templateUrl: './app-configuration.component.html',
+  styleUrls: ['./app-configuration.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatBadgeModule,
+    NgTemplateOutlet,
+    AppConfigurationCardComponent,
+    FeatureTextInfoComponent,
+    RouterOutlet,
+    AsyncPipe,
+  ],
+  providers: [FeatureDetailService ],
 })
 export class AppConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
@@ -129,18 +131,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
     });
-
   }
-
-  // @2dg New with a Subscription, onChanges is not needed ?
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (changes.dialogSettings != null) {
-  //     const appScope = this.dialogSettings.Context.App.SettingsScope;
-  //     this.isGlobal = appScope === AppScopes.Global;
-  //     this.isPrimary = appScope === AppScopes.Site;
-  //     this.isApp = appScope === AppScopes.App;
-  //   }
-  // }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
@@ -225,6 +216,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.parent.firstChild });
   }
 
+  // TODO:: Permission Bug
   openLanguagePermissions(enabled: boolean) {
     if (enabled)
       this.router.navigate(['language-permissions'], { relativeTo: this.route.parent.firstChild });
@@ -241,7 +233,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
-      });
+    });
   }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {

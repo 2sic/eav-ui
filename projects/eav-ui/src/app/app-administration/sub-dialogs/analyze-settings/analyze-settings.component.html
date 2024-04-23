@@ -1,13 +1,14 @@
 @if (viewModel$ | async; as vm) {
-  <div class="nav-component-wrapper">
-    <div mat-mdc-dialog-title>
-      <div class="dialog-title-box">
-        <div>Analyze {{ part }}</div>
-        <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
+<div class="nav-component-wrapper">
+  <div mat-mdc-dialog-title>
+    <div class="dialog-title-box">
+      <div>Analyze {{ part }}</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
+  </div>
+  <div class="padding-class">
     <p class="dialog-description">
       Settings and Resources are consolidated from many sources. Here you see what the resulting values would be.
     </p>
@@ -17,14 +18,16 @@
       <mat-select [ngModel]="vm.selectedView" (ngModelChange)="changeView($event)">
         <mat-option [value]="undefined">No view selected - this is how APIs see the data</mat-option>
         @for (view of vm.views; track view) {
-          <mat-option [value]="view.Guid">{{ view.Name }}</mat-option>
+        <mat-option [value]="view.Guid">{{ view.Name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
-    <div class="grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="vm.stack" [gridOptions]="gridOptions">
-      </ag-grid-angular>
-      <div class="grid-more-actions-box"></div>
-    </div>
   </div>
+
+  <div class="grid-wrapper padding-class">
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.stack" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+    <div class="grid-more-actions-box"></div>
+  </div>
+</div>
 }

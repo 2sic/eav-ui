@@ -26,11 +26,12 @@ import { FeatureComponentBase } from '../features/shared/base-feature.component'
 import { MatBadgeModule } from '@angular/material/badge';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { AgGridModule } from '@ag-grid-community/angular';
+import {  AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureDetailService } from '../features/services/feature-detail.service';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-metadata',
@@ -43,6 +44,7 @@ import { FeatureDetailService } from '../features/services/feature-detail.servic
     MatIconModule,
     RouterOutlet,
     AgGridModule,
+    SxcGridModule,
     MatDialogActions,
     EcoFabSpeedDialComponent,
     NgClass,
