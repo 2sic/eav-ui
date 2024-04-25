@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, share, switchMap, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap, take } from 'rxjs';
 import { DevRestBase } from '..';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { SourceService } from '../../code-editor/services/source.service';
@@ -85,11 +85,13 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
 
     const webApi$ = combineLatest([
       this.route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramApiPath))),
-      this.sourceService.getWebApis(),
-    ]).pipe(map(([name, webApis]) => {
-      name = decodeURIComponent(name);
-      return webApis.find(w => w.path === name);
-    }));
+      this.sourceService.getWebApis().pipe(shareReplay(1)),
+    ]).pipe(
+      map(([name, webApis]) => {
+        name = decodeURIComponent(name);
+        return webApis.find(w => w.path === name);
+      },
+    ));
 
     const apiDetails$ = webApi$.pipe(
       switchMap(webApi => this.sourceService.getWebApiDetails(webApi.path)),

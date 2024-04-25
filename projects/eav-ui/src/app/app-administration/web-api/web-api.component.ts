@@ -1,11 +1,11 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
-import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../../create-file-dialog';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -13,7 +13,6 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
-import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
 
