@@ -5,4 +5,5 @@ export interface WebApi {
   isShared: boolean;
   endpointPath: string;
   isCompiled: boolean;
+  edition: string;
 }

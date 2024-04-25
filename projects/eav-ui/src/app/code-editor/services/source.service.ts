@@ -98,7 +98,7 @@ export class SourceService {
           const fileExtIndex = file.path.lastIndexOf('.');
           const folder = file.path.substring(0, splitIndex);
           const name = file.path.substring(splitIndex + 1, fileExtIndex);
-          const webApi: WebApi = { path: file.path, folder, name, isShared: file.isShared, endpointPath: file.endpointPath, isCompiled: file.isCompiled };
+          const webApi: WebApi = { path: file.path, folder, name, isShared: file.isShared, endpointPath: file.endpointPath, isCompiled: file.isCompiled, edition: file.edition };
           return webApi;
         });
         return webApis;

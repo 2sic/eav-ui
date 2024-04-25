@@ -154,6 +154,19 @@ export class WebApiComponent implements OnInit, OnDestroy {
           },
         },
         {
+          field: 'Edition',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.edition;
+          },
+        },
+        {
           field: 'Folder',
           flex: 2,
           minWidth: 250,
@@ -178,19 +191,19 @@ export class WebApiComponent implements OnInit, OnDestroy {
             return api.name;
           },
         },
-        {
-          field: 'Type',
-          flex: 1,
-          minWidth: 100,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.isShared;
-          },
-          cellRenderer: WebApiTypeComponent,
-        },
+        // {
+        //   field: 'Type',
+        //   flex: 1,
+        //   minWidth: 100,
+        //   cellClass: 'no-outline',
+        //   sortable: true,
+        //   filter: BooleanFilterComponent,
+        //   valueGetter: (params) => {
+        //     const api: WebApi = params.data;
+        //     return api.isShared;
+        //   },
+        //   cellRenderer: WebApiTypeComponent,
+        // },
         {
           width: 82,
           cellClass: 'secondary-action no-padding'.split(' '),
