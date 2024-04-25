@@ -130,66 +130,50 @@ export class WebApiComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: 'Endpoint',
+          headerName: 'Endpoint',
+          field: 'endpointPath',
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.endpointPath;
-          },
         },
         {
-          field: 'Compiled',
+          headerName: 'Compiled',
+          field: 'isCompiled',
+          width: 100,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: BooleanFilterComponent,
+        },
+        {
+          headerName: 'Edition',
+          field: 'edition',
           flex: 1,
           minWidth: 100,
           cellClass: 'no-outline',
           sortable: true,
-          filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.isCompiled;
-          },
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
         },
         {
-          field: 'Edition',
-          flex: 2,
-          minWidth: 250,
+          headerName: 'Forder2',
+          field: 'folder',
+          flex: 1,
+          minWidth: 100,
           cellClass: 'no-outline',
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.edition;
-          },
         },
         {
-          field: 'Folder',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.folder;
-          },
-        },
-        {
-          field: 'Name',
+          headerName: 'Name',
+          field: 'name',
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.name;
-          },
         },
         // {
         //   field: 'Type',
