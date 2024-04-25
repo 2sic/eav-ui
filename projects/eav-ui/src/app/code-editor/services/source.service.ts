@@ -14,6 +14,7 @@ const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
 const appFilesCreate = 'admin/AppFiles/create';
 const apiExplorerInspect = 'admin/ApiExplorer/inspect';
+const apiExplorerAppApiFiles = 'admin/ApiExplorer/AppApiFiles';
 const appFilesPredefinedTemplates = 'admin/AppFiles/GetTemplates';
 const appFilesPreview = 'admin/AppFiles/preview';
 
@@ -78,14 +79,26 @@ export class SourceService {
   }
 
   getWebApis(): Observable<WebApi[]> {
-    return this.getAll('*Controller.cs').pipe(
+    return this.http.get<{ files: WebApi[] }>(this.dnnContext.$2sxc.http.apiUrl(apiExplorerAppApiFiles), {
+      params: {
+        appId: this.context.appId,
+      },
+    }).pipe(
+      map(({ files }) => {
+        files.forEach(file => {
+          file.isShared ??= false;
+          file.isCompiled ??= false;
+        });
+        return files;
+      }),
+    ).pipe(
       map(files => {
         const webApis: WebApi[] = files.map(file => {
-          const splitIndex = file.Path.lastIndexOf('/');
-          const fileExtIndex = file.Path.lastIndexOf('.');
-          const folder = file.Path.substring(0, splitIndex);
-          const name = file.Path.substring(splitIndex + 1, fileExtIndex);
-          const webApi: WebApi = { path: file.Path, folder, name, isShared: file.Shared };
+          const splitIndex = file.path.lastIndexOf('/');
+          const fileExtIndex = file.path.lastIndexOf('.');
+          const folder = file.path.substring(0, splitIndex);
+          const name = file.path.substring(splitIndex + 1, fileExtIndex);
+          const webApi: WebApi = { path: file.path, folder, name, isShared: file.isShared, endpointPath: file.endpointPath, isCompiled: file.isCompiled };
           return webApi;
         });
         return webApis;

@@ -130,6 +130,30 @@ export class WebApiComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
+          field: 'Endpoint',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.endpointPath;
+          },
+        },
+        {
+          field: 'Compiled',
+          flex: 1,
+          minWidth: 100,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: BooleanFilterComponent,
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.isCompiled;
+          },
+        },
+        {
           field: 'Folder',
           flex: 2,
           minWidth: 250,
@@ -157,7 +181,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
         {
           field: 'Type',
           flex: 1,
-          minWidth: 250,
+          minWidth: 100,
           cellClass: 'no-outline',
           sortable: true,
           filter: BooleanFilterComponent,

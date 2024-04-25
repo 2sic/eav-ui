@@ -29,7 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
-const pathToApi = 'app/{appname}/api/{controller}/{action}';
+const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 
 @Component({
     selector: 'app-dev-rest-api',
@@ -106,8 +106,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
         console.log('webApi object', webApi);
         const resolved = pathToApi
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder))
-          .replace('/api/', `/${webApi.folder}/`)
-          .replace('{controller}', details.controller.replace(/controller/i, ''))
+          .replace('{endpointPath}', webApi.endpointPath)
           .replace('{action}', action.name);
         return this.rootBasedOnScenario(resolved, scenario);
       }),
@@ -119,7 +118,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     ])
       .pipe(
         map(([[webApi, details, selected, urlParams, scenario], [root, /* item, */ diag]]) => ({
-          ...this.buildBaseViewModel(webApi.name, webApi.path, diag, null, root, scenario),
+          ...this.buildBaseViewModel(webApi.name, webApi.endpointPath, diag, null, root, scenario),
           webApi,
           details,
           selected,

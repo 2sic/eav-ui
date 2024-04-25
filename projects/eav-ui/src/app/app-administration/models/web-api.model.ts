@@ -3,4 +3,6 @@ export interface WebApi {
   folder: string;
   name: string;
   isShared: boolean;
+  endpointPath: string;
+  isCompiled: boolean;
 }
