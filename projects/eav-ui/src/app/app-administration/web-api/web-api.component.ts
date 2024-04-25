@@ -15,6 +15,7 @@ import { WebApiActionsComponent } from './web-api-actions/web-api-actions.compon
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
 
 @Component({
   selector: 'app-web-api',
@@ -139,14 +140,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
           filter: 'agTextColumnFilter',
         },
         {
-          headerName: 'Compiled',
-          field: 'isCompiled',
-          width: 100,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: BooleanFilterComponent,
-        },
-        {
           headerName: 'Edition',
           field: 'edition',
           flex: 1,
@@ -188,6 +181,15 @@ export class WebApiComponent implements OnInit, OnDestroy {
         //   },
         //   cellRenderer: WebApiTypeComponent,
         // },
+        {
+          headerName: 'Compiled',
+          field: 'isCompiled',
+          width: 100,
+          cellRenderer: TrueFalseComponent,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: BooleanFilterComponent,
+        },
         {
           width: 82,
           cellClass: 'secondary-action no-padding'.split(' '),
