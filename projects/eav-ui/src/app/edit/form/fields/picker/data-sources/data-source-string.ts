@@ -34,14 +34,14 @@ export class DataSourceString extends DataSourceBase {
   }
 
   private stringEntityMapping(dropdownOption: DropdownOption): PickerItem {
+    const settings = this.settings$.value;
     const entityInfo: PickerItem = {
       Value: dropdownOption.value as string,
       Text: dropdownOption.label,
-    };
-    const settings = this.settings$.value;
-    entityInfo._tooltip = this.helpers.cleanStringFromWysiwyg(settings.ItemTooltip);
-    entityInfo._information = this.helpers.cleanStringFromWysiwyg(settings.ItemInformation);
-    entityInfo._helpLink = settings.ItemLink;
+      _tooltip: this.helpers.stripHtml(settings.ItemTooltip),
+      _information: this.helpers.stripHtml(settings.ItemInformation),
+      _helpLink: settings.ItemLink,
+    } as PickerItem;
     return entityInfo;
   }
 }

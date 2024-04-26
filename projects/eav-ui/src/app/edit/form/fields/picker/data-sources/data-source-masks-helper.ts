@@ -104,8 +104,8 @@ export class DataSourceMasksHelper extends ServiceBase {
   }
 
   private buildMasks(settings: FieldSettings): DataSourceMasks {
-    const tooltipMask = !!settings.ItemTooltip ? this.helpers.cleanStringFromWysiwyg(settings.ItemTooltip) : '';
-    const infoMask = !!settings.ItemInformation ? this.helpers.cleanStringFromWysiwyg(settings.ItemInformation) : '';
+    const tooltipMask = !!settings.ItemTooltip ? this.helpers.stripHtml(settings.ItemTooltip) : '';
+    const infoMask = !!settings.ItemInformation ? this.helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
     const labelMask = settings.Label ?? '';
     const valueMask = settings.Value ?? '';
