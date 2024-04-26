@@ -1,4 +1,4 @@
-import { EntityForPicker, PickerItem, FieldSettings } from "projects/edit-types";
+import { PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
 import { PickerDataCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
@@ -177,7 +177,7 @@ export class DataSourceQuery extends DataSourceBase {
     return [...errors, ...this.setDisableEdit(items)];
   }
 
-  private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {
+  private setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => {
         const disable = e.AppId != null && e.AppId.toString() !== this.appId;

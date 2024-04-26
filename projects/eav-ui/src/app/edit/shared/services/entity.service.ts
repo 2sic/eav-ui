@@ -1,9 +1,9 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { filter, map, Observable, share, shareReplay, switchMap } from 'rxjs';
+import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { EavService, QueryService } from '.';
-import { PickerItem } from '../../../../../../edit-types';
+import { EntityBasic } from '../models/entity-basic';
 
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
@@ -15,10 +15,24 @@ export class EntityService {
     private dnnContext: DnnContext,
     private queryService: QueryService) { }
 
-  private getAvailableEntities(contentTypeName: string, entitiesFilter?: string[]): Observable<PickerItem[]> {
+  private getAvailableEntities(contentTypeName: string, entitiesFilter?: string[]): Observable<EntityBasic[]> {
 
-    return this.queryService.getEntities({contentTypes: [contentTypeName], itemIds: entitiesFilter, fields: 'Id,Guid,Title', log: 'getAvailableEntities'})
-      .pipe(map(data => data.Default.map(entity => { return { Id: entity.Id, Value: entity.Guid, Text: entity.Title } as PickerItem; })));
+    return this.queryService.getEntities({
+      contentTypes: [contentTypeName],
+      itemIds: entitiesFilter,
+      fields: 'Id,Guid,Title',
+      log: 'getAvailableEntities'
+    }).pipe(
+      map(data => data.Default.map(entity => ({
+        Id: entity.Id,
+        Guid: entity.Guid,
+        // Value is old, try to remove
+        Value: entity.Guid,
+        Title: entity.Title,
+        // Text is old, try to remove
+        Text: entity.Title
+      } as EntityBasic)
+    )));
 
     // #RemoveOldEntityPicker - commented out 2024-03-05, remove ca. 2024-06-01
     // // eavConfig for edit ui and context for other calls
@@ -32,7 +46,7 @@ export class EntityService {
   }
 
   // Experimental 2dm
-  reactiveEntities(params: Observable<{ contentTypeName: string }>): Observable<PickerItem[]> {
+  reactiveEntities(params: Observable<{ contentTypeName: string }>): Observable<EntityBasic[]> {
     return params.pipe(
       filter(p => p != null),
       switchMap(p => this.getAvailableEntities(p.contentTypeName).pipe(shareReplay(1))),
