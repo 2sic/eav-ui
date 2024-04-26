@@ -2,7 +2,7 @@ export * from './adam-cache.service';
 export * from './base-data.service';
 export * from './content-type-item.service';
 export * from './content-type.service';
-export * from './entity-cache.service';
+export * from '../../../form/fields/picker/picker-data-cache.service';
 export * from './entity-metadata';
 export * from './global-config.service';
 export * from './input-type.service';

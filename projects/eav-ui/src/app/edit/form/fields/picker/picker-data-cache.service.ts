@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { PickerItem } from '../../../../../../../edit-types';
-import { GeneralHelpers } from '../../helpers';
-import { BaseDataService } from './base-data.service';
+import { GeneralHelpers } from '../../../shared/helpers';
+import { BaseDataService } from '../../../shared/store/ngrx-data/base-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class PickerDataCacheService extends BaseDataService<PickerItem> {
