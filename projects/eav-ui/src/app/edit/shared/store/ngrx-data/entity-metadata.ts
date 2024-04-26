@@ -2,7 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, StringQueryCacheItem } from '../../models';
+import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, PickerStringQueryCacheItem } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 import { IdentityUpperCaseId } from '../../models/identity-upper-case-id';
 
@@ -109,6 +109,6 @@ function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
 }
 
-function stringQueryCacheSelectId(cacheItem: StringQueryCacheItem): string {
+function stringQueryCacheSelectId(cacheItem: PickerStringQueryCacheItem): string {
   return cacheItem?.selector;
 }

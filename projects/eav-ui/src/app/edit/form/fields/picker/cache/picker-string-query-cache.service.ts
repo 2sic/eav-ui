@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
-import { QueryEntity } from '../../../form/fields/entity/entity-query/entity-query.models';
-import { GeneralHelpers } from '../../helpers';
-import { StringQueryCacheItem } from '../../models';
-import { BaseDataService } from './base-data.service';
+import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { GeneralHelpers } from '../../../../shared/helpers';
+import { PickerStringQueryCacheItem } from '../../../../shared/models';
+import { BaseDataService } from '../../../../shared/store/ngrx-data/base-data.service';
 
+// TODO: @2dm - this should probably become obsolete? #cleanup-picker
 @Injectable({ providedIn: 'root' })
-export class StringQueryCacheService extends BaseDataService<StringQueryCacheItem> {
+export class StringQueryCacheService extends BaseDataService<PickerStringQueryCacheItem> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('StringQueryCache', serviceElementsFactory);
   }
 
   loadEntities(entityGuid: string, fieldName: string, entities: QueryEntity[]): void {
     if (entities == null) { return; }
-    const cacheItem: StringQueryCacheItem = {
+    const cacheItem: PickerStringQueryCacheItem = {
       selector: this.buildSelector(entityGuid, fieldName),
       entities,
     };

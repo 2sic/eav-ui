@@ -9,7 +9,7 @@ import { DeleteEntityProps } from '../picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { EavService } from '../../../../shared/services';
-import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
+import { StringQueryCacheService } from '../cache/picker-string-query-cache.service';
 import { PickerDataCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';

@@ -2,8 +2,8 @@ import { PickerStateAdapter } from "./picker-state-adapter";
 import { convertArrayToString } from "../picker.helpers";
 import { EavService } from "../../../../shared/services";
 import { Injectable } from '@angular/core';
-import { PickerDataCacheService } from '../picker-data-cache.service';
-import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { StringQueryCacheService } from '../cache/picker-string-query-cache.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 const logThis = false;
