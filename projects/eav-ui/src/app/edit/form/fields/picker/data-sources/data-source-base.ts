@@ -1,8 +1,8 @@
-import { PickerItem } from 'projects/edit-types/src/EntityInfo';
+import { PickerItem } from 'projects/eav-ui/src/app/edit/form/fields/picker/models/picker-item.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldSettings } from 'projects/edit-types';
-import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { QueryEntity } from '../models/query-entity.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';

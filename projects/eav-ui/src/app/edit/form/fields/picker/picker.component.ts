@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerViewModel } from './picker.models';
+import { PickerViewModel } from './models/picker.models';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DataSourceEntity } from './data-sources/data-source-entity';

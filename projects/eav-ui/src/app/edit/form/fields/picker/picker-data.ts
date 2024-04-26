@@ -16,7 +16,7 @@ export class PickerData extends ServiceBase {
     public source: PickerSourceAdapter,
     private translate: TranslateService,
   ) {
-    super(new EavLogger('PickerData', false));
+    super(new EavLogger('PickerData', logThis));
     // TODO: @SDV include this take(1) and remove this.subscriptions after fixing an issue of why 
     // labels don't show on on picker list (or picker search if we added new items in picker list...)
 

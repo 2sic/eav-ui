@@ -1,6 +1,6 @@
 import { FieldSettings, PickerItem } from 'projects/edit-types';
 import { DataSourceHelpers } from './data-source-helpers';
-import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { QueryEntity } from '../models/query-entity.model';
 import { DataSourceMasks } from './data-source-masks';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';

@@ -15,7 +15,7 @@ import { PickerData } from '../picker-data';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerTreeItem, TreeItem } from '../picker-tree.models';
+import { PickerTreeItem, TreeItem } from '../models/picker-tree.models';
 
 const logThis = false;
 

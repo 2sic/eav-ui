@@ -1,6 +1,6 @@
 import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DeleteEntityProps } from '../picker.models';
+import { DeleteEntityProps } from '../models/picker.models';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';

@@ -2,20 +2,18 @@ import { PickerItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { ControlStatus } from '../../../../shared/models';
-import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
 import { convertArrayToString, convertValueToArray, equalizeSelectedItems } from '../picker.helpers';
-import { DeleteEntityProps } from '../picker.models';
+import { DeleteEntityProps } from '../models/picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { EavService } from '../../../../shared/services';
-import { StringQueryCacheService } from '../cache/picker-string-query-cache.service';
-import { PickerDataCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Optional } from '@angular/core';
 import { PickerComponent } from '../picker.component';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = false;
 
@@ -36,7 +34,7 @@ export class PickerStateAdapter extends ServiceBase {
   constructor(
     public eavService: EavService,
     entityCacheService: PickerDataCacheService,
-    private stringQueryCacheService: StringQueryCacheService,
+    // private stringQueryCacheService: StringQueryCacheService,
     @Optional() logger: EavLogger = null,
   ) {
     super(logger ?? new EavLogger('PickerStateAdapter', logThis));
@@ -50,7 +48,7 @@ export class PickerStateAdapter extends ServiceBase {
   public placeholder$: Observable<string>;
   public required$: Observable<boolean>;
   public cacheItems$: Observable<PickerItem[]>;
-  public stringQueryCache$: Observable<QueryEntity[]>;
+  // public stringQueryCache$: Observable<QueryEntity[]>;
   public control: AbstractControl;
   private focusOnSearchComponent: () => void;
 
@@ -88,7 +86,7 @@ export class PickerStateAdapter extends ServiceBase {
     this.label$ = label$;
     this.placeholder$ = placeholder$;
     this.required$ = required$;
-    this.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);
+    // this.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);
     this.control = control;
     this.focusOnSearchComponent = focusOnSearchComponent;
 

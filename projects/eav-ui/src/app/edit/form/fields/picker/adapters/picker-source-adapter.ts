@@ -1,6 +1,6 @@
 import { PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
-import { DeleteEntityProps } from "../picker.models";
+import { DeleteEntityProps } from "../models/picker.models";
 
 export interface PickerSourceAdapter {
   optionsOrHints$: BehaviorSubject<PickerItem[]>;

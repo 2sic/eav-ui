@@ -2,12 +2,12 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { combineLatest } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
-import { PickerDataCacheService } from "../../../../shared/store/ngrx-data";
 import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = true;
 

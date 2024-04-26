@@ -1,4 +1,4 @@
-import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { QueryEntity } from '../models/query-entity.model';
 
 export class PickerStringQueryCacheItem {
   selector: string;

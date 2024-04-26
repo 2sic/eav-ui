@@ -1,12 +1,12 @@
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
-import { PickerDataCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
-import { QueryEntity } from "../../entity/entity-query/entity-query.models";
+import { QueryEntity } from "../models/query-entity.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = false;
 const logChildren = false;

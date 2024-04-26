@@ -1,14 +1,15 @@
 import { PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
-import { PickerDataCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
-import { QueryEntity, QueryStreams } from "../../entity/entity-query/entity-query.models";
+import { QueryEntity } from "../models/query-entity.model";
+import { QueryStreams } from '../models/query-stream.model';
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = false;
 
@@ -19,7 +20,6 @@ export class DataSourceQuery extends DataSourceBase {
   constructor(
     private queryService: QueryService,
     private entityCacheService: PickerDataCacheService,
-    private stringQueryCacheService: StringQueryCacheService,
     private translate: TranslateService,
   ) {
     super(new EavLogger('DataSourceQuery', logThis));
@@ -32,12 +32,12 @@ export class DataSourceQuery extends DataSourceBase {
 
   setupQuery(
     settings$: BehaviorSubject<FieldSettings>,
-    isStringQuery: boolean,
+    isForStringField: boolean,
     entityGuid: string,
     fieldName: string,
     appId: string
   ): void {
-    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isStringQuery', isStringQuery, 'entityGuid', entityGuid, 'fieldName', fieldName);
+    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName);
 
     this.appId = appId;
     super.setup(settings$);
@@ -82,33 +82,26 @@ export class DataSourceQuery extends DataSourceBase {
           );
       }),
       lAll.map('before'),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
       lAll.map('after'),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
       lAll.shareReplay(),
     );
 
-    const prefetch$ = this.prefetchEntityGuids$.pipe(
-      distinctUntilChanged(),
-      filter(entityGuids => entityGuids?.length > 0),
-      mergeMap(entityGuids => {
-        if (isStringQuery) {
-          return this.stringQueryCacheService.getEntities$(entityGuid, fieldName);
-        } else {
-          return this.entityCacheService.getEntities$(entityGuids);
-        }
-      }),
-      map(entities => {
-        if (isStringQuery) {
-          return entities.map(entity => this.entity2PickerItem(entity as QueryEntity, null, /* mustUseGuid: */ !isStringQuery));
-        } else {
-          return entities as PickerItem[];
-        }
-      }),
-      startWith([] as PickerItem[]),
-      shareReplay(1),
-    );
+    // Figure out the prefetch
+    // Note that if we're using a string-data based query, there will be no prefetch
+    // So it just needs to return an empty list
+    const prefetch$ = isForStringField
+      ? of([] as PickerItem[])
+      : this.prefetchEntityGuids$.pipe(
+          distinctUntilChanged(),
+          filter(entityGuids => entityGuids?.length > 0),
+          mergeMap(entityGuids => this.entityCacheService.getEntities$(entityGuids)),
+          map(entities => entities as PickerItem[]),
+          startWith([] as PickerItem[]),
+          shareReplay(1),
+        );
 
     let missingInPrefetch$ = combineLatest([prefetch$, this.prefetchEntityGuids$]).pipe(
       // return guids from prefetchEntityGuids that are not in prefetch
@@ -129,7 +122,7 @@ export class DataSourceQuery extends DataSourceBase {
           startWith({ data: {} as QueryStreams, loading: true })
         )
       ),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
       startWith({ data: [] as PickerItem[], loading: false }),
       shareReplay(1),
     );
