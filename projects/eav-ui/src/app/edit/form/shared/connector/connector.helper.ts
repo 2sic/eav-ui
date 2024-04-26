@@ -136,8 +136,9 @@ export class ConnectorHelper {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
       getSettings: (name) => this.eavService.eavConfig.settings?.Values[name],
-      getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
-      getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
+      // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
+      // getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
+      // getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
     };
 
     return experimentalProps;

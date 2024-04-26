@@ -27,15 +27,16 @@ export class EntityCacheService extends BaseDataService<PickerItem> {
     );
   }
 
-  getEntities(guids?: string[]): PickerItem[] {
-    if (guids == null) {
-      return this.cache$.value;
-    }
+  // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
+  // getEntities(guids?: string[]): PickerItem[] {
+  //   if (guids == null) {
+  //     return this.cache$.value;
+  //   }
 
-    return this.cache$.value.filter(entity => guids.includes(entity.Value));
-  }
+  //   return this.cache$.value.filter(entity => guids.includes(entity.Value));
+  // }
 
-  getEntity(guid: string): PickerItem {
-    return this.cache$.value.find(entity => entity.Value === guid);
-  }
+  // getEntity(guid: string): PickerItem {
+  //   return this.cache$.value.find(entity => entity.Value === guid);
+  // }
 }

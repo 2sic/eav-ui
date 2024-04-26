@@ -1,4 +1,11 @@
 export interface EntityForPicker {
+  /** The EntityId */
+  Id?: number;
+
+  /** The title to show in the dropdown */
+  Text: string;
+
+
   /**
    * Prevent edit of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
@@ -24,11 +31,6 @@ export interface EntityForPicker {
   /** New in v15, sometimes included to indicate if it's from the current app */
   AppId?: number;
 
-  /** The EntityId */
-  Id?: number;
-
-  /** The title to show in the dropdown */
-  Text: string;
 }
 
 export interface PickerItem extends EntityForPicker {
@@ -67,16 +69,4 @@ export interface PickerItem extends EntityForPicker {
   data?: {
     [key: string]: any;  
   }
-}
-
-export interface PickerTreeItem extends PickerItem {
-  Level: number;
-  Expandable: boolean;
-  // TODO: @SDV - CHECK IF THIS is correct, and if Parent is []
-  Children: PickerTreeItem[];
-  Parent: PickerTreeItem[];
-}
-
-export interface TreeItem {
-  [key: string]: any;
 }
