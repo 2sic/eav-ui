@@ -1,32 +1,31 @@
 import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, of } from "rxjs";
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, of, shareReplay } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 
+const logThis = true;
+const logRx = true;
+
 @Injectable()
 export class DataSourceString extends DataSourceBase {
   constructor() {
-    super(new EavLogger('DataSourceString', false));
+    super(new EavLogger('DataSourceString', logThis));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {
+    this.log.add('setup', 'settings$', settings$);
     super.setup(settings$);
     this.loading$ = of(false);
 
-    const preloaded = this.settings$.pipe(
+    const rxLog = this.log.rxTap('data$', { enabled: logRx });
+    this.data$ = this.settings$.pipe(
+      rxLog.pipe(),
       map(settings => settings._options.map(option => this.stringEntityMapping(option))),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      shareReplay(1),
     );
 
-    // TODO: @STV - I don't think this combine latest makes sense,
-    // we probably never _wait_ for the getAll$ to be true - pls check/clean up
-    this.data$ = combineLatest([
-      this.getAll$.pipe(distinctUntilChanged()),
-      preloaded,
-    ]).pipe(
-      map(([_, preloaded]) => preloaded)
-    );
     return this;
   }
 
