@@ -1,6 +1,6 @@
 import { EntityForPicker, PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
-import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
+import { PickerDataCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity, QueryStreams } from "../../entity/entity-query/entity-query.models";
@@ -18,7 +18,7 @@ export class DataSourceQuery extends DataSourceBase {
 
   constructor(
     private queryService: QueryService,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     private translate: TranslateService,
   ) {

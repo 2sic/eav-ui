@@ -10,7 +10,7 @@ import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, PickerDataCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
@@ -49,7 +49,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     private dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
     private snackBar: MatSnackBar,
     private zone: NgZone,
     private formsStateService: FormsStateService,

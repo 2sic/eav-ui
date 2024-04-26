@@ -2,7 +2,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
-import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
+import { PickerDataCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceQuery } from "../data-sources/data-source-query";
@@ -23,7 +23,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     public fieldsSettingsService: FieldsSettingsService,
     public queryService: QueryService,
     public stringQueryCacheService: StringQueryCacheService,
-    public entityCacheService: EntityCacheService,
+    public entityCacheService: PickerDataCacheService,
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,

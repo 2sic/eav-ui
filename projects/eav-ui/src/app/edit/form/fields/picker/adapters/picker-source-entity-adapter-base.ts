@@ -9,7 +9,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { EntityService, EavService, EditRoutingService } from "../../../../shared/services";
-import { EntityCacheService } from "../../../../shared/store/ngrx-data";
+import { PickerDataCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStateAdapter } from './picker-state-adapter';
@@ -23,7 +23,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
   constructor(
-    public entityCacheService: EntityCacheService,  // DI
+    public entityCacheService: PickerDataCacheService,  // DI
     public entityService: EntityService, // DI
     public eavService: EavService, // DI
     public editRoutingService: EditRoutingService, // DI

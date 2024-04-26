@@ -15,7 +15,7 @@ import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHel
 import { FormValues } from '../models';
 import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, PickerDataCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
@@ -39,7 +39,7 @@ export class EditInitializerService implements OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,

@@ -15,7 +15,7 @@ import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, PickerDataCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
@@ -54,7 +54,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
     private formsStateService: FormsStateService,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private stringQueryCacheService: StringQueryCacheService,

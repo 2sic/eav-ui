@@ -1,6 +1,6 @@
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
-import { EntityCacheService } from "../../../../shared/store/ngrx-data";
+import { PickerDataCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
@@ -17,7 +17,7 @@ export class DataSourceEntity extends DataSourceBase {
 
   constructor(
     private queryService: QueryService,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
   ) {
     super(new EavLogger('DataSourceEntity', logThis, logChildren));
   }

@@ -10,7 +10,7 @@ import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { EavService } from '../../../../shared/services';
 import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { PickerDataCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -35,7 +35,7 @@ export class PickerStateAdapter extends ServiceBase {
 
   constructor(
     public eavService: EavService,
-    entityCacheService: EntityCacheService,
+    entityCacheService: PickerDataCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     @Optional() logger: EavLogger = null,
   ) {

@@ -6,7 +6,7 @@ import { GeneralHelpers } from '../../helpers';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class EntityCacheService extends BaseDataService<PickerItem> {
+export class PickerDataCacheService extends BaseDataService<PickerItem> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('EntityCache', serviceElementsFactory);
   }
