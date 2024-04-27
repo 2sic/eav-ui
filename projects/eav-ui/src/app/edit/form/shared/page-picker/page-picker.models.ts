@@ -8,12 +8,21 @@ export interface PagePickerDialogData {
 }
 
 export interface PageEntity extends EntityBasic {
+  // Not used ATM
   // Created: string;
   // Modified: string;
   Name: string;
+
+  /** The ID of the parent page */
   ParentId: number;
+
+  /** The path of the page - probably without the http etc. */
   Path: string;
+
+  /** The URL of the page */
   Url: string;
+
+  /** If the page is visible in the navigation */
   Visible: boolean;
 
   /** If the page would be clickable in the navigation, or just a name to show (usually opening sub-pages) */
