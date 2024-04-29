@@ -110,7 +110,7 @@ export class DataSourceQuery extends DataSourceBase {
 
     let missingInPrefetch$ = combineLatest([prefetch$, this.prefetchEntityGuids$]).pipe(
       // return guids from prefetchEntityGuids that are not in prefetch
-      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
+      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.value === guid))),
     );
 
     let combinedGuids$ = combineLatest([missingInPrefetch$, this.guidsToRefresh$]).pipe(
@@ -141,7 +141,7 @@ export class DataSourceQuery extends DataSourceBase {
       lData.pipe(),
       map(([all, overrides, prefetch]) => {
         // data always takes the last unique value in the array (should be most recent)
-        const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.Value, item])).values()];
+        const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.value, item])).values()];
         return data;
       }),
       shareReplay(1),

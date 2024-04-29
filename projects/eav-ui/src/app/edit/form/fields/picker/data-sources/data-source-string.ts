@@ -36,7 +36,7 @@ export class DataSourceString extends DataSourceBase {
   private stringEntityMapping(dropdownOption: DropdownOption): PickerItem {
     const settings = this.settings$.value;
     const entityInfo: PickerItem = {
-      Value: dropdownOption.value as string,
+      value: dropdownOption.value as string,
       label: dropdownOption.label,
       _tooltip: this.helpers.stripHtml(settings.ItemTooltip),
       _information: this.helpers.stripHtml(settings.ItemInformation),

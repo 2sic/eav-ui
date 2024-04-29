@@ -45,7 +45,7 @@ export class DataSourceMasksHelper extends ServiceBase {
       const result: PickerItem = {
         Id: entity.Id,
         data: entity,
-        Value: valueFieldValue,
+        value: valueFieldValue,
         label: titleFieldValue,
         _tooltip: masks.tooltip,
         _information: masks.info,
@@ -65,7 +65,7 @@ export class DataSourceMasksHelper extends ServiceBase {
     return {
       Id: entity.Id,
       data: entity,
-      Value: valueFieldValue,
+      value: valueFieldValue,
       label: finalTitle,
       _tooltip: tooltip,
       _information: information,

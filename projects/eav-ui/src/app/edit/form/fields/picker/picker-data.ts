@@ -27,7 +27,7 @@ export class PickerData extends ServiceBase {
     // previous code
     // this.subscriptions.add(state.selectedItems$/*.pipe(take(1))*/.subscribe(items => {
     this.subscriptions.add(state.selectedItems$.pipe(take(1)).subscribe(items => {
-      source.initPrefetch(items.map(item => item.Value));
+      source.initPrefetch(items.map(item => item.value));
     }));
 
     this.selectedItems$ = combineLatest([
@@ -54,16 +54,16 @@ export class PickerData extends ServiceBase {
     translate: TranslateService,
   ): PickerItem[] {
     const selectedEntities = selectedItems.map(item => {
-      const entity = data.find(e => e.Value === item.Value);
+      const entity = data.find(e => e.value === item.value);
       if (!entity) {
         return item;
       } else {
         const text = entity.label ?? translate.instant('Fields.Entity.EntityNotFound');
         return this.createPickerItem(
           entity.Id,
-          entity.Value,
+          entity.value,
           text,
-          entity._tooltip ?? `${text} (${entity.Value})`,
+          entity._tooltip ?? `${text} (${entity.value})`,
           entity._information ?? '',
           entity._disableEdit === true,
           entity._disableDelete === true,
@@ -78,7 +78,7 @@ export class PickerData extends ServiceBase {
   private createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
     return {
       Id: id,
-      Value: value,
+      value: value,
       label: text,
       _tooltip: tooltip,
       _information: information,

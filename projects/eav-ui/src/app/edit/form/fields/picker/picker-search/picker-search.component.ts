@@ -127,7 +127,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const filteredItems = !elemValue ? options : options?.filter(option =>
           option.label
             ? option.label.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
-            : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
+            : option.value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
 
         // TODO: @SDV -> tree expand by default and test search (search has to show parents)
@@ -181,10 +181,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     let returnValue = '';
     if (value != null || value != undefined) {
       if (typeof value === 'string') {
-        returnValue = this.optionItems$.value?.find(ae => ae.Value == value)?.label;
+        returnValue = this.optionItems$.value?.find(ae => ae.value == value)?.label;
       } else if (Array.isArray(value)) {
         if (typeof value[0] === 'string') {
-          returnValue = this.optionItems$.value?.find(ae => ae.Value == value[0])?.label;
+          returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
         } else {
           returnValue = (value[0] as PickerItem)?.label;
         }
@@ -193,7 +193,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         returnValue = (value as PickerItem)?.label;
     }
     if (!returnValue) {
-      if (this.selectedItem$.value?.Value == value) {
+      if (this.selectedItem$.value?.value == value) {
         returnValue = this.selectedItem$.value?.label;
       } else {
         returnValue = value + " *";
@@ -225,7 +225,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
     if (this.showSelectedItem) {
       // @SDV - improve this
-      if (this.newValue && this.newValue != selectedItem?.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
+      if (this.newValue && this.newValue != selectedItem?.value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
       else if (selectedItem && selectedItems.length < 2) this.autocompleteRef.nativeElement.value = selectedItem.label;
     } else {
       // @SDV - improve this
@@ -261,12 +261,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   isOptionDisabled(value: string, selectedEntities: PickerItem[]): boolean {
-    const isSelected = selectedEntities.some(entity => entity.Value === value);
+    const isSelected = selectedEntities.some(entity => entity.value === value);
     return isSelected;
   }
 
   isOptionUnpickable(item: PickerTreeItem, selectedEntities: PickerItem[], enableReselect: boolean, treeConfig: UiPickerModeTree): boolean {
-    const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.Value === item.Value);
+    const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.value === item.value);
     const isRootUnpickableByConfiguration = treeConfig?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
     const isBranchUnpickableByConfiguration = treeConfig?.TreeAllowSelectBranch ? false : item.Children?.length > 0 && item.Parent?.length > 0;
     const isLeafUnpickableByConfiguration = treeConfig?.TreeAllowSelectLeaf ? false : item.Children?.length === 0;
@@ -316,7 +316,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       return {
         Level: Level,
         Expandable: expandable,
-        Value: item.Value,
+        value: item.value,
         label: item.Text,
         Parent: item[cpRef],
         Children: item[pcRef],

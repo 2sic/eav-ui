@@ -92,7 +92,7 @@ export class DataSourceEntity extends DataSourceBase {
     const prefetchNotFoundGuids$ = combineLatest([prefetchInCache$, this.prefetchEntityGuids$]).pipe(
       logPrefetchNotFoundGuids.pipe(),
       // return guids from prefetchEntityGuids that are not in prefetch
-      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
+      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.value === guid))),
     );
 
     // These GUIDs should be force-loaded from the server
@@ -150,7 +150,7 @@ export class DataSourceEntity extends DataSourceBase {
         // merge and take the last unique value in the array (should be most recent)
         // it uses the Map and the `Value` property to ensure uniqueness
         const combined = [...prefetch, ...all.data, ...overrides.data];
-        const data = [...new Map(combined.map(item => [item.Value, item])).values()];
+        const data = [...new Map(combined.map(item => [item.value, item])).values()];
         return data;
       }),
       shareReplay(1),

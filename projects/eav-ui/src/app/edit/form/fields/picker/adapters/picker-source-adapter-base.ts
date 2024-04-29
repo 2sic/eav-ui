@@ -54,7 +54,7 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
 export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
   const item: PickerItem = {
     label: translate.instant(i18nLabel) + (suffix ?? ''),
-    Value: null,
+    value: null,
     _disableSelect: true,
     _disableDelete: true,
     _disableEdit: true,

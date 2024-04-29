@@ -41,7 +41,7 @@
                 [tippy]="'Fields.Entity.Edit' | translate"
                 [disabled]="config.initialDisabled"
                 appMousedownStopPropagation
-                (click)="edit(item.Value, item.Id)">
+                (click)="edit(item.value, item.Id)">
                 <mat-icon>edit</mat-icon>
               </button>
             }
@@ -50,7 +50,7 @@
                 [tippy]="'Fields.Entity.Delete' | translate"
                 [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
-                (click)="deleteItem(index, item.Value)">
+                (click)="deleteItem(index, item.value)">
                 <mat-icon>delete</mat-icon>
               </button>
             }

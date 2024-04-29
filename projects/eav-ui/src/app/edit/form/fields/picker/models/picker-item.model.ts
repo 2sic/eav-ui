@@ -12,11 +12,11 @@ export interface EntityForPicker {
 }
 
 export interface PickerItem extends EntityForPicker {
-  /** The value to store */
-  Value: string;
-
   /** The title to show in the dropdown */
   label: string;
+  
+  /** The value to store */
+  value: string;
 
   /**
    * Prevent edit of this item for whatever reason, v15

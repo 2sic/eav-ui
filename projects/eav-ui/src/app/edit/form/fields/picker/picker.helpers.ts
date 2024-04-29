@@ -17,7 +17,7 @@ export function equalizeSelectedItems(
       Id: null,
       label: value,
       _tooltip: `${value}`,
-      Value: value,
+      value: value,
     };
     return result;
   });

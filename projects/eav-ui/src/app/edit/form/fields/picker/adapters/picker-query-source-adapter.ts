@@ -111,7 +111,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       this.deletedItemGuids$,
     ]).subscribe({
       next: ([data, loading, deleted]) => {
-        const items = data.filter(item => !deleted.some(guid => guid === item.Value));
+        const items = data.filter(item => !deleted.some(guid => guid === item.value));
         this.optionsOrHints$.next(loading
           ? [placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]
           : items
@@ -150,6 +150,11 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.dsQuery.getAll();
   }
 
+  /**
+   * TODO: it's a bit unclear what this is for.
+   * 2024-04-29 2dm I believe it should flush the optionsOrHints$ when the settings change.
+   * ...but I'm not quite sure how they would ever change at runtime.
+   */
   flushAvailableEntities(): void {
     this.log.add('flushAvailableEntities, isStringQuery', this.isStringQuery);
     if (!this.isStringQuery) {
@@ -168,8 +173,8 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       this.subscriptions.add(
         this.settings$.pipe(
           map(settings => ({
-            Value: settings.Value,
-            Label: settings.Label,
+            value: settings.Value,
+            label: settings.Label,
           })),
           distinctUntilChanged(GeneralHelpers.objectsEqual),
         ).subscribe(() => {

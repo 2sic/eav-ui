@@ -65,7 +65,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
   }
 
   trackByFn(index: number, item: PickerItem) {
-    return item.Value;
+    return item.value;
   }
 
   expandDialog() {

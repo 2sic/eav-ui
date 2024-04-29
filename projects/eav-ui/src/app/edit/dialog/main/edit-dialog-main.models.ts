@@ -85,7 +85,7 @@ export function prefetchItemToPickerItem(item: PrefetchEntity): PickerItem {
   return {
     Id: item.Id,
     label: item.Text,
-    Value: item.Value,
+    value: item.Value,
   };
 }
 

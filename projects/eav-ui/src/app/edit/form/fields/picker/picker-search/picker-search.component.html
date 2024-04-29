@@ -14,13 +14,13 @@
       @if (vm.enableEdit && !vm.selectedItem?._disableEdit && vm.showItemEditButtons) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Edit' | translate"
           [disabled]="vm.csDisabled || config.initialDisabled" appClickStopPropagation
-          (click)="edit(vm.selectedItem?.Value, vm.selectedItem?.Id)">
+          (click)="edit(vm.selectedItem?.value, vm.selectedItem?.Id)">
           <mat-icon>edit</mat-icon>
         </button>
       }
       @if (vm.enableDelete && !vm.selectedItem?._disableDelete && vm.showItemEditButtons) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Delete' | translate"
-          [disabled]="vm.csDisabled" appClickStopPropagation (click)="deleteItem(0, vm.selectedItem?.Value)">
+          [disabled]="vm.csDisabled" appClickStopPropagation (click)="deleteItem(0, vm.selectedItem?.value)">
           <mat-icon>delete</mat-icon>
         </button>
       }
@@ -45,11 +45,11 @@
       <!-- List Display Mode -->
       @if (!vm.isTreeDisplayMode) {
           @for (item of vm.filteredItems; track item) {
-          <mat-option [value]="item.Value" class="eav-picker-option"
-            [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)"
+          <mat-option [value]="item.value" class="eav-picker-option"
+            [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.value, vm.selectedItems)"
             [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
             <div class="eav-dropdown-option">
-              <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.Value }}</span>
+              <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
               <div class="eav-dropdown-option-info">
                 @if (item._helpLink) {
                   <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
@@ -68,11 +68,11 @@
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
           <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
             <button mat-icon-button disabled></button>
-            <mat-option [value]="item.Value" class="eav-picker-option"
+            <mat-option [value]="item.value" class="eav-picker-option"
               [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
               [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
               <div class="eav-dropdown-option">
-                <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.Value }}</span>
+                <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
                 <div class="eav-dropdown-option-info">
                   @if (item._helpLink) {
                     <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
@@ -91,11 +91,11 @@
                 {{treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
             </button>
-            <mat-option [value]="item.Value" class="eav-picker-option"
+            <mat-option [value]="item.value" class="eav-picker-option"
               [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
               [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
               <div class="eav-dropdown-option">
-                <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.Value }}</span>
+                <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
                 <div class="eav-dropdown-option-info">
                   @if (item._helpLink) {
                     <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>

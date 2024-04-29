@@ -23,21 +23,8 @@ export class PickerDataCacheService extends BaseDataService<PickerItem> {
       return this.cache$.asObservable();
 
     return this.cache$.pipe(
-      map(entities => entities.filter(entity => guids.includes(entity.Value))),
+      map(entities => entities.filter(entity => guids.includes(entity.value))),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
-
-  // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
-  // getEntities(guids?: string[]): PickerItem[] {
-  //   if (guids == null) {
-  //     return this.cache$.value;
-  //   }
-
-  //   return this.cache$.value.filter(entity => guids.includes(entity.Value));
-  // }
-
-  // getEntity(guid: string): PickerItem {
-  //   return this.cache$.value.find(entity => entity.Value === guid);
-  // }
 }

@@ -22,7 +22,7 @@ export class DataSourceEmpty extends DataSourceBase {
     this.loading$ = of(false);
 
     const dummyItem: PickerItem = {
-      Value: '',
+      value: '',
       label: 'No options available',
     };
 
