@@ -1,13 +1,12 @@
-import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
+import { FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, distinctUntilChanged, map, of, shareReplay } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
-import { DataSourceMasks } from './data-source-masks.model';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 const logThis = true;
-const logChildren = true;
+const logChildren = false;
 const logRx = true;
 
 @Injectable()
@@ -20,9 +19,6 @@ export class DataSourceString extends DataSourceBase {
     this.log.add('setup', 'settings$', settings$);
     super.setup(settings$);
     this.loading$ = of(false);
-
-    var mask = this.getMaskHelper().getMasks();
-    this.log.add('mask', mask);
 
     const rxLog = this.log.rxTap('data$', { enabled: logRx });
     this.data$ = this.settings$.pipe(
