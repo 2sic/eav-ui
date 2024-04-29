@@ -83,7 +83,7 @@ export interface PrefetchEntity {
 /** Temporary till the models are somehow in sync again */
 export function prefetchItemToPickerItem(item: PrefetchEntity): PickerItem {
   return {
-    Id: item.Id,
+    id: item.Id,
     label: item.Text,
     value: item.Value,
   };

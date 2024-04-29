@@ -159,7 +159,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
       const entity = this.optionsOrHints$.value.find(item => item.value === editParams.entityGuid);
       if (entity != null) {
         form = {
-          items: [{ EntityId: entity.Id }],
+          items: [{ EntityId: entity.id }],
         };
       } else {
         form = {
@@ -173,7 +173,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   deleteItem(props: DeleteEntityProps): void {
     this.log.add('deleteItem', props);
     const entity = this.optionsOrHints$.value.find(item => item.value === props.entityGuid);
-    const id = entity.Id;
+    const id = entity.id;
     const title = entity.label;
     const contentType = this.contentType;
     const parentId = this.config.entityId;

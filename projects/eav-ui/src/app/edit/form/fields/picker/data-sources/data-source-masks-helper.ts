@@ -43,7 +43,7 @@ export class DataSourceMasksHelper extends ServiceBase {
     // If we don't have masks, we are done
     if (!masks.hasMask) {
       const result: PickerItem = {
-        Id: entity.Id,
+        id: entity.Id,
         data: entity,
         value: valueFieldValue,
         label: titleFieldValue,
@@ -63,7 +63,7 @@ export class DataSourceMasksHelper extends ServiceBase {
     const finalTitle = masks.label.includes('[') ? title : titleFieldValue;
 
     return {
-      Id: entity.Id,
+      id: entity.Id,
       data: entity,
       value: valueFieldValue,
       label: finalTitle,

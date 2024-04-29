@@ -6,17 +6,17 @@
 
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-export interface EntityForPicker {
-  /** The EntityId */
-  Id?: number;
-}
-
-export interface PickerItem extends EntityForPicker {
+export interface PickerItem {
   /** The title to show in the dropdown */
   label: string;
   
   /** The value to store */
   value: string;
+
+  /**
+   * The entity Id, only used to enable edit etc. if the item is an entity.
+   */
+  id?: number;
 
   /**
    * Prevent edit of this item for whatever reason, v15

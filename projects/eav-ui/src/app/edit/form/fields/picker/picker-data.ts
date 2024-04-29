@@ -60,7 +60,7 @@ export class PickerData extends ServiceBase {
       } else {
         const text = entity.label ?? translate.instant('Fields.Entity.EntityNotFound');
         return this.createPickerItem(
-          entity.Id,
+          entity.id,
           entity.value,
           text,
           entity._tooltip ?? `${text} (${entity.value})`,
@@ -77,7 +77,7 @@ export class PickerData extends ServiceBase {
 
   private createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
     return {
-      Id: id,
+      id: id,
       value: value,
       label: text,
       _tooltip: tooltip,

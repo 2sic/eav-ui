@@ -14,7 +14,7 @@
       @if (vm.enableEdit && !vm.selectedItem?._disableEdit && vm.showItemEditButtons) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Edit' | translate"
           [disabled]="vm.csDisabled || config.initialDisabled" appClickStopPropagation
-          (click)="edit(vm.selectedItem?.value, vm.selectedItem?.Id)">
+          (click)="edit(vm.selectedItem?.value, vm.selectedItem?.id)">
           <mat-icon>edit</mat-icon>
         </button>
       }
