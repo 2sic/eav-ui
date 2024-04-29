@@ -6,7 +6,7 @@ import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { BehaviorSubject } from 'rxjs';
 
-const logThis = true;
+const logThis = false;
 
 export class PickerTreeDataHelper extends ServiceBase {
 
@@ -136,7 +136,16 @@ export class PickerTreeDataHelper extends ServiceBase {
 
   disableOption(item: PickerTreeItem, selected: PickerItem[], enableReselect: boolean): boolean {
     const treeConfig = this.pickerTreeConfiguration;
-    const selectedButNoReselect = enableReselect && selected.some(entity => entity.value === item.value);
+    const selectedButNoReselect = enableReselect
+      ? false
+      : selected.some(entity => entity.value === item.value);
+
+    if (item.label?.indexOf('Kawasaki') > -1) {
+      this.log.enabled = true;
+      this.log.add('disableOption', item, selected, enableReselect, selectedButNoReselect);
+      this.log.enabled = false;
+    }
+    
     const isRootButRootNotAllowed = treeConfig?.TreeAllowSelectRoot
       ? false
       : item.children?.length > 0 && item.parent?.length === 0;
