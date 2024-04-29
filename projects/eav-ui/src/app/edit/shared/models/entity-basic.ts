@@ -14,6 +14,11 @@ export interface EntityBasic {
    * @deprecated
    */
   Text: string;
+
   /** The title, new, WIP */
   Title: string;
+}
+
+export interface EntityBasicWithFields extends EntityBasic {
+  [key: string]: any;
 }

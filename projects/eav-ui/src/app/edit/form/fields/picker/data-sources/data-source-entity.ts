@@ -3,10 +3,10 @@ import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, 
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
-import { QueryEntity } from "../models/query-entity.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
 const logChildren = false;
@@ -60,16 +60,14 @@ export class DataSourceEntity extends DataSourceBase {
       }).pipe(
         logAllOfTypeGetEntities.pipe(),
         map(data => {
-          const items: PickerItem[] = data["Default"].map(entity => {
-            return this.queryEntityMapping(entity)
-          });
+          const items: PickerItem[] = data.Default.map(entity => this.queryEntityMapping(entity));
           return { data: items, loading: false };
         }),
         logAllOfTypeGetEntities.map('queryEntityMapping'),
-        startWith({ data: [] as PickerItem[], loading: true }),
+        startWith(this.noItemsLoadingTrue),
         logAllOfTypeGetEntities.read(),
       )),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      startWith(this.noItemsLoadingFalse),
       logAllOfType.read(),
       shareReplay(1),
       logAllOfType.shareReplay(),
@@ -124,15 +122,13 @@ export class DataSourceEntity extends DataSourceBase {
         log: logOverrides.name,
       }).pipe(
           map(data => {
-            const items: PickerItem[] = data["Default"].map(entity => {
-              return this.queryEntityMapping(entity)
-            });
+            const items: PickerItem[] = data.Default.map(entity => this.queryEntityMapping(entity));
             return { data: items, loading: false };
           }),
-          startWith({ data: [] as PickerItem[], loading: true })
+          startWith(this.noItemsLoadingTrue)
         )
       ),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      startWith(this.noItemsLoadingFalse),
       shareReplay(1),
       logOverrides.shareReplay(),
     );
@@ -171,7 +167,7 @@ export class DataSourceEntity extends DataSourceBase {
     this.contentTypeName$.next(contentTypeName);
   }
 
-  private queryEntityMapping(entity: QueryEntity): PickerItem {
+  private queryEntityMapping(entity: EntityBasicWithFields): PickerItem {
     return this.entity2PickerItem(entity, null, /* mustUseGuid: */ true);
   }
 }

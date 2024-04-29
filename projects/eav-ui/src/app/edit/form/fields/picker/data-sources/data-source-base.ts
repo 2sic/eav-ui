@@ -2,12 +2,13 @@ import { PickerItem } from 'projects/eav-ui/src/app/edit/form/fields/picker/mode
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldSettings } from 'projects/edit-types';
-import { QueryEntity } from '../models/query-entity.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
+import { DataWitLoading } from '../models/data-with-loading';
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 export abstract class DataSourceBase extends ServiceBase {
   /** Stream containing the data */
@@ -36,6 +37,9 @@ export abstract class DataSourceBase extends ServiceBase {
   constructor(logSpecs: EavLogger) {
     super(logSpecs);
   }
+
+  protected noItemsLoadingFalse: DataWitLoading<PickerItem[]> = { data: [], loading: false };
+  protected noItemsLoadingTrue: DataWitLoading<PickerItem[]> = { data: [], loading: true };
 
   protected setup(settings$: BehaviorSubject<FieldSettings>) {
     this.settings$ = settings$;
@@ -68,7 +72,7 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   /** fill additional properties */
-  protected entity2PickerItem(entity: QueryEntity, streamName: string | null, mustUseGuid: boolean): PickerItem {
+  protected entity2PickerItem(entity: EntityBasicWithFields, streamName: string | null, mustUseGuid: boolean): PickerItem {
     this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log.enableChildren);
     return this.masks.entity2PickerItem(entity, streamName, mustUseGuid);
   }

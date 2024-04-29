@@ -2,14 +2,15 @@ import { PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
-import { QueryEntity } from "../models/query-entity.model";
-import { QueryStreams } from '../models/query-stream.model';
+import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { DataWitLoading } from '../models/data-with-loading';
+import { EntityBasic } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
 
@@ -60,16 +61,24 @@ export class DataSourceQuery extends DataSourceBase {
       lAll.pipe(),
       mergeMap(([params, _]) => {
         // If we don't have a query URL return a single item with a message
-        if (!queryUrl)
-          return of({ data: {
-            'Default': [
-              {
-                Id: -1,
-                Text: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
-                Guid: null,
-              }
-            ] as QueryEntity[],
-          } as QueryStreams, loading: true });
+        if (!queryUrl) {
+          var notConfigured: EntityBasic = {
+            Id: -1,
+            Guid: null,
+            Text: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
+            Title: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
+            Value: null,
+          };
+          return of({
+              data: {
+                'Default': [
+                  notConfigured
+                ],
+              } as QueryStreams,
+              loading: true
+            } as DataWitLoading<QueryStreams>
+          );
+        }
 
         // Default case, get the data
         const lGetQs = this.log.rxTap('queryService', { enabled: true });
@@ -84,7 +93,7 @@ export class DataSourceQuery extends DataSourceBase {
       lAll.map('before'),
       map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
       lAll.map('after'),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      startWith(this.noItemsLoadingFalse),
       shareReplay(1),
       lAll.shareReplay(),
     );
@@ -123,7 +132,7 @@ export class DataSourceQuery extends DataSourceBase {
         )
       ),
       map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      startWith(this.noItemsLoadingFalse),
       shareReplay(1),
     );
 

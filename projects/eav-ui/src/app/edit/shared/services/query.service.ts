@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Context } from '../../../shared/services/context';
-import { QueryStreams } from '../../form/fields/picker/models/query-stream.model';
+import { QueryStreams } from '../models/query-stream.model';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 

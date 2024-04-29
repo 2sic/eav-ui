@@ -2,7 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, PickerStringQueryCacheItem } from '../../models';
+import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 import { IdentityUpperCaseId } from '../../models/identity-upper-case-id';
 
@@ -45,9 +45,10 @@ export const entityMetadata: EntityMetadataMap = {
   LinkCache: {
     selectId: linkCacheSelectId,
   },
-  StringQueryCache: {
-    selectId: stringQueryCacheSelectId,
-  },
+  // 2024-04-29 2dm removed this #cleanup-picker
+  // StringQueryCache: {
+  //   selectId: stringQueryCacheSelectId,
+  // },
 };
 
 const pluralNames = {
@@ -109,6 +110,7 @@ function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
 }
 
-function stringQueryCacheSelectId(cacheItem: PickerStringQueryCacheItem): string {
-  return cacheItem?.selector;
-}
+// 2024-04-29 2dm removed this #cleanup-picker
+// function stringQueryCacheSelectId(cacheItem: PickerStringQueryCacheItem): string {
+//   return cacheItem?.selector;
+// }

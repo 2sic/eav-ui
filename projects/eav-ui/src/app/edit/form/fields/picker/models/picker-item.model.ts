@@ -4,8 +4,21 @@ export interface EntityForPicker {
 
   /** The title to show in the dropdown */
   Text: string;
+}
 
+export interface PickerItem extends EntityForPicker {
+  /** 
+   * AppId where the entity came from. 
+   * It is sometimes included to indicate if it's from the current app,
+   * eg. to check if edit is allowed. 
+   * New it v15 when sometimes providing entities from multiple apps
+   */
+  AppId?: number;
 
+  /** The value to store */
+  Value: string;
+
+  
   /**
    * Prevent edit of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
@@ -28,15 +41,6 @@ export interface EntityForPicker {
    */
   _disableSelect?: boolean;
 
-  /** New in v15, sometimes included to indicate if it's from the current app */
-  AppId?: number;
-
-}
-
-export interface PickerItem extends EntityForPicker {
-
-  /** The value to store */
-  Value: string;
 
   /** 
    * The tooltip that is seen on hover over item in the dropdown.
@@ -66,6 +70,10 @@ export interface PickerItem extends EntityForPicker {
    */
   _streamName?: string;
 
+  /**
+   * The data of the underlying original entity.
+   * Used in formulas and field masks for all properties.
+   */
   data?: {
     [key: string]: any;  
   }
