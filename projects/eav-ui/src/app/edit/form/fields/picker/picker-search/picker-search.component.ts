@@ -86,7 +86,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const required$ = state.required$;
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const logFieldSettings = this.log.rxTap('fieldSettings$', {enabled: true});
+    const logFieldSettings = this.log.rxTap('fieldSettings$', { enabled: false });
     const fieldSettings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName)
       .pipe(
         logFieldSettings.pipe(),
@@ -129,6 +129,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ),
+      // this is handled separately, so change-detection is property based, not object-reference based
       fieldSettings$.pipe(
         map(settings => settings.PickerTreeConfiguration),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
@@ -159,7 +160,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         if (allItems?.[0]?.data == null)
           return [] as PickerTreeItem[];
 
-        return allItems.map(itm => this.treeHelper.preConvertItemToTreeItem(settings.pickerTreeConfig, itm, allItems));   
+        return this.treeHelper.preConvertAllItems(settings.pickerTreeConfig, allItems);
+        // return allItems.map(itm => this.treeHelper.preConvertItemToTreeItem(settings.pickerTreeConfig, itm, allItems));   
       }),
       treeDataLog.map(),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
@@ -213,21 +215,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const filteredItems = !elemValue ? optionItems : optionItems?.filter(oItem =>
           ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(elemValLowerCase)
         );
-
-        // // TODO: @SDV -> tree expand by default and test search (search has to show parents)
-        // if (this.isTreeDisplayMode) {
-        //   if (optionItems?.[0]?.data != null) {
-        //     // TODO: this is a wild side-effect!
-        //     // const treeConfig = settings.pickerTreeConfig;
-        //     // this.treeHelper.updateConfig(treeConfig);
-        //     // this.treeHelper.addOptionItems(this.optionItems$);
-
-        //     // const filteredData = optionItems.filter(x => (treeConfig?.TreeRelationship == RelationshipParentChild) //check for two streams type also
-        //     //   ? !optionItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
-        //     //   : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
-        //     // this.treeHelper.updateSelectedData(filteredData);
-        //   }   
-        // }
 
         const csDisabled = controlStatus.disabled;
 

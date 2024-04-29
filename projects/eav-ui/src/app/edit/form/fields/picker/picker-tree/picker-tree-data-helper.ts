@@ -4,16 +4,13 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { PickerItem, RelationshipChildParent, RelationshipParentChild, UiPickerModeTree } from 'projects/edit-types';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { BehaviorSubject } from 'rxjs';
-import { Observable } from 'tinymce';
+import { exportAppDialog } from '../../../../../app-administration/sub-dialogs/export-app/export-app-dialog.config';
 
 const logThis = true;
 
 export class PickerTreeDataHelper extends ServiceBase {
 
-  public treeFlattener: MatTreeFlattener<PickerItem, PickerTreeItem>;
   private pickerTreeConfiguration: UiPickerModeTree;
-  private optionItems$: BehaviorSubject<PickerItem[]>;
   private treeItems: PickerTreeItem[];
 
   dataSource: MatTreeFlatDataSource<PickerItem, PickerTreeItem, PickerTreeItem>
@@ -24,21 +21,10 @@ export class PickerTreeDataHelper extends ServiceBase {
     this.build();
   }
 
-    /** Needed later for tree implementation testing */
-  public static treeControl = new FlatTreeControl<PickerTreeItem>(
-    item => item.level,
-    item => item.expandable,
-  );
-
   public updateConfig(pickerConfig: UiPickerModeTree) {
     this.log.add('updateConfigAndSelectedData');
     // set config, which will be accessed on 'this.' whenever it's needed
     this.pickerTreeConfiguration = pickerConfig;
-  }
-
-  public addOptionItems(optionItems$: BehaviorSubject<PickerItem[]>) {
-    this.log.add('addOptionItems');
-    this.optionItems$ = optionItems$;
   }
 
   public addTreeItems(treeItems: PickerTreeItem[]) {
@@ -50,12 +36,33 @@ export class PickerTreeDataHelper extends ServiceBase {
     this.log.add('updateSelectedData');
     this.dataSource.data = selectedData;
   }
+
+  public preConvertAllItems(treeConfig: UiPickerModeTree, items: PickerItem[]) {
+    this.log.add('preConvertAllItemsToTreeItems', treeConfig, items);
+    const convertedItems = items.map(x => this.preConvertItemToTreeItem(treeConfig, x, items));
+
+    // todo: establish relationships
+    const withChildren = convertedItems.map(x => {
+      if (!x.expandable) return x;
+      const children = this.getChildren(treeConfig, x, convertedItems);
+      // important: don't use spread, we really want to modify the object
+      // so that all object correctly reference each other
+      x.children = children;
+      return x;
+      // return { ...x, children };
+    });
+    // todo: open collapse first level...
+
+    return withChildren;
+  }
   
-  public preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
+  private preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
+    // Log and do some initial checks
     this.log.add(`preConvertItemToTreeItem for item ${item?.id}`, treeConfig, item, allItems);
     if (!treeConfig) throw new Error('No tree configuration found');
     if (!item) throw new Error("Can't transform null-item");
 
+    // Get the tree configuration
     const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
     const cpRef = treeConfig.TreeChildParentRefField;
     const pcRef = treeConfig.TreeParentChildRefField;
@@ -67,21 +74,18 @@ export class PickerTreeDataHelper extends ServiceBase {
       .filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName)
       .find(x => x == item);
 
+    // figure out if this node can be expanded
+    // todo: first variant isParentChild probably doesn't work yet
+    const currentId = item?.data?.[pId];
     const expandable = isParentChild
       ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
       : itemInCorrectStream && !!allItems.find(x => {
-        return (x.data[cpRef]?.[0]?.[pId] == item?.data?.[pId])
-          // return x.data[cpRef][0][pId] == item.data[pId]
+        return (x.data[cpRef]?.[0]?.[pId] == currentId)
       }
     );
   
     const result: PickerTreeItem = {
       ...item,
-      // value: item.value,
-      // label: item.label,
-      // tooltip: item.tooltip,
-      // infoBox: item.infoBox,
-      // helpLink: item.helpLink,
       level: -1,
       expandable: expandable,
       parent: item.data[cpRef],
@@ -93,59 +97,14 @@ export class PickerTreeDataHelper extends ServiceBase {
 
   public build() {
     this.log.add('build');
-    // const optionItems = this.optionItems$.value;
 
-
-    this.treeFlattener = new MatTreeFlattener(
+    const treeFlattener = new MatTreeFlattener(
       // transformFunction converts an item to a tree-item
-      (item: PickerTreeItem, level: number): PickerTreeItem => {
-        // const log = new EavLogger('transformFunction', logThis);
-        // log.add(`item: ${item?.id}`, item);
-        // const treeConfig = this.pickerTreeConfiguration;
-        // if (!treeConfig) throw new Error('No tree configuration found');
+      (item: PickerTreeItem, level: number): PickerTreeItem => ({
+        ...item,
+        level,
+      }),
 
-        // if (!item) throw new Error("Can't transform null-item");
-
-        return {
-          ...item,
-          level: level,
-        }
-
-        // const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
-        // const cpRef = treeConfig.TreeChildParentRefField;
-        // const pcRef = treeConfig.TreeParentChildRefField;
-        // const cId = treeConfig.TreeChildIdField;
-        // const pId = treeConfig.TreeParentIdField;
-        // const cStreamName = treeConfig.TreeLeavesStream;
-        // const pStreamName = treeConfig.TreeBranchesStream;
-        // const allItems = this.optionItems$.value;
-        // const itemInCorrectStream = allItems
-        //   .filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName)
-        //   .find(x => x == item);
-        
-        // const expandable = isParentChild
-        //     ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
-        //     : itemInCorrectStream && !!allItems.find(x => {
-        //       return (x.data[cpRef]?.[0]?.[pId] == item?.data?.[pId])
-        //         // return x.data[cpRef][0][pId] == item.data[pId]
-        //     }
-        //   );
-        
-        // const result: PickerTreeItem = {
-        //   ...item,
-        //   // value: item.value,
-        //   // label: item.label,
-        //   // tooltip: item.tooltip,
-        //   // infoBox: item.infoBox,
-        //   // helpLink: item.helpLink,
-        //   level: level,
-        //   expandable: expandable,
-        //   parent: item.data[cpRef],
-        //   children: item.data[pcRef],
-        // };
-        // log.add('result', result);
-        // return result;
-      },
       // getLevel
       (item): number => { return item.level; },
 
@@ -154,32 +113,44 @@ export class PickerTreeDataHelper extends ServiceBase {
 
       // getChildren
       (item): PickerTreeItem[] => {
-        const treeConfig = this.pickerTreeConfiguration;
-        const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
-        const cpRef = treeConfig.TreeChildParentRefField;
-        const pcRef = treeConfig.TreeParentChildRefField;
-        const cId = treeConfig.TreeChildIdField;
-        const pId = treeConfig.TreeParentIdField;
-        const allItems = this.treeItems;// this.optionItems$.value;
-        if (isParentChild)
-          return item.data[pcRef].map((x: any) => {
-            const child = allItems.find(y => (y as any)[cId] == (x as any)[cId]);
-            return child;
-          });
-        else if (treeConfig.TreeRelationship == RelationshipChildParent)
-          return allItems.filter(x => {
-            if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-              return x.data[cpRef][0][pId] == item.data[pId];
-          });
-        else
-          throw new Error(`Unknown tree relationship: "${treeConfig?.TreeRelationship}"`);
+        // TODO: @2dm - must determine which method is better
+        // getting them here is a bit more functional, but the other model doesn't need the catalog to be stored separately
+        
+        // return item.children; // 
+        // const getChildren = this.getChildren(this.pickerTreeConfiguration, item, this.treeItems);
+        // console.warn('2dm item', item, 'getChildren', getChildren, 'item.children', item.children)
+        // return getChildren;
+        return item.children;
       },
     );
 
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    this.dataSource = new MatTreeFlatDataSource(this.treeControl, treeFlattener);
   }
 
-  /** Needed later for tree implementation testing */
+  private getChildren(treeConfig: UiPickerModeTree, item: PickerTreeItem, allItems: PickerTreeItem[]) {
+    const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
+    const cpRef = treeConfig.TreeChildParentRefField;
+    const pcRef = treeConfig.TreeParentChildRefField;
+    const cId = treeConfig.TreeChildIdField;
+    const pId = treeConfig.TreeParentIdField;
+    if (isParentChild)
+      return item.data[pcRef].map((x: any) => {
+        const child = allItems.find(y => (y as any)[cId] == (x as any)[cId]);
+        return child;
+      });
+    else if (treeConfig.TreeRelationship == RelationshipChildParent) {
+      const itemParentValue = item.data?.[pId];
+      console.log(`RelationshipChildParent - 2dm for parentIdField: '${pId}' on item: '${itemParentValue}' with parent having id field '${cId}' `);
+      return allItems.filter(x => {
+        const childParentId = x.data[cpRef]?.[0]?.[pId];
+        return childParentId == itemParentValue;
+      });
+    }
+    else
+      throw new Error(`Unknown tree relationship: "${treeConfig?.TreeRelationship}"`);
+  }
+
+  /** Needed by material tree to somehow determine the properties */
   treeControl = new FlatTreeControl<PickerTreeItem>(
     item => item.level,
     item => item.expandable,
