@@ -1,5 +1,5 @@
 import { PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
+import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
@@ -10,9 +10,9 @@ import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
-import { EntityBasic } from '../../../../shared/models/entity-basic';
 
-const logThis = false;
+const logThis = true;
+const logRx = true;
 
 @Injectable()
 export class DataSourceQuery extends DataSourceBase {
@@ -29,7 +29,7 @@ export class DataSourceQuery extends DataSourceBase {
   // private isStringQuery: boolean;
   // private entityGuid: string;
   // private fieldName: string;
-  private appId: string;
+  private appId: number;
 
   setupQuery(
     settings$: BehaviorSubject<FieldSettings>,
@@ -40,7 +40,7 @@ export class DataSourceQuery extends DataSourceBase {
   ): void {
     this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName);
 
-    this.appId = appId;
+    this.appId = Number(appId);
     super.setup(settings$);
     const settings = settings$.value;
     const streamName = settings.StreamName;
@@ -53,7 +53,7 @@ export class DataSourceQuery extends DataSourceBase {
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
 
-    const lAll = this.log.rxTap('all$', { enabled: true });
+    const lAll = this.log.rxTap('all$', { enabled: logRx });
     const all$ = combineLatest([
       params$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll))
@@ -77,7 +77,7 @@ export class DataSourceQuery extends DataSourceBase {
           );
 
         // Default case, get the data
-        const lGetQs = this.log.rxTap('queryService', { enabled: true });
+        const lGetQs = this.log.rxTap('queryService', { enabled: logRx });
         return this.queryService
           .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), [])
           .pipe(
@@ -178,7 +178,8 @@ export class DataSourceQuery extends DataSourceBase {
   private setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => {
-        const disable = e.AppId != null && e.AppId.toString() !== this.appId;
+        const appId = e.data?.AppId;
+        const disable = appId != null && appId !== this.appId;
         e._disableEdit = disable;
         e._disableDelete = disable;
       });

@@ -1,24 +1,23 @@
+// TODO: @2dm
+// - rename Value to value
+// - rename Text to label
+// - rename _tooltip to tooltip and all others with _ as well
+// - rename Id to id
+
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+
 export interface EntityForPicker {
   /** The EntityId */
   Id?: number;
-
-  /** The title to show in the dropdown */
-  Text: string;
 }
 
 export interface PickerItem extends EntityForPicker {
-  /** 
-   * AppId where the entity came from. 
-   * It is sometimes included to indicate if it's from the current app,
-   * eg. to check if edit is allowed. 
-   * New it v15 when sometimes providing entities from multiple apps
-   */
-  AppId?: number;
-
   /** The value to store */
   Value: string;
 
-  
+  /** The title to show in the dropdown */
+  label: string;
+
   /**
    * Prevent edit of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
@@ -74,7 +73,8 @@ export interface PickerItem extends EntityForPicker {
    * The data of the underlying original entity.
    * Used in formulas and field masks for all properties.
    */
-  data?: {
-    [key: string]: any;  
-  }
+  data?: EntityBasicWithFields;
+  //  {
+  //   [key: string]: any;  
+  // }
 }

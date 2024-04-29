@@ -174,7 +174,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     this.log.add('deleteItem', props);
     const entity = this.optionsOrHints$.value.find(item => item.Value === props.entityGuid);
     const id = entity.Id;
-    const title = entity.Text;
+    const title = entity.label;
     const contentType = this.contentType;
     const parentId = this.config.entityId;
     const parentField = this.config.fieldName;

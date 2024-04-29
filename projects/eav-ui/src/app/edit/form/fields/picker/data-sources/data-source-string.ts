@@ -4,7 +4,7 @@ import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 
-const logThis = true;
+const logThis = false;
 const logRx = true;
 
 @Injectable()
@@ -37,7 +37,7 @@ export class DataSourceString extends DataSourceBase {
     const settings = this.settings$.value;
     const entityInfo: PickerItem = {
       Value: dropdownOption.value as string,
-      Text: dropdownOption.label,
+      label: dropdownOption.label,
       _tooltip: this.helpers.stripHtml(settings.ItemTooltip),
       _information: this.helpers.stripHtml(settings.ItemInformation),
       _helpLink: settings.ItemLink,

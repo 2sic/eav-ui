@@ -40,7 +40,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private pickerTreeConfiguration: UiPickerModeTree;
   dataSource: MatTreeFlatDataSource<TreeItem, PickerTreeItem, PickerTreeItem>;
 
-  private options$ = new BehaviorSubject<PickerItem[]>(null);
+  private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
   private selectedItems$ = new Observable<PickerItem[]>;
   private selectedItem$ = new BehaviorSubject<PickerItem>(null);
   private newValue: string = null;
@@ -68,10 +68,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
     if (false) {
       this.subscription.add(
-        this.fieldsSettingsService.processPickerItems$(this.config.fieldName, source.optionsOrHints$).subscribe((items) => this.options$.next(items))
+        this.fieldsSettingsService.processPickerItems$(this.config.fieldName, source.optionsOrHints$).subscribe((items) => this.optionItems$.next(items))
       );
     } else {
-      this.options$ = source.optionsOrHints$;
+      this.optionItems$ = source.optionsOrHints$;
     }
     
     this.selectedItems$ = this.pickerData.selectedItems$;
@@ -103,13 +103,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     );
 
     const testLog = this.log.rxTap('test$');
-    combineLatest([/*debugEnabled$, settings$, this.selectedItems$, */ this.options$,]).pipe(
+    combineLatest([/*debugEnabled$, settings$, this.selectedItems$, */ this.optionItems$,]).pipe(
       testLog.pipe(),
     ).subscribe();
 
     const vmLog = this.log.rxTap('viewModel$');
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, this.selectedItems$, this.options$, error$,
+      debugEnabled$, settings$, this.selectedItems$, this.optionItems$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.filter$,
     ]).pipe(
       vmLog.pipe(),
@@ -125,8 +125,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const filteredItems = !elemValue ? options : options?.filter(option =>
-          option.Text
-            ? option.Text.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
+          option.label
+            ? option.label.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
 
@@ -181,20 +181,20 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     let returnValue = '';
     if (value != null || value != undefined) {
       if (typeof value === 'string') {
-        returnValue = this.options$.value?.find(ae => ae.Value == value)?.Text;
+        returnValue = this.optionItems$.value?.find(ae => ae.Value == value)?.label;
       } else if (Array.isArray(value)) {
         if (typeof value[0] === 'string') {
-          returnValue = this.options$.value?.find(ae => ae.Value == value[0])?.Text;
+          returnValue = this.optionItems$.value?.find(ae => ae.Value == value[0])?.label;
         } else {
-          returnValue = (value[0] as PickerItem)?.Text;
+          returnValue = (value[0] as PickerItem)?.label;
         }
       }
       else
-        returnValue = (value as PickerItem)?.Text;
+        returnValue = (value as PickerItem)?.label;
     }
     if (!returnValue) {
       if (this.selectedItem$.value?.Value == value) {
-        returnValue = this.selectedItem$.value?.Text;
+        returnValue = this.selectedItem$.value?.label;
       } else {
         returnValue = value + " *";
       }
@@ -226,7 +226,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     if (this.showSelectedItem) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
-      else if (selectedItem && selectedItems.length < 2) this.autocompleteRef.nativeElement.value = selectedItem.Text;
+      else if (selectedItem && selectedItems.length < 2) this.autocompleteRef.nativeElement.value = selectedItem.label;
     } else {
       // @SDV - improve this
       this.autocompleteRef.nativeElement.value = '';
@@ -306,18 +306,18 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       const pId = treeConfig?.TreeParentIdField;
       const cStreamName = treeConfig?.TreeLeavesStream;
       const pStreamName = treeConfig?.TreeBranchesStream;
-      return {
-        Level: Level,
-        Expandable: (treeConfig?.TreeRelationship == 'parent-child')
-          ? this.options$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item)
-          && !!item.data[pcRef] && item.data[pcRef].length > 0
-          : this.options$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item)
-          && !!this.options$.value.find(x => {
+      const itemInCorrectStream = this.optionItems$.value.filter(x => !x._streamName || x._streamName == pStreamName).find(x => x == item);
+      const expandable = (treeConfig?.TreeRelationship == 'parent-child')
+          ? itemInCorrectStream && !!item.data[pcRef] && item.data[pcRef].length > 0
+          : itemInCorrectStream && !!this.optionItems$.value.find(x => {
             if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
               return x.data[cpRef][0][pId] == item[pId]
-          }),
+          });
+      return {
+        Level: Level,
+        Expandable: expandable,
         Value: item.Value,
-        Text: item.Text,
+        label: item.Text,
         Parent: item[cpRef],
         Children: item[pcRef],
         _tooltip: item._tooltip,
@@ -337,11 +337,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       const pStreamName = treeConfig?.TreeBranchesStream;
       if (treeConfig?.TreeRelationship == 'parent-child') {
         return item.data[pcRef].map((x: any) => {
-          const child = this.options$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
+          const child = this.optionItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
           return child;
         });
       } else if (treeConfig?.TreeRelationship == 'child-parent') {
-        return this.options$.value.filter(x => {
+        return this.optionItems$.value.filter(x => {
           if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
             return x.data[cpRef][0][pId] == item[pId];
         });

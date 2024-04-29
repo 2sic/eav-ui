@@ -4,6 +4,7 @@ import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { PickerItem } from '../../../../../../../../edit-types';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { BaseDataService } from '../../../../shared/store/ngrx-data/base-data.service';
+import { PrefetchEntity, prefetchItemToPickerItem } from '../../../../dialog/main/edit-dialog-main.models';
 
 @Injectable({ providedIn: 'root' })
 export class PickerDataCacheService extends BaseDataService<PickerItem> {
@@ -11,9 +12,10 @@ export class PickerDataCacheService extends BaseDataService<PickerItem> {
     super('EntityCache', serviceElementsFactory);
   }
 
-  loadEntities(entities: PickerItem[]): void {
+  loadEntities(entities: PrefetchEntity[]): void {
     if (entities == null) return;
-    this.upsertManyInCache(entities);
+    var asPicker = entities.map(e => prefetchItemToPickerItem(e));
+    this.upsertManyInCache(asPicker);
   }
 
   getEntities$(guids?: string[]): Observable<PickerItem[]> {

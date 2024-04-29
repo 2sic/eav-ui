@@ -50,10 +50,10 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   abstract fetchItems(): void;
 }
 
-/** Generate a placeholder item to show in the menu in case of error or loading */
+/** Generate a placeholder item to show in the list to show during loading or in case of error */
 export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
   const item: PickerItem = {
-    Text: translate.instant(i18nLabel) + (suffix ?? ''),
+    label: translate.instant(i18nLabel) + (suffix ?? ''),
     Value: null,
     _disableSelect: true,
     _disableDelete: true,

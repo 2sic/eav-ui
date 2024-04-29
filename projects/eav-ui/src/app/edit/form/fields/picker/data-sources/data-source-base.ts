@@ -76,6 +76,10 @@ export abstract class DataSourceBase extends ServiceBase {
     this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log.enableChildren);
     return this.masks.entity2PickerItem(entity, streamName, mustUseGuid);
   }
+  /**
+   * The masks to determine which fields are used for what, and how to combine them.
+   * They are generated once per source, and then reused.
+   */
   private masks: DataSourceMasksHelper;
 
   protected fieldsToRetrieve(settings: FieldSettings): string {

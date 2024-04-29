@@ -95,7 +95,7 @@ export class FormulaEngine implements OnDestroy {
 
         switch (formula.target) {
           case FormulaTargets.ListItemLabel:
-            item.Text = formulaResult.value as string;
+            item.label = formulaResult.value as string;
             break;
           case FormulaTargets.ListItemDisabled:
             item._disableSelect = formulaResult.value as boolean;
