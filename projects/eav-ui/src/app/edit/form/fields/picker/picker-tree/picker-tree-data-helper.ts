@@ -5,14 +5,16 @@ import { PickerItem, RelationshipChildParent, RelationshipParentChild, UiPickerM
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'tinymce';
 
-const logThis = false;
+const logThis = true;
 
 export class PickerTreeDataHelper extends ServiceBase {
 
   public treeFlattener: MatTreeFlattener<PickerItem, PickerTreeItem>;
   private pickerTreeConfiguration: UiPickerModeTree;
   private optionItems$: BehaviorSubject<PickerItem[]>;
+  private treeItems: PickerTreeItem[];
 
   dataSource: MatTreeFlatDataSource<PickerItem, PickerTreeItem, PickerTreeItem>
 
@@ -39,11 +41,55 @@ export class PickerTreeDataHelper extends ServiceBase {
     this.optionItems$ = optionItems$;
   }
 
+  public addTreeItems(treeItems: PickerTreeItem[]) {
+    this.log.add('addTreeItems');
+    this.treeItems = treeItems;
+  }
+
   public updateSelectedData(selectedData: PickerItem[]) {
     this.log.add('updateSelectedData');
     this.dataSource.data = selectedData;
   }
   
+  public preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
+    this.log.add(`preConvertItemToTreeItem for item ${item?.id}`, treeConfig, item, allItems);
+    if (!treeConfig) throw new Error('No tree configuration found');
+    if (!item) throw new Error("Can't transform null-item");
+
+    const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
+    const cpRef = treeConfig.TreeChildParentRefField;
+    const pcRef = treeConfig.TreeParentChildRefField;
+    const cId = treeConfig.TreeChildIdField;
+    const pId = treeConfig.TreeParentIdField;
+    const cStreamName = treeConfig.TreeLeavesStream;
+    const pStreamName = treeConfig.TreeBranchesStream;
+    const itemInCorrectStream = allItems
+      .filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName)
+      .find(x => x == item);
+
+    const expandable = isParentChild
+      ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
+      : itemInCorrectStream && !!allItems.find(x => {
+        return (x.data[cpRef]?.[0]?.[pId] == item?.data?.[pId])
+          // return x.data[cpRef][0][pId] == item.data[pId]
+      }
+    );
+  
+    const result: PickerTreeItem = {
+      ...item,
+      // value: item.value,
+      // label: item.label,
+      // tooltip: item.tooltip,
+      // infoBox: item.infoBox,
+      // helpLink: item.helpLink,
+      level: -1,
+      expandable: expandable,
+      parent: item.data[cpRef],
+      children: item.data[pcRef],
+    };
+    this.log.add('result', result);
+    return result;
+  }
 
   public build() {
     this.log.add('build');
@@ -52,47 +98,53 @@ export class PickerTreeDataHelper extends ServiceBase {
 
     this.treeFlattener = new MatTreeFlattener(
       // transformFunction converts an item to a tree-item
-      (item: PickerItem, level: number): PickerTreeItem => {
-        const log = new EavLogger('transformFunction', logThis);
-        log.add(`item: ${item?.id}`, item);
-        const treeConfig = this.pickerTreeConfiguration;
-        if (!treeConfig) throw new Error('No tree configuration found');
+      (item: PickerTreeItem, level: number): PickerTreeItem => {
+        // const log = new EavLogger('transformFunction', logThis);
+        // log.add(`item: ${item?.id}`, item);
+        // const treeConfig = this.pickerTreeConfiguration;
+        // if (!treeConfig) throw new Error('No tree configuration found');
 
-        if (!item) throw new Error("Can't transform null-item");
+        // if (!item) throw new Error("Can't transform null-item");
 
-        const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
-        const cpRef = treeConfig.TreeChildParentRefField;
-        const pcRef = treeConfig.TreeParentChildRefField;
-        const cId = treeConfig.TreeChildIdField;
-        const pId = treeConfig.TreeParentIdField;
-        const cStreamName = treeConfig.TreeLeavesStream;
-        const pStreamName = treeConfig.TreeBranchesStream;
-        const allItems = this.optionItems$.value;
-        const itemInCorrectStream = allItems
-          .filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName)
-          .find(x => x == item);
-        
-        const expandable = isParentChild
-            ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
-            : itemInCorrectStream && !!allItems.find(x => {
-              return (x.data[cpRef]?.[0]?.[pId] == item?.data?.[pId])
-                // return x.data[cpRef][0][pId] == item.data[pId]
-            }
-          );
-        
-        const result: PickerTreeItem = {
+        return {
+          ...item,
           level: level,
-          expandable: expandable,
-          value: item.value,
-          label: item.label,
-          parent: item.data[cpRef],
-          children: item.data[pcRef],
-          tooltip: item.tooltip,
-          infoBox: item.infoBox,
-          helpLink: item.helpLink,
-        };
-        log.add('result', result);
-        return result;
+        }
+
+        // const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
+        // const cpRef = treeConfig.TreeChildParentRefField;
+        // const pcRef = treeConfig.TreeParentChildRefField;
+        // const cId = treeConfig.TreeChildIdField;
+        // const pId = treeConfig.TreeParentIdField;
+        // const cStreamName = treeConfig.TreeLeavesStream;
+        // const pStreamName = treeConfig.TreeBranchesStream;
+        // const allItems = this.optionItems$.value;
+        // const itemInCorrectStream = allItems
+        //   .filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName)
+        //   .find(x => x == item);
+        
+        // const expandable = isParentChild
+        //     ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
+        //     : itemInCorrectStream && !!allItems.find(x => {
+        //       return (x.data[cpRef]?.[0]?.[pId] == item?.data?.[pId])
+        //         // return x.data[cpRef][0][pId] == item.data[pId]
+        //     }
+        //   );
+        
+        // const result: PickerTreeItem = {
+        //   ...item,
+        //   // value: item.value,
+        //   // label: item.label,
+        //   // tooltip: item.tooltip,
+        //   // infoBox: item.infoBox,
+        //   // helpLink: item.helpLink,
+        //   level: level,
+        //   expandable: expandable,
+        //   parent: item.data[cpRef],
+        //   children: item.data[pcRef],
+        // };
+        // log.add('result', result);
+        // return result;
       },
       // getLevel
       (item): number => { return item.level; },
@@ -101,14 +153,14 @@ export class PickerTreeDataHelper extends ServiceBase {
       (item): boolean => { return item.expandable; },
 
       // getChildren
-      (item): PickerItem[] => {
+      (item): PickerTreeItem[] => {
         const treeConfig = this.pickerTreeConfiguration;
         const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
         const cpRef = treeConfig.TreeChildParentRefField;
         const pcRef = treeConfig.TreeParentChildRefField;
         const cId = treeConfig.TreeChildIdField;
         const pId = treeConfig.TreeParentIdField;
-        const allItems = this.optionItems$.value;
+        const allItems = this.treeItems;// this.optionItems$.value;
         if (isParentChild)
           return item.data[pcRef].map((x: any) => {
             const child = allItems.find(y => (y as any)[cId] == (x as any)[cId]);
@@ -140,12 +192,13 @@ export class PickerTreeDataHelper extends ServiceBase {
       ? false
       : selected.some(entity => entity.value === item.value);
 
-    if (item.label?.indexOf('Kawasaki') > -1) {
-      this.log.enabled = true;
-      this.log.add('disableOption', item, selected, enableReselect, selectedButNoReselect);
-      this.log.enabled = false;
-    }
-    
+    // test code to verify functionality
+    // if (item.label?.indexOf('Kawasaki') > -1) {
+    //   this.log.enabled = true;
+    //   this.log.add('disableOption', item, selected, enableReselect, selectedButNoReselect);
+    //   this.log.enabled = false;
+    // }
+
     const isRootButRootNotAllowed = treeConfig?.TreeAllowSelectRoot
       ? false
       : item.children?.length > 0 && item.parent?.length === 0;
