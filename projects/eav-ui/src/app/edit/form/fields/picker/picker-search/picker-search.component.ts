@@ -16,7 +16,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeItem, TreeItem } from '../models/picker-tree.models';
-import { PickerIconHelpComponent } from './picker-icon-help/picker-icon-help.component';
+import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 
 const logThis = false;
 
@@ -41,10 +41,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
 
-  private pickerTreeConfiguration: UiPickerModeTree;
-  dataSource: MatTreeFlatDataSource<TreeItem, PickerTreeItem, PickerTreeItem>;
+  // private pickerTreeConfiguration: UiPickerModeTree;
+  // dataSource: MatTreeFlatDataSource<TreeItem, PickerTreeItem, PickerTreeItem>;
 
-  private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
+  optionItems$ = new BehaviorSubject<PickerItem[]>(null);
   private selectedItems$ = new Observable<PickerItem[]>;
   private selectedItem$ = new BehaviorSubject<PickerItem>(null);
   private newValue: string = null;
@@ -53,6 +53,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private filter$ = new BehaviorSubject(false);
 
   private log = new EavLogger('PickerSearchComponent', logThis);
+
+  treeHelper = new PickerTreeDataHelper();
 
   constructor(
     private translate: TranslateService,
@@ -66,7 +68,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const state = this.pickerData.state;
     const source = this.pickerData.source;
     this.control = this.group.controls[this.config.fieldName];
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    // this.dataSource = new MatTreeFlatDataSource(this.treeHelper.treeControl, this.treeFlattener);
 
     // TODO: @2dm - maybe there is even a more elegant way to do this
     // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
@@ -90,7 +92,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const setLog = this.log.rxTap('settings$');
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       setLog.pipe(),
-      // tap(() => console.log('2dm')),
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableAddExisting: settings.EnableAddExisting,
@@ -105,6 +106,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       distinctUntilChanged(GeneralHelpers.objectsEqual),
       setLog.distinctUntilChanged(),
     );
+
+    // Tree work
+    // this.treeHelper = new PickerTreeDataHelper();
 
     const testLog = this.log.rxTap('test$');
     combineLatest([/*debugEnabled$, settings$, this.selectedItems$, */ this.optionItems$,]).pipe(
@@ -136,11 +140,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         // TODO: @SDV -> tree expand by default and test search (search has to show parents)
         if (this.isTreeDisplayMode) {
           if (optionItems && optionItems[0]?.data != undefined) {
+            // TODO: this is a wild side-effect!
             const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
+            this.treeHelper.updateConfig(treeConfig);
+            this.treeHelper.addOptionItems(this.optionItems$);
             const filteredData = optionItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
               ? !optionItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
               : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
-            this.dataSource.data = filteredData;
+            // this.dataSource.data = filteredData;
+            this.treeHelper.updateSelectedData(filteredData);
           }   
         }
 
@@ -151,9 +159,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           allowMultiValue: settings.AllowMultiValue,
           enableAddExisting: settings.EnableAddExisting,
           enableTextEntry: settings.EnableTextEntry,
-          enableEdit: settings.EnableEdit,
-          enableDelete: settings.EnableDelete,
-          enableRemove: settings.EnableRemove,
+          enableEdit: settings.EnableEdit && showItemEditButtons,
+          enableDelete: settings.EnableDelete && showItemEditButtons,
+          enableRemove: settings.EnableRemove && showItemEditButtons,
           enableReselect: settings.EnableReselect,
           pickerTreeConfiguration: settings.PickerTreeConfiguration,
           selectedItems,
@@ -167,13 +175,14 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           filteredItems,
 
           // additional properties for easier readability in the template
-          showItemEditButtons,
+          // showItemEditButtons,
           isTreeDisplayMode: this.isTreeDisplayMode,
           csDisabled,
         };
         return viewModel;
       }),
     );
+
   }
 
   ngOnDestroy(): void {
@@ -295,60 +304,61 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
 
   /** Needed later for tree implementation testing */
-  treeControl = new FlatTreeControl<PickerTreeItem>(
-    item => item.Level,
-    item => item.Expandable,
-  );
+  // treeControl: FlatTreeControl<PickerTreeItem, PickerTreeItem>;
+  // treeControl = new FlatTreeControl<PickerTreeItem>(
+  //   item => item.Level,
+  //   item => item.Expandable,
+  // );
 
-  treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
-    (item, Level): PickerTreeItem => {
-      const treeConfig = this.pickerTreeConfiguration;
-      const cpRef = treeConfig?.TreeChildParentRefField;
-      const pcRef = treeConfig?.TreeParentChildRefField;
-      const cId = treeConfig?.TreeChildIdField;
-      const pId = treeConfig?.TreeParentIdField;
-      const cStreamName = treeConfig?.TreeLeavesStream;
-      const pStreamName = treeConfig?.TreeBranchesStream;
-      const itemInCorrectStream = this.optionItems$.value.filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName).find(x => x == item);
-      const expandable = (treeConfig?.TreeRelationship == 'parent-child')
-          ? itemInCorrectStream && !!item.data[pcRef] && item.data[pcRef].length > 0
-          : itemInCorrectStream && !!this.optionItems$.value.find(x => {
-            if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-              return x.data[cpRef][0][pId] == item.data[pId]
-          });
-      return {
-        Level: Level,
-        Expandable: expandable,
-        value: item.value,
-        label: item.label,
-        Parent: item.data[cpRef],
-        Children: item.data[pcRef],
-        tooltip: item.tooltip,
-        infoBox: item.infoBox,
-        helpLink: item.helpLink,
-      };
-    },
-    (item): number => { return item.Level; },
-    (item): boolean => { return item.Expandable; },
-    (item): PickerItem[] => {
-      const treeConfig = this.pickerTreeConfiguration;
-      const cpRef = treeConfig?.TreeChildParentRefField;
-      const pcRef = treeConfig?.TreeParentChildRefField;
-      const cId = treeConfig?.TreeChildIdField;
-      const pId = treeConfig?.TreeParentIdField;
-      const cStreamName = treeConfig?.TreeLeavesStream;
-      const pStreamName = treeConfig?.TreeBranchesStream;
-      if (treeConfig?.TreeRelationship == 'parent-child') {
-        return item.data[pcRef].map((x: any) => {
-          const child = this.optionItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
-          return child;
-        });
-      } else if (treeConfig?.TreeRelationship == 'child-parent') {
-        return this.optionItems$.value.filter(x => {
-          if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-            return x.data[cpRef][0][pId] == item.data[pId];
-        });
-      }
-    },
-  );
+  // private treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
+  //   (item, Level): PickerTreeItem => {
+  //     const treeConfig = this.pickerTreeConfiguration;
+  //     const cpRef = treeConfig?.TreeChildParentRefField;
+  //     const pcRef = treeConfig?.TreeParentChildRefField;
+  //     const cId = treeConfig?.TreeChildIdField;
+  //     const pId = treeConfig?.TreeParentIdField;
+  //     const cStreamName = treeConfig?.TreeLeavesStream;
+  //     const pStreamName = treeConfig?.TreeBranchesStream;
+  //     const itemInCorrectStream = this.optionItems$.value.filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName).find(x => x == item);
+  //     const expandable = (treeConfig?.TreeRelationship == 'parent-child')
+  //         ? itemInCorrectStream && !!item.data[pcRef] && item.data[pcRef].length > 0
+  //         : itemInCorrectStream && !!this.optionItems$.value.find(x => {
+  //           if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
+  //             return x.data[cpRef][0][pId] == item.data[pId]
+  //         });
+  //     return {
+  //       Level: Level,
+  //       Expandable: expandable,
+  //       value: item.value,
+  //       label: item.label,
+  //       Parent: item.data[cpRef],
+  //       Children: item.data[pcRef],
+  //       tooltip: item.tooltip,
+  //       infoBox: item.infoBox,
+  //       helpLink: item.helpLink,
+  //     };
+  //   },
+  //   (item): number => { return item.Level; },
+  //   (item): boolean => { return item.Expandable; },
+  //   (item): PickerItem[] => {
+  //     const treeConfig = this.pickerTreeConfiguration;
+  //     const cpRef = treeConfig?.TreeChildParentRefField;
+  //     const pcRef = treeConfig?.TreeParentChildRefField;
+  //     const cId = treeConfig?.TreeChildIdField;
+  //     const pId = treeConfig?.TreeParentIdField;
+  //     const cStreamName = treeConfig?.TreeLeavesStream;
+  //     const pStreamName = treeConfig?.TreeBranchesStream;
+  //     if (treeConfig?.TreeRelationship == 'parent-child') {
+  //       return item.data[pcRef].map((x: any) => {
+  //         const child = this.optionItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
+  //         return child;
+  //       });
+  //     } else if (treeConfig?.TreeRelationship == 'child-parent') {
+  //       return this.optionItems$.value.filter(x => {
+  //         if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
+  //           return x.data[cpRef][0][pId] == item.data[pId];
+  //       });
+  //     }
+  //   },
+  // );
 }

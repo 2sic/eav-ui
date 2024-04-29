@@ -7,7 +7,7 @@ import { TippyStandaloneDirective } from 'projects/eav-ui/src/app/shared/directi
   standalone: true,
   imports: [
     MatIconModule,
-    TippyStandaloneDirective
+    TippyStandaloneDirective,
   ],
   templateUrl: './picker-icon-info.component.html',
 })

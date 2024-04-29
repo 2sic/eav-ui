@@ -11,20 +11,20 @@
         [disabled]="vm.csDisabled || !vm.enableAddExisting">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
-      @if (vm.enableEdit && !vm.selectedItem?.noEdit && vm.showItemEditButtons) {
+      @if (vm.enableEdit && !vm.selectedItem?.noEdit) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Edit' | translate"
           [disabled]="vm.csDisabled || config.initialDisabled" appClickStopPropagation
           (click)="edit(vm.selectedItem?.value, vm.selectedItem?.id)">
           <mat-icon>edit</mat-icon>
         </button>
       }
-      @if (vm.enableDelete && !vm.selectedItem?.noDelete && vm.showItemEditButtons) {
+      @if (vm.enableDelete && !vm.selectedItem?.noDelete) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Delete' | translate"
           [disabled]="vm.csDisabled" appClickStopPropagation (click)="deleteItem(0, vm.selectedItem?.value)">
           <mat-icon>delete</mat-icon>
         </button>
       }
-      @if (vm.enableRemove && vm.showItemEditButtons) {
+      @if (vm.enableRemove) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Remove' | translate"
           [disabled]="vm.csDisabled" appClickStopPropagation (click)="removeItem(0)">
           <mat-icon>do_not_disturb_on</mat-icon>
@@ -61,7 +61,9 @@
 
       <!-- Tree Display Mode -->
       @if (vm.isTreeDisplayMode) {
-        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <!-- <app-picker-tree [vm]="vm" [config]="config" [optionItems$]="optionItems$" [pickerTreeConfiguration]="vm.pickerTreeConfiguration"></app-picker-tree>
+        <span>test</span> -->
+        <mat-tree [dataSource]="treeHelper.dataSource" [treeControl]="treeHelper.treeControl">
           <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
             <button mat-icon-button disabled></button>
             <mat-option [value]="item.value" class="eav-picker-option"
@@ -79,7 +81,7 @@
           <mat-tree-node *matTreeNodeDef="let item;when: hasChild" matTreeNodePadding class="eav-tree-node">
             <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + item.name">
               <mat-icon class="mat-icon-rtl-mirror">
-                {{treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
+                {{treeHelper.treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
             </button>
             <mat-option [value]="item.value" class="eav-picker-option"

@@ -22,7 +22,7 @@ export interface PickerSearchViewModel {
   filteredItems: PickerItem[];
 
   // added for easier readability
-  showItemEditButtons: boolean;
+  // showItemEditButtons: boolean;
   isTreeDisplayMode: boolean;
   csDisabled: boolean;
 }
