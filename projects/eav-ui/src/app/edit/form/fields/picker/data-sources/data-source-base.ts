@@ -7,7 +7,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
-import { DataWitLoading } from '../models/data-with-loading';
+import { DataWithLoading } from '../models/data-with-loading';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 export abstract class DataSourceBase extends ServiceBase {
@@ -38,8 +38,8 @@ export abstract class DataSourceBase extends ServiceBase {
     super(logSpecs);
   }
 
-  protected noItemsLoadingFalse: DataWitLoading<PickerItem[]> = { data: [], loading: false };
-  protected noItemsLoadingTrue: DataWitLoading<PickerItem[]> = { data: [], loading: true };
+  protected noItemsLoadingFalse: DataWithLoading<PickerItem[]> = { data: [], loading: false };
+  protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
 
   protected setup(settings$: BehaviorSubject<FieldSettings>) {
     this.settings$ = settings$;

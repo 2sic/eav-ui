@@ -7,7 +7,7 @@ import { EntityBasic } from '../models/entity-basic';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
@@ -22,6 +22,12 @@ export class EntityService extends ServiceBase {
     super(new EavLogger('EntityService', logThis));
   }
 
+  /**
+   * Get entities based on the content type name.
+   * As of 2024-04-29 only used in REST API.
+   * @param params 
+   * @returns 
+   */
   getEntities$(params: Observable<{ contentTypeName: string }>): Observable<EntityBasic[]> {
     return params.pipe(
       filter(p => p != null),

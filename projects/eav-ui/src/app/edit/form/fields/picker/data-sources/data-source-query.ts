@@ -9,7 +9,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
-import { DataWitLoading } from '../models/data-with-loading';
+import { DataWithLoading } from '../models/data-with-loading';
 import { EntityBasic } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
@@ -61,22 +61,20 @@ export class DataSourceQuery extends DataSourceBase {
       lAll.pipe(),
       mergeMap(([params, _]) => {
         // If we don't have a query URL return a single item with a message
-        if (!queryUrl) {
-          var notConfigured: EntityBasic = {
-            Id: -1,
-            Guid: null,
-            Title: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
-          };
-          return of({
+        if (!queryUrl)
+          return of<DataWithLoading<QueryStreams>>({
               data: {
                 'Default': [
-                  notConfigured
+                  {
+                    Id: -1,
+                    Guid: null,
+                    Title: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
+                  },
                 ],
-              } as QueryStreams,
-              loading: true
-            } as DataWitLoading<QueryStreams>
+              },
+              loading: true,
+            }
           );
-        }
 
         // Default case, get the data
         const lGetQs = this.log.rxTap('queryService', { enabled: true });
