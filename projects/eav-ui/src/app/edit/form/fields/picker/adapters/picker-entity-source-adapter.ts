@@ -9,7 +9,7 @@ import { placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {

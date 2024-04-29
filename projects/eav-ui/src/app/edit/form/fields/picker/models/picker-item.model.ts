@@ -1,6 +1,3 @@
-// TODO: @2dm
-// - rename _tooltip to tooltip and all others with _ as well
-
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 export interface PickerItem {
@@ -38,21 +35,18 @@ export interface PickerItem {
   /** 
    * The tooltip that is seen on hover over item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
   tooltip?: string;
 
   /**
    * The data that is seen on click on information icon on item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
   infoBox?: string;
 
   /**
    * The data that is seen on click on help icon on item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
   helpLink?: string;
 

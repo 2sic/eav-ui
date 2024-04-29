@@ -1,16 +1,19 @@
 import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, of, shareReplay } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, of, shareReplay } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
+import { DataSourceMasks } from './data-source-masks.model';
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = false;
+const logThis = true;
+const logChildren = true;
 const logRx = true;
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
   constructor() {
-    super(new EavLogger('DataSourceString', logThis));
+    super(new EavLogger('DataSourceString', logThis, logChildren));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {
@@ -18,10 +21,22 @@ export class DataSourceString extends DataSourceBase {
     super.setup(settings$);
     this.loading$ = of(false);
 
+    var mask = this.getMaskHelper().getMasks();
+    this.log.add('mask', mask);
+
     const rxLog = this.log.rxTap('data$', { enabled: logRx });
     this.data$ = this.settings$.pipe(
       rxLog.pipe(),
-      map(settings => settings._options.map(option => this.stringEntityMapping(option))),
+      map(settings => settings._options.map(option => {
+        const asEntity: EntityBasicWithFields = {
+          Id: null,
+          Guid: null,
+          Title: option.label,
+          // These are only added for use in Formulas or masks.
+          Value: option.value,
+        };
+        return this.entity2PickerItem(asEntity, null, /* mustUseGuid: */ false);
+      })),
       distinctUntilChanged(),
       shareReplay(1),
     );
@@ -33,15 +48,4 @@ export class DataSourceString extends DataSourceBase {
     super.destroy();
   }
 
-  private stringEntityMapping(dropdownOption: DropdownOption): PickerItem {
-    const settings = this.settings$.value;
-    const entityInfo: PickerItem = {
-      value: dropdownOption.value as string,
-      label: dropdownOption.label,
-      tooltip: this.helpers.stripHtml(settings.ItemTooltip),
-      infoBox: this.helpers.stripHtml(settings.ItemInformation),
-      helpLink: settings.ItemLink,
-    } as PickerItem;
-    return entityInfo;
-  }
 }

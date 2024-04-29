@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
 
-const logThis = true;
+const logThis = false;
 const logRx = true;
 
 @Injectable()
@@ -127,7 +127,7 @@ export class DataSourceQuery extends DataSourceBase {
           startWith({ data: {} as QueryStreams, loading: true })
         )
       ),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* valueMustBeGuid: */ !isForStringField) } }),
       startWith(this.noItemsLoadingFalse),
       shareReplay(1),
     );
@@ -157,7 +157,7 @@ export class DataSourceQuery extends DataSourceBase {
     this.params$.next(params);
   }
 
-  transformData(data: QueryStreams, streamName: string | null, mustUseGuid: boolean): PickerItem[] {
+  transformData(data: QueryStreams, streamName: string | null, valueMustBeGuid: boolean): PickerItem[] {
     this.log.add('transformData', 'data', data, 'streamName', streamName);
     if (!data)
       return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
@@ -170,7 +170,7 @@ export class DataSourceQuery extends DataSourceBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, mustUseGuid)));
+      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, valueMustBeGuid)));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }
@@ -179,11 +179,9 @@ export class DataSourceQuery extends DataSourceBase {
     if (queryEntities)
       queryEntities.forEach(e => {
         const appId = e.data?.AppId;
-        const disable = appId != null && appId !== this.appId;
-        e.noEdit = disable;
-        e.noDelete = disable;
+        e.noEdit = appId != null && appId !== this.appId;
+        e.noDelete = e.noEdit;
       });
-    // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;
   }
 }
