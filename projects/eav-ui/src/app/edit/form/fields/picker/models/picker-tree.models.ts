@@ -8,6 +8,6 @@ export interface PickerTreeItem extends PickerItem {
   Parent: PickerTreeItem[];
 }
 
-export interface TreeItem {
-  [key: string]: any;
+export interface TreeItem extends PickerItem {
+  // [key: string]: any;
 }

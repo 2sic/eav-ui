@@ -47,15 +47,15 @@
           @for (item of vm.filteredItems; track item) {
           <mat-option [value]="item.value" class="eav-picker-option"
             [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.value, vm.selectedItems)"
-            [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+            [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
             <div class="eav-dropdown-option">
               <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
               <div class="eav-dropdown-option-info">
-                @if (item._helpLink) {
-                  <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
+                @if (item.helpLink) {
+                  <mat-icon (click)="goToLink(item.helpLink)" [tippy]="item.helpLink" appClickStopPropagation>open_in_new</mat-icon>
                 }
-                @if (item._information) {
-                  <mat-icon [tippy]="item._information" [tippyAllowHtml]="true" [tippyArrow]="true" appClickStopPropagation>info</mat-icon>
+                @if (item.infoBox) {
+                  <mat-icon [tippy]="item.infoBox" [tippyAllowHtml]="true" [tippyArrow]="true" appClickStopPropagation>info</mat-icon>
                 }
               </div>
             </div>
@@ -70,15 +70,15 @@
             <button mat-icon-button disabled></button>
             <mat-option [value]="item.value" class="eav-picker-option"
               [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
-              [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+              [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
               <div class="eav-dropdown-option">
                 <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
                 <div class="eav-dropdown-option-info">
-                  @if (item._helpLink) {
-                    <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
+                  @if (item.helpLink) {
+                    <mat-icon (click)="goToLink(item.helpLink)" [tippy]="item.helpLink" appClickStopPropagation>open_in_new</mat-icon>
                   }
-                  @if (item._information) {
-                    <mat-icon [tippy]="item._information" [tippyAllowHtml]="true" [tippyArrow]="true"
+                  @if (item.infoBox) {
+                    <mat-icon [tippy]="item.infoBox" [tippyAllowHtml]="true" [tippyArrow]="true"
                       appClickStopPropagation>info</mat-icon>
                   }
                 </div>
@@ -93,15 +93,15 @@
             </button>
             <mat-option [value]="item.value" class="eav-picker-option"
               [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
-              [tippy]="item._tooltip" tippyShowDelay="500" [tippyDisabled]="!item._tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+              [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
               <div class="eav-dropdown-option">
                 <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
                 <div class="eav-dropdown-option-info">
-                  @if (item._helpLink) {
-                    <mat-icon (click)="goToLink(item._helpLink)" [tippy]="item._helpLink" appClickStopPropagation>open_in_new</mat-icon>
+                  @if (item.helpLink) {
+                    <mat-icon (click)="goToLink(item.helpLink)" [tippy]="item.helpLink" appClickStopPropagation>open_in_new</mat-icon>
                   }
-                  @if (item._information) {
-                    <mat-icon [tippy]="item._information" [tippyAllowHtml]="true" [tippyArrow]="true"
+                  @if (item.infoBox) {
+                    <mat-icon [tippy]="item.infoBox" [tippyAllowHtml]="true" [tippyArrow]="true"
                       appClickStopPropagation>info</mat-icon>
                   }
                 </div>

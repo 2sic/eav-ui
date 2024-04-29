@@ -47,10 +47,10 @@ export class DataSourceMasksHelper extends ServiceBase {
         data: entity,
         value: valueFieldValue,
         label: titleFieldValue,
-        _tooltip: masks.tooltip,
-        _information: masks.info,
-        _helpLink: masks.link,
-        _streamName: streamName ?? null,
+        tooltip: masks.tooltip,
+        infoBox: masks.info,
+        helpLink: masks.link,
+        sourceStreamName: streamName ?? null,
       };
       this.log.add('entity2PickerItem - no masks', result);
       return result;
@@ -67,10 +67,10 @@ export class DataSourceMasksHelper extends ServiceBase {
       data: entity,
       value: valueFieldValue,
       label: finalTitle,
-      _tooltip: tooltip,
-      _information: information,
-      _helpLink: helpLink,
-      _streamName: streamName ?? null,
+      tooltip: tooltip,
+      infoBox: information,
+      helpLink: helpLink,
+      sourceStreamName: streamName ?? null,
     } as PickerItem;
   }
 

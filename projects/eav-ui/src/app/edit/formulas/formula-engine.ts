@@ -101,13 +101,13 @@ export class FormulaEngine implements OnDestroy {
             item._disableSelect = formulaResult.value as boolean;
             break;
           case FormulaTargets.ListItemTooltip:
-            item._tooltip = formulaResult.value as string;
+            item.tooltip = formulaResult.value as string;
             break;
           case FormulaTargets.ListItemInformation:
-            item._information = formulaResult.value as string;
+            item.infoBox = formulaResult.value as string;
             break;
           case FormulaTargets.ListItemHelpLink:
-            item._helpLink = formulaResult.value as string;
+            item.helpLink = formulaResult.value as string;
             break;
         }
       }

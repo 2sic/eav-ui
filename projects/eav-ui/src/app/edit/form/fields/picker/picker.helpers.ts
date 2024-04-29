@@ -18,7 +18,7 @@ export function equalizeSelectedItems(
       // either the real value or null if text-field or not found
       id: null,
       label: value,
-      _tooltip: `${value}`,
+      tooltip: `${value}`,
       value: value,
     };
     return result;

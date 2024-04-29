@@ -38,9 +38,9 @@ export class DataSourceString extends DataSourceBase {
     const entityInfo: PickerItem = {
       value: dropdownOption.value as string,
       label: dropdownOption.label,
-      _tooltip: this.helpers.stripHtml(settings.ItemTooltip),
-      _information: this.helpers.stripHtml(settings.ItemInformation),
-      _helpLink: settings.ItemLink,
+      tooltip: this.helpers.stripHtml(settings.ItemTooltip),
+      infoBox: this.helpers.stripHtml(settings.ItemInformation),
+      helpLink: settings.ItemLink,
     } as PickerItem;
     return entityInfo;
   }
