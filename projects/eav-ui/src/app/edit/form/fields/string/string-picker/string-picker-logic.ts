@@ -8,7 +8,7 @@ import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { calculateDropdownOptions } from './string-picker.helpers';
 
-const logThis = true;
+const logThis = false;
 
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeConstants.WIPStringPicker;
