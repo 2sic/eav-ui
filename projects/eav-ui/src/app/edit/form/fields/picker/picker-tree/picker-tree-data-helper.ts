@@ -112,4 +112,21 @@ export class PickerTreeDataHelper extends ServiceBase {
     item => item.Expandable,
   );
 
+
+  disableOption(item: PickerTreeItem, selected: PickerItem[], enableReselect: boolean): boolean {
+    const treeConfig = this.pickerTreeConfiguration;
+    const selectedButNoReselect = enableReselect && selected.some(entity => entity.value === item.value);
+    const isRootButRootNotAllowed = treeConfig?.TreeAllowSelectRoot
+      ? false
+      : item.Children?.length > 0 && item.Parent?.length === 0;
+    const isBranchButBranchNotAllowed = treeConfig?.TreeAllowSelectBranch
+      ? false
+      : item.Children?.length > 0 && item.Parent?.length > 0;
+    const isLeafButLeafNotAllowed = treeConfig?.TreeAllowSelectLeaf
+      ? false
+      : item.Children?.length === 0;
+    return selectedButNoReselect || isRootButRootNotAllowed || isBranchButBranchNotAllowed || isLeafButLeafNotAllowed;
+  }
+
+  hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
 }

@@ -10,7 +10,6 @@ export interface PickerSearchViewModel {
   enableDelete: boolean;
   enableRemove: boolean;
   enableReselect: boolean;
-  pickerTreeConfiguration: UiPickerModeTree;
   selectedItems: PickerItem[];
   options: PickerItem[];
   error: string;

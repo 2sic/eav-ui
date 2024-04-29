@@ -67,7 +67,7 @@
           <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
             <button mat-icon-button disabled></button>
             <mat-option [value]="item.value" class="eav-picker-option"
-              [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
+              [disabled]="treeHelper.disableOption(item, vm.selectedItems, vm.enableReselect)"
               [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
               <div class="eav-dropdown-option">
                 <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
@@ -85,7 +85,7 @@
               </mat-icon>
             </button>
             <mat-option [value]="item.value" class="eav-picker-option"
-              [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
+              [disabled]="treeHelper.disableOption(item, vm.selectedItems, vm.enableReselect)"
               [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
               <div class="eav-dropdown-option">
                 <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>

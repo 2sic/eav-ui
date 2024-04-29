@@ -2,8 +2,8 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { PickerItem, UiPickerModeTree } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
+import { PickerItem } from 'projects/edit-types';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -12,10 +12,8 @@ import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-buil
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FlatTreeControl } from '@angular/cdk/tree';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerTreeItem, TreeItem } from '../models/picker-tree.models';
+import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 
 const logThis = false;
@@ -41,9 +39,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
 
-  // private pickerTreeConfiguration: UiPickerModeTree;
-  // dataSource: MatTreeFlatDataSource<TreeItem, PickerTreeItem, PickerTreeItem>;
-
   optionItems$ = new BehaviorSubject<PickerItem[]>(null);
   private selectedItems$ = new Observable<PickerItem[]>;
   private selectedItem$ = new BehaviorSubject<PickerItem>(null);
@@ -54,6 +49,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   private log = new EavLogger('PickerSearchComponent', logThis);
 
+  /**
+   * The tree helper must be generated early, and then populated later
+   */
   treeHelper = new PickerTreeDataHelper();
 
   constructor(
@@ -68,7 +66,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const state = this.pickerData.state;
     const source = this.pickerData.source;
     this.control = this.group.controls[this.config.fieldName];
-    // this.dataSource = new MatTreeFlatDataSource(this.treeHelper.treeControl, this.treeFlattener);
 
     // TODO: @2dm - maybe there is even a more elegant way to do this
     // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
@@ -101,17 +98,14 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         EnableRemove: settings.EnableRemove,
         EnableReselect: settings.EnableReselect,
         PickerDisplayMode: settings.PickerDisplayMode,
-        PickerTreeConfiguration: settings.PickerTreeConfiguration,
+        pickerTreeConfig: settings.PickerTreeConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
       setLog.distinctUntilChanged(),
     );
 
-    // Tree work
-    // this.treeHelper = new PickerTreeDataHelper();
-
     const testLog = this.log.rxTap('test$');
-    combineLatest([/*debugEnabled$, settings$, this.selectedItems$, */ this.optionItems$,]).pipe(
+    combineLatest([this.optionItems$,]).pipe(
       testLog.pipe(),
     ).subscribe();
 
@@ -123,7 +117,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       vmLog.pipe(),
       map(([
         debugEnabled, settings, selectedItems, optionItems, error,
-        controlStatus, freeTextMode, label, required, filter
+        controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
       ]) => {
         const selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
         this.selectedItem$.next(selectedItem);
@@ -141,13 +135,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         if (this.isTreeDisplayMode) {
           if (optionItems && optionItems[0]?.data != undefined) {
             // TODO: this is a wild side-effect!
-            const treeConfig = this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
+            const treeConfig = settings.pickerTreeConfig;
             this.treeHelper.updateConfig(treeConfig);
             this.treeHelper.addOptionItems(this.optionItems$);
+
             const filteredData = optionItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
               ? !optionItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
               : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
-            // this.dataSource.data = filteredData;
             this.treeHelper.updateSelectedData(filteredData);
           }   
         }
@@ -163,7 +157,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           enableDelete: settings.EnableDelete && showItemEditButtons,
           enableRemove: settings.EnableRemove && showItemEditButtons,
           enableReselect: settings.EnableReselect,
-          pickerTreeConfiguration: settings.PickerTreeConfiguration,
           selectedItems,
           options: optionItems,
           error,
@@ -277,14 +270,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     return isSelected;
   }
 
-  isOptionUnpickable(item: PickerTreeItem, selectedEntities: PickerItem[], enableReselect: boolean, treeConfig: UiPickerModeTree): boolean {
-    const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.value === item.value);
-    const isRootUnpickableByConfiguration = treeConfig?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
-    const isBranchUnpickableByConfiguration = treeConfig?.TreeAllowSelectBranch ? false : item.Children?.length > 0 && item.Parent?.length > 0;
-    const isLeafUnpickableByConfiguration = treeConfig?.TreeAllowSelectLeaf ? false : item.Children?.length === 0;
-    return isUnpickableBySelection || isRootUnpickableByConfiguration || isBranchUnpickableByConfiguration || isLeafUnpickableByConfiguration;
-  }
-
   edit(entityGuid: string, entityId: number): void {
     this.pickerData.source.editItem({ entityGuid, entityId }, null);
   }
@@ -301,64 +286,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     window.open(helpLink, '_blank');
   }
 
-  hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
+  hasChild = (_: number, item: PickerTreeItem) => this.treeHelper.hasChild(_, item);
 
-  /** Needed later for tree implementation testing */
-  // treeControl: FlatTreeControl<PickerTreeItem, PickerTreeItem>;
-  // treeControl = new FlatTreeControl<PickerTreeItem>(
-  //   item => item.Level,
-  //   item => item.Expandable,
-  // );
-
-  // private treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
-  //   (item, Level): PickerTreeItem => {
-  //     const treeConfig = this.pickerTreeConfiguration;
-  //     const cpRef = treeConfig?.TreeChildParentRefField;
-  //     const pcRef = treeConfig?.TreeParentChildRefField;
-  //     const cId = treeConfig?.TreeChildIdField;
-  //     const pId = treeConfig?.TreeParentIdField;
-  //     const cStreamName = treeConfig?.TreeLeavesStream;
-  //     const pStreamName = treeConfig?.TreeBranchesStream;
-  //     const itemInCorrectStream = this.optionItems$.value.filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName).find(x => x == item);
-  //     const expandable = (treeConfig?.TreeRelationship == 'parent-child')
-  //         ? itemInCorrectStream && !!item.data[pcRef] && item.data[pcRef].length > 0
-  //         : itemInCorrectStream && !!this.optionItems$.value.find(x => {
-  //           if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-  //             return x.data[cpRef][0][pId] == item.data[pId]
-  //         });
-  //     return {
-  //       Level: Level,
-  //       Expandable: expandable,
-  //       value: item.value,
-  //       label: item.label,
-  //       Parent: item.data[cpRef],
-  //       Children: item.data[pcRef],
-  //       tooltip: item.tooltip,
-  //       infoBox: item.infoBox,
-  //       helpLink: item.helpLink,
-  //     };
-  //   },
-  //   (item): number => { return item.Level; },
-  //   (item): boolean => { return item.Expandable; },
-  //   (item): PickerItem[] => {
-  //     const treeConfig = this.pickerTreeConfiguration;
-  //     const cpRef = treeConfig?.TreeChildParentRefField;
-  //     const pcRef = treeConfig?.TreeParentChildRefField;
-  //     const cId = treeConfig?.TreeChildIdField;
-  //     const pId = treeConfig?.TreeParentIdField;
-  //     const cStreamName = treeConfig?.TreeLeavesStream;
-  //     const pStreamName = treeConfig?.TreeBranchesStream;
-  //     if (treeConfig?.TreeRelationship == 'parent-child') {
-  //       return item.data[pcRef].map((x: any) => {
-  //         const child = this.optionItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
-  //         return child;
-  //       });
-  //     } else if (treeConfig?.TreeRelationship == 'child-parent') {
-  //       return this.optionItems$.value.filter(x => {
-  //         if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-  //           return x.data[cpRef][0][pId] == item.data[pId];
-  //       });
-  //     }
-  //   },
-  // );
 }

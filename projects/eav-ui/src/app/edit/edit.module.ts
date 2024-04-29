@@ -111,6 +111,7 @@ import { OWL_DATE_TIME_FORMATS, OwlDateTimeModule } from '@danielmoncada/angular
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { PickerIconHelpComponent } from './form/fields/picker/picker-search/picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from './form/fields/picker/picker-search/picker-icon-info/picker-icon-info.component';
+import { PickerTreeComponent } from './form/fields/picker/picker-tree/picker-tree.component';
 
 export const OWL_DAYJS_FORMATS = {
     parseInput: 'l LT',
@@ -236,6 +237,7 @@ export const OWL_DAYJS_FORMATS = {
         // 2024-04-29 2dm new standalone components
         PickerIconHelpComponent,
         PickerIconInfoComponent,
+        PickerTreeComponent,
     ],
     providers: [
         Context,
