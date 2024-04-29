@@ -109,8 +109,8 @@ import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity
 import { StringPickerComponent } from './form/fields/string/string-picker/string-picker.component';
 import { OWL_DATE_TIME_FORMATS, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
-import { PickerIconHelpComponent } from './form/fields/picker/picker-search/picker-icon-help/picker-icon-help.component';
-import { PickerIconInfoComponent } from './form/fields/picker/picker-search/picker-icon-info/picker-icon-info.component';
+import { PickerIconHelpComponent } from './form/fields/picker/picker-icon-help/picker-icon-help.component';
+import { PickerIconInfoComponent } from './form/fields/picker/picker-icon-info/picker-icon-info.component';
 import { PickerTreeComponent } from './form/fields/picker/picker-tree/picker-tree.component';
 
 export const OWL_DAYJS_FORMATS = {

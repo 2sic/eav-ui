@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTreeModule } from '@angular/material/tree';
-import { PickerIconHelpComponent } from '../picker-search/picker-icon-help/picker-icon-help.component';
-import { PickerIconInfoComponent } from '../picker-search/picker-icon-info/picker-icon-info.component';
+import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
+import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 import { TippyStandaloneDirective } from 'projects/eav-ui/src/app/shared/directives/tippy-Standalone.directive';
