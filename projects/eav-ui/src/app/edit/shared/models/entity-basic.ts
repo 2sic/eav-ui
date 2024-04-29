@@ -1,19 +1,21 @@
 export interface EntityBasic {
   Id: number;
-  /**
-   * The value - old, WIP
-   * @deprecated
-   */
-  Value: string;
+
+  // 2024-04-29 2dm removed this #cleanup-picker
+  // /**
+  //  * The value - old, WIP
+  //  * @deprecated
+  //  */
+  // Value: string;
+  // /**
+  //  * The title - old, WIP
+  //  * @deprecated
+  //  */
+  // Text: string;
 
   /** The Guid, new, WIP */
   Guid: string;
 
-  /**
-   * The title - old, WIP
-   * @deprecated
-   */
-  Text: string;
 
   /** The title, new, WIP */
   Title: string;

@@ -65,9 +65,7 @@ export class DataSourceQuery extends DataSourceBase {
           var notConfigured: EntityBasic = {
             Id: -1,
             Guid: null,
-            Text: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
             Title: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
-            Value: null,
           };
           return of({
               data: {

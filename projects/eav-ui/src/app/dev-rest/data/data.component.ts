@@ -109,7 +109,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     );
 
     // Get an item of this type for building urls
-    const noDataFound: EntityBasic = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Value: 'no data found', Title: 'no data found', Text: 'no data found'};
+    const noDataFound: EntityBasic = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
     const itemOfThisType$ = entityService.reactiveEntities(
       contentType$.pipe(
         filter(ct => !!ct),

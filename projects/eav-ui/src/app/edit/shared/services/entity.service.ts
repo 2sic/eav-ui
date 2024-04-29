@@ -26,11 +26,11 @@ export class EntityService {
       map(data => data.Default.map(entity => ({
         Id: entity.Id,
         Guid: entity.Guid,
-        // Value is old, try to remove
-        Value: entity.Guid,
+        // Value is old, try to remove #cleanup-picker
+        // Value: entity.Guid,
         Title: entity.Title,
         // Text is old, try to remove
-        Text: entity.Title
+        // Text: entity.Title
       } as EntityBasic)
     )));
 
