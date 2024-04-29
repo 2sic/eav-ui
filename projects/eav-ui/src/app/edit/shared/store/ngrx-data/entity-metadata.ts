@@ -37,7 +37,7 @@ export const entityMetadata: EntityMetadataMap = {
   },
   // Entity Cache is actually the PickerItem Cache, uses UpperCase Id
   EntityCache: {
-    selectId: useUpperCaseId,
+    selectId: useLowerCaseId,
   },
   AdamCache: {
     selectId: adamCacheSelectId,
@@ -100,6 +100,10 @@ function prefetchSelectId(entity: Prefetch): string {
 // Select anything that's identified by an upper-case ID
 function useUpperCaseId(entity: IdentityUpperCaseId /* PickerItem */): number {
   return entity?.Id;
+}
+
+function useLowerCaseId(entity: { id: number } /* PickerItem */): number {
+  return entity?.id;
 }
 
 function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {
