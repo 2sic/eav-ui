@@ -65,8 +65,8 @@ export class PickerData extends ServiceBase {
           text,
           entity.tooltip ?? `${text} (${entity.value})`,
           entity.infoBox ?? '',
-          entity._disableEdit === true,
-          entity._disableDelete === true,
+          entity.noEdit === true,
+          entity.noDelete === true,
           false,
         );
       }
@@ -82,9 +82,9 @@ export class PickerData extends ServiceBase {
       label: text,
       tooltip: tooltip,
       infoBox: information,
-      _disableEdit: disableEdit,
-      _disableDelete: disableDelete,
-      _disableSelect: disableSelect,
+      noEdit: disableEdit,
+      noDelete: disableDelete,
+      notSelectable: disableSelect,
     } as PickerItem;
   }
 }

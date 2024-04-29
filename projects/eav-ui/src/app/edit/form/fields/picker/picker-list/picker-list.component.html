@@ -36,7 +36,7 @@
           </div>
           <div class="item-actions">
             <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-            @if (vm.enableEdit && !item._disableEdit) {
+            @if (vm.enableEdit && !item.noEdit) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Entity.Edit' | translate"
                 [disabled]="config.initialDisabled"
@@ -45,7 +45,7 @@
                 <mat-icon>edit</mat-icon>
               </button>
             }
-            @if (vm.enableDelete && !item._disableDelete) {
+            @if (vm.enableDelete && !item.noDelete) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Entity.Delete' | translate"
                 [disabled]="vm.csDisabled"

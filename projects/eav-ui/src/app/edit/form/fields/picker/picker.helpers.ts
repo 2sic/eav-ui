@@ -13,8 +13,8 @@ export function equalizeSelectedItems(
   const selectedEntities = currentValueAsArray.map(value => {
     const result: PickerItem = {
       // if it's a free text value or not found, disable edit and delete
-      _disableEdit: true,
-      _disableDelete: true,
+      noEdit: true,
+      noDelete: true,
       // either the real value or null if text-field or not found
       id: null,
       label: value,

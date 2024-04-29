@@ -180,8 +180,8 @@ export class DataSourceQuery extends DataSourceBase {
       queryEntities.forEach(e => {
         const appId = e.data?.AppId;
         const disable = appId != null && appId !== this.appId;
-        e._disableEdit = disable;
-        e._disableDelete = disable;
+        e.noEdit = disable;
+        e.noDelete = disable;
       });
     // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;

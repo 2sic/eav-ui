@@ -18,24 +18,21 @@ export interface PickerItem {
   /**
    * Prevent edit of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
-   * That's why it has an underscore.
    */
-  _disableEdit?: boolean;
+  noEdit?: boolean;
 
   /**
    * Prevent delete of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
-   * That's why it has an underscore.
    */
-  _disableDelete?: boolean;
+  noDelete?: boolean;
 
   /**
    * Prevent select of this item for whatever reason, v16
    * It was originally added so "no query" message will be shown in the dropdown.
    * This property does not come from the server, but must be added by code.
-   * That's why it has an underscore.
    */
-  _disableSelect?: boolean;
+  notSelectable?: boolean;
 
 
   /** 

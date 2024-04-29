@@ -55,9 +55,9 @@ export function placeholderPickerItem(translate: TranslateService, i18nLabel: st
   const item: PickerItem = {
     label: translate.instant(i18nLabel) + (suffix ?? ''),
     value: null,
-    _disableSelect: true,
-    _disableDelete: true,
-    _disableEdit: true,
+    notSelectable: true,
+    noDelete: true,
+    noEdit: true,
   };
   return item;
 }

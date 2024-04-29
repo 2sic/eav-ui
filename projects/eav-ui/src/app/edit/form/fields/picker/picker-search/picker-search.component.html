@@ -11,14 +11,14 @@
         [disabled]="vm.csDisabled || !vm.enableAddExisting">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
-      @if (vm.enableEdit && !vm.selectedItem?._disableEdit && vm.showItemEditButtons) {
+      @if (vm.enableEdit && !vm.selectedItem?.noEdit && vm.showItemEditButtons) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Edit' | translate"
           [disabled]="vm.csDisabled || config.initialDisabled" appClickStopPropagation
           (click)="edit(vm.selectedItem?.value, vm.selectedItem?.id)">
           <mat-icon>edit</mat-icon>
         </button>
       }
-      @if (vm.enableDelete && !vm.selectedItem?._disableDelete && vm.showItemEditButtons) {
+      @if (vm.enableDelete && !vm.selectedItem?.noDelete && vm.showItemEditButtons) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Entity.Delete' | translate"
           [disabled]="vm.csDisabled" appClickStopPropagation (click)="deleteItem(0, vm.selectedItem?.value)">
           <mat-icon>delete</mat-icon>
@@ -46,7 +46,7 @@
       @if (!vm.isTreeDisplayMode) {
           @for (item of vm.filteredItems; track item) {
           <mat-option [value]="item.value" class="eav-picker-option"
-            [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.value, vm.selectedItems)"
+            [disabled]="item.notSelectable ? true : vm.enableReselect ? false : isOptionDisabled(item.value, vm.selectedItems)"
             [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
             <div class="eav-dropdown-option">
               <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
