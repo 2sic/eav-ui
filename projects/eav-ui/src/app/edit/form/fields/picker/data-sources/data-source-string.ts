@@ -5,8 +5,8 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = true;
-const logChildren = false;
+const logThis = false;
+const logChildren = true;
 const logRx = true;
 
 @Injectable()
@@ -20,6 +20,10 @@ export class DataSourceString extends DataSourceBase {
     super.setup(settings$);
     this.loading$ = of(false);
 
+    // Make sure the converter/builder uses the "Value" field for the final 'value'
+    const maskHelper = this.getMaskHelper();
+    maskHelper.patchMasks({ value: 'Value' })
+    this.log.add('maskHelper', maskHelper.getMasks());
     const rxLog = this.log.rxTap('data$', { enabled: logRx });
     this.data$ = this.settings$.pipe(
       rxLog.pipe(),
@@ -31,7 +35,11 @@ export class DataSourceString extends DataSourceBase {
           // These are only added for use in Formulas or masks.
           Value: option.value,
         };
-        return this.entity2PickerItem(asEntity, null, /* mustUseGuid: */ false);
+        // TODO: @2dm fix bug, the value should be provided by entity2PickerItem
+        // but it's not - probably something we must ensure with the mask...?
+        const pickerItem = this.getMaskHelper().entity2PickerItem(asEntity, /* streamName: */ null, /* mustUseGuid: */ false);
+        this.log.add('final data', pickerItem);
+        return pickerItem;
       })),
       distinctUntilChanged(),
       shareReplay(1),

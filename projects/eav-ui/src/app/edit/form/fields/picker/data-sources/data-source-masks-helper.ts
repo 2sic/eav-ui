@@ -97,6 +97,7 @@ export class DataSourceMasksHelper extends ServiceBase {
     return { title, tooltip, information, helpLink };
   }
 
+  /** Get the mask - if possibly from current objects cache */
   public getMasks() {
     if (!!this.masks) return this.masks;
     this.masks = this.buildMasks(this.settings);
@@ -104,8 +105,14 @@ export class DataSourceMasksHelper extends ServiceBase {
     return this.masks;
   }
 
+  /** modify/patch the current objects mask */
+  public patchMasks(patch: Partial<DataSourceMasks>) {
+    this.masks = { ...this.getMasks(), ...patch };
+    this.log.add('patchMasks', this.masks);
+  }
+
   private buildMasks(settings: FieldSettings): DataSourceMasks {
-    this.log.add('buildMasks', settings);
+    this.log.add('buildMasks settings', settings);
     const tooltipMask = !!settings.ItemTooltip ? this.helpers.stripHtml(settings.ItemTooltip) : '';
     const infoMask = !!settings.ItemInformation ? this.helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
