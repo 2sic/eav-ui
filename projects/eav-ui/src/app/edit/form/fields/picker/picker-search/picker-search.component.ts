@@ -16,6 +16,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeItem, TreeItem } from '../models/picker-tree.models';
+import { PickerIconHelpComponent } from './picker-icon-help/picker-icon-help.component';
 
 const logThis = false;
 
@@ -23,6 +24,9 @@ const logThis = false;
   selector: 'app-picker-search',
   templateUrl: './picker-search.component.html',
   styleUrls: ['./picker-search.component.scss'],
+  // imports: [
+  //   PickerHelpComponentComponent,
+  // ]
 })
 export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;

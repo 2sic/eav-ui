@@ -51,12 +51,8 @@
             <div class="eav-dropdown-option">
               <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
               <div class="eav-dropdown-option-info">
-                @if (item.helpLink) {
-                  <mat-icon (click)="goToLink(item.helpLink)" [tippy]="item.helpLink" appClickStopPropagation>open_in_new</mat-icon>
-                }
-                @if (item.infoBox) {
-                  <mat-icon [tippy]="item.infoBox" [tippyAllowHtml]="true" [tippyArrow]="true" appClickStopPropagation>info</mat-icon>
-                }
+                <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+                <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
               </div>
             </div>
           </mat-option>
@@ -74,13 +70,8 @@
               <div class="eav-dropdown-option">
                 <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
                 <div class="eav-dropdown-option-info">
-                  @if (item.helpLink) {
-                    <mat-icon (click)="goToLink(item.helpLink)" [tippy]="item.helpLink" appClickStopPropagation>open_in_new</mat-icon>
-                  }
-                  @if (item.infoBox) {
-                    <mat-icon [tippy]="item.infoBox" [tippyAllowHtml]="true" [tippyArrow]="true"
-                      appClickStopPropagation>info</mat-icon>
-                  }
+                  <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+                  <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
                 </div>
               </div>
             </mat-option>
@@ -97,13 +88,8 @@
               <div class="eav-dropdown-option">
                 <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
                 <div class="eav-dropdown-option-info">
-                  @if (item.helpLink) {
-                    <mat-icon (click)="goToLink(item.helpLink)" [tippy]="item.helpLink" appClickStopPropagation>open_in_new</mat-icon>
-                  }
-                  @if (item.infoBox) {
-                    <mat-icon [tippy]="item.infoBox" [tippyAllowHtml]="true" [tippyArrow]="true"
-                      appClickStopPropagation>info</mat-icon>
-                  }
+                  <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+                  <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
                 </div>
               </div>
             </mat-option>
