@@ -328,8 +328,11 @@ export interface UiPickerSourceQuery extends ConfigModel {
   MoreFields: string;
 }
 
+export const RelationshipParentChild = 'parent-child';
+export const RelationshipChildParent = 'child-parent';
+
 export interface UiPickerModeTree extends ConfigModel {
-  TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
+  TreeRelationship: typeof RelationshipParentChild | typeof RelationshipChildParent ; //child-parent or parent-child
   TreeBranchesStream: string;
   TreeLeavesStream: string;
   TreeParentIdField: string;

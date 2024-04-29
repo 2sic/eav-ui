@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { PickerItem } from 'projects/edit-types';
+import { PickerItem, RelationshipParentChild } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -139,7 +139,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
             this.treeHelper.updateConfig(treeConfig);
             this.treeHelper.addOptionItems(this.optionItems$);
 
-            const filteredData = optionItems.filter(x => (treeConfig?.TreeRelationship == 'parent-child') //check for two streams type also
+            const filteredData = optionItems.filter(x => (treeConfig?.TreeRelationship == RelationshipParentChild) //check for two streams type also
               ? !optionItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
               : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
             this.treeHelper.updateSelectedData(filteredData);

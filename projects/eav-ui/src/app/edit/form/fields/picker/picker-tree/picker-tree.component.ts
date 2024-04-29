@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
+import { MatTreeModule } from '@angular/material/tree';
 import { PickerIconHelpComponent } from '../picker-search/picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-search/picker-icon-info/picker-icon-info.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 import { TippyStandaloneDirective } from 'projects/eav-ui/src/app/shared/directives/tippy-Standalone.directive';
 import { PickerSearchViewModel } from '../picker-search/picker-search.models';
-import { PickerTreeItem, TreeItem } from '../models/picker-tree.models';
+import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerItem } from '../models/picker-item.model';
 import { UiPickerModeTree } from 'projects/edit-types/src/FieldSettings';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -97,56 +97,4 @@ export class PickerTreeComponent extends ServiceBase implements OnInit {
 
   hasChild = (_: number, item: PickerTreeItem) => this.treeHelper.hasChild(_, item);
 
-
-  treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
-    (item, Level): PickerTreeItem => {
-      const treeConfig = this.pickerTreeConfiguration;
-      const cpRef = treeConfig?.TreeChildParentRefField;
-      const pcRef = treeConfig?.TreeParentChildRefField;
-      const cId = treeConfig?.TreeChildIdField;
-      const pId = treeConfig?.TreeParentIdField;
-      const cStreamName = treeConfig?.TreeLeavesStream;
-      const pStreamName = treeConfig?.TreeBranchesStream;
-      const itemInCorrectStream = this.optionItems$.value.filter(x => !x.sourceStreamName || x.sourceStreamName == pStreamName).find(x => x == item);
-      const expandable = (treeConfig?.TreeRelationship == 'parent-child')
-          ? itemInCorrectStream && !!item.data[pcRef] && item.data[pcRef].length > 0
-          : itemInCorrectStream && !!this.optionItems$.value.find(x => {
-            if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-              return x.data[cpRef][0][pId] == item.data[pId]
-          });
-      return {
-        Level: Level,
-        Expandable: expandable,
-        value: item.value,
-        label: item.label,
-        Parent: item.data[cpRef],
-        Children: item.data[pcRef],
-        tooltip: item.tooltip,
-        infoBox: item.infoBox,
-        helpLink: item.helpLink,
-      };
-    },
-    (item): number => { return item.Level; },
-    (item): boolean => { return item.Expandable; },
-    (item): PickerItem[] => {
-      const treeConfig = this.pickerTreeConfiguration;
-      const cpRef = treeConfig?.TreeChildParentRefField;
-      const pcRef = treeConfig?.TreeParentChildRefField;
-      const cId = treeConfig?.TreeChildIdField;
-      const pId = treeConfig?.TreeParentIdField;
-      const cStreamName = treeConfig?.TreeLeavesStream;
-      const pStreamName = treeConfig?.TreeBranchesStream;
-      if (treeConfig?.TreeRelationship == 'parent-child') {
-        return item.data[pcRef].map((x: any) => {
-          const child = this.optionItems$.value.find(y => (y as any)[treeConfig?.TreeChildIdField] == (x as any)[treeConfig?.TreeChildIdField]);
-          return child;
-        });
-      } else if (treeConfig?.TreeRelationship == 'child-parent') {
-        return this.optionItems$.value.filter(x => {
-          if (x.data[cpRef] != undefined && x.data[cpRef][0] != undefined && item != undefined)
-            return x.data[cpRef][0][pId] == item.data[pId];
-        });
-      }
-    },
-  );
 }
