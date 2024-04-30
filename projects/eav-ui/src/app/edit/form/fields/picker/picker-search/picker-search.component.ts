@@ -16,8 +16,11 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
+import { messagePickerItem } from '../adapters/picker-source-adapter-base';
 
 const logThis = true;
+/** log each detail, eg. item-is-disabled (separate logger) */
+const logEachItemChecks = false;
 
 @Component({
   selector: 'app-picker-search',
@@ -41,12 +44,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private control: AbstractControl;
 
   optionItems$ = new BehaviorSubject<PickerItem[]>(null);
-  private selectedItem: PickerItem; //$ = new BehaviorSubject<PickerItem>(null);
+  private selectedItem: PickerItem;
   private newValue: string = null;
 
   private filter$ = new BehaviorSubject(false);
 
   private log = new EavLogger('PickerSearchComponent', logThis);
+  private logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
 
   /**
    * The tree helper which is used by the tree display.
@@ -95,27 +99,27 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         logFieldSettings.shareReplay(),
       );
 
-    const logSettings = this.log.rxTap('settings$');
+    const logSettings = this.log.rxTap('settings$', { enabled: false });
     const settings$ = fieldSettings$.pipe(
       logSettings.pipe(),
       map(settings => ({
-        AllowMultiValue: settings.AllowMultiValue,
-        EnableAddExisting: settings.EnableAddExisting,
-        EnableTextEntry: settings.EnableTextEntry,
-        EnableEdit: settings.EnableEdit,
-        EnableDelete: settings.EnableDelete,
-        EnableRemove: settings.EnableRemove,
-        EnableReselect: settings.EnableReselect,
+        allowMultiValue: settings.AllowMultiValue,
+        enableAddExisting: settings.EnableAddExisting,
+        enableTextEntry: settings.EnableTextEntry,
+        enableEdit: settings.EnableEdit,
+        enableDelete: settings.EnableDelete,
+        enableRemove: settings.EnableRemove,
+        enableReselect: settings.EnableReselect,
         showAsTree: settings.PickerDisplayMode === 'tree',
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
       logSettings.distinctUntilChanged(),
     );
 
-    const testLog = this.log.rxTap('test$');
-    combineLatest([this.optionItems$,]).pipe(
-      testLog.pipe(),
-    ).subscribe();
+    // const testLog = this.log.rxTap('test$');
+    // combineLatest([this.optionItems$,]).pipe(
+    //   testLog.pipe(),
+    // ).subscribe();
 
     // Setup Tree Helper - but should only happen, if we're really doing trees
     // ATM we're only doing this the first time, as these settings are not expected to change
@@ -127,7 +131,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     
 
     // Create the default ViewModel used in the other modes
-    const vmLog = this.log.rxTap('viewModel$', { enabled: false });
+    const vmLog = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.pickerData.selectedItems$, this.optionItems$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.filter$,
@@ -137,29 +141,30 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         debugEnabled, settings, selectedItems, optionItems, error,
         controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
       ]) => {
-        // figure out if tree, and save it for functions to use
-        const isTreeDisplayMode = settings.showAsTree;
+        optionItems = optionItems ?? [];
         const selectedItem = this.selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
 
         const showItemEditButtons = selectedItem && this.showItemEditButtons;
 
-        const elemValue = this.autocompleteRef?.nativeElement.value;
-        const elemValLowerCase = elemValue?.toLocaleLowerCase();
-        const filteredItems = !elemValue ? optionItems : optionItems?.filter(oItem =>
-          ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(elemValLowerCase)
-        );
+        const filterValue = this.autocompleteRef?.nativeElement.value;
+        const filterLc = filterValue?.toLocaleLowerCase();
+        let filteredItems = !filterValue
+          ? optionItems
+          : optionItems.filter(oItem => ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(filterLc));
 
-        const csDisabled = controlStatus.disabled;
+        const filterOrMessage = filteredItems.length > 0
+          ? filteredItems
+          : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterValue })];
 
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
-          allowMultiValue: settings.AllowMultiValue,
-          enableAddExisting: settings.EnableAddExisting,
-          enableTextEntry: settings.EnableTextEntry,
-          enableEdit: settings.EnableEdit && showItemEditButtons,
-          enableDelete: settings.EnableDelete && showItemEditButtons,
-          enableRemove: settings.EnableRemove && showItemEditButtons,
-          enableReselect: settings.EnableReselect,
+          allowMultiValue: settings.allowMultiValue,
+          enableAddExisting: settings.enableAddExisting,
+          enableTextEntry: settings.enableTextEntry,
+          enableEdit: settings.enableEdit && showItemEditButtons,
+          enableDelete: settings.enableDelete && showItemEditButtons,
+          enableRemove: settings.enableRemove && showItemEditButtons,
+          enableReselect: settings.enableReselect,
           selectedItems,
           options: optionItems,
           error,
@@ -168,13 +173,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           label,
           required,
           selectedItem,
-          filteredItems,
+          filteredItems: filterOrMessage,
 
-          isTreeDisplayMode,
-          csDisabled,
+          // figure out if tree, and save it for functions to use
+          isTreeDisplayMode: settings.showAsTree,
+          isDisabled: controlStatus.disabled,
         };
         return viewModel;
       }),
+      vmLog.end(),
     );
 
   }
@@ -184,7 +191,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   displayFn(value: string /* | string[] | PickerItem */): string {
-    this.log.add('displayFn', value);
+    this.logItemChecks.add(`displayFn: value: '${value}'; selectedItem: `, this.selectedItem);
     // 2024-04-30 2dm: seems this is always a string, will simplify the code
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
@@ -225,19 +232,22 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   onOpened(isTreeDisplayMode: boolean): void {
-    this.log.add(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}`);
+    const domElement = this.autocompleteRef.nativeElement;
+    this.log.add(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);
     // flush the input so the user can use it to search, otherwise the list is filtered
-    this.autocompleteRef.nativeElement.value = '';
+    domElement.value = '';
     // If tree, we need to blur so tree reacts to the first click, otherwise the user must click 2x
     if (isTreeDisplayMode)
-      this.autocompleteRef.nativeElement.blur();
+      domElement.blur();
   }
 
-  onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
+  onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void {
+    this.log.add('onClosed', selectedItems, selectedItem);
     if (this.showSelectedItem) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
-      else if (selectedItem && selectedItems.length < 2) this.autocompleteRef.nativeElement.value = selectedItem.label;
+      else if (selectedItem && selectedItems.length < 2)
+        this.autocompleteRef.nativeElement.value = selectedItem.label;
     } else {
       // @SDV - improve this
       this.autocompleteRef.nativeElement.value = '';
@@ -245,6 +255,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
+    this.logItemChecks.add('optionSelected', event.option.value);
     this.newValue = event.option.value;
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
@@ -256,39 +267,48 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   getPlaceholder(availableEntities: PickerItem[], error: string): string {
-    if (availableEntities?.length > 0) {
-      return this.translate.instant('Fields.Entity.Search');
-    }
-    return this.translate.instant('Fields.EntityQuery.QueryNoItems');
+    // this.log.add(`getPlaceholder error: '${error}'`, availableEntities);
+    var placeholder = availableEntities?.length > 0
+      ? this.translate.instant('Fields.Picker.Search')
+      : this.translate.instant('Fields.Picker.QueryNoItems');
+    this.logItemChecks.add(`getPlaceholder error: '${error}'; result '${placeholder}'`, availableEntities);
+    return placeholder;
   }
 
   toggleFreeText(disabled: boolean): void {
+    this.log.add('toggleFreeText', disabled);
     if (disabled) { return; }
     this.pickerData.state.toggleFreeTextMode();
   }
 
   insertNull(): void {
+    this.log.add('insertNull');
     this.pickerData.state.addSelected(null);
   }
 
   isOptionDisabled(value: string, selectedEntities: PickerItem[]): boolean {
     const isSelected = selectedEntities.some(entity => entity.value === value);
+    this.logItemChecks.add(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selectedEntities);
     return isSelected;
   }
 
   edit(entityGuid: string, entityId: number): void {
+    this.log.add(`edit guid: '${entityGuid}'; id: '${entityId}'`);
     this.pickerData.source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
+    this.log.add(`removeItem index: '${index}'`);
     this.pickerData.state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
+    this.log.add(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
     this.pickerData.source.deleteItem({ index, entityGuid });
   }
 
   goToLink(helpLink: string): void {
+    this.log.add(`goToLink helpLink: '${helpLink}'`);
     window.open(helpLink, '_blank');
   }
 

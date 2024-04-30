@@ -7,7 +7,7 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { placeholderPickerItem } from './picker-source-adapter-base';
+import { messagePickerItem, placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerStateAdapter } from './picker-state-adapter';
@@ -113,12 +113,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       next: ([data, loading, deleted]) => {
         const items = data.filter(item => !deleted.some(guid => guid === item.value));
         this.optionsOrHints$.next(loading
-          ? [placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]
+          ? [messagePickerItem(this.translate, 'Fields.Picker.Loading'), ...items]
           : items
         );
       },
       error: (error) => {
-        this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError', "-" + error.data)]);
+        this.optionsOrHints$.next([messagePickerItem(this.translate, 'Fields.Picker.QueryError', { error: error.data })]);
       }
     }));
   }
@@ -143,7 +143,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.dsQuery.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
-      this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryNotDefined')]);
+      this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')]);
       return;
     }
 

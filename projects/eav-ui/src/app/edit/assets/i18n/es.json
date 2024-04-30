@@ -125,7 +125,7 @@
     "JsonWarning": "JSON is not valid"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "Elija elemento para añadir",
       "New": "Crear nuevo",
       "Empty": "Empty",
@@ -136,9 +136,8 @@
       "Remove": "Quitar de la lista",
       "Delete": "Delete",
       "Loading": "Loading...",
-      "Search": "Search"
-    },
-    "EntityQuery": {
+      "Search": "Search",
+
       "QueryNoItems": "No items found",
       "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
       "QueryStreamNotFound": "Error: The query did not return a stream named"

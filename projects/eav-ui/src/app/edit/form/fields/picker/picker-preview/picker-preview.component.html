@@ -48,7 +48,7 @@
       <!-- create new entity to add to this list -->
       @if (vm.showAddNewEntityButton) {
         @if (pickerData.state.createEntityTypes.length > 1) {
-          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Entity.New' | translate"
+          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
             [disabled]="vm.csDisabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
             (click)="getEntityTypesData()">
             <mat-icon>add_circle_outline</mat-icon>
@@ -61,7 +61,7 @@
             }
           </mat-menu>
         } @else {
-          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Entity.New' | translate"
+          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
             [disabled]="vm.csDisabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
             <mat-icon>add_circle_outline</mat-icon>
           </button>
@@ -70,7 +70,7 @@
       @if (vm.showGoToListDialogButton) {
         <button mat-icon-button class="eav-suffix-button"
           [disabled]="vm.csDisabled"
-          [tippy]="'Fields.Entity.OpenMultiselect' | translate"
+          [tippy]="'Fields.Picker.OpenMultiselect' | translate"
           (click)="expandDialog()">
           <mat-icon>post_add</mat-icon>
         </button>

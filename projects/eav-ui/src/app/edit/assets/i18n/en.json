@@ -148,7 +148,7 @@
     "JsonWarning": "JSON is not valid"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "Add existing item",
       "New": "Create new",
       "Empty": "Empty",
@@ -162,11 +162,13 @@
       "Search": "Search",
       "AddItemBelow": "Add item below",
       "AddExistingItem": "Add existing item",
-      "OpenMultiselect": "Open multiselect"
-    },
-    "EntityQuery": {
+      "OpenMultiselect": "Open multiselect",
+
+      "FilterNoResults": "search for '{{search}}' returned no results",
+
       "QueryNoItems": "No items found",
-      "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
+      "QueryError": "Error: An error occurred while executing the query. {{error}} See the console for more information.",
+      "QueryErrorNoData": "Error: An error occurred while executing the query. No data found. See the console for more information.",
       "QueryStreamNotFound": "Error: The query did not return a stream named",
       "QueryNotDefined": "Error: can't load data, query is not configured"
     },

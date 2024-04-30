@@ -142,7 +142,7 @@
     "JsonWarning": "JSON is not valid"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "Add existing item",
       "New": "Create new",
       "Empty": "Empty",
@@ -153,9 +153,8 @@
       "Remove": "Remove from list",
       "Delete": "Delete",
       "Loading": "Loading...",
-      "Search": "Search"
-    },
-    "EntityQuery": {
+      "Search": "Search",
+
       "QueryNoItems": "Nijedna pronađena stavka",
       "QueryError": "Greška: Greška se dogodila za vrijeme izvršavanja upita. Pogledajte u konzolu za više podataka.",
       "QueryStreamNotFound": "Greška: Upit nije vratio tok podataka s nazivom",

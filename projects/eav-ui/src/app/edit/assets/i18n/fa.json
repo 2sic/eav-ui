@@ -147,7 +147,7 @@
     "JsonWarning": "JSON معتبر نیست"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "افزودن آیتم موجود",
       "New": "ایجاد جدید",
       "Empty": "خالی",
@@ -161,9 +161,8 @@
       "Search": "جستجو",
       "AddItemBelow": "افزودن آیتم در پائین",
       "AddExistingItem": "افزودن آیتم موجود",
-      "OpenMultiselect": "چندانتخابی را باز کنید"
-    },
-    "EntityQuery": {
+      "OpenMultiselect": "چندانتخابی را باز کنید",
+
       "QueryNoItems": "موردی پیدا نشد",
       "QueryError": "خطا: هنگام اجرای پرس و جو خطایی رخ داد. برای اطلاعات بیشتر به کنسول مراجعه کنید.",
       "QueryStreamNotFound": "خطا: کوئری مقداری را برگشت نداد",

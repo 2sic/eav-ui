@@ -99,11 +99,11 @@ export class PagePickerComponent implements OnInit, OnDestroy {
     this.queryService.getAvailableEntities(`System.Pages/Default`, true, params, null).subscribe({
       next: (data) => {
         if (!data) {
-          console.error(this.translate.instant('Fields.EntityQuery.QueryError'));
+          console.error(this.translate.instant('Fields.Picker.QueryErrorNoData'));
           return;
         }
         if (!data[stream]) {
-          console.error(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + stream);
+          console.error(this.translate.instant('Fields.Picker.QueryStreamNotFound') + ' ' + stream);
           return;
         }
         const pages = data[stream] as PageEntity[];
@@ -114,7 +114,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error(error);
-        console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
+        console.error(`${this.translate.instant('Fields.Picker.QueryError')} - ${error.data}`);
       }
     });
   }

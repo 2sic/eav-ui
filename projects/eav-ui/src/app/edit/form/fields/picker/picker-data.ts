@@ -58,7 +58,7 @@ export class PickerData extends ServiceBase {
       if (!entity) {
         return item;
       } else {
-        const text = entity.label ?? translate.instant('Fields.Entity.EntityNotFound');
+        const text = entity.label ?? translate.instant('Fields.Picker.EntityNotFound');
         return this.createPickerItem(
           entity.id,
           entity.value,

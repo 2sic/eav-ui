@@ -1,4 +1,4 @@
-import { UiPickerModeTree, PickerItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 
 export interface PickerSearchViewModel {
@@ -21,5 +21,5 @@ export interface PickerSearchViewModel {
   filteredItems: PickerItem[];
 
   isTreeDisplayMode: boolean;
-  csDisabled: boolean;
+  isDisabled: boolean;
 }

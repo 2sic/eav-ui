@@ -25,7 +25,7 @@
           <div class="item-title" [ngClass]="{ 'disabled': vm.csDisabled }">
             @if (vm.allowMultiValue) {
               <mat-icon class="item-title__icon"
-                [tippy]="'Fields.Entity.DragMove' | translate"
+                [tippy]="'Fields.Picker.DragMove' | translate"
                 [tippyDisabled]="vm.csDisabled">
                 drag_handle
               </mat-icon>
@@ -38,7 +38,7 @@
             <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
             @if (vm.enableEdit && !item.noEdit) {
               <button mat-icon-button class="eav-action-button"
-                [tippy]="'Fields.Entity.Edit' | translate"
+                [tippy]="'Fields.Picker.Edit' | translate"
                 [disabled]="config.initialDisabled"
                 appMousedownStopPropagation
                 (click)="edit(item.value, item.id)">
@@ -47,7 +47,7 @@
             }
             @if (vm.enableDelete && !item.noDelete) {
               <button mat-icon-button class="eav-action-button"
-                [tippy]="'Fields.Entity.Delete' | translate"
+                [tippy]="'Fields.Picker.Delete' | translate"
                 [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
                 (click)="deleteItem(index, item.value)">
@@ -56,7 +56,7 @@
             }
             @if (vm.enableRemove) {
               <button mat-icon-button class="eav-action-button"
-                [tippy]="'Fields.Entity.Remove' | translate"
+                [tippy]="'Fields.Picker.Remove' | translate"
                 [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
                 (click)="removeItem(index)">

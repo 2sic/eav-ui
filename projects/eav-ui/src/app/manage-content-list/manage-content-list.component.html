@@ -43,19 +43,19 @@
               </div>
               <div>
                 <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
-                <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation
+                <button mat-icon-button [tippy]="'Fields.Picker.AddExistingItem' | translate" appMousedownStopPropagation
                   [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
                   <mat-icon>playlist_add</mat-icon>
                 </button>
-                <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation
+                <button mat-icon-button [tippy]="'Fields.Picker.AddItemBelow' | translate" appMousedownStopPropagation
                   [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation
+                <button mat-icon-button [tippy]="'Fields.Picker.Remove' | translate" appMousedownStopPropagation
                   [disabled]="reordered" (click)="remove(item)">
                   <mat-icon>remove</mat-icon>
                 </button>
-                <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation
+                <button mat-icon-button [tippy]="'Fields.Picker.Edit' | translate" appMousedownStopPropagation
                   [disabled]="item.Id === 0" (click)="editItem(item.Id)">
                   <mat-icon>edit</mat-icon>
                 </button>

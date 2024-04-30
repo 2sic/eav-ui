@@ -4,7 +4,7 @@ import { guidRegex } from '../../../../shared/constants/guid.constants';
 export function equalizeSelectedItems(
   fieldValue: string | string[],
   separator: string,
-  dropdownOptions: DropdownOption[] // Options are used only for legacy usecase's where the value is an empty string
+  dropdownOptions: DropdownOption[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
   const currentValueAsArray = typeof fieldValue === 'string'
     ? convertValueToArray(fieldValue, separator, dropdownOptions)

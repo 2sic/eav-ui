@@ -57,6 +57,12 @@ export interface PickerItem {
   sourceStreamName?: string;
 
   /**
+   * Indicate that this item is an error or message, which means it should not be selectable and it should
+   * also not be filtered out.
+   */
+  isMessage?: boolean;
+
+  /**
    * The data of the underlying original entity.
    * Used in formulas and field masks for all properties.
    */

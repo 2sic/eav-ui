@@ -127,7 +127,7 @@
     "JsonWarning": "JSON ist nicht valide"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "Bestehendes Element auswählen",
       "New": "Neues Element erstellen",
       "Empty": "Leer",
@@ -138,9 +138,10 @@
       "Remove": "Aus Liste entfernen",
       "Delete": "Löschen",
       "Loading": "Lädt...",
-      "Search": "Suchen"
-    },
-    "EntityQuery": {
+      "Search": "Suchen",
+
+      "FilterNoResults": "keine Treffer bei der suche nach '{{search}}'",
+
       "QueryNoItems": "Keine Elemente gefunden",
       "QueryError": "Fehler: Die Abfrage konnte nicht ausgeführt werden. In der Konsole findest du genauere Details.",
       "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen",

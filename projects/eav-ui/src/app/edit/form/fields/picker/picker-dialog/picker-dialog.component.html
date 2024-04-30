@@ -26,7 +26,7 @@
   @if (vm.showAddNewEntityButtonInDialog) {
     @if (pickerData.state.createEntityTypes.length > 1) {
       <div fxLayout="row" fxLayoutAlign="end center">
-        <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate"
+        <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
           [disabled]="vm.controlStatus.disabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
           (click)="getEntityTypesData()">
           <mat-icon>add</mat-icon>
@@ -41,7 +41,7 @@
       </div>
     } @else {
       <div fxLayout="row" fxLayoutAlign="end center">
-        <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate"
+        <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
           [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
           <mat-icon>add</mat-icon>
         </button>

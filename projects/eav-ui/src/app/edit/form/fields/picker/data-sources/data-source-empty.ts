@@ -24,6 +24,8 @@ export class DataSourceEmpty extends DataSourceBase {
     const dummyItem: PickerItem = {
       value: '',
       label: 'No options available',
+      notSelectable: true,
+      isMessage: true,
     };
 
     this.data$ = of([dummyItem]).pipe(

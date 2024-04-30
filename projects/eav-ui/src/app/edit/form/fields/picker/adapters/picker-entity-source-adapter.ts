@@ -5,7 +5,7 @@ import { EntityService, EavService, EditRoutingService, FieldsSettingsService } 
 import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { placeholderPickerItem } from './picker-source-adapter-base';
+import { messagePickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
@@ -49,7 +49,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     ]).subscribe(([data, loading, deleted]) => {
       const items = data.filter(item => !deleted.some(guid => guid === item.value));
       this.optionsOrHints$.next(loading
-        ? [placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]
+        ? [messagePickerItem(this.translate, 'Fields.Picker.Loading'), ...items]
         : items
       );
     }));
