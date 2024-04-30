@@ -100,6 +100,8 @@
       }
     </mat-autocomplete>
   </div>
+
+  <!-- Button to add null-item, in debug-mode only -->
   @if (vm.debugEnabled) {
     <div class="null-box">
       debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>

@@ -112,6 +112,8 @@ import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, OwlDayJsDateTimeModule } from '@da
 import { PickerIconHelpComponent } from './form/fields/picker/picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from './form/fields/picker/picker-icon-info/picker-icon-info.component';
 import { PickerTreeComponent } from './form/fields/picker/picker-tree/picker-tree.component';
+import { PickerTreeDataService } from './form/fields/picker/picker-tree/picker-tree-data-service';
+import { PickerTreeDataHelper } from './form/fields/picker/picker-tree/picker-tree-data-helper';
 
 export const OWL_DAYJS_FORMATS = {
     parseInput: 'l LT',
@@ -256,6 +258,9 @@ export const OWL_DAYJS_FORMATS = {
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
         { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
         { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
+
+        PickerTreeDataService,
+        PickerTreeDataHelper,
     ],
 })
 export class EditModule { }

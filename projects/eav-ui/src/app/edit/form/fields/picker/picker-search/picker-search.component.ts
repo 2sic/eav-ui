@@ -2,8 +2,8 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { PickerItem, RelationshipParentChild } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
+import { PickerItem } from 'projects/edit-types';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, take } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -15,6 +15,7 @@ import { PickerData } from '../picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
+import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 
 const logThis = true;
 
@@ -50,14 +51,16 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private log = new EavLogger('PickerSearchComponent', logThis);
 
   /**
-   * The tree helper must be generated early, and then populated later
+   * The tree helper which is used by the tree display.
+   * Will only be initialized if we're really showing a tree.
    */
-  treeHelper = new PickerTreeDataHelper();
+  treeHelper: PickerTreeDataHelper;
 
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private fieldsSettingsService: FieldsSettingsService,
+    private treeDataService: PickerTreeDataService,
   ) {
     super();
   }
@@ -97,7 +100,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       );
 
     const logSettings = this.log.rxTap('settings$');
-    const settings$ = fieldSettings$ /* this.fieldsSettingsService.getFieldSettings$(this.config.fieldName) */.pipe(
+    const settings$ = fieldSettings$.pipe(
       logSettings.pipe(),
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
@@ -108,7 +111,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         EnableRemove: settings.EnableRemove,
         EnableReselect: settings.EnableReselect,
         PickerDisplayMode: settings.PickerDisplayMode,
-        pickerTreeConfig: settings.PickerTreeConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
       logSettings.distinctUntilChanged(),
@@ -119,81 +121,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       testLog.pipe(),
     ).subscribe();
 
-    // Get only tree settings, make sure they don't fire unless they really change
-    const logTreeSettings = this.log.rxTap('treeSettings$');
-    const treeSettings$ = combineLatest([
-      fieldSettings$.pipe(
-        map(settings => ({
-          displayMode: settings.PickerDisplayMode,
-          isTree: settings.PickerDisplayMode === 'tree',
-        })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ),
-      // this is handled separately, so change-detection is property based, not object-reference based
-      fieldSettings$.pipe(
-        map(settings => settings.PickerTreeConfiguration),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ),
-    ]).pipe(
-      logTreeSettings.pipe(),
-      map(([modeAndIsTree, pickerTreeConfig]) => ({
-        ...modeAndIsTree,
-        pickerTreeConfig,
-      })),
-      shareReplay(1),
-      logTreeSettings.shareReplay(),
-    );
+    // Setup Tree Helper - but should only happen, if we're really doing trees
+    // ATM we're only doing this the first time, as these settings are not expected to change
+    settings$.pipe(take(1)).subscribe(settings => {
+      if (settings.PickerDisplayMode !== 'tree') return;
+      this.treeDataService.init(fieldSettings$, this.optionItems$);
+      this.treeHelper = this.treeDataService.treeHelper;
+    });
 
-    // Create the tree data stream, make sure it only fires if things really change
-    const treeDataLog = this.log.rxTap('treeData$');
-    const treeData$ = combineLatest([
-      this.optionItems$.pipe(treeDataLog.part('optionItems$')),
-      treeSettings$.pipe(treeDataLog.part('treeSettings$')),
-    ]).pipe(
-      treeDataLog.pipe(),
-      map(([allItems, settings]) => {
-        if (!settings.isTree) //  && allItems && allItems[0]?.data != undefined) {
-          return [] as PickerTreeItem[];
-
-        // if the objects don't have a data property, we can't convert them to tree items
-        // todo: not sure why this happens, possibly early cycles don't have it yet?
-        if (allItems?.[0]?.data == null)
-          return [] as PickerTreeItem[];
-
-        return this.treeHelper.preConvertAllItems(settings.pickerTreeConfig, allItems);
-        // return allItems.map(itm => this.treeHelper.preConvertItemToTreeItem(settings.pickerTreeConfig, itm, allItems));   
-      }),
-      treeDataLog.map(),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
-      shareReplay(1),
-      treeDataLog.shareReplay(),
-    );
-
-    const treeLog = this.log.rxTap('tree$', { enabled: true });
-    const tree$ = combineLatest([
-      treeData$,
-      treeSettings$
-    ]).pipe(
-        treeLog.pipe(),
-      )
-      .subscribe(([treeItems, settings]) => {
-        if (!settings.isTree) 
-          return;
-
-        if (treeItems?.[0]?.data != undefined) {
-          const treeConfig = settings.pickerTreeConfig;
-          this.treeHelper.updateConfig(treeConfig);
-          this.treeHelper.addTreeItems(treeItems);
-
-          const filteredData = treeItems.filter(x => (treeConfig?.TreeRelationship == RelationshipParentChild) //check for two streams type also
-            ? !treeItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
-            : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
-          this.treeHelper.updateSelectedData(filteredData);
-        }
-      });
-    this.subscription.add(tree$);
-
-
+    // Create the default ViewModel used in the other modes
     const vmLog = this.log.rxTap('viewModel$', { enabled: false });
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.selectedItems$, this.optionItems$, error$,
@@ -208,7 +144,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         this.selectedItem$.next(selectedItem);
 
         const showItemEditButtons = selectedItem && this.showItemEditButtons;
-        this.isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
+        const isTreeDisplayMode = this.isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const elemValLowerCase = elemValue?.toLocaleLowerCase();
@@ -237,9 +173,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           selectedItem,
           filteredItems,
 
-          // additional properties for easier readability in the template
-          // showItemEditButtons,
-          isTreeDisplayMode: this.isTreeDisplayMode,
+          isTreeDisplayMode,
           csDisabled,
         };
         return viewModel;
@@ -253,27 +187,24 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   displayFn(value: string | string[] | PickerItem): string {
+    if (value == null || value == undefined) return '';
     let returnValue = '';
-    if (value != null || value != undefined) {
-      if (typeof value === 'string') {
-        returnValue = this.optionItems$.value?.find(ae => ae.value == value)?.label;
-      } else if (Array.isArray(value)) {
-        if (typeof value[0] === 'string') {
-          returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
-        } else {
-          returnValue = (value[0] as PickerItem)?.label;
-        }
-      }
-      else
-        returnValue = (value as PickerItem)?.label;
-    }
-    if (!returnValue) {
-      if (this.selectedItem$.value?.value == value) {
-        returnValue = this.selectedItem$.value?.label;
+    if (typeof value === 'string') {
+      returnValue = this.optionItems$.value?.find(ae => ae.value == value)?.label;
+    } else if (Array.isArray(value)) {
+      if (typeof value[0] === 'string') {
+        returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
       } else {
-        returnValue = value + " *";
+        returnValue = (value[0] as PickerItem)?.label;
       }
-    }
+    } else
+      returnValue = (value as PickerItem)?.label;
+    
+    // If nothing yet, try to return label of selected or fallback to return the value
+    if (!returnValue)
+      return this.selectedItem$.value?.value == value
+        ? this.selectedItem$.value?.label
+        : value + " *";
     return returnValue;
   }
 

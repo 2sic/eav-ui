@@ -4,10 +4,11 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { PickerItem, RelationshipChildParent, RelationshipParentChild, UiPickerModeTree } from 'projects/edit-types';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { exportAppDialog } from '../../../../../app-administration/sub-dialogs/export-app/export-app-dialog.config';
+import { Injectable } from '@angular/core';
 
 const logThis = true;
 
+@Injectable()
 export class PickerTreeDataHelper extends ServiceBase {
 
   private pickerTreeConfiguration: UiPickerModeTree;
@@ -115,7 +116,7 @@ export class PickerTreeDataHelper extends ServiceBase {
       (item): PickerTreeItem[] => {
         // TODO: @2dm - must determine which method is better
         // getting them here is a bit more functional, but the other model doesn't need the catalog to be stored separately
-        
+
         // return item.children; // 
         // const getChildren = this.getChildren(this.pickerTreeConfiguration, item, this.treeItems);
         // console.warn('2dm item', item, 'getChildren', getChildren, 'item.children', item.children)
@@ -140,7 +141,7 @@ export class PickerTreeDataHelper extends ServiceBase {
       });
     else if (treeConfig.TreeRelationship == RelationshipChildParent) {
       const itemParentValue = item.data?.[pId];
-      console.log(`RelationshipChildParent - 2dm for parentIdField: '${pId}' on item: '${itemParentValue}' with parent having id field '${cId}' `);
+      // console.log(`RelationshipChildParent - 2dm for parentIdField: '${pId}' on item: '${itemParentValue}' with parent having id field '${cId}' `);
       return allItems.filter(x => {
         const childParentId = x.data[cpRef]?.[0]?.[pId];
         return childParentId == itemParentValue;
