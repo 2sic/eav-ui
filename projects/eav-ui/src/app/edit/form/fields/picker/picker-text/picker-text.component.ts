@@ -7,7 +7,7 @@ import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set
 import { PickerData } from '../picker-data';
 import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { MatInputModule } from '@angular/material/input';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-picker-text',
@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './picker-text.component.html',
   styleUrls: ['./picker-text.component.scss'],
   imports: [
-    CommonModule, // for | async
+    AsyncPipe, // for | async
     ReactiveFormsModule,
     MatInputModule,
   ]
