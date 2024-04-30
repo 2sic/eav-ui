@@ -1,16 +1,24 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PickerItem } from 'projects/edit-types';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EntityPickerTextViewModel } from './picker-text.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { PickerData } from '../picker-data';
 import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
+import { MatInputModule } from '@angular/material/input';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-picker-text',
+  standalone: true,
   templateUrl: './picker-text.component.html',
   styleUrls: ['./picker-text.component.scss'],
+  imports: [
+    CommonModule, // for | async
+    ReactiveFormsModule,
+    MatInputModule,
+  ]
 })
 export class PickerTextComponent implements OnInit {
   @Input() pickerData: PickerData;

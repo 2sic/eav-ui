@@ -178,7 +178,6 @@ export const OWL_DAYJS_FORMATS = {
         PickerSearchComponent,
         PickerDialogComponent,
         PickerPreviewComponent,
-        PickerTextComponent,
         PickerTextToggleComponent,
         PickerPillsComponent,
         EntityQueryComponent,
@@ -240,6 +239,10 @@ export const OWL_DAYJS_FORMATS = {
         PickerIconHelpComponent,
         PickerIconInfoComponent,
         PickerTreeComponent,
+
+        // 2024-04-30 moving some to standalone components
+        PickerTextComponent,
+
     ],
     providers: [
         Context,
