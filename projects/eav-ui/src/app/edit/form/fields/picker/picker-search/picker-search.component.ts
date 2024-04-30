@@ -37,19 +37,31 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
+
+  /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
   @Input() showSelectedItem: boolean;
+
+  /** Determine if edit buttons are possible, eg. not in preview */
   @Input() showItemEditButtons: boolean;
 
   viewModel$: Observable<PickerSearchViewModel>;
-  private control: AbstractControl;
 
-  optionItems$ = new BehaviorSubject<PickerItem[]>(null);
+  private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
+
+  /**
+   * Currently selected item (not sure why just 1), used in displayFn to show the label from the value
+   * note that it seems a bit flaky, I think it's just the last-selected...?
+   */
   private selectedItem: PickerItem;
   private newValue: string = null;
 
-  private filter$ = new BehaviorSubject(false);
+  /** True/false trigger to trigger filtering */
+  private triggerFilter = new BehaviorSubject(false);
 
+  /** normal log */
   private log = new EavLogger('PickerSearchComponent', logThis);
+
+  /** Special log which would fire a lot for each item doing disabled checks etc. */
   private logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
 
   /**
@@ -70,7 +82,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   ngOnInit(): void {
     const state = this.pickerData.state;
     const source = this.pickerData.source;
-    this.control = this.group.controls[this.config.fieldName];
 
     // TODO: @2dm - maybe there is even a more elegant way to do this
     // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
@@ -89,19 +100,19 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const required$ = state.required$;
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const logFieldSettings = this.log.rxTap('fieldSettings$', { enabled: false });
+    const logFs = this.log.rxTap('fieldSettings$', { enabled: false });
     const fieldSettings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName)
       .pipe(
-        logFieldSettings.pipe(),
+        logFs.pipe(),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
-        logFieldSettings.distinctUntilChanged(),
+        logFs.distinctUntilChanged(),
         shareReplay(1),
-        logFieldSettings.shareReplay(),
+        logFs.shareReplay(),
       );
 
-    const logSettings = this.log.rxTap('settings$', { enabled: false });
+    const logSets = this.log.rxTap('settings$', { enabled: false });
     const settings$ = fieldSettings$.pipe(
-      logSettings.pipe(),
+      logSets.pipe(),
       map(settings => ({
         allowMultiValue: settings.AllowMultiValue,
         enableAddExisting: settings.EnableAddExisting,
@@ -113,13 +124,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         showAsTree: settings.PickerDisplayMode === 'tree',
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
-      logSettings.distinctUntilChanged(),
+      logSets.distinctUntilChanged(),
     );
-
-    // const testLog = this.log.rxTap('test$');
-    // combineLatest([this.optionItems$,]).pipe(
-    //   testLog.pipe(),
-    // ).subscribe();
 
     // Setup Tree Helper - but should only happen, if we're really doing trees
     // ATM we're only doing this the first time, as these settings are not expected to change
@@ -131,12 +137,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     
 
     // Create the default ViewModel used in the other modes
-    const vmLog = this.log.rxTap('viewModel$', { enabled: true });
+    const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.pickerData.selectedItems$, this.optionItems$, error$,
-      controlStatus$, freeTextMode$, label$, required$, this.filter$,
+      controlStatus$, freeTextMode$, label$, required$, this.triggerFilter,
     ]).pipe(
-      vmLog.pipe(),
+      logVm.pipe(),
       map(([
         debugEnabled, settings, selectedItems, optionItems, error,
         controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
@@ -144,14 +150,17 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         optionItems = optionItems ?? [];
         const selectedItem = this.selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
 
-        const showItemEditButtons = selectedItem && this.showItemEditButtons;
+        const showEditButtons = selectedItem && this.showItemEditButtons;
 
         const filterValue = this.autocompleteRef?.nativeElement.value;
         const filterLc = filterValue?.toLocaleLowerCase();
         let filteredItems = !filterValue
           ? optionItems
           : optionItems.filter(oItem => ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(filterLc));
+          // idea to combine key & value - needs further thinking, otherwise the GUID is in there too
+          // : optionItems.filter(opt => (`${opt.label} ${opt.value}`).toLocaleLowerCase().includes(filterLc));
 
+        // If the list is empty, show a message about this.
         const filterOrMessage = filteredItems.length > 0
           ? filteredItems
           : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterValue })];
@@ -161,9 +170,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           allowMultiValue: settings.allowMultiValue,
           enableAddExisting: settings.enableAddExisting,
           enableTextEntry: settings.enableTextEntry,
-          enableEdit: settings.enableEdit && showItemEditButtons,
-          enableDelete: settings.enableDelete && showItemEditButtons,
-          enableRemove: settings.enableRemove && showItemEditButtons,
+          enableEdit: settings.enableEdit && showEditButtons,
+          enableDelete: settings.enableDelete && showEditButtons,
+          enableRemove: settings.enableRemove && showEditButtons,
           enableReselect: settings.enableReselect,
           selectedItems,
           options: optionItems,
@@ -181,7 +190,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         };
         return viewModel;
       }),
-      vmLog.end(),
+      logVm.end(),
     );
 
   }
@@ -190,9 +199,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
+  // 2024-04-30 2dm: seems this is always a string, will simplify the code
   displayFn(value: string /* | string[] | PickerItem */): string {
     this.logItemChecks.add(`displayFn: value: '${value}'; selectedItem: `, this.selectedItem);
-    // 2024-04-30 2dm: seems this is always a string, will simplify the code
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
     let returnValue = '';
@@ -220,7 +229,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   markAsTouched(): void {
-    GeneralHelpers.markControlTouched(this.control);
+    const control = this.group.controls[this.config.fieldName];
+    GeneralHelpers.markControlTouched(control);
   }
 
   fetchEntities(): void {
@@ -228,9 +238,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   filterSelectionList(): void {
-    this.filter$.next(true);
+    this.triggerFilter.next(true);
   }
 
+  /**
+   * Event triggered when opening the auto-complete / search
+   */
   onOpened(isTreeDisplayMode: boolean): void {
     const domElement = this.autocompleteRef.nativeElement;
     this.log.add(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);

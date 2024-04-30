@@ -61,8 +61,6 @@
 
       <!-- Tree Display Mode -->
       @if (vm.isTreeDisplayMode) {
-        <!-- <app-picker-tree [vm]="vm" [config]="config" [optionItems$]="optionItems$" [pickerTreeConfiguration]="vm.pickerTreeConfiguration"></app-picker-tree>
-        <span>test</span> -->
         <mat-tree [dataSource]="treeHelper.dataSource" [treeControl]="treeHelper.treeControl">
           <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
             <button mat-icon-button disabled></button>
