@@ -41,7 +41,7 @@
     </mat-form-field>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)" [hideSingleSelectionIndicator]="true"
       (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedItem)"
-      (closed)="onClosed(vm.selectedItems, vm.selectedItem)" (opened)="onOpened()">
+      (closed)="onClosed(vm.selectedItems, vm.selectedItem)" (opened)="onOpened(vm.isTreeDisplayMode)">
       <!-- List Display Mode -->
       @if (!vm.isTreeDisplayMode) {
           @for (item of vm.filteredItems; track item) {

@@ -41,10 +41,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private control: AbstractControl;
 
   optionItems$ = new BehaviorSubject<PickerItem[]>(null);
-  private selectedItems$ = new Observable<PickerItem[]>;
-  private selectedItem$ = new BehaviorSubject<PickerItem>(null);
+  private selectedItem: PickerItem; //$ = new BehaviorSubject<PickerItem>(null);
   private newValue: string = null;
-  private isTreeDisplayMode: boolean = false;
 
   private filter$ = new BehaviorSubject(false);
 
@@ -80,8 +78,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       this.optionItems$ = source.optionsOrHints$;
     }
     
-    this.selectedItems$ = this.pickerData.selectedItems$;
-
     const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
     const error$ = state.error$;
@@ -110,7 +106,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         EnableDelete: settings.EnableDelete,
         EnableRemove: settings.EnableRemove,
         EnableReselect: settings.EnableReselect,
-        PickerDisplayMode: settings.PickerDisplayMode,
+        showAsTree: settings.PickerDisplayMode === 'tree',
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
       logSettings.distinctUntilChanged(),
@@ -124,15 +120,16 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     // Setup Tree Helper - but should only happen, if we're really doing trees
     // ATM we're only doing this the first time, as these settings are not expected to change
     settings$.pipe(take(1)).subscribe(settings => {
-      if (settings.PickerDisplayMode !== 'tree') return;
+      if (!settings.showAsTree) return;
       this.treeDataService.init(fieldSettings$, this.optionItems$);
       this.treeHelper = this.treeDataService.treeHelper;
     });
+    
 
     // Create the default ViewModel used in the other modes
     const vmLog = this.log.rxTap('viewModel$', { enabled: false });
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, this.selectedItems$, this.optionItems$, error$,
+      debugEnabled$, settings$, this.pickerData.selectedItems$, this.optionItems$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.filter$,
     ]).pipe(
       vmLog.pipe(),
@@ -140,11 +137,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         debugEnabled, settings, selectedItems, optionItems, error,
         controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
       ]) => {
-        const selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
-        this.selectedItem$.next(selectedItem);
+        // figure out if tree, and save it for functions to use
+        const isTreeDisplayMode = settings.showAsTree;
+        const selectedItem = this.selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
 
         const showItemEditButtons = selectedItem && this.showItemEditButtons;
-        const isTreeDisplayMode = this.isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const elemValLowerCase = elemValue?.toLocaleLowerCase();
@@ -186,25 +183,32 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  displayFn(value: string | string[] | PickerItem): string {
-    if (value == null || value == undefined) return '';
+  displayFn(value: string /* | string[] | PickerItem */): string {
+    this.log.add('displayFn', value);
+    // 2024-04-30 2dm: seems this is always a string, will simplify the code
+    // and probably clean up if it's stable for a few days
+    if (value == null) return '';
     let returnValue = '';
-    if (typeof value === 'string') {
+    // if (typeof value === 'string') {
       returnValue = this.optionItems$.value?.find(ae => ae.value == value)?.label;
-    } else if (Array.isArray(value)) {
-      if (typeof value[0] === 'string') {
-        returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
-      } else {
-        returnValue = (value[0] as PickerItem)?.label;
-      }
-    } else
-      returnValue = (value as PickerItem)?.label;
+    // }
+    //  else if (Array.isArray(value)) {
+    //   if (typeof value[0] === 'string') {
+    //     returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
+    //   } else {
+    //     returnValue = (value[0] as PickerItem)?.label;
+    //   }
+    // } else
+    //   returnValue = (value as PickerItem)?.label;
     
     // If nothing yet, try to return label of selected or fallback to return the value
+    // note: not quite sure, but I believe this is for scenarios where a manual entry was done
+    // ...so it would return it, even though it's not in the list of available items
     if (!returnValue)
-      return this.selectedItem$.value?.value == value
-        ? this.selectedItem$.value?.label
+      return this.selectedItem?.value == value
+        ? this.selectedItem?.label
         : value + " *";
+    this.log.add('displayFn result', value, returnValue);  
     return returnValue;
   }
 
@@ -220,12 +224,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.filter$.next(true);
   }
 
-  onOpened(): void {
+  onOpened(isTreeDisplayMode: boolean): void {
+    this.log.add(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}`);
+    // flush the input so the user can use it to search, otherwise the list is filtered
     this.autocompleteRef.nativeElement.value = '';
-    if (this.isTreeDisplayMode) {
-      this.autocompleteRef.nativeElement.blur();//needed so tree reacts to the first click
-    }
-      
+    // If tree, we need to blur so tree reacts to the first click, otherwise the user must click 2x
+    if (isTreeDisplayMode)
+      this.autocompleteRef.nativeElement.blur();
   }
 
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
