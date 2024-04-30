@@ -117,10 +117,10 @@
     "NotValid": "Inválido",
     "Required": "Isto é requerido",
     "RequiredShort": "requerido",
-    "Min": "Este valor deve ser maior que {{param.Min}}",
-    "Max": "Este valor deve ser inferior ou igual a {{param.Max}}",
+    "Min": "Este valor deve ser maior que {{Min}}",
+    "Max": "Este valor deve ser inferior ou igual a {{Max}}",
     "Pattern": "Por favor adeque o formato ao requerido",
-    "Decimals": "Este número pode ter até {{param.Decimals}} casas decimais",
+    "Decimals": "Este número pode ter até {{Decimals}} casas decimais",
     "JsonError": "JSON is not valid",
     "JsonWarning": "JSON is not valid"
   },
