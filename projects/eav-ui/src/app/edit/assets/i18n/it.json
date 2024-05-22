@@ -117,15 +117,15 @@
     "NotValid": "Not valid",
     "Required": "This is required",
     "RequiredShort": "required",
-    "Min": "This value should be {{param.Min}} or higher",
-    "Max": "This value should be {{param.Max}} or lower",
+    "Min": "This value should be {{Min}} or higher",
+    "Max": "This value should be {{Max}} or lower",
     "Pattern": "Please match the requested format",
-    "Decimals": "This number can have up to {{param.Decimals}} decimal places",
+    "Decimals": "This number can have up to {{Decimals}} decimal places",
     "JsonError": "JSON is not valid",
     "JsonWarning": "JSON is not valid"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "Scegli l'elemento per aggiungerlo",
       "New": "Crea nuovo",
       "Empty": "Empty",
@@ -136,9 +136,8 @@
       "Remove": "Rimuovi dalla lista",
       "Delete": "Delete",
       "Loading": "Loading...",
-      "Search": "Search"
-    },
-    "EntityQuery": {
+      "Search": "Search",
+
       "QueryNoItems": "No items found",
       "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
       "QueryStreamNotFound": "Error: The query did not return a stream named"

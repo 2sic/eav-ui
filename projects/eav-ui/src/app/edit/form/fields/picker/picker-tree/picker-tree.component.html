@@ -1,0 +1,35 @@
+<p>picker-tree works!</p>
+<mat-tree [dataSource]="treeHelper.dataSource" [treeControl]="treeHelper.treeControl">
+  <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
+    <button mat-icon-button disabled></button>
+    <mat-option [value]="item.value" class="eav-picker-option"
+      [disabled]="treeHelper.disableOption(item, vm.selectedItems, vm.enableReselect)"
+      [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+      <div class="eav-dropdown-option">
+        <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
+        <div class="eav-dropdown-option-info">
+          <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+          <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
+        </div>
+      </div>
+    </mat-option>
+  </mat-tree-node>
+  <mat-tree-node *matTreeNodeDef="let item; when: hasChild" matTreeNodePadding class="eav-tree-node">
+    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + item.name">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeHelper.treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <mat-option [value]="item.value" class="eav-picker-option"
+      [disabled]="treeHelper.disableOption(item, vm.selectedItems, vm.enableReselect)"
+      [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
+      <div class="eav-dropdown-option">
+        <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
+        <div class="eav-dropdown-option-info">
+          <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+          <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
+        </div>
+      </div>
+    </mat-option>
+  </mat-tree-node>
+</mat-tree>

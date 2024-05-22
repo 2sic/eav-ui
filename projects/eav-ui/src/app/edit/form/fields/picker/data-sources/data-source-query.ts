@@ -1,45 +1,46 @@
-import { EntityForPicker, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
-import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
+import { PickerItem, FieldSettings } from "projects/edit-types";
+import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
-import { QueryEntity, QueryStreams } from "../../entity/entity-query/entity-query.models";
+import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { placeholderPickerItem } from '../adapters/picker-source-adapter-base';
+import { messagePickerItem, placeholderPickerItem } from '../adapters/picker-source-adapter-base';
 import { Injectable } from '@angular/core';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { DataWithLoading } from '../models/data-with-loading';
 
-const logThis = true;
+const logThis = false;
+const logRx = true;
 
 @Injectable()
-export class QueryFieldDataSource extends DataSourceBase {
+export class DataSourceQuery extends DataSourceBase {
   private params$ = new Subject<string>();
 
   constructor(
     private queryService: QueryService,
-    private entityCacheService: EntityCacheService,
-    private stringQueryCacheService: StringQueryCacheService,
+    private entityCacheService: PickerDataCacheService,
     private translate: TranslateService,
   ) {
-    super(new EavLogger('QueryFieldDataSource', logThis));
+    super(new EavLogger('DataSourceQuery', logThis));
   }
 
   // private isStringQuery: boolean;
   // private entityGuid: string;
   // private fieldName: string;
-  private appId: string;
+  private appId: number;
 
   setupQuery(
     settings$: BehaviorSubject<FieldSettings>,
-    isStringQuery: boolean,
+    isForStringField: boolean,
     entityGuid: string,
     fieldName: string,
     appId: string
   ): void {
-    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isStringQuery', isStringQuery, 'entityGuid', entityGuid, 'fieldName', fieldName);
+    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName);
 
-    this.appId = appId;
+    this.appId = Number(appId);
     super.setup(settings$);
     const settings = settings$.value;
     const streamName = settings.StreamName;
@@ -52,7 +53,7 @@ export class QueryFieldDataSource extends DataSourceBase {
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
 
-    const lAll = this.log.rxTap('all$', { enabled: true });
+    const lAll = this.log.rxTap('all$', { enabled: logRx });
     const all$ = combineLatest([
       params$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll))
@@ -61,18 +62,22 @@ export class QueryFieldDataSource extends DataSourceBase {
       mergeMap(([params, _]) => {
         // If we don't have a query URL return a single item with a message
         if (!queryUrl)
-          return of({ data: {
-            'Default': [
-              {
-                Id: -1,
-                Text: this.translate.instant('Fields.EntityQuery.QueryNotConfigured'),
-                Guid: null,
-              }
-            ] as QueryEntity[],
-          } as QueryStreams, loading: true });
+          return of<DataWithLoading<QueryStreams>>({
+              data: {
+                'Default': [
+                  {
+                    Id: -1,
+                    Guid: null,
+                    Title: this.translate.instant('Fields.Picker.QueryNotConfigured'),
+                  },
+                ],
+              },
+              loading: true,
+            }
+          );
 
         // Default case, get the data
-        const lGetQs = this.log.rxTap('queryService', { enabled: true });
+        const lGetQs = this.log.rxTap('queryService', { enabled: logRx });
         return this.queryService
           .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), [])
           .pipe(
@@ -82,41 +87,34 @@ export class QueryFieldDataSource extends DataSourceBase {
           );
       }),
       lAll.map('before'),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
       lAll.map('after'),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      startWith(this.noItemsLoadingFalse),
       shareReplay(1),
       lAll.shareReplay(),
     );
 
-    const prefetch$ = this.prefetchEntityGuids$.pipe(
-      distinctUntilChanged(),
-      filter(entityGuids => entityGuids?.length > 0),
-      mergeMap(entityGuids => {
-        if (isStringQuery) {
-          return this.stringQueryCacheService.getEntities$(entityGuid, fieldName);
-        } else {
-          return this.entityCacheService.getEntities$(entityGuids);
-        }
-      }),
-      map(entities => {
-        if (isStringQuery) {
-          return entities.map(entity => this.entity2PickerItem(entity as QueryEntity, null, /* mustUseGuid: */ !isStringQuery));
-        } else {
-          return entities as PickerItem[];
-        }
-      }),
-      startWith([] as PickerItem[]),
-      shareReplay(1),
-    );
+    // Figure out the prefetch
+    // Note that if we're using a string-data based query, there will be no prefetch
+    // So it just needs to return an empty list
+    const prefetch$ = isForStringField
+      ? of([] as PickerItem[])
+      : this.prefetchEntityGuids$.pipe(
+          distinctUntilChanged(),
+          filter(entityGuids => entityGuids?.length > 0),
+          mergeMap(entityGuids => this.entityCacheService.getEntities$(entityGuids)),
+          map(entities => entities as PickerItem[]),
+          startWith([] as PickerItem[]),
+          shareReplay(1),
+        );
 
     let missingInPrefetch$ = combineLatest([prefetch$, this.prefetchEntityGuids$]).pipe(
       // return guids from prefetchEntityGuids that are not in prefetch
-      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
+      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.value === guid))),
     );
 
-    let combinedGuids$ = combineLatest([missingInPrefetch$, this.entityGuids$]).pipe(
-      map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
+    let combinedGuids$ = combineLatest([missingInPrefetch$, this.guidsToRefresh$]).pipe(
+      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(GeneralHelpers.distinct)),
       filter(guids => guids?.length > 0),
       // distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
@@ -129,8 +127,8 @@ export class QueryFieldDataSource extends DataSourceBase {
           startWith({ data: {} as QueryStreams, loading: true })
         )
       ),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isStringQuery) } }),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* valueMustBeGuid: */ !isForStringField) } }),
+      startWith(this.noItemsLoadingFalse),
       shareReplay(1),
     );
 
@@ -143,7 +141,7 @@ export class QueryFieldDataSource extends DataSourceBase {
       lData.pipe(),
       map(([all, overrides, prefetch]) => {
         // data always takes the last unique value in the array (should be most recent)
-        const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.Value, item])).values()];
+        const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.value, item])).values()];
         return data;
       }),
       shareReplay(1),
@@ -159,32 +157,31 @@ export class QueryFieldDataSource extends DataSourceBase {
     this.params$.next(params);
   }
 
-  transformData(data: QueryStreams, streamName: string | null, mustUseGuid: boolean): PickerItem[] {
+  transformData(data: QueryStreams, streamName: string | null, valueMustBeGuid: boolean): PickerItem[] {
     this.log.add('transformData', 'data', data, 'streamName', streamName);
     if (!data)
-      return [placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryError')];
+      return [messagePickerItem(this.translate, 'Fields.Picker.QueryErrorNoData')];
 
     let items: PickerItem[] = [];
     let errors: PickerItem[] = [];
     streamName.split(',').forEach(stream => { 
       if (!data[stream]) {
-        errors.push(placeholderPickerItem(this.translate, 'Fields.EntityQuery.QueryStreamNotFound', ' ' + stream));
+        errors.push(placeholderPickerItem(this.translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, mustUseGuid)));
+      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, valueMustBeGuid)));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }
 
-  private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {
+  private setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => {
-        const disable = e.AppId != null && e.AppId.toString() !== this.appId;
-        e._disableEdit = disable;
-        e._disableDelete = disable;
+        const appId = e.data?.AppId;
+        e.noEdit = appId != null && appId !== this.appId;
+        e.noDelete = e.noEdit;
       });
-    // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;
   }
 }

@@ -25,42 +25,42 @@
           <div class="item-title" [ngClass]="{ 'disabled': vm.csDisabled }">
             @if (vm.allowMultiValue) {
               <mat-icon class="item-title__icon"
-                [tippy]="'Fields.Entity.DragMove' | translate"
+                [tippy]="'Fields.Picker.DragMove' | translate"
                 [tippyDisabled]="vm.csDisabled">
                 drag_handle
               </mat-icon>
             }
-            <span class="item-title__text" [tippy]="item._tooltip">
-              {{ item.Text }}
+            <span class="item-title__text" [tippy]="item.tooltip">
+              {{ item.label }}
             </span>
           </div>
           <div class="item-actions">
             <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-            @if (vm.enableEdit && !item._disableEdit) {
+            @if (vm.enableEdit && !item.noEdit) {
               <button mat-icon-button class="eav-action-button"
-                [tippy]="'Fields.Entity.Edit' | translate"
+                [tippy]="'Fields.Picker.Edit' | translate"
                 [disabled]="config.initialDisabled"
                 appMousedownStopPropagation
-                (click)="edit(item.Value, item.Id)">
+                (click)="edit(item.value, item.id)">
                 <mat-icon>edit</mat-icon>
               </button>
             }
-            @if (vm.enableDelete && !item._disableDelete) {
+            @if (vm.enableDelete && !item.noDelete) {
               <button mat-icon-button class="eav-action-button"
-                [tippy]="'Fields.Entity.Delete' | translate"
+                [tippy]="'Fields.Picker.Delete' | translate"
                 [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
-                (click)="deleteItem(index, item.Value)">
+                (click)="deleteItem(index, item.value)">
                 <mat-icon>delete</mat-icon>
               </button>
             }
             @if (vm.enableRemove) {
               <button mat-icon-button class="eav-action-button"
-                [tippy]="'Fields.Entity.Remove' | translate"
+                [tippy]="'Fields.Picker.Remove' | translate"
                 [disabled]="vm.csDisabled"
                 appMousedownStopPropagation
                 (click)="removeItem(index)">
-                <mat-icon>clear</mat-icon>
+                <mat-icon>do_not_disturb_on</mat-icon>
               </button>
             }
           </div>

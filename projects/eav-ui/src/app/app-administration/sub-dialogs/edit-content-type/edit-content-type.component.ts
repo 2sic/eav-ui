@@ -18,6 +18,8 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   @HostBinding('className') hostClass = 'dialog-component';
 
   contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+
+  /** RegEx property to use in HTML */
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
   dropdownInsertValue = dropdownInsertValue;

@@ -1,29 +1,28 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { PickerItem } from "projects/edit-types";
-import { Observable, combineLatest } from "rxjs";
+import { combineLatest } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
-import { EntityCacheService } from "../../../../shared/store/ngrx-data";
-import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
+import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { placeholderPickerItem } from './picker-source-adapter-base';
+import { messagePickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
-    public entityCacheService: EntityCacheService,
+    public entityCacheService: PickerDataCacheService,
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public snackBar: MatSnackBar,
-    private entityFieldDataSource: EntityFieldDataSource,
+    private dsEntity: DataSourceEntity,
   ) {
     super(
       entityCacheService,
@@ -32,6 +31,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
       editRoutingService,
       translate,
       snackBar,
+      dsEntity,
       new EavLogger('PickerEntitySourceAdapter', logThis),
     );
   }
@@ -40,49 +40,34 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     this.log.add('init');
     super.init(callerName);
 
-    this.entityFieldDataSource.setup(this.settings$);
+    this.dsEntity.setup(this.settings$);
 
     this.subscriptions.add(combineLatest([
-      this.entityFieldDataSource.data$,
-      this.entityFieldDataSource.loading$,
+      this.dataSource.data$,
+      this.dataSource.loading$,
       this.deletedItemGuids$,
     ]).subscribe(([data, loading, deleted]) => {
-      const items = data.filter(item => !deleted.some(guid => guid === item.Value));
-      if (loading) {
-        this.availableItems$.next([placeholderPickerItem(this.translate, 'Fields.Entity.Loading'), ...items]);
-      } else {
-        this.availableItems$.next(items);
-      }
+      const items = data.filter(item => !deleted.some(guid => guid === item.value));
+      this.optionsOrHints$.next(loading
+        ? [messagePickerItem(this.translate, 'Fields.Picker.Loading'), ...items]
+        : items
+      );
     }));
   }
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.entityFieldDataSource.contentType(this.contentType);
-  }
-
-  getDataFromSource(): Observable<PickerItem[]> {
-    return this.entityFieldDataSource.data$;
-  }
-
-  setPrefetchData(missingData: string[]): void {
-    this.entityFieldDataSource.prefetchEntityGuids(missingData);
-  }
-
-  forceReloadData(missingData: string[]): void {
-    this.entityFieldDataSource.forceLoadGuids(missingData);
+    this.dsEntity.contentType(this.contentType);
   }
 
   destroy(): void {
     this.contentTypeMask.destroy();
-    this.entityFieldDataSource.destroy();
-
     super.destroy();
   }
 
   fetchItems(): void {
     this.contentType = this.contentTypeMask.resolve();
-    this.entityFieldDataSource.contentType(this.contentType);
-    this.entityFieldDataSource.getAll();
+    this.dsEntity.contentType(this.contentType);
+    this.dataSource.getAll();
   }
 }

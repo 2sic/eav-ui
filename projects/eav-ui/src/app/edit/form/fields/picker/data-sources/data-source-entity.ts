@@ -1,24 +1,25 @@
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
-import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
-import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
+const logChildren = false;
 
 @Injectable()
-export class EntityFieldDataSource extends DataSourceBase {
+export class DataSourceEntity extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
 
   constructor(
     private queryService: QueryService,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
   ) {
-    super(new EavLogger('EntityFieldDataSource', logThis));
+    super(new EavLogger('DataSourceEntity', logThis, logChildren));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): void {
@@ -44,56 +45,54 @@ export class EntityFieldDataSource extends DataSourceBase {
     // Note that the backend should not be accessed till getAll$ is true
     // So the stream should be prefilled with an empty array
     // and shared
-    const allOfTypeLog = this.log.rxTap('allOfType$', { enabled: false });
-    const AllOfTypeGetEntitiesLog = this.log.rxTap('allOfType$/getEntities', { enabled: false });
+    const logAllOfType = this.log.rxTap('allOfType$', { enabled: false });
+    const logAllOfTypeGetEntities = this.log.rxTap('allOfType$/getEntities', { enabled: false });
     const allOfType$ = combineLatest([
       typeName$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
     ]).pipe(
-      allOfTypeLog.pipe(),
+      logAllOfType.pipe(),
       mergeMap(([typeName, _]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: [],
         fields: this.fieldsToRetrieve(this.settings$.value),
         log: 'all$'
       }).pipe(
-        AllOfTypeGetEntitiesLog.pipe(),
+        logAllOfTypeGetEntities.pipe(),
         map(data => {
-          const items: PickerItem[] = data["Default"].map(entity => {
-            return this.queryEntityMapping(entity)
-          });
+          const items: PickerItem[] = data.Default.map(entity => this.queryEntityMapping(entity));
           return { data: items, loading: false };
         }),
-        AllOfTypeGetEntitiesLog.map('queryEntityMapping'),
-        startWith({ data: [] as PickerItem[], loading: true }),
-        AllOfTypeGetEntitiesLog.read(),
+        logAllOfTypeGetEntities.map('queryEntityMapping'),
+        startWith(this.noItemsLoadingTrue),
+        logAllOfTypeGetEntities.read(),
       )),
-      startWith({ data: [] as PickerItem[], loading: false }),
-      allOfTypeLog.read(),
+      startWith(this.noItemsLoadingFalse),
+      logAllOfType.read(),
       shareReplay(1),
-      allOfTypeLog.shareReplay(),
+      logAllOfType.shareReplay(),
     );
 
     // Items to prefetch which were found in the cache
-    const prefetchInCacheLog = this.log.rxTap('prefetchInCache$', { enabled: true });
+    const logPrefetchInCache = this.log.rxTap('prefetchInCache$', { enabled: false });
     const prefetchInCache$ = this.prefetchEntityGuids$.pipe(
-      prefetchInCacheLog.pipe(),
+      logPrefetchInCache.pipe(),
       distinctUntilChanged(),
       filter(entityGuids => entityGuids?.length > 0),
       mergeMap(entityGuids => this.entityCacheService.getEntities$(entityGuids)),
       startWith([] as PickerItem[]),
-      prefetchInCacheLog.read(),
+      logPrefetchInCache.read(),
       shareReplay(1),
-      prefetchInCacheLog.shareReplay(),
+      logPrefetchInCache.shareReplay(),
     );
 
     // Check if anything should be prefetched but was missing
     // so we can retrieve it from the server
-    const prefetchNotFoundGuidsLog = this.log.rxTap('prefetchNotFoundGuids$', { enabled: false });
+    const logPrefetchNotFoundGuids = this.log.rxTap('prefetchNotFoundGuids$', { enabled: false });
     const prefetchNotFoundGuids$ = combineLatest([prefetchInCache$, this.prefetchEntityGuids$]).pipe(
-      prefetchNotFoundGuidsLog.pipe(),
+      logPrefetchNotFoundGuids.pipe(),
       // return guids from prefetchEntityGuids that are not in prefetch
-      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
+      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.value === guid))),
     );
 
     // These GUIDs should be force-loaded from the server
@@ -101,63 +100,61 @@ export class EntityFieldDataSource extends DataSourceBase {
     // TODO: this isn't quite right
     // - atm it always loads all selected items, but it should only do this if they may have changed
     // - to fix this, we need to know if the selected items have changed and probably place that in another list
-    const guidsToForceLoadLog = this.log.rxTap('guidsToForceLoad$');
-    const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.entityGuids$]).pipe(
-      guidsToForceLoadLog.pipe(),
-      map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
+    const logGuidsToForceLoad = this.log.rxTap('guidsToForceLoad$', { enabled: true });
+    const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.guidsToRefresh$]).pipe(
+      logGuidsToForceLoad.pipe(),
+      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(GeneralHelpers.distinct)),
       filter(guids => guids?.length > 0),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
-      guidsToForceLoadLog.distinctUntilChanged(),
+      logGuidsToForceLoad.distinctUntilChanged(),
     );
 
     // Load specific items as overrides
     // to ensure that we always use the latest copy
     // TODO: Not quite right yet - see guidsToForceLoad$
-    const overridesLog = this.log.rxTap('overrides$');
+    const logOverrides = this.log.rxTap('overrides$', { enabled: true });
     const overrides$ = combineLatest([typeName$, guidsToForceLoad$]).pipe(
-      overridesLog.pipe(),
+      logOverrides.pipe(),
       mergeMap(([typeName, guids]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: guids,
         fields: this.fieldsToRetrieve(this.settings$.value),
-        log: overridesLog.name,
+        log: logOverrides.name,
       }).pipe(
           map(data => {
-            const items: PickerItem[] = data["Default"].map(entity => {
-              return this.queryEntityMapping(entity)
-            });
+            const items: PickerItem[] = data.Default.map(entity => this.queryEntityMapping(entity));
             return { data: items, loading: false };
           }),
-          startWith({ data: [] as PickerItem[], loading: true })
+          startWith(this.noItemsLoadingTrue)
         )
       ),
-      startWith({ data: [] as PickerItem[], loading: false }),
+      startWith(this.noItemsLoadingFalse),
       shareReplay(1),
-      overridesLog.shareReplay(),
+      logOverrides.shareReplay(),
     );
 
     // Create a loading$ stream to indicate if we are loading
-    const loading$log = this.log.rxTap('loading$', { enabled: false });
+    const logLoading = this.log.rxTap('loading$', { enabled: false });
     this.loading$ = combineLatest([allOfType$, overrides$]).pipe(
-      loading$log.pipe(),
+      logLoading.pipe(),
       map(([all, overrides]) => all.loading || overrides.loading),
       distinctUntilChanged(),
-      loading$log.distinctUntilChanged(),
+      logLoading.distinctUntilChanged(),
     );
 
     // Create the main data$ stream merging all, overrides and prefetches
-    const data$log = this.log.rxTap('data$', { enabled: false });
+    const logData = this.log.rxTap('data$', { enabled: false });
     this.data$ = combineLatest([prefetchInCache$, allOfType$, overrides$]).pipe(
-      data$log.pipe(),
+      logData.pipe(),
       map(([prefetch, all, overrides]) => {
         // merge and take the last unique value in the array (should be most recent)
         // it uses the Map and the `Value` property to ensure uniqueness
         const combined = [...prefetch, ...all.data, ...overrides.data];
-        const data = [...new Map(combined.map(item => [item.Value, item])).values()];
+        const data = [...new Map(combined.map(item => [item.value, item])).values()];
         return data;
       }),
       shareReplay(1),
-      data$log.shareReplay(),
+      logData.shareReplay(),
     );
   }
 
@@ -170,11 +167,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     this.contentTypeName$.next(contentTypeName);
   }
 
-  forceLoadGuids(entityGuids: string[]): void {
-    this.entityGuids$.next(entityGuids);
-  }
-
-  private queryEntityMapping(entity: QueryEntity): PickerItem {
+  private queryEntityMapping(entity: EntityBasicWithFields): PickerItem {
     return this.entity2PickerItem(entity, null, /* mustUseGuid: */ true);
   }
 }

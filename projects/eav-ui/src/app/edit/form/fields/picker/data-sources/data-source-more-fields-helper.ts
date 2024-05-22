@@ -1,12 +1,21 @@
 import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
 import { GeneralHelpers } from '../../../../shared/helpers/general.helpers';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 /**
  * Helper class for data source, to figure out all the fields we need to retrieve from the server.
  */
-export class DataSourceMoreFieldsHelper {
+export class DataSourceMoreFieldsHelper extends ServiceBase {
+  constructor(enableLog = logThis) {
+    super(new EavLogger('DataSourceMoreFieldsHelper', enableLog));
+  }
 
   fieldListToRetrieveFromServer(settings: FieldSettings): string {
+    this.log.add('fieldListToRetrieveFromServer', settings);
+
     const treeConfig = settings.PickerTreeConfiguration;
     const moreFields = settings.MoreFields?.split(',') ?? [];
     const queryFields = [settings.Value, settings.Label];
@@ -40,6 +49,7 @@ export class DataSourceMoreFieldsHelper {
    * @returns parsed fields
    */
   extractFieldNamesFromTokens(input: string, enableSimpleFields: boolean = true): string[] {
+    this.log.add('extractFieldNamesFromTokens', input, enableSimpleFields);
     const fields: string[] = [];
 
     // 1.) skip processing on null or empty

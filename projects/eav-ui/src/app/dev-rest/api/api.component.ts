@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, share, switchMap, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap, take } from 'rxjs';
 import { DevRestBase } from '..';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { SourceService } from '../../code-editor/services/source.service';
@@ -29,7 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 
-const pathToApi = 'app/{appname}/api/{controller}/{action}';
+const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 
 @Component({
     selector: 'app-dev-rest-api',
@@ -85,11 +85,13 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
 
     const webApi$ = combineLatest([
       this.route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramApiPath))),
-      this.sourceService.getWebApis(),
-    ]).pipe(map(([name, webApis]) => {
-      name = decodeURIComponent(name);
-      return webApis.find(w => w.path === name);
-    }));
+      this.sourceService.getWebApis().pipe(shareReplay(1)),
+    ]).pipe(
+      map(([name, webApis]) => {
+        name = decodeURIComponent(name);
+        return webApis.find(w => w.path === name);
+      },
+    ));
 
     const apiDetails$ = webApi$.pipe(
       switchMap(webApi => this.sourceService.getWebApiDetails(webApi.path)),
@@ -106,8 +108,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
         console.log('webApi object', webApi);
         const resolved = pathToApi
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder))
-          .replace('/api/', `/${webApi.folder}/`)
-          .replace('{controller}', details.controller.replace(/controller/i, ''))
+          .replace('{endpointPath}', webApi.endpointPath)
           .replace('{action}', action.name);
         return this.rootBasedOnScenario(resolved, scenario);
       }),
@@ -119,7 +120,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     ])
       .pipe(
         map(([[webApi, details, selected, urlParams, scenario], [root, /* item, */ diag]]) => ({
-          ...this.buildBaseViewModel(webApi.name, webApi.path, diag, null, root, scenario),
+          ...this.buildBaseViewModel(webApi.name, webApi.endpointPath, diag, null, root, scenario),
           webApi,
           details,
           selected,

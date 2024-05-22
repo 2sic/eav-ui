@@ -119,15 +119,15 @@
     "NotValid": "Ungültig",
     "Required": "Pflichtfeld",
     "RequiredShort": "Pflichtfeld",
-    "Min": "Dieser Wert sollte mindestens {{param.Min}} sein",
-    "Max": "Dieser Wert sollte höchstens {{param.Max}} sein",
+    "Min": "Dieser Wert sollte mindestens {{Min}} sein",
+    "Max": "Dieser Wert sollte höchstens {{Max}} sein",
     "Pattern": "Bitte richtig eingeben",
-    "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben",
+    "Decimals": "Diese Zahl kann {{Decimals}} Dezimalstellen haben",
     "JsonError": "JSON ist nicht valide",
     "JsonWarning": "JSON ist nicht valide"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "Bestehendes Element auswählen",
       "New": "Neues Element erstellen",
       "Empty": "Leer",
@@ -138,9 +138,10 @@
       "Remove": "Aus Liste entfernen",
       "Delete": "Löschen",
       "Loading": "Lädt...",
-      "Search": "Suchen"
-    },
-    "EntityQuery": {
+      "Search": "Suchen",
+
+      "FilterNoResults": "keine Treffer bei der suche nach '{{search}}'",
+
       "QueryNoItems": "Keine Elemente gefunden",
       "QueryError": "Fehler: Die Abfrage konnte nicht ausgeführt werden. In der Konsole findest du genauere Details.",
       "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen",

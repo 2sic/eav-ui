@@ -48,7 +48,9 @@ function consoleLogInternal(segment: keyof typeof enableLogging, message?: any, 
   if (environment.production) return;
 
   const prefix = segment === 'always' ? '' : segmentUpper;
+  
   console.groupCollapsed(`${prefix} ${message}`, ...optionalParams);
+  
   // tslint:disable-next-line:no-console
   console.trace();
   console.groupEnd();

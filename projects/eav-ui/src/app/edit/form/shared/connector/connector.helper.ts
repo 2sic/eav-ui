@@ -10,7 +10,7 @@ import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 
@@ -37,7 +37,7 @@ export class ConnectorHelper {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
-    private entityCacheService: EntityCacheService,
+    // private entityCacheService: PickerDataCacheService,
     private snackBar: MatSnackBar,
     private zone: NgZone,
   ) {
@@ -136,8 +136,9 @@ export class ConnectorHelper {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
       getSettings: (name) => this.eavService.eavConfig.settings?.Values[name],
-      getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
-      getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
+      // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
+      // getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
+      // getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
     };
 
     return experimentalProps;

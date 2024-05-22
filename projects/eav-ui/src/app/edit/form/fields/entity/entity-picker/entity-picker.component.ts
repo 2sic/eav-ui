@@ -12,7 +12,7 @@ import { PickerConfigModels } from '../../picker/constants/picker-config-model.c
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: InputTypeConstants.WIPEntityPicker,

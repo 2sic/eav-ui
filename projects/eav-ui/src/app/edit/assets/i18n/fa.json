@@ -137,17 +137,17 @@
     "NotValid": "معتبر نیست",
     "Required": "الزامی است",
     "RequiredShort": "الزامی",
-    "Min": "این مقدار باید {{param.Min}} یا بالاتر باشد",
-    "Max": "این مقدار باید {{param.Max}} یا کمتر باشد",
-    "MinNoItems": "تعداد موارد باید {{param.AllowMultiMin}} یا بیشتر باشد",
-    "MaxNoItems": "تعداد موارد باید {{param.AllowMultiMax}} یا کمتر باشد",
+    "Min": "این مقدار باید {{Min}} یا بالاتر باشد",
+    "Max": "این مقدار باید {{Max}} یا کمتر باشد",
+    "MinNoItems": "تعداد موارد باید {{AllowMultiMin}} یا بیشتر باشد",
+    "MaxNoItems": "تعداد موارد باید {{AllowMultiMax}} یا کمتر باشد",
     "Pattern": "لطفا با فرمت درخواستی مطابقت دهید",
-    "Decimals": "این عدد می تواند تا {{param.Decimals}} رقم اعشار داشته باشد",
+    "Decimals": "این عدد می تواند تا {{Decimals}} رقم اعشار داشته باشد",
     "JsonError": "JSON معتبر نیست",
     "JsonWarning": "JSON معتبر نیست"
   },
   "Fields": {
-    "Entity": {
+    "Picker": {
       "Choose": "افزودن آیتم موجود",
       "New": "ایجاد جدید",
       "Empty": "خالی",
@@ -161,9 +161,8 @@
       "Search": "جستجو",
       "AddItemBelow": "افزودن آیتم در پائین",
       "AddExistingItem": "افزودن آیتم موجود",
-      "OpenMultiselect": "چندانتخابی را باز کنید"
-    },
-    "EntityQuery": {
+      "OpenMultiselect": "چندانتخابی را باز کنید",
+
       "QueryNoItems": "موردی پیدا نشد",
       "QueryError": "خطا: هنگام اجرای پرس و جو خطایی رخ داد. برای اطلاعات بیشتر به کنسول مراجعه کنید.",
       "QueryStreamNotFound": "خطا: کوئری مقداری را برگشت نداد",

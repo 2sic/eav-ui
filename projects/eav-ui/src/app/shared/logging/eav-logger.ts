@@ -5,8 +5,10 @@ export class EavLogger {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(7);
 
-  constructor(public name: string, public enabled: boolean) { 
+  enableChildren = true;
 
+  constructor(public name: string, public enabled: boolean, enableChildren?: boolean) { 
+    this.enableChildren = enableChildren ?? enabled;
   }
 
   inherit(log: EavLogger) {

@@ -3,12 +3,12 @@ import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
-import { DeleteEntityProps } from "../picker.models";
-import { StringFieldDataSource } from "../data-sources/string-field-data-source";
+import { DeleteEntityProps } from "../models/picker.models";
+import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { DataSourceBase } from '../data-sources/data-source-base';
-import { PickerDataSourceEmpty } from '../data-sources/picker-data-source-empty';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 
@@ -17,8 +17,8 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
   private dataSource: DataSourceBase;
 
   constructor(
-    private stringFieldDataSource: StringFieldDataSource,
-    private pickerDataSourceEmpty: PickerDataSourceEmpty,
+    private stringFieldDataSource: DataSourceString,
+    private pickerDataSourceEmpty: DataSourceEmpty,
   ) {
     super(new EavLogger('PickerStringSourceAdapter', logThis));
   }
@@ -54,7 +54,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
 
     const l = this.log.rxTap('data$');
     this.subscriptions.add(
-      this.dataSource.data$.pipe(l.pipe()).subscribe(this.availableItems$)
+      this.dataSource.data$.pipe(l.pipe()).subscribe(this.optionsOrHints$)
     );
   }
 
@@ -68,7 +68,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     return this.dataSource.data$;
   }
 
-  setPrefetchData(missingData: string[]): void {
+  initPrefetch(prefetchGuids: string[]): void {
     // should never be needed as we have synchronously all data in settings
   }
 
@@ -78,7 +78,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
 
   fetchItems(): void {
     this.dataSource.getAll();
-    this.subscriptions.add(this.dataSource.data$.subscribe(this.availableItems$));
+    this.subscriptions.add(this.dataSource.data$.subscribe(this.optionsOrHints$));
   }
 
   deleteItem(props: DeleteEntityProps): void {

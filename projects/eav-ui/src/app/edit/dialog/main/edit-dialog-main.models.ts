@@ -63,11 +63,30 @@ export interface EditDialogMainViewModel {
 
 export interface Prefetch {
   Adam: PrefetchAdams;
-  Entities: PickerItem[];
+  Entities: PrefetchEntity[];
   Links: PrefetchLinks;
 
   /** NgRx store helper */
   _guid?: string;
+}
+
+/**
+ * temporary interface till backend is updated again to match latest requirements.
+ * Should then be replaced with EntityBasic
+ */
+export interface PrefetchEntity {
+  Id: number,
+  Value: string,
+  Text: string,
+}
+
+/** Temporary till the models are somehow in sync again */
+export function prefetchItemToPickerItem(item: PrefetchEntity): PickerItem {
+  return {
+    id: item.Id,
+    label: item.Text,
+    value: item.Value,
+  };
 }
 
 export interface PrefetchAdams {
