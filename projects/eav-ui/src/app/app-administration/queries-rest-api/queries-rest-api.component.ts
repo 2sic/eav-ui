@@ -13,7 +13,7 @@ import { Query } from '../models';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-queries-rest-api',
+  selector: 'app-web-api-rest-api',
   standalone: true,
   imports: [MatSelectModule, MatButtonModule,
     MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestQueryComponent, RouterOutlet],
@@ -42,8 +42,11 @@ export class QueriesRestApiComponent {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
       this.queryTypes$.next(queries);
 
-       // When Route are reloade and have some Guid in the Route
+       // When Route are reload and have some Guid in the Route
        const urlSegments = this.router.url.split('/');
+
+       console.log(urlSegments)
+
        const urlGuidName = urlSegments[urlSegments.length - 1]
 
        const selectedContentType = queries.find(query => query.Guid === urlGuidName);
@@ -55,6 +58,7 @@ export class QueriesRestApiComponent {
   }
 
   openRestApi(event: string): void {
+    console.log('this.route.parent.firstChild', this.route.parent.firstChild);
     if (!event) return;
     this.router.navigate([`${event}`], { relativeTo: this.route.parent.firstChild });
   }

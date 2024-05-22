@@ -31,6 +31,8 @@ import { DevRestDataComponent } from '../dev-rest/data/data.component';
 import { DevRestQueryComponent } from '../dev-rest/query/query.component';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { ViewCopilotComponent } from './copilot/view-copilot/view-copilot.component';
+import { WebApiRestApiComponent } from './web-api-rest-api/web-api-rest-api.component';
+import { DevRestApiComponent } from '../dev-rest/api/api.component';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -141,7 +143,7 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'App Queries', breadcrumb: "Queries" },
       },
       {
-        path: GoToDevRest.routeQuery, component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries', },
+        path: GoToDevRest.routeQuery, component: QueriesRestApiComponent, data: { title: 'Rest-Api Queries', breadcrumb: 'Rest-Api Queries' },
         children: [
           {
             path: `:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent,
@@ -162,7 +164,8 @@ const appAdministrationRoutes: Routes = [
           {
             path: 'usage/:guid',
             component: DialogEntryComponent,
-            data: { dialog: viewsUsageDialog } },
+            data: { dialog: viewsUsageDialog }
+          },
           {
             matcher: edit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
@@ -189,6 +192,27 @@ const appAdministrationRoutes: Routes = [
           GoToDevRest.route,
         ],
       },
+      {
+        path: GoToDevRest.routeWebApi,
+        component: WebApiRestApiComponent,
+        data: {
+          title: 'Rest-Api Web Api',
+          breadcrumb: 'Rest-Api Web Api'
+        },
+        children: [
+          {
+            path: `:${GoToDevRest.paramApiPath}`,
+            component: DevRestApiComponent,
+            data: {
+              breadcrumb: 'Rest-Api Web Api'
+            },
+            children: [
+              GoToPermissions.route,
+            ]
+          },
+        ]
+      },
+      ////
       {
         path: 'app',
         component: AppConfigurationComponent, data: { title: 'Manage App', breadcrumb: "Manage App" },

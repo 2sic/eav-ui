@@ -1,0 +1,16 @@
+<form [formGroup]="webApiTypeForm">
+  <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+    <mat-label>Endpoint</mat-label>
+    <mat-select formControlName="webApiType" (valueChange)="openRestApi($event)">
+      @if (webApis$ | async; as endpoints) {
+        @for (endpoint of endpoints.sort() ; track endpoint) {
+        <mat-option [value]="endpoint.path">
+          {{ endpoint.name }}
+        </mat-option>
+        }
+      }
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<router-outlet></router-outlet>

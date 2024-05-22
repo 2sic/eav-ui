@@ -50,7 +50,7 @@ export class DataRestApiComponent {
       (contentTypes: ContentType[]) => {
         this.contentTypes$.next(contentTypes);
 
-        // When Route are reloade and have some StaticName in the Route
+        // When Route are reload and have some StaticName in the Route
         const urlSegments = this.router.url.split('/');
         const urlStaticName = urlSegments[urlSegments.length - 1]
 
