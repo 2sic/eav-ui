@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, debounce, debounceTime, filter, map, share, shareReplay, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap } from 'rxjs';
 import { DevRestBase } from '..';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { SourceService } from '../../code-editor/services/source.service';
