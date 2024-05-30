@@ -232,14 +232,14 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     return existingMd != null
       ? { EntityId: existingMd.Id } // if defined, return the entity-number to edit
       : {
-        ContentTypeName: newItemTypeName, // otherwise the content type for new-assignment
-        For: {
-          Target: eavConstants.metadata.attribute.target,
-          TargetType: eavConstants.metadata.attribute.targetType,
-          Number: field.Id,
-        },
-        Prefill: { Name: field.StaticName },
-      };
+          ContentTypeName: newItemTypeName, // otherwise the content type for new-assignment
+          For: {
+            Target: eavConstants.metadata.attribute.target,
+            TargetType: eavConstants.metadata.attribute.targetType,
+            Number: field.Id,
+          },
+          Prefill: { Name: field.StaticName },
+        };
   }
 
   private setTitle(field: Field) {

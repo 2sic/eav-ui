@@ -101,10 +101,12 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       items: [
         query == null
           ? {
-            ContentTypeName: eavConstants.contentTypes.query,
-            Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters }
-          }
-          : { EntityId: query.Id }
+              ContentTypeName: eavConstants.contentTypes.query,
+              Prefill: {
+                TestParameters: eavConstants.pipelineDesigner.testParameters
+              }
+            }
+          : { EntityId: query.Id },
       ],
     };
     const formUrl = convertFormToUrl(form);
