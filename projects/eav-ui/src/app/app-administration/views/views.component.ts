@@ -25,6 +25,7 @@ import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
   selector: 'app-views',
@@ -186,20 +187,8 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private buildGridOptions(): GridOptions {
     // TODO: we should use this simpler pattern for column definitions everywhere
-    const textColWideDefaults = {
-      flex: 2,
-      minWidth: 250,
-      cellClass: 'no-outline',
-      sortable: true,
-      filter: 'agTextColumnFilter',
-    };
-    const textColNarrowDefaults = {
-      flex: 1,
-      minWidth: 150,
-      cellClass: 'no-outline',
-      sortable: true,
-      filter: 'agTextColumnFilter',
-    };
+    // ColumnDefinitions.TextWide
+    // ColumnDefinitions.TextNarrow
 
     function showItemDetails(viewEntity: ViewEntity) {
       return (viewEntity.DemoId == 0) ? "" : `${viewEntity.DemoId} ${viewEntity.DemoTitle}`
@@ -209,12 +198,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agNumberColumnFilter',
+          ...ColumnDefinitions.Id,
           cellClass: (params) => {
             const view: View = params.data;
             return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
@@ -228,17 +212,12 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           })(),
         },
         {
-          field: 'Show',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: BooleanFilterComponent,
+          ...ColumnDefinitions.IconShow,
           valueGetter: (params) => !(<View> params.data).IsHidden,
           cellRenderer: ViewsShowComponent,
         },
         {
-          ...textColWideDefaults,
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
           cellClass: 'primary-action highlight'.split(' '),
           sort: 'asc',
@@ -258,73 +237,67 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: ViewsTypeComponent,
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Used',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
           onCellClicked: (params) => this.openUsage(<View> params.data),
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Url Key',
           field: 'ViewNameInUrl',
         },
         {
-          ...textColWideDefaults,
+          ...ColumnDefinitions.TextWide,
           headerName: 'Path',
           field: 'TemplatePath',
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Content',
           valueGetter: (params) => (<View> params.data).ContentType.Name,
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'ContentDemo',
           valueGetter: (params) => showItemDetails((<View> params.data).ContentType),
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           field: 'Presentation',
           valueGetter: (params) => (<View> params.data).PresentationType.Name,
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'PresentationDemo',
           valueGetter: (params) => showItemDetails((<View> params.data).PresentationType),
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           field: 'Header',
           valueGetter: (params) => (<View> params.data).ListContentType.Name,
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderDemo',
           valueGetter: (params) => showItemDetails((<View> params.data).ListContentType),
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Header Pres.',
           field: 'HeaderPresentation',
           valueGetter: (params) => (<View> params.data).ListPresentationType.Name,
         },
         {
-          ...textColNarrowDefaults,
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderPresentationDemo',
           valueGetter: (params) => showItemDetails((<View> params.data).ListPresentationType),
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: ViewsActionsComponent,
           cellRendererParams: (() => {
             const params: ViewActionsParams = {

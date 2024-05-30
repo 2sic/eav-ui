@@ -24,6 +24,7 @@ import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-sav
 import { MetadataDto, MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
 import { FeatureComponentBase } from '../features/shared/base-feature.component';
 import { EavLogger } from '../shared/logging/eav-logger';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 
 const logThis = false;
 
@@ -253,17 +254,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const metadata: MetadataItem = params.data;
-            return metadata.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<MetadataItem> = {
@@ -273,30 +264,17 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
           })(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Title',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
-          sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const metadata: MetadataItem = params.data;
-            return metadata.Title;
-          },
           onCellClicked: (params) => {
             const metadata: MetadataItem = params.data;
             this.editMetadata(metadata);
           },
         },
         {
+          ...ColumnDefinitions.TextWide,
           headerName: 'Content Type',
           field: 'ContentType',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: (params) => {
             const metadata: MetadataItem = params.data;
             return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
@@ -304,9 +282,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
           cellRenderer: MetadataContentTypeComponent,
         },
         {
-          width: 42,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: MetadataActionsComponent,
           cellRendererParams: (() => {
             const params: MetadataActionsParams = {

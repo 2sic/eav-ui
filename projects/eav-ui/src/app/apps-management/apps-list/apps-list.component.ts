@@ -34,6 +34,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 const logThis = false;
 
@@ -196,17 +197,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<App> = {
@@ -216,31 +207,19 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           })(),
         },
         {
-          field: 'Show',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'icons no-outline'.split(' '),
-          sortable: true,
-          filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return !app.IsHidden;
-          },
+          ...ColumnDefinitions.IconShow,
+          // valueGetter: (params) => {
+          //   const app: App = params.data;
+          //   return !app.IsHidden;
+          // },
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
           cellClass: 'apps-list-primary-action highlight'.split(' '),
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Name;
-          },
           onCellClicked: (params) => {
             const app: App = params.data;
             this.openApp(app);
@@ -259,42 +238,20 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Folder',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Folder;
-          },
         },
         {
+          ...ColumnDefinitions.Character,
           field: 'Version',
           width: 78,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Version;
-          },
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Items',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'number-cell no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Items;
-          },
         },
         {
+          // todo: boolean
           field: 'HasCodeWarnings',
           headerName: 'Code',
           width: 70,
@@ -306,9 +263,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
         },
         {
-          width: 122,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: (() => {
             const params: AppsListActionsParams = {
