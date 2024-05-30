@@ -10,17 +10,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
-    selector: 'app-apps-list-actions',
-    templateUrl: './apps-list-actions.component.html',
-    styleUrls: ['./apps-list-actions.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatIconModule,
-        MatBadgeModule,
-        MatRippleModule,
-        MatMenuModule,
-    ],
+  selector: 'app-apps-list-actions',
+  templateUrl: './apps-list-actions.component.html',
+  styleUrls: ['./apps-list-actions.component.scss'],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatRippleModule,
+    MatMenuModule,
+  ],
 })
 export class AppsListActionsComponent implements ICellRendererAngularComp {
   app: App;
@@ -34,15 +34,9 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
     this.params = params;
     this.app = this.params.data;
     this.lightspeedEnabled = this.params.lightspeedEnabled();
-    this.appHasLightSpeed = this.app.Lightspeed?.Id != null; //.IsEnabled == true;
+    this.appHasLightSpeed = this.app.Lightspeed?.Id != null;
     this.appLightSpeedEnabled = this.app.Lightspeed?.IsEnabled == true;
   }
-
-//   appLightSpeedExits(): boolean {
-// console.log('2dm app ls check', this.app.Lightspeed);
-//     return this.app.Lightspeed?.IsEnabled == true;
-//   }
-
 
   refresh(params?: any): boolean {
     return true;

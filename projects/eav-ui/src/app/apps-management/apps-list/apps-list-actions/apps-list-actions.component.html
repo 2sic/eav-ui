@@ -17,8 +17,7 @@
       </mat-icon>
     </div>
   }
-
-  @if (lightspeedEnabled) {
+  @else {
     <div class="eav-grid-action-button {{ appHasLightSpeed ? '' : 'disabled'}}" matRipple
       [tippy]="appHasLightSpeed ? app.Lightspeed.Title : 'App not yet configured for LightSpeed'"
       (click)="openLightspeed()">
@@ -28,7 +27,7 @@
           bolt
         </mat-icon>
       }
-      @if (!appLightSpeedEnabled) {
+      @else {
         <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after"
           aria-hidden="false">
           bolt
