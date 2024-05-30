@@ -13,7 +13,7 @@
         @if (!vm.itemFor) {
           This item is not metadata for anything else.
         }
-        @if (vm.itemFor) {
+        @else {
           This item is metadata for:
           <br>Target: {{ vm.itemFor.Target }}
           <br>TargetType: {{ vm.itemFor.TargetType }}
