@@ -155,8 +155,6 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       ],
     };
     this.openEdit(form);
-    // const formUrl = convertFormToUrl(form);
-    // this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private enableCodeGetter() {
@@ -169,7 +167,6 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private openUsage(view: View) {
     this.openChildDialog(`usage/${view.Guid}`);
-    // this.router.navigate([`usage/${view.Guid}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private openCode(view: View) {
@@ -178,7 +175,6 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private openPermissions(view: View) {
     this.openChildDialog(GoToPermissions.getUrlEntity(view.Guid));
-    // this.router.navigate([GoToPermissions.getUrlEntity(view.Guid)], { relativeTo: this.route.parent.firstChild });
   }
 
   private openMetadata(view: View) {
@@ -187,7 +183,6 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       `Metadata for View: ${view.Name} (${view.Id})`,
     );
     this.openChildDialog(url);
-    // this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
   }
 
   private cloneView(view: View) {
@@ -195,8 +190,6 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [{ ContentTypeName: eavConstants.contentTypes.template, DuplicateEntity: view.Id }],
     };
     this.openEdit(form);
-    // const formUrl = convertFormToUrl(form);
-    // this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private exportView(view: View) {
@@ -223,23 +216,18 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           ? {
               EntityId: view.lightSpeed.Id,
               Prefill: prefill,
-              ClientData: {
-                fields: 'LightSpeedInfo',
-                parameters: {
-                  VarShowDuration: "false",
-                },
-              }
             }
           : {
-              ContentTypeName: 'LightSpeedOutputDecorator',
+              ContentTypeName: eavConstants.appMetadata.LightSpeed.ContentTypeName,
               For: {
                 Target: eavConstants.metadata.entity.target,
                 TargetType: eavConstants.metadata.entity.targetType,
                 Guid: view.Guid,
               },
+              Prefill: prefill,
             },
-      ]
-    }
+      ],
+    };
     this.openEdit(form);
   }
 
@@ -276,7 +264,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
         },
         {
           ...ColumnDefinitions.IconShow,
-          valueGetter: (params) => !(<View> params.data).IsHidden,
+          valueGetter: (params) => !(params.data as View).IsHidden,
           cellRenderer: ViewsShowComponent,
         },
         {
@@ -296,13 +284,13 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => calculateViewType(<View> params.data).value,
+          valueGetter: (params) => calculateViewType(params.data as View).value,
           cellRenderer: ViewsTypeComponent,
         },
         {
           ...ColumnDefinitions.Number,
           field: 'Used',
-          onCellClicked: (params) => this.openUsage(<View> params.data),
+          onCellClicked: (params) => this.openUsage(params.data as View),
         },
         {
           ...ColumnDefinitions.TextNarrow,
@@ -317,66 +305,63 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Content',
-          valueGetter: (params) => (<View> params.data).ContentType.Name,
+          valueGetter: (params) => (params.data as View).ContentType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'ContentDemo',
-          valueGetter: (params) => showItemDetails((<View> params.data).ContentType),
+          valueGetter: (params) => showItemDetails((params.data as View).ContentType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           field: 'Presentation',
-          valueGetter: (params) => (<View> params.data).PresentationType.Name,
+          valueGetter: (params) => (params.data as View).PresentationType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'PresentationDemo',
-          valueGetter: (params) => showItemDetails((<View> params.data).PresentationType),
+          valueGetter: (params) => showItemDetails((params.data as View).PresentationType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           field: 'Header',
-          valueGetter: (params) => (<View> params.data).ListContentType.Name,
+          valueGetter: (params) => (params.data as View).ListContentType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderDemo',
-          valueGetter: (params) => showItemDetails((<View> params.data).ListContentType),
+          valueGetter: (params) => showItemDetails((params.data as View).ListContentType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Header Pres.',
           field: 'HeaderPresentation',
-          valueGetter: (params) => (<View> params.data).ListPresentationType.Name,
+          valueGetter: (params) => (params.data as View).ListPresentationType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderPresentationDemo',
-          valueGetter: (params) => showItemDetails((<View> params.data).ListPresentationType),
+          valueGetter: (params) => showItemDetails((params.data as View).ListPresentationType),
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight5,
           cellRenderer: ViewsActionsComponent,
-          cellRendererParams: (() => {
-            const params: ViewActionsParams = {
-              enableCodeGetter: () => this.enableCodeGetter(),
-              enablePermissionsGetter: () => this.enablePermissionsGetter(),
-              onOpenCode: (view) => this.openCode(view),
-              onOpenPermissions: (view) => this.openPermissions(view),
-              onOpenMetadata: (view) => this.openMetadata(view),
-              onClone: (view) => this.cloneView(view),
-              onExport: (view) => this.exportView(view),
-              onDelete: (view) => this.deleteView(view),
-              onOpenLightspeed: (view: unknown) => this.openLightSpeed(view as View),
-              openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            enableCodeGetter: () => this.enableCodeGetter(),
+            enablePermissionsGetter: () => this.enablePermissionsGetter(),
+            onOpenCode: (view) => this.openCode(view),
+            onOpenPermissions: (view) => this.openPermissions(view),
+            onOpenMetadata: (view) => this.openMetadata(view),
+            onClone: (view) => this.cloneView(view),
+            onExport: (view) => this.exportView(view),
+            onDelete: (view) => this.deleteView(view),
+            onOpenLightspeed: (view: unknown) => this.openLightSpeed(view as View),
+            openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
+          } satisfies ViewActionsParams,
         },
       ],
     };

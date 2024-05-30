@@ -195,13 +195,6 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   private buildGridOptions(): GridOptions {
-
-    // Get Lightspeed status for the table below
-    // let lightSpeedEnabled = false;
-    // this.subscription.add(
-    //   this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe((enabled) => lightSpeedEnabled = enabled)
-    // );
-    
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -274,16 +267,12 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
         {
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
-          cellRendererParams: (() => {
-            const params: AppsListActionsParams = {
-              onDelete: (app) => this.deleteApp(app),
-              onFlush: (app) => this.flushApp(app),
-              onOpenLightspeed: (app) => this.openLightSpeed(<App> app),
-              // lightspeedEnabled: () => lightSpeedEnabled,
-              openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            onDelete: (app) => this.deleteApp(app),
+            onFlush: (app) => this.flushApp(app),
+            onOpenLightspeed: (app) => this.openLightSpeed(<App> app),
+            openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
+          } satisfies AppsListActionsParams,
         },
       ],
     };
