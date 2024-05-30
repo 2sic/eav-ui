@@ -1,6 +1,7 @@
+import { LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-actions.models';
 import { View } from '../../models/view.model';
 
-export interface ViewActionsParams {
+export interface ViewActionsParams extends LightSpeedActionsParams {
   enableCodeGetter(): boolean;
   enablePermissionsGetter(): boolean;
   onOpenCode(view: View): void;

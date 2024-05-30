@@ -13,7 +13,7 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
   view: View;
   enableCode: boolean;
   enablePermissions: boolean;
-  private params: ICellRendererParams & ViewActionsParams;
+  params: ICellRendererParams & ViewActionsParams;
 
   agInit(params: ICellRendererParams & ViewActionsParams): void {
     this.params = params;

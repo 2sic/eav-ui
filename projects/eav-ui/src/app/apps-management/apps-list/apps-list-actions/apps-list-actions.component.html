@@ -1,4 +1,5 @@
 <div class="actions-component">
+  <!-- Global/Inherited button for shared apps (if enabled) -->
   <div class="eav-grid-action-button icon"
     [tippy]="app.IsGlobal ? 'This app is global' : app.IsInherited ? 'This app is inherited' : ''"
     [tippyDisabled]="!app.IsGlobal && !app.IsInherited">
@@ -9,37 +10,17 @@
       <mat-icon>holiday_village</mat-icon>
     }
   </div>
-  @if (!lightspeedEnabled) {
-    <div class="eav-grid-action-button disabled" tippy="Lightspeed is disabled"
-      (click)="openLightspeedFeatureInfo()">
-      <mat-icon matBadgeSize="small" matBadge="💎" matBadgePosition="below after" aria-hidden="false">
-        bolt
-      </mat-icon>
-    </div>
-  }
-  @else {
-    <div class="eav-grid-action-button {{ appHasLightSpeed ? '' : 'disabled'}}" matRipple
-      [tippy]="appHasLightSpeed ? app.Lightspeed.Title : 'App not yet configured for LightSpeed'"
-      (click)="openLightspeed()">
-      @if (appLightSpeedEnabled) {
-        <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after"
-          aria-hidden="false">
-          bolt
-        </mat-icon>
-      }
-      @else {
-        <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after"
-          aria-hidden="false">
-          bolt
-        </mat-icon>
-      }
-    </div>
-  }
+
+  <!-- Lightspeed button -->
+  <app-lightspeed-action [lightSpeedOwner]="app" [params]="params" [lightSpeed]="app.lightSpeed"></app-lightspeed-action>
+
+  <!-- More button -->
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
+<!-- The menu which appears on more -->
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
     <button mat-menu-item (click)="flushCache()">

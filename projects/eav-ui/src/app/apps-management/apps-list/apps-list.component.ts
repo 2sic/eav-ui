@@ -71,7 +71,6 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
   isAddFromFolderEnabled$: Observable<boolean>;
-  lightspeedEnabled$ = new BehaviorSubject<boolean>(false);
 
   private refreshApps$ = new Subject<void>();
 
@@ -110,7 +109,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     this.isAddFromFolderEnabled$ = this.featuresService
       .isEnabled$(FeatureNames.AppSyncWithSiteFiles)
       .pipe(isAddFromFolderEnabledLog.pipe(), isAddFromFolderEnabledLog.shareReplay());
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
+    
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
       map(([apps, fabOpen, isAddFromFolderEnabled]) => {
         return { apps, fabOpen, isAddFromFolderEnabled};
@@ -196,6 +195,13 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   private buildGridOptions(): GridOptions {
+
+    // Get Lightspeed status for the table below
+    // let lightSpeedEnabled = false;
+    // this.subscription.add(
+    //   this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe((enabled) => lightSpeedEnabled = enabled)
+    // );
+    
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -272,8 +278,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
             const params: AppsListActionsParams = {
               onDelete: (app) => this.deleteApp(app),
               onFlush: (app) => this.flushApp(app),
-              onOpenLightspeed: (app) => this.openLightSpeed(app),
-              lightspeedEnabled: () => this.lightspeedEnabled$.value,
+              onOpenLightspeed: (app) => this.openLightSpeed(<App> app),
+              // lightspeedEnabled: () => lightSpeedEnabled,
               openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             };
             return params;

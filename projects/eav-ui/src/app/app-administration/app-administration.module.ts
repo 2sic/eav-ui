@@ -76,6 +76,7 @@ import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationCardComponent } from './app-configuration/app-configuration-card/app-configuration-card.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { LightSpeedActionsComponent } from '../admin-shared/lightspeed-action/lightspeed-action.component';
 
 
 @NgModule({
@@ -142,6 +143,9 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     FeaturesModule,
     MatToolbarModule,
     MatSidenavModule,
+
+    // New added 2024-05-30, could cause trouble when merging code
+    LightSpeedActionsComponent,
   ],
   providers: [
     Context,

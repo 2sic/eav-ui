@@ -1,0 +1,26 @@
+@if (!lightSpeedEnabled) {
+  <div class="eav-grid-action-button disabled" tippy="Lightspeed is disabled"
+    (click)="openLightspeedFeatureInfo()">
+    <mat-icon matBadgeSize="small" matBadge="💎" matBadgePosition="below after" aria-hidden="false">
+      bolt
+    </mat-icon>
+  </div>
+}
+@else {
+  <div class="eav-grid-action-button {{ appHasLightSpeed ? '' : 'disabled'}}" matRipple
+    [tippy]="appHasLightSpeed ? lightSpeed.Title : 'Not yet configured for LightSpeed'"
+    (click)="openLightspeed()">
+    @if (appLightSpeedEnabled) {
+      <mat-icon matBadgeSize="small" matBadge="✅" matBadgePosition="below after"
+        aria-hidden="false">
+        bolt
+      </mat-icon>
+    }
+    @else {
+      <mat-icon matBadgeSize="small" matBadge="⛔" matBadgePosition="below after"
+        aria-hidden="false">
+        bolt
+      </mat-icon>
+    }
+  </div>
+}

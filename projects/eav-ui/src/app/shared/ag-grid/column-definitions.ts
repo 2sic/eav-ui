@@ -22,6 +22,12 @@ export class ColumnDefinitions
     pinned: 'right',
   };
 
+  static ActionsPinnedRight5: ColDef = {
+    width: 202,
+    cellClass: 'secondary-action no-padding'.split(' '),
+    pinned: 'right',
+  };
+
   static IconShow: ColDef = {
     headerName: 'Show',
     width: 70,
