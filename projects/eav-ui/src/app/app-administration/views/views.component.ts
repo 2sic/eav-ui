@@ -17,7 +17,7 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
-import { View } from '../models/view.model';
+import { View, ViewEntity } from '../models/view.model';
 import { ViewsService } from '../services/views.service';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
 import { ViewActionsParams } from './views-actions/views-actions.models';
@@ -185,6 +185,26 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private buildGridOptions(): GridOptions {
+    // TODO: we should use this simpler pattern for column definitions everywhere
+    const textColWideDefaults = {
+      flex: 2,
+      minWidth: 250,
+      cellClass: 'no-outline',
+      sortable: true,
+      filter: 'agTextColumnFilter',
+    };
+    const textColNarrowDefaults = {
+      flex: 1,
+      minWidth: 150,
+      cellClass: 'no-outline',
+      sortable: true,
+      filter: 'agTextColumnFilter',
+    };
+
+    function showItemDetails(viewEntity: ViewEntity) {
+      return (viewEntity.DemoId == 0) ? "" : `${viewEntity.DemoId} ${viewEntity.DemoTitle}`
+    }
+    
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -198,10 +218,6 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellClass: (params) => {
             const view: View = params.data;
             return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.Id;
           },
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
@@ -218,27 +234,17 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return !view.IsHidden;
-          },
+          valueGetter: (params) => !(<View> params.data).IsHidden,
           cellRenderer: ViewsShowComponent,
         },
         {
+          ...textColWideDefaults,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
           cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const view: View = params.data;
             this.editView(view);
-          },
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.Name;
           },
         },
         {
@@ -248,11 +254,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            const type = calculateViewType(view);
-            return type.value;
-          },
+          valueGetter: (params) => calculateViewType(<View> params.data).value,
           cellRenderer: ViewsTypeComponent,
         },
         {
@@ -262,140 +264,62 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellClass: 'primary-action highlight'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          onCellClicked: (params) => {
-            const view: View = params.data;
-            this.openUsage(view);
-          },
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.Used;
-          },
+          onCellClicked: (params) => this.openUsage(<View> params.data),
         },
         {
+          ...textColNarrowDefaults,
           headerName: 'Url Key',
-          field: 'UrlKey',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ViewNameInUrl;
-          },
+          field: 'ViewNameInUrl',
         },
         {
-          field: 'Path',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.TemplatePath;
-          },
+          ...textColWideDefaults,
+          headerName: 'Path',
+          field: 'TemplatePath',
         },
         {
-          field: 'Content',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ContentType.Name;
-          },
+          ...textColNarrowDefaults,
+          headerName: 'Content',
+          valueGetter: (params) => (<View> params.data).ContentType.Name,
         },
         {
+          ...textColNarrowDefaults,
           headerName: 'Default',
           field: 'ContentDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.ContentType.DemoId} ${view.ContentType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((<View> params.data).ContentType),
         },
         {
+          ...textColNarrowDefaults,
           field: 'Presentation',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.PresentationType.Name;
-          },
+          valueGetter: (params) => (<View> params.data).PresentationType.Name,
         },
         {
+          ...textColNarrowDefaults,
           headerName: 'Default',
           field: 'PresentationDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.PresentationType.DemoId} ${view.PresentationType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((<View> params.data).PresentationType),
         },
         {
+          ...textColNarrowDefaults,
           field: 'Header',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ListContentType.Name;
-          },
+          valueGetter: (params) => (<View> params.data).ListContentType.Name,
         },
         {
+          ...textColNarrowDefaults,
           headerName: 'Default',
           field: 'HeaderDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.ListContentType.DemoId} ${view.ListContentType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((<View> params.data).ListContentType),
         },
         {
-          headerName: 'Header Presentation',
+          ...textColNarrowDefaults,
+          headerName: 'Header Pres.',
           field: 'HeaderPresentation',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ListPresentationType.Name;
-          },
+          valueGetter: (params) => (<View> params.data).ListPresentationType.Name,
         },
         {
+          ...textColNarrowDefaults,
           headerName: 'Default',
           field: 'HeaderPresentationDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.ListPresentationType.DemoId} ${view.ListPresentationType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((<View> params.data).ListPresentationType),
         },
         {
           width: 162,
