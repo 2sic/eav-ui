@@ -51,6 +51,10 @@ export function convertFormToUrl(form: EditForm) {
       // I actually think that prefill should be supported, because it can also transport more parameters
       // formUrl += prefill2UrlParams(groupItem.Prefill, fields);
 
+      // 2024-05-30 2dm reactivating prefill on edit, for scenarios where new fields were added
+      // and for ephemeral control fields
+      formUrl += prefill2UrlParams(asItem.Prefill);
+
     } else if ((item as ItemAddIdentifier).ContentTypeName) {
       // Add Item
       const addItem = item as ItemAddIdentifier;
