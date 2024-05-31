@@ -15,7 +15,7 @@ import { DatetimeDefaultViewModel } from './datetime-default.models';
 import { DateTimeAdapter } from '@danielmoncada/angular-datetime-picker';
 
 @Component({
-  selector: InputTypeConstants.DatetimeDefault,
+  selector: InputTypeConstants.DateTimeDefault,
   templateUrl: './datetime-default.component.html',
   styleUrls: ['./datetime-default.component.scss'],
 })

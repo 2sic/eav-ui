@@ -7,7 +7,7 @@ import { PickerConfigModels } from '../../picker/constants/picker-config-model.c
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 
 export class EntityPickerLogic extends FieldLogicBase {
-  name = InputTypeConstants.WIPEntityPicker;
+  name = InputTypeConstants.EntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     let dataSources: EavEntity[] = [];

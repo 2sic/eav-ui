@@ -338,9 +338,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               targetOptions.push(targetOption);
             }
           }
-          if (inputType === InputTypeConstants.WIPEntityPicker
-            || inputType === InputTypeConstants.WIPStringPicker
-            || inputType === InputTypeConstants.WIPNumberPicker) {
+          if (inputType === InputTypeConstants.EntityPicker
+            || inputType === InputTypeConstants.StringPicker
+            || inputType === InputTypeConstants.NumberPicker) {
             for (const target of Object.values(FormulaListItemTargets)) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(

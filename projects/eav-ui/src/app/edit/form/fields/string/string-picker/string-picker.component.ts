@@ -17,7 +17,7 @@ import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-st
 const logThis = false;
 
 @Component({
-  selector: InputTypeConstants.WIPStringPicker,
+  selector: InputTypeConstants.StringPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   providers: pickerProviders,

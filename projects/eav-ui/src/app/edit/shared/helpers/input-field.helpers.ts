@@ -55,8 +55,8 @@ export class InputFieldHelpers {
       || (inputType === InputTypeConstants.EntityContentBlocks)
       || (inputType === InputTypeConstants.StringDropdown)
       /** WIP pickers */
-      || (inputType === InputTypeConstants.WIPEntityPicker)
-      || (inputType === InputTypeConstants.WIPStringPicker);
+      || (inputType === InputTypeConstants.EntityPicker)
+      || (inputType === InputTypeConstants.StringPicker);
       // || (inputType === InputTypeConstants.WIPNumberPicker);
     
     const allowMultiValue = settings.AllowMultiValue ?? false;
@@ -107,20 +107,20 @@ export class InputFieldHelpers {
         return defaultValue != null && defaultValue !== ''
           ? defaultValue.toLowerCase() === 'true'
           : null;
-      case InputTypeConstants.DatetimeDefault:
+      case InputTypeConstants.DateTimeDefault:
         return defaultValue != null && defaultValue !== ''
           ? new Date(defaultValue).toJSON()
           : null;
       case InputTypeConstants.NumberDefault:
       case InputTypeConstants.NumberDropdown:
-      case InputTypeConstants.WIPNumberPicker:
+      case InputTypeConstants.NumberPicker:
         return defaultValue != null && defaultValue !== ''
           ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
-      case InputTypeConstants.WIPEntityPicker:
+      case InputTypeConstants.EntityPicker:
         // Empty - return []
         if (defaultValue == null || defaultValue === '')
           return [];

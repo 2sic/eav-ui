@@ -11,14 +11,14 @@ import { calculateDropdownOptions } from './string-picker.helpers';
 const logThis = false;
 
 export class StringPickerLogic extends FieldLogicBase {
-  name: InputTypeStrict = InputTypeConstants.WIPStringPicker;
+  name: InputTypeStrict = InputTypeConstants.StringPicker;
 
   update(settings: FieldSettings, value: string, tools: FieldLogicTools): FieldSettings {
     var log = new EavLogger('StringPickerLogic', logThis);
     log.add('update', settings, value, tools);
 
     let dataSources: EavEntity[] = [];
-    const entityPickerLogic = FieldLogicManager.singleton().get(InputTypeConstants.WIPEntityPicker);
+    const entityPickerLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityPicker);
     const fs = entityPickerLogic.update(settings, value, tools);
 
     fs.EnableTextEntry ??= false;

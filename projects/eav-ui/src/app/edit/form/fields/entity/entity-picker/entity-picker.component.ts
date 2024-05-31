@@ -15,7 +15,7 @@ import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-st
 const logThis = false;
 
 @Component({
-  selector: InputTypeConstants.WIPEntityPicker,
+  selector: InputTypeConstants.EntityPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   providers: pickerProviders,
