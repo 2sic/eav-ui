@@ -8,7 +8,7 @@ import { WrappersConstant, WrappersConstants } from '../constants/wrappers.const
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavItem } from '../models/eav';
 
-const logThis = true;
+const logThis = false;
 
 export class InputFieldHelpers {
 
