@@ -13,7 +13,8 @@ const logThis = true;
 export class InputFieldHelpers {
 
   static getContentTypeId(item: EavItem): string {
-    return item.Entity.Type?.Id ?? (item.Header as ItemAddIdentifier).ContentTypeName;
+    return item.Entity.Type?.Id
+      ?? (item.Header as ItemAddIdentifier).ContentTypeName;
   }
 
   static getInputTypeNames(attributes: EavContentTypeAttribute[], inputTypes: InputType[]): InputTypeName[] {
@@ -40,10 +41,12 @@ export class InputFieldHelpers {
     const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 
-    if (EmptyFieldHelpers.isMessage(inputType)) return [];
+    if (EmptyFieldHelpers.isMessage(inputType))
+      return [];
 
     // empty input type wrappers
-    if (EmptyFieldHelpers.isGroupStart(inputType)) return [WrappersConstants.CollapsibleWrapper];
+    if (EmptyFieldHelpers.isGroupStart(inputType))
+      return [WrappersConstants.CollapsibleWrapper];
 
     // default wrappers
     const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
@@ -63,19 +66,18 @@ export class InputFieldHelpers {
 
     if (isEntityOrStringDropdownType) {
       wrappers.push(WrappersConstants.LocalizationWrapper);
-      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
+      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks)
         wrappers.push(WrappersConstants.PickerExpandableWrapper);
-      }
     }
 
-    if (isExternal) {
+    // External components should always get these wrappers
+    if (isExternal)
       wrappers.push(
         WrappersConstants.DropzoneWrapper,
         WrappersConstants.LocalizationWrapper,
         WrappersConstants.ExpandableWrapper,
         WrappersConstants.AdamWrapper,
       );
-    }
 
     return wrappers;
   }
@@ -144,14 +146,4 @@ export class InputFieldHelpers {
         return defaultValue ?? '';
     }
   }
-
-  // 2023-08-31 2dm moved to logic...
-  // /**
-  //  * Entity fields for empty items are prefilled on the backend with []
-  //  * so I can never know if entity field is brand new, or just emptied out by the user
-  //  */
-  // static isValueEmpty(value: FieldValue, eavService: EavService) {
-  //   const emptyEntityField = Array.isArray(value) && value.length === 0 && eavService.eavConfig.createMode;
-  //   return value === undefined || emptyEntityField;
-  // }
 }
