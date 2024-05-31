@@ -45,7 +45,7 @@ export class EavLogger {
   }
 
   val(name: string, value: unknown) {
-    logAlways(`[${this.name}-${this.svcId}] ${name}:`, [value]);
+    logAlways(`[${this.name}-${this.svcId}] value of ${name}:`, [value]);
   }
 
   fn<T>(name: string, message?: string, data?: unknown[]): EavLoggerFn<T> {

@@ -1,11 +1,14 @@
 import { FieldSettings, FieldValue, InputTypeName } from '../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { WrappersConstant, WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavItem } from '../models/eav';
+
+const logThis = false;
 
 export class InputFieldHelpers {
 
@@ -85,9 +88,17 @@ export class InputFieldHelpers {
     itemHeader?: ItemIdentifierShared,
     onlyPrefill?: boolean,
   ): FieldValue {
-    if (onlyPrefill && itemHeader?.Prefill?.[name] === undefined) { return; }
+    const log = new EavLogger('InputFieldHelpers', logThis);
+    const l = log.fn<FieldValue>('parseDefaultValue',
+      'name: ' + name + ', inputType: ' + inputType + ', settings: ' + settings + ', itemHeader: ' + itemHeader + ', onlyPrefill: ' + onlyPrefill);
 
-    let defaultValue = itemHeader?.Prefill?.[name]?.toString() ?? settings.DefaultValue;
+    if (onlyPrefill && itemHeader?.Prefill?.[name] === undefined)
+      return l.rNull('only prefill, but no prefill data found');
+
+    let defaultValue = itemHeader?.Prefill?.[name]?.toString()
+      ?? settings.DefaultValue;
+
+    l.values({ defaultValue });
 
     switch (inputType) {
       case InputTypeConstants.BooleanDefault:
@@ -110,11 +121,11 @@ export class InputFieldHelpers {
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
       case InputTypeConstants.WIPEntityPicker:
-        if (defaultValue == null || defaultValue === '') { return []; }
+        if (defaultValue == null || defaultValue === '')
+          return [];
         // string has { } characters, we must switch them to quotes
-        if (defaultValue.includes('{')) {
+        if (defaultValue.includes('{'))
           defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
-        }
         // list but no array, add brackets
         if (defaultValue.includes(',') && !defaultValue.includes('[')) {
           const guids = defaultValue.split(',').map(guid => guid.trim());

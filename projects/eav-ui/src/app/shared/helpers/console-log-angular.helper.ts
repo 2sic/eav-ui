@@ -75,7 +75,7 @@ function consoleLogInternal(
       return;
     }
     
-    console.log(`n ${prefix} ${message}`, ...data);
+    console.log(`${prefix} ${message}`, ...data);
     return;
   }
 

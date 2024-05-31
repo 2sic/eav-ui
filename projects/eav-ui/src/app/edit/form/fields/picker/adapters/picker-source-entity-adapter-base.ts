@@ -157,15 +157,18 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
       };
     } else {
       const entity = this.optionsOrHints$.value.find(item => item.value === editParams.entityGuid);
-      if (entity != null) {
-        form = {
-          items: [{ EntityId: entity.id }],
-        };
-      } else {
-        form = {
-          items: [{ EntityId: editParams.entityId }],
-        };
-      }
+      // if (entity != null) {
+      //   form = {
+      //     items: [{ EntityId: entity.id }],
+      //   };
+      // } else {
+      //   form = {
+      //     items: [{ EntityId: editParams.entityId }],
+      //   };
+      // }
+      form = {
+        items: [{ EntityId: entity?.id ?? editParams.entityId }],
+      };
     }
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
