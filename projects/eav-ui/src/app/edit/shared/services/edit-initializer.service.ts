@@ -21,9 +21,13 @@ import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { EavContentType } from '../models/eav/eav-content-type';
 import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = true;
 
 @Injectable()
-export class EditInitializerService implements OnDestroy {
+export class EditInitializerService extends ServiceBase implements OnDestroy {
   loaded$ = new BehaviorSubject(false);
 
   private initialFormValues: Record<string, FormValues> = {};
@@ -44,7 +48,9 @@ export class EditInitializerService implements OnDestroy {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
-  ) { }
+  ) {
+    super(new EavLogger('EditInitializerService', logThis));
+  }
 
   ngOnDestroy(): void {
     this.loaded$.complete();
@@ -62,9 +68,35 @@ export class EditInitializerService implements OnDestroy {
         };
       }),
     }
+    this.log.a('fetchFormData', form);
+
     const editItems = JSON.stringify(form.items);
-    this.eavService.fetchFormData(editItems).subscribe(formData => {
-      // SDV: comment it
+    this.eavService.fetchFormData(editItems).subscribe(dataFromBackend => {
+      // 2dm 2024-06-01 preserve prefill and client-data from original
+      // and stop relying on round-trip to keep it
+      const formData: EavEditLoadDto = {
+        ...dataFromBackend,
+        Items: dataFromBackend.Items.map(item => {
+          // try to find original item
+          const originalItem = form.items.find(i => i.clientId === item.Header.clientId);
+          this.log.a('fetchFormData - remix', item, originalItem);
+
+          return originalItem == null
+            ? item
+            : {
+                ...item,
+                Header: {
+                  ...item.Header,
+                  Prefill: originalItem.Prefill,
+                  ClientData: originalItem.ClientData,
+                }
+              };
+        }),
+      };
+      this.log.a('fetchFormData - after remix', formData);
+
+
+      // SDV: document what's happening here
       this.featuresService.load(formData.Context);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.importLoadedData(formData);

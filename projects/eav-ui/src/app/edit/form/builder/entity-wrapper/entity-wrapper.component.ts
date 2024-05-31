@@ -207,7 +207,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const title = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.Title, null);
     const id = note.Id;
-    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
+    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
+      return;
     this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.noteRef?.close();
       this.fetchNote();
@@ -216,7 +217,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
 
   private fetchNote() {
     const item = this.itemService.getItem(this.entityGuid);
-    if (item.Entity.Id === 0) { return; }
+    if (item.Entity.Id === 0)
+      return;
 
     const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
     this.eavService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
