@@ -56,6 +56,9 @@ export interface ItemIdentifierShared {
     parameters?: Record<string, unknown>;
     [key: string]: unknown;
   };
+
+  /** Experimental 17.10+ */
+  clientId?: number;
 }
 
 export interface ItemEditIdentifier extends ItemIdentifierShared {

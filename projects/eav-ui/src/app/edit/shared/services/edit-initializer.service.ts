@@ -51,7 +51,17 @@ export class EditInitializerService implements OnDestroy {
   }
 
   fetchFormData(): void {
-    const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
+    const inbound = convertUrlToForm((this.route.snapshot.params as EditParams).items);
+    // 2024-06-01 2dm adding index to round trip
+    const form = {
+      ...inbound,
+      items: inbound.items.map((item, index) => {
+        return {
+          ...item,
+          clientId: index,
+        };
+      }),
+    }
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       // SDV: comment it
