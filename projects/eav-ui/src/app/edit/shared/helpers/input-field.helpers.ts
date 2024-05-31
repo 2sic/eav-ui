@@ -8,7 +8,7 @@ import { WrappersConstant, WrappersConstants } from '../constants/wrappers.const
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavItem } from '../models/eav';
 
-const logThis = false;
+const logThis = true;
 
 export class InputFieldHelpers {
 
@@ -121,16 +121,22 @@ export class InputFieldHelpers {
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
       case InputTypeConstants.WIPEntityPicker:
+        // Empty - return []
         if (defaultValue == null || defaultValue === '')
           return [];
-        // string has { } characters, we must switch them to quotes
+
+        // string has { } characters, we must switch them to quotes for parsing below
+        // 2024-06-01 2dm not sure why this is an option..., maybe some interim encoding?
         if (defaultValue.includes('{'))
           defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
+
         // list but no array, add brackets
         if (defaultValue.includes(',') && !defaultValue.includes('[')) {
           const guids = defaultValue.split(',').map(guid => guid.trim());
           defaultValue = JSON.stringify(guids);
         }
+
+        // Finally parse
         return defaultValue.startsWith('[') // an array with guid strings
           ? JSON.parse(defaultValue) // if it's a string containing an array
           : [defaultValue.replace(/"/g, '')]; // just a guid string, but might have quotes
