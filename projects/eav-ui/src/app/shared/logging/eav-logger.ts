@@ -1,4 +1,5 @@
 import { consoleLogAlways, logAlways } from '../helpers/console-log-angular.helper';
+import { EavLoggerFn } from './eav-logger-fn';
 import { RxTapDebug } from './rx-debug-dbg';
 
 export class EavLogger {
@@ -21,9 +22,9 @@ export class EavLogger {
    * @param args data to show
    * @returns 
    */
-  a(message: string, ...args: any[]): void {
+  a(message: string, data?: unknown[]): void {
     if (!this.enabled) return;
-    logAlways(`[${this.name}-${this.svcId}] ${message}`, ...args);
+    logAlways(`[${this.name}-${this.svcId}] ${message}`, data);
   }
 
   /**
@@ -38,7 +39,16 @@ export class EavLogger {
     return this.add.bind(this);
   }
 
+  /** Create a special logger for rx logging */
   rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }) {
     return new RxTapDebug(this, name, enabled, jsonify);
+  }
+
+  val(name: string, value: unknown) {
+    logAlways(`[${this.name}-${this.svcId}] ${name}:`, [value]);
+  }
+
+  fn<T>(name: string, message?: string, data?: unknown[]): EavLoggerFn<T> {
+    return new EavLoggerFn(this, name, message, data);
   }
 }

@@ -36,8 +36,8 @@ export function consoleLogAlways(message?: any, ...optionalParams: any[]): void 
 }
 
 /** Log to Dev lightweight (no stack) - always active */
-export function logAlways(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal({ segment: 'always', message, callStack: false, data: optionalParams })
+export function logAlways(message?: any, data?: unknown[]): void {
+  consoleLogInternal({ segment: 'always', message, callStack: false, data: data })
 }
 
 
@@ -63,7 +63,19 @@ function consoleLogInternal(
   
   // New lightweight log, without the entire trace / call stack
   if (callStack == false) {
-    console.log(`${prefix} ${message}`, ...data);
+    if (!data || data.length === 0) {
+      console.log(`${prefix} ${message}`)
+      return;
+    }
+
+    if (data.length === 1) {
+      const show = data[0]
+      const len = (typeof(show) === 'string') ? `:${show.length}` : '';
+      console.log(`${prefix} ${message} [${typeof(show)}${len}]`, show);
+      return;
+    }
+    
+    console.log(`n ${prefix} ${message}`, ...data);
     return;
   }
 
