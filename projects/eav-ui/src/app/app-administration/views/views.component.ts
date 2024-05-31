@@ -130,14 +130,10 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       ],
     };
     this.openEdit(form);
-    // const formUrl = convertFormToUrl(form);
-    // this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private openEdit(form: EditForm) {
     this.openChildDialog(`edit/${convertFormToUrl(form)}`);
-    // const formUrl = convertFormToUrl(form);
-    // this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
   }
 
   private openChildDialog(subPath: string) {
@@ -206,25 +202,30 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private openLightSpeed(view: View): void {
-    const prefill = {
-      VarShowDuration: "false",
-    };
+    const shared = {
+      ClientData: {
+        parameters: {
+          forView: true,
+          showDuration: false,
+        },
+      },
+    }
 
     const form: EditForm = {
       items: [
         (view.lightSpeed != null)
           ? {
+              ...shared,
               EntityId: view.lightSpeed.Id,
-              Prefill: prefill,
             }
           : {
+              ...shared,
               ContentTypeName: eavConstants.appMetadata.LightSpeed.ContentTypeName,
               For: {
                 Target: eavConstants.metadata.entity.target,
                 TargetType: eavConstants.metadata.entity.targetType,
                 Guid: view.Guid,
               },
-              Prefill: prefill,
             },
       ],
     };

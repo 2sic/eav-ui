@@ -7,7 +7,6 @@ import { WrappersConstant, WrappersConstants } from '../constants/wrappers.const
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavItem } from '../models/eav';
 
-
 export class InputFieldHelpers {
 
   static getContentTypeId(item: EavItem): string {
@@ -88,12 +87,9 @@ export class InputFieldHelpers {
   ): FieldValue {
     if (onlyPrefill && itemHeader?.Prefill?.[name] === undefined) { return; }
 
-    let defaultValue = settings.DefaultValue;
+    let defaultValue = itemHeader?.Prefill?.[name]?.toString() ?? settings.DefaultValue;
 
-    if (itemHeader?.Prefill?.[name])
-      defaultValue = itemHeader.Prefill[name];
-
-    switch (inputType/*?.Type*/) {
+    switch (inputType) {
       case InputTypeConstants.BooleanDefault:
         return defaultValue?.toLowerCase() === 'true';
       case InputTypeConstants.BooleanTristate:

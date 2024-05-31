@@ -44,12 +44,16 @@ export interface ItemIdentifierInbound {
 export interface ItemIdentifierShared {
 
   /** Prefill form with data */
-  Prefill?: Record<string, string>;
+  Prefill?: Record<string, unknown>;
 
-  /** New way to transport a random amount of properties back and forth */
+  /**
+   * New way to transport a random amount of properties back and forth
+   * - IMPORTANT: this is only after conversion to funky url
+   * - before you must use Parameters on the main object?
+   */
   ClientData?: {
     fields?: string;
-    parameters?: Record<string, string>;
+    parameters?: Record<string, unknown>;
     [key: string]: unknown;
   };
 }
