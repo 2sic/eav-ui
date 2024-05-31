@@ -7,7 +7,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerTreeDataService extends ServiceBase {

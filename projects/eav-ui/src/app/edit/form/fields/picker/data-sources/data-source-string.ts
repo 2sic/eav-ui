@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
-const logChildren = true;
+const logChildren = false;
 const logRx = true;
 
 @Injectable()

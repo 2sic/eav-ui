@@ -18,7 +18,7 @@ import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 import { messagePickerItem } from '../adapters/picker-source-adapter-base';
 
-const logThis = true;
+const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
 

@@ -6,7 +6,7 @@ import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Injectable } from '@angular/core';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerTreeDataHelper extends ServiceBase {

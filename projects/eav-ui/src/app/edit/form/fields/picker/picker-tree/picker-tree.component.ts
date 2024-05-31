@@ -16,7 +16,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { BehaviorSubject } from 'rxjs';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: 'app-picker-tree',

@@ -17,26 +17,39 @@ const warningNoLogShown: Record<string, boolean> = {};
 
 /** Log Store changes */
 export function consoleLogStore(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal('store', message, optionalParams)
+  consoleLogInternal({ segment: 'store', message, data: optionalParams })
 }
 
 /** Log Form / Fields / Formulas */
 export function consoleLogEditForm(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal('editForm', message, optionalParams)
+  consoleLogInternal({ segment: 'editForm', message, data: optionalParams })
 }
 
 /** Log to Dev */
 export function consoleLogDev(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal('dev', message, optionalParams)
+  consoleLogInternal({ segment: 'dev', message, data: optionalParams })
 }
 
 /** Log to Dev - always active */
 export function consoleLogAlways(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal('always', message, optionalParams)
+  consoleLogInternal({ segment: 'always', message, data: optionalParams })
+}
+
+/** Log to Dev lightweight (no stack) - always active */
+export function logAlways(message?: any, ...optionalParams: any[]): void {
+  consoleLogInternal({ segment: 'always', message, callStack: false, data: optionalParams })
 }
 
 
-function consoleLogInternal(segment: keyof typeof enableLogging, message?: any, ...optionalParams: any[]): void {
+
+function consoleLogInternal(
+  { segment, message, callStack, data = [] }
+  : { segment: keyof typeof enableLogging; message?: any; callStack?: boolean, data?: any[]; }
+): void {
+  // Skip on production
+  if (environment.production) return;
+
+  // Check if we've already logged a lot to then stop logging
   const segmentUpper = `[${segment?.toUpperCase()}]`;
   if (!enableLogging[segment])  {
     if (warningNoLogShown[segment]) return;
@@ -45,11 +58,16 @@ function consoleLogInternal(segment: keyof typeof enableLogging, message?: any, 
     return;
   }
 
-  if (environment.production) return;
-
+  // Make prefix uppercase if not always
   const prefix = segment === 'always' ? '' : segmentUpper;
   
-  console.groupCollapsed(`${prefix} ${message}`, ...optionalParams);
+  // New lightweight log, without the entire trace / call stack
+  if (callStack == false) {
+    console.log(`${prefix} ${message}`, ...data);
+    return;
+  }
+
+  console.groupCollapsed(`${prefix} ${message}`, ...data);
   
   // tslint:disable-next-line:no-console
   console.trace();
