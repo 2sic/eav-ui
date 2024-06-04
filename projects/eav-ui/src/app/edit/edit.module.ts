@@ -27,6 +27,7 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
     EditRoutingModule,
     RouterModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+
   ],
   providers: [
     Context,
@@ -39,7 +40,7 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
     ScriptsLoaderService,
     EntitiesService,
 
-    // @2dg, move in to datetime component
+    // @2dg, move in to dateTime component
     // MatDayjsDateAdapter,
     // { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },
     // { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
