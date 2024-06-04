@@ -15,6 +15,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
         MatButtonModule,
         UpperCasePipe,
         TranslateModule,
+        UpperCasePipe
     ],
 })
 export class SnackBarUnsavedChangesComponent {
