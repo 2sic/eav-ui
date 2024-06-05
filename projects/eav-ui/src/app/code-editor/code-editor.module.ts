@@ -46,9 +46,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
         Context,
         SourceService,
         SnippetsService,
-
-      // TODO:: Remove after Test
-        // TranslateService,
     ],
 })
 export class CodeEditorModule { }

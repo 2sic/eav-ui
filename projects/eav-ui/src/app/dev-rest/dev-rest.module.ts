@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
 @NgModule({
     imports: [
-      // TODO:: Remove routing module from imports (Standalone)
       DevRestRoutingModule
     ],
     providers: [

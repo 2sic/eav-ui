@@ -11,7 +11,8 @@ import { translateLoaderFactory } from '../shared/translation/translate-loader-f
   imports: [
     ManageContentListRoutingModule,
     MatDialogModule,
-    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+    // @2dg New in app.Module, remove after Test
+    // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
   ],
   providers: [
     Context,

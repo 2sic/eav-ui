@@ -11,7 +11,8 @@ import { FeatureDetailService } from './services/feature-detail.service';
 
 @NgModule({
     imports: [
-        TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+        // @2dg New in app.Module, remove after Test
+        // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
         FeatureIconComponent,
         FeatureIconTextComponent,
         FeatureInfoDialogComponent,

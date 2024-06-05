@@ -26,7 +26,8 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
     EditEntryComponent,
     EditRoutingModule,
     RouterModule,
-    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+    // @2dg New in app.Module, remove after Test
+    // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
 
   ],
   providers: [

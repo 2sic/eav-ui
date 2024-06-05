@@ -21,6 +21,8 @@ import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interce
 import { Context } from './shared/services/context';
 import { AppInstallSettingsService } from './shared/services/getting-started.service';
 import { InstallerService } from './shared/services/installer.service';
+import { buildTranslateConfiguration } from './shared/translation';
+import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { InstallerService } from './shared/services/installer.service';
     EntityDataModule.forRoot(entityConfig),
     TranslateModule.forRoot(),
     MatSnackBarModule,
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },

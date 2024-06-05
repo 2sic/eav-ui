@@ -216,7 +216,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.parent.firstChild });
   }
 
-  // TODO:: Permission Bug
   openLanguagePermissions(enabled: boolean) {
     if (enabled)
       this.router.navigate(['language-permissions'], { relativeTo: this.route.parent.firstChild });
