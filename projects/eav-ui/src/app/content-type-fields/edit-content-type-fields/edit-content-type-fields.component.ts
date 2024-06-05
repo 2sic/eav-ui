@@ -27,6 +27,7 @@ import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-edit-content-type-fields',
@@ -47,6 +48,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
         MatButtonModule,
         AsyncPipe,
         TranslateModule,
+        FieldHintComponent,
     ],
 })
 export class EditContentTypeFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
@@ -187,7 +189,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
     return this.inputTypeOptions.find(option => option.inputType === inputName);
   }
 
-  addSharedField() { 
+  addSharedField() {
     this.dialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
       width: '1600px',

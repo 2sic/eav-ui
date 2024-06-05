@@ -16,7 +16,6 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
 import { EntityFilterComponent } from './components/entity-filter/entity-filter.component';
 import { FieldHintComponent } from './components/field-hint/field-hint.component';
 import { FileUploadDialogComponent } from './components/file-upload-dialog/file-upload-dialog.component';
-import { IdFieldComponent } from './components/id-field/id-field.component';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MatFormFieldTextareaDirective } from './directives/mat-form-field-textarea.directive';
@@ -28,7 +27,6 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
 import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
-import { NavItemListComponent } from './components/nav-item-list/nav-item-list.component';
 
 
 
@@ -36,26 +34,21 @@ import { NavItemListComponent } from './components/nav-item-list/nav-item-list.c
 @NgModule({
   declarations: [
     // AG Grid Components - started creation by 2dm to be more generic / less code 2023-06-19
-    AgBoolIconRenderer,
-
-
-    EmptyRouteComponent,
     DialogEntryComponent,
-    FieldHintComponent,
+    BooleanFilterComponent,
+    EntityFilterComponent,
+
+    FileUploadDialogComponent, // TODO:: Open
+    AgBoolIconRenderer,
     ClickStopPropagationDirective,
     DragAndDropDirective,
     MousedownStopPropagationDirective,
-    BooleanFilterComponent,
-    IdFieldComponent,
-    SafeHtmlPipe,
-    SafeResourceUrlPipe,
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
     TippyDirective,
-    EntityFilterComponent,
     MatInputAutofocusDirective,
-    FileUploadDialogComponent,
-    NavItemListComponent
+    SafeResourceUrlPipe,
+    SafeHtmlPipe,
   ],
   imports: [
     RouterModule,
@@ -75,23 +68,20 @@ import { NavItemListComponent } from './components/nav-item-list/nav-item-list.c
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
   ],
   exports: [
-    EmptyRouteComponent,
+    BreadcrumbModule,
     DialogEntryComponent,
-    FieldHintComponent,
+    BooleanFilterComponent,
+    FileUploadDialogComponent,
+    EntityFilterComponent,
     ClickStopPropagationDirective,
     DragAndDropDirective,
     MousedownStopPropagationDirective,
-    BooleanFilterComponent,
-    SafeHtmlPipe,
-    SafeResourceUrlPipe,
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
     TippyDirective,
-    EntityFilterComponent,
+    SafeHtmlPipe,
+    SafeResourceUrlPipe,
     MatInputAutofocusDirective,
-    FileUploadDialogComponent,
-    BreadcrumbModule,
-    NavItemListComponent
   ],
 })
 export class SharedComponentsModule { }

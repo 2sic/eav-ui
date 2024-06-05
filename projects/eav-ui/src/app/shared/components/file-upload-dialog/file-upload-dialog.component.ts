@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
@@ -9,11 +9,23 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Context } from '../../services/context';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { InstallerService } from '../../services/installer.service';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SafeHtmlPipeStandAlone } from '../../pipes/safe-htmlStandAlone.pipe';
 
 @Component({
   selector: 'app-file-upload-dialog',
   templateUrl: './file-upload-dialog.component.html',
   styleUrls: ['./file-upload-dialog.component.scss'],
+  // TODO:: Open
+  // standalone: true,
+  // imports:[
+  //   NgClass,
+  //   MatDialogModule,
+  //   MatProgressSpinnerModule,
+  //   SafeHtmlPipeStandAlone,
+  //   AsyncPipe,
+  // ]
 })
 export class FileUploadDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -46,7 +58,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     private sanitizer: DomSanitizer,
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super();
 
     // copied from 2sxc-ui app/installer
@@ -209,7 +221,7 @@ Please try again later or check how to manually install content-templates: https
     );
   }
 
-  showAppCatalog(): void { 
+  showAppCatalog(): void {
     this.showAppCatalog$.next(!this.showAppCatalog$.value);
   }
 

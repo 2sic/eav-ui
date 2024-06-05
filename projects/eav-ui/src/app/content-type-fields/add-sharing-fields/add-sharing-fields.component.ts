@@ -23,6 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -42,7 +43,8 @@ import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indic
     FeaturesModule,
     AsyncPipe,
     TranslateModule,
-    FeatureIconIndicatorComponent
+    FeatureIconIndicatorComponent,
+    FieldHintComponent,
   ]
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {

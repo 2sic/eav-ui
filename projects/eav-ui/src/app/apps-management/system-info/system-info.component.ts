@@ -24,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 declare const window: EavWindow;
 
@@ -46,6 +47,7 @@ declare const window: EavWindow;
     RouterOutlet,
     AsyncPipe,
     FeatureTextInfoComponent,
+    FieldHintComponent,
   ],
   providers: [
     ZoneService,

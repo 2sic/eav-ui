@@ -16,13 +16,28 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-rename-stream',
     templateUrl: './rename-stream.component.html',
     styleUrls: ['./rename-stream.component.scss'],
     standalone: true,
-    imports: [MatButtonModule, SharedComponentsModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, NgClass, MatDialogActions, MatSlideToggleModule]
+    imports: [
+      MatButtonModule,
+      SharedComponentsModule,
+      MatIconModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatSelectModule,
+      MatOptionModule,
+      NgClass,
+      MatDialogActions,
+      MatSlideToggleModule,
+      FieldHintComponent,
+    ]
 })
 export class RenameStreamComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

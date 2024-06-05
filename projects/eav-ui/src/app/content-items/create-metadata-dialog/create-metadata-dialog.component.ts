@@ -22,13 +22,30 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-create-metadata-dialog',
     templateUrl: './create-metadata-dialog.component.html',
     styleUrls: ['./create-metadata-dialog.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, SharedComponentsModule, NgTemplateOutlet, MatButtonModule, NgClass, MatIconModule, MatDialogActions, MatSlideToggleModule, AsyncPipe]
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormFieldModule,
+      MatSelectModule,
+      MatOptionModule,
+      MatInputModule,
+      SharedComponentsModule,
+      NgTemplateOutlet,
+      MatButtonModule,
+      NgClass,
+      MatIconModule,
+      MatDialogActions,
+      MatSlideToggleModule,
+      AsyncPipe,
+      FieldHintComponent,
+    ]
 })
 export class CreateMetadataDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

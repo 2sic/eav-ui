@@ -13,6 +13,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterOutlet } from '@angular/router';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-create-app',
@@ -31,6 +32,7 @@ import { RouterOutlet } from '@angular/router';
         MatDialogActions,
         MatButtonModule,
         AsyncPipe,
+        FieldHintComponent,
     ],
     providers: [
         AppsListService,

@@ -17,13 +17,27 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
 
 @Component({
   selector: 'app-create-file-dialog',
   templateUrl: './create-file-dialog.component.html',
   styleUrls: ['./create-file-dialog.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, SharedComponentsModule, MatProgressSpinnerModule, MatButtonModule, NgClass, AsyncPipe],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    SharedComponentsModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    NgClass,
+    AsyncPipe,
+    FieldHintComponent,
+  ],
   providers: [SourceService],
 })
 export class CreateFileDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {

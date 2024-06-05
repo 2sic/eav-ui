@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExportAppService } from '../../services';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-export-app-parts',
@@ -33,6 +34,7 @@ import { ExportAppService } from '../../services';
         MatCheckboxModule,
         MatDialogActions,
         AsyncPipe,
+        FieldHintComponent,
     ],
     providers:[ExportAppPartsService, ContentTypesService, ExportAppService]
 })

@@ -17,13 +17,28 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-metadata-save-dialog',
     templateUrl: './metadata-save-dialog.component.html',
     styleUrls: ['./metadata-save-dialog.component.scss'],
     standalone: true,
-    imports: [MatCardModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, SharedComponentsModule, MatInputModule, MatButtonModule, NgClass, MatIconModule, MatSlideToggleModule, AsyncPipe]
+    imports: [
+      MatCardModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormFieldModule,
+      MatSelectModule,
+      MatOptionModule,
+      SharedComponentsModule,
+      MatInputModule,
+      MatButtonModule,
+      NgClass,
+      MatIconModule,
+      MatSlideToggleModule,
+      AsyncPipe,
+      FieldHintComponent]
 })
 export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
