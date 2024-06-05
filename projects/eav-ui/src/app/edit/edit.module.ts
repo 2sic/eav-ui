@@ -5,21 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { Context } from '../shared/services/context';
-import { buildTranslateConfiguration } from '../shared/translation';
-import { translateLoaderFactory } from '../shared/translation/translate-loader-factory';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { EditRoutingModule } from './edit-routing.module';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
+import { MatDayjsDateAdapter } from './shared/date-adapters/date-adapter-api';
 
-// const OWL_DAYJS_FORMATS = {
-//   parseInput: 'l LT',
-//   fullPickerInput: 'l LT',
-//   datePickerInput: 'l',
-//   timePickerInput: 'LT',
-//   monthYearLabel: 'MMM YYYY',
-//   dateA11yLabel: 'LL',
-//   monthYearA11yLabel: 'MMMM YYYY',
-// };
+
 
 @NgModule({
   imports: [
@@ -40,12 +31,13 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
     SourceService,
     ScriptsLoaderService,
     EntitiesService,
+    MatDayjsDateAdapter,
 
     // @2dg, move in to dateTime component
-    // MatDayjsDateAdapter,
     // { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },
     // { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
     // { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+
     // @2dg, no impact of style since angular 16+
     // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
     // { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }

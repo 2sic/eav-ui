@@ -1,5 +1,4 @@
 @if (viewModel | async; as vm) {
-  <!-- TODO:: 2dg Date Format not working -->
   @if (!vm.useTimePicker) {
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
       <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker"

@@ -23,6 +23,7 @@ import { AppInstallSettingsService } from './shared/services/getting-started.ser
 import { InstallerService } from './shared/services/installer.service';
 import { buildTranslateConfiguration } from './shared/translation';
 import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
+import { MatDayjsDateModule } from './edit/shared/date-adapters/date-adapter-api';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,9 @@ import { translateLoaderFactory } from './shared/translation/translate-loader-fa
     EntityDataModule.forRoot(entityConfig),
     TranslateModule.forRoot(),
     MatSnackBarModule,
+    // Use to load translations for the app
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+    // MatDayjsDateModule,
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
