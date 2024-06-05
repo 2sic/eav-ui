@@ -22,18 +22,33 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
 
 @Component({
-    selector: 'app-add-sharing-fields',
-    templateUrl: './add-sharing-fields.component.html',
-    styleUrls: ['./add-sharing-fields.component.scss'],
-    standalone: true,
-    imports: [MatCardModule, MatTableModule, MatButtonModule, FormsModule, MatFormFieldModule, MatInputModule, ReservedNamesValidatorDirective, SharedComponentsModule, MatDialogActions, FeaturesModule, AsyncPipe, TranslateModule]
+  selector: 'app-add-sharing-fields',
+  templateUrl: './add-sharing-fields.component.html',
+  styleUrls: ['./add-sharing-fields.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    SharedComponentsModule,
+    MatDialogActions,
+    FeaturesModule,
+    AsyncPipe,
+    TranslateModule,
+    FeatureIconIndicatorComponent
+  ]
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
-  
+
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
   displayedSelectedFieldsColumns: string[] = ['newName', 'source', 'remove'];
 
@@ -74,7 +89,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     this.subscription.add(this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
       this.shareableFields.data = shareableFields;
     }));
-    this.subscription.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => { 
+    this.subscription.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => {
       const existingFields: ReservedNames = {};
       this.dialogData.existingFields.forEach(field => {
         existingFields[field.StaticName] = 'Field with this name already exists';
@@ -132,7 +147,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
           this.snackBar.open('Saved', null, { duration: 2000 });
           this.closeDialog();
         });
-       }
+      }
     });
   }
 

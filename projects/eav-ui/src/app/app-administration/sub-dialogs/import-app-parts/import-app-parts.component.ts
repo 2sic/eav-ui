@@ -10,6 +10,7 @@ import { SharedComponentsModule } from '../../../shared/shared-components.module
     styleUrls: ['./import-app-parts.component.scss'],
     standalone: true,
     imports: [SharedComponentsModule],
+    providers: [ImportAppPartsService]
 })
 export class ImportAppPartsComponent {
 

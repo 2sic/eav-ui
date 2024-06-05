@@ -34,6 +34,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
         MatDialogActions,
         AsyncPipe,
         TranslateModule,
+        MatDialogModule,
     ],
     providers: [ContentGroupService, AppDialogConfigService]
 })

@@ -14,24 +14,27 @@ import { MatDayjsDateAdapter } from './shared/date-adapters/date-adapter-api';
 
 @NgModule({
   imports: [
-    EditEntryComponent,
     EditRoutingModule,
     RouterModule,
+
+    // @2dg Remove after Test
+    // EditEntryComponent,
     // @2dg New in app.Module, remove after Test
     // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
 
   ],
   providers: [
     Context,
-    EavService,
-    AdamService,
-    EntityService,
-    QueryService,
-    LoadIconsService,
-    SourceService,
-    ScriptsLoaderService,
-    EntitiesService,
-    MatDayjsDateAdapter,
+    // @2dg Remove after Test
+    // EavService,
+    // AdamService,
+    // EntityService,
+    // QueryService,
+    // LoadIconsService,
+    // SourceService,
+    // ScriptsLoaderService,
+    // EntitiesService,
+    // MatDayjsDateAdapter,
 
     // @2dg, move in to dateTime component
     // { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },

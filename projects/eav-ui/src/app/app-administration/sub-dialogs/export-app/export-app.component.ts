@@ -22,6 +22,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatButtonModule,
         AsyncPipe,
     ],
+    providers: [
+        ExportAppService,
+    ],
 })
 export class ExportAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -17,16 +17,10 @@ import { ExportAppService } from './services/export-app.service';
 import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
-import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
-import { ExportAppComponent } from './sub-dialogs/export-app/export-app.component';
-import { ImportAppPartsComponent } from './sub-dialogs/import-app-parts/import-app-parts.component';
 
 @NgModule({
   imports: [
     AppAdministrationRoutingModule,
-    ExportAppComponent,
-    ExportAppPartsComponent,
-    ImportAppPartsComponent,
   ],
   providers: [
     Context,

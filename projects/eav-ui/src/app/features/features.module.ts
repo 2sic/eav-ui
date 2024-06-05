@@ -13,18 +13,19 @@ import { FeatureDetailService } from './services/feature-detail.service';
     imports: [
         // @2dg New in app.Module, remove after Test
         // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
-        FeatureIconComponent,
-        FeatureIconTextComponent,
-        FeatureInfoDialogComponent,
-        FeatureTextInfoComponent,
-        FeatureIconIndicatorComponent,
+        // TODO:: 2dg Open to Test
+        // FeatureIconComponent,
+        // FeatureIconTextComponent,
+        // FeatureInfoDialogComponent,
+        // FeatureTextInfoComponent,
+        // FeatureIconIndicatorComponent,
     ],
     exports: [
-        FeatureIconComponent,
-        FeatureIconTextComponent,
-        FeatureInfoDialogComponent,
-        FeatureTextInfoComponent,
-        FeatureIconIndicatorComponent,
+        // FeatureIconComponent,
+        // FeatureIconTextComponent,
+        // FeatureInfoDialogComponent,
+        // FeatureTextInfoComponent,
+        // FeatureIconIndicatorComponent,
     ],
     providers: [
         FeatureDetailService

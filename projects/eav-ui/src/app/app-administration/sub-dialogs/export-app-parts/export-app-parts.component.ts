@@ -15,6 +15,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ExportAppService } from '../../services';
 
 @Component({
     selector: 'app-export-app-parts',
@@ -33,6 +34,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         MatDialogActions,
         AsyncPipe,
     ],
+    providers:[ExportAppPartsService, ContentTypesService, ExportAppService]
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
