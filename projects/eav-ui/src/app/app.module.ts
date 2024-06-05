@@ -2,7 +2,6 @@ import { SxcHttpInterceptorProvider } from '@2sic.com/sxc-angular';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EntityDataModule } from '@ngrx/data';
@@ -23,7 +22,6 @@ import { AppInstallSettingsService } from './shared/services/getting-started.ser
 import { InstallerService } from './shared/services/installer.service';
 import { buildTranslateConfiguration } from './shared/translation';
 import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
-import { MatDayjsDateModule } from './edit/shared/date-adapters/date-adapter-api';
 
 @NgModule({
   declarations: [
@@ -38,10 +36,12 @@ import { MatDayjsDateModule } from './edit/shared/date-adapters/date-adapter-api
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     EntityDataModule.forRoot(entityConfig),
-    TranslateModule.forRoot(),
-    MatSnackBarModule,
     // Use to load translations for the app
+    TranslateModule.forRoot(),
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+
+    // Remove after Test
+    // MatSnackBarModule,
     // MatDayjsDateModule,
   ],
   providers: [

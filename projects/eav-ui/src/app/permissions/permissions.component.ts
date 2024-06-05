@@ -20,21 +20,27 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { MetadataService } from './services/metadata.service';
+import { EntitiesService } from '../content-items/services/entities.service';
 
 @Component({
-    selector: 'app-permissions',
-    templateUrl: './permissions.component.html',
-    styleUrls: ['./permissions.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        RouterOutlet,
-        AgGridModule,
-        MatDialogActions,
-        AsyncPipe,
-    ],
+  selector: 'app-permissions',
+  templateUrl: './permissions.component.html',
+  styleUrls: ['./permissions.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    MatDialogActions,
+    AsyncPipe,
+  ],
+  providers: [
+    PermissionsService,
+    MetadataService,
+    EntitiesService,]
 })
 export class PermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
@@ -58,7 +64,7 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
 
     private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
-  ) { 
+  ) {
     super(router, route);
   }
 

@@ -70,8 +70,6 @@ import { NavItemListComponent } from './components/nav-item-list/nav-item-list.c
     MatButtonModule,
     MatDialogModule,
     BreadcrumbModule,
-
-
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }

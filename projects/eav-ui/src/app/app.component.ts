@@ -7,8 +7,6 @@ import { AppIconsService } from './shared/icons/app-icons.service';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { Context } from './shared/services/context';
 
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
