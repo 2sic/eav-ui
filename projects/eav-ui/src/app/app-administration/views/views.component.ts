@@ -1,6 +1,6 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -17,7 +17,7 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
-import { View } from '../models/view.model';
+import { View, ViewEntity } from '../models/view.model';
 import { ViewsService } from '../services/views.service';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
 import { ViewActionsParams } from './views-actions/views-actions.models';
@@ -25,6 +25,13 @@ import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { App } from '../../apps-management/models/app.model';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { FeatureNames } from '../../features/feature-names';
+import { MatDialog } from '@angular/material/dialog';
+import { FeaturesService } from '../../shared/services/features.service';
+import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -71,6 +78,11 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private dialogConfigSvc: AppDialogConfigService,
+
+    // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
    }
@@ -135,8 +147,15 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           : { EntityId: view.Id }
       ],
     };
-    const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.openEdit(form);
+  }
+
+  private openEdit(form: EditForm) {
+    this.openChildDialog(`edit/${convertFormToUrl(form)}`);
+  }
+
+  private openChildDialog(subPath: string) {
+    this.router.navigate([subPath], { relativeTo: this.route.parent.firstChild });
   }
 
   editPolymorphisms() {
@@ -149,8 +168,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           : { EntityId: this.polymorphism.Id }
       ],
     };
-    const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.openEdit(form);
   }
 
   private enableCodeGetter() {
@@ -162,7 +180,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private openUsage(view: View) {
-    this.router.navigate([`usage/${view.Guid}`], { relativeTo: this.route.parent.firstChild });
+    this.openChildDialog(`usage/${view.Guid}`);
   }
 
   private openCode(view: View) {
@@ -170,7 +188,7 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(view: View) {
-    this.router.navigate([GoToPermissions.getUrlEntity(view.Guid)], { relativeTo: this.route.parent.firstChild });
+    this.openChildDialog(GoToPermissions.getUrlEntity(view.Guid));
   }
 
   private openMetadata(view: View) {
@@ -178,15 +196,14 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       view.Guid,
       `Metadata for View: ${view.Name} (${view.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
+    this.openChildDialog(url);
   }
 
   private cloneView(view: View) {
     const form: EditForm = {
       items: [{ ContentTypeName: eavConstants.contentTypes.template, DuplicateEntity: view.Id }],
     };
-    const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.openEdit(form);
   }
 
   private exportView(view: View) {
@@ -202,24 +219,59 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
+  private openLightSpeed(view: View): void {
+    const shared = {
+      ClientData: {
+        parameters: {
+          forView: true,
+          showDuration: false,
+        },
+      },
+    }
+
+    const form: EditForm = {
+      items: [
+        (view.lightSpeed != null)
+          ? {
+              ...shared,
+              EntityId: view.lightSpeed.Id,
+            }
+          : {
+              ...shared,
+              ContentTypeName: eavConstants.appMetadata.LightSpeed.ContentTypeName,
+              For: {
+                Target: eavConstants.metadata.entity.target,
+                TargetType: eavConstants.metadata.entity.targetType,
+                Guid: view.Guid,
+              },
+            },
+      ],
+    };
+    this.openEdit(form);
+  }
+
+
   private buildGridOptions(): GridOptions {
+    // TODO: we should use this simpler pattern for column definitions everywhere
+    // ColumnDefinitions.TextWide
+    // ColumnDefinitions.TextNarrow
+
+    function showItemDetails(viewEntity: ViewEntity) {
+      return (viewEntity.DemoId == 0) ? "" : `${viewEntity.DemoId} ${viewEntity.DemoTitle}`
+    }
+
+    // Helper function for actions in the table below
+    const openLightSpeedFeatInfo = () => 
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+    
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agNumberColumnFilter',
+          ...ColumnDefinitions.Id,
           cellClass: (params) => {
             const view: View = params.data;
             return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.Id;
           },
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
@@ -230,33 +282,18 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           })(),
         },
         {
-          field: 'Show',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return !view.IsHidden;
-          },
+          ...ColumnDefinitions.IconShow,
+          valueGetter: (params) => !(params.data as View).IsHidden,
           cellRenderer: ViewsShowComponent,
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
           cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const view: View = params.data;
             this.editView(view);
-          },
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.Name;
           },
         },
         {
@@ -266,173 +303,84 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            const type = calculateViewType(view);
-            return type.value;
-          },
+          valueGetter: (params) => calculateViewType(params.data as View).value,
           cellRenderer: ViewsTypeComponent,
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Used',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          onCellClicked: (params) => {
-            const view: View = params.data;
-            this.openUsage(view);
-          },
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.Used;
-          },
+          onCellClicked: (params) => this.openUsage(params.data as View),
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Url Key',
-          field: 'UrlKey',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ViewNameInUrl;
-          },
+          field: 'ViewNameInUrl',
         },
         {
-          field: 'Path',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.TemplatePath;
-          },
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Path',
+          field: 'TemplatePath',
         },
         {
-          field: 'Content',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ContentType.Name;
-          },
+          ...ColumnDefinitions.TextNarrow,
+          headerName: 'Content',
+          valueGetter: (params) => (params.data as View).ContentType.Name,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'ContentDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.ContentType.DemoId} ${view.ContentType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((params.data as View).ContentType),
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           field: 'Presentation',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.PresentationType.Name;
-          },
+          valueGetter: (params) => (params.data as View).PresentationType.Name,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'PresentationDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.PresentationType.DemoId} ${view.PresentationType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((params.data as View).PresentationType),
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           field: 'Header',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ListContentType.Name;
-          },
+          valueGetter: (params) => (params.data as View).ListContentType.Name,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.ListContentType.DemoId} ${view.ListContentType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((params.data as View).ListContentType),
         },
         {
-          headerName: 'Header Presentation',
+          ...ColumnDefinitions.TextNarrow,
+          headerName: 'Header Pres.',
           field: 'HeaderPresentation',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return view.ListPresentationType.Name;
-          },
+          valueGetter: (params) => (params.data as View).ListPresentationType.Name,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderPresentationDemo',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const view: View = params.data;
-            return `${view.ListPresentationType.DemoId} ${view.ListPresentationType.DemoTitle}`;
-          },
+          valueGetter: (params) => showItemDetails((params.data as View).ListPresentationType),
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight5,
           cellRenderer: ViewsActionsComponent,
-          cellRendererParams: (() => {
-            const params: ViewActionsParams = {
-              enableCodeGetter: () => this.enableCodeGetter(),
-              enablePermissionsGetter: () => this.enablePermissionsGetter(),
-              onOpenCode: (view) => this.openCode(view),
-              onOpenPermissions: (view) => this.openPermissions(view),
-              onOpenMetadata: (view) => this.openMetadata(view),
-              onClone: (view) => this.cloneView(view),
-              onExport: (view) => this.exportView(view),
-              onDelete: (view) => this.deleteView(view),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            enableCodeGetter: () => this.enableCodeGetter(),
+            enablePermissionsGetter: () => this.enablePermissionsGetter(),
+            onOpenCode: (view) => this.openCode(view),
+            onOpenPermissions: (view) => this.openPermissions(view),
+            onOpenMetadata: (view) => this.openMetadata(view),
+            onClone: (view) => this.cloneView(view),
+            onExport: (view) => this.exportView(view),
+            onDelete: (view) => this.deleteView(view),
+            onOpenLightspeed: (view: unknown) => this.openLightSpeed(view as View),
+            openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
+          } satisfies ViewActionsParams,
         },
       ],
     };

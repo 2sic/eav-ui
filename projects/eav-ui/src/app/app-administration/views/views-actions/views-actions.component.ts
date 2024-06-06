@@ -8,6 +8,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
+import { LightSpeedActionsComponent } from "../../../admin-shared/lightspeed-action/lightspeed-action.component";
 
 @Component({
     selector: 'app-views-actions',
@@ -20,13 +21,14 @@ import { MatRippleModule } from '@angular/material/core';
         MatIconModule,
         MatBadgeModule,
         MatMenuModule,
-    ],
+        LightSpeedActionsComponent
+    ]
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
   view: View;
   enableCode: boolean;
   enablePermissions: boolean;
-  private params: ICellRendererParams & ViewActionsParams;
+  params: ICellRendererParams & ViewActionsParams;
 
   agInit(params: ICellRendererParams & ViewActionsParams): void {
     this.params = params;

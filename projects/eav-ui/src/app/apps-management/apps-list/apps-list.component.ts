@@ -34,6 +34,8 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { FeaturesModule } from '../../features/features.module';
 
 const logThis = false;
 
@@ -55,6 +57,8 @@ const logThis = false;
     MatBadgeModule,
     RouterOutlet,
     AsyncPipe,
+    // WIP 2dm - needed for the lightspeed buttons to work
+    FeaturesModule,
   ],
   providers: [
     AppsListService,
@@ -67,7 +71,6 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
   isAddFromFolderEnabled$: Observable<boolean>;
-  lightspeedEnabled$ = new BehaviorSubject<boolean>(false);
 
   private refreshApps$ = new Subject<void>();
 
@@ -106,7 +109,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     this.isAddFromFolderEnabled$ = this.featuresService
       .isEnabled$(FeatureNames.AppSyncWithSiteFiles)
       .pipe(isAddFromFolderEnabledLog.pipe(), isAddFromFolderEnabledLog.shareReplay());
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
+    
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
       map(([apps, fabOpen, isAddFromFolderEnabled]) => {
         return { apps, fabOpen, isAddFromFolderEnabled};
@@ -196,17 +199,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<App> = {
@@ -216,31 +209,19 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           })(),
         },
         {
-          field: 'Show',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'icons no-outline'.split(' '),
-          sortable: true,
-          filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return !app.IsHidden;
-          },
+          ...ColumnDefinitions.IconShow,
+          // valueGetter: (params) => {
+          //   const app: App = params.data;
+          //   return !app.IsHidden;
+          // },
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
           cellClass: 'apps-list-primary-action highlight'.split(' '),
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Name;
-          },
           onCellClicked: (params) => {
             const app: App = params.data;
             this.openApp(app);
@@ -259,42 +240,20 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Folder',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Folder;
-          },
         },
         {
+          ...ColumnDefinitions.Character,
           field: 'Version',
           width: 78,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Version;
-          },
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Items',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'number-cell no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Items;
-          },
         },
         {
+          // todo: boolean
           field: 'HasCodeWarnings',
           headerName: 'Code',
           width: 70,
@@ -306,20 +265,14 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
         },
         {
-          width: 122,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
-          cellRendererParams: (() => {
-            const params: AppsListActionsParams = {
-              onDelete: (app) => this.deleteApp(app),
-              onFlush: (app) => this.flushApp(app),
-              onOpenLightspeed: (app) => this.openLightSpeed(app),
-              lightspeedEnabled: () => this.lightspeedEnabled$.value,
-              openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            onDelete: (app) => this.deleteApp(app),
+            onFlush: (app) => this.flushApp(app),
+            onOpenLightspeed: (app) => this.openLightSpeed(<App> app),
+            openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
+          } satisfies AppsListActionsParams,
         },
       ],
     };

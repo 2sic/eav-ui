@@ -15,6 +15,7 @@ import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
@@ -130,17 +131,7 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Permission> = {
@@ -150,62 +141,29 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
           })(),
         },
         {
-          field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Name',
+          field: 'Title',
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const permission: Permission = params.data;
             this.editPermission(permission);
           },
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Title;
-          },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Identity',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Identity;
-          },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Condition',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Condition;
-          },
         },
         {
+          ...ColumnDefinitions.Character,
           field: 'Grant',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Grant;
-          },
         },
         {
-          width: 42,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: PermissionsActionsComponent,
           cellRendererParams: (() => {
             const params: PermissionsActionsParams = {

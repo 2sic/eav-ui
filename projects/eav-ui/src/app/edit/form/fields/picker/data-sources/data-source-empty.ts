@@ -11,9 +11,9 @@ const logThis = false;
  * It should only show the information that it's not configured.
  */
 @Injectable()
-export class PickerDataSourceEmpty extends DataSourceBase {
+export class DataSourceEmpty extends DataSourceBase {
   constructor() {
-    super(new EavLogger('PickerDataSourceEmpty', logThis));
+    super(new EavLogger('DataSourceEmpty', logThis));
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {
@@ -22,8 +22,10 @@ export class PickerDataSourceEmpty extends DataSourceBase {
     this.loading$ = of(false);
 
     const dummyItem: PickerItem = {
-      Value: '',
-      Text: 'No options available',
+      value: '',
+      label: 'No options available',
+      notSelectable: true,
+      isMessage: true,
     };
 
     this.data$ = of([dummyItem]).pipe(

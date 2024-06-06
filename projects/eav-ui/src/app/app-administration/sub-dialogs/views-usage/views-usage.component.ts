@@ -12,6 +12,7 @@ import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClass
 import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
 import { buildData } from './views-usage.helpers';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
@@ -75,46 +76,30 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
+          ...ColumnDefinitions.Id,
           field: 'Block',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: blockIdValueGetter,
           cellRenderer: ViewsUsageIdComponent,
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Module',
-          width: 76,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agTextColumnFilter',
+          width: 80,
           valueGetter: moduleIdValueGetter,
           cellClass: moduleIdClassGetter,
           cellRenderer: ViewsUsageIdComponent,
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Page',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: pageIdValueGetter,
           cellClass: pageIdClassGetter,
           cellRenderer: ViewsUsageIdComponent,
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const data: ViewUsageData = params.data;
-            return data.Name;
-          },
           cellClass: nameClassGetter,
           onCellClicked: onNameClicked,
         },
@@ -124,10 +109,6 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const data: ViewUsageData = params.data;
-            return data.Language;
-          },
         },
         {
           field: 'Status',
@@ -135,10 +116,6 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           cellClass: 'icon no-outline'.split(' '),
           filter: ViewsUsageStatusFilterComponent,
           cellRenderer: statusCellRenderer,
-          valueGetter: (params) => {
-            const data: ViewUsageData = params.data;
-            return data.Status;
-          },
         },
       ],
     };

@@ -11,6 +11,7 @@ import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
+import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 
 @Component({
     selector: WrappersConstants.DropzoneWrapper,
@@ -23,6 +24,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
         DropzoneModule,
         AsyncPipe,
     ],
+    providers: [PickerTreeDataHelper],
 })
 export class DropzoneWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

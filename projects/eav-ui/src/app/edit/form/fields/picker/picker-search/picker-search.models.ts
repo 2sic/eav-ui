@@ -1,4 +1,4 @@
-import { UiPickerModeTree, PickerItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 
 export interface PickerSearchViewModel {
@@ -10,9 +10,8 @@ export interface PickerSearchViewModel {
   enableDelete: boolean;
   enableRemove: boolean;
   enableReselect: boolean;
-  pickerTreeConfiguration: UiPickerModeTree;
   selectedItems: PickerItem[];
-  availableItems: PickerItem[];
+  options: PickerItem[];
   error: string;
   controlStatus: ControlStatus<string | string[]>;
   freeTextMode: boolean;
@@ -21,8 +20,6 @@ export interface PickerSearchViewModel {
   selectedItem: PickerItem;
   filteredItems: PickerItem[];
 
-  // added for easier readability
-  showItemEditButtons: boolean;
   isTreeDisplayMode: boolean;
-  csDisabled: boolean;
+  isDisabled: boolean;
 }

@@ -6,7 +6,6 @@ import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
 import { FieldValue } from './FieldValue';
-import { PickerItem } from './EntityInfo';
 
 export interface ExperimentalProps {
   entityGuid: string;
@@ -23,6 +22,7 @@ export interface ExperimentalProps {
   featureDisabledWarning(featureNameId: string): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getSettings(name: string): any;
-  getEntityCache(guids?: string[]): PickerItem[];
-  getEntityCache$(guids?: string[]): Observable<PickerItem[]>;
+  // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
+  // getEntityCache(guids?: string[]): PickerItem[];
+  // getEntityCache$(guids?: string[]): Observable<PickerItem[]>;
 }

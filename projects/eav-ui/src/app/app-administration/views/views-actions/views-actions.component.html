@@ -5,7 +5,7 @@
       <mat-icon>code</mat-icon>
     </div>
   }
-  @if (view.EditInfo.DisableEdit || !enableCode) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon>code</mat-icon>
     </div>
@@ -20,7 +20,7 @@
       </mat-icon>
     </div>
   }
-  @if (view.EditInfo.DisableMetadata) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
         [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" aria-hidden="false">
@@ -38,7 +38,7 @@
       </mat-icon>
     </div>
   }
-  @if (view.EditInfo.DisableEdit || !enablePermissions) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
         [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
@@ -46,6 +46,8 @@
       </mat-icon>
     </div>
   }
+
+  <app-lightspeed-action [lightSpeedOwner]="view" [params]="params" [lightSpeed]="view.lightSpeed"></app-lightspeed-action>
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

@@ -7,7 +7,6 @@ export interface DevRestBaseViewModel {
   currentScenario: Scenario;
   root: string;
   itemId?: number;
-  // itemGuid: string;
   apiCalls: ApiCall[];
   folder: string;
   moduleId: number;

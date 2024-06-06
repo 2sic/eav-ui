@@ -220,14 +220,17 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [
         !contentType.Properties
           ? {
-            ContentTypeName: eavConstants.contentTypes.contentType,
-            For: {
-              Target: eavConstants.metadata.contentType.target,
-              TargetType: eavConstants.metadata.contentType.targetType,
-              String: contentType.StaticName,
-            },
-            Prefill: { Label: contentType.Name, Description: contentType.Description },
-          }
+              ContentTypeName: eavConstants.contentTypes.contentType,
+              For: {
+                Target: eavConstants.metadata.contentType.target,
+                TargetType: eavConstants.metadata.contentType.targetType,
+                String: contentType.StaticName,
+              },
+              Prefill: {
+                Label: contentType.Name,
+                Description: contentType.Description
+              },
+            }
           : { EntityId: contentType.Properties.Id }
       ],
     };

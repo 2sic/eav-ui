@@ -68,7 +68,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     [InputTypeConstants.BooleanTristate]: BooleanTristateComponent,
     [InputTypeConstants.CustomDefault]: CustomDefaultComponent,
     [InputTypeConstants.CustomJsonEditor]: CustomJsonEditorComponent,
-    [InputTypeConstants.DatetimeDefault]: DatetimeDefaultComponent,
+    [InputTypeConstants.DateTimeDefault]: DatetimeDefaultComponent,
     [InputTypeConstants.EmptyDefault]: EmptyDefaultComponent,
     [InputTypeConstants.EmptyMessage]: EmptyMessageComponent,
     [InputTypeConstants.EntityContentBlocks]: EntityContentBlockComponent,
@@ -88,9 +88,9 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
 
     /** WIP pickers */
-    [InputTypeConstants.WIPEntityPicker]: EntityPickerComponent,
-    [InputTypeConstants.WIPStringPicker]: StringPickerComponent,
-    [InputTypeConstants.WIPNumberPicker]: NumberDropdownComponent,
+    [InputTypeConstants.EntityPicker]: EntityPickerComponent,
+    [InputTypeConstants.StringPicker]: StringPickerComponent,
+    [InputTypeConstants.NumberPicker]: NumberDropdownComponent,
   };
 
   constructor(

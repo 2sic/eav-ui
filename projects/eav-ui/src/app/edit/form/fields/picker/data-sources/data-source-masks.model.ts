@@ -5,7 +5,7 @@
  */
 export interface DataSourceMasks {
   /** Will be true if any of the values require mask-processing - pre-calculated for performance */
-  hasMask: boolean;
+  hasPlaceholders: boolean;
 
   /** The tooltip value or mask */
   tooltip: string;

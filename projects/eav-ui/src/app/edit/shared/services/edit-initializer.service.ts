@@ -15,14 +15,19 @@ import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHel
 import { FormValues } from '../models';
 import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { EavContentType } from '../models/eav/eav-content-type';
+import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = false;
 
 @Injectable()
-export class EditInitializerService implements OnDestroy {
+export class EditInitializerService extends ServiceBase implements OnDestroy {
   loaded$ = new BehaviorSubject(false);
 
   private initialFormValues: Record<string, FormValues> = {};
@@ -39,21 +44,59 @@ export class EditInitializerService implements OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
-  ) { }
+  ) {
+    super(new EavLogger('EditInitializerService', logThis));
+  }
 
   ngOnDestroy(): void {
     this.loaded$.complete();
   }
 
   fetchFormData(): void {
-    const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
+    const inbound = convertUrlToForm((this.route.snapshot.params as EditParams).items);
+    // 2024-06-01 2dm adding index to round trip
+    const form = {
+      ...inbound,
+      items: inbound.items.map((item, index) => {
+        return {
+          ...item,
+          clientId: index,
+        };
+      }),
+    }
+    this.log.a('fetchFormData', [form]);
+
     const editItems = JSON.stringify(form.items);
-    this.eavService.fetchFormData(editItems).subscribe(formData => {
-      // SDV: comment it
+    this.eavService.fetchFormData(editItems).subscribe(dataFromBackend => {
+      // 2dm 2024-06-01 preserve prefill and client-data from original
+      // and stop relying on round-trip to keep it
+      const formData: EavEditLoadDto = {
+        ...dataFromBackend,
+        Items: dataFromBackend.Items.map(item => {
+          // try to find original item
+          const originalItem = form.items.find(i => i.clientId === item.Header.clientId);
+          this.log.a('fetchFormData - remix', [item, originalItem]);
+
+          return originalItem == null
+            ? item
+            : {
+                ...item,
+                Header: {
+                  ...item.Header,
+                  Prefill: originalItem.Prefill,
+                  ClientData: originalItem.ClientData,
+                }
+              };
+        }),
+      };
+      this.log.a('fetchFormData - after remix', [formData]);
+
+
+      // SDV: document what's happening here
       this.featuresService.load(formData.Context);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.importLoadedData(formData);
@@ -137,6 +180,8 @@ export class EditInitializerService implements OnDestroy {
   }
 
   private initMissingValues(): void {
+    const l = this.log.fn('initMissingValues');
+
     const eavConfig = this.eavService.eavConfig;
     const formId = eavConfig.formId;
     const items = this.itemService.getItems(eavConfig.itemGuids);
@@ -152,11 +197,13 @@ export class EditInitializerService implements OnDestroy {
       const contentType = this.contentTypeService.getContentType(contentTypeId);
 
       for (const ctAttribute of contentType.Attributes) {
+        const currentName = ctAttribute.Name;
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' and 'empty-message' don't save value
-        // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
-        // if (empties.includes(inputType?.Type)) { continue; }
-        if (EmptyFieldHelpers.isEmptyInputType(inputType?.Type)) { continue; }
+        const isEmptyType = EmptyFieldHelpers.isEmptyInputType(inputType?.Type);
+        l.a(`Attribute: '${currentName}' InputType: '${inputType?.Type}' isEmptyType: '${isEmptyType}'`);
+
+        if (isEmptyType)
+          continue;
 
         const logic = FieldLogicManager.singleton().getOrUnknown(inputType?.Type);
 
@@ -167,14 +214,20 @@ export class EditInitializerService implements OnDestroy {
         );
 
         if (languages.length === 0) {
+          l.a(`${currentName} languages none, simple init`);
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
           if (logic.isValueEmpty(firstValue, isCreateMode)) {
           // if (InputFieldHelpers.isValueEmpty(firstValue, this.eavService)) {
             this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
           }
         } else {
+          l.a(`${currentName} languages many, complex init`);
+
+          // check if there is a value for the generic / all language
+          const disableI18n = inputType?.DisableI18n;
           const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Strict);
-          if (!inputType?.DisableI18n && noLanguageValue !== undefined) {
+          l.values({ disableI18n, noLanguageValue }, currentName);
+          if (!disableI18n && noLanguageValue !== undefined) {
             // move * value to defaultLanguage
             const transactionItem = this.itemService.removeItemAttributeDimension(item.Entity.Guid, ctAttribute.Name, '*', true);
             this.itemService.addItemAttributeValue(
@@ -187,6 +240,7 @@ export class EditInitializerService implements OnDestroy {
               false,
               transactionItem,
             );
+            l.a(`${currentName} exit`);
             continue;
           }
 
@@ -197,8 +251,10 @@ export class EditInitializerService implements OnDestroy {
             BestValueModes.Strict,
           );
 
-          // if (InputFieldHelpers.isValueEmpty(defaultLanguageValue, this.eavService)) {
-          if (logic.isValueEmpty(defaultLanguageValue, isCreateMode)) {
+        
+          const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
+          l.values({ currentName, valueIsEmpty, defaultLanguageValue, isCreateMode }, currentName);
+          if (valueIsEmpty) {
             const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
 
             // 2022-08-15 2dm added this

@@ -6,6 +6,8 @@ const base = 'restapi';
 export class GoToDevRest {
   static routeQuery = 'restapiquery';
   static routeData = 'restapidata';
+  static routeWebApi = 'restapiwebapi';
+
 
   static navLabel = 'Rest-Api';
   static icon = 'code-curly';
@@ -22,6 +24,13 @@ export class GoToDevRest {
     icon: GoToDevRest.icon,
     svgIcon: true,
     path: GoToDevRest.routeQuery
+  };
+
+  static routeWebApiDefinition = {
+    name: GoToDevRest.navLabel,
+    icon: GoToDevRest.icon,
+    svgIcon: true,
+    path: GoToDevRest.routeWebApi
   };
 
   static paramTypeName: 'contentTypeStaticName';

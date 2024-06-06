@@ -22,7 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 
 @Component({
-  selector: InputTypeConstants.DatetimeDefault,
+  selector: InputTypeConstants.DateTimeDefault,
   templateUrl: './datetime-default.component.html',
   styleUrls: ['./datetime-default.component.scss'],
   standalone: true,

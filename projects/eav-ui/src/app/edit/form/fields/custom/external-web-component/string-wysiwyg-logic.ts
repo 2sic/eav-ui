@@ -60,7 +60,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
   private fixImageUrls(value: FieldValue, tools: FieldLogicTools): FieldValue {
     if (typeof value !== 'string') return value;
     if (value.indexOf('data-cmsid="file:') < 0) return value;
-    console.log('2dm - found cmsid in wysiwyg value', value);
+    // console.log('2dm - found cmsid in wysiwyg value', value);
     return value;
   }
 }

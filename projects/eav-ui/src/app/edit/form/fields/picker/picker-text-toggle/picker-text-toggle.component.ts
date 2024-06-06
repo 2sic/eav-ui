@@ -8,6 +8,8 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
+// 2024-04-30 2dm Note: not going standalone yet, as the styling is then off
+// must find out how to import the styles correctly to continue
 @Component({
     selector: 'app-picker-toggle-text',
     templateUrl: './picker-text-toggle.component.html',

@@ -2,8 +2,7 @@ import { PickerStateAdapter } from "./picker-state-adapter";
 import { convertArrayToString } from "../picker.helpers";
 import { EavService } from "../../../../shared/services";
 import { Injectable } from '@angular/core';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data/entity-cache.service';
-import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 const logThis = false;
@@ -12,13 +11,13 @@ const logThis = false;
 export class PickerStringStateAdapter extends PickerStateAdapter {
   constructor(
     eavService: EavService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
+    entityCacheService: PickerDataCacheService,
+    // stringQueryCacheService: StringQueryCacheService,
   ) {
     super(
       eavService,
       entityCacheService,
-      stringQueryCacheService,
+      // stringQueryCacheService,
       new EavLogger('PickerStringStateAdapter', logThis),
     );
   }

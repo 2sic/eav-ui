@@ -1,19 +1,20 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model";
-import { DeleteEntityProps } from "../picker.models";
+import { DeleteEntityProps } from "../models/picker.models";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
 import { FieldMask, GeneralHelpers } from "../../../../shared/helpers";
-import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings } from "projects/edit-types";
+import { FieldSettings, PickerItem } from "projects/edit-types";
 import { EntityService, EavService, EditRoutingService } from "../../../../shared/services";
-import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerComponent } from '../picker.component';
+import { DataSourceBase } from '../data-sources/data-source-base';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   private createEntityTypes: string = '';
@@ -22,12 +23,13 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
   constructor(
-    public entityCacheService: EntityCacheService,  // DI
+    public entityCacheService: PickerDataCacheService,  // DI
     public entityService: EntityService, // DI
     public eavService: EavService, // DI
     public editRoutingService: EditRoutingService, // DI
     protected translate: TranslateService, // DI
     public snackBar: MatSnackBar,
+    protected dataSource: DataSourceBase,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
@@ -92,22 +94,38 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
           settings.EntityType,
           this.group.controls,
           () => {
-            this.availableItems$.next(null);
+            this.optionsOrHints$.next(null);
             this.updateAddNew();
           },
           null,
           this.eavService.eavConfig,
           this.config,
         );
-        this.availableItems$.next(null);
+        this.optionsOrHints$.next(null);
         this.updateAddNew();
       })
     );
   }
 
+
+  getDataFromSource(): Observable<PickerItem[]> {
+    return this.dataSource.data$;
+  }
+
+  initPrefetch(prefetchGuids: string[]): void {
+    this.dataSource.initPrefetch(prefetchGuids);
+  }
+
+  forceReloadData(missingData: string[]): void {
+    this.dataSource.addToRefresh(missingData);
+  }
+
+
+
+
   destroy(): void {
     this.settings$.complete();
-
+    this.dataSource.destroy();
     super.destroy();
   }
 
@@ -138,25 +156,28 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
       };
     } else {
-      const entity = this.availableItems$.value.find(item => item.Value === editParams.entityGuid);
-      if (entity != null) {
-        form = {
-          items: [{ EntityId: entity.Id }],
-        };
-      } else {
-        form = {
-          items: [{ EntityId: editParams.entityId }],
-        };
-      }
+      const entity = this.optionsOrHints$.value.find(item => item.value === editParams.entityGuid);
+      // if (entity != null) {
+      //   form = {
+      //     items: [{ EntityId: entity.id }],
+      //   };
+      // } else {
+      //   form = {
+      //     items: [{ EntityId: editParams.entityId }],
+      //   };
+      // }
+      form = {
+        items: [{ EntityId: entity?.id ?? editParams.entityId }],
+      };
     }
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   deleteItem(props: DeleteEntityProps): void {
     this.log.add('deleteItem', props);
-    const entity = this.availableItems$.value.find(item => item.Value === props.entityGuid);
-    const id = entity.Id;
-    const title = entity.Text;
+    const entity = this.optionsOrHints$.value.find(item => item.value === props.entityGuid);
+    const id = entity.id;
+    const title = entity.label;
     const contentType = this.contentType;
     const parentId = this.config.entityId;
     const parentField = this.config.fieldName;

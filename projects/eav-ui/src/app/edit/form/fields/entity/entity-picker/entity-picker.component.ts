@@ -15,10 +15,10 @@ import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
-    selector: InputTypeConstants.WIPEntityPicker,
+    selector: InputTypeConstants.EntityPicker,
     templateUrl: '../../picker/picker.component.html',
     styleUrls: ['../../picker/picker.component.scss'],
     providers: pickerProviders,

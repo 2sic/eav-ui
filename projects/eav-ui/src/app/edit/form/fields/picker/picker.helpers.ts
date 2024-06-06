@@ -4,20 +4,22 @@ import { guidRegex } from '../../../../shared/constants/guid.constants';
 export function equalizeSelectedItems(
   fieldValue: string | string[],
   separator: string,
-  Options: DropdownOption[] // Options are used only for legacy usecase's where the value is an empty string
+  dropdownOptions: DropdownOption[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
-  const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator, Options) : fieldValue;
+  const currentValueAsArray = typeof fieldValue === 'string'
+    ? convertValueToArray(fieldValue, separator, dropdownOptions)
+    : fieldValue;
 
   const selectedEntities = currentValueAsArray.map(value => {
     const result: PickerItem = {
       // if it's a free text value or not found, disable edit and delete
-      _disableEdit: true,
-      _disableDelete: true,
+      noEdit: true,
+      noDelete: true,
       // either the real value or null if text-field or not found
-      Id: null,
-      Text: value,
-      _tooltip: `${value}`,
-      Value: value,
+      id: null,
+      label: value,
+      tooltip: `${value}`,
+      value: value,
     };
     return result;
   });
@@ -26,9 +28,12 @@ export function equalizeSelectedItems(
 }
 
 /** Convert string value in string array if a value is type string */
-export function convertValueToArray(value: string | string[], separator: string, Options?: DropdownOption[]): string[] {
+export function convertValueToArray(value: string | string[], separator: string, dropdownOptions?: DropdownOption[]): string[] {
   // this is for a usecase where the value is an empty string etc. label:value/value:label selection in string dropdown field configuration
-  if (value == "" && Options?.some(o => o.value == "")) return [""];
+  // 2024-04-29 2dm - remove this, as the following line does the same without the second check
+  // ...probably a legacy thing
+  // clean-up ca. 2024-07-01 if all remains stable #cleanup-picker
+  // if (value == "" && dropdownOptions?.some(o => o.value == "")) return [""];
   if (value == "") return [];
   else if (!value) return []; 
 

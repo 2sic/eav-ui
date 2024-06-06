@@ -24,8 +24,11 @@ export function convertFormToUrl(form: EditForm) {
     const asGroup = item as ItemInListIdentifier;
     const asItem = item as ItemEditIdentifier;
     const asInboundParams = item as ItemIdentifierInbound;
-    const fields = asInboundParams.UiFields;
-    const parameters = asInboundParams.Parameters;
+    // Fields/Parameters can come from two places
+    // When a link is inbound from the page, it will use UiFields/Parameters
+    // If it's from the Admin-UI itself, it should use the newer / deeper ClientData
+    const fields = asInboundParams.UiFields ?? item.ClientData?.fields;
+    const parameters = asInboundParams.Parameters ?? item.ClientData?.parameters;
     // Group- or Inner-Item
     if (asGroup.Parent) {
       formUrl += GROUP_PREFIX + toOrderedParams([
@@ -50,6 +53,12 @@ export function convertFormToUrl(form: EditForm) {
       // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
       // I actually think that prefill should be supported, because it can also transport more parameters
       // formUrl += prefill2UrlParams(groupItem.Prefill, fields);
+
+      // 2024-05-30 2dm reactivating prefill on edit, for scenarios where new fields were added
+      // and for ephemeral control fields
+      // 2024-06-01 2dm re-disabled, since this also affects links coming in from the page
+      // so this could be an unexpected breaking change...
+      // formUrl += prefill2UrlParams(asItem.Prefill);
 
     } else if ((item as ItemAddIdentifier).ContentTypeName) {
       // Add Item
@@ -105,15 +114,8 @@ function getParamForOldMetadata(addItem: ItemAddIdentifier) {
   ]);
 }
 
-function prefill2UrlParams(prefill: Record<string, string>) {
+function prefill2UrlParams(prefill: Record<string, unknown>) {
   return obj2UrlParams(prefill, PREFILL_PREFIX);
-  // let result = '';
-  // if (!prefill) return result;
-  // for (const [key, value] of Object.entries(prefill)) {
-  //   if (value == null) continue;
-  //   result += `${VAL_SEPARATOR}${PREFILL_PREFIX}${key}~${paramEncode(value.toString())}`;
-  // }
-  // return result;
 }
 
 function obj2UrlParams(obj: Record<string, unknown>, prefix: string) {
@@ -126,7 +128,7 @@ function obj2UrlParams(obj: Record<string, unknown>, prefix: string) {
   return result;
 }
 
-function prefillFromUrlParams(url: string, addTo: Record<string, string>): Record<string, string> {
+function prefillFromUrlParams(url: string, addTo: Record<string, unknown>): Record<string, unknown> {
   const result = addTo ?? {} as Record<string, string>;
   if (url == null) return result;
   const prefillParams = url.split(LIST_SEPARATOR);

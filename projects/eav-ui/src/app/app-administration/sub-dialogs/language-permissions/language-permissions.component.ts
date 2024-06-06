@@ -1,8 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, Observable, Subscription } from 'rxjs';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
@@ -12,6 +12,7 @@ import { IdFieldParams } from '../../../shared/components/id-field/id-field.mode
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
@@ -91,17 +92,9 @@ export class LanguagePermissionsComponent extends BaseComponent implements OnIni
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.Id,
+          field: 'Code',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const language: SiteLanguagePermissions = params.data;
-            return language.Code;
-          },
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguagePermissions> = {
@@ -111,22 +104,16 @@ export class LanguagePermissionsComponent extends BaseComponent implements OnIni
           })(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           valueGetter: (params) => {
             const language: SiteLanguagePermissions = params.data;
             return language.Culture;
           },
         },
         {
-          width: 42,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: LanguagesPermissionsActionsComponent,
           cellRendererParams: (() => {
             const params: LanguagesPermissionsActionsParams = {

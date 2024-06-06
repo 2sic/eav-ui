@@ -21,6 +21,7 @@ import { FormulaValueCorrections } from './helpers/formula-value-corrections.hel
 import { FormulaPromiseHandler } from './formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { Title } from '@angular/platform-browser';
 
 /**
  * Formula engine is responsible for running formulas and returning the result.
@@ -94,19 +95,19 @@ export class FormulaEngine implements OnDestroy {
 
         switch (formula.target) {
           case FormulaTargets.ListItemLabel:
-            item.Text = formulaResult.value as string;
+            item.label = formulaResult.value as string;
             break;
           case FormulaTargets.ListItemDisabled:
-            item._disableSelect = formulaResult.value as boolean;
+            item.notSelectable = formulaResult.value as boolean;
             break;
           case FormulaTargets.ListItemTooltip:
-            item._tooltip = formulaResult.value as string;
+            item.tooltip = formulaResult.value as string;
             break;
           case FormulaTargets.ListItemInformation:
-            item._information = formulaResult.value as string;
+            item.infoBox = formulaResult.value as string;
             break;
           case FormulaTargets.ListItemHelpLink:
-            item._helpLink = formulaResult.value as string;
+            item.helpLink = formulaResult.value as string;
             break;
         }
       }

@@ -5,7 +5,7 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
-import { DeleteEntityProps } from '../../picker/picker.models';
+import { DeleteEntityProps } from '../../picker/models/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';

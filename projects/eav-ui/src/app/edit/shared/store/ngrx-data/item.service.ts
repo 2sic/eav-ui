@@ -11,9 +11,13 @@ import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, 
 import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 import { ItemEditIdentifier, ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseDataService<EavItem> {
+  log = new EavLogger('ItemService', logThis);
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
   }
@@ -262,6 +266,7 @@ export class ItemService extends BaseDataService<EavItem> {
     languages: Language[],
     defaultLanguage: string,
   ): FieldValue {
+    const l = this.log.fn<FieldValue>('setDefaultValue', `Name: ${ctAttribute.Name}`, [item, ctAttribute, inputType, settings, languages, defaultLanguage]);
     const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(

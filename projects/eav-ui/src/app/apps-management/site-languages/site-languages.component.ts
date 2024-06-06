@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap, tap } from 'rxjs';
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -14,6 +14,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
   selector: 'app-site-languages',
@@ -75,17 +76,9 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.Id,
+          field: 'Code',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const language: SiteLanguage = params.data;
-            return language.Code;
-          },
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguage> = {
@@ -95,17 +88,10 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           })(),
         },
         {
-          field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action highlight no-outline'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Name',
+          field: 'Culture',
           sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const language: SiteLanguage = params.data;
-            return language.Culture;
-          },
           onCellClicked: (params) => {
             const language: SiteLanguage = params.data;
             this.toggleLanguage(language, !language.IsEnabled);

@@ -3,16 +3,16 @@ import { map, Observable } from 'rxjs';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerViewModel } from './picker.models';
+import { PickerViewModel } from './models/picker.models';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
-import { StringFieldDataSource } from './data-sources/string-field-data-source';
-import { QueryFieldDataSource } from './data-sources/query-field-data-source';
+import { DataSourceEntity } from './data-sources/data-source-entity';
+import { DataSourceString } from './data-sources/data-source-string';
+import { DataSourceQuery } from './data-sources/data-source-query';
 import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
 import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
 import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
-import { PickerDataSourceEmpty } from './data-sources/picker-data-source-empty';
+import { DataSourceEmpty } from './data-sources/data-source-empty';
 import { PickerStateAdapter } from './adapters/picker-state-adapter';
 import { PickerEntityStateAdapter } from './adapters/picker-entity-state-adapter';
 import { PickerStringStateAdapter } from './adapters/picker-string-state-adapter';
@@ -29,10 +29,10 @@ const logThis = false;
  * ...and when opened the second time, they will show an empty dropdown.
  */
 export const pickerProviders = [
-  StringFieldDataSource,
-  EntityFieldDataSource,
-  QueryFieldDataSource,
-  PickerDataSourceEmpty,
+  DataSourceString,
+  DataSourceEntity,
+  DataSourceQuery,
+  DataSourceEmpty,
 
   PickerStringSourceAdapter,
   PickerEntitySourceAdapter,

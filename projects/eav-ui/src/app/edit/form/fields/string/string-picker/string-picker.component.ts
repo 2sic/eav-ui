@@ -4,7 +4,7 @@ import { EavService, EditRoutingService, FieldsSettingsService } from '../../../
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
-import { DeleteEntityProps } from '../../picker/picker.models';
+import { DeleteEntityProps } from '../../picker/models/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { StringPickerLogic } from './string-picker-logic';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
@@ -20,7 +20,7 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 const logThis = false;
 
 @Component({
-    selector: InputTypeConstants.WIPStringPicker,
+    selector: InputTypeConstants.StringPicker,
     templateUrl: '../../picker/picker.component.html',
     styleUrls: ['../../picker/picker.component.scss'],
     providers: pickerProviders,
@@ -93,7 +93,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
       source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
 
-    
+
     state.init();
     source.init('StringPickerComponent.createPickerAdapters');
     this.pickerData = new PickerData(

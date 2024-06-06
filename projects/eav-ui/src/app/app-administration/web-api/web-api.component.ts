@@ -1,11 +1,11 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
-import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../../create-file-dialog';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -13,8 +13,8 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
-import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -149,42 +149,64 @@ export class WebApiComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: 'Folder',
+          headerName: 'Endpoint',
+          field: 'endpointPath',
           flex: 2,
           minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+        },
+        {
+          headerName: 'Edition',
+          field: 'edition',
+          flex: 1,
+          minWidth: 100,
           cellClass: 'no-outline',
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.folder;
-          },
         },
         {
-          field: 'Name',
+          headerName: 'Forder2',
+          field: 'folder',
+          flex: 1,
+          minWidth: 100,
+          cellClass: 'no-outline',
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+        },
+        {
+          headerName: 'Name',
+          field: 'name',
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.name;
-          },
         },
+        // {
+        //   field: 'Type',
+        //   flex: 1,
+        //   minWidth: 100,
+        //   cellClass: 'no-outline',
+        //   sortable: true,
+        //   filter: BooleanFilterComponent,
+        //   valueGetter: (params) => {
+        //     const api: WebApi = params.data;
+        //     return api.isShared;
+        //   },
+        //   cellRenderer: WebApiTypeComponent,
+        // },
         {
-          field: 'Type',
-          flex: 1,
-          minWidth: 250,
+          headerName: 'Compiled',
+          field: 'isCompiled',
+          width: 100,
+          cellRenderer: TrueFalseComponent,
           cellClass: 'no-outline',
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const api: WebApi = params.data;
-            return api.isShared;
-          },
-          cellRenderer: WebApiTypeComponent,
         },
         {
           width: 82,

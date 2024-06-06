@@ -1,10 +1,12 @@
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog eav-no-scrollbar">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">Using REST with API <code>{{ vm.webApi?.name }}</code></div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
+  <div class="eav-dialog eav-no-scrollbar" >
+    <div mat-mdc-dialog-title>
+      <div class="dialog-title-box">
+        <div>Using REST with API <code>{{ vm.webApi?.name }}</code></div>
+        <!-- <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+          <mat-icon>close</mat-icon>
+        </button> -->
+      </div>
     </div>
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>

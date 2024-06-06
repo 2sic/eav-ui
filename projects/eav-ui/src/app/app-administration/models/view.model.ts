@@ -1,3 +1,4 @@
+import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { MetadataItemShort } from '../../metadata';
 import { EditInfo } from '../../shared/models/edit-info';
 import { PermissionsCount } from './permissions-count.model';
@@ -22,6 +23,9 @@ export interface View {
   /** How often this is used in ContentBlocks */
   Used: number;
   ViewNameInUrl: string;
+
+  /** new 17.10 */
+  lightSpeed?: LightSpeedInfo;
 }
 
 export interface ViewEntity {

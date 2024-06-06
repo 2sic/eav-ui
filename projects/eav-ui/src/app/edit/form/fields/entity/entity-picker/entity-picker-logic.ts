@@ -1,4 +1,4 @@
-import { FieldSettings, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
+import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
@@ -7,7 +7,7 @@ import { PickerConfigModels } from '../../picker/constants/picker-config-model.c
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 
 export class EntityPickerLogic extends FieldLogicBase {
-  name = InputTypeConstants.WIPEntityPicker;
+  name = InputTypeConstants.EntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     let dataSources: EavEntity[] = [];
@@ -85,7 +85,7 @@ export class EntityPickerLogic extends FieldLogicBase {
       const pickerTreeConfiguration: UiPickerModeTree = {
         Title: uiPickerModeTree.Title ?? '',
         ConfigModel: PickerConfigModels.UiPickerModeTree,
-        TreeRelationship: uiPickerModeTree.TreeRelationship ?? 'parent-child',
+        TreeRelationship: uiPickerModeTree.TreeRelationship ?? RelationshipParentChild,
         TreeBranchesStream: uiPickerModeTree.TreeBranchesStream ?? 'Default',
         TreeLeavesStream: uiPickerModeTree.TreeLeavesStream ?? 'Default',
         TreeParentIdField: uiPickerModeTree.TreeParentIdField ?? 'Id',

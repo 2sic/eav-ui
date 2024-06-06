@@ -32,6 +32,10 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureDetailService } from '../features/services/feature-detail.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { EavLogger } from '../shared/logging/eav-logger';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+
+const logThis = false;
 
 @Component({
   selector: 'app-metadata',
@@ -80,19 +84,30 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route);
+    super(router, route, new EavLogger('MetadataComponent', logThis));
   }
 
   ngOnInit() {
     this.fetchFor();
     this.fetchMetadata();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchMetadata(); }));
-
-    const filteredRecs$ = this.metadataSet$.pipe(
-      map((set) => set.Recommendations.filter(r => set.Items.filter(i => i._Type.Id === r.Id).length < r.Count)),
+    this.subscription.add(
+      this.refreshOnChildClosedShallow().subscribe(() => { this.fetchMetadata(); })
     );
 
+    const logFilteredRecs = this.log.rxTap('filteredRecs$');
+    this.metadataSet$.subscribe((set) => {
+      this.log.add('test 2dm', set);
+    });
+
+    const filteredRecs$ = this.metadataSet$.pipe(
+      logFilteredRecs.pipe(),
+      map((set) => set.Recommendations.filter(r => set.Items.filter(i => i._Type.Id === r.Id).length < r.Count)),
+      logFilteredRecs.map(),
+    );
+
+    const logViewModel = this.log.rxTap('viewModel$');
     this.viewModel$ = combineLatest([this.metadataSet$, filteredRecs$, this.itemFor$, this.fabOpen$]).pipe(
+      logViewModel.pipe(),
       map(([metadata, recommendations, itemFor, fabOpen]) => {
         const viewModel: MetadataViewModel = {
           metadata: metadata.Items,
@@ -102,10 +117,12 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
         };
         return viewModel;
       }),
+      logViewModel.map(),
     );
   }
 
   ngOnDestroy() {
+    this.log.add('destroying');
     this.metadataSet$.complete();
     this.itemFor$.complete();
     this.fabOpen$.complete();
@@ -152,7 +169,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
       width: '650px',
     });
     metadataDialogRef.afterClosed().subscribe((contentType?: string) => {
-      if (contentType == null) { return; }
+      if (contentType == null) return;
       this.createMetadataForm(contentType);
     });
   }
@@ -192,20 +209,29 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   private fetchMetadata() {
-    this.metadataService.getMetadata(this.targetType, this.keyType, this.key).pipe(
-      take(1),
-      map(metadata => {
-        metadata.Recommendations.forEach(r => {
-          if (r.Icon?.startsWith('base64:')) {
-            r.Icon = r.Icon.replace('base64:', '');
-            r.Icon = window.atob(r.Icon);
-            // used for coloring black icons to white
-            r.Icon = r.Icon.replace('fill="#000000"', 'fill="#ffffff"');
-          }
-        });
-        return metadata;
-      })
-    ).subscribe(this.metadataSet$);
+    const logGetMetadata = this.log.rxTap('getMetadata');
+    this.metadataService.getMetadata(this.targetType, this.keyType, this.key)
+      .pipe(
+        logGetMetadata.pipe(),
+        take(1),
+        map(metadata => {
+          metadata.Recommendations.forEach(r => {
+            if (r.Icon?.startsWith('base64:')) {
+              r.Icon = r.Icon.replace('base64:', '');
+              r.Icon = window.atob(r.Icon);
+              // used for coloring black icons to white
+              r.Icon = r.Icon.replace('fill="#000000"', 'fill="#ffffff"');
+            }
+          });
+          return metadata;
+        }),
+        logGetMetadata.map(),
+      )
+      // 2024-05-30 2dm - this standard shorthand seems to fail
+      // for reasons unknown to me. I've replaced it with the longhand
+      // The problem occurs when the metadataSet$ is updated after the initial load.
+      // .subscribe(this.metadataSet$);
+      .subscribe(data => this.metadataSet$.next(data));
   }
 
   private editMetadata(metadata: MetadataItem) {
@@ -230,9 +256,8 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
         width: '400px',
       });
       confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
-        if (isConfirmed) {
+        if (isConfirmed)
           this.deleteMetadata(metadata, true);
-        }
       });
       return;
     }
@@ -254,17 +279,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const metadata: MetadataItem = params.data;
-            return metadata.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<MetadataItem> = {
@@ -274,30 +289,17 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
           })(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Title',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
-          sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const metadata: MetadataItem = params.data;
-            return metadata.Title;
-          },
           onCellClicked: (params) => {
             const metadata: MetadataItem = params.data;
             this.editMetadata(metadata);
           },
         },
         {
+          ...ColumnDefinitions.TextWide,
           headerName: 'Content Type',
           field: 'ContentType',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: (params) => {
             const metadata: MetadataItem = params.data;
             return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
@@ -305,9 +307,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
           cellRenderer: MetadataContentTypeComponent,
         },
         {
-          width: 42,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: MetadataActionsComponent,
           cellRendererParams: (() => {
             const params: MetadataActionsParams = {

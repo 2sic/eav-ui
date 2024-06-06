@@ -1,6 +1,9 @@
 import { DropdownOption } from '../../../../../../../../edit-types';
 
-/** Takes current value and dropdownValues string from settings and calculates options for dropdown */
+/**
+ * For String-Picker field - will prepare settings (usually in the form of multiline-CSV)
+ * and convert them to options, for further use in the picker. 
+ */
 export function calculateDropdownOptions(
   currentValue: string,
   type: 'string' | 'number',

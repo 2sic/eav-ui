@@ -15,13 +15,14 @@ import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
 import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
@@ -33,12 +34,13 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { SourceService } from '../../../code-editor/services/source.service';
+import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
+import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 
 @Component({
   selector: 'app-edit-dialog-main',
   templateUrl: './edit-dialog-main.component.html',
   styleUrls: ['./edit-dialog-main.component.scss'],
-  providers: [EditRoutingService, FormsStateService, FormulaDesignerService, SourceService],
   standalone: true,
   imports: [
     SharedComponentsModule,
@@ -56,6 +58,7 @@ import { SourceService } from '../../../code-editor/services/source.service';
     AsyncPipe,
     TranslateModule,
   ],
+  providers: [EditRoutingService, FormsStateService, FormulaDesignerService, SourceService, PickerTreeDataService, PickerTreeDataHelper],
 })
 export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
@@ -82,10 +85,10 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
     private formsStateService: FormsStateService,
-    private entityCacheService: EntityCacheService,
+    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
-    private stringQueryCacheService: StringQueryCacheService,
+    // private stringQueryCacheService: StringQueryCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
     super();
@@ -160,7 +163,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
       this.entityCacheService.clearCache();
       this.adamCacheService.clearCache();
       this.linkCacheService.clearCache();
-      this.stringQueryCacheService.clearCache();
+      // this.stringQueryCacheService.clearCache();
     }
     super.ngOnDestroy();
   }

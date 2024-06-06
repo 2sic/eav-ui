@@ -1,23 +1,22 @@
 import { PickerStateAdapter } from "./picker-state-adapter";
 import { EavService } from "../../../../shared/services";
 import { Injectable } from '@angular/core';
-import { StringQueryCacheService } from '../../../../shared/store/ngrx-data/string-query-cache.service';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data/entity-cache.service';
+import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Injectable()
 export class PickerEntityStateAdapter extends PickerStateAdapter {
   constructor(
     eavService: EavService,
-    entityCacheService: EntityCacheService,
-    stringQueryCacheService: StringQueryCacheService,
+    entityCacheService: PickerDataCacheService,
+    // stringQueryCacheService: StringQueryCacheService,
   ) {
     super(
       eavService,
       entityCacheService,
-      stringQueryCacheService,
+      // stringQueryCacheService,
       new EavLogger('PickerEntityStateAdapter', logThis),
     );
   }

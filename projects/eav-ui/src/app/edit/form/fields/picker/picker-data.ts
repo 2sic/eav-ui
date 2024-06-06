@@ -16,7 +16,7 @@ export class PickerData extends ServiceBase {
     public source: PickerSourceAdapter,
     private translate: TranslateService,
   ) {
-    super(new EavLogger('PickerData', false));
+    super(new EavLogger('PickerData', logThis));
     // TODO: @SDV include this take(1) and remove this.subscriptions after fixing an issue of why 
     // labels don't show on on picker list (or picker search if we added new items in picker list...)
 
@@ -27,7 +27,7 @@ export class PickerData extends ServiceBase {
     // previous code
     // this.subscriptions.add(state.selectedItems$/*.pipe(take(1))*/.subscribe(items => {
     this.subscriptions.add(state.selectedItems$.pipe(take(1)).subscribe(items => {
-      source.setPrefetchData(items.map(item => item.Value));
+      source.initPrefetch(items.map(item => item.value));
     }));
 
     this.selectedItems$ = combineLatest([
@@ -54,19 +54,19 @@ export class PickerData extends ServiceBase {
     translate: TranslateService,
   ): PickerItem[] {
     const selectedEntities = selectedItems.map(item => {
-      const entity = data.find(e => e.Value === item.Value);
+      const entity = data.find(e => e.value === item.value);
       if (!entity) {
         return item;
       } else {
-        const text = entity.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+        const text = entity.label ?? translate.instant('Fields.Picker.EntityNotFound');
         return this.createPickerItem(
-          entity.Id,
-          entity.Value,
+          entity.id,
+          entity.value,
           text,
-          entity._tooltip ?? `${text} (${entity.Value})`,
-          entity._information ?? '',
-          entity._disableEdit === true,
-          entity._disableDelete === true,
+          entity.tooltip ?? `${text} (${entity.value})`,
+          entity.infoBox ?? '',
+          entity.noEdit === true,
+          entity.noDelete === true,
           false,
         );
       }
@@ -77,14 +77,14 @@ export class PickerData extends ServiceBase {
 
   private createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
     return {
-      Id: id,
-      Value: value,
-      Text: text,
-      _tooltip: tooltip,
-      _information: information,
-      _disableEdit: disableEdit,
-      _disableDelete: disableDelete,
-      _disableSelect: disableSelect,
+      id: id,
+      value: value,
+      label: text,
+      tooltip: tooltip,
+      infoBox: information,
+      noEdit: disableEdit,
+      noDelete: disableDelete,
+      notSelectable: disableSelect,
     } as PickerItem;
   }
 }

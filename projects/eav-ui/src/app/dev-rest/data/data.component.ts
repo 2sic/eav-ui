@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
-import { PickerItem } from '../../../../../edit-types';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
 import { EavService, EntityService, QueryService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
@@ -26,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 import { ContentType } from '../../app-administration/models';
+import { EntityBasic } from '../../edit/shared/models/entity-basic';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 
@@ -109,7 +109,8 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     );
 
     // Get an item of this type for building urls
-    const itemOfThisType$ = entityService.reactiveEntities(
+    const noDataFound: EntityBasic = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
+    const itemOfThisType$ = entityService.getEntities$(
       contentType$.pipe(
         filter(ct => !!ct),
         map(ct => ({ contentTypeName: ct.StaticName })),
@@ -118,22 +119,35 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
       map(list => list.length
         ? list[0]
         // we need a dummy in case nothing is found, otherwise the observables stop
-        : { Id: 0, Value: 'no data found', Text: 'no data found' } as PickerItem),
+        : noDataFound),
     );
 
     // Prepare everything for use in the template
     // Note that we need to mix multiple combineLatest, because a combineLatest can only take 6 streams
     this.viewModel$ = combineLatest([
-      combineLatest([contentType$, this.scenario$, this.permissions$]),
-      combineLatest([root$, itemOfThisType$, this.dialogSettings$]),
+      combineLatest([
+        contentType$,
+        this.scenario$,
+        this.permissions$
+      ]),
+      combineLatest([
+        root$,
+        itemOfThisType$,
+        this.dialogSettings$
+      ]),
     ]).pipe(
-      map(([[contentType, scenario, permissions], [root, item, diag]]) => ({
-        ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
-        contentType,
-        itemId: item.Id,
-        itemGuid: item.Value,
-        apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),
-      })),
+      map(([[contentType, scenario, permissions], [root, item, diag]]) => {
+        var result: DevRestDataViewModel = {
+        // return ({
+          ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
+          contentType,
+          itemId: item.Id,
+          // 2024-04-26 2dm - believe this is never used, so removed it #cleanup-picker
+          // itemGuid: item.Guid, //Value,
+          apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),
+        };//);
+        return result;
+      }),
     );
 
   }

@@ -1,13 +1,18 @@
 import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DeleteEntityProps } from '../picker.models';
+import { DeleteEntityProps } from '../models/picker.models';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';
 
 export abstract class PickerSourceAdapterBase extends ServiceBase implements PickerSourceAdapter {
-  public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
+  /**
+   * The options to show.
+   * Can be different from the underlying data, since it may have error or loading-entries.
+   */
+  public optionsOrHints$ = new BehaviorSubject<PickerItem[]>(null);
+
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
@@ -27,14 +32,14 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   onAfterViewInit(): void { }
 
   destroy() {
-    this.availableItems$.complete();
+    this.optionsOrHints$.complete();
     this.editEntityGuid$.complete();
     super.destroy();
   }
 
-  getDataFromSource(): Observable<PickerItem[]> { return null; }
+  abstract getDataFromSource(): Observable<PickerItem[]>;
 
-  abstract setPrefetchData(missingData: string[]): void;
+  abstract initPrefetch(prefetchGuids: string[]): void;
 
   abstract forceReloadData(missingData: string[]): void;
 
@@ -45,14 +50,28 @@ export abstract class PickerSourceAdapterBase extends ServiceBase implements Pic
   abstract fetchItems(): void;
 }
 
-/** Generate a placeholder item to show in the menu in case of error or loading */
+/** Generate a placeholder item to show in the list to show during loading or in case of error */
 export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
   const item: PickerItem = {
-    Text: translate.instant(i18nLabel) + (suffix ?? ''),
-    Value: null,
-    _disableSelect: true,
-    _disableDelete: true,
-    _disableEdit: true,
+    label: translate.instant(i18nLabel) + (suffix ?? ''),
+    value: null,
+    notSelectable: true,
+    isMessage: true,
+    noDelete: true,
+    noEdit: true,
+  };
+  return item;
+}
+
+/** Generate a placeholder item to show in the list to show during loading or in case of error */
+export function messagePickerItem(translate: TranslateService, i18nLabel: string, params?: object): PickerItem {
+  const item: PickerItem = {
+    label: translate.instant(i18nLabel, params),
+    value: null,
+    notSelectable: true,
+    isMessage: true,
+    noDelete: true,
+    noEdit: true,
   };
   return item;
 }

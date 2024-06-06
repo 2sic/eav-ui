@@ -15,12 +15,14 @@ export class StringDropdownLogic extends FieldLogicBase {
     fixedSettings._options = calculateDropdownOptions(value, this.type, fixedSettings.DropdownValuesFormat, fixedSettings.DropdownValues);
     fixedSettings.EntityType ??= '';
     fixedSettings.CreateTypes = fixedSettings.EntityType;
-    fixedSettings.AllowMultiValue ??= false;
     fixedSettings.EnableEdit ??= false;
     fixedSettings.EnableCreate ??= false;
     fixedSettings.EnableAddExisting ??= true;
-    fixedSettings.EnableRemove ??= fixedSettings.AllowMultiValue; //if multi-value is allowed, then we can remove, if not we can't
     fixedSettings.EnableDelete ??= false;
+    // if multi-value is ever allowed, then we must also enable remove
+    // since we're migrating to pickers, we don't plan to implement multi-value dropdowns here
+    fixedSettings.AllowMultiValue ??= false;
+    fixedSettings.EnableRemove ??= fixedSettings.AllowMultiValue;
     return fixedSettings;
   }
 }

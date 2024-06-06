@@ -1,10 +1,10 @@
 import { EntityMetadataMap } from '@ngrx/data';
 import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
-import { PickerItem } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, StringQueryCacheItem } from '../../models';
+import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
+import { IdentityUpperCaseId } from '../../models/identity-upper-case-id';
 
 export const entityMetadata: EntityMetadataMap = {
   GlobalConfig: {},
@@ -35,8 +35,9 @@ export const entityMetadata: EntityMetadataMap = {
   Prefetch: {
     selectId: prefetchSelectId,
   },
+  // Entity Cache is actually the PickerItem Cache, uses UpperCase Id
   EntityCache: {
-    selectId: entityCacheSelectId,
+    selectId: useLowerCaseId,
   },
   AdamCache: {
     selectId: adamCacheSelectId,
@@ -44,12 +45,13 @@ export const entityMetadata: EntityMetadataMap = {
   LinkCache: {
     selectId: linkCacheSelectId,
   },
-  StringQueryCache: {
-    selectId: stringQueryCacheSelectId,
-  },
+  // 2024-04-29 2dm removed this #cleanup-picker
+  // StringQueryCache: {
+  //   selectId: stringQueryCacheSelectId,
+  // },
 };
 
-export const pluralNames = {
+const pluralNames = {
   Feature: 'Features', // example
   PublishStatus: 'PublishStatuses',
 };
@@ -59,54 +61,60 @@ export const entityConfig = {
   pluralNames,
 };
 
-export function itemSelectId(item: EavItem): string {
+function itemSelectId(item: EavItem): string {
   return item?.Entity?.Guid;
 }
 
-export function featureSelectId(feature: Feature): string {
+function featureSelectId(feature: Feature): string {
   return feature?.Guid;
 }
 
-export function languageSelectId(language: Language): string {
+function languageSelectId(language: Language): string {
   return language?.NameId;
 }
 
-export function languageInstanceSelectId(languageInstance: LanguageInstance): number {
+function languageInstanceSelectId(languageInstance: LanguageInstance): number {
   return languageInstance?.formId;
 }
 
-export function contentTypeSelectId(contentType: EavContentType): string {
+function contentTypeSelectId(contentType: EavContentType): string {
   return contentType?.Id;
 }
 
-export function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
+function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
   return contentTypeItem?.Guid;
 }
 
-export function inputTypeSelectId(inputType: InputType): string {
+function inputTypeSelectId(inputType: InputType): string {
   return inputType?.Type;
 }
 
-export function publishStatusSelectId(publishStatus: PublishStatus): number {
+function publishStatusSelectId(publishStatus: PublishStatus): number {
   return publishStatus?.formId;
 }
 
-export function prefetchSelectId(entity: Prefetch): string {
+function prefetchSelectId(entity: Prefetch): string {
   return entity?._guid;
 }
 
-export function entityCacheSelectId(entity: PickerItem): number {
+// Select anything that's identified by an upper-case ID
+function useUpperCaseId(entity: IdentityUpperCaseId /* PickerItem */): number {
   return entity?.Id;
 }
 
-export function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {
+function useLowerCaseId(entity: { id: number } /* PickerItem */): number {
+  return entity?.id;
+}
+
+function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {
   return adamSnapshot?.Guid;
 }
 
-export function linkCacheSelectId(link: LinkCache): string {
+function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
 }
 
-export function stringQueryCacheSelectId(cacheItem: StringQueryCacheItem): string {
-  return cacheItem?.selector;
-}
+// 2024-04-29 2dm removed this #cleanup-picker
+// function stringQueryCacheSelectId(cacheItem: PickerStringQueryCacheItem): string {
+//   return cacheItem?.selector;
+// }

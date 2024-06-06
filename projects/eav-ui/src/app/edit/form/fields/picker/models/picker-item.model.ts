@@ -1,82 +1,70 @@
-export interface EntityForPicker {
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+
+export interface PickerItem {
+  /** The title to show in the dropdown */
+  label: string;
+  
+  /** The value to store */
+  value: string;
+
+  /**
+   * The entity Id, only used to enable edit etc. if the item is an entity.
+   */
+  id?: number;
+
   /**
    * Prevent edit of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
-   * That's why it has an underscore.
    */
-  _disableEdit?: boolean;
+  noEdit?: boolean;
 
   /**
    * Prevent delete of this item for whatever reason, v15
    * This property does not come from the server, but must be added by code.
-   * That's why it has an underscore.
    */
-  _disableDelete?: boolean;
+  noDelete?: boolean;
 
   /**
    * Prevent select of this item for whatever reason, v16
    * It was originally added so "no query" message will be shown in the dropdown.
    * This property does not come from the server, but must be added by code.
-   * That's why it has an underscore.
    */
-  _disableSelect?: boolean;
+  notSelectable?: boolean;
 
-  /** New in v15, sometimes included to indicate if it's from the current app */
-  AppId?: number;
-
-  /** The EntityId */
-  Id?: number;
-
-  /** The title to show in the dropdown */
-  Text: string;
-}
-
-export interface PickerItem extends EntityForPicker {
-
-  /** The value to store */
-  Value: string;
 
   /** 
    * The tooltip that is seen on hover over item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
-  _tooltip?: string;
+  tooltip?: string;
 
   /**
    * The data that is seen on click on information icon on item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
-  _information?: string;
+  infoBox?: string;
 
   /**
    * The data that is seen on click on help icon on item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
-  _helpLink?: string;
+  helpLink?: string;
 
   /**
    * The streamName is used for tree config when we have data from multiple streams and they have same Ids.
    * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
-  _streamName?: string;
+  sourceStreamName?: string;
 
-  data?: {
-    [key: string]: any;  
-  }
-}
+  /**
+   * Indicate that this item is an error or message, which means it should not be selectable and it should
+   * also not be filtered out.
+   */
+  isMessage?: boolean;
 
-export interface PickerTreeItem extends PickerItem {
-  Level: number;
-  Expandable: boolean;
-  // TODO: @SDV - CHECK IF THIS is correct, and if Parent is []
-  Children: PickerTreeItem[];
-  Parent: PickerTreeItem[];
-}
-
-export interface TreeItem {
-  [key: string]: any;
+  /**
+   * The data of the underlying original entity.
+   * Used in formulas and field masks for all properties.
+   */
+  data?: EntityBasicWithFields;
 }

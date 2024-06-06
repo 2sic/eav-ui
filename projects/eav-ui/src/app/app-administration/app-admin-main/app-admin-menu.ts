@@ -36,7 +36,12 @@ export const AppAdminMenu: NavItem[] = [
       },
     ]
   },
-  { name: 'Web API', path: 'web-api', icon: 'offline_bolt', svgIcon: false, tippy: 'WebApi' },
+  {
+    name: 'Web API', path: 'web-api', icon: 'offline_bolt', svgIcon: false, tippy: 'WebApi',
+    child: [
+      { ...GoToDevRest.routeWebApiDefinition, tippy: 'Rest-Api Queries' },
+    ]
+  },
   {
     name: 'App',
     path: 'app',

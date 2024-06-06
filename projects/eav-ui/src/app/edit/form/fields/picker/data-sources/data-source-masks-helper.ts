@@ -1,18 +1,19 @@
 import { FieldSettings, PickerItem } from 'projects/edit-types';
 import { DataSourceHelpers } from './data-source-helpers';
-import { QueryEntity } from '../../entity/entity-query/entity-query.models';
-import { DataSourceMasks } from './data-source-masks';
+import { DataSourceMasks } from './data-source-masks.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = true;
+const logThis = false;
 /**
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.
  */
 export class DataSourceMasksHelper extends ServiceBase {
-  constructor(private settings: FieldSettings, enableLog = logThis) {
-    super(new EavLogger('DataSourceMasksHelper', enableLog));
+  constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
+    super(new EavLogger('DataSourceMasksHelper', enableLog ?? parentLog.enableChildren));
+    this.log.add('constructor', 'settings', settings);
   }
 
   private helpers = new DataSourceHelpers();
@@ -20,9 +21,9 @@ export class DataSourceMasksHelper extends ServiceBase {
   private masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem(entity: QueryEntity, streamName: string | undefined, mustUseGuid: boolean): PickerItem {
+  entity2PickerItem(entity: EntityBasicWithFields, streamName: string | undefined, mustUseGuid: boolean): PickerItem {
     // Check if we have masks, if yes
-    const masks = this.getMasks(this.settings);
+    const masks = this.getMasks();
 
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
     const maybeValue = entity[masks.value];
@@ -41,16 +42,16 @@ export class DataSourceMasksHelper extends ServiceBase {
         : valueFieldValue + ' *'; // If there is not even a title, use the value with asterisk
 
     // If we don't have masks, we are done
-    if (!masks.hasMask) {
+    if (!masks.hasPlaceholders) {
       const result: PickerItem = {
-        Id: entity.Id,
+        id: entity.Id,
         data: entity,
-        Value: valueFieldValue,
-        Text: titleFieldValue,
-        _tooltip: masks.tooltip,
-        _information: masks.info,
-        _helpLink: masks.link,
-        _streamName: streamName ?? null,
+        value: valueFieldValue,
+        label: titleFieldValue,
+        tooltip: masks.tooltip,
+        infoBox: masks.info,
+        helpLink: masks.link,
+        sourceStreamName: streamName ?? null,
       };
       this.log.add('entity2PickerItem - no masks', result);
       return result;
@@ -63,27 +64,27 @@ export class DataSourceMasksHelper extends ServiceBase {
     const finalTitle = masks.label.includes('[') ? title : titleFieldValue;
 
     return {
-      Id: entity.Id,
+      id: entity.Id,
       data: entity,
-      Value: valueFieldValue,
-      Text: finalTitle,
-      _tooltip: tooltip,
-      _information: information,
-      _helpLink: helpLink,
-      _streamName: streamName ?? null,
+      value: valueFieldValue,
+      label: finalTitle,
+      tooltip: tooltip,
+      infoBox: information,
+      helpLink: helpLink,
+      sourceStreamName: streamName ?? null,
     } as PickerItem;
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
-  private parseMasks(masks: DataSourceMasks, entity: QueryEntity) {
+  private parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
     let tooltip = masks.tooltip;
     let information = masks.info;
     let helpLink = masks.link;
     let title = masks.label;
 
-    Object.keys(entity).forEach(key => {
+    Object.keys(data).forEach(key => {
       // must check for null and use '' instead
-      const value = entity[key] ?? '';
+      const value = data[key] ?? '';
 
       // replace all occurrences of [Item:Key] with value - should be case insensitive
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
@@ -96,27 +97,37 @@ export class DataSourceMasksHelper extends ServiceBase {
     return { title, tooltip, information, helpLink };
   }
 
-  getMasks(settings: FieldSettings) {
+  /** Get the mask - if possibly from current objects cache */
+  public getMasks() {
     if (!!this.masks) return this.masks;
-    this.masks = this.buildMasks(settings);
+    this.masks = this.buildMasks(this.settings);
     this.log.add('getMasks', this.masks);
     return this.masks;
   }
 
+  /** modify/patch the current objects mask */
+  public patchMasks(patch: Partial<DataSourceMasks>) {
+    this.masks = { ...this.getMasks(), ...patch };
+    this.log.add('patchMasks', this.masks);
+  }
+
   private buildMasks(settings: FieldSettings): DataSourceMasks {
-    const tooltipMask = !!settings.ItemTooltip ? this.helpers.cleanStringFromWysiwyg(settings.ItemTooltip) : '';
-    const infoMask = !!settings.ItemInformation ? this.helpers.cleanStringFromWysiwyg(settings.ItemInformation) : '';
+    this.log.add('buildMasks settings', settings);
+    const tooltipMask = !!settings.ItemTooltip ? this.helpers.stripHtml(settings.ItemTooltip) : '';
+    const infoMask = !!settings.ItemInformation ? this.helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
     const labelMask = settings.Label ?? '';
     const valueMask = settings.Value ?? '';
-    const hasMask = (tooltipMask + infoMask + linkMask + labelMask).includes('[');
-    return {
-      hasMask,
+    const hasPlaceholders = (tooltipMask + infoMask + linkMask + labelMask).includes('[');
+    const result: DataSourceMasks = {
+      hasPlaceholders,
       tooltip: tooltipMask,
       info: infoMask,
       link: linkMask,
       label: labelMask,
       value: valueMask,
-    } as DataSourceMasks;
+    };
+    this.log.add('buildMasks result', result);
+    return result;
   }
 }

@@ -1,3 +1,5 @@
+import { LightSpeedInfo } from './LightSpeedInfo';
+
 export interface App {
   AppRoot: string;
   AppSharedRoot: string;
@@ -10,19 +12,14 @@ export interface App {
   IsHidden: boolean;
   IsInherited: boolean;
   Items: number;
-  Lightspeed?: LightspeedEntityInfo;
+  /** LightSpeed info provided by the backend */
+  lightSpeed?: LightSpeedInfo;
   Name: string;
   Thumbnail: string | null;
   Version: string;
 
   /** New 16.02 */
   HasCodeWarnings?: boolean;
-}
-
-export interface LightspeedEntityInfo {
-  Id: number;
-  IsEnabled: boolean;
-  Title: string;
 }
 
 export interface PendingApp {
