@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NavItem } from '../../models/nav-item.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
@@ -15,6 +15,7 @@ import { TippyStandaloneDirective } from '../../directives/tippy-Standalone.dire
     MatIconModule,
     NgClass,
     RouterLink,
+    RouterLinkActive,
     TippyStandaloneDirective,
     NgIf,
   ],
@@ -22,7 +23,7 @@ import { TippyStandaloneDirective } from '../../directives/tippy-Standalone.dire
 export class NavItemListComponent implements OnInit {
   @Input() navItem!: NavItem;
   isOpenMenu = false;
-  constructor(private router: Router,) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.openChildMenu();

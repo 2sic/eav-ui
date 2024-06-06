@@ -53,7 +53,7 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     MatBadgeModule,
     AsyncPipe,
   ],
-  providers: [EntitiesService, MetadataService, FeatureDetailService]
+  providers: [EntitiesService, MetadataService, FeatureDetailService, ContentItemsService]
 })
 export class MetadataComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();

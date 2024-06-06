@@ -34,6 +34,7 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
         AsyncPipe,
         SxcGridModule,
     ],
+    providers: [ZoneService]
 })
 export class LanguagePermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
