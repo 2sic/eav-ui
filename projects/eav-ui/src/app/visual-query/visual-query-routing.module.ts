@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { edit } from '../edit/edit.matcher';
-import { VisualQueryComponent } from './visual-query.component';
 
 const routes: Routes = [
   {
-    path: '', component: VisualQueryComponent, children: [
+    path: '',
+    loadComponent: () => import('./visual-query.component').then(m => m.VisualQueryComponent),
+    children: [
       GoToDevRest.route,
       {
         matcher: edit,
