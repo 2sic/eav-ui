@@ -6,7 +6,10 @@ import { edit, refreshEdit } from './edit.matcher';
 
 const editRoutes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: editDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: editDialog },
+    children: [
       {
         matcher: edit,
         loadChildren: () => import('./edit.module').then(m => m.EditModule),

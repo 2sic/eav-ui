@@ -9,7 +9,13 @@ import { DevRestQueryComponent } from './query/query.component';
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: devRestDialog, title: 'REST API' }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: {
+      dialog: devRestDialog,
+      title: 'REST API'
+    },
+    children: [
       // 2dm 2024-03-19 should not be used any more, as now a primary route in /app
       // {
       //   path: `data/:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent, children: [
@@ -18,11 +24,16 @@ const routes: Routes = [
       // },
       /* This route is used in Visual Query to open REST as Dialog */
       {
-        path: `query/:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent, children: [
+        path: `query/:${GoToDevRest.paramQuery}`,
+        component: DevRestQueryComponent,
+        children: [
           GoToPermissions.route,
         ]
       },
-      { path: `custom/:${GoToDevRest.paramApiPath}`, component: DevRestApiComponent },
+      {
+        path: `custom/:${GoToDevRest.paramApiPath}`,
+        component: DevRestApiComponent
+      },
     ]
   },
 ];
