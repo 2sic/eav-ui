@@ -5,11 +5,27 @@ import { PublishMode, PublishModes } from '../../../shared/models';
 import { EavService } from '../../../shared/services';
 import { PublishStatusService } from '../../../shared/store/ngrx-data';
 import { PublishStatusDialogViewModel } from './publish-status-dialog.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-publish-status-dialog',
-  templateUrl: './publish-status-dialog.component.html',
-  styleUrls: ['./publish-status-dialog.component.scss'],
+    selector: 'app-publish-status-dialog',
+    templateUrl: './publish-status-dialog.component.html',
+    styleUrls: ['./publish-status-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        MatListModule,
+        NgClass,
+        ExtendedModule,
+        MatIconModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PublishStatusDialogComponent implements OnInit {
   PublishModes = PublishModes;

@@ -16,6 +16,9 @@ import { DataSourceEmpty } from './data-sources/data-source-empty';
 import { PickerStateAdapter } from './adapters/picker-state-adapter';
 import { PickerEntityStateAdapter } from './adapters/picker-entity-state-adapter';
 import { PickerStringStateAdapter } from './adapters/picker-string-state-adapter';
+import { AsyncPipe } from '@angular/common';
+import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
 
 const logThis = false;
 
@@ -41,10 +44,16 @@ export const pickerProviders = [
 ];
 
 @Component({
-  // selector: InputTypeConstants.EntityDefault,
-  templateUrl: './picker.component.html',
-  styleUrls: ['./picker.component.scss'],
-  providers: pickerProviders,
+    // selector: InputTypeConstants.EntityDefault,
+    templateUrl: './picker.component.html',
+    styleUrls: ['./picker.component.scss'],
+    providers: pickerProviders,
+    standalone: true,
+    imports: [
+        PickerPreviewComponent,
+        PickerDialogComponent,
+        AsyncPipe,
+    ],
 })
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;

@@ -13,11 +13,27 @@ import { AppInternalsService } from '../../services/app-internals.service';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../../models/app-internals.model';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-app-configuration-card',
-  templateUrl: './app-configuration-card.component.html',
-  styleUrls: ['./app-configuration-card.component.scss'],
+    selector: 'app-app-configuration-card',
+    templateUrl: './app-configuration-card.component.html',
+    styleUrls: ['./app-configuration-card.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        MatIconModule,
+        SharedComponentsModule,
+        NgTemplateOutlet,
+        MatButtonModule,
+        MatBadgeModule,
+        AsyncPipe,
+    ],
 })
 export class AppConfigurationCardComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;

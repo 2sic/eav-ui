@@ -46,7 +46,10 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 const logThis = false;
 
-@Directive({ selector: '[appFieldsBuilder]' })
+@Directive({
+    selector: '[appFieldsBuilder]',
+    standalone: true
+})
 export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
   @Input() group: UntypedFormGroup;
   private fieldConfigs: FieldConfigSet[] = [];

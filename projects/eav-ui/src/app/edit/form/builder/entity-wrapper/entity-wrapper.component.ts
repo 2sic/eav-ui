@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, Temp
 import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
@@ -15,11 +15,38 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService, F
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeViewModel } from './entity-wrapper.models';
+import { AsyncPipe } from '@angular/common';
+import { FieldsBuilderDirective } from '../fields-builder/fields-builder.directive';
+import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
+import { EntityTranslateMenuComponent } from './entity-translate-menu/entity-translate-menu.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-entity-wrapper',
-  templateUrl: './entity-wrapper.component.html',
-  styleUrls: ['./entity-wrapper.component.scss'],
+    selector: 'app-entity-wrapper',
+    templateUrl: './entity-wrapper.component.html',
+    styleUrls: ['./entity-wrapper.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        FlexModule,
+        MatIconModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        CdkDrag,
+        CdkDragHandle,
+        MatSlideToggleModule,
+        EntityTranslateMenuComponent,
+        ChangeAnchorTargetDirective,
+        FieldsBuilderDirective,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class EntityWrapperComponent extends BaseSubsinkComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;

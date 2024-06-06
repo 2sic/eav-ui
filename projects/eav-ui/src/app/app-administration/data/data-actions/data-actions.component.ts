@@ -4,11 +4,24 @@ import { Component } from '@angular/core';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { ContentType } from '../../models/content-type.model';
 import { DataActionsParams } from './data-actions.models';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-  selector: 'app-data-actions',
-  templateUrl: './data-actions.component.html',
-  styleUrls: ['./data-actions.component.scss'],
+    selector: 'app-data-actions',
+    templateUrl: './data-actions.component.html',
+    styleUrls: ['./data-actions.component.scss'],
+    standalone: true,
+    imports: [
+        MatRippleModule,
+        SharedComponentsModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatMenuModule,
+    ],
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
   contentType: ContentType;

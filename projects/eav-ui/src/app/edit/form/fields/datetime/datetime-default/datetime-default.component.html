@@ -1,7 +1,7 @@
-@if (viewModel | async; as vm) {  
+@if (viewModel | async; as vm) {
   @if (!vm.useTimePicker) {
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-      <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker" 
+      <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker"
         [placeholder]="vm.placeholder" [required]="vm.required" [value]="vm.controlStatus.value" (dateChange)="updateValue($event)">
       <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
       </mat-datepicker-toggle>
@@ -11,7 +11,7 @@
   }
   @if (vm.useTimePicker) {
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-      <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [owlDateTime]="owlPicker" 
+      <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [owlDateTime]="owlPicker"
         [placeholder]="vm.placeholder" [required]="vm.required" [value]="vm.controlStatus.value" (dateTimeChange)="updateValue($event)">
       <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" [tippy]="'Fields.DateTime.Open' | translate">
       </mat-datepicker-toggle>

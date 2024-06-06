@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { NgForm, FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, Subscription, switchMap, toArray } from 'rxjs';
@@ -17,11 +17,39 @@ import { ContentTypesFieldsService } from '../services/content-types-fields.serv
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { ReservedNamesValidatorDirective } from './reserved-names.directive';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
-  selector: 'app-edit-content-type-fields',
-  templateUrl: './edit-content-type-fields.component.html',
-  styleUrls: ['./edit-content-type-fields.component.scss'],
+    selector: 'app-edit-content-type-fields',
+    templateUrl: './edit-content-type-fields.component.html',
+    styleUrls: ['./edit-content-type-fields.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReservedNamesValidatorDirective,
+        MatSelectModule,
+        MatIconModule,
+        MatOptionModule,
+        NgClass,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+        TranslateModule,
+        FieldHintComponent,
+    ],
 })
 export class EditContentTypeFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -161,7 +189,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
     return this.inputTypeOptions.find(option => option.inputType === inputName);
   }
 
-  addSharedField() { 
+  addSharedField() {
     this.dialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
       width: '1600px',

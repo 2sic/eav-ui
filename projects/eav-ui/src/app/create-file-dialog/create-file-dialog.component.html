@@ -1,94 +1,95 @@
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog eav-no-scrollbar">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title eav-dialog-title-box">
-        <span>Create</span>
-        <span class="eav-file-name">{{
-          controls.finalName.value
-          || (controls.folder.value ? controls.folder.value.trim() + '/' : '')
+<div class="eav-dialog eav-no-scrollbar">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title eav-dialog-title-box">
+      <span>Create</span>
+      <span class="eav-file-name">{{
+        controls.finalName.value
+        || (controls.folder.value ? controls.folder.value.trim() + '/' : '')
         }}</span>
-      </div>
     </div>
-    <div class="eav-dialog-content">
-      <form [formGroup]="form" class="dialog-form">
-        <div class="dialog-form-content">
-          <div class="eav-field-container eav-multiple">
-            <!-- Platform -->
-            <div class="eav-multiple-field">
-              <mat-form-field color="accent" class="eav-form-field">
-                <mat-label>Platform</mat-label>
-                <mat-select formControlName="platform">
-                  @for (platform of vm.platforms; track platform) {
-                    <mat-option [value]="platform">
-                      {{ platform }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <!-- Purpose -->
-            <div class="eav-multiple-field">
-              <mat-form-field color="accent" class="eav-form-field">
-                <mat-label>Purpose</mat-label>
-                <mat-select formControlName="purpose">
-                  @for (purpose of vm.purposes; track purpose) {
-                    <mat-option [value]="purpose">
-                      {{ purpose }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <!-- Template -->
-          <div class="eav-field-container">
+  </div>
+  <div class="eav-dialog-content">
+    <form [formGroup]="form" class="dialog-form">
+      <div class="dialog-form-content">
+        <div class="eav-field-container eav-multiple">
+          <!-- Platform -->
+          <div class="eav-multiple-field">
             <mat-form-field color="accent" class="eav-form-field">
-              <mat-label>Template</mat-label>
-              <mat-select formControlName="templateKey">
-                @for (template of vm.templates; track template) {
-                  <mat-option [value]="template.Key">
-                    {{ template.Name }}
-                  </mat-option>
+              <mat-label>Platform</mat-label>
+              <mat-select formControlName="platform">
+                @for (platform of vm.platforms; track platform) {
+                <mat-option [value]="platform">
+                  {{ platform }}
+                </mat-option>
                 }
               </mat-select>
             </mat-form-field>
           </div>
-          <!-- Name -->
-          <div class="eav-field-container">
+          <!-- Purpose -->
+          <div class="eav-multiple-field">
             <mat-form-field color="accent" class="eav-form-field">
-              <mat-label>Name</mat-label>
-              <input matInput type="text" formControlName="name" required appMatInputAutofocus autofocusSelectValue="true">
+              <mat-label>Purpose</mat-label>
+              <mat-select formControlName="purpose">
+                @for (purpose of vm.purposes; track purpose) {
+                <mat-option [value]="purpose">
+                  {{ purpose }}
+                </mat-option>
+                }
+              </mat-select>
             </mat-form-field>
-            @if (controls.name.touched && controls.name.errors?.required) {
-              <app-field-hint [isError]="true">
-                This field is required
-              </app-field-hint>
-            }
           </div>
         </div>
-        <div class="dialog-form-actions">
-          @if (vm.loadingPreview) {
-            <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-            <div class="spacer"></div>
+        <!-- Template -->
+        <div class="eav-field-container">
+          <mat-form-field color="accent" class="eav-form-field">
+            <mat-label>Template</mat-label>
+            <mat-select formControlName="templateKey">
+              @for (template of vm.templates; track template) {
+              <mat-option [value]="template.Key">
+                {{ template.Name }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- Name -->
+        <div class="eav-field-container">
+          <mat-form-field color="accent" class="eav-form-field">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name" required appMatInputAutofocus
+              autofocusSelectValue="true">
+          </mat-form-field>
+          @if (controls.name.touched && controls.name.errors?.required) {
+          <app-field-hint [isError]="true">
+            This field is required
+          </app-field-hint>
           }
-          <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-          <button mat-raised-button type="button" color="accent"
-            [disabled]="!form.valid || vm.loadingPreview || !vm.previewValid" (click)="confirm()">
-            Create
-          </button>
         </div>
-        @if (vm.preview) {
-          <div class="eav-preview-label-box">
-            <label class="eav-preview-label" [ngClass]="{ 'disabled': vm.loadingPreview }">Preview</label>
-          </div>
-          <pre class="fancy-scrollbar-light" [ngClass]="{ 'disabled': vm.loadingPreview }">{{ vm.preview }}</pre>
+      </div>
+      <div class="dialog-form-actions">
+        @if (vm.loadingPreview) {
+        <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+        <div class="spacer"></div>
         }
-        @if (!vm.loadingPreview && vm.previewError) {
-          <div class="eav-preview-error">
-            {{ vm.previewError }}
-          </div>
-        }
-      </form>
-    </div>
+        <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button type="button" color="accent"
+          [disabled]="!form.valid || vm.loadingPreview || !vm.previewValid" (click)="confirm()">
+          Create
+        </button>
+      </div>
+      @if (vm.preview) {
+      <div class="eav-preview-label-box">
+        <label class="eav-preview-label" [ngClass]="{ 'disabled': vm.loadingPreview }">Preview</label>
+      </div>
+      <pre class="fancy-scrollbar-light" [ngClass]="{ 'disabled': vm.loadingPreview }">{{ vm.preview }}</pre>
+      }
+      @if (!vm.loadingPreview && vm.previewError) {
+      <div class="eav-preview-error">
+        {{ vm.previewError }}
+      </div>
+      }
+    </form>
   </div>
+</div>
 }

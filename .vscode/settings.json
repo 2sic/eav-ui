@@ -8,6 +8,7 @@
       "bullist",
       "cbid",
       "charmap",
+      "ecodev",
       "endregion",
       "guids",
       "jsonify",
@@ -16,6 +17,7 @@
       "numlist",
       "pastetext",
       "removeformat",
+      "sitewide",
       "tinymce"
     ],
 }

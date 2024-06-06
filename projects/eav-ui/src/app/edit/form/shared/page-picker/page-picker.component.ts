@@ -1,17 +1,38 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FieldValue, PagePickerResult } from '../../../../../../../edit-types';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { QueryService } from '../../../shared/services';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
 import { PageEntity, PagePickerDialogData, PagePickerViewModel, PageSearchItem, PageTreeItem } from './page-picker.models';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-page-picker',
-  templateUrl: './page-picker.component.html',
-  styleUrls: ['./page-picker.component.scss'],
+    selector: 'app-page-picker',
+    templateUrl: './page-picker.component.html',
+    styleUrls: ['./page-picker.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        NgTemplateOutlet,
+        NgClass,
+        ExtendedModule,
+        MatIconModule,
+        SharedComponentsModule,
+        MatDialogActions,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PagePickerComponent implements OnInit, OnDestroy {
   selected: number;

@@ -1,13 +1,30 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-export-app',
-  templateUrl: './export-app.component.html',
-  styleUrls: ['./export-app.component.scss'],
+    selector: 'app-export-app',
+    templateUrl: './export-app.component.html',
+    styleUrls: ['./export-app.component.scss'],
+    standalone: true,
+    imports: [
+        MatProgressSpinnerModule,
+        MatCheckboxModule,
+        FormsModule,
+        MatDialogActions,
+        MatButtonModule,
+        AsyncPipe,
+    ],
+    providers: [
+        ExportAppService,
+    ],
 })
 export class ExportAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -12,6 +12,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterOutlet } from '@angular/router';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
     selector: 'app-create-inherited-app',
@@ -29,6 +30,7 @@ import { RouterOutlet } from '@angular/router';
         MatDialogActions,
         MatButtonModule,
         AsyncPipe,
+        FieldHintComponent
     ],
     providers: [
         AppsListService,

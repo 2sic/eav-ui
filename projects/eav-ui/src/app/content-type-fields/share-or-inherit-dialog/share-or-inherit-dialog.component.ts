@@ -8,11 +8,33 @@ import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-i
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeaturesModule } from '../../features/features.module';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
 
 @Component({
-  selector: 'app-share-or-inherit-dialog',
-  templateUrl: './share-or-inherit-dialog.component.html',
-  styleUrls: ['./share-or-inherit-dialog.component.scss']
+    selector: 'app-share-or-inherit-dialog',
+    templateUrl: './share-or-inherit-dialog.component.html',
+    styleUrls: ['./share-or-inherit-dialog.component.scss'],
+    standalone: true,
+    imports: [
+      MatButtonModule,
+      SharedComponentsModule,
+      MatIconModule,
+      MatCardModule,
+      MatTableModule,
+      NgClass,
+      FeaturesModule,
+      AsyncPipe,
+      TranslateModule,
+      FeatureIconIndicatorComponent
+    ]
 })
 export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];

@@ -1,8 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { BaseComponent } from '../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
@@ -16,11 +16,32 @@ import { PermissionsActionsComponent } from './permissions-actions/permissions-a
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MetadataService } from './services/metadata.service';
+import { EntitiesService } from '../content-items/services/entities.service';
 
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
   styleUrls: ['./permissions.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    MatDialogActions,
+    AsyncPipe,
+  ],
+  providers: [
+    PermissionsService,
+    MetadataService,
+    EntitiesService,]
 })
 export class PermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
@@ -44,7 +65,7 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
 
     private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
-  ) { 
+  ) {
     super(router, route);
   }
 

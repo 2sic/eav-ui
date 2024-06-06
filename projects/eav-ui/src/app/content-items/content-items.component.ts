@@ -1,9 +1,9 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subject, Subscription, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -40,11 +40,26 @@ import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.compon
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
+import { AsyncPipe } from '@angular/common';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 
 @Component({
-  selector: 'app-content-items',
-  templateUrl: './content-items.component.html',
-  styleUrls: ['./content-items.component.scss'],
+    selector: 'app-content-items',
+    templateUrl: './content-items.component.html',
+    styleUrls: ['./content-items.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        AgGridModule,
+        MatDialogActions,
+        AsyncPipe,
+    ],
 })
 export class ContentItemsComponent extends BaseComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();

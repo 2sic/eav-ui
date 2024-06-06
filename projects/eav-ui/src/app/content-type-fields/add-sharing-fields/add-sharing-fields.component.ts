@@ -1,28 +1,56 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray, pipe } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormsModule } from '@angular/forms';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { FeaturesModule } from '../../features/features.module';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
   selector: 'app-add-sharing-fields',
   templateUrl: './add-sharing-fields.component.html',
-  styleUrls: ['./add-sharing-fields.component.scss']
+  styleUrls: ['./add-sharing-fields.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    SharedComponentsModule,
+    MatDialogActions,
+    FeaturesModule,
+    AsyncPipe,
+    TranslateModule,
+    FeatureIconIndicatorComponent,
+    FieldHintComponent,
+  ]
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
-  
+
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
   displayedSelectedFieldsColumns: string[] = ['newName', 'source', 'remove'];
 
@@ -63,7 +91,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     this.subscription.add(this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
       this.shareableFields.data = shareableFields;
     }));
-    this.subscription.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => { 
+    this.subscription.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => {
       const existingFields: ReservedNames = {};
       this.dialogData.existingFields.forEach(field => {
         existingFields[field.StaticName] = 'Field with this name already exists';
@@ -121,7 +149,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
           this.snackBar.open('Saved', null, { duration: 2000 });
           this.closeDialog();
         });
-       }
+      }
     });
   }
 

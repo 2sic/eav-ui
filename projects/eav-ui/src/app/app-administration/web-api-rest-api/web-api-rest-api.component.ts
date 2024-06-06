@@ -15,8 +15,16 @@ import { SourceService } from '../../code-editor/services/source.service';
 @Component({
   selector: 'app-web-api-rest-api',
   standalone: true,
-  imports: [MatSelectModule, MatButtonModule,
-    MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestQueryComponent, RouterOutlet],
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    DevRestQueryComponent,
+    RouterOutlet
+  ],
   providers: [PipelinesService],
   templateUrl: './web-api-rest-api.component.html',
   styleUrl: './web-api-rest-api.component.scss'

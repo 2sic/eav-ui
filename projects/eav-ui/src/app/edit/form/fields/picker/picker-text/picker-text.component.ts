@@ -1,24 +1,29 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PickerItem } from 'projects/edit-types';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EntityPickerTextViewModel } from './picker-text.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { PickerData } from '../picker-data';
 import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
-import { MatInputModule } from '@angular/material/input';
 import { AsyncPipe } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'app-picker-text',
-  standalone: true,
-  templateUrl: './picker-text.component.html',
-  styleUrls: ['./picker-text.component.scss'],
-  imports: [
-    AsyncPipe, // for | async
-    ReactiveFormsModule,
-    MatInputModule,
-  ]
+    selector: 'app-picker-text',
+    templateUrl: './picker-text.component.html',
+    styleUrls: ['./picker-text.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        AsyncPipe,
+    ],
 })
 export class PickerTextComponent implements OnInit {
   @Input() pickerData: PickerData;

@@ -3,11 +3,15 @@ import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGet
 import { Component } from '@angular/core';
 import { ViewUsageDataStatus } from '../../../models/view-usage-data.model';
 import { ViewsUsageStatusFilterModel } from './views-usage-status-filter.model';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
-  selector: 'app-views-usage-status-filter',
-  templateUrl: './views-usage-status-filter.component.html',
-  styleUrls: ['./views-usage-status-filter.component.scss'],
+    selector: 'app-views-usage-status-filter',
+    templateUrl: './views-usage-status-filter.component.html',
+    styleUrls: ['./views-usage-status-filter.component.scss'],
+    standalone: true,
+    imports: [MatRadioModule, FormsModule],
 })
 export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   isVisible = '';

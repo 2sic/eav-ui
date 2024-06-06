@@ -9,14 +9,23 @@ import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStateAdapter } from '../../picker/adapters/picker-state-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { AsyncPipe } from '@angular/common';
+import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
 
 @Component({
-  selector: InputTypeConstants.EntityContentBlocks,
-  templateUrl: '../../picker/picker.component.html',
-  styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
+    selector: InputTypeConstants.EntityContentBlocks,
+    templateUrl: '../../picker/picker.component.html',
+    styleUrls: ['../../picker/picker.component.scss'],
+    providers: pickerProviders,
+    standalone: true,
+    imports: [
+        PickerPreviewComponent,
+        PickerDialogComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({})
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {

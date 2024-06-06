@@ -10,9 +10,10 @@ import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
 
 @Component({
-  selector: InputTypeConstants.HyperlinkLibrary,
-  templateUrl: './hyperlink-library.component.html',
-  styleUrls: ['./hyperlink-library.component.scss'],
+    selector: InputTypeConstants.HyperlinkLibrary,
+    templateUrl: './hyperlink-library.component.html',
+    styleUrls: ['./hyperlink-library.component.scss'],
+    standalone: true,
 })
 @FieldMetadata({
   wrappers: [

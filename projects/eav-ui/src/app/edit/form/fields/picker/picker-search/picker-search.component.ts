@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { TranslateService } from '@ngx-translate/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, take } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -12,23 +12,50 @@ import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-buil
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatOptionModule } from '@angular/material/core';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 import { messagePickerItem } from '../adapters/picker-source-adapter-base';
+import { PickerTreeItem } from '../models/picker-tree.models';
+import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
+import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
 
 @Component({
-  selector: 'app-picker-search',
-  templateUrl: './picker-search.component.html',
-  styleUrls: ['./picker-search.component.scss'],
-  // imports: [
-  //   PickerHelpComponentComponent,
-  // ]
+    selector: 'app-picker-search',
+    templateUrl: './picker-search.component.html',
+    styleUrls: ['./picker-search.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        ExtendedModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatIconModule,
+        SharedComponentsModule,
+        MatOptionModule,
+        MatTreeModule,
+        AsyncPipe,
+        TranslateModule,
+        PickerIconHelpComponent,
+        PickerIconInfoComponent
+    ]
 })
 export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
@@ -92,7 +119,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     } else {
       this.optionItems$ = source.optionsOrHints$;
     }
-    
+
     const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
     const error$ = state.error$;
@@ -134,7 +161,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       this.treeDataService.init(fieldSettings$, this.optionItems$);
       this.treeHelper = this.treeDataService.treeHelper;
     });
-    
+
 
     // Create the default ViewModel used in the other modes
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
@@ -216,7 +243,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     //   }
     // } else
     //   returnValue = (value as PickerItem)?.label;
-    
+
     // If nothing yet, try to return label of selected or fallback to return the value
     // note: not quite sure, but I believe this is for scenarios where a manual entry was done
     // ...so it would return it, even though it's not in the list of available items
@@ -224,7 +251,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       return this.selectedItem?.value == value
         ? this.selectedItem?.label
         : value + " *";
-    this.log.add('displayFn result', value, returnValue);  
+    this.log.add('displayFn result', value, returnValue);
     return returnValue;
   }
 

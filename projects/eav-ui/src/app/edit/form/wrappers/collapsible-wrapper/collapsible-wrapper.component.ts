@@ -10,11 +10,29 @@ import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
+import { MatIconModule } from '@angular/material/icon';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: WrappersConstants.CollapsibleWrapper,
-  templateUrl: './collapsible-wrapper.component.html',
-  styleUrls: ['./collapsible-wrapper.component.scss'],
+    selector: WrappersConstants.CollapsibleWrapper,
+    templateUrl: './collapsible-wrapper.component.html',
+    styleUrls: ['./collapsible-wrapper.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        NgClass,
+        ExtendedModule,
+        FlexModule,
+        MatIconModule,
+        ChangeAnchorTargetDirective,
+        SharedComponentsModule,
+        AsyncPipe,
+    ],
 })
 export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

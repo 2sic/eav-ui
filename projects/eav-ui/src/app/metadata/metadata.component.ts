@@ -1,9 +1,9 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, Observable, startWith, take, tap } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { EavFor } from '../edit/shared/models/eav';
@@ -23,6 +23,15 @@ import { MetadataContentTypeComponent } from './metadata-content-type/metadata-c
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataDto, MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
 import { FeatureComponentBase } from '../features/shared/base-feature.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
+import {  AgGridModule } from '@ag-grid-community/angular';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { FeatureDetailService } from '../features/services/feature-detail.service';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 
@@ -32,6 +41,23 @@ const logThis = false;
   selector: 'app-metadata',
   templateUrl: './metadata.component.html',
   styleUrls: ['./metadata.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    SxcGridModule,
+    MatDialogActions,
+    EcoFabSpeedDialComponent,
+    NgClass,
+    EcoFabSpeedDialTriggerComponent,
+    EcoFabSpeedDialActionsComponent,
+    MatBadgeModule,
+    AsyncPipe,
+  ],
+  providers: [EntitiesService, MetadataService, FeatureDetailService, ContentItemsService]
 })
 export class MetadataComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
@@ -50,7 +76,6 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<MetadataComponent>,
-
     private metadataService: MetadataService,
     private snackBar: MatSnackBar,
     private entitiesService: EntitiesService,

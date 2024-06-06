@@ -8,11 +8,29 @@ import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from './translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData, TranslateMenuDialogViewModel } from './translate-menu-dialog.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-translate-menu-dialog',
-  templateUrl: './translate-menu-dialog.component.html',
-  styleUrls: ['./translate-menu-dialog.component.scss'],
+    selector: 'app-translate-menu-dialog',
+    templateUrl: './translate-menu-dialog.component.html',
+    styleUrls: ['./translate-menu-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        MatCardModule,
+        MatListModule,
+        NgClass,
+        ExtendedModule,
+        MatIconModule,
+        MatButtonModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;

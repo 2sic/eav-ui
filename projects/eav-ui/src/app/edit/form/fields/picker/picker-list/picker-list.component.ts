@@ -1,4 +1,4 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -8,11 +8,31 @@ import { FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { PickerItem } from 'projects/edit-types';
 import { PickerData } from '../picker-data';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-picker-list',
-  templateUrl: './picker-list.component.html',
-  styleUrls: ['./picker-list.component.scss'],
+    selector: 'app-picker-list',
+    templateUrl: './picker-list.component.html',
+    styleUrls: ['./picker-list.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        NgClass,
+        ExtendedModule,
+        CdkDropList,
+        CdkDrag,
+        MatIconModule,
+        SharedComponentsModule,
+        MatButtonModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PickerListComponent implements OnInit {
   @Input() pickerData: PickerData;

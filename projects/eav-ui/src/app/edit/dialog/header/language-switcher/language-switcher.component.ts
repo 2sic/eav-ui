@@ -8,11 +8,22 @@ import { getLanguageButtons } from './language-switcher.helpers';
 import { LanguageSwitcherViewModel } from './language-switcher.models';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-language-switcher',
-  templateUrl: './language-switcher.component.html',
-  styleUrls: ['./language-switcher.component.scss'],
+    selector: 'app-language-switcher',
+    templateUrl: './language-switcher.component.html',
+    styleUrls: ['./language-switcher.component.scss'],
+    standalone: true,
+    imports: [
+        SharedComponentsModule,
+        MatButtonModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;

@@ -5,11 +5,27 @@ import { EavService, FieldsSettingsService, EditRoutingService } from '../../../
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { PickerItem } from 'projects/edit-types';
 import { PickerData } from '../picker-data';
+import { MatListModule } from '@angular/material/list';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { MatRippleModule } from '@angular/material/core';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-picker-pills',
-  templateUrl: './picker-pills.component.html',
-  styleUrls: ['./picker-pills.component.scss'],
+    selector: 'app-picker-pills',
+    templateUrl: './picker-pills.component.html',
+    styleUrls: ['./picker-pills.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        NgClass,
+        ExtendedModule,
+        MatRippleModule,
+        FlexModule,
+        MatListModule,
+        AsyncPipe,
+    ],
 })
 export class PickerPillsComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
   @Input() pickerData: PickerData;

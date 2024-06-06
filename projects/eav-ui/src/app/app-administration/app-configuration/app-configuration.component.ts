@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
@@ -24,11 +24,34 @@ import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { MatBadgeModule } from '@angular/material/badge';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
   selector: 'app-app-configuration',
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatBadgeModule,
+    NgTemplateOutlet,
+    AppConfigurationCardComponent,
+    FeatureTextInfoComponent,
+    RouterOutlet,
+    AsyncPipe,
+  ],
+  providers: [FeatureDetailService ],
 })
 export class AppConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
@@ -108,18 +131,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
     });
-
   }
-
-  // @2dg New with a Subscription, onChanges is not needed ?
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (changes.dialogSettings != null) {
-  //     const appScope = this.dialogSettings.Context.App.SettingsScope;
-  //     this.isGlobal = appScope === AppScopes.Global;
-  //     this.isPrimary = appScope === AppScopes.Site;
-  //     this.isApp = appScope === AppScopes.App;
-  //   }
-  // }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
@@ -220,7 +232,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
-      });
+    });
   }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {

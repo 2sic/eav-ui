@@ -1,12 +1,31 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FileLocationFormValues } from '..';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
   selector: 'app-file-location-dialog',
   templateUrl: './file-location-dialog.component.html',
-  styleUrls: ['./file-location-dialog.component.scss']
+  styleUrls: ['./file-location-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    SharedComponentsModule,
+    MatButtonModule,
+    FieldHintComponent,
+  ]
 })
 export class FileLocationDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';

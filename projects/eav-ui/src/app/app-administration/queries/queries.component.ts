@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -21,11 +21,29 @@ import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions } from '@angular/material/dialog';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-  selector: 'app-queries',
-  templateUrl: './queries.component.html',
-  styleUrls: ['./queries.component.scss'],
+    selector: 'app-queries',
+    templateUrl: './queries.component.html',
+    styleUrls: ['./queries.component.scss'],
+    standalone: true,
+    imports: [
+        AgGridModule,
+        SharedComponentsModule,
+        MatDialogActions,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        AsyncPipe,
+        SxcGridModule,
+    ],
 })
 export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {
   enablePermissions!: boolean;

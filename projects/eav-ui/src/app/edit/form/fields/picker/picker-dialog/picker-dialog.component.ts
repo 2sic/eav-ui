@@ -8,11 +8,36 @@ import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-buil
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { PickerTextComponent } from '../picker-text/picker-text.component';
+import { PickerSearchComponent } from '../picker-search/picker-search.component';
+import { PickerListComponent } from '../picker-list/picker-list.component';
 
 @Component({
-  selector: 'app-picker-dialog',
-  templateUrl: './picker-dialog.component.html',
-  styleUrls: ['./picker-dialog.component.scss'],
+    selector: 'app-picker-dialog',
+    templateUrl: './picker-dialog.component.html',
+    styleUrls: ['./picker-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        PickerListComponent,
+        PickerSearchComponent,
+        PickerTextComponent,
+        FieldHelperTextComponent,
+        FlexModule,
+        MatButtonModule,
+        SharedComponentsModule,
+        MatMenuModule,
+        MatIconModule,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class PickerDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @Input() pickerData: PickerData;

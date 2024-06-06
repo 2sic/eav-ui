@@ -2,7 +2,7 @@ import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
@@ -32,11 +32,29 @@ import { FeatureNames } from '../../features/feature-names';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions } from '@angular/material/dialog';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-  selector: 'app-views',
-  templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss'],
+    selector: 'app-views',
+    templateUrl: './views.component.html',
+    styleUrls: ['./views.component.scss'],
+    standalone: true,
+    imports: [
+        AgGridModule,
+        SharedComponentsModule,
+        MatDialogActions,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        AsyncPipe,
+        SxcGridModule,
+    ],
 })
 export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   enableCode: boolean;

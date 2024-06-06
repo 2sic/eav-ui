@@ -5,11 +5,14 @@ import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: WrappersConstants.HiddenWrapper,
-  templateUrl: './hidden-wrapper.component.html',
-  styleUrls: ['./hidden-wrapper.component.scss'],
+    selector: WrappersConstants.HiddenWrapper,
+    templateUrl: './hidden-wrapper.component.html',
+    styleUrls: ['./hidden-wrapper.component.scss'],
+    standalone: true,
+    imports: [AsyncPipe],
 })
 export class HiddenWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

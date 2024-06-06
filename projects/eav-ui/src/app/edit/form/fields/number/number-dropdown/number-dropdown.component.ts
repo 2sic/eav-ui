@@ -7,11 +7,40 @@ import { NumberDropdownLogic } from './number-dropdown-logic';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { Observable, BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { NumberDropdownViewModel } from './number-dropdown.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: InputTypeConstants.NumberDropdown,
-  templateUrl: './number-dropdown.component.html',
-  styleUrls: ['./number-dropdown.component.scss'],
+    selector: InputTypeConstants.NumberDropdown,
+    templateUrl: './number-dropdown.component.html',
+    styleUrls: ['./number-dropdown.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatInputModule,
+        MatButtonModule,
+        NgClass,
+        ExtendedModule,
+        SharedComponentsModule,
+        MatIconModule,
+        FieldHelperTextComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

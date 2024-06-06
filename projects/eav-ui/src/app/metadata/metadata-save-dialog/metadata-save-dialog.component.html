@@ -11,7 +11,7 @@
       <form [formGroup]="form">
         <!-- Scope -->
         @if (advancedMode && guidedContentType) {
-          <mat-form-field color="accent" class="eav-form-field">
+          <mat-form-field color="accent" style="width: 100%;">
             <mat-label>Scope</mat-label>
             <mat-select formControlName="scope" [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
               @for (scopeOption of vm.scopeOptions; track scopeOption) {
@@ -28,7 +28,7 @@
           </app-field-hint>
         }
         <!-- Content Type of metadata item -->
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" style="width: 100%;">
           <mat-label>Content Type</mat-label>
           @if (guidedContentType) {
             <mat-select formControlName="contentType" required

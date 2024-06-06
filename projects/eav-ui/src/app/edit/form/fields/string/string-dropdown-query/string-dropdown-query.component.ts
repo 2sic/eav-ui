@@ -10,12 +10,21 @@ import { pickerProviders } from '../../picker/picker.component';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { AsyncPipe } from '@angular/common';
+import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 @Component({
-  selector: InputTypeConstants.StringDropdownQuery,
-  templateUrl: '../../picker/picker.component.html',
-  styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
+    selector: InputTypeConstants.StringDropdownQuery,
+    templateUrl: '../../picker/picker.component.html',
+    styleUrls: ['../../picker/picker.component.scss'],
+    providers: pickerProviders,
+    standalone: true,
+    imports: [
+        PickerPreviewComponent,
+        PickerDialogComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {

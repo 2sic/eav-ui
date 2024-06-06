@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
@@ -29,11 +29,37 @@ import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { AppDialogConfigService } from '../services';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogActions } from '@angular/material/dialog';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { AgGridModule } from '@ag-grid-community/angular';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-  selector: 'app-data',
-  templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss'],
+    selector: 'app-data',
+    templateUrl: './data.component.html',
+    styleUrls: ['./data.component.scss'],
+    standalone: true,
+    imports: [
+        AgGridModule,
+        SharedComponentsModule,
+        MatDialogActions,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterOutlet,
+        AsyncPipe,
+        SxcGridModule,
+    ],
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 

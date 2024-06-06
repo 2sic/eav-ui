@@ -11,7 +11,10 @@ import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
 
-@Directive({ selector: '[appPasteClipboardImage]' })
+@Directive({
+    selector: '[appPasteClipboardImage]',
+    standalone: true
+})
 export class PasteClipboardImageDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;

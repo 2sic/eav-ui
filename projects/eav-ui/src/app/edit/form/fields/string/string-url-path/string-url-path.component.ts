@@ -8,11 +8,25 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
 import { StringUrlPathViewModel } from './string-url-path.models';
+import { AsyncPipe } from '@angular/common';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: InputTypeConstants.StringUrlPath,
-  templateUrl: './string-url-path.component.html',
-  styleUrls: ['./string-url-path.component.scss'],
+    selector: InputTypeConstants.StringUrlPath,
+    templateUrl: './string-url-path.component.html',
+    styleUrls: ['./string-url-path.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        FieldHelperTextComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

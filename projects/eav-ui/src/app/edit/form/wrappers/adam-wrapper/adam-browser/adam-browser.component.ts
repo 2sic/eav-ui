@@ -16,27 +16,36 @@ import { AdamService, EditRoutingService, FieldsSettingsService, FormsStateServi
 import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AdamBrowserViewModel, AdamConfigInstance } from './adam-browser.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { PasteClipboardImageDirective } from '../../../../shared/directives/paste-clipboard-image.directive';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'adam-browser',
-  templateUrl: './adam-browser.component.html',
-  styleUrls: ['./adam-browser.component.scss'],
-  animations: [
-    trigger('adamShowAnimate', [
-      state('closed', style({
-        height: '0',
-        overflow: 'hidden',
-      })),
-      state('open', style({
-        height: '*',
-        overflow: 'hidden',
-      })),
-      transition('closed => open', [
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ]),
-    ]),
-  ]
+    // tslint:disable-next-line:component-selector
+    selector: 'adam-browser',
+    templateUrl: './adam-browser.component.html',
+    styleUrls: ['./adam-browser.component.scss'],
+    animations: [
+        trigger('adamShowAnimate', [
+            state('closed', style({
+                height: '0',
+                overflow: 'hidden',
+            })),
+            state('open', style({
+                height: '*',
+                overflow: 'hidden',
+            })),
+            transition('closed => open', [
+                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+            ]),
+        ]),
+    ],
+    standalone: true,
+    imports: [NgClass, ExtendedModule, SharedComponentsModule, MatIconModule, PasteClipboardImageDirective, MatBadgeModule, AsyncPipe, TranslateModule]
 })
 export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;

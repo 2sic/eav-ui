@@ -2,7 +2,6 @@ import { SxcHttpInterceptorProvider } from '@2sic.com/sxc-angular';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EntityDataModule } from '@ngrx/data';
@@ -21,6 +20,8 @@ import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interce
 import { Context } from './shared/services/context';
 import { AppInstallSettingsService } from './shared/services/getting-started.service';
 import { InstallerService } from './shared/services/installer.service';
+import { buildTranslateConfiguration } from './shared/translation';
+import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
 
 @NgModule({
   declarations: [
@@ -35,8 +36,13 @@ import { InstallerService } from './shared/services/installer.service';
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     EntityDataModule.forRoot(entityConfig),
+    // Use to load translations for the app
     TranslateModule.forRoot(),
-    MatSnackBarModule,
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
+
+    // Remove after Test
+    // MatSnackBarModule,
+    // MatDayjsDateModule,
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },

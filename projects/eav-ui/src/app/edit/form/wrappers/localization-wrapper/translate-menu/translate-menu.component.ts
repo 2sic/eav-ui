@@ -13,11 +13,33 @@ import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
 import { TranslateMenuViewModel } from './translate-menu.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'app-translate-menu',
-  templateUrl: './translate-menu.component.html',
-  styleUrls: ['./translate-menu.component.scss'],
+    selector: 'app-translate-menu',
+    templateUrl: './translate-menu.component.html',
+    styleUrls: ['./translate-menu.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        NgClass,
+        ExtendedModule,
+        SharedComponentsModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        FeatureIconIndicatorComponent,
+        AsyncPipe,
+        TranslateModule,
+    ],
 })
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;

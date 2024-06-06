@@ -17,6 +17,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { FeaturesModule } from '../../features/features.module';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 
 @Component({
     selector: 'app-add-app-from-folder',
@@ -29,6 +30,7 @@ import { FeaturesModule } from '../../features/features.module';
         MatDialogActions,
         MatButtonModule,
         AsyncPipe,
+        FeatureTextInfoComponent,
     ],
     providers: [
         AppsListService,

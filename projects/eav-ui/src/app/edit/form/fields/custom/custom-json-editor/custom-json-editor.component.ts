@@ -10,11 +10,26 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
 import { CustomJsonEditorViewModel } from './custom-json-editor.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: InputTypeConstants.CustomJsonEditor,
-  templateUrl: './custom-json-editor.component.html',
-  styleUrls: ['./custom-json-editor.component.scss'],
+    selector: InputTypeConstants.CustomJsonEditor,
+    templateUrl: './custom-json-editor.component.html',
+    styleUrls: ['./custom-json-editor.component.scss'],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        MatFormFieldModule,
+        MonacoEditorComponent,
+        NgStyle,
+        FieldHelperTextComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
@@ -23,12 +23,42 @@ import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-e
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
+import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
+import { ExtendedFabSpeedDialModule } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
+import { FormSlideDirective } from './form-slide.directive';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { SourceService } from '../../../code-editor/services/source.service';
+import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
+import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 
 @Component({
   selector: 'app-edit-dialog-main',
   templateUrl: './edit-dialog-main.component.html',
   styleUrls: ['./edit-dialog-main.component.scss'],
-  providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    MatDialogActions,
+    NgClass,
+    ExtendedModule,
+    EditDialogHeaderComponent,
+    CdkScrollable,
+    FormSlideDirective,
+    FormBuilderComponent,
+    ExtendedFabSpeedDialModule,
+    MatRippleModule,
+    MatIconModule,
+    EditDialogFooterComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
+  providers: [EditRoutingService, FormsStateService, FormulaDesignerService, SourceService, PickerTreeDataService, PickerTreeDataHelper],
 })
 export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;

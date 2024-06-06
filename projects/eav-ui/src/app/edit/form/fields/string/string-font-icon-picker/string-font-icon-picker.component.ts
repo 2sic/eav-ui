@@ -9,11 +9,33 @@ import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
 import { IconOption, StringFontIconPickerViewModel } from './string-font-icon-picker.models';
+import { AsyncPipe } from '@angular/common';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatOptionModule } from '@angular/material/core';
+import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: InputTypeConstants.StringFontIconPicker,
-  templateUrl: './string-font-icon-picker.component.html',
-  styleUrls: ['./string-font-icon-picker.component.scss'],
+    selector: InputTypeConstants.StringFontIconPicker,
+    templateUrl: './string-font-icon-picker.component.html',
+    styleUrls: ['./string-font-icon-picker.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        CdkVirtualScrollViewport,
+        CdkFixedSizeVirtualScroll,
+        CdkVirtualForOf,
+        MatOptionModule,
+        FieldHelperTextComponent,
+        AsyncPipe,
+    ],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

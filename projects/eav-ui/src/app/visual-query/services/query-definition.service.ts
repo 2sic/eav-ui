@@ -1,4 +1,3 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
@@ -9,10 +8,10 @@ import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '.
 
 @Injectable()
 export class QueryDefinitionService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+  constructor(private http: HttpClient, private context: Context) { }
 
   fetchPipeline(pipelineEntityId: number, dataSources: DataSource[]) {
-    return this.http.get<PipelineModel>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryGet), {
+    return this.http.get<PipelineModel>(webApiQueryGet, {
       params: { appId: this.context.appId.toString(), id: pipelineEntityId.toString() }
     }).pipe(
       map(pipelineModel => {
@@ -67,7 +66,7 @@ export class QueryDefinitionService {
   }
 
   fetchDataSources() {
-    return this.http.get<DataSource[]>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDataSources), {
+    return this.http.get<DataSource[]>(webApiQueryDataSources, {
       params: {
         appid: this.context.appId,
         zoneId: this.context.zoneId,
@@ -119,7 +118,7 @@ export class QueryDefinitionService {
     const dataSources = pipelineModel.DataSources;
 
     return this.http.post<PipelineModel>(
-      this.dnnContext.$2sxc.http.apiUrl(webApiQuerySave),
+      webApiQuerySave,
       { pipeline, dataSources },
       { params: { appId: this.context.appId.toString(), Id: pipeline.EntityId.toString() } }
     ).pipe(
@@ -132,14 +131,14 @@ export class QueryDefinitionService {
 
   /** `top` - fetch first X items */
   runPipeline(id: number, top: number) {
-    return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryRun), {
+    return this.http.get<PipelineResult>(webApiQueryRun, {
       params: { appId: this.context.appId.toString(), id: id.toString(), top: top.toString() }
     });
   }
 
   /** `top` - fetch first X items */
   debugStream(id: number, source: string, sourceOut: string, top: number) {
-    return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDebugStream), {
+    return this.http.get<PipelineResult>(webApiQueryDebugStream, {
       params: { appId: this.context.appId.toString(), id: id.toString(), from: source, out: sourceOut, top: top.toString() }
     });
   }

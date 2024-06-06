@@ -2,11 +2,15 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
+import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-import-app-parts',
-  templateUrl: './import-app-parts.component.html',
-  styleUrls: ['./import-app-parts.component.scss'],
+    selector: 'app-import-app-parts',
+    templateUrl: './import-app-parts.component.html',
+    styleUrls: ['./import-app-parts.component.scss'],
+    standalone: true,
+    imports: [SharedComponentsModule],
+    providers: [ImportAppPartsService]
 })
 export class ImportAppPartsComponent {
 

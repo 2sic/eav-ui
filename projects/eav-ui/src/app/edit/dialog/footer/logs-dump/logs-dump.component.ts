@@ -3,11 +3,22 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { LogEntry, LogSeverities } from '../../../shared/models';
 import { LoggingService } from '../../../shared/services';
 import { LogsDumpViewModel } from './logs-dump.component.models';
+import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-logs-dump',
-  templateUrl: './logs-dump.component.html',
-  styleUrls: ['./logs-dump.component.scss'],
+    selector: 'app-logs-dump',
+    templateUrl: './logs-dump.component.html',
+    styleUrls: ['./logs-dump.component.scss'],
+    standalone: true,
+    imports: [
+        NgClass,
+        ExtendedModule,
+        SharedComponentsModule,
+        AsyncPipe,
+        DatePipe,
+    ],
 })
 export class LogsDumpComponent implements OnInit {
   LogSeverities = LogSeverities;

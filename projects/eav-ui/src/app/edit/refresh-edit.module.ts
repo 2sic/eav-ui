@@ -7,6 +7,7 @@ import { UrlHelpers } from './shared/helpers';
 
 @Component({
   template: '',
+  standalone: true,
 })
 export class RefreshEditComponent {
   constructor(router: Router, route: ActivatedRoute) {
@@ -29,11 +30,9 @@ const editRefreshRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    RefreshEditComponent,
-  ],
   imports: [
     RouterModule.forChild(editRefreshRoutes),
+    RefreshEditComponent,
   ],
 })
 export class RefreshEditModule { }

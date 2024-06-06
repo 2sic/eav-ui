@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -29,11 +30,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatSidenavModule,
     RouterOutlet,
     AsyncPipe,
+    NavItemListComponent
   ],
   providers: [
     AppDialogConfigService,
-    // Don't inject context here, it should inherit from the root
-    // Context,
   ]
 })
 export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {

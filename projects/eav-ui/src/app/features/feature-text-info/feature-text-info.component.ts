@@ -4,11 +4,17 @@ import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureSummary } from '../models';
 import { FeatureComponentBase } from '../shared/base-feature.component';
 import { BehaviorSubject, map, Observable, combineLatest, switchMap } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { SharedComponentsModule } from '../../shared/shared-components.module';
 
 @Component({
-  selector: 'app-feature-text-info',
-  templateUrl: './feature-text-info.component.html',
-  styleUrls: ['./feature-text-info.component.scss']
+    selector: 'app-feature-text-info',
+    templateUrl: './feature-text-info.component.html',
+    styleUrls: ['./feature-text-info.component.scss'],
+    standalone: true,
+    imports: [SharedComponentsModule, MatIconModule, AsyncPipe, TranslateModule]
 })
 export class FeatureTextInfoComponent extends FeatureComponentBase {
   @Input()
