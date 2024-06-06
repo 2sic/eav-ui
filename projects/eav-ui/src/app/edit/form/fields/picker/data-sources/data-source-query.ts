@@ -38,7 +38,7 @@ export class DataSourceQuery extends DataSourceBase {
     fieldName: string,
     appId: string
   ): void {
-    this.log.add('setupQuery', 'settings$', settings$, 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName);
+    this.log.a('setupQuery', ['settings$', settings$, 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
 
     this.appId = Number(appId);
     super.setup(settings$);
@@ -158,7 +158,7 @@ export class DataSourceQuery extends DataSourceBase {
   }
 
   transformData(data: QueryStreams, streamName: string | null, valueMustBeGuid: boolean): PickerItem[] {
-    this.log.add('transformData', 'data', data, 'streamName', streamName);
+    this.log.a('transformData', ['data', data, 'streamName', streamName]);
     if (!data)
       return [messagePickerItem(this.translate, 'Fields.Picker.QueryErrorNoData')];
 

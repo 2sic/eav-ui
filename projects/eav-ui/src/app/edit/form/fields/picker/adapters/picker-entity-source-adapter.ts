@@ -66,7 +66,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   fetchItems(): void {
-    this.contentType = this.contentTypeMask.resolve();
+    // this.contentType = this.contentTypeMask.resolve();
     this.dsEntity.contentType(this.contentType);
     this.dataSource.getAll();
   }

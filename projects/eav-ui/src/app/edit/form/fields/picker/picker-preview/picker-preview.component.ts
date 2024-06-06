@@ -22,7 +22,7 @@ import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
     selector: 'app-picker-preview',

@@ -33,7 +33,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
-    this.log.add('constructor');
+    this.log.a('constructor');
   }
 
   disableAddNew$: BehaviorSubject<boolean>;
@@ -46,8 +46,9 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     component: PickerComponent,
     state: PickerStateAdapter,
   ): this  {
-    this.log.add('setupFromComponent');
-    this.log.inherit(component.log);
+    this.log.a('setupFromComponent');
+    if (!this.log.enabled)
+      this.log.inherit(component.log);
     return this.setupShared(
       component.settings$,
       component.config,
@@ -66,7 +67,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     disableAddNew$: BehaviorSubject<boolean>,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): this {
-    this.log.add('setupShared');
+    this.log.a('setupShared');
     this.settings$ = settings$;
     this.config = config;
     this.group = group;
@@ -89,17 +90,31 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ).subscribe(settings => {
         this.createEntityTypes = settings.CreateEntityTypes;
+        this.log.a('about to create contentTypeMask');
         this.contentTypeMask?.destroy();
         this.contentTypeMask = new FieldMask(
           settings.EntityType,
           this.group.controls,
           () => {
-            this.optionsOrHints$.next(null);
-            this.updateAddNew();
+            // 2024-06-06 2dm temp - the function isn't used,
+            // but the mask only watches if it gets a function for now
+            // this.optionsOrHints$.next(null);
+            // this.updateAddNew();
           },
           null,
           this.eavService.eavConfig,
           this.config,
+          true, // override log
+        );
+
+        // watch for changes
+        this.subscriptions.add(
+          this.contentTypeMask.value$.subscribe(contentType => {
+            this.contentType = contentType;
+            this.optionsOrHints$.next(null);
+            this.updateAddNew();
+            this.log.a(`contentTypeMask.value$:'${contentType}'`);
+          })
         );
         this.optionsOrHints$.next(null);
         this.updateAddNew();
@@ -130,14 +145,14 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   onAfterViewInit(): void {
-    this.log.add('onAfterViewInit');
-    this.contentType = this.contentTypeMask.resolve();
+    this.log.a('onAfterViewInit');
+    // this.contentType = this.contentTypeMask.resolve();
   }
 
   updateAddNew(): void {
-    this.log.add('updateAddNew');
-    const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!contentTypeName && !this.createEntityTypes);
+    this.log.a('updateAddNew');
+    // const contentTypeName = this.contentTypeMask.resolve();
+    this.disableAddNew$.next(!this.contentType && !this.createEntityTypes);
   }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
@@ -145,7 +160,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
-    this.log.add('editItem', editParams);
+    this.log.a('editItem', [editParams]);
     if (editParams)
       this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
@@ -174,7 +189,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   deleteItem(props: DeleteEntityProps): void {
-    this.log.add('deleteItem', props);
+    this.log.a('deleteItem', [props]);
     const entity = this.optionsOrHints$.value.find(item => item.value === props.entityGuid);
     const id = entity.id;
     const title = entity.label;
@@ -218,11 +233,10 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
    * new 11.11.03
    */
   private getPrefill(): Record<string, string> {
-    this.log.add('getPrefill');
+    this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillMask =
-        new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
+      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
       const prefill = prefillMask.resolve();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

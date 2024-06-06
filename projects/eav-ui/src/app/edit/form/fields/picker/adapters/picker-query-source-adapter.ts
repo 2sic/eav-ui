@@ -47,7 +47,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private isStringQuery: boolean;
 
   public /* override */ setupFromComponent(component: PickerComponent, state: PickerStateAdapter): this {
-    this.log.add('setupFromComponent');
+    this.log.a('setupFromComponent');
     super.setupFromComponent(component, state);
     this.isStringQuery = component.isStringQuery;
     return this;
@@ -58,7 +58,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     error$: BehaviorSubject<string>,
   ): this {
 
-    this.log.add('setupQuery');
+    this.log.a('setupQuery');
     this.error$ = error$;
     return this;
   }
@@ -71,6 +71,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
         map(settings => settings.UrlParameters),
         distinctUntilChanged(),
       ).subscribe(urlParameters => {
+        this.log.a('init in QuerySourceAdapter, about to create paramsMask')
         this.paramsMask?.destroy();
         this.paramsMask = new FieldMask(
           urlParameters,
@@ -79,13 +80,19 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
           null,
           this.eavService.eavConfig,
           this.config,
+          true, // overrideLog
         );
+
+        this.paramsMask.value$.subscribe(value => {
+          this.log.a(`paramsMask.value$ - value: '${value}'`);
+          // this.dsQuery.params(value);
+        });
 
         this.optionsOrHints$.next(null);
       })
     );
 
-    this.log.add('init - isStringQuery', this.isStringQuery);
+    this.log.a(`init - isStringQuery: ${this.isStringQuery}`);
 
     this.dsQuery.setupQuery(
       this.settings$,
@@ -135,7 +142,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   fetchItems(): void {
-    this.log.add('fetchItems');
+    this.log.a('fetchItems');
     // this.contentType = this.contentTypeMask.resolve();
     // console.warn('2dm content-type', this.contentType);
     // this.entityFieldDataSource.contentType(this.contentType);
@@ -156,7 +163,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
    * ...but I'm not quite sure how they would ever change at runtime.
    */
   flushAvailableEntities(): void {
-    this.log.add('flushAvailableEntities, isStringQuery', this.isStringQuery);
+    this.log.a(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
     if (!this.isStringQuery) {
       this.subscriptions.add(
         this.settings$.pipe(
