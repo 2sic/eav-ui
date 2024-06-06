@@ -24,15 +24,14 @@ import { ViewsComponent } from './views/views.component';
 import { QueriesComponent } from './queries/queries.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
-import { DataCopilotComponent } from './copilot/data-copilot/data-copilot.component';
 import { DataRestApiComponent } from './data-rest-api/data-rest-api.component';
 import { QueriesRestApiComponent } from './queries-rest-api/queries-rest-api.component';
 import { DevRestDataComponent } from '../dev-rest/data/data.component';
 import { DevRestQueryComponent } from '../dev-rest/query/query.component';
 import { GoToCopilot } from './copilot/go-to-copilot';
-import { ViewCopilotComponent } from './copilot/view-copilot/view-copilot.component';
 import { WebApiRestApiComponent } from './web-api-rest-api/web-api-rest-api.component';
 import { DevRestApiComponent } from '../dev-rest/api/api.component';
+import { CopilotSpecs } from './copilot/copilot-specs';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -101,8 +100,8 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: `data-${GoToCopilot.route}`,
-        component: DataCopilotComponent,
-        data: { title: 'Copilot', breadcrumb: '2sxc Copilot' }
+        loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
+        data: CopilotSpecs.data,
       },
       {
         path: GoToDevRest.routeData,
@@ -182,8 +181,8 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: `views-${GoToCopilot.route}`,
-        component: ViewCopilotComponent,
-        data: { title: 'Copilot', breadcrumb: '2sxc View Copilot' }
+        loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
+        data: CopilotSpecs.views,
       },
       {
         path: 'web-api',
@@ -191,6 +190,11 @@ const appAdministrationRoutes: Routes = [
         children: [
           GoToDevRest.route,
         ],
+      },
+      {
+        path: `web-api-${GoToCopilot.route}`,
+        loadComponent: () => import('./copilot/page/copilot-page.component').then(mod => mod.CopilotPageComponent),
+        data: CopilotSpecs.webApi,
       },
       {
         path: GoToDevRest.routeWebApi,
