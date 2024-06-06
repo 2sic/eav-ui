@@ -48,6 +48,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
         MatDialogActions,
         AsyncPipe,
     ],
+    providers: [ContentTypesService, ContentTypesFieldsService]
 })
 export class ContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
