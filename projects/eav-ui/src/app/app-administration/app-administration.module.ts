@@ -17,10 +17,18 @@ import { ExportAppService } from './services/export-app.service';
 import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
+import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
 
 @NgModule({
   imports: [
+    // TODO:: @2dg Fix later, AppId from Context ist not correct, if remove the following components
+    // Important: If one of these two components is in the module, Managed Apps > App administration works.
+    // In other words, the Eav service has the correct context app ID, not from the app where the Apps Manage is opened,
+    // e.g. AppId 2 = Content App but from the app that is opened in the Managed, e.g. AppId 6 = Blog
     AppAdministrationRoutingModule,
+    // ImportAppPartsComponent
+
+    ExportAppPartsComponent
   ],
   providers: [
     Context,

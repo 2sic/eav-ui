@@ -14,13 +14,13 @@ import { MatDayjsDateAdapter } from '../../shared/date-adapters/date-adapter-api
   providers: [
     LoggingService,
     EditInitializerService,
-    EavService,
-    LoadIconsService,
-    EntityService,
-    QueryService,
-    MatDayjsDateAdapter,
-    AdamService,
-    ScriptsLoaderService
+    // EavService,
+    // LoadIconsService,
+    // EntityService,
+    // QueryService,
+    // MatDayjsDateAdapter,
+    // AdamService,
+    // ScriptsLoaderService
   ],
   standalone: true,
   imports: [

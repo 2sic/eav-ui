@@ -19,7 +19,7 @@ const logThis = false;
   styleUrls: ['./dialog-entry.component.scss'],
   standalone: true,
   imports: [],
-  providers: [Context],
+  providers: [],
 })
 export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestroy {
   private dialogData: Record<string, any>;
