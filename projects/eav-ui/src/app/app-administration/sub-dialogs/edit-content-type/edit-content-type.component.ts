@@ -39,6 +39,7 @@ import { FieldHintComponent } from '../../../shared/components/field-hint/field-
         AsyncPipe,
         FieldHintComponent,
     ],
+    providers: [ContentTypesService],
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';

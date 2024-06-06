@@ -34,9 +34,10 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 @NgModule({
   declarations: [
     // AG Grid Components - started creation by 2dm to be more generic / less code 2023-06-19
-    DialogEntryComponent,
-    BooleanFilterComponent,
-    EntityFilterComponent,
+    // TODO:: @2dg Remove after Test
+    // DialogEntryComponent,
+    // BooleanFilterComponent,
+    // EntityFilterComponent,
 
     FileUploadDialogComponent, // TODO:: Open
     AgBoolIconRenderer,
@@ -69,10 +70,10 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
   ],
   exports: [
     BreadcrumbModule,
-    DialogEntryComponent,
-    BooleanFilterComponent,
+    // DialogEntryComponent,
+    // BooleanFilterComponent,
+    // EntityFilterComponent,
     FileUploadDialogComponent,
-    EntityFilterComponent,
     ClickStopPropagationDirective,
     DragAndDropDirective,
     MousedownStopPropagationDirective,

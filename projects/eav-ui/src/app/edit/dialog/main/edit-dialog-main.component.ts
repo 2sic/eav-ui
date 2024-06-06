@@ -32,29 +32,30 @@ import { EditDialogHeaderComponent } from '../header/edit-dialog-header.componen
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { SourceService } from '../../../code-editor/services/source.service';
 
 @Component({
-    selector: 'app-edit-dialog-main',
-    templateUrl: './edit-dialog-main.component.html',
-    styleUrls: ['./edit-dialog-main.component.scss'],
-    providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatDialogActions,
-        NgClass,
-        ExtendedModule,
-        EditDialogHeaderComponent,
-        CdkScrollable,
-        FormSlideDirective,
-        FormBuilderComponent,
-        ExtendedFabSpeedDialModule,
-        MatRippleModule,
-        MatIconModule,
-        EditDialogFooterComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-edit-dialog-main',
+  templateUrl: './edit-dialog-main.component.html',
+  styleUrls: ['./edit-dialog-main.component.scss'],
+  providers: [EditRoutingService, FormsStateService, FormulaDesignerService, SourceService],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    MatDialogActions,
+    NgClass,
+    ExtendedModule,
+    EditDialogHeaderComponent,
+    CdkScrollable,
+    FormSlideDirective,
+    FormBuilderComponent,
+    ExtendedFabSpeedDialModule,
+    MatRippleModule,
+    MatIconModule,
+    EditDialogFooterComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
