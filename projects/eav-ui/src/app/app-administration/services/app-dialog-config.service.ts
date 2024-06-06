@@ -24,7 +24,7 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
     featuresService: FeaturesService,
   ) {
     super(new EavLogger('AppDialogConfigService', logThis));
-    this.log.add('using context #', this.context.log.svcId);
+    this.log.a(`using context #${this.context.log.svcId}`);
     featuresService.loadFromService(this);
   }
 
@@ -38,7 +38,7 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
   getCurrent$(): Observable<DialogSettings> {
     const appId = this.context.appId;
     console.log('getCurrent$', 'appId', appId);
-    this.log.add('getCurrent$', 'appId', appId);
+    this.log.a(`getCurrent\$ - appId:${appId}`);
     return this.getShared$(appId);
   }
 
@@ -53,14 +53,14 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
 
 
   getShared$(appId: number): Observable<DialogSettings> {
-    this.log.add('getShared$', 'appId', appId);
+    this.log.a('getShared$ appId: ' + appId);
     // if (!this.dialogSettings$[appIdToUse])
     this.dialogSettings$[appId] ??= this.getDialogSettings(appId, 'getShared$').pipe(shareReplay({ refCount: false }));
     return this.dialogSettings$[appId];
   }
 
   getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
-    this.log.add('getDialogSettings', 'appId', appId, 'reqBy', reqBy);
+    this.log.a('getDialogSettings', ['appId', appId, 'reqBy', reqBy]);
     return this.http.get<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.context.appId.toString() },
     }).pipe(

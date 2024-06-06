@@ -110,7 +110,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
       filter(x => !!x?.actions?.length),
       logToSelectedAction.filter(),
     ).subscribe(x => {
-      this.log.add('first action', x?.actions[0]?.name);
+      this.log.a(`first action '${x?.actions[0]?.name}'`);
       return this.selectedActionName$.next(x?.actions[0]?.name);
     });
 

@@ -23,23 +23,23 @@ export class PickerTreeDataHelper extends ServiceBase {
   }
 
   public updateConfig(pickerConfig: UiPickerModeTree) {
-    this.log.add('updateConfigAndSelectedData');
+    this.log.a('updateConfigAndSelectedData');
     // set config, which will be accessed on 'this.' whenever it's needed
     this.pickerTreeConfiguration = pickerConfig;
   }
 
   public addTreeItems(treeItems: PickerTreeItem[]) {
-    this.log.add('addTreeItems');
+    this.log.a('addTreeItems');
     this.treeItems = treeItems;
   }
 
   public updateSelectedData(selectedData: PickerItem[]) {
-    this.log.add('updateSelectedData');
+    this.log.a('updateSelectedData');
     this.dataSource.data = selectedData;
   }
 
   public preConvertAllItems(treeConfig: UiPickerModeTree, items: PickerItem[]) {
-    this.log.add('preConvertAllItemsToTreeItems', treeConfig, items);
+    this.log.a('preConvertAllItemsToTreeItems', [treeConfig, items]);
     const convertedItems = items.map(x => this.preConvertItemToTreeItem(treeConfig, x, items));
 
     // todo: establish relationships
@@ -59,7 +59,7 @@ export class PickerTreeDataHelper extends ServiceBase {
   
   private preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
     // Log and do some initial checks
-    this.log.add(`preConvertItemToTreeItem for item ${item?.id}`, treeConfig, item, allItems);
+    this.log.a(`preConvertItemToTreeItem for item ${item?.id}`, [treeConfig, item, allItems]);
     if (!treeConfig) throw new Error('No tree configuration found');
     if (!item) throw new Error("Can't transform null-item");
 
@@ -92,12 +92,12 @@ export class PickerTreeDataHelper extends ServiceBase {
       parent: item.data[cpRef],
       children: item.data[pcRef],
     };
-    this.log.add('result', result);
+    this.log.a('result', [result]);
     return result;
   }
 
   public build() {
-    this.log.add('build');
+    this.log.a('build');
 
     const treeFlattener = new MatTreeFlattener(
       // transformFunction converts an item to a tree-item
@@ -167,7 +167,7 @@ export class PickerTreeDataHelper extends ServiceBase {
     // test code to verify functionality
     // if (item.label?.indexOf('Kawasaki') > -1) {
     //   this.log.enabled = true;
-    //   this.log.add('disableOption', item, selected, enableReselect, selectedButNoReselect);
+    //   this.log.a('disableOption', item, selected, enableReselect, selectedButNoReselect);
     //   this.log.enabled = false;
     // }
 

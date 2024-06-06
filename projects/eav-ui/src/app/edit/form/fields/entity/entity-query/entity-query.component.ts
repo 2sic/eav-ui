@@ -44,7 +44,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       editRoutingService,
     );
     this.log = new EavLogger('EntityQueryComponent', logThis);
-    this.log.add('constructor');
+    this.log.a('constructor');
     EntityQueryLogic.importMe();
     this.isStringQuery = false;
   }
@@ -56,11 +56,11 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
+    this.log.a('createPickerAdapters');
     const state = this.stateRaw.setupFromComponent(this);
 
-    this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-    this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
+    this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
+    this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$]);
     const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
       .setupQuery(state.error$);
 

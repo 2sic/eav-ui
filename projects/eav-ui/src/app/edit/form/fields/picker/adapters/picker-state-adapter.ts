@@ -53,7 +53,7 @@ export class PickerStateAdapter extends ServiceBase {
   private focusOnSearchComponent: () => void;
 
   public setupFromComponent(component: PickerComponent): this  {
-    this.log.add('setupFromComponent');
+    this.log.a('setupFromComponent');
     this.log.inherit(component.log);
     return this.setupShared(
       component.settings$,
@@ -79,7 +79,7 @@ export class PickerStateAdapter extends ServiceBase {
     control: AbstractControl,
     focusOnSearchComponent: () => void,
   ): this {
-    this.log.add('setupShared');
+    this.log.a('setupShared');
     this.settings$ = settings$;
     this.controlStatus$ = controlStatus$;
     this.isExpanded$ = isExpanded$;
@@ -95,7 +95,7 @@ export class PickerStateAdapter extends ServiceBase {
 
 
   init() {
-    this.log.add('init');
+    this.log.a('init');
     this.selectedItems$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.settings$.pipe(
@@ -131,15 +131,15 @@ export class PickerStateAdapter extends ServiceBase {
     }));
 
     // log a lot
-    this.allowMultiValue$.subscribe(allowMultiValue => this.log.add('allowMultiValue', allowMultiValue));
-    this.isDialog$.subscribe(isDialog => this.log.add('isDialog', isDialog));
-    this.selectedItems$.subscribe(selectedItems => this.log.add('selectedItems', selectedItems));
-    this.shouldPickerListBeShown$.subscribe(shouldPickerListBeShown => this.log.add('shouldPickerListBeShown', shouldPickerListBeShown));
+    this.allowMultiValue$.subscribe(allowMultiValue => this.log.a(`allowMultiValue ${allowMultiValue}`));
+    this.isDialog$.subscribe(isDialog => this.log.a(`isDialog ${isDialog}`));
+    this.selectedItems$.subscribe(selectedItems => this.log.a('selectedItems', selectedItems));
+    this.shouldPickerListBeShown$.subscribe(shouldPickerListBeShown => this.log.a(`shouldPickerListBeShown ${shouldPickerListBeShown}`));
 
   }
 
   destroy() {
-    this.log.add('destroy');
+    this.log.a('destroy');
     this.settings$.complete();
     this.controlStatus$.complete();
     this.disableAddNew$.complete();

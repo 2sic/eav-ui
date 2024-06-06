@@ -17,7 +17,7 @@ export class DataSourceEmpty extends DataSourceBase {
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {
-    this.log.add('setup');
+    this.log.a('setup');
     super.setup(settings$);
     this.loading$ = of(false);
 
@@ -30,7 +30,7 @@ export class DataSourceEmpty extends DataSourceBase {
 
     this.data$ = of([dummyItem]).pipe(
       shareReplay(1),
-      tap(data => this.log.add('data$', data))
+      tap(data => this.log.a('data$', [data]))
     );
     return this;
   }

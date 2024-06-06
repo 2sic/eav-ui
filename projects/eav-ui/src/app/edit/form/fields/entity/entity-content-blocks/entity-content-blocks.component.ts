@@ -44,7 +44,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       editRoutingService,
     );
     this.log = new EavLogger('EntityContentBlockComponent', logThis);
-    this.log.add('constructor');
+    this.log.a('constructor');
     EntityContentBlocksLogic.importMe();
   }
 
@@ -62,7 +62,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
+    this.log.a('createPickerAdapters');
     const state = this.pickerStateAdapterRaw.setupFromComponent(this);
 
     const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);

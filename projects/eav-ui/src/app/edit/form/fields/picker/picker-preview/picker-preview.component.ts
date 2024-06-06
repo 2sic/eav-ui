@@ -20,6 +20,9 @@ import { PickerSearchComponent } from '../picker-search/picker-search.component'
 import { PickerTextToggleComponent } from '../picker-text-toggle/picker-text-toggle.component';
 import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
 
 @Component({
     selector: 'app-picker-preview',
@@ -48,6 +51,8 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   @Input() controlConfig: FieldControlConfig;
 
   viewModel$: Observable<EntityPickerPreviewViewModel>;
+
+  log = new EavLogger('PickerPreviewComponent', logThis);
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
@@ -106,6 +111,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   }
 
   openNewEntityDialog(entityType: string): void {
+    this.log.a(`openNewEntityDialog: '${entityType}'`);
     this.pickerData.source.editItem(null, entityType);
   }
 

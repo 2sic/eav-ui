@@ -69,7 +69,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
+    this.log.a('createPickerAdapters');
 
     let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 

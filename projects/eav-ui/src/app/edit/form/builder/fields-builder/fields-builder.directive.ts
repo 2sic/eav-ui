@@ -147,7 +147,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
-    this.log.add('createComponent', fieldProps.calculatedInputType);
+    this.log.a('createComponent', [fieldProps.calculatedInputType]);
 
     let wrapperInfo = new WrapperInfo(null, containerRef);
     if (fieldProps.wrappers) {
@@ -167,14 +167,14 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldMetadata.wrappers, fieldConfig);
 
     // generate the real input field component
-    this.log.add('createComponent - add component', componentType);
+    this.log.a('createComponent - add component', [componentType]);
     this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, false);
 
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
-      this.log.add('createComponent - add preview', previewType);
+      this.log.a('createComponent - add preview', [previewType]);
       this.generateAndAttachField(previewType, pickerPreviewContainerRef, fieldConfig, true);
     }
   }

@@ -74,7 +74,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngOnInit(): void {
-    this.log.add('ngOnInit');
+    this.log.a('ngOnInit');
     super.ngOnInit();
     this.refreshOnChildClosed();
   }
@@ -84,17 +84,17 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    * If the PickerData already exists, it will be reused
    */
   initAdaptersAndViewModel(): void {
-    this.log.add('initAdaptersAndViewModel');
+    this.log.a('initAdaptersAndViewModel');
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
     if (this.config.pickerData) {
-      this.log.add('createPickerAdapters: pickerData already exists, will reuse');
+      this.log.a('createPickerAdapters: pickerData already exists, will reuse');
       this.pickerData = this.config.pickerData;
     } else {
       // this method is overridden in each variant as of now
       this.createPickerAdapters();
-      this.log.add('createPickerAdapters: config', this.config);
+      this.log.a('createPickerAdapters: config', [this.config]);
       this.config.pickerData = this.pickerData;
     }
 
@@ -103,12 +103,12 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngAfterViewInit(): void {
-    this.log.add('ngAfterViewInit');
+    this.log.a('ngAfterViewInit');
     this.pickerData.source.onAfterViewInit();
   }
 
   ngOnDestroy(): void {
-    this.log.add('ngOnDestroy');
+    this.log.a('ngOnDestroy');
     this.pickerData.destroy();
     super.ngOnDestroy();
   }
@@ -119,7 +119,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   createViewModel(): void {
-    this.log.add('createViewModel');
+    this.log.a('createViewModel');
     this.viewModel$ = this.pickerData.state.allowMultiValue$
       .pipe(
         map(allowMultiValue => {

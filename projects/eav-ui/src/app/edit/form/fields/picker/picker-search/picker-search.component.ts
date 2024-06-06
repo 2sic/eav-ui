@@ -251,7 +251,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       return this.selectedItem?.value == value
         ? this.selectedItem?.label
         : value + " *";
-    this.log.add('displayFn result', value, returnValue);
+    this.log.a('displayFn result', [value, returnValue]);
     return returnValue;
   }
 
@@ -273,7 +273,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
    */
   onOpened(isTreeDisplayMode: boolean): void {
     const domElement = this.autocompleteRef.nativeElement;
-    this.log.add(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);
+    this.log.a(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);
     // flush the input so the user can use it to search, otherwise the list is filtered
     domElement.value = '';
     // If tree, we need to blur so tree reacts to the first click, otherwise the user must click 2x
@@ -282,7 +282,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void {
-    this.log.add('onClosed', selectedItems, selectedItem);
+    this.log.a('onClosed', [selectedItems, selectedItem]);
     if (this.showSelectedItem) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
@@ -307,7 +307,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   getPlaceholder(availableEntities: PickerItem[], error: string): string {
-    // this.log.add(`getPlaceholder error: '${error}'`, availableEntities);
+    // this.log.a(`getPlaceholder error: '${error}'`, availableEntities);
     var placeholder = availableEntities?.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
@@ -316,39 +316,39 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   toggleFreeText(disabled: boolean): void {
-    this.log.add('toggleFreeText', disabled);
+    this.log.a(`toggleFreeText ${disabled}`);
     if (disabled) { return; }
     this.pickerData.state.toggleFreeTextMode();
   }
 
   insertNull(): void {
-    this.log.add('insertNull');
+    this.log.a('insertNull');
     this.pickerData.state.addSelected(null);
   }
 
   isOptionDisabled(value: string, selectedEntities: PickerItem[]): boolean {
     const isSelected = selectedEntities.some(entity => entity.value === value);
-    this.logItemChecks.add(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selectedEntities);
+    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selectedEntities);
     return isSelected;
   }
 
   edit(entityGuid: string, entityId: number): void {
-    this.log.add(`edit guid: '${entityGuid}'; id: '${entityId}'`);
+    this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
     this.pickerData.source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
-    this.log.add(`removeItem index: '${index}'`);
+    this.log.a(`removeItem index: '${index}'`);
     this.pickerData.state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
-    this.log.add(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
+    this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
     this.pickerData.source.deleteItem({ index, entityGuid });
   }
 
   goToLink(helpLink: string): void {
-    this.log.add(`goToLink helpLink: '${helpLink}'`);
+    this.log.a(`goToLink helpLink: '${helpLink}'`);
     window.open(helpLink, '_blank');
   }
 

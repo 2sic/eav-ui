@@ -96,7 +96,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');
     this.metadataSet$.subscribe((set) => {
-      this.log.add('test 2dm', set);
+      this.log.a('test 2dm', [set]);
     });
 
     const filteredRecs$ = this.metadataSet$.pipe(
@@ -122,7 +122,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy() {
-    this.log.add('destroying');
+    this.log.a('destroying');
     this.metadataSet$.complete();
     this.itemFor$.complete();
     this.fabOpen$.complete();

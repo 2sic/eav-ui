@@ -49,11 +49,11 @@ export class PickerTreeComponent extends ServiceBase implements OnInit {
     private fieldsSettingsService: FieldsSettingsService,
   ) {
     super(new EavLogger('PickerTreeComponent', logThis));
-    this.log.add('constructor');
+    this.log.a('constructor');
   }
 
   ngOnInit(): void {
-    this.log.add('ngOnInit', this.vm, this.config, this.optionItems$);
+    this.log.a('ngOnInit', [this.vm, this.config, this.optionItems$]);
     // this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     // const setLog = this.log.rxTap('settings$');

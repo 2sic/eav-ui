@@ -15,7 +15,7 @@ export class StringPickerLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: string, tools: FieldLogicTools): FieldSettings {
     var log = new EavLogger('StringPickerLogic', logThis);
-    log.add('update', settings, value, tools);
+    log.a('update', [settings, value, tools]);
 
     let dataSources: EavEntity[] = [];
     const entityPickerLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityPicker);
@@ -30,7 +30,7 @@ export class StringPickerLogic extends FieldLogicBase {
 
     /** Dropdown data source aka custom-list picker */
     if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceCustomList) {
-      log.add('type: UiPickerSourceCustomList', dataSources[0])
+      log.a('type: UiPickerSourceCustomList', [dataSources[0]])
       fs.DataSourceType = PickerConfigModels.UiPickerSourceCustomList;
       const uiPickerSourceCustomList = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList;
 
@@ -46,7 +46,7 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.EnableCreate = false;
       fs.EnableDelete = false;
     } else
-      log.add('type: not UiPickerSourceCustomList', dataSources[0]);
+      log.a('type: not UiPickerSourceCustomList', [dataSources[0]]);
 
     return fs;
   }

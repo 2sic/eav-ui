@@ -20,7 +20,7 @@ export class PickerTreeDataService extends ServiceBase {
   }
 
   public init(fieldSettings$: Observable<FieldSettings>, allItems$: Observable<PickerItem[]>) {
-    this.log.add('init');
+    this.log.a('init');
 
     // Get only tree settings, make sure they don't fire unless they really change
     const logTreeSettings = this.log.rxTap('treeSettings$');

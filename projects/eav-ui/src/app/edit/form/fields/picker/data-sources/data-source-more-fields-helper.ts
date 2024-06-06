@@ -14,7 +14,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
   }
 
   fieldListToRetrieveFromServer(settings: FieldSettings): string {
-    this.log.add('fieldListToRetrieveFromServer', settings);
+    this.log.a('fieldListToRetrieveFromServer', [settings]);
 
     const treeConfig = settings.PickerTreeConfiguration;
     const moreFields = settings.MoreFields?.split(',') ?? [];
@@ -49,7 +49,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
    * @returns parsed fields
    */
   extractFieldNamesFromTokens(input: string, enableSimpleFields: boolean = true): string[] {
-    this.log.add('extractFieldNamesFromTokens', input, enableSimpleFields);
+    this.log.a('extractFieldNamesFromTokens', [input, enableSimpleFields]);
     const fields: string[] = [];
 
     // 1.) skip processing on null or empty

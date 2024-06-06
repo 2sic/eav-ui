@@ -37,7 +37,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   init(callerName: string): void {
-    this.log.add('init');
+    this.log.a('init');
     super.init(callerName);
 
     this.dsEntity.setup(this.settings$);

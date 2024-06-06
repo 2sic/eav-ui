@@ -13,7 +13,7 @@ const logThis = false;
 export class DataSourceMasksHelper extends ServiceBase {
   constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
     super(new EavLogger('DataSourceMasksHelper', enableLog ?? parentLog.enableChildren));
-    this.log.add('constructor', 'settings', settings);
+    this.log.a('constructor - settings', [settings]);
   }
 
   private helpers = new DataSourceHelpers();
@@ -53,7 +53,7 @@ export class DataSourceMasksHelper extends ServiceBase {
         helpLink: masks.link,
         sourceStreamName: streamName ?? null,
       };
-      this.log.add('entity2PickerItem - no masks', result);
+      this.log.a('entity2PickerItem - no masks', [result]);
       return result;
     }
 
@@ -101,18 +101,18 @@ export class DataSourceMasksHelper extends ServiceBase {
   public getMasks() {
     if (!!this.masks) return this.masks;
     this.masks = this.buildMasks(this.settings);
-    this.log.add('getMasks', this.masks);
+    this.log.a('getMasks', [this.masks]);
     return this.masks;
   }
 
   /** modify/patch the current objects mask */
   public patchMasks(patch: Partial<DataSourceMasks>) {
     this.masks = { ...this.getMasks(), ...patch };
-    this.log.add('patchMasks', this.masks);
+    this.log.a('patchMasks', [this.masks]);
   }
 
   private buildMasks(settings: FieldSettings): DataSourceMasks {
-    this.log.add('buildMasks settings', settings);
+    this.log.a('buildMasks settings', [settings]);
     const tooltipMask = !!settings.ItemTooltip ? this.helpers.stripHtml(settings.ItemTooltip) : '';
     const infoMask = !!settings.ItemInformation ? this.helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
@@ -127,7 +127,7 @@ export class DataSourceMasksHelper extends ServiceBase {
       label: labelMask,
       value: valueMask,
     };
-    this.log.add('buildMasks result', result);
+    this.log.a('buildMasks result', [result]);
     return result;
   }
 }

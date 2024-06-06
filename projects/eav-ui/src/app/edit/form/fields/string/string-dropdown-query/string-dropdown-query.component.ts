@@ -52,7 +52,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
+    this.log.a('createPickerAdapters');
     const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
 
     const source = this.querySourceAdapterRaw.setupFromComponent(this, state)

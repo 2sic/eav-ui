@@ -16,14 +16,14 @@ export class DataSourceString extends DataSourceBase {
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): this {
-    this.log.add('setup', 'settings$', settings$);
+    this.log.a('setup - settings$', [settings$]);
     super.setup(settings$);
     this.loading$ = of(false);
 
     // Make sure the converter/builder uses the "Value" field for the final 'value'
     const maskHelper = this.getMaskHelper();
     maskHelper.patchMasks({ value: 'Value' })
-    this.log.add('maskHelper', maskHelper.getMasks());
+    this.log.a('maskHelper', [maskHelper.getMasks()]);
     const rxLog = this.log.rxTap('data$', { enabled: logRx });
     this.data$ = this.settings$.pipe(
       rxLog.pipe(),
@@ -38,7 +38,7 @@ export class DataSourceString extends DataSourceBase {
         // TODO: @2dm fix bug, the value should be provided by entity2PickerItem
         // but it's not - probably something we must ensure with the mask...?
         const pickerItem = this.getMaskHelper().entity2PickerItem(asEntity, /* streamName: */ null, /* mustUseGuid: */ false);
-        this.log.add('final data', pickerItem);
+        this.log.a('final data', [pickerItem]);
         return pickerItem;
       })),
       distinctUntilChanged(),

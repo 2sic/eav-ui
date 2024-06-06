@@ -23,7 +23,7 @@ export class DataSourceEntity extends DataSourceBase {
   }
 
   setup(settings$: BehaviorSubject<FieldSettings>): void {
-    this.log.add('setup', 'settings$', settings$);
+    this.log.a('setup - settings$', [settings$]);
     super.setup(settings$);
 
     // Logging helper for the stream typeName$

@@ -35,7 +35,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     deleteCallback: (props: DeleteEntityProps) => void,
     useEmpty?: boolean,
   ): this {
-    this.log.add('setupString', 'useEmpty', useEmpty);
+    this.log.a(`setupString - useEmpty ${useEmpty}`);
     // this.settings$ = settings$;
     this.disableAddNew$ = disableAddNew$;
     this.config = config;

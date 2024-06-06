@@ -43,7 +43,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       editRoutingService,
     );
     this.log = new EavLogger('EntityDefaultComponent', logThis);
-    this.log.add('constructor');
+    this.log.a('constructor');
     EntityDefaultLogic.importMe();
   }
 
@@ -61,11 +61,11 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
+    this.log.a('createPickerAdapters');
 
     const state = this.stateRaw.setupFromComponent(this);
 
-    this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
+    this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
 
     const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
     // const source = this.sourceFactory.createPickerEntitySourceAdapter(

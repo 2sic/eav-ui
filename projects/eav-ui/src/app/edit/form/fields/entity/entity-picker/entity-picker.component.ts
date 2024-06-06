@@ -46,7 +46,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       editRoutingService,
     );
     this.log = new EavLogger('EntityPickerComponent', logThis);
-    this.log.add('constructor');
+    this.log.a('constructor');
     EntityPickerLogic.importMe();
     this.isStringQuery = false;
   }
@@ -57,20 +57,20 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
+    this.log.a('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
     const state = this.stateRaw.setupFromComponent(this);
 
     const dataSourceType = this.settings$.value.DataSourceType;
-    this.log.add('createPickerAdapters: dataSourceType', dataSourceType);
+    this.log.a(`createPickerAdapters: dataSourceType: '${dataSourceType}'`);
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
-      this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
+      this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
       source = this.entitySourceAdapterRaw.setupFromComponent(this, state);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
-      this.log.add('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-      this.log.add('specs', 'isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$)
+      this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
+      this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
       source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
     }
 
