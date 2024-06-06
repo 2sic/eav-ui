@@ -37,6 +37,7 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
 
   getCurrent$(): Observable<DialogSettings> {
     const appId = this.context.appId;
+    console.log('getCurrent$', 'appId', appId);
     this.log.add('getCurrent$', 'appId', appId);
     return this.getShared$(appId);
   }
@@ -45,11 +46,11 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
     getSitePrimaryApp$(): Observable<DialogContextSiteApp> {
       return this.getCurrent$().pipe(map(dc => dc?.Context.Site.PrimaryApp));
     }
-  
+
     getGlobalPrimaryApp$(): Observable<DialogContextSiteApp> {
       return this.getCurrent$().pipe(map(dc => dc?.Context.System.PrimaryApp));
     }
-  
+
 
   getShared$(appId: number): Observable<DialogSettings> {
     this.log.add('getShared$', 'appId', appId);
