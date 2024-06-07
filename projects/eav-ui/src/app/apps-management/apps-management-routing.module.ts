@@ -37,9 +37,21 @@ const appsManagementRoutes: Routes = [
             path: 'import',
             loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
           },
-          { path: 'create', component: DialogEntryComponent, data: { dialog: createAppDialog } },
-          { path: 'create-inherited', component: DialogEntryComponent, data: { dialog: createInheritedAppDialog } },
-          { path: 'add-app-from-folder', component: DialogEntryComponent, data: { dialog: addAppFromFolderDialog } },
+          {
+            path: 'create',
+            component: DialogEntryComponent,
+            data: { dialog: createAppDialog }
+          },
+          {
+            path: 'create-inherited',
+            component: DialogEntryComponent,
+            data: { dialog: createInheritedAppDialog }
+          },
+          {
+            path: 'add-app-from-folder',
+            component: DialogEntryComponent,
+            data: { dialog: addAppFromFolderDialog }
+          },
           {
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)

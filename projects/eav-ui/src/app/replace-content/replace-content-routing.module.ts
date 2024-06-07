@@ -6,7 +6,10 @@ import { replaceContentDialog } from './replace-content-dialog.config';
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: replaceContentDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: replaceContentDialog },
+    children: [
       {
         matcher: edit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),

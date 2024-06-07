@@ -6,7 +6,10 @@ import { manageContentListDialog } from './manage-content-list-dialog.config';
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: manageContentListDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: manageContentListDialog },
+    children: [
       {
         matcher: edit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)

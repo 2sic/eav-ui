@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Data, Route, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavigateFormResult } from '../../../edit/shared/models';
 import { consoleLogDev } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';

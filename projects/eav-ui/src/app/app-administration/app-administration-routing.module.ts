@@ -255,7 +255,8 @@ const appAdministrationRoutes: Routes = [
             data: { dialog: analyzeSettingsDialog, title: 'Analyze Settings / Resources' }, children: [
               {
                 path: 'details/:view/:settingsItemKey',
-                component: DialogEntryComponent, data: { dialog: settingsItemDetailsDialog, title: 'Settings / Resources Item Details' },
+                component: DialogEntryComponent,
+                data: { dialog: settingsItemDetailsDialog, title: 'Settings / Resources Item Details' },
               },
             ],
           },
@@ -266,9 +267,21 @@ const appAdministrationRoutes: Routes = [
         loadComponent: () => import('./sync-configuration/sync-configuration.component').then(mod => mod.SyncConfigurationComponent),
         data: { title: 'Sync', breadcrumb: "Sync" }, children: [
           ...GoToMetadata.getRoutes(),
-          { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
-          { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
-          { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },
+          {
+            path: 'export',
+            component: DialogEntryComponent,
+            data: { dialog: exportAppDialog, title: 'Export App' }
+          },
+          {
+            path: 'export/parts',
+            component: DialogEntryComponent,
+            data: { dialog: exportAppPartsDialog, title: 'Export App Parts' }
+          },
+          {
+            path: 'import/parts',
+            component: DialogEntryComponent,
+            data: { dialog: importAppPartsDialog, title: 'Import App Parts' }
+          },
         ],
       },
     ]

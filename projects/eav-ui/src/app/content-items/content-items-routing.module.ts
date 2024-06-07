@@ -8,7 +8,10 @@ import { contentItemsDialog } from './content-items-dialog.config';
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: contentItemsDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: contentItemsDialog },
+    children: [
       ...GoToMetadata.getRoutes(),
       {
         path: 'export/:contentTypeStaticName',
@@ -18,7 +21,11 @@ const routes: Routes = [
         path: 'export/:contentTypeStaticName/:selectedIds',
         loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
       },
-      { path: 'import', component: DialogEntryComponent, data: { dialog: importContentItemDialog } },
+      {
+        path: 'import',
+        component: DialogEntryComponent,
+        data: { dialog: importContentItemDialog }
+      },
       {
         path: ':contentTypeStaticName/import',
         loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),

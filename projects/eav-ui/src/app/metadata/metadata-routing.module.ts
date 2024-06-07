@@ -6,7 +6,10 @@ import { metadataDialog } from './metadata-dialog.config';
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: metadataDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: metadataDialog },
+    children: [
       {
         matcher: edit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)

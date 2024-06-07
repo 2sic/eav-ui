@@ -9,8 +9,15 @@ import { editContentTypeFieldsDialog } from './edit-content-type-fields/edit-con
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: contentTypeFieldsDialog }, children: [
-      { path: 'add/:contentTypeStaticName', component: DialogEntryComponent, data: { dialog: editContentTypeFieldsDialog } },
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: contentTypeFieldsDialog },
+    children: [
+      {
+        path: 'add/:contentTypeStaticName',
+        component: DialogEntryComponent,
+        data: { dialog: editContentTypeFieldsDialog }
+      },
       {
         path: 'update/:contentTypeStaticName/:id/:editMode',
         component: DialogEntryComponent,

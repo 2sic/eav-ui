@@ -4,7 +4,11 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { contentImportDialog } from './content-import-dialog.config';
 
 const routes: Routes = [
-  { path: '', component: DialogEntryComponent, data: { dialog: contentImportDialog } },
+  {
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: contentImportDialog }
+  },
 ];
 
 @NgModule({

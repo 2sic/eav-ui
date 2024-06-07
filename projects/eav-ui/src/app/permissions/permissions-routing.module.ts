@@ -6,7 +6,10 @@ import { permissionsDialog } from './permissions-dialog.config';
 
 const routes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: permissionsDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: permissionsDialog },
+    children: [
       {
         matcher: edit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)

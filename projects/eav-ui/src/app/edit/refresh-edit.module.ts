@@ -25,7 +25,9 @@ export class RefreshEditComponent {
 
 const editRefreshRoutes: Routes = [
   {
-    path: '', component: RefreshEditComponent, data: { title: 'Refreshing Edit Dialog' }
+    path: '',
+    component: RefreshEditComponent,
+    data: { title: 'Refreshing Edit Dialog' }
   },
 ];
 
