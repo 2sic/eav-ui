@@ -6,7 +6,9 @@
     </button>
     <div class="eav-languages">
       @if (vm.hasLanguages) {
-        <app-language-switcher [disabled]="disabled"></app-language-switcher>
+        @defer {
+          <app-language-switcher [disabled]="disabled"></app-language-switcher>
+        }
       }
     </div>
     @if (vm.readOnly) {

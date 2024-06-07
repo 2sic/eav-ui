@@ -15,21 +15,21 @@ import { MatCardModule } from '@angular/material/card';
 declare const window: EavWindow;
 
 @Component({
-    selector: 'app-edit-dialog-footer',
-    templateUrl: './edit-dialog-footer.component.html',
-    styleUrls: ['./edit-dialog-footer.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        NgClass,
-        ExtendedModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        DataDumpComponent,
-        FormulaDesignerComponent,
-        LogsDumpComponent,
-    ],
+  selector: 'app-edit-dialog-footer',
+  templateUrl: './edit-dialog-footer.component.html',
+  styleUrls: ['./edit-dialog-footer.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    NgClass,
+    ExtendedModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    DataDumpComponent,
+    FormulaDesignerComponent,
+    LogsDumpComponent,
+  ],
 })
 export class EditDialogFooterComponent implements OnInit {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
@@ -39,10 +39,9 @@ export class EditDialogFooterComponent implements OnInit {
   activeDebug: DebugType;
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   toggleDebugType(type: DebugType): void {
     this.activeDebug = type !== this.activeDebug ? type : null;

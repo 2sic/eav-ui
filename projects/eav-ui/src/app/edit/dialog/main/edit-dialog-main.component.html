@@ -46,9 +46,11 @@
       }
     </div>
     @if (vm.debugEnabled) {
-      <app-edit-dialog-footer mat-dialog-actions [formBuilderRefs]="formBuilderRefs"
-        (debugInfoOpened)="debugInfoOpened($event)">
-      </app-edit-dialog-footer>
+      @defer {
+        <app-edit-dialog-footer mat-dialog-actions [formBuilderRefs]="formBuilderRefs"
+          (debugInfoOpened)="debugInfoOpened($event)">
+        </app-edit-dialog-footer>
+      }
     }
   </div>
 }

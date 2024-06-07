@@ -21,7 +21,9 @@
     "build-prepare": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",
     "build-languages": "node ./build-helpers/build-languages",
     "docs-prepare": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s",
-    "ci": "npm ci --legacy-peer-deps"
+    "ci": "npm ci --legacy-peer-deps",
+    
+    "source-map-explorer-example": "node_modules/.bin/source-map-explorer C:/Projects/2sxc/2sxc-sources/_latest C:/Projects/2sxc/2sxc-sources/_latest/dist/ng-edit/default-projects_eav-ui_src_app_edit_edit_module_ts.27ddea5d6f2512d1*"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^14.7.1",
