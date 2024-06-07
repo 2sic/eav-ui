@@ -58,8 +58,4 @@ export class GoToDevRest {
   static getUrlQueryInAdmin(guid: string): string {
     return `../${GoToDevRest.routeQuery}/${guid}`;
   }
-
-  static getUrlWebApi(api: WebApi): string {
-    return `${base}/custom/${encodeURIComponent(api.path)}`;
-  }
 }

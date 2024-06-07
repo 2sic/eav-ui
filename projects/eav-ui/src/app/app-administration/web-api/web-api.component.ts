@@ -140,10 +140,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.dialogService.openCodeFile(api.path, api.isShared);
   }
 
-  private openRestApi(api: WebApi) {
-    this.router.navigate([GoToDevRest.getUrlWebApi(api)], { relativeTo: this.route.parent.firstChild });
-  }
-
   private buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -217,7 +213,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
             const params: WebApiActionsParams = {
               enableCodeGetter: () => this.enableCodeGetter(),
               onOpenCode: (api) => this.openCode(api),
-              onOpenRestApi: (api) => this.openRestApi(api),
             };
             return params;
           })(),
