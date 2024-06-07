@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable }
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
@@ -45,8 +45,8 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
 
   private iconOptions$: BehaviorSubject<IconOption[]>;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService, private scriptsLoaderService: ScriptsLoaderService) {
-    super(eavService, fieldsSettingsService);
+  constructor(fieldsSettingsService: FieldsSettingsService, private scriptsLoaderService: ScriptsLoaderService) {
+    super(fieldsSettingsService);
     StringFontIconPickerLogic.importMe();
   }
 

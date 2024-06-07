@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, pickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,7 +36,6 @@ const logThis = false;
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
@@ -46,7 +45,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     private querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
-      eavService,
       fieldsSettingsService,
       editRoutingService,
     );

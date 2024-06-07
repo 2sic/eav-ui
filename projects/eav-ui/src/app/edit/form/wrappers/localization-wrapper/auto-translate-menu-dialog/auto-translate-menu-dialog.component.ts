@@ -5,7 +5,7 @@ import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
-import { EavService, FieldsTranslateService } from '../../../../shared/services';
+import { FormConfigService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
@@ -56,7 +56,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
     private snackBar: MatSnackBar,
     private featuresService: FeaturesService,
@@ -85,7 +85,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     }
 
     // If the demo API key is being used, show snackbar warning
-    const apiKeyInfo = this.eavService.settings.Values[EditApiKeyPaths.GoogleTranslate] as ApiKeySpecs;
+    const apiKeyInfo = this.formConfig.settings.Values[EditApiKeyPaths.GoogleTranslate] as ApiKeySpecs;
     if (apiKeyInfo.IsDemo)
       this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
 
@@ -93,8 +93,8 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),

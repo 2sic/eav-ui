@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
-import { EavService, QueryService } from '.';
+import { FormConfigService, QueryService } from '.';
 import { EntityBasic } from '../models/entity-basic';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -15,7 +15,7 @@ export const webApiEntityList = 'admin/entity/list';
 @Injectable()
 export class EntityService extends ServiceBase {
   constructor(private http: HttpClient,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private dnnContext: DnnContext,
     private queryService: QueryService)
   {
@@ -53,7 +53,7 @@ export class EntityService extends ServiceBase {
       params: {
         contentType,
         id: entityId.toString(),
-        appId: this.eavService.eavConfig.appId,
+        appId: this.formConfig.config.appId,
         force: force.toString(),
         ...(parentId && { parentId: parentId.toString() }),
         ...(parentId && parentField && { parentField }),

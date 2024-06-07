@@ -8,7 +8,7 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { DatetimeDefaultViewModel } from './datetime-default.models';
@@ -48,13 +48,12 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
   viewModel: Observable<DatetimeDefaultViewModel>;
 
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private matDayjsDateAdapter: MatDayjsDateAdapter,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
     dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);

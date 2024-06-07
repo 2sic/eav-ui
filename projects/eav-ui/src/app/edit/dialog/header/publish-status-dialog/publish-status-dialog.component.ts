@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, map, Observable } from 'rxjs';
 import { PublishMode, PublishModes } from '../../../shared/models';
-import { EavService } from '../../../shared/services';
+import { FormConfigService } from '../../../shared/services';
 import { PublishStatusService } from '../../../shared/store/ngrx-data';
 import { PublishStatusDialogViewModel } from './publish-status-dialog.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -34,7 +34,7 @@ export class PublishStatusDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
     private publishStatusService: PublishStatusService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
@@ -44,12 +44,12 @@ export class PublishStatusDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
+    const publishMode$ = this.publishStatusService.getPublishMode$(this.formConfig.config.formId);
     this.viewModel$ = combineLatest([publishMode$]).pipe(
       map(([publishMode]) => {
         const viewModel: PublishStatusDialogViewModel = {
           publishMode,
-          options: this.eavService.eavConfig.versioningOptions,
+          options: this.formConfig.config.versioningOptions,
         };
         return viewModel;
       }),
@@ -57,7 +57,7 @@ export class PublishStatusDialogComponent implements OnInit {
   }
 
   setPublishMode(publishMode: PublishMode) {
-    this.publishStatusService.setPublishMode(publishMode, this.eavService.eavConfig.formId, this.eavService);
+    this.publishStatusService.setPublishMode(publishMode, this.formConfig.config.formId, this.formConfig);
     this.closeDialog();
   }
 

@@ -6,7 +6,7 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { FormulaEngine } from '../../../formulas/formula-engine';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { FieldProps, FormValues, SxcAbstractControl } from '../../../shared/models';
-import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
+import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { AdamCacheService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
 import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
@@ -37,7 +37,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
     public fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
     private formBuilder: UntypedFormBuilder,
-    private eavService: EavService,
+    private eavService: FormConfigService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
@@ -146,8 +146,8 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
         map(() => this.form.getRawValue() as FormValues),
         distinctUntilChanged((previous, current) => GeneralHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.config.formId);
+        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.config.formId);
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, currentLanguage, defaultLanguage);
       })
     );

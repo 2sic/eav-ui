@@ -7,7 +7,7 @@ import { convertArrayToString, convertValueToArray, equalizeSelectedItems } from
 import { DeleteEntityProps } from '../models/picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { EavService } from '../../../../shared/services';
+import { FormConfigService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -32,9 +32,8 @@ export class PickerStateAdapter extends ServiceBase {
   public createEntityTypes: { label: string, guid: string }[] = [];
 
   constructor(
-    public eavService: EavService,
+    public formConfigSvc: FormConfigService,
     entityCacheService: PickerDataCacheService,
-    // private stringQueryCacheService: StringQueryCacheService,
     @Optional() logger: EavLogger = null,
   ) {
     super(logger ?? new EavLogger('PickerStateAdapter', logThis));
@@ -207,7 +206,7 @@ export class PickerStateAdapter extends ServiceBase {
   getEntityTypesData(): void {
     if (this.createEntityTypes[0].label) { return; }
     this.createEntityTypes.forEach(entityType => {
-      const ct = this.eavService.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
+      const ct = this.formConfigSvc.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
       entityType.label = ct?.Name ?? entityType.guid + " (not found)";
       entityType.guid = ct?.Id ?? entityType.guid;
     });

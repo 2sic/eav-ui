@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import { Language } from '../../../shared/models';
-import { EavService } from '../../../shared/services';
+import { FormConfigService } from '../../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../../shared/store/ngrx-data';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageButtons } from './language-switcher.helpers';
@@ -41,11 +41,11 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private ngZone: NgZone,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
   ) { }
 
   ngOnInit() {
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
     const languageButtons$ = this.languageService.getLanguages$().pipe(map(langs => getLanguageButtons(langs)));
 
     this.viewModel$ = combineLatest([currentLanguage$, languageButtons$]).pipe(
@@ -85,7 +85,7 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
     this.centerSelectedHelper.lngButtonClick(event);
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
-      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, language.NameId);
+      this.languageInstanceService.setCurrentLanguage(this.formConfig.config.formId, language.NameId);
     }
   }
 

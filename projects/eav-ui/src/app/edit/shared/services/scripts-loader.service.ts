@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EavService } from '.';
+import { FormConfigService } from '.';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
 
@@ -21,7 +21,7 @@ export interface LoadFile {
 export class ScriptsLoaderService {
   private loadedFiles: LoadFile[] = [];
 
-  constructor(private eavService: EavService) { }
+  constructor(private formConfig: FormConfigService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
   load(scripts: string[], callback: () => void) {
@@ -99,9 +99,9 @@ export class ScriptsLoaderService {
   }
 
   private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.eavService.eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.eavService.eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig))
-      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.eavService.eavConfig));
+    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.formConfig.config))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.formConfig.config))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config))
+      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.formConfig.config));
   }
 }

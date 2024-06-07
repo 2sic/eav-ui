@@ -1,7 +1,7 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { combineLatest } from "rxjs";
-import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
+import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -18,7 +18,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     public fieldsSettingsService: FieldsSettingsService,
     public entityCacheService: PickerDataCacheService,
     public entityService: EntityService,
-    public eavService: EavService,
+    public formConfig: FormConfigService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public snackBar: MatSnackBar,
@@ -27,7 +27,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     super(
       entityCacheService,
       entityService,
-      eavService,
+      formConfig,
       editRoutingService,
       translate,
       snackBar,

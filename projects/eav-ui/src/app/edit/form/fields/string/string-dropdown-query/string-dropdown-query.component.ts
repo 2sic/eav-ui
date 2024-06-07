@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
@@ -30,7 +30,6 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
@@ -39,7 +38,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
     super(
-      eavService,
       fieldsSettingsService,
       translate,
       editRoutingService,

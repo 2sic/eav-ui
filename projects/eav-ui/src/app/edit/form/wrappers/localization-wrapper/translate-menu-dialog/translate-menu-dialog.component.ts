@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
-import { EavService, FieldsTranslateService } from '../../../../shared/services';
+import { FormConfigService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from './translate-menu-dialog.constants';
@@ -46,7 +46,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
@@ -60,8 +60,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),

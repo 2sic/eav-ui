@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
@@ -19,8 +19,8 @@ export class HiddenWrapperComponent extends BaseFieldComponent implements FieldW
 
   hidden$: Observable<boolean>;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  constructor(fieldsSettingsService: FieldsSettingsService) {
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {

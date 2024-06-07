@@ -4,7 +4,7 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { ControlStatus } from '../../../shared/models';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
+import { FieldsSettingsService } from '../../../shared/services';
 import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../builder/fields-builder/field.model';
 
@@ -23,7 +23,8 @@ export class BaseFieldComponent<T = FieldValue> extends BaseSubsinkComponent imp
   placeholder$: Observable<string>;
   required$: Observable<boolean>;
 
-  constructor(public eavService: EavService, public fieldsSettingsService: FieldsSettingsService) { super(); }
+  // TODO: @2DM - GET RED OF THE FORMcONFIG HERE
+  constructor(public fieldsSettingsService: FieldsSettingsService) { super(); }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];

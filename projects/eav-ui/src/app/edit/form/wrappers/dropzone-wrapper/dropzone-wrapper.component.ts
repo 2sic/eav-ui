@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable }
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
@@ -36,12 +36,12 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
   isStringWysiwyg = false;
 
   constructor(
-    eavService: EavService,
+    private formConfig: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {
@@ -130,7 +130,7 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    const appId = this.eavService.eavConfig.appId;
+    const appId = this.formConfig.config.appId;
 
     const startDisabled = this.config.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);

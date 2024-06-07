@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, Vie
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
@@ -30,8 +30,8 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
   fullscreenAdam: boolean;
   adamDisabled$ = new BehaviorSubject(true);
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  constructor(fieldsSettingsService: FieldsSettingsService) {
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {

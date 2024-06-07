@@ -4,7 +4,7 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
 import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -51,7 +51,7 @@ export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
   ) {
     super();
     EmptyDefaultLogic.importMe();
@@ -78,7 +78,7 @@ export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements
     );
 
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId).subscribe(() => {
+      this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId).subscribe(() => {
         const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
         this.collapsed$.next(settingsSnapshot.Collapsed);
       })

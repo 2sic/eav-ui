@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Context } from '../shared/services/context';
 import { ManageContentListRoutingModule } from './manage-content-list-routing.module';
-import { EavService } from '../edit/shared/services';
+import { FormConfigService } from '../edit/shared/services';
 
 @NgModule({
   imports: [
@@ -15,7 +15,7 @@ import { EavService } from '../edit/shared/services';
   ],
   providers: [
     Context,
-    EavService,
+    FormConfigService,
   ]
 })
 export class ManageContentListModule { }

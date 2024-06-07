@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './models/picker.models';
@@ -65,12 +65,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   public log: EavLogger = new EavLogger('PickerComponent', logThis);
 
-  constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
-    public editRoutingService: EditRoutingService,
-  ) {
-    super(eavService, fieldsSettingsService);
+  constructor(fieldsSettingsService: FieldsSettingsService, public editRoutingService: EditRoutingService) {
+    super(fieldsSettingsService);
   }
 
   ngOnInit(): void {

@@ -1,8 +1,8 @@
 @if (viewModel$ | async; as vm) {
   <mat-card class="eav-header">
     <button mat-icon-button class="eav-exit-button" (click)="close()"
-      [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
-      <mat-icon class="eav-icon">{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
+      [tippy]="(formConfig.config.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
+      <mat-icon class="eav-icon">{{ formConfig.config.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
     </button>
     <div class="eav-languages">
       @if (vm.hasLanguages) {
@@ -17,7 +17,7 @@
         lock
       </mat-icon>
     }
-    @if (eavService.eavConfig.isCopy) {
+    @if (formConfig.config.isCopy) {
       <mat-icon class="eav-hint-icon" [tippy]="'General.CopyHint' | translate">
         file_copy
       </mat-icon>

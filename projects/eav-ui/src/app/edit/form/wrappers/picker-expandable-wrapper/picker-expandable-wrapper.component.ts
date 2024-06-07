@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable, distinctUntilChanged, share } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -46,12 +46,11 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
 
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {

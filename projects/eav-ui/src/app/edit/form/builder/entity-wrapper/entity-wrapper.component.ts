@@ -11,7 +11,7 @@ import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavItem } from '../../../shared/models/eav';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { FormConfigService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeViewModel } from './entity-wrapper.models';
@@ -68,7 +68,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
     private router: Router,
     private route: ActivatedRoute,
     private fieldsSettingsService: FieldsSettingsService,
-    public eavService: EavService,
+    public formConfig: FormConfigService,
     private formDataService: FormDataService,
     private translate: TranslateService,
     private formsStateService: FormsStateService,
@@ -89,8 +89,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
 
   ngOnInit() {
     const readOnly$ = this.formsStateService.readOnly$;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
     const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
       map(itemFor => getItemForTooltip(itemFor, this.translate)),
     );
@@ -232,8 +232,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
   }
 
   deleteNote(note: EavEntity) {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     const title = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.Title, null);
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))

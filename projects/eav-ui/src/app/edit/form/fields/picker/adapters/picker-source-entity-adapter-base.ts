@@ -8,7 +8,7 @@ import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, PickerItem } from "projects/edit-types";
-import { EntityService, EavService, EditRoutingService } from "../../../../shared/services";
+import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerStateAdapter } from './picker-state-adapter';
@@ -25,7 +25,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   constructor(
     public entityCacheService: PickerDataCacheService,  // DI
     public entityService: EntityService, // DI
-    public eavService: EavService, // DI
+    public formConfig: FormConfigService, // DI
     public editRoutingService: EditRoutingService, // DI
     protected translate: TranslateService, // DI
     public snackBar: MatSnackBar,
@@ -102,7 +102,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
             // this.updateAddNew();
           },
           null,
-          this.eavService.eavConfig,
+          this.formConfig.config,
           this.config,
           true, // override log
         );
@@ -236,7 +236,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
+      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.formConfig.config);
       const prefill = prefillMask.resolve();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

@@ -1,6 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { EavConfig } from '../models';
+import { FormConfiguration } from '../models';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { GeneralHelpers } from './general.helpers';
 import { ServiceBase } from '../../../shared/services/service-base';
@@ -34,7 +34,7 @@ export class FieldMask extends ServiceBase {
     model: Record<string, AbstractControl>,
     private changeEvent: (newValue: string) => void,
     overloadPreCleanValues: (key: string, value: string) => string,
-    private eavConfig?: EavConfig,
+    private eavConfig?: FormConfiguration,
     private config?: FieldConfigSet,
     overrideLog?: boolean
   ) {

@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, 
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
@@ -68,7 +68,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    eavService: EavService,
+    eavService: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     adamService: AdamService,
     dialog: MatDialog,

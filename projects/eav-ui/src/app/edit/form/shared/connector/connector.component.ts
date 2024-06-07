@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { consoleLogDev } from '../../../../shared/helpers/console-log-angular.helper';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHelper } from './connector.helper';
@@ -25,7 +25,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
   private connectorCreator: ConnectorHelper;
 
   constructor(
-    private eavService: EavService,
+    private eavService: FormConfigService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,

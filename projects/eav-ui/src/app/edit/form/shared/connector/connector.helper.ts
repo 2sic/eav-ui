@@ -9,7 +9,7 @@ import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/feature
 import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
@@ -26,7 +26,7 @@ export class ConnectorHelper {
     private group: UntypedFormGroup,
     private customElContainerRef: ElementRef,
     private customElName: string,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
@@ -76,7 +76,7 @@ export class ConnectorHelper {
     const fieldConfig = this.getFieldConfig(settingsSnapshot);
     const fieldConfig$ = this.settings$.pipe(map(settings => this.getFieldConfig(settings)));
     const value$ = this.value$.asObservable();
-    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.eavService.eavConfig);
+    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.formConfig.config);
     this.subscription.add(
       this.settings$.subscribe(settings => {
         connector.field.settings = settings;
@@ -135,7 +135,7 @@ export class ConnectorHelper {
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
-      getSettings: (name) => this.eavService.eavConfig.settings?.Values[name],
+      getSettings: (name) => this.formConfig.config.settings?.Values[name],
       // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
       // getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
       // getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),

@@ -8,7 +8,7 @@ import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
 import { EavContentTypeAttribute, EavEntity, EavValues } from '../shared/models/eav';
-import { EavService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
+import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
@@ -36,7 +36,7 @@ export class FormulaEngine implements OnDestroy {
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
     private formulaDesignerService: FormulaDesignerService,
@@ -247,8 +247,8 @@ export class FormulaEngine implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     item?: PickerItem
   ): FormulaResultRaw {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
     const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, currentLanguage);
@@ -266,7 +266,7 @@ export class FormulaEngine implements OnDestroy {
       itemIdWithPrefill,
       debugEnabled,
       this.itemService,
-      this.eavService,
+      this.formConfig,
       this.fieldsSettingsService,
       this.featuresCache$.value,
     );

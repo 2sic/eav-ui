@@ -3,7 +3,7 @@ import { Connector, ConnectorData, ConnectorDialog, ExperimentalProps, FieldConf
 import { loadScripts } from '../../../../shared/helpers/load-scripts.helper';
 import { EavWindow } from '../../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../../../shared/helpers';
-import { EavConfig } from '../../../shared/models';
+import { FormConfiguration } from '../../../shared/models';
 
 declare const window: EavWindow;
 
@@ -18,7 +18,7 @@ export class ConnectorInstance<T = any> implements Connector<T> {
     public field: FieldConfig,
     public field$: Observable<FieldConfig>,
     public _experimental: ExperimentalProps,
-    eavConfig: EavConfig,
+    eavConfig: FormConfiguration,
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
@@ -50,7 +50,7 @@ export class ConnectorInstance<T = any> implements Connector<T> {
     };
   }
 
-  resolveTokens(src: string, eavConfig: EavConfig) {
+  resolveTokens(src: string, eavConfig: FormConfiguration) {
     src = src.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', eavConfig))
       .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', eavConfig))
       .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', eavConfig));

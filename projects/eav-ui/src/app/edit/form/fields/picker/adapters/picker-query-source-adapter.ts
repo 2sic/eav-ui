@@ -1,7 +1,7 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from "rxjs";
-import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
+import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceQuery } from "../data-sources/data-source-query";
@@ -25,7 +25,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     // public stringQueryCacheService: StringQueryCacheService,
     public entityCacheService: PickerDataCacheService,
     public entityService: EntityService,
-    public eavService: EavService,
+    public formConfig: FormConfigService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public snackBar: MatSnackBar,
@@ -34,7 +34,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     super(
       entityCacheService,
       entityService,
-      eavService,
+      formConfig,
       editRoutingService,
       translate,
       snackBar,
@@ -78,7 +78,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
           this.group.controls,
           () => { this.optionsOrHints$.next(null); },
           null,
-          this.eavService.eavConfig,
+          this.formConfig.config,
           this.config,
           true, // overrideLog
         );
@@ -99,7 +99,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       this.isStringQuery,
       this.config.entityGuid,
       this.config.fieldName,
-      this.eavService.eavConfig.appId,
+      this.formConfig.config.appId,
     );
 
     // this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(

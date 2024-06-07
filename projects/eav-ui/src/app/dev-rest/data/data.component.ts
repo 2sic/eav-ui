@@ -5,7 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
-import { EavService, EntityService, QueryService } from '../../edit/shared/services';
+import { FormConfigService, EntityService, QueryService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -57,7 +57,7 @@ const pathToContent = 'app/{appname}/data/{typename}';
     EntityService,
     AppDialogConfigService,
     ContentTypesService,
-    EavService,
+    FormConfigService,
     // WIP - should be self-declared by the EntitiesService
     QueryService,
   ],

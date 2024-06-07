@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { EavConfig } from '../models';
+import { FormConfiguration } from '../models';
 
 export class UrlHelpers {
 
@@ -132,7 +132,7 @@ export class UrlHelpers {
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
 
-  static getUrlPrefix(area: 'system' | 'zone' | 'app' | 'appShared', eavConfig: EavConfig) {
+  static getUrlPrefix(area: 'system' | 'zone' | 'app' | 'appShared', eavConfig: FormConfiguration) {
     let result = '';
 
     if (area === 'system') { result = eavConfig.systemRoot; } // used to link to JS-stuff and similar

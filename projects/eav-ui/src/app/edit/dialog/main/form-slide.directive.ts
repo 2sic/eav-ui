@@ -1,7 +1,7 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, fromEvent, map, merge, pairwise, Subscription } from 'rxjs';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
-import { EavService } from '../../shared/services';
+import { FormConfigService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 
 @Directive({
@@ -14,7 +14,7 @@ export class FormSlideDirective extends BaseSubsinkComponent implements OnInit, 
     private elementRef: ElementRef<HTMLElement>,
     private languageInstanceService: LanguageInstanceService,
     private languageService: LanguageService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
   ) {
     super();
    }
@@ -22,7 +22,7 @@ export class FormSlideDirective extends BaseSubsinkComponent implements OnInit, 
   ngOnInit() {
     this.subscription.add(
       merge(
-        this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId).pipe(
+        this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId).pipe(
           pairwise(),
           map(([previousLang, currentLang]) => {
             const languages = this.languageService.getLanguages();

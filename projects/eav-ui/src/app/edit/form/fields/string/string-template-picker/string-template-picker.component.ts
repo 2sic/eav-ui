@@ -6,7 +6,7 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../create-file-dialog';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { templateTypes } from './string-template-picker.constants';
@@ -57,13 +57,12 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
   private resetIfNotFound = false;
 
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private sourceService: SourceService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {

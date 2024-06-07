@@ -3,7 +3,7 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDefaultLogic } from './string-default-logic';
@@ -38,8 +38,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 export class StringDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   viewModel: Observable<StringDefaultViewModel>;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  constructor(fieldsSettingsService: FieldsSettingsService) {
+    super(fieldsSettingsService);
     StringDefaultLogic.importMe();
   }
 

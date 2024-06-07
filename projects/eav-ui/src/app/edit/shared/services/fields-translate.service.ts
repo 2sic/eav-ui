@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
-import { EavService, FieldsSettingsService } from '.';
+import { FormConfigService, FieldsSettingsService } from '.';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
@@ -21,7 +21,7 @@ export class FieldsTranslateService {
     private http: HttpClient,
     private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private contentTypeService: ContentTypeService,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
@@ -34,8 +34,8 @@ export class FieldsTranslateService {
 
   translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     if (this.isTranslationDisabled(fieldName)) { return; }
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
 
     transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true, transactionItem);
 
@@ -52,7 +52,7 @@ export class FieldsTranslateService {
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
     transactionItem = this.itemService.removeItemAttributeDimension(
       this.entityGuid, fieldName, currentLanguage, isTransaction, transactionItem,
     );
@@ -65,12 +65,12 @@ export class FieldsTranslateService {
    */
   autoTranslate(fieldNames: string[], autoTranslateLanguageKey: string, isMany: boolean = false, areAllChecksKnown: boolean = false): void {
     // Get API key and optionally show warning
-    const apiKeyInfo = this.eavService.settings.Values[EditApiKeyPaths.GoogleTranslate] as ApiKeySpecs;
+    const apiKeyInfo = this.formConfig.settings.Values[EditApiKeyPaths.GoogleTranslate] as ApiKeySpecs;
     if (apiKeyInfo.IsDemo)
       alert(apiKeyInDemoModeAlert);
 
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
@@ -114,8 +114,8 @@ export class FieldsTranslateService {
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, copyFromLanguageKey, defaultLanguage);
     if (attributeValueTranslation) {
       const valueAlreadyExists = values
@@ -139,8 +139,8 @@ export class FieldsTranslateService {
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, fieldName, currentLanguage, linkWithLanguageKey, defaultLanguage, true, transactionItem,
@@ -150,8 +150,8 @@ export class FieldsTranslateService {
   linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, fieldName, currentLanguage, linkWithLanguageKey, defaultLanguage, false, transactionItem,

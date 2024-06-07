@@ -50,7 +50,7 @@
           <mat-icon>local_offer</mat-icon>
         </div>
       }
-      @if (eavService.eavConfig.enableHistory) {
+      @if (formConfig.config.enableHistory) {
         <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
           [disabled]="vm.readOnly" (click)="openHistory()">
           <mat-icon>history</mat-icon>

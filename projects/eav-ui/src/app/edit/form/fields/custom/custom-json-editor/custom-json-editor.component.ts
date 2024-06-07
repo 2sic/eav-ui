@@ -5,7 +5,7 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { JsonSchema } from '../../../../../monaco-editor';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
@@ -50,15 +50,15 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
     fixedOverflowWidgets: true,
   };
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  constructor(private formConfig: FormConfigService, fieldsSettingsService: FieldsSettingsService) {
+    super(fieldsSettingsService);
     CustomJsonEditorLogic.importMe();
     StringJsonLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.filename = `${this.config.fieldName} ${this.config.entityGuid} ${this.eavService.eavConfig.formId}.json`;
+    this.filename = `${this.config.fieldName} ${this.config.entityGuid} ${this.formConfig.config.formId}.json`;
     const rowCount$ = this.settings$.pipe(map(settings => settings.Rows), distinctUntilChanged());
     const jsonSchema$ = this.settings$.pipe(
       map(settings => {

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
-import { EavService } from '.';
+import { FormConfigService } from '.';
 import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
@@ -22,7 +22,7 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
     private route: ActivatedRoute,
     private router: Router,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
   ) { 
     super();
   }
@@ -115,7 +115,7 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
           distinctUntilChanged(),
         )
         .subscribe(hasDetails => {
-          this.languageInstanceService.updateHideHeader(this.eavService.eavConfig.formId, hasDetails);
+          this.languageInstanceService.updateHideHeader(this.formConfig.config.formId, hasDetails);
         })
     );
   }

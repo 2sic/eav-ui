@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { NumberDropdownLogic } from './number-dropdown-logic';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -50,8 +50,8 @@ export class NumberDropdownComponent extends BaseFieldComponent<number> implemen
 
   private toggleFreeText$: BehaviorSubject<boolean>;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  constructor(fieldsSettingsService: FieldsSettingsService) {
+    super(fieldsSettingsService);
     NumberDropdownLogic.importMe();
   }
 

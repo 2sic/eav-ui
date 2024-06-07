@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
-import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AutoTranslateDisabledWarningDialog } from '../auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
@@ -53,7 +53,7 @@ export class TranslateMenuComponent implements OnInit {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
     private formsStateService: FormsStateService,
@@ -61,8 +61,8 @@ export class TranslateMenuComponent implements OnInit {
 
   ngOnInit(): void {
     const readOnly$ = this.formsStateService.readOnly$;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
     const translationState$ = this.fieldsSettingsService.getTranslationState$(this.config.fieldName);
     const disableTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),

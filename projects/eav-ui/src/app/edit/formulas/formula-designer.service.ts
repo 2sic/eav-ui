@@ -6,7 +6,7 @@ import { EavWindow } from '../../shared/models/eav-window.model';
 import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
-import { EavService, LoggingService } from '../shared/services';
+import { FormConfigService, LoggingService } from '../shared/services';
 import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
@@ -26,7 +26,7 @@ export class FormulaDesignerService implements OnDestroy {
   private subscription = new Subscription();
 
   constructor(
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private languageInstanceService: LanguageInstanceService,
@@ -136,8 +136,8 @@ export class FormulaDesignerService implements OnDestroy {
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
         const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
@@ -363,9 +363,8 @@ export class FormulaDesignerService implements OnDestroy {
         string: mdFor?.String,
       },
     };
-    const eavService = this.eavService;
-    const user = eavService.eavConfig.dialogContext.User;
-    const eavConfig = eavService.eavConfig;
+    const formConfig = this.formConfig.config;
+    const user = formConfig.dialogContext.User;
     return {
       targetEntity,
       user: {
@@ -380,18 +379,18 @@ export class FormulaDesignerService implements OnDestroy {
         username: user?.Username,
       } as FormulaV1CtxUser,
       app: {
-        appId: parseInt(eavConfig.appId, 10),
-        zoneId: parseInt(eavConfig.zoneId, 10),
-        isGlobal: eavConfig.dialogContext.App.IsGlobalApp,
-        isSite: eavConfig.dialogContext.App.IsSiteApp,
-        isContent: eavConfig.dialogContext.App.IsContentApp,
+        appId: parseInt(formConfig.appId, 10),
+        zoneId: parseInt(formConfig.zoneId, 10),
+        isGlobal: formConfig.dialogContext.App.IsGlobalApp,
+        isSite: formConfig.dialogContext.App.IsSiteApp,
+        isContent: formConfig.dialogContext.App.IsContentApp,
         getSetting: (key: string) => undefined,
       },
       sxc: window.$2sxc({
-        zoneId: eavConfig.zoneId,
-        appId: eavConfig.appId,
-        pageId: eavConfig.tabId,
-        moduleId: eavConfig.moduleId,
+        zoneId: formConfig.zoneId,
+        appId: formConfig.appId,
+        pageId: formConfig.tabId,
+        moduleId: formConfig.moduleId,
         _noContextInHttpHeaders: true,  // disable pageid etc. headers in http headers, because it would make debugging very hard
         _autoAppIdsInUrl: true,         // auto-add appid and zoneid to url so formula developer can see what's happening
       } as any),
@@ -404,11 +403,11 @@ export class FormulaDesignerService implements OnDestroy {
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     const entityReader = new EntityReader(currentLanguage, defaultLanguage);
 
-    for (const entityGuid of this.eavService.eavConfig.itemGuids) {
+    for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.getItem(entityGuid);
 
       const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
-import { AdamService, EavService, EditInitializerService, EntityService, LoadIconsService, LoggingService, QueryService, ScriptsLoaderService } from '../../shared/services';
+import { AdamService, FormConfigService, EditInitializerService, EntityService, LoadIconsService, LoggingService, QueryService, ScriptsLoaderService } from '../../shared/services';
 import { EditEntryViewModel } from './edit-entry.models';
 import { AsyncPipe } from '@angular/common';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';

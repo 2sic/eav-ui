@@ -3,16 +3,27 @@ import { DialogContext } from '../../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
-import { EavConfig, VersioningOptions } from '../models';
+import { FormConfiguration, VersioningOptions } from '../models';
+import { FormLanguages } from '../models/form-languages.model';
 
 export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
-export class EavService {
-  /** WARNING! These are constants that form was loaded with. They do not change while form is running */
-  eavConfig: EavConfig;
+export class FormConfigService {
+  /**
+   * Important! These are constants that form was loaded with.
+   * They are initialized in the main edit-form.
+   * They do not change while form is running
+   */
+  config: FormConfiguration;
 
+  /**
+   * Current edit settings
+   * Note: Clean use - only used by classes that inject this themselves
+   */
   settings: EditSettings;
+
+  languages: FormLanguages;
 
   constructor(
     /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
@@ -20,7 +31,7 @@ export class EavService {
   ) {}
 
   /** Create EavConfiguration from sessionStorage */
-  setEavConfig(
+  initFormConfig(
     dialogContext: DialogContext,
     formId: number,
     isParentDialog: boolean,
@@ -31,14 +42,16 @@ export class EavService {
     settings: EditSettings
   ) {
     this.settings = settings;
-    this.eavConfig = {
+    this.languages = {
+      current: dialogContext.Language.Current,
+      primary: dialogContext.Language.Primary,
+      list: dialogContext.Language.List,
+    };
+    this.config = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
       appRoot: dialogContext.App.Url,
       appSharedRoot: dialogContext.App.SharedUrl,
-      lang: dialogContext.Language.Current,
-      langPri: dialogContext.Language.Primary,
-      langs: dialogContext.Language.List,
       moduleId: this.context.moduleId?.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage) ?? partOfPageDefault,
       portalRoot: dialogContext.Site.Url,
@@ -66,14 +79,11 @@ export class EavService {
     partOfPage: boolean,
     publishing: string
   ): VersioningOptions {
-    const allowAll: VersioningOptions = {
-      show: true,
-      hide: true,
-      branch: true,
-    };
-    if (!partOfPage) {
+
+    const allowAll: VersioningOptions = { show: true, hide: true, branch: true };
+    
+    if (!partOfPage)
       return allowAll;
-    }
 
     const publish = publishing || '';
     switch (publish) {

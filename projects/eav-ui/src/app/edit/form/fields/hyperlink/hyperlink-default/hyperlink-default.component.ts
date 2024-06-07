@@ -5,7 +5,7 @@ import { AdamItem } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
@@ -58,7 +58,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   viewModel: Observable<HyperlinkDefaultViewModel>;
 
   constructor(
-    eavService: EavService,
+    eavService: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     adamService: AdamService,
     dialog: MatDialog,

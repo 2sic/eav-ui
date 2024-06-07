@@ -6,7 +6,7 @@ import { EntitiesService } from '../content-items/services/entities.service';
 import { Context } from '../shared/services/context';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { EditRoutingModule } from './edit-routing.module';
-import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
+import { AdamService, FormConfigService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { MatDayjsDateAdapter } from './shared/date-adapters/date-adapter-api';
 
 
@@ -26,7 +26,7 @@ import { MatDayjsDateAdapter } from './shared/date-adapters/date-adapter-api';
   providers: [
     Context,
 
-    EavService,
+    FormConfigService,
     AdamService,
     EntityService,
     QueryService,

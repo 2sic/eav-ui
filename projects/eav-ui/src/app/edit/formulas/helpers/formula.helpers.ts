@@ -3,7 +3,7 @@ import { FeatureSummary } from '../../../features/models';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
 import { FormValues, Language } from '../../shared/models';
-import { EavService, FieldsSettingsService } from '../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../shared/services';
 import { ItemService } from '../../shared/store/ngrx-data';
 
 // Import the type definitions for intellisense
@@ -98,7 +98,7 @@ export class FormulaHelpers {
    * @param itemHeader 
    * @param debugEnabled 
    * @param itemService 
-   * @param eavService 
+   * @param formConfig 
    * @param fieldsSettingsService 
    * @param features 
    * @returns Formula properties
@@ -117,7 +117,7 @@ export class FormulaHelpers {
     itemHeader: ItemIdentifierShared,
     debugEnabled: boolean,
     itemService: ItemService,
-    eavService: EavService,
+    formConfig: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     features: FeatureSummary[],
   ): FormulaProps {
@@ -196,7 +196,7 @@ export class FormulaHelpers {
                   console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
                   return '⚠️ error - see console';
                 }
-                const result = eavService.eavConfig.settings.Values[settingPath];
+                const result = formConfig.config.settings.Values[settingPath];
                 if (result != null) return result;
                 console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
                   `See https://go.2sxc.org/formulas`);
@@ -239,7 +239,7 @@ export class FormulaHelpers {
           },
           experimental: {
             getEntities(): FormulaV1ExperimentalEntity[] {
-              const v1Entities = itemService.getItems(eavService.eavConfig.itemGuids).map(item => {
+              const v1Entities = itemService.getItems(formConfig.config.itemGuids).map(item => {
                 const v1Entity: FormulaV1ExperimentalEntity = {
                   guid: item.Entity.Guid,
                   id: item.Entity.Id,

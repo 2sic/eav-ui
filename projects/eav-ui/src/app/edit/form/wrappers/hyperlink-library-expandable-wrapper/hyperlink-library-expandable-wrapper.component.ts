@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, 
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -61,14 +61,13 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
     private featuresService: FeaturesService,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {

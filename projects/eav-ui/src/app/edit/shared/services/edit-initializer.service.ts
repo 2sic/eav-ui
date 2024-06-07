@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
-import { EavService } from '.';
+import { FormConfigService } from '.';
 import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
@@ -35,7 +35,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private contentTypeItemService: ContentTypeItemService,
@@ -132,35 +132,33 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       Entities: EavEntity.convertMany(loadDto.Settings.Entities),
       ContentTypes: EavContentType.convertMany(loadDto.Settings.ContentTypes),
     };
-    this.eavService.setEavConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
+    this.formConfig.initFormConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 
-    const currentLanguage = this.eavService.eavConfig.lang;
-    const defaultLanguage = this.eavService.eavConfig.langPri;
-    const languages = this.eavService.eavConfig.langs;
+    var langs = this.formConfig.languages;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
-    const isoLangCode = currentLanguage.split('-')[0];
+    const isoLangCode = langs.current.split('-')[0];
     this.translate.use(isoLangCode);
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (isParentDialog) {
-      const sortedLanguages = sortLanguages(defaultLanguage, languages);
+      const sortedLanguages = sortLanguages(langs.current, langs.list);
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageInstanceService.addLanguageInstance(formId, currentLanguage, defaultLanguage, currentLanguage, false);
+    this.languageInstanceService.addLanguageInstance(formId, langs.current, langs.primary, langs.current, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
     const publishMode = this.publishStatusService.asPublishMode(loadDto.IsPublished, loadDto.DraftShouldBranch);
-    this.publishStatusService.setPublishMode(publishMode, formId, this.eavService);
+    this.publishStatusService.setPublishMode(publishMode, formId, this.formConfig);
   }
 
   /**
    * Preserve initial values for future use in formulas which may need to know the initial value
    */
   private keepInitialValues(): void {
-    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
+    const items = this.itemService.getItems(this.formConfig.config.itemGuids);
     const languages = this.languageService.getLanguages().map(language => language.NameId);
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
     if (!languages.includes(currentLanguage)) languages.push(currentLanguage);
     if (!languages.includes(defaultLanguage)) languages.push(defaultLanguage);
 
@@ -184,7 +182,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   private initMissingValues(): void {
     const l = this.log.fn('initMissingValues');
 
-    const eavConfig = this.eavService.eavConfig;
+    const eavConfig = this.formConfig.config;
     const formId = eavConfig.formId;
     const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();

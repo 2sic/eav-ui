@@ -9,7 +9,7 @@ import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angul
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
@@ -66,7 +66,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    eavService: EavService,
+    private formConfig: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
@@ -82,7 +82,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     private zone: NgZone,
     private formsStateService: FormsStateService,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {
@@ -154,7 +154,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
       this.group,
       this.previewContainerRef,
       componentTag,
-      this.eavService,
+      this.formConfig,
       this.translateService,
       this.contentTypeService,
       this.inputTypeService,

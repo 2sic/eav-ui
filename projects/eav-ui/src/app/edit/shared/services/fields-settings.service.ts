@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subject, Subscription } from 'rxjs';
-import { EavService } from '.';
+import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
@@ -50,7 +50,7 @@ export class FieldsSettingsService implements OnDestroy {
     private contentTypeService: ContentTypeService,
     private contentTypeItemService: ContentTypeItemService,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private globalConfigService: GlobalConfigService,
@@ -82,7 +82,7 @@ export class FieldsSettingsService implements OnDestroy {
     // todo: @STV unsure why we have a stream for the header, isn't it the same as item.Header?
     // pls find out and either clarify or fix
     this.itemHeader$ = this.itemService.getItemHeader$(entityGuid);
-    this.entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
+    this.entityReader$ = this.languageInstanceService.getEntityReader$(this.formConfig.config.formId);
 
     this.subscription.add(
       combineLatest([this.contentType$, this.itemHeader$, this.entityReader$]).pipe(
@@ -105,11 +105,11 @@ export class FieldsSettingsService implements OnDestroy {
     const entityId = item.Entity.Id;
     this.entityId = entityId;
 
-    const eavConfig = this.eavService.eavConfig;
+    const eavConfig = this.formConfig.config;
     this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
         // When merging metadata, the primary language must be the real primary, not the current
-        const mdMerger = new EntityReader(eavConfig.lang, entityReader.defaultLanguage);
+        const mdMerger = new EntityReader(this.formConfig.languages.current, entityReader.defaultLanguage);
 
         const allConstFieldParts = contentType.Attributes.map((attribute, index) => {
           const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));
@@ -202,7 +202,7 @@ export class FieldsSettingsService implements OnDestroy {
 
           const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
           const logicTools: FieldLogicTools = {
-            eavConfig: this.eavService.eavConfig,
+            eavConfig: this.formConfig.config,
             entityReader,
             debug: debugEnabled,
             contentTypeItemService: this.contentTypeItemService,

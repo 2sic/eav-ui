@@ -14,7 +14,7 @@ import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
 import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, SettingsFormulaPrefix, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
-import { EavService } from '../../../shared/services';
+import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
@@ -63,7 +63,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
-  allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
+  allowSaveFormula = this.formConfig.config.enableFormulaSave;
   isDeleted$ = new BehaviorSubject(false);
   saving$ = new BehaviorSubject(false);
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -78,14 +78,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     tabSize: 2,
     fixedOverflowWidgets: true,
   };
-  filename = `formula${this.eavService.eavConfig.formId}.js`;
+  filename = `formula${this.formConfig.config.formId}.js`;
   focused = false;
   viewModel$: Observable<FormulaDesignerViewModel>;
 
   constructor(
     private formulaDesignerService: FormulaDesignerService,
     private snackBar: MatSnackBar,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private entitiesService: EntitiesService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { PublishMode, PublishModes, PublishStatus } from '../../models';
-import { EavService } from '../../services';
+import { FormConfigService } from '../../services';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
@@ -35,10 +35,10 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
     return draftShouldBranch ? PublishModes.Branch : isPublished ? PublishModes.Show : PublishModes.Hide;
   }
 
-  setPublishMode(publishMode: PublishMode, formId: number, eavService: EavService): void {
+  setPublishMode(publishMode: PublishMode, formId: number, eavService: FormConfigService): void {
     // if publish mode is prohibited, set default
-    if (eavService.eavConfig.versioningOptions[publishMode] == null) {
-      publishMode = Object.keys(eavService.eavConfig.versioningOptions)[0] as PublishMode;
+    if (eavService.config.versioningOptions[publishMode] == null) {
+      publishMode = Object.keys(eavService.config.versioningOptions)[0] as PublishMode;
     }
     const publishStatus: PublishStatus = {
       formId,

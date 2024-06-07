@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
-import { EavService } from '../../../shared/services';
+import { FormConfigService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
 import { DataDumpViewModel } from './data-dump.component.models';
 import { AsyncPipe, JsonPipe } from '@angular/common';
@@ -15,10 +15,10 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 export class DataDumpComponent implements OnInit {
   viewModel$: Observable<DataDumpViewModel>;
 
-  constructor(private itemService: ItemService, private eavService: EavService) { }
+  constructor(private itemService: ItemService, private formConfig: FormConfigService) { }
 
   ngOnInit(): void {
-    const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
+    const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
     this.viewModel$ = combineLatest([items$]).pipe(
       map(([items]) => {
         const viewModel: DataDumpViewModel = {

@@ -5,7 +5,7 @@ import { AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { Preview } from './hyperlink-default.models';
@@ -16,7 +16,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
   preview$: BehaviorSubject<Preview>;
 
   constructor(
-    eavService: EavService,
+    private formConfig: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     public adamService: AdamService,
     public dialog: MatDialog,
@@ -26,7 +26,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
     public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit() {
@@ -116,7 +116,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
 
   private setPreview(value: string, isResolved: boolean, adam?: AdamItem) {
     // for preview resolve [App:Path]
-    value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig));
+    value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config));
 
     const preview: Preview = {
       url: value,

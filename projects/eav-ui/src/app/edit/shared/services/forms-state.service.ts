@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subject, Subscription } from 'rxjs';
-import { EavService } from '.';
+import { FormConfigService } from '.';
 import { GeneralHelpers } from '../helpers';
 import { FormReadOnly } from '../models';
 import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
@@ -18,7 +18,7 @@ export class FormsStateService implements OnDestroy {
   private subscription: Subscription;
 
   constructor(
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
@@ -45,18 +45,18 @@ export class FormsStateService implements OnDestroy {
     );
     this.formsValid = {};
     this.formsDirty = {};
-    for (const entityGuid of this.eavService.eavConfig.itemGuids) {
+    for (const entityGuid of this.formConfig.config.itemGuids) {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }
 
     this.subscription.add(
       combineLatest([
-        combineLatest(this.eavService.eavConfig.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
+        combineLatest(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
           map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
         ),
         combineLatest([
-          this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId),
+          this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId),
           this.languageService.getLanguages$(),
         ]).pipe(
           map(([currentLanguage, languages]) => languages.find(l => l.NameId === currentLanguage)?.IsAllowed ?? true),

@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { PickerPillsViewModel } from './picker-pills.models';
-import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
+import { FormConfigService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { PickerItem } from 'projects/edit-types';
 import { PickerData } from '../picker-data';
@@ -33,11 +33,10 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
   viewModel$: Observable<PickerPillsViewModel>;
 
   constructor(
-    eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(fieldsSettingsService);
   }
 
   ngOnInit(): void {
