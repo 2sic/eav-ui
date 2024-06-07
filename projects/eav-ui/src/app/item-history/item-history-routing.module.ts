@@ -4,7 +4,11 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { itemHistoryDialog } from './item-history-dialog.config';
 
 const routes: Routes = [
-  { path: '', component: DialogEntryComponent, data: { dialog: itemHistoryDialog, title: 'Item History' } },
+  {
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: itemHistoryDialog, title: 'Item History' }
+  },
 ];
 
 @NgModule({

@@ -6,29 +6,33 @@ import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folde
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
-import { SystemInfoComponent } from './system-info/system-info.component';
-import { AppsListComponent } from './apps-list/apps-list.component';
-import { SiteLanguagesComponent } from './site-languages/site-languages.component';
-import { LicenseInfoComponent } from './licence-info/license-info.component';
-import { RegistrationComponent } from './sub-dialogs/registration/registration.component';
 
 const appsManagementRoutes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialog: appsManagementDialog }, children: [
+    path: '',
+    component: DialogEntryComponent,
+    data: { dialog: appsManagementDialog },
+    children: [
       { path: '', redirectTo: 'system', pathMatch: 'full' },
       {
-        path: 'system', component: SystemInfoComponent, data: { title: 'System Info' , breadcrumb: 'System Info'},
+        path: 'system',
+        loadComponent: () => import('./system-info/system-info.component').then(m => m.SystemInfoComponent),
+        data: { title: 'System Info' , breadcrumb: 'System Info'},
         // @2dg is no longer needed as Register is a separate SideNav and no longer a dialog
         //  children: [
         //     GoToRegistration.getRoute()
         // ]
       },
-      { path: 'registration', component: RegistrationComponent, data: {
+      { path: 'registration',
+        loadComponent: () => import('./sub-dialogs/registration/registration.component').then(m => m.RegistrationComponent),
+        data: {
           title: 'Registration', breadcrumb: 'Register'
         }
       },
       {
-        path: 'list', component: AppsListComponent, children: [
+        path: 'list',
+        loadComponent: () => import('./apps-list/apps-list.component').then(m => m.AppsListComponent),
+        children: [
           {
             path: 'import',
             loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
@@ -51,9 +55,15 @@ const appsManagementRoutes: Routes = [
         ],
         data: { title: 'Apps in this Zone' , breadcrumb: 'Apps' },
       },
-      { path: 'languages', component: SiteLanguagesComponent, data: { title: 'Zone Languages' , breadcrumb: 'Languages' } },
       {
-        path: 'license', component: LicenseInfoComponent, data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' },
+        path: 'languages',
+        loadComponent: () => import('./site-languages/site-languages.component').then(m => m.SiteLanguagesComponent),
+        data: { title: 'Zone Languages' , breadcrumb: 'Languages' }
+      },
+      {
+        path: 'license',
+        loadComponent: () => import('./licence-info/license-info.component').then(m => m.LicenseInfoComponent),
+        data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' },
          // @2dg is no longer needed as Register is a separate SideNav and no longer a dialog
         //  children: [
         //   GoToRegistration.getRoute()
