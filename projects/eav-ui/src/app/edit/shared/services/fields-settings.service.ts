@@ -90,8 +90,8 @@ export class FieldsSettingsService implements OnDestroy {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
             entityReader.flattenAll<ContentTypeSettings>(contentType.Metadata),
             contentType,
-            entityReader.currentLanguage,
-            entityReader.defaultLanguage,
+            entityReader.current,
+            entityReader.primary,
             itemHeader,
           );
           return ctSettings;
@@ -109,7 +109,7 @@ export class FieldsSettingsService implements OnDestroy {
     this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
         // When merging metadata, the primary language must be the real primary, not the current
-        const mdMerger = new EntityReader(this.formConfig.languages.current, entityReader.defaultLanguage);
+        const mdMerger = new EntityReader(this.formConfig.languages.current, entityReader.primary);
 
         const allConstFieldParts = contentType.Attributes.map((attribute, index) => {
           const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));
@@ -148,7 +148,7 @@ export class FieldsSettingsService implements OnDestroy {
             inputType,
             calculatedInputType,
             constants,
-            currentLanguage: entityReader.currentLanguage,
+            currentLanguage: entityReader.current,
           };
 
           return constantFieldParts;
@@ -255,7 +255,7 @@ export class FieldsSettingsService implements OnDestroy {
               possibleFieldsUpdates.push(...formulaResult.fields);
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
-              attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
+              attributeValues, fixed.DisableTranslation, entityReader.current, entityReader.primary,
             );
             const wrappers = InputFieldHelpers.getWrappers(fixed, constantFieldPart.calculatedInputType);
 

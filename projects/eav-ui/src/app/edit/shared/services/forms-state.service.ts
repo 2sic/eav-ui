@@ -21,7 +21,7 @@ export class FormsStateService implements OnDestroy {
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
   ) { }
 
   ngOnDestroy() {
@@ -56,10 +56,10 @@ export class FormsStateService implements OnDestroy {
           map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
         ),
         combineLatest([
-          this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId),
+          this.languageStore.getLanguage$(this.formConfig.config.formId),
           this.languageService.getLanguages$(),
         ]).pipe(
-          map(([currentLanguage, languages]) => languages.find(l => l.NameId === currentLanguage)?.IsAllowed ?? true),
+          map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),
         ),
       ]).subscribe(([itemsReadOnly, languageAllowed]) => {
         const readOnly: FormReadOnly = {

@@ -89,7 +89,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private loadIconsService: LoadIconsService,
@@ -99,7 +99,6 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
-    // private stringQueryCacheService: StringQueryCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
     super();
@@ -116,7 +115,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     /** Small delay to make form opening feel smoother. */
     const delayForm$ = of(false).pipe(delay(0), startWith(true));
     const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
-    const hideHeader$ = this.languageInstanceService.getHideHeader$(this.formConfig.config.formId);
+    const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
     const formsValid$ = this.formsStateService.formsValid$;
     const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
@@ -159,12 +158,12 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
   ngOnDestroy() {
     this.viewInitiated$.complete();
     this.debugInfoIsOpen$.complete();
-    this.languageInstanceService.removeLanguageInstance(this.formConfig.config.formId);
+    this.languageStore.removeFromStore(this.formConfig.config.formId);
     this.publishStatusService.removePublishStatus(this.formConfig.config.formId);
 
     if (this.formConfig.config.isParentDialog) {
       // clear the rest of the store
-      this.languageInstanceService.clearCache();
+      this.languageStore.clearCache();
       this.languageService.clearCache();
       this.itemService.clearCache();
       this.inputTypeService.clearCache();

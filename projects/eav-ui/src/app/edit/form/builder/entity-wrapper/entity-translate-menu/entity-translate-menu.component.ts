@@ -18,20 +18,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-    selector: 'app-entity-translate-menu',
-    templateUrl: './entity-translate-menu.component.html',
-    styleUrls: ['./entity-translate-menu.component.scss'],
-    standalone: true,
-    imports: [
-        FlexModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        FeatureIconIndicatorComponent,
-        AsyncPipe,
-        UpperCasePipe,
-        TranslateModule,
-    ],
+  selector: 'app-entity-translate-menu',
+  templateUrl: './entity-translate-menu.component.html',
+  styleUrls: ['./entity-translate-menu.component.scss'],
+  standalone: true,
+  imports: [
+    FlexModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    FeatureIconIndicatorComponent,
+    AsyncPipe,
+    UpperCasePipe,
+    TranslateModule,
+  ],
 })
 export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
@@ -43,7 +43,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog,
-    private languageInstanceService: LanguageInstanceService,
+    private langsInStore: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -57,15 +57,13 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
       map(header => !header.IsEmptyAllowed ? false : header.IsEmpty),
     );
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.config.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.config.formId);
-    this.viewModel$ = combineLatest([readOnly$, slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([readOnly, slotIsEmpty, currentLanguage, defaultLanguage]) => {
+    const language$ = this.langsInStore.getLanguage$(this.eavService.config.formId);
+    this.viewModel$ = combineLatest([readOnly$, slotIsEmpty$, language$]).pipe(
+      map(([readOnly, slotIsEmpty, lang]) => {
         const viewModel: EntityTranslateMenuViewModel = {
+          ...lang,
           readOnly: readOnly.isReadOnly,
           slotIsEmpty,
-          currentLanguage,
-          defaultLanguage,
         };
         return viewModel;
       }),

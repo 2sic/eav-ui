@@ -4,7 +4,7 @@ import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared
 import { Context } from '../../../shared/services/context';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
 import { FormConfiguration, VersioningOptions } from '../models';
-import { FormLanguages } from '../models/form-languages.model';
+import { FormLanguagesConfig } from '../models/form-languages.model';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -23,7 +23,7 @@ export class FormConfigService {
    */
   settings: EditSettings;
 
-  languages: FormLanguages;
+  languages: FormLanguagesConfig;
 
   constructor(
     /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */

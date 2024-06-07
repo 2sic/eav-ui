@@ -1,5 +1,5 @@
 @if (viewModel$ | async; as vm) {
-  @if (vm.currentLanguage !== vm.defaultLanguage) {
+  @if (vm.current !== vm.primary) {
     <div fxLayoutAlign="end center">
       <button mat-button fxLayoutAlign="end center" [disabled]="vm.readOnly || vm.slotIsEmpty"
         [matMenuTriggerFor]="menu">

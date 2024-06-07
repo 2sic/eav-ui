@@ -24,22 +24,22 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-    selector: 'app-translate-menu',
-    templateUrl: './translate-menu.component.html',
-    styleUrls: ['./translate-menu.component.scss'],
-    standalone: true,
-    imports: [
-        FlexModule,
-        NgClass,
-        ExtendedModule,
-        SharedComponentsModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        FeatureIconIndicatorComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-translate-menu',
+  templateUrl: './translate-menu.component.html',
+  styleUrls: ['./translate-menu.component.scss'],
+  standalone: true,
+  imports: [
+    FlexModule,
+    NgClass,
+    ExtendedModule,
+    SharedComponentsModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    FeatureIconIndicatorComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
@@ -52,23 +52,22 @@ export class TranslateMenuComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
-    private fieldsSettingsService: FieldsSettingsService,
-    private fieldsTranslateService: FieldsTranslateService,
-    private formsStateService: FormsStateService,
+    private fieldSettings: FieldsSettingsService,
+    private fieldsTranslate: FieldsTranslateService,
+    private formsState: FormsStateService,
   ) { }
 
   ngOnInit(): void {
-    const readOnly$ = this.formsStateService.readOnly$;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
-    const translationState$ = this.fieldsSettingsService.getTranslationState$(this.config.fieldName);
-    const disableTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+    const readOnly$ = this.formsState.readOnly$;
+    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
+    const translationState$ = this.fieldSettings.getTranslationState$(this.config.fieldName);
+    const disableTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
       distinctUntilChanged(),
     );
-    const disableAutoTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+    const disableAutoTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableAutoTranslation),
       distinctUntilChanged(),
     );
@@ -81,13 +80,13 @@ export class TranslateMenuComponent implements OnInit {
     );
 
     this.viewModel$ = combineLatest([
-      readOnly$, currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
+      readOnly$, language$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
     ]).pipe(
-      map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
+      map(([readOnly, language, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
         const disableTranslateButton = readOnly.isReadOnly || disableTranslation;
         const viewModel: TranslateMenuViewModel = {
-          currentLanguage,
-          defaultLanguage,
+          current: language.current,
+          primary: language.primary,
           translationState,
           translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
           disableAutoTranslation,
@@ -101,11 +100,11 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   translate(): void {
-    this.fieldsTranslateService.translate(this.config.name);
+    this.fieldsTranslate.translate(this.config.name);
   }
 
   dontTranslate(): void {
-    this.fieldsTranslateService.dontTranslate(this.config.name);
+    this.fieldsTranslate.dontTranslate(this.config.name);
   }
 
   openTranslateMenuDialog(translationState: TranslationState): void {
@@ -113,7 +112,7 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   openAutoTranslateMenuDialog(translationState: TranslationState): void {
-    if (this.fieldsSettingsService.getFieldSettings(this.config.fieldName).DisableAutoTranslation) {
+    if (this.fieldSettings.getFieldSettings(this.config.fieldName).DisableAutoTranslation) {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: false },

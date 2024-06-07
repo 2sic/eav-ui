@@ -2,7 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
+import { AdamSnapshot, Language, FormLanguageInStore, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 import { IdentityUpperCaseId } from '../../models/identity-upper-case-id';
 
@@ -17,7 +17,7 @@ export const entityMetadata: EntityMetadataMap = {
   Language: {
     selectId: languageSelectId,
   },
-  LanguageInstance: {
+  FormLanguageInStore: {
     selectId: languageInstanceSelectId,
   },
   ContentType: {
@@ -73,7 +73,7 @@ function languageSelectId(language: Language): string {
   return language?.NameId;
 }
 
-function languageInstanceSelectId(languageInstance: LanguageInstance): number {
+function languageInstanceSelectId(languageInstance: FormLanguageInStore): number {
   return languageInstance?.formId;
 }
 

@@ -35,7 +35,7 @@ export class FormulaEngine implements OnDestroy {
   private formulaPromiseHandler: FormulaPromiseHandler = null;
 
   constructor(
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
@@ -247,8 +247,8 @@ export class FormulaEngine implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     item?: PickerItem
   ): FormulaResultRaw {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
     const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, currentLanguage);

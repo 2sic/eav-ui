@@ -1,4 +1,4 @@
 export interface LanguageState {
-  readonly currentLanguage: string;
-  readonly defaultLanguage: string;
+  readonly current: string;
+  readonly primary: string;
 }

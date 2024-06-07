@@ -40,7 +40,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
     private eavService: FormConfigService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private adamCacheService: AdamCacheService,
   ) {
     super();
@@ -146,8 +146,8 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
         map(() => this.form.getRawValue() as FormValues),
         distinctUntilChanged((previous, current) => GeneralHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.config.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.config.formId);
+        const currentLanguage = this.languageStore.getCurrent(this.eavService.config.formId);
+        const defaultLanguage = this.languageStore.getPrimary(this.eavService.config.formId);
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, currentLanguage, defaultLanguage);
       })
     );

@@ -45,11 +45,11 @@ export class FormulaSettingsHelper {
     settingsCurrent.Name = settingsCurrent.Name || attribute.Name;
     settingsCurrent._currentRequired = ValidationHelpers.isRequired(settingsCurrent);
     const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
-      contentTypeMetadata, fieldInputType, attributeValues, languages.defaultLanguage, attribute.Metadata,
+      contentTypeMetadata, fieldInputType, attributeValues, languages.primary, attribute.Metadata,
     );
     settingsCurrent.DisableTranslation = slotIsEmpty || disableTranslation;
     settingsCurrent._disabledBecauseOfTranslation = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-      attributeValues, settingsCurrent.DisableTranslation, languages.currentLanguage, languages.defaultLanguage,
+      attributeValues, settingsCurrent.DisableTranslation, languages.current, languages.primary,
     );
     settingsCurrent.ForcedDisabled = slotIsEmpty || settingsCurrent._disabledBecauseOfTranslation || formReadOnly;
     // newSettings.Disabled = newSettings.Disabled || slotIsEmpty || newSettings._disabledBecauseOfTranslation || formReadOnly;

@@ -1,6 +1,12 @@
 import { Language } from '.';
 
-export interface FormLanguages
+export interface FormLanguage
+{
+  current: string;
+  primary: string;
+}
+
+export interface FormLanguagesConfig
 {
   current: string;
   primary: string;

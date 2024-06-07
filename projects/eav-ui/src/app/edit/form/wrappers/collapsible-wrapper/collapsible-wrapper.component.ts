@@ -50,7 +50,7 @@ export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
   ) {
     super();
@@ -78,7 +78,7 @@ export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements
     );
 
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId).subscribe(() => {
+      this.languageStore.getLanguage$(this.formConfig.config.formId).subscribe(() => {
         const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
         this.collapsed$.next(settingsSnapshot.Collapsed);
       })

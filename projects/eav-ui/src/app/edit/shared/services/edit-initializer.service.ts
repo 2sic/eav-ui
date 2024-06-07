@@ -43,7 +43,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     private publishStatusService: PublishStatusService,
     private translate: TranslateService,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
@@ -144,7 +144,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       const sortedLanguages = sortLanguages(langs.current, langs.list);
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageInstanceService.addLanguageInstance(formId, langs.current, langs.primary, langs.current, false);
+    this.languageStore.addToStore(formId, langs.current, langs.primary, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
     const publishMode = this.publishStatusService.asPublishMode(loadDto.IsPublished, loadDto.DraftShouldBranch);
@@ -157,8 +157,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   private keepInitialValues(): void {
     const items = this.itemService.getItems(this.formConfig.config.itemGuids);
     const languages = this.languageService.getLanguages().map(language => language.NameId);
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
     if (!languages.includes(currentLanguage)) languages.push(currentLanguage);
     if (!languages.includes(defaultLanguage)) languages.push(defaultLanguage);
 
@@ -187,7 +187,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(formId);
+    const defaultLanguage = this.languageStore.getPrimary(formId);
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
     const isCreateMode = eavConfig.createMode;
@@ -272,9 +272,9 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       }
     }
 
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(formId);
+    const currentLanguage = this.languageStore.getCurrent(formId);
     if (switchToDefault && currentLanguage !== defaultLanguage) {
-      this.languageInstanceService.setCurrentLanguage(formId, defaultLanguage);
+      this.languageStore.setCurrent(formId, defaultLanguage);
       const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
       this.snackBar.open(message, null, { duration: 5000 });
     }

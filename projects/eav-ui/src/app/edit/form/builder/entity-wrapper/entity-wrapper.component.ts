@@ -27,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../../shared/services/form-data.service';
+import { defaultFormulaNow } from '../../../formulas/formula.constants';
 
 @Component({
     selector: 'app-entity-wrapper',
@@ -63,7 +64,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
   private noteRef?: MatDialogRef<undefined, any>;
 
   constructor(
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
@@ -89,8 +90,9 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
 
   ngOnInit() {
     const readOnly$ = this.formsStateService.readOnly$;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
+    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
+    // const currentLanguage$ = this.languageStore.getCurrentLanguage$(this.formConfig.config.formId);
+    // const defaultLanguage$ = this.languageStore.getDefaultLanguage$(this.formConfig.config.formId);
     const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
       map(itemFor => getItemForTooltip(itemFor, this.translate)),
     );
@@ -110,8 +112,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
       map(item => item.Entity.Id === 0),
       distinctUntilChanged(),
     );
-    const noteProps$ = combineLatest([note$, currentLanguage$, defaultLanguage$, itemNotSaved$]).pipe(
-      map(([note, currentLanguage, defaultLanguage, itemNotSaved]) => getNoteProps(note, currentLanguage, defaultLanguage, itemNotSaved)),
+    const noteProps$ = combineLatest([note$, language$, itemNotSaved$]).pipe(
+      map(([note, lang, itemNotSaved]) => getNoteProps(note, lang.current, lang.primary, itemNotSaved)),
     );
     const showNotes$ = combineLatest([
       this.featuresService.isEnabled$(FeatureNames.EditUiShowNotes),
@@ -129,17 +131,17 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
     );
 
     this.viewModel$ = combineLatest([
-      combineLatest([readOnly$, currentLanguage$, defaultLanguage$, showNotes$, showMetadataFor$]),
+      combineLatest([readOnly$, language$, showNotes$, showMetadataFor$]),
       combineLatest([itemForTooltip$, header$, settings$, noteProps$]),
     ]).pipe(
       map(([
-        [readOnly, currentLanguage, defaultLanguage, showNotes, showMetadataFor],
+        [readOnly, lang, showNotes, showMetadataFor],
         [itemForTooltip, header, settings, noteProps],
       ]) => {
         const viewModel: ContentTypeViewModel = {
           readOnly: readOnly.isReadOnly,
-          currentLanguage,
-          defaultLanguage,
+          currentLanguage: lang.current,
+          defaultLanguage: lang.primary,
           header,
           itemTitle: settings._itemTitle,
           slotCanBeEmpty: settings._slotCanBeEmpty,
@@ -232,8 +234,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
   }
 
   deleteNote(note: EavEntity) {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
     const title = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.Title, null);
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))

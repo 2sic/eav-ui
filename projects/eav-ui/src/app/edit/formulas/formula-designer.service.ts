@@ -29,7 +29,7 @@ export class FormulaDesignerService implements OnDestroy {
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private contentTypeItemService: ContentTypeItemService,
     private loggingService: LoggingService,
     private translate: TranslateService,
@@ -136,8 +136,8 @@ export class FormulaDesignerService implements OnDestroy {
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+        const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+        const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
         const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
@@ -403,8 +403,8 @@ export class FormulaDesignerService implements OnDestroy {
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
     const entityReader = new EntityReader(currentLanguage, defaultLanguage);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {

@@ -17,20 +17,20 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-    selector: 'app-translate-menu-dialog',
-    templateUrl: './translate-menu-dialog.component.html',
-    styleUrls: ['./translate-menu-dialog.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatListModule,
-        NgClass,
-        ExtendedModule,
-        MatIconModule,
-        MatButtonModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-translate-menu-dialog',
+  templateUrl: './translate-menu-dialog.component.html',
+  styleUrls: ['./translate-menu-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatListModule,
+    NgClass,
+    ExtendedModule,
+    MatIconModule,
+    MatButtonModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
@@ -44,7 +44,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private itemService: ItemService,
     private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -60,24 +60,22 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
+    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),
-      currentLanguage$,
-      defaultLanguage$,
+      language$,
       attributes$,
       this.translationState$,
     ]).pipe(
-      map(([languages, currentLanguage, defaultLanguage, attributes, translationState]) =>
-        getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes, translationState.linkType)),
+      map(([languages, lang, attributes, translationState]) =>
+        getTemplateLanguages(this.dialogData.config, lang.current, lang.primary,  languages, attributes, translationState.linkType)),
     );
 
-    this.viewModel$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
-      map(([defaultLanguage, languages, translationState]) => {
+    this.viewModel$ = combineLatest([language$, languages$, this.translationState$]).pipe(
+      map(([lang, languages, translationState]) => {
         const viewModel: TranslateMenuDialogViewModel = {
-          defaultLanguage,
+          primary: lang.primary,
           languages,
           translationState,
           showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),

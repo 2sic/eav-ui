@@ -8,6 +8,7 @@ import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
+import { FormLanguage } from '../../../shared/models/form-languages.model';
 
 @Component({
     selector: WrappersConstants.LocalizationWrapper,
@@ -25,14 +26,13 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 
-  currentLanguage$: Observable<string>;
-  defaultLanguage$: Observable<string>;
+  language$: Observable<FormLanguage>;
   hideTranslateButton: boolean = true;
 
   constructor(
     private formConfig: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
   ) {
@@ -41,8 +41,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId);
-    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.formConfig.config.formId);
+    this.language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
   }
 
   ngOnDestroy() {
@@ -51,8 +50,8 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   translate() {
     if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.formConfig.config.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.formConfig.config.formId);
+    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
     if (currentLanguage === defaultLanguage) { return; }
     if (!this.control.disabled) { return; }
     const isExpanded = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);

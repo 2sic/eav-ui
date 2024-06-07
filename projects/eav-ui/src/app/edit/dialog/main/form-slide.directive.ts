@@ -22,7 +22,8 @@ export class FormSlideDirective extends BaseSubsinkComponent implements OnInit, 
   ngOnInit() {
     this.subscription.add(
       merge(
-        this.languageInstanceService.getCurrentLanguage$(this.formConfig.config.formId).pipe(
+        this.languageInstanceService.getLanguage$(this.formConfig.config.formId).pipe(
+          map(language => language.current),
           pairwise(),
           map(([previousLang, currentLang]) => {
             const languages = this.languageService.getLanguages();

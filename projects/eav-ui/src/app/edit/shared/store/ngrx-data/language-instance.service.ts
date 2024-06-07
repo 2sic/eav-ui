@@ -1,45 +1,62 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { combineLatest, distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
+import { distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
 import { EntityReader } from '../../helpers';
-import { LanguageInstance } from '../../models';
+import { FormLanguageInStore } from '../../models';
 import { BaseDataService } from './base-data.service';
+import { FormLanguage } from '../../models/form-languages.model';
 
 @Injectable({ providedIn: 'root' })
-export class LanguageInstanceService extends BaseDataService<LanguageInstance> {
+export class LanguageInstanceService extends BaseDataService<FormLanguageInStore> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-    super('LanguageInstance', serviceElementsFactory);
+    super('FormLanguageInStore', serviceElementsFactory);
   }
 
-  addLanguageInstance(formId: number, currentLanguage: string, defaultLanguage: string, uiLanguage: string, hideHeader: boolean): void {
-    const languageInstance: LanguageInstance = { formId, currentLanguage, defaultLanguage, uiLanguage, hideHeader };
-    this.addOneToCache(languageInstance);
+  addToStore(formId: number, currentLanguage: string, defaultLanguage: string, hideHeader: boolean): void {
+    this.addOneToCache({
+      formId,
+      current: currentLanguage,
+      primary: defaultLanguage,
+      hideHeader,
+    } satisfies FormLanguageInStore);
   }
 
-  removeLanguageInstance(formId: number): void {
+  removeFromStore(formId: number): void {
     this.removeOneFromCache(formId);
   }
 
-  setCurrentLanguage(formId: number, newLanguage: string): void {
-    const languageInstance: Partial<LanguageInstance> = { formId, currentLanguage: newLanguage };
-    this.updateOneInCache(languageInstance);
+  setCurrent(formId: number, newLanguage: string): void {
+    this.updateOneInCache({
+      formId,
+      current: newLanguage,
+    } satisfies Partial<FormLanguageInStore>);
   }
 
-  getCurrentLanguage(formId: number): string {
-    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.currentLanguage;
+  // TODO: @2dm - get rid of this, use a getLanguage() instead
+
+  getLanguage(formId: number): FormLanguage {
+    const found = this.cache$.value.find(languageInstance => languageInstance.formId === formId);
+    return {
+      current: found?.current,
+      primary: found?.primary,
+    } satisfies FormLanguage;
+  }
+
+  getCurrent(formId: number): string {
+    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.current;
+  }
+
+  getPrimary(formId: number): string {
+    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.primary;
   }
 
   /**
    * Get an EntityReader for the current form
    */
   getEntityReader$(formId: number) {
-    return combineLatest([
-      this.getCurrentLanguage$(formId),
-      this.getDefaultLanguage$(formId),
-    ]).pipe(
-      map(([currentLanguage, defaultLanguage]) => {
-        return new EntityReader(currentLanguage, defaultLanguage);
-      }),
+    return this.getLanguage$(formId)
+    .pipe(
+      map((language) => new EntityReader(language.current, language.primary)),
       // Ensure we don't fire too often
       distinctUntilChanged(),
       // Ensure the EntityReader is reused and not recreated every time
@@ -47,23 +64,26 @@ export class LanguageInstanceService extends BaseDataService<LanguageInstance> {
     );
   }
 
-  getCurrentLanguage$(formId: number): Observable<string> {
-    return this.cache$.pipe(
-      map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.currentLanguage),
+  getLanguage$(formId: number): Observable<FormLanguage> {
+    if (this.get$Cache[formId]) 
+      return this.get$Cache[formId];
+
+    return this.get$Cache[formId] = this.cache$.pipe(
+      map(languageInstances => {
+        const found = languageInstances.find(l => l.formId === formId);
+        return {
+          current: found?.current,
+          primary: found?.primary,
+        } satisfies FormLanguage;
+      }),
       distinctUntilChanged(),
+      // Ensure the EntityReader is reused and not recreated every time
+      // todo: this probably doesn't have a real effect...
+      shareReplay(1)
     );
   }
+  private get$Cache: Record<number, Observable<FormLanguage>> = {};
 
-  getDefaultLanguage(formId: number): string {
-    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.defaultLanguage;
-  }
-
-  getDefaultLanguage$(formId: number): Observable<string> {
-    return this.cache$.pipe(
-      map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.defaultLanguage),
-      distinctUntilChanged(),
-    );
-  }
 
   /** Get hideHeader for the form. Fix for safari and mobile browsers */
   getHideHeader$(formId: number): Observable<boolean> {
@@ -75,7 +95,7 @@ export class LanguageInstanceService extends BaseDataService<LanguageInstance> {
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
   updateHideHeader(formId: number, hideHeader: boolean): void {
-    const languageInstance: Partial<LanguageInstance> = { formId, hideHeader };
+    const languageInstance: Partial<FormLanguageInStore> = { formId, hideHeader };
     this.updateOneInCache(languageInstance);
   }
 }
