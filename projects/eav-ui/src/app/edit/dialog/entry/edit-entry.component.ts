@@ -6,14 +6,21 @@ import { AsyncPipe } from '@angular/common';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
 import { RouterOutlet } from '@angular/router';
 import { MatDayjsDateAdapter } from '../../shared/date-adapters/date-adapter-api';
+import { FormDataService } from '../../shared/services/form-data.service';
 
 @Component({
   selector: 'app-edit-entry',
   templateUrl: './edit-entry.component.html',
   styleUrls: ['./edit-entry.component.scss'],
+  imports: [
+    RouterOutlet,
+    EditDialogMainComponent,
+    AsyncPipe,
+  ],
   providers: [
     LoggingService,
     EditInitializerService,
+    FormDataService,
     // EavService,
     // LoadIconsService,
     // EntityService,
@@ -23,11 +30,6 @@ import { MatDayjsDateAdapter } from '../../shared/date-adapters/date-adapter-api
     // ScriptsLoaderService
   ],
   standalone: true,
-  imports: [
-    RouterOutlet,
-    EditDialogMainComponent,
-    AsyncPipe,
-  ],
 })
 export class EditEntryComponent implements OnInit {
   viewModel$: Observable<EditEntryViewModel>;

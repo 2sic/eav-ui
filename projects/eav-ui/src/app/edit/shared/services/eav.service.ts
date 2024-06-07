@@ -1,13 +1,9 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, tap } from 'rxjs';
 import { DialogContext } from '../../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
-import { EavEditLoadDto, EditSettings, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
-import { EavConfig, SaveResult, VersioningOptions } from '../models';
-import { GlobalConfigService } from '../store/ngrx-data';
+import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
+import { EavConfig, VersioningOptions } from '../models';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -19,12 +15,9 @@ export class EavService {
   settings: EditSettings;
 
   constructor(
-    private http: HttpClient,
-    private dnnContext: DnnContext,
     /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
-    private context: Context,
-    private globalConfigService: GlobalConfigService,
-  ) { }
+    private context: Context
+  ) {}
 
   /** Create EavConfiguration from sessionStorage */
   setEavConfig(
@@ -35,7 +28,7 @@ export class EavService {
     createMode: boolean,
     isCopy: boolean,
     enableHistory: boolean,
-    settings: EditSettings,
+    settings: EditSettings
   ) {
     this.settings = settings;
     this.eavConfig = {
@@ -53,7 +46,7 @@ export class EavService {
       systemRoot: window.location.pathname.split('/dist/')[0] + '/',
       versioningOptions: this.getVersioningOptions(
         sessionStorage.getItem(keyPartOfPage) === 'true',
-        sessionStorage.getItem(keyPublishing),
+        sessionStorage.getItem(keyPublishing)
       ),
       formId,
       isParentDialog,
@@ -62,34 +55,22 @@ export class EavService {
       isCopy,
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
-      overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
+      overrideEditRestrictions:
+        dialogContext.Enable.OverrideEditRestrictions ?? false,
       dialogContext,
-      settings
+      settings,
     };
   }
 
-  fetchFormData(items: string) {
-    return this.http.post<EavEditLoadDto>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
-      params: { appId: this.context.appId.toString() }
-    }).pipe(
-      map(formData => {
-        formData.Context.Language.List = formData.Context.Language.List.filter(language => language.IsEnabled);
-        return formData;
-      }),
-      tap(formData => {
-        this.globalConfigService.allowDebug(formData.Context.Enable.DebugMode);
-      }),
-    );
-  }
-
-  saveFormData(result: SaveEavFormData, partOfPage: string) {
-    return this.http.post<SaveResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), result, {
-      params: { appId: this.eavConfig.appId, partOfPage }
-    });
-  }
-
-  private getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {
-    const allowAll: VersioningOptions = { show: true, hide: true, branch: true };
+  private getVersioningOptions(
+    partOfPage: boolean,
+    publishing: string
+  ): VersioningOptions {
+    const allowAll: VersioningOptions = {
+      show: true,
+      hide: true,
+      branch: true,
+    };
     if (!partOfPage) {
       return allowAll;
     }
@@ -111,5 +92,4 @@ export class EavService {
       }
     }
   }
-
 }

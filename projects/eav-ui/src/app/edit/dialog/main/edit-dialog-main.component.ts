@@ -36,6 +36,7 @@ import { SharedComponentsModule } from '../../../shared/shared-components.module
 import { SourceService } from '../../../code-editor/services/source.service';
 import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
+import { FormDataService } from '../../shared/services/form-data.service';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -58,7 +59,14 @@ import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picke
     AsyncPipe,
     TranslateModule,
   ],
-  providers: [EditRoutingService, FormsStateService, FormulaDesignerService, SourceService, PickerTreeDataService, PickerTreeDataHelper],
+  providers: [
+    EditRoutingService,
+    FormsStateService,
+    FormulaDesignerService,
+    SourceService,
+    PickerTreeDataService,
+    PickerTreeDataHelper,
+  ],
 })
 export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
@@ -74,7 +82,10 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private globalConfigService: GlobalConfigService,
+
     private eavService: EavService,
+    private formDataService: FormDataService,
+
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
@@ -213,7 +224,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
       consoleLogDev('SAVE FORM DATA:', saveFormData);
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-      this.eavService.saveFormData(saveFormData, this.eavService.eavConfig.partOfPage).subscribe({
+      this.formDataService.saveFormData(saveFormData, this.eavService.eavConfig.partOfPage).subscribe({
         next: result => {
           consoleLogDev('SAVED!, result:', result, 'close:', close);
           this.itemService.updateItemId(result);

@@ -23,6 +23,7 @@ import { EavContentType } from '../models/eav/eav-content-type';
 import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { FormDataService } from './form-data.service';
 
 const logThis = false;
 
@@ -48,6 +49,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
+    private formDataService: FormDataService,
   ) {
     super(new EavLogger('EditInitializerService', logThis));
   }
@@ -71,7 +73,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     this.log.a('fetchFormData', [form]);
 
     const editItems = JSON.stringify(form.items);
-    this.eavService.fetchFormData(editItems).subscribe(dataFromBackend => {
+    this.formDataService.fetchFormData(editItems).subscribe(dataFromBackend => {
       // 2dm 2024-06-01 preserve prefill and client-data from original
       // and stop relying on round-trip to keep it
       const formData: EavEditLoadDto = {

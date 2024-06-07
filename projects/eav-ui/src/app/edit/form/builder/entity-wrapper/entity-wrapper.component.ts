@@ -26,6 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
+import { FormDataService } from '../../../shared/services/form-data.service';
 
 @Component({
     selector: 'app-entity-wrapper',
@@ -68,6 +69,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
     private route: ActivatedRoute,
     private fieldsSettingsService: FieldsSettingsService,
     public eavService: EavService,
+    private formDataService: FormDataService,
     private translate: TranslateService,
     private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
@@ -248,7 +250,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
       return;
 
     const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
-    this.eavService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
+    this.formDataService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
       this.itemService.updateItemMetadata(this.entityGuid, items[0].Entity.Metadata);
     });
