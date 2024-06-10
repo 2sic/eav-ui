@@ -136,9 +136,8 @@ export class FormulaDesignerService implements OnDestroy {
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
-        const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-        const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-        const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+        const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+        const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
         const designerState = this.getDesignerState();
@@ -403,9 +402,8 @@ export class FormulaDesignerService implements OnDestroy {
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    const entityReader = new EntityReader(currentLanguage, defaultLanguage);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const entityReader = new EntityReader(language.current, language.primary);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.getItem(entityGuid);
@@ -420,23 +418,21 @@ export class FormulaDesignerService implements OnDestroy {
           // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
         );
         const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas).filter(formulaItem => {
-          const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Enabled, null);
+          const enabled: boolean = LocalizationHelpers.translate<boolean>(language, formulaItem.Attributes.Enabled, null);
           return enabled;
         });
         for (const formulaItem of formulaItems) {
-          const formula: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
+          const formula: string = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Formula, null);
           if (formula == null) { continue; }
 
-          const target: FormulaTarget = LocalizationHelpers.translate(
-            currentLanguage, defaultLanguage, formulaItem.Attributes.Target, null
-          );
+          const target: FormulaTarget = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Target, null);
 
           let formulaFunction: FormulaFunction;
           try {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
             this.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true, false);
-            const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+            const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }

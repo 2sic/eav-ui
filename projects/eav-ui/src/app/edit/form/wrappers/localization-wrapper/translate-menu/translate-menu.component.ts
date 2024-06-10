@@ -85,8 +85,7 @@ export class TranslateMenuComponent implements OnInit {
       map(([readOnly, language, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
         const disableTranslateButton = readOnly.isReadOnly || disableTranslation;
         const viewModel: TranslateMenuViewModel = {
-          current: language.current,
-          primary: language.primary,
+          ...language,
           translationState,
           translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
           disableAutoTranslation,

@@ -12,11 +12,11 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
     super('FormLanguageInStore', serviceElementsFactory);
   }
 
-  addToStore(formId: number, currentLanguage: string, defaultLanguage: string, hideHeader: boolean): void {
+  addToStore(formId: number, current: string, primary: string, hideHeader: boolean): void {
     this.addOneToCache({
       formId,
-      current: currentLanguage,
-      primary: defaultLanguage,
+      current,
+      primary,
       hideHeader,
     } satisfies FormLanguageInStore);
   }
@@ -40,14 +40,6 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
       current: found?.current,
       primary: found?.primary,
     } satisfies FormLanguage;
-  }
-
-  getCurrent(formId: number): string {
-    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.current;
-  }
-
-  getPrimary(formId: number): string {
-    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.primary;
   }
 
   /**

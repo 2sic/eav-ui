@@ -49,13 +49,12 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
   }
 
   translate() {
-    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    if (currentLanguage === defaultLanguage) { return; }
-    if (!this.control.disabled) { return; }
+    if (this.formsStateService.readOnly$.value.isReadOnly) return;
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    if (language.current === language.primary) return;
+    if (!this.control.disabled) return;
     const isExpanded = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
-    if (isExpanded) { return; }
+    if (isExpanded) return;
 
     this.translateMenu.translate();
   }

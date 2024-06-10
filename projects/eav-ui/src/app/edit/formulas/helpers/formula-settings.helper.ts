@@ -1,11 +1,11 @@
 import { FieldSettings, FieldValue } from "projects/edit-types";
 import { InputType } from "../../../content-type-fields/models/input-type.model";
-import { LanguageState } from "../../../shared/models/language-state";
 import { FieldLogicBase } from "../../form/shared/field-logic/field-logic-base";
 import { FieldLogicTools } from "../../form/shared/field-logic/field-logic-tools";
 import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
 import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/models/eav";
 import { SettingsFormulaPrefix } from "../models/formula.models";
+import { FormLanguage } from '../../shared/models/form-languages.model';
 
 /**
  * Contains methods for updating settings from formulas.
@@ -21,7 +21,7 @@ export class FormulaSettingsHelper {
    * @param fieldInputType 
    * @param fieldLogic 
    * @param attributeValues 
-   * @param languages 
+   * @param language 
    * @param slotIsEmpty If slot is empty
    * @param formReadOnly Is form read only
    * @param valueBefore 
@@ -36,7 +36,7 @@ export class FormulaSettingsHelper {
     fieldInputType: InputType,
     fieldLogic: FieldLogicBase,
     attributeValues: EavValues<any>,
-    languages: LanguageState,
+    language: FormLanguage,
     slotIsEmpty: boolean,
     formReadOnly: boolean,
     valueBefore: FieldValue,
@@ -45,14 +45,14 @@ export class FormulaSettingsHelper {
     settingsCurrent.Name = settingsCurrent.Name || attribute.Name;
     settingsCurrent._currentRequired = ValidationHelpers.isRequired(settingsCurrent);
     const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
-      contentTypeMetadata, fieldInputType, attributeValues, languages.primary, attribute.Metadata,
+      contentTypeMetadata, fieldInputType, attributeValues, language.primary, attribute.Metadata,
     );
     settingsCurrent.DisableTranslation = slotIsEmpty || disableTranslation;
     settingsCurrent._disabledBecauseOfTranslation = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-      attributeValues, settingsCurrent.DisableTranslation, languages.current, languages.primary,
+      attributeValues, settingsCurrent.DisableTranslation, language,
     );
     settingsCurrent.ForcedDisabled = slotIsEmpty || settingsCurrent._disabledBecauseOfTranslation || formReadOnly;
-    // newSettings.Disabled = newSettings.Disabled || slotIsEmpty || newSettings._disabledBecauseOfTranslation || formReadOnly;
+
     settingsCurrent.DisableAutoTranslation = settingsInitial.DisableAutoTranslation || settingsCurrent.DisableTranslation;
 
     // update settings with respective FieldLogics

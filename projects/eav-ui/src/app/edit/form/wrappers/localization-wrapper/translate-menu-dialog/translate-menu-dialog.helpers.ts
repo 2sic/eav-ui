@@ -2,26 +2,26 @@ import { TranslationLink, TranslationLinks } from '../../../../shared/constants'
 import { LocalizationHelpers } from '../../../../shared/helpers';
 import { Language } from '../../../../shared/models';
 import { EavEntityAttributes } from '../../../../shared/models/eav';
+import { FormLanguage } from '../../../../shared/models/form-languages.model';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 
 export function getTemplateLanguages(
   config: FieldConfigSet,
-  currentLanguage: string,
-  defaultLanguage: string,
+  language: FormLanguage,
   languages: Language[],
   attributes: EavEntityAttributes,
   linkType: TranslationLink,
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
-    .filter(language => language.NameId !== currentLanguage)
-    .map(language => {
+    .filter(lang => lang.NameId !== language.current)
+    .map(lang => {
       const values = attributes[config.fieldName];
-      const disabled = (linkType === TranslationLinks.LinkReadWrite && !language.IsAllowed)
-        || !LocalizationHelpers.isEditableTranslationExist(values, language.NameId, defaultLanguage);
+      const disabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
+        || !LocalizationHelpers.hasEditableTranslation(values, FormLanguage.diffCurrent(language, lang.NameId));
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
-        key: language.NameId,
+        key: lang.NameId,
         disabled,
       };
       return templateLanguage;
@@ -30,28 +30,27 @@ export function getTemplateLanguages(
 }
 
 export function getTemplateLanguagesWithContent(
-  currentLanguage: string,
-  defaultLanguage: string,
+  language: FormLanguage,
   languages: Language[],
   attributes: EavEntityAttributes,
   linkType: TranslationLink,
   translatableFields?: string[],
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
-    .filter(language => language.NameId !== currentLanguage)
-    .map(language => {
+    .filter(lang => lang.NameId !== language.current)
+    .map(lang => {
       let noTranslatableFields: number = 0;
       let noTranslatableFieldsThatHaveContent: number = 0;
       let isDisabled: boolean = false;
       translatableFields.forEach(field => {
         const values = attributes[field];
-        noTranslatableFields += LocalizationHelpers.noEditableTranslationFields(values, language.NameId, defaultLanguage);
-        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslatableFieldsWithContent(values, language.NameId, defaultLanguage)
-        isDisabled = (linkType === TranslationLinks.LinkReadWrite && !language.IsAllowed)
+        noTranslatableFields += LocalizationHelpers.noEditableTranslationFields(values, lang.NameId, language.primary);
+        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslatableFieldsWithContent(values, lang.NameId, language.primary);
+        isDisabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
           || noTranslatableFields == 0;
       });
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
-        key: language.NameId,
+        key: lang.NameId,
         disabled: isDisabled,
         noTranslatableFields,
         noTranslatableFieldsThatHaveContent,

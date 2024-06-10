@@ -9,6 +9,7 @@ import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-man
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { EavItem } from '../models/eav';
 import { ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { FormLanguage } from '../models/form-languages.model';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
 
@@ -34,17 +35,16 @@ export class FieldsTranslateService {
 
   translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     if (this.isTranslationDisabled(fieldName)) { return; }
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
 
-    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true, transactionItem);
+    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true, transactionItem);
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
-    const doesFieldHaveExistingDimension = values.Values.find(v => v.Dimensions.find(x => x.Value === currentLanguage)) !== undefined;
-    const defaultValue = LocalizationHelpers.getValueTranslation(values, defaultLanguage, defaultLanguage);
+    const doesFieldHaveExistingDimension = values.Values.find(v => v.Dimensions.find(x => x.Value === language.current)) !== undefined;
+    const defaultValue = LocalizationHelpers.getValueTranslation(values, FormLanguage.bothPrimary(language));
     if (!doesFieldHaveExistingDimension) 
-      return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, currentLanguage, false);
+      return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, language.current, false);
     else
       return null;
   }
@@ -52,9 +52,9 @@ export class FieldsTranslateService {
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
     transactionItem = this.itemService.removeItemAttributeDimension(
-      this.entityGuid, fieldName, currentLanguage, isTransaction, transactionItem,
+      this.entityGuid, fieldName, language.current, isTransaction, transactionItem,
     );
     return transactionItem;
   }
@@ -69,13 +69,12 @@ export class FieldsTranslateService {
     if (apiKeyInfo.IsDemo)
       alert(apiKeyInDemoModeAlert);
 
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
     const textsForTranslation = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
-    const doFieldsHaveExistingDimension = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === currentLanguage)) !== undefined);
+    const doFieldsHaveExistingDimension = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === language.current)) !== undefined);
 
     if (!areAllChecksKnown) {
       fieldNames.forEach((field, i) => {
@@ -88,7 +87,7 @@ export class FieldsTranslateService {
 
     const translationData = {
       q: textsForTranslation,
-      target: currentLanguage,
+      target: language.current,
       source: autoTranslateLanguageKey
     };
     this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${apiKeyInfo.ApiKey}`, translationData)
@@ -99,10 +98,10 @@ export class FieldsTranslateService {
             elem.innerHTML = translation.translatedText;
             if (!isMany && doFieldsHaveExistingDimension[i]) {
               this.itemService.updateItemAttributeValue(
-                this.entityGuid, fieldNames[i], elem.value, currentLanguage, defaultLanguage, false
+                this.entityGuid, fieldNames[i], elem.value, language.current, language.primary, false
               );
             } else if (!doFieldsHaveExistingDimension[i]) {
-              this.addItemAttributeValueHelper(fieldNames[i], elem.value, currentLanguage, false);
+              this.addItemAttributeValueHelper(fieldNames[i], elem.value, language.current, false);
             }
           });
         }
@@ -114,47 +113,44 @@ export class FieldsTranslateService {
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, copyFromLanguageKey, defaultLanguage);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
     if (attributeValueTranslation) {
       const valueAlreadyExists = values
-        ? LocalizationHelpers.isEditableOrReadonlyTranslationExist(values, currentLanguage, defaultLanguage)
+        ? LocalizationHelpers.isEditableOrReadonlyTranslationExist(values, language)
         : false;
 
       if (valueAlreadyExists) {
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(
-          this.entityGuid, fieldName, attributeValueTranslation.Value, currentLanguage, defaultLanguage, false,
+          this.entityGuid, fieldName, attributeValueTranslation.Value, language.current, language.primary, false,
         );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.addItemAttributeValueHelper(fieldName, attributeValueTranslation.Value, currentLanguage, false);
+        this.addItemAttributeValueHelper(fieldName, attributeValueTranslation.Value, language.current, false);
       }
     } else {
-      consoleLogEditForm(`${currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
+      consoleLogEditForm(`${language.current}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
     }
   }
 
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
-      this.entityGuid, fieldName, currentLanguage, linkWithLanguageKey, defaultLanguage, true, transactionItem,
+      this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, true, transactionItem,
     );
   }
 
   linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
-      this.entityGuid, fieldName, currentLanguage, linkWithLanguageKey, defaultLanguage, false, transactionItem,
+      this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, false, transactionItem,
     );
   }
 

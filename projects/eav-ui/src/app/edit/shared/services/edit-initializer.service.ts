@@ -24,6 +24,7 @@ import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-da
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FormDataService } from './form-data.service';
+import { FormLanguage } from '../models/form-languages.model';
 
 const logThis = false;
 
@@ -156,18 +157,18 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
    */
   private keepInitialValues(): void {
     const items = this.itemService.getItems(this.formConfig.config.itemGuids);
-    const languages = this.languageService.getLanguages().map(language => language.NameId);
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    if (!languages.includes(currentLanguage)) languages.push(currentLanguage);
-    if (!languages.includes(defaultLanguage)) languages.push(defaultLanguage);
+    const allLangs = this.languageService.getLanguages().map(language => language.NameId);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    if (!allLangs.includes(language.current)) allLangs.push(language.current);
+    if (!allLangs.includes(language.primary)) allLangs.push(language.primary);
 
     for (const item of items)
-      for (const language of languages) {
+      for (const lang of allLangs) {
         const formValues: FormValues = {};
+        const lookupLang = FormLanguage.diffCurrent(language, lang);
         for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes))
-          formValues[fieldName] = LocalizationHelpers.translate(language, defaultLanguage, fieldValues, null);
-        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, language)] = formValues;
+          formValues[fieldName] = LocalizationHelpers.translate(lookupLang, fieldValues, null);
+        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, lang)] = formValues;
       }
   }
 
@@ -187,7 +188,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
-    const defaultLanguage = this.languageStore.getPrimary(formId);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
     const isCreateMode = eavConfig.createMode;
@@ -209,8 +210,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
-          new EntityReader(defaultLanguage, defaultLanguage).flattenAll(ctAttribute.Metadata)
-          // FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage),
+          new EntityReader(language.primary, language.primary).flattenAll(ctAttribute.Metadata)
         );
 
         if (languages.length === 0) {
@@ -218,7 +218,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
           if (logic.isValueEmpty(firstValue, isCreateMode)) {
           // if (InputFieldHelpers.isValueEmpty(firstValue, this.eavService)) {
-            this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
+            this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
           }
         } else {
           l.a(`${currentName} languages many, complex init`);
@@ -234,7 +234,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
               item.Entity.Guid,
               ctAttribute.Name,
               noLanguageValue,
-              defaultLanguage,
+              language.primary,
               false,
               ctAttribute.Type,
               false,
@@ -246,8 +246,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
           const defaultLanguageValue = LocalizationHelpers.getBestValue(
             attributeValues,
-            defaultLanguage,
-            defaultLanguage,
+            language.primary,
+            language.primary,
             BestValueModes.Strict,
           );
 
@@ -255,7 +255,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
           l.values({ currentName, valueIsEmpty, defaultLanguageValue, isCreateMode }, currentName);
           if (valueIsEmpty) {
-            const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
+            const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
 
             // 2022-08-15 2dm added this
             // If we run into more problems (like required date-fields which result in null)
@@ -272,10 +272,9 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       }
     }
 
-    const currentLanguage = this.languageStore.getCurrent(formId);
-    if (switchToDefault && currentLanguage !== defaultLanguage) {
-      this.languageStore.setCurrent(formId, defaultLanguage);
-      const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
+    if (switchToDefault && language.current !== language.primary) {
+      this.languageStore.setCurrent(formId, language.primary);
+      const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: language.primary });
       this.snackBar.open(message, null, { duration: 5000 });
     }
   }

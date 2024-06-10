@@ -12,6 +12,7 @@ import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 import { ItemEditIdentifier, ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { FormLanguage } from '../../models/form-languages.model';
 
 const logThis = false;
 
@@ -108,14 +109,15 @@ export class ItemService extends BaseDataService<EavItem> {
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityGuid: string, newValues: FormValues, currentLanguage: string, defaultLanguage: string): void {
+  updateItemAttributesValues(entityGuid: string, newValues: FormValues, language: FormLanguage): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
     const oldValues: FormValues = {};
     for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
-      if (!newValues.hasOwnProperty(name)) { continue; }
-      oldValues[name] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
+      if (!newValues.hasOwnProperty(name))
+        continue;
+      oldValues[name] = LocalizationHelpers.translate(language, values, null);
     }
     const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
     if (changes == null) { return; }
@@ -124,7 +126,7 @@ export class ItemService extends BaseDataService<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, currentLanguage, defaultLanguage),
+        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language),
       }
     };
     this.updateOneInCache(newItem);

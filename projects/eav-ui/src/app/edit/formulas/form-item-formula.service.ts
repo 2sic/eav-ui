@@ -57,9 +57,7 @@ export class FormItemFormulaService {
     if (Object.keys(valueUpdates).length > 0) {
       if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
         this.valueFormulaCounter++;
-        this.itemService.updateItemAttributesValues(
-          entityGuid, valueUpdates, entityReader.current, entityReader.primary
-        );
+        this.itemService.updateItemAttributesValues(entityGuid, valueUpdates, entityReader);
         // return true to make sure fieldProps are not updated yet
         return true;
       } else {

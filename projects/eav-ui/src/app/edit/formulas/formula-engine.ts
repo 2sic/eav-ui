@@ -247,21 +247,19 @@ export class FormulaEngine implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     item?: PickerItem
   ): FormulaResultRaw {
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
-    const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, currentLanguage);
+    const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, language.current);
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,
-      entityId,
+      // entityId,
       inputType?.Type,
       settingsInitial,
       settingsCurrent,
       formValues,
       initialFormValues,
-      currentLanguage,
-      defaultLanguage,
+      language,
       languages,
       itemIdWithPrefill,
       debugEnabled,

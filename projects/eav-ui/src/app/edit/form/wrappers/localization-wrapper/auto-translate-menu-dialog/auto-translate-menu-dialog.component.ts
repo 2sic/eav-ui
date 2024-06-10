@@ -101,10 +101,10 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
       attributes$,
       this.translationState$,
     ]).pipe(
-      map(([languages, lang, attributes, translationState]) => {
+      map(([languages, language, attributes, translationState]) => {
         return this.dialogData.isTranslateMany
-          ? getTemplateLanguagesWithContent(lang.current, lang.primary, languages, attributes, translationState.linkType, this.dialogData.translatableFields)
-          : getTemplateLanguages(this.dialogData.config, lang.current, lang.primary, languages, attributes, translationState.linkType);
+          ? getTemplateLanguagesWithContent(language, languages, attributes, translationState.linkType, this.dialogData.translatableFields)
+          : getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
       }),
     );
 

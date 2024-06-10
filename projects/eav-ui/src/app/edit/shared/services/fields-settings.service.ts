@@ -90,8 +90,7 @@ export class FieldsSettingsService implements OnDestroy {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
             entityReader.flattenAll<ContentTypeSettings>(contentType.Metadata),
             contentType,
-            entityReader.current,
-            entityReader.primary,
+            entityReader,
             itemHeader,
           );
           return ctSettings;
@@ -254,9 +253,7 @@ export class FieldsSettingsService implements OnDestroy {
             if (formulaResult.fields)
               possibleFieldsUpdates.push(...formulaResult.fields);
 
-            const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
-              attributeValues, fixed.DisableTranslation, entityReader.current, entityReader.primary,
-            );
+            const fieldTranslation = FieldsSettingsHelpers.getTranslationState(attributeValues, fixed.DisableTranslation, entityReader);
             const wrappers = InputFieldHelpers.getWrappers(fixed, constantFieldPart.calculatedInputType);
 
             fieldsProps[attribute.Name] = {

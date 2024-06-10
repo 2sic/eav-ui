@@ -68,8 +68,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
       attributes$,
       this.translationState$,
     ]).pipe(
-      map(([languages, lang, attributes, translationState]) =>
-        getTemplateLanguages(this.dialogData.config, lang.current, lang.primary,  languages, attributes, translationState.linkType)),
+      map(([languages, language, attributes, translationState]) =>
+        getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType)),
     );
 
     this.viewModel$ = combineLatest([language$, languages$, this.translationState$]).pipe(

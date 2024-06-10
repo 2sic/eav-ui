@@ -113,7 +113,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
       distinctUntilChanged(),
     );
     const noteProps$ = combineLatest([note$, language$, itemNotSaved$]).pipe(
-      map(([note, lang, itemNotSaved]) => getNoteProps(note, lang.current, lang.primary, itemNotSaved)),
+      map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
     );
     const showNotes$ = combineLatest([
       this.featuresService.isEnabled$(FeatureNames.EditUiShowNotes),
@@ -234,9 +234,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
   }
 
   deleteNote(note: EavEntity) {
-    const currentLanguage = this.languageStore.getCurrent(this.formConfig.config.formId);
-    const defaultLanguage = this.languageStore.getPrimary(this.formConfig.config.formId);
-    const title = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.Title, null);
+    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const title = LocalizationHelpers.translate(language, note.Attributes.Title, null);
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
       return;

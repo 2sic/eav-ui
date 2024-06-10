@@ -13,6 +13,7 @@ import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { FormLanguage } from '../../shared/models/form-languages.model';
 
 /**
  * Contains methods for building formulas.
@@ -92,8 +93,6 @@ export class FormulaHelpers {
    * @param settingsCurrent 
    * @param formValues 
    * @param initialFormValues 
-   * @param currentLanguage 
-   * @param defaultLanguage 
    * @param languages 
    * @param itemHeader 
    * @param debugEnabled 
@@ -105,14 +104,13 @@ export class FormulaHelpers {
    */
   static buildFormulaProps(
     formula: FormulaCacheItem,
-    entityId: number,
+    // entityId: number,
     inputType: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     formValues: FormValues,
     initialFormValues: FormValues,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
     languages: Language[],
     itemHeader: ItemIdentifierShared,
     debugEnabled: boolean,
@@ -205,8 +203,8 @@ export class FormulaHelpers {
             },
             cache: formula.cache,
             culture: {
-              code: currentLanguage,
-              name: languages.find(l => l.NameId === currentLanguage)?.Culture,
+              code: language.current,
+              name: languages.find(l => l.NameId === language.current)?.Culture,
             },
             debug: debugEnabled,
             features: {
@@ -260,7 +258,7 @@ export class FormulaHelpers {
               const item = itemService.getItem(entityGuid);
               const values: FormValues = {};
               for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
-                values[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+                values[fieldName] = LocalizationHelpers.translate(language, fieldValues, null);
               }
               return values;
             }
