@@ -21,7 +21,9 @@ export class DataSourceMasksHelper extends ServiceBase {
   private masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem(entity: EntityBasicWithFields, streamName: string | undefined, mustUseGuid: boolean): PickerItem {
+  entity2PickerItem({ entity, streamName, mustUseGuid }
+    : { entity: EntityBasicWithFields; streamName: string | undefined; mustUseGuid: boolean; }
+  ): PickerItem {
     // Check if we have masks, if yes
     const masks = this.getMasks();
 

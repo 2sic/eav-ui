@@ -5,7 +5,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = false;
+const logThis = true;
 const logChildren = false;
 const logRx = true;
 
@@ -37,7 +37,7 @@ export class DataSourceString extends DataSourceBase {
         };
         // TODO: @2dm fix bug, the value should be provided by entity2PickerItem
         // but it's not - probably something we must ensure with the mask...?
-        const pickerItem = this.getMaskHelper().entity2PickerItem(asEntity, /* streamName: */ null, /* mustUseGuid: */ false);
+        const pickerItem = this.getMaskHelper().entity2PickerItem({ entity: asEntity, streamName: null, mustUseGuid: false });
         this.log.a('final data', [pickerItem]);
         return pickerItem;
       })),

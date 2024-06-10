@@ -170,7 +170,7 @@ export class DataSourceQuery extends DataSourceBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
         
-      items = items.concat(data[stream].map(entity => this.entity2PickerItem(entity, stream, valueMustBeGuid)));
+      items = items.concat(data[stream].map(entity => this.entity2PickerItem({ entity, streamName: stream, mustUseGuid: valueMustBeGuid })));
     });
     return [...errors, ...this.setDisableEdit(items)];
   }

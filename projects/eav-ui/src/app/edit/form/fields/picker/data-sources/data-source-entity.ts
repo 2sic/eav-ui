@@ -168,6 +168,6 @@ export class DataSourceEntity extends DataSourceBase {
   }
 
   private queryEntityMapping(entity: EntityBasicWithFields): PickerItem {
-    return this.entity2PickerItem(entity, null, /* mustUseGuid: */ true);
+    return this.entity2PickerItem({ entity, streamName: null, mustUseGuid: true });
   }
 }
