@@ -59,7 +59,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
 
     const addressMaskSetting = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMask = new FieldMask(addressMaskSetting, expConnector.formGroup.controls, null, null);
+    this.addressMask = new FieldMask(addressMaskSetting, expConnector.formGroup.controls, null, null, null, null, 'Gps');
     consoleLogWebpack(`${gpsDialogTag} addressMask:`, addressMaskSetting);
     if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');

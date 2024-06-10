@@ -106,8 +106,4 @@ export class GeneralHelpers {
     return array.indexOf(value) === index;
   }
 
-  /** used for query parameters */
-  static lowercaseInsideSquareBrackets(value: string) {
-    return value.replace(/\[([^\]]+)\]/g, (match, group) => `[${group.toLowerCase()}]`);
-  }
 }

@@ -10,10 +10,18 @@ export class EavLogger {
 
   constructor(public name: string, public enabled: boolean, enableChildren?: boolean) { 
     this.enableChildren = enableChildren /* ?? enabled */ ?? false;
+    this.nameWithSvcId = `${name}-${this.svcId}`;
   }
+
+  private nameWithSvcId: string;
 
   inherit(log: EavLogger) {
     this.enabled = log.enabled;
+
+    // if this results in log enabled, inform the console.
+    // otherwise it's really hard to find out why a log is on
+    if (log.enabled)
+      this.a(`Inheriting log settings from parent ${log.nameWithSvcId}`);
   }
 
   /**
@@ -24,7 +32,7 @@ export class EavLogger {
    */
   a(message: string, data?: unknown[]): void {
     if (!this.enabled) return;
-    logAlways(`[${this.name}-${this.svcId}] ${message}`, data);
+    logAlways(`[${this.nameWithSvcId}] ${message}`, data);
   }
 
   /**
@@ -32,7 +40,7 @@ export class EavLogger {
    */
   add(message: string, ...args: any[]): void {
     if (!this.enabled) return;
-    consoleLogAlways(`[${this.name}-${this.svcId}] ${message}`, ...args);
+    consoleLogAlways(`[${this.nameWithSvcId}] ${message}`, ...args);
   }
 
   qAdd(): (message: string, ...args: any[]) => void {
@@ -45,7 +53,8 @@ export class EavLogger {
   }
 
   val(name: string, value: unknown) {
-    logAlways(`[${this.name}-${this.svcId}] value of ${name}:`, [value]);
+    if (!this.enabled) return;
+    logAlways(`[${this.nameWithSvcId}] value of ${name}:`, [value]);
   }
 
   fn<T>(name: string, message?: string, data?: unknown[]): EavLoggerFn<T> {

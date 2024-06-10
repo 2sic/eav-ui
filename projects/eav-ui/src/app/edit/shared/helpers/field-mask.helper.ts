@@ -2,13 +2,14 @@ import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FormConfiguration } from '../models';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
-import { GeneralHelpers } from './general.helpers';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
 const logThis = false;
-const logChanges = true;
+const logChanges = false;
 
+const FieldsFind = /\[.*?\]/ig;
+const FieldUnwrap = /[\[\]]/ig;
 /**
  * Create a new FieldMask instance and access result with resolve
  * @example
@@ -20,30 +21,30 @@ const logChanges = true;
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
 export class FieldMask extends ServiceBase {
-  private mask: string;
-  private model: Record<string, AbstractControl>;
-  private fields: string[] = [];
-  private value: string;
-  private findFields = /\[.*?\]/ig;
-  private unwrapField = /[\[\]]/ig;
+  /**
+   * Value observable containing result of the field-mask.
+   */
+  public value$: BehaviorSubject<string>;
 
-  public value$ = new BehaviorSubject<string>('');
+  /** Fields used in the mask */
+  private fieldsUsedInMask: string[] = [];
+
 
   constructor(
-    mask: string | null,
-    model: Record<string, AbstractControl>,
+    private mask: string | null,
+    private model: Record<string, AbstractControl>,
     private changeEvent: (newValue: string) => void,
     overloadPreCleanValues: (key: string, value: string) => string,
     private eavConfig?: FormConfiguration,
-    private config?: FieldConfigSet,
+    private fieldConfig?: FieldConfigSet,
+    logName?: string,
     overrideLog?: boolean
   ) {
-    super(new EavLogger('FieldMask', overrideLog ?? logThis));
+    super(new EavLogger('FieldMask' + (logName ? `-${logName}` : ''), overrideLog ?? logThis));
     
     this.mask = mask ?? '';
-    this.value = mask ?? '';// set value to be initially same as the mask so onChange doesn't run for the first time without reason
-    this.model = model;
-    this.fields = this.fieldList();
+    this.value$ = new BehaviorSubject<string>(this.mask);
+    this.fieldsUsedInMask = this.fieldList();
 
     if (overloadPreCleanValues)
       this.preClean = overloadPreCleanValues;
@@ -52,44 +53,52 @@ export class FieldMask extends ServiceBase {
     if (model && changeEvent)
       this.watchAllFields();
 
+    // optionally log everything that happens during dev
     if (logChanges)
       this.subscriptions.add(
-        this.value$.subscribe(value => this.log.a(`Value of '${mask}' changed to: '${value}'`))
+        this.value$.subscribe(value => this.log.a(`Value of mask: '${mask}' changed to: '${value}'`))
       );
   }
 
+  
+
   /** Resolves a mask to the final value */
   resolve(): string {
-    let value = this.mask;
-    if (value.includes('[')) {
-      value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
-      if (this.eavConfig != null)
-        value = value
-          .replace('[app:appid]', this.eavConfig.appId)
-          .replace('[app:zoneid]', this.eavConfig.zoneId);
 
-          if (this.config != null && this.config != undefined)
-        value = value
-          .replace('[guid]', this.config.entityGuid)
-          .replace('[id]', this.config.entityId.toString());
+    // if no mask, exit early
+    if (!hasPlaceholders(this.mask))
+      return this.mask;
 
-          this.fields.forEach((e, i) => {
-        const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
-        const cleaned = this.preClean(e, replaceValue);
-        value = value.replace('[' + e.toLowerCase() + ']', cleaned);
-      });
-    }
+    let value = lowercaseInsideSquareBrackets(this.mask);
+    if (this.eavConfig != null)
+      value = value
+        .replace('[app:appid]', this.eavConfig.appId)
+        .replace('[app:zoneid]', this.eavConfig.zoneId);
+
+    if (this.fieldConfig != null)
+      value = value
+        .replace('[guid]', this.fieldConfig.entityGuid)
+        .replace('[id]', this.fieldConfig.entityId.toString());
+
+    this.fieldsUsedInMask.forEach((e, i) => {
+      const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
+      const cleaned = this.preClean(e, replaceValue);
+      value = value.replace('[' + e.toLowerCase() + ']', cleaned);
+    });
     return value;
   }
 
   /** Retrieves a list of all fields used in the mask */
   fieldList(): string[] {
+    // exit early if mask very simple or not a mask
+    if (!this.mask || !hasPlaceholders(this.mask))
+      return [];
+    
     const result: string[] = [];
-    if (!this.mask) { return result; }
-    const matches = this.mask.match(this.findFields);
+    const matches = this.mask.match(FieldsFind);
     if (matches) {
       matches.forEach((e, i) => {
-        const staticName = e.replace(this.unwrapField, '');
+        const staticName = e.replace(FieldUnwrap, '');
         result.push(staticName);
       });
     } else { // TODO: ask is this good
@@ -106,17 +115,16 @@ export class FieldMask extends ServiceBase {
   /** Change-event - will only fire if it really changes */
   private onChange() {
     const maybeNew = this.resolve();
-    if (this.value !== maybeNew) {
+    if (this.value$.value !== maybeNew) {
       this.value$.next(maybeNew);
       this.changeEvent(maybeNew);
     }
-    this.value = maybeNew;
   }
 
   /** Add watcher and execute onChange */
   private watchAllFields() {
     // add a watch for each field in the field-mask
-    this.fields.forEach(field => {
+    this.fieldsUsedInMask.forEach(field => {
       if (!this.model[field]) { return; }
       const valueSub = this.model[field].valueChanges.subscribe(_ => this.onChange());
       this.subscriptions.add(valueSub);
@@ -126,4 +134,14 @@ export class FieldMask extends ServiceBase {
   destroy() {
     super.destroy();
   }
+}
+
+
+function hasPlaceholders(mask: string): boolean {
+  return (mask ?? '').includes('[');
+}
+
+/** used for query parameters */
+function lowercaseInsideSquareBrackets(value: string) {
+  return value.replace(/\[([^\]]+)\]/g, (match, group) => `[${group.toLowerCase()}]`);
 }

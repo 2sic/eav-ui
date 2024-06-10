@@ -104,6 +104,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
           null,
           this.formConfig.config,
           this.config,
+          'PickerSource-EntityType',
           true, // override log
         );
 
@@ -236,7 +237,9 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.formConfig.config);
+      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.formConfig.config,
+        null,
+        'LogPrefill');
       const prefill = prefillMask.resolve();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

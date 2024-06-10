@@ -14,6 +14,7 @@ import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = false;
+const logName = 'PickerQuerySourceAdapter';
 
 @Injectable()
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
@@ -39,7 +40,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       translate,
       snackBar,
       dsQuery,
-      new EavLogger('PickerQuerySourceAdapter', logThis),
+      new EavLogger(logName, logThis),
     );
   }
 
@@ -80,6 +81,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
           null,
           this.formConfig.config,
           this.config,
+          logName, // log name
           true, // overrideLog
         );
 

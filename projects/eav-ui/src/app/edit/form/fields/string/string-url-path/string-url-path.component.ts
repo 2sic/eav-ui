@@ -58,6 +58,9 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
           (newValue) => { this.onSourcesChanged(newValue); },
           // remove slashes which could look like path-parts
           (key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value,
+          null,
+          null,
+          'UrlPath',
         );
 
         this.onSourcesChanged(this.fieldMask.resolve());

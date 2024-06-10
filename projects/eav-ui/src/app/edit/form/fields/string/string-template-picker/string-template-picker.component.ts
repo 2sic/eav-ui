@@ -74,8 +74,8 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     const typeFilterMask = this.settings$.value.FileType ?? '[Type]';
 
     // set change-watchers to the other values
-    this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null);
-    this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
+    this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null, null, null, 'String-TypeMask');
+    this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null, null, null, 'String-LocationMask');
 
     this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
     this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
@@ -137,7 +137,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
   }
 
   createTemplate() {
-    const nameMask = new FieldMask('[Name]', this.group.controls, null, null);
+    const nameMask = new FieldMask('[Name]', this.group.controls, null, null, null, null, 'String-NameMask');
     const data: CreateFileDialogData = {
       global: this.global,
       purpose: this.activeSpec.purpose,
