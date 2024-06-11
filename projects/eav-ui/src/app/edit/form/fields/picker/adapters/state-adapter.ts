@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, 
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
-import { convertArrayToString, convertValueToArray, equalizeSelectedItems } from '../picker.helpers';
+import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -95,6 +95,19 @@ export class StateAdapter extends ServiceBase {
 
   init(callerName: string) {
     this.log.a('init from ' + callerName);
+
+    // TODO: @2dm - verify this still works - on picker
+    // this.subscriptions.add(
+    //   this.settings$.subscribe(settings => {
+    //     const types = settings.CreateTypes;
+    //     this.createEntityTypes = types
+    //       ? types
+    //           .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
+    //           .map((guid: string) => ({ label: null, guid }))
+    //       : [];
+    //   })
+    // );
+
     const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
     const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
     this.selectedItems$ = combineLatest([
@@ -123,8 +136,8 @@ export class StateAdapter extends ServiceBase {
       ),
     ]).pipe(
       logSelected.start(),
-      map(([value, settings]) =>
-        equalizeSelectedItems(value, settings.Separator, settings.Options)
+      map(([controlValue, settings]) =>
+        correctStringEmptyValue(controlValue, settings.Separator, settings.Options)
       ),
       logSelected.end(),
     );
