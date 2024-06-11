@@ -5,10 +5,10 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { DatetimeDefaultViewModel } from './datetime-default.models';
@@ -41,9 +41,7 @@ import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-d
   ],
 
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
+@FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   viewModel: Observable<DatetimeDefaultViewModel>;
 

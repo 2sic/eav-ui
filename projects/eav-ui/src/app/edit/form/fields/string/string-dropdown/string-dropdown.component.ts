@@ -26,7 +26,6 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
     AsyncPipe,
   ],
 })
-@FieldMetadata({ /* This is needed for the field to work */ })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,

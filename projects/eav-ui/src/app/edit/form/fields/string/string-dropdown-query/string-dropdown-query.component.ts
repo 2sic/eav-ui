@@ -26,7 +26,6 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
     AsyncPipe,
   ],
 })
-@FieldMetadata({ /* This is needed for the field to work */ })
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
   constructor(

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { NumberDropdownLogic } from './number-dropdown-logic';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -42,9 +42,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         TranslateModule,
     ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
+@FieldMetadata({ ...WrappersLocalizationOnly })
 export class NumberDropdownComponent extends BaseFieldComponent<number> implements OnInit, OnDestroy {
   viewModel$: Observable<NumberDropdownViewModel>;
 

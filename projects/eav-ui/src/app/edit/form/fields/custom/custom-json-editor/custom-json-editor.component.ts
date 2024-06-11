@@ -3,7 +3,7 @@ import type * as Monaco from 'monaco-editor';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { JsonSchema } from '../../../../../monaco-editor';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -31,9 +31,7 @@ import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
         AsyncPipe,
     ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
+@FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomJsonEditorComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   viewModel$: Observable<CustomJsonEditorViewModel>;
   filename: string;

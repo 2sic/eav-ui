@@ -30,7 +30,6 @@ const logThis = true;
     AsyncPipe,
   ],
 })
-@FieldMetadata({ /* This is needed for the field to work */ })
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,

@@ -28,7 +28,6 @@ const logThis = false;
     AsyncPipe,
   ],
 })
-@FieldMetadata({ /* This is needed for the field to work */ })
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(

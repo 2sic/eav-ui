@@ -4,9 +4,9 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { SourceService } from '../../../../../code-editor/services/source.service';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../create-file-dialog';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
-import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { templateTypes } from './string-template-picker.constants';
@@ -41,9 +41,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         TranslateModule,
     ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
+@FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringTemplatePickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   viewModel: Observable<StringTemplatePickerViewModel>;
 

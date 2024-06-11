@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDefaultLogic } from './string-default-logic';
@@ -32,9 +32,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         AsyncPipe,
     ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
+@FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   viewModel: Observable<StringDefaultViewModel>;
 
