@@ -14,6 +14,7 @@ import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 const logThis = true;
 
@@ -29,6 +30,7 @@ const logThis = true;
     AsyncPipe,
   ],
 })
+@FieldMetadata({ /* This is needed for the field to work */ })
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,

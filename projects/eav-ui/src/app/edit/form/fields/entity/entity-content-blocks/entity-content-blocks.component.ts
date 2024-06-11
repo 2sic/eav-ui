@@ -12,6 +12,7 @@ import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 const logThis = false;
 
@@ -27,6 +28,7 @@ const logThis = false;
     AsyncPipe,
   ],
 })
+@FieldMetadata({ /* This is needed for the field to work */ })
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(
@@ -48,14 +50,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
   ngOnInit(): void {
     super.ngOnInit();
     this.initAdaptersAndViewModel();
-  }
-
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {

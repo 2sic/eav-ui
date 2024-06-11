@@ -12,6 +12,7 @@ import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -25,6 +26,7 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
     AsyncPipe,
   ],
 })
+@FieldMetadata({ /* This is needed for the field to work */ })
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
   constructor(

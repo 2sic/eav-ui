@@ -8,6 +8,7 @@ import { EmptyMessageViewModel } from './empty-message.models';
 import { ItemFieldVisibility } from '../../../../shared/services/item-field-visibility';
 import { AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 @Component({
   selector: InputTypeConstants.EmptyMessage,
@@ -16,6 +17,7 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
   standalone: true,
   imports: [SharedComponentsModule, AsyncPipe],
 })
+@FieldMetadata({ /* This is needed for the field to work */ })
 export class EmptyMessageComponent implements OnInit {
   @Input() config: FieldConfigSet;
 

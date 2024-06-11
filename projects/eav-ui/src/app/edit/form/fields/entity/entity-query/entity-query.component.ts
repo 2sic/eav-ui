@@ -12,6 +12,7 @@ import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 const logThis = false;
 
@@ -27,6 +28,7 @@ const logThis = false;
     AsyncPipe,
   ],
 })
+@FieldMetadata({ /* This is needed for the field to work */ })
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(

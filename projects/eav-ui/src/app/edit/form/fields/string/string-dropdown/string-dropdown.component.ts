@@ -26,9 +26,7 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
     AsyncPipe,
   ],
 })
-@FieldMetadata({
-  // wrappers: [WrappersConstants.LocalizationWrapper],
-})
+@FieldMetadata({ /* This is needed for the field to work */ })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,
@@ -49,15 +47,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     this.initAdaptersAndViewModel();
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
-
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
