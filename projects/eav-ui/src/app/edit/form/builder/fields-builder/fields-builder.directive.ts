@@ -44,7 +44,46 @@ import { StringPickerComponent } from '../../fields/string/string-picker/string-
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = false;
+const logThis = true;
+
+const InputComponents: Record<string, Type<any>> = {
+  [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
+  [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
+  [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
+  [WrappersConstants.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
+  [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
+  [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
+  [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
+  [WrappersConstants.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
+  [WrappersConstants.LocalizationWrapper]: LocalizationWrapperComponent,
+  [InputTypeConstants.BooleanDefault]: BooleanDefaultComponent,
+  [InputTypeConstants.BooleanTristate]: BooleanTristateComponent,
+  [InputTypeConstants.CustomDefault]: CustomDefaultComponent,
+  [InputTypeConstants.CustomJsonEditor]: CustomJsonEditorComponent,
+  [InputTypeConstants.DateTimeDefault]: DatetimeDefaultComponent,
+  [InputTypeConstants.EmptyDefault]: EmptyDefaultComponent,
+  [InputTypeConstants.EmptyMessage]: EmptyMessageComponent,
+  [InputTypeConstants.EntityContentBlocks]: EntityContentBlockComponent,
+  [InputTypeConstants.EntityDefault]: EntityDefaultComponent,
+  [InputTypeConstants.EntityQuery]: EntityQueryComponent,
+  [InputTypeConstants.ExternalWebComponent]: ExternalWebComponentComponent,
+  [InputTypeConstants.HyperlinkDefault]: HyperlinkDefaultComponent,
+  [InputTypeConstants.HyperlinkLibrary]: HyperlinkLibraryComponent,
+  [InputTypeConstants.NumberDefault]: NumberDefaultComponent,
+  [InputTypeConstants.NumberDropdown]: NumberDropdownComponent,
+  [InputTypeConstants.StringDefault]: StringDefaultComponent,
+  [InputTypeConstants.StringDropdown]: StringDropdownComponent,
+  [InputTypeConstants.StringDropdownQuery]: StringDropdownQueryComponent,
+  [InputTypeConstants.StringFontIconPicker]: StringFontIconPickerComponent,
+  [InputTypeConstants.StringJson]: CustomJsonEditorComponent,
+  [InputTypeConstants.StringTemplatePicker]: StringTemplatePickerComponent,
+  [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
+
+  /** WIP pickers */
+  [InputTypeConstants.EntityPicker]: EntityPickerComponent,
+  [InputTypeConstants.StringPicker]: StringPickerComponent,
+  [InputTypeConstants.NumberPicker]: NumberDropdownComponent,
+};
 
 @Directive({
     selector: '[appFieldsBuilder]',
@@ -54,44 +93,6 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   @Input() group: UntypedFormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
-  private components: Record<string, Type<any>> = {
-    [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
-    [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
-    [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
-    [WrappersConstants.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
-    [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
-    [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
-    [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
-    [WrappersConstants.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
-    [WrappersConstants.LocalizationWrapper]: LocalizationWrapperComponent,
-    [InputTypeConstants.BooleanDefault]: BooleanDefaultComponent,
-    [InputTypeConstants.BooleanTristate]: BooleanTristateComponent,
-    [InputTypeConstants.CustomDefault]: CustomDefaultComponent,
-    [InputTypeConstants.CustomJsonEditor]: CustomJsonEditorComponent,
-    [InputTypeConstants.DateTimeDefault]: DatetimeDefaultComponent,
-    [InputTypeConstants.EmptyDefault]: EmptyDefaultComponent,
-    [InputTypeConstants.EmptyMessage]: EmptyMessageComponent,
-    [InputTypeConstants.EntityContentBlocks]: EntityContentBlockComponent,
-    [InputTypeConstants.EntityDefault]: EntityDefaultComponent,
-    [InputTypeConstants.EntityQuery]: EntityQueryComponent,
-    [InputTypeConstants.ExternalWebComponent]: ExternalWebComponentComponent,
-    [InputTypeConstants.HyperlinkDefault]: HyperlinkDefaultComponent,
-    [InputTypeConstants.HyperlinkLibrary]: HyperlinkLibraryComponent,
-    [InputTypeConstants.NumberDefault]: NumberDefaultComponent,
-    [InputTypeConstants.NumberDropdown]: NumberDropdownComponent,
-    [InputTypeConstants.StringDefault]: StringDefaultComponent,
-    [InputTypeConstants.StringDropdown]: StringDropdownComponent,
-    [InputTypeConstants.StringDropdownQuery]: StringDropdownQueryComponent,
-    [InputTypeConstants.StringFontIconPicker]: StringFontIconPickerComponent,
-    [InputTypeConstants.StringJson]: CustomJsonEditorComponent,
-    [InputTypeConstants.StringTemplatePicker]: StringTemplatePickerComponent,
-    [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
-
-    /** WIP pickers */
-    [InputTypeConstants.EntityPicker]: EntityPickerComponent,
-    [InputTypeConstants.StringPicker]: StringPickerComponent,
-    [InputTypeConstants.NumberPicker]: NumberDropdownComponent,
-  };
 
   constructor(
     private mainContainerRef: ViewContainerRef,
@@ -214,7 +215,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private readComponentType(selector: string): Type<any> {
-    const componentType = this.components[selector];
+    const componentType = InputComponents[selector];
     if (componentType == null) {
       console.error(`Missing component class for: ${selector}`);
       return CustomDefaultComponent;

@@ -15,7 +15,7 @@ import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
-const logThis = false;
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityPicker,

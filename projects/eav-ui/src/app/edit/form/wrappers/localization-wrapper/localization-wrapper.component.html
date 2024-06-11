@@ -1,9 +1,12 @@
+<!-- <pre>Wrapper.Localization Start</pre> -->
 <div class="language-wrap" (mouseenter)="toggleTranslateButtonVisibility(false)"
   (mouseleave)="toggleTranslateButtonVisibility(true)">
   <div class="language-wrap__field"
     [ngClass]="{ 'language-wrap__field-short': (language$ | async)?.current !== (language$ | async)?.primary }"
     (dblclick)="translate()">
+    <pre>Wrapper.Localization - Field Start</pre>
     <ng-container #fieldComponent></ng-container>
+    <pre>Wrapper.Localization - Field End</pre>
   </div>
 
   <app-translate-menu class="language-wrap__translate" [hideTranslateButton]="hideTranslateButton"
@@ -11,3 +14,4 @@
     [config]="config" [group]="group">
   </app-translate-menu>
 </div>
+<!-- <pre>Wrapper.Localization End</pre> -->

@@ -15,7 +15,7 @@ import { Injectable, Optional } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
-const logThis = true;
+const logThis = false;
 const dumpSelected = true;
 const dumpProperties = false;
 
