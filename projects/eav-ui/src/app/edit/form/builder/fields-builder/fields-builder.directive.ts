@@ -15,7 +15,7 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { InputComponents } from './input-components.constant';
 
-const logThis = true;
+const logThis = false;
 
 @Directive({
   selector: '[appFieldsBuilder]',

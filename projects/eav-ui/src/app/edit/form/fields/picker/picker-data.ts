@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 export class PickerData extends ServiceBase {
 

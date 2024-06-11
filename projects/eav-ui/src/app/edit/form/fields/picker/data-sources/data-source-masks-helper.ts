@@ -5,7 +5,8 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = false;
+// const logThis = false;
+
 /**
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.

@@ -5,7 +5,7 @@ import { FormLanguage } from '../models/form-languages.model';
 export class EntityReader implements FormLanguage {
   constructor(public current: string, public primary: string) {}
 
-    // WIP - to make code clearer, this is what should be used from now on
+  // WIP - to make code clearer, this is what should be used from now on
   // But we'll probably end up calling this from the EntityReader only, so it should be straight forward
   getBestValue<T>(attributeValues: EavValues<unknown>, defaultValue: T): T {
     return LocalizationHelpers.translate<T>(this, attributeValues as EavValues<T>, defaultValue);
@@ -15,7 +15,7 @@ export class EntityReader implements FormLanguage {
     return this.flattenAll<T>([metadataItem]);
   }
 
-  flattenAll<T>(metadataItems: EavEntity[]): T {
+  public flattenAll<T>(metadataItems: EavEntity[]): T {
     if (metadataItems == null) { return {} as T; }
 
     const merged: Record<string, any> = {};

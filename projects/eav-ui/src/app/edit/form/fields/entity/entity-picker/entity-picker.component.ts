@@ -14,9 +14,8 @@ import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
-const logThis = true;
+const logThis = false;
 
 @Component({
   selector: InputTypeConstants.EntityPicker,
