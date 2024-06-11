@@ -23,26 +23,9 @@ export class PickerData extends ServiceBase {
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
-
-    // TODO: @SDV include this take(1) and remove this.subscriptions after fixing an issue of why 
-    // labels don't show on on picker list (or picker search if we added new items in picker list...)
-
-    // 2024-02-13 from 2dm - reactivated take(1)
-    // to ensure that the pre-selected items are set only once
-    // TODO: @SDV the note above existed before, I don't know why or how long it's been there
-    // pls review and remove if all is good
-    // previous code
-    // this.subscriptions.add(state.selectedItems$/*.pipe(take(1))*/.subscribe(items => {
-    const logSelectedFirst = this.log.rxTap('selectedItems$-initPrefetch', { enabled: false });
-    this.subscriptions.add(
-      state.selectedItems$
-        .pipe(
-          logSelectedFirst.pipe(),
-          take(1),
-          logSelectedFirst.end(),
-        )
-        .subscribe(items => source.initPrefetch(items.map(item => item.value)))
-      );
+    state.selectedItems$
+      .pipe(take(1))
+      .subscribe(items => source.initPrefetch(items.map(item => item.value)))
 
     // 2. Selected Items 
     const logSelected = this.log.rxTap('selectedItems$', { enabled: true });
