@@ -54,8 +54,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
       .setupQuery(state.error$);
 
-    state.init();
-    source.init('StringDropdownQueryComponent.createPickerAdapters');
+    state.init('StringDropdownQueryComponent');
+    source.init('StringDropdownQueryComponent');
     this.pickerData = new PickerData(
       state,
       source,

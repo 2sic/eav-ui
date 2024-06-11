@@ -60,8 +60,8 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
       .setupQuery(state.error$);
 
-    state.init();
-    source.init('EntityQueryComponent.createPickerAdapters');
+    state.init('EntityQueryComponent');
+    source.init('EntityQueryComponent');
     this.pickerData = new PickerData(
       state,
       source,

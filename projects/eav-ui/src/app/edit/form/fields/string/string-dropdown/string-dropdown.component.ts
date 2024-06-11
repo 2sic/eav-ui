@@ -68,8 +68,8 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       (props: DeleteEntityProps) => state.doAfterDelete(props)
     );
 
-    state.init();
-    source.init('StringDropdownComponent.createPickerAdapters');
+    state.init('StringDropdownComponent');
+    source.init('StringDropdownComponent');
     this.pickerData = new PickerData(
       state,
       source,

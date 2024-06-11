@@ -70,8 +70,8 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
     }
 
-    state.init();
-    source.init('EntityPickerComponent.createPickerAdapters');
+    state.init('EntityPickerComponent');
+    source.init('EntityPickerComponent');
     this.pickerData = new PickerData(
       state,
       source,

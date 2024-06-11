@@ -62,20 +62,9 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     const state = this.pickerStateAdapterRaw.attachToComponent(this);
 
     const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
-    // const source = this.sourceFactory.createPickerEntitySourceAdapter(
-    //   this,
-    //   state,
-    //   // state.disableAddNew$,
-    //   // state.control,
-    //   // this.config,
-    //   // state.settings$,
-    //   // this.group,
-    //   // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-    //   // (props: DeleteEntityProps) => state.doAfterDelete(props)
-    // );
 
-    state.init();
-    source.init('EntityContentBlockComponent.createPickerAdapters');
+    state.init('EntityContentBlockComponent');
+    source.init('EntityContentBlockComponent');
     this.pickerData = new PickerData(
       state,
       source,

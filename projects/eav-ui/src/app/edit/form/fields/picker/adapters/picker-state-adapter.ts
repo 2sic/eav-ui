@@ -93,8 +93,8 @@ export class PickerStateAdapter extends ServiceBase {
   }
 
 
-  init() {
-    this.log.a('init');
+  init(callerName: string) {
+    this.log.a('init from ' + callerName);
     const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
     const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
     this.selectedItems$ = combineLatest([

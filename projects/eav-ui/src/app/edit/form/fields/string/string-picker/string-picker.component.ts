@@ -80,8 +80,8 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
 
 
-    state.init();
-    source.init('StringPickerComponent.createPickerAdapters');
+    state.init('StringPickerComponent');
+    source.init('StringPickerComponent');
     this.pickerData = new PickerData(
       state,
       source,

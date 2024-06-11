@@ -64,20 +64,9 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
 
     const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
-    // const source = this.sourceFactory.createPickerEntitySourceAdapter(
-    //   this,
-    //   state,
-    //   // state.disableAddNew$,
-    //   // state.control,
-    //   // this.config,
-    //   // state.settings$,
-    //   // this.group,
-    //   // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-    //   // (props: DeleteEntityProps) => state.doAfterDelete(props)
-    // );
 
-    state.init();
-    source.init('EntityDefaultComponent.createPickerAdapters');
+    state.init('EntityDefaultComponent');
+    source.init('EntityDefaultComponent');
     this.pickerData = new PickerData(
       state,
       source,

@@ -5,9 +5,9 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = true;
+const logThis = false;
 const logChildren = false;
-const logRx = true;
+const logRx = false;
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
