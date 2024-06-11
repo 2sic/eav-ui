@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { PickerData } from '../../picker/picker-data';
@@ -16,18 +15,17 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 const logThis = false;
 
 @Component({
-    selector: InputTypeConstants.EntityContentBlocks,
-    templateUrl: '../../picker/picker.component.html',
-    styleUrls: ['../../picker/picker.component.scss'],
-    providers: PickerProviders,
-    standalone: true,
-    imports: [
-        PickerPreviewComponent,
-        PickerDialogComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.EntityContentBlocks,
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
+  providers: PickerProviders,
+  standalone: true,
+  imports: [
+    PickerPreviewComponent,
+    PickerDialogComponent,
+    AsyncPipe,
+  ],
 })
-@FieldMetadata({})
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(
@@ -61,7 +59,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.pickerStateAdapterRaw.setupFromComponent(this);
+    const state = this.pickerStateAdapterRaw.attachToComponent(this);
 
     const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
     // const source = this.sourceFactory.createPickerEntitySourceAdapter(

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { PickerData } from '../../picker/picker-data';
@@ -26,7 +25,6 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
     AsyncPipe,
   ],
 })
-@FieldMetadata({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
   constructor(
@@ -51,7 +49,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
+    const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
     const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
       .setupQuery(state.error$);

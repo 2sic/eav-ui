@@ -58,7 +58,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
+    const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
     const source = this.pickerStringSourceAdapterRaw.setupString(
       state.settings$,

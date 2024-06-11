@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
-const logThis = false;
+const logThis = true;
 
 @Injectable()
 export class PickerStringSourceAdapter extends PickerSourceAdapterBase {

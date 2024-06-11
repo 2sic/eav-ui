@@ -4,7 +4,6 @@ import { PickerComponent, PickerProviders } from '../../picker/picker.component'
 import { TranslateService } from '@ngx-translate/core';
 import { FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { EntityPickerLogic } from './entity-picker-logic';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerData } from '../../picker/picker-data';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
@@ -18,18 +17,17 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 const logThis = false;
 
 @Component({
-    selector: InputTypeConstants.EntityPicker,
-    templateUrl: '../../picker/picker.component.html',
-    styleUrls: ['../../picker/picker.component.scss'],
-    providers: PickerProviders,
-    standalone: true,
-    imports: [
-        PickerPreviewComponent,
-        PickerDialogComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.EntityPicker,
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
+  providers: PickerProviders,
+  standalone: true,
+  imports: [
+    PickerPreviewComponent,
+    PickerDialogComponent,
+    AsyncPipe,
+  ],
 })
-@FieldMetadata({})
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,
@@ -58,7 +56,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log.a('createPickerAdapters');
     let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    const state = this.stateRaw.setupFromComponent(this);
+    const state = this.stateRaw.attachToComponent(this);
 
     const dataSourceType = this.settings$.value.DataSourceType;
     this.log.a(`createPickerAdapters: dataSourceType: '${dataSourceType}'`);

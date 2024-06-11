@@ -15,7 +15,9 @@ import { Injectable, Optional } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
-const logThis = false;
+const logThis = true;
+const dumpSelected = true;
+const dumpProperties = false;
 
 @Injectable()
 export class PickerStateAdapter extends ServiceBase {
@@ -24,6 +26,7 @@ export class PickerStateAdapter extends ServiceBase {
   public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   // TODO: doesn't seem to be in use, but probably should?
+  // my guess is it should detect if the open-dialog is shown
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
   public allowMultiValue$: Observable<boolean>;
@@ -47,14 +50,13 @@ export class PickerStateAdapter extends ServiceBase {
   public placeholder$: Observable<string>;
   public required$: Observable<boolean>;
   public cacheItems$: Observable<PickerItem[]>;
-  // public stringQueryCache$: Observable<QueryEntity[]>;
   public control: AbstractControl;
   private focusOnSearchComponent: () => void;
 
-  public setupFromComponent(component: PickerComponent): this  {
+  public attachToComponent(component: PickerComponent): this  {
     this.log.a('setupFromComponent');
     this.log.inherit(component.log);
-    return this.setupShared(
+    return this.attachDependencies(
       component.settings$,
       component.config,
       component.controlStatus$,
@@ -67,7 +69,7 @@ export class PickerStateAdapter extends ServiceBase {
     );
   }
 
-  public setupShared(
+  private attachDependencies(
     settings$: BehaviorSubject<FieldSettings>,
     config: FieldConfigSet,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
@@ -85,18 +87,23 @@ export class PickerStateAdapter extends ServiceBase {
     this.label$ = label$;
     this.placeholder$ = placeholder$;
     this.required$ = required$;
-    // this.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);
     this.control = control;
     this.focusOnSearchComponent = focusOnSearchComponent;
-
     return this;
   }
 
 
   init() {
     this.log.a('init');
+    const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
+    const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
     this.selectedItems$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
+      this.controlStatus$.pipe(
+        logCtlSelected.pipe(),
+        map(controlStatus => controlStatus.value),
+        distinctUntilChanged(),
+        logCtlSelected.distinctUntilChanged(),
+      ),
       this.settings$.pipe(
         tap(settings => {
           // TODO: this looks bad - side-effect in observable
@@ -115,25 +122,45 @@ export class PickerStateAdapter extends ServiceBase {
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ),
     ]).pipe(
+      logSelected.start(),
       map(([value, settings]) =>
         equalizeSelectedItems(value, settings.Separator, settings.Options)
       ),
+      logSelected.end(),
     );
-    this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
-    this.isDialog$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
+
+    this.allowMultiValue$ = this.settings$.pipe(
+      map(settings => settings.AllowMultiValue),
+      distinctUntilChanged()
+    );
+
+    this.isDialog$ = this.settings$.pipe(
+      map(settings => settings._isDialog),
+      distinctUntilChanged()
+    );
+
     this.shouldPickerListBeShown$ = combineLatest([
-      this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedItems$
-    ]).pipe(map(([
-      freeTextMode, isExpanded, allowMultiValue, selectedItems
-    ]) => {
-      return !freeTextMode && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue)) && (!allowMultiValue || (allowMultiValue && isExpanded));
-    }));
+      this.freeTextMode$,
+      this.isExpanded$,
+      this.allowMultiValue$,
+      this.selectedItems$,
+    ]).pipe(
+      map(([freeTextMode, isExpanded, allowMultiValue, selectedItems]) => {
+        return !freeTextMode
+          && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
+          && (!allowMultiValue || (allowMultiValue && isExpanded));
+      })
+    );
 
     // log a lot
-    this.allowMultiValue$.subscribe(allowMultiValue => this.log.a(`allowMultiValue ${allowMultiValue}`));
-    this.isDialog$.subscribe(isDialog => this.log.a(`isDialog ${isDialog}`));
-    this.selectedItems$.subscribe(selectedItems => this.log.a('selectedItems', selectedItems));
-    this.shouldPickerListBeShown$.subscribe(shouldPickerListBeShown => this.log.a(`shouldPickerListBeShown ${shouldPickerListBeShown}`));
+    if (dumpSelected)
+      this.selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
+
+    if (dumpProperties) {
+      this.allowMultiValue$.subscribe(allowMv => this.log.a(`allowMultiValue ${allowMv}`));
+      this.isDialog$.subscribe(isDialog => this.log.a(`isDialog ${isDialog}`));
+      this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
+    }
 
   }
 

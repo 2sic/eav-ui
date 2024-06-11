@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
@@ -31,16 +30,13 @@ const logThis = false;
     AsyncPipe,
   ],
 })
-@FieldMetadata({
-  // wrappers: [WrappersConstants.LocalizationWrapper],
-})
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
-    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
+    private sourceAdapterStringRaw: PickerStringSourceAdapter,
+    private stateAdapterStringRaw: PickerStringStateAdapter,
     private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
     private querySourceAdapterRaw: PickerQuerySourceAdapter,
   ) {
@@ -58,26 +54,18 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     this.initAdaptersAndViewModel();
   }
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
-
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
     let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
-    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
+    const state = this.stateAdapterStringRaw.attachToComponent(this);
 
     const dataSourceType = this.settings$.value.DataSourceType;
     const isEmpty = !dataSourceType;
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
-      source = this.pickerStringSourceAdapterRaw.setupString(
+      source = this.sourceAdapterStringRaw.setupString(
         state.settings$,
         state.disableAddNew$,
         this.config,

@@ -7,16 +7,23 @@ import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = false;
+const logThis = true;
 
 export class PickerData extends ServiceBase {
+  
   public selectedItems$ = new Observable<PickerItem[]>;
+
   constructor(
     public state: PickerStateAdapter,
     public source: PickerSourceAdapter,
     private translate: TranslateService,
   ) {
     super(new EavLogger('PickerData', logThis));
+
+    // 1. Init Prefetch - for Entity Picker
+    // This will place the prefetch items into the available-items list
+    // Otherwise related entities would only show as GUIDs.
+
     // TODO: @SDV include this take(1) and remove this.subscriptions after fixing an issue of why 
     // labels don't show on on picker list (or picker search if we added new items in picker list...)
 
@@ -26,23 +33,38 @@ export class PickerData extends ServiceBase {
     // pls review and remove if all is good
     // previous code
     // this.subscriptions.add(state.selectedItems$/*.pipe(take(1))*/.subscribe(items => {
-    this.subscriptions.add(state.selectedItems$.pipe(take(1)).subscribe(items => {
-      source.initPrefetch(items.map(item => item.value));
-    }));
+    const logSelectedFirst = this.log.rxTap('selectedItems$-initPrefetch', { enabled: false });
+    this.subscriptions.add(
+      state.selectedItems$
+        .pipe(
+          logSelectedFirst.pipe(),
+          take(1),
+          logSelectedFirst.end(),
+        )
+        .subscribe(items => source.initPrefetch(items.map(item => item.value)))
+      );
 
+    // 2. Selected Items 
+    const logSelected = this.log.rxTap('selectedItems$', { enabled: true });
     this.selectedItems$ = combineLatest([
-      state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.getDataFromSource().pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      state.selectedItems$.pipe(
+        distinctUntilChanged(GeneralHelpers.arraysEqual)
+      ),
+      source.getDataFromSource().pipe(
+        distinctUntilChanged(GeneralHelpers.arraysEqual)
+      ),
     ]).pipe(
+      logSelected.start(),
       map(([selectedItems, data]) =>
         this.createUIModel(selectedItems, data, this.translate)
       ),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
       shareReplay(1),
+      logSelected.end(),
     );
   }
 
-  destroy() {
+  override destroy() {
     this.source.destroy();
     this.state.destroy();
     super.destroy();

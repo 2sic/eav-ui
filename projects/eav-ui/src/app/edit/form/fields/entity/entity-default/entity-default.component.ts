@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { PickerData } from '../../picker/picker-data';
@@ -16,18 +15,17 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 const logThis = false;
 
 @Component({
-    selector: InputTypeConstants.EntityDefault,
-    templateUrl: '../../picker/picker.component.html',
-    styleUrls: ['../../picker/picker.component.scss'],
-    providers: PickerProviders,
-    standalone: true,
-    imports: [
-        PickerPreviewComponent,
-        PickerDialogComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.EntityDefault,
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
+  providers: PickerProviders,
+  standalone: true,
+  imports: [
+    PickerPreviewComponent,
+    PickerDialogComponent,
+    AsyncPipe,
+  ],
 })
-@FieldMetadata({})
 export class EntityDefaultComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     fieldsSettingsService: FieldsSettingsService,
@@ -61,7 +59,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
-    const state = this.stateRaw.setupFromComponent(this);
+    const state = this.stateRaw.attachToComponent(this);
 
     this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
 

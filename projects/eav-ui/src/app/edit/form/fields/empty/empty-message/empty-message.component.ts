@@ -4,20 +4,18 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EmptyMessageViewModel } from './empty-message.models';
 import { ItemFieldVisibility } from '../../../../shared/services/item-field-visibility';
 import { AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 
 @Component({
-    selector: InputTypeConstants.EmptyMessage,
-    templateUrl: './empty-message.component.html',
-    styleUrls: ['./empty-message.component.scss'],
-    standalone: true,
-    imports: [SharedComponentsModule, AsyncPipe],
+  selector: InputTypeConstants.EmptyMessage,
+  templateUrl: './empty-message.component.html',
+  styleUrls: ['./empty-message.component.scss'],
+  standalone: true,
+  imports: [SharedComponentsModule, AsyncPipe],
 })
-@FieldMetadata({})
 export class EmptyMessageComponent implements OnInit {
   @Input() config: FieldConfigSet;
 

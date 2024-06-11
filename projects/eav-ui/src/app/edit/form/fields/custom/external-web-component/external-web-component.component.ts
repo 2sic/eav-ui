@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../../shared/helpers/console-log-angular.helper';
-import { FormConfigService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomGpsLogic } from './custom-gps-logic';
 import { ExternalWebComponentViewModel } from './external-web-component.models';
@@ -13,17 +12,16 @@ import { ConnectorComponent } from '../../../shared/connector/connector.componen
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-    selector: InputTypeConstants.ExternalWebComponent,
-    templateUrl: './external-web-component.component.html',
-    styleUrls: ['./external-web-component.component.scss'],
-    standalone: true,
-    imports: [
-        MatProgressSpinnerModule,
-        ConnectorComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.ExternalWebComponent,
+  templateUrl: './external-web-component.component.html',
+  styleUrls: ['./external-web-component.component.scss'],
+  standalone: true,
+  imports: [
+    MatProgressSpinnerModule,
+    ConnectorComponent,
+    AsyncPipe,
+  ],
 })
-@FieldMetadata({})
 export class ExternalWebComponentComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   viewModel: Observable<ExternalWebComponentViewModel>;
 

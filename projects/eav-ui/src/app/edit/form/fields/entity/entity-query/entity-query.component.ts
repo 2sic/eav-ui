@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
 import { PickerData } from '../../picker/picker-data';
@@ -27,7 +26,6 @@ const logThis = false;
     AsyncPipe,
   ],
 })
-@FieldMetadata({})
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(
@@ -55,7 +53,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.stateRaw.setupFromComponent(this);
+    const state = this.stateRaw.attachToComponent(this);
 
     this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
     this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$]);
