@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model";
 import { DeleteEntityProps } from "../models/picker.models";
-import { DataAdapterBase } from "./picker-source-adapter-base";
+import { DataAdapterBase } from "./data-adapter-base";
 import { FieldMask, GeneralHelpers } from "../../../../shared/helpers";
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { FormGroup, AbstractControl } from "@angular/forms";
@@ -11,7 +11,7 @@ import { FieldSettings, PickerItem } from "projects/edit-types";
 import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { StateAdapter } from './picker-state-adapter';
+import { StateAdapter } from './state-adapter';
 import { PickerComponent } from '../picker.component';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';

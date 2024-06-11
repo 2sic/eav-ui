@@ -2,7 +2,7 @@ import { FormGroup } from "@angular/forms";
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { DataAdapterBase } from "./picker-source-adapter-base";
+import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';

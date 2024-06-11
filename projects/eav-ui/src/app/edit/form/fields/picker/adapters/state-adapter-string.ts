@@ -1,4 +1,4 @@
-import { StateAdapter } from "./picker-state-adapter";
+import { StateAdapter } from "./state-adapter";
 import { convertArrayToString } from "../picker.helpers";
 import { FormConfigService } from "../../../../shared/services";
 import { Injectable } from '@angular/core';

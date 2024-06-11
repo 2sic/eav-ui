@@ -1,6 +1,6 @@
 import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
-import { DataAdapter } from "./adapters/picker-source-adapter";
-import { StateAdapter } from "./adapters/picker-state-adapter";
+import { DataAdapter } from "./adapters/data-adapter.interface";
+import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
 import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
 import { TranslateService } from '@ngx-translate/core';

@@ -1,7 +1,7 @@
 import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DeleteEntityProps } from '../models/picker.models';
-import { DataAdapter } from './picker-source-adapter';
+import { DataAdapter } from './data-adapter.interface';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';

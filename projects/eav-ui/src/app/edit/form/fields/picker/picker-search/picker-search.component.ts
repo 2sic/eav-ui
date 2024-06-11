@@ -24,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
-import { messagePickerItem } from '../adapters/picker-source-adapter-base';
+import { messagePickerItem } from '../adapters/data-adapter-base';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";

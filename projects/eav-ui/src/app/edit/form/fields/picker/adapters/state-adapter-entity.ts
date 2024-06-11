@@ -1,4 +1,4 @@
-import { StateAdapter } from "./picker-state-adapter";
+import { StateAdapter } from "./state-adapter";
 import { FormConfigService } from "../../../../shared/services";
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';

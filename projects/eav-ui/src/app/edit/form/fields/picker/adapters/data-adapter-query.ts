@@ -5,12 +5,12 @@ import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsSer
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceQuery } from "../data-sources/data-source-query";
-import { DataAdapterEntityBase } from "./picker-source-entity-adapter-base";
+import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { messagePickerItem, placeholderPickerItem } from './picker-source-adapter-base';
+import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerComponent } from '../picker.component';
-import { StateAdapter } from './picker-state-adapter';
+import { StateAdapter } from './state-adapter';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = false;

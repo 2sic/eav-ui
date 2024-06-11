@@ -6,7 +6,7 @@ import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { messagePickerItem, placeholderPickerItem } from '../adapters/picker-source-adapter-base';
+import { messagePickerItem, placeholderPickerItem } from '../adapters/data-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';

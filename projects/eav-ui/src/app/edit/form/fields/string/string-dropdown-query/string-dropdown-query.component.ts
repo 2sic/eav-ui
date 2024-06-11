@@ -6,9 +6,9 @@ import { EntityQueryComponent } from '../../entity/entity-query/entity-query.com
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { PickerData } from '../../picker/picker-data';
 import { PickerProviders } from '../../picker/picker.component';
-import { StateAdapterEntity } from '../../picker/adapters/picker-entity-state-adapter';
-import { StateAdapterString } from '../../picker/adapters/picker-string-state-adapter';
-import { DataAdapterQuery } from '../../picker/adapters/picker-query-source-adapter';
+import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
+import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
+import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';

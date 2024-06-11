@@ -6,8 +6,8 @@ import { PickerComponent, PickerProviders } from '../../picker/picker.component'
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { StateAdapter } from '../../picker/adapters/picker-state-adapter';
-import { DataAdapterEntity } from '../../picker/adapters/picker-entity-source-adapter';
+import { StateAdapter } from '../../picker/adapters/state-adapter';
+import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
