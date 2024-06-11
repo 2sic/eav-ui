@@ -37,7 +37,7 @@ export class DataSourceString extends DataSourceBase {
         };
         // TODO: @2dm fix bug, the value should be provided by entity2PickerItem
         // but it's not - probably something we must ensure with the mask...?
-        const pickerItem = this.getMaskHelper().entity2PickerItem({ entity: asEntity, streamName: null, mustUseGuid: false });
+        const pickerItem = maskHelper.entity2PickerItem({ entity: asEntity, streamName: null, mustUseGuid: false });
         this.log.a('final data', [pickerItem]);
         return pickerItem;
       })),

@@ -71,21 +71,9 @@ export abstract class DataSourceBase extends ServiceBase {
     this.prefetchEntityGuids$.next(guids);
   }
 
-  /** fill additional properties */
-  protected entity2PickerItem(entity: { entity: EntityBasicWithFields; streamName: string | null; mustUseGuid: boolean; }
-  ): PickerItem {
-    return this.getMaskHelper().entity2PickerItem(entity);
+  protected getMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
+    return new DataSourceMasksHelper(this.settings$.value, this.log, enableLog);
   }
-
-  protected getMaskHelper(): DataSourceMasksHelper {
-    return this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log);
-  }
-
-  /**
-   * The masks to determine which fields are used for what, and how to combine them.
-   * They are generated once per source, and then reused.
-   */
-  private masks: DataSourceMasksHelper;
 
   protected fieldsToRetrieve(settings: FieldSettings): string {
     return this.fieldsHelper.fieldListToRetrieveFromServer(settings);

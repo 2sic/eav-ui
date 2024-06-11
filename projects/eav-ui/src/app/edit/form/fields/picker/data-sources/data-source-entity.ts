@@ -6,7 +6,6 @@ import { QueryService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
-import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
 const logChildren = false;
@@ -41,6 +40,8 @@ export class DataSourceEntity extends DataSourceBase {
       typeNameLog.shareReplay(),
     );
 
+    const fieldMask = this.getMaskHelper(true);
+
     // All the data which was retrieved from the server
     // Note that the backend should not be accessed till getAll$ is true
     // So the stream should be prefilled with an empty array
@@ -60,7 +61,7 @@ export class DataSourceEntity extends DataSourceBase {
       }).pipe(
         logAllOfTypeGetEntities.pipe(),
         map(data => {
-          const items: PickerItem[] = data.Default.map(entity => this.queryEntityMapping(entity));
+          const items: PickerItem[] = data.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, mustUseGuid: true })); // this.queryEntityMapping(entity));
           return { data: items, loading: false };
         }),
         logAllOfTypeGetEntities.map('queryEntityMapping'),
@@ -122,7 +123,7 @@ export class DataSourceEntity extends DataSourceBase {
         log: logOverrides.name,
       }).pipe(
           map(data => {
-            const items: PickerItem[] = data.Default.map(entity => this.queryEntityMapping(entity));
+            const items: PickerItem[] = data.Default.map(entity => fieldMask.entity2PickerItem({ entity, streamName: null, mustUseGuid: true }));
             return { data: items, loading: false };
           }),
           startWith(this.noItemsLoadingTrue)
@@ -165,9 +166,5 @@ export class DataSourceEntity extends DataSourceBase {
 
   contentType(contentTypeName: string): void {
     this.contentTypeName$.next(contentTypeName);
-  }
-
-  private queryEntityMapping(entity: EntityBasicWithFields): PickerItem {
-    return this.entity2PickerItem({ entity, streamName: null, mustUseGuid: true });
   }
 }

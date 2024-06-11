@@ -35,10 +35,9 @@ export class EntityPickerLogic extends FieldLogicBase {
     const specs = tools.entityReader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
     
     // Properties to transfer from both query and entity
-    if (sourceIsEntity && sourceIsQuery) {
+    if (sourceIsEntity || sourceIsQuery) {
       fs.CreateTypes = specs.CreateTypes ?? '';// possible multiple types
       fs.MoreFields = specs.MoreFields ?? '';
-
       fs.Label = specs.Label ?? '';
       fs.ItemInformation = specs.ItemInformation ?? '';
       fs.ItemTooltip = specs.ItemTooltip ?? '';
