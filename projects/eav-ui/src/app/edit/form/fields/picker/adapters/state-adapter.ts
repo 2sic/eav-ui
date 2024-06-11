@@ -96,17 +96,19 @@ export class StateAdapter extends ServiceBase {
   init(callerName: string) {
     this.log.a('init from ' + callerName);
 
-    // TODO: @2dm - verify this still works - on picker
-    // this.subscriptions.add(
-    //   this.settings$.subscribe(settings => {
-    //     const types = settings.CreateTypes;
-    //     this.createEntityTypes = types
-    //       ? types
-    //           .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
-    //           .map((guid: string) => ({ label: null, guid }))
-    //       : [];
-    //   })
-    // );
+    // Create list of entity types to create for the (+) button
+    // ATM exclusively used in the new pickers for selecting the source.
+    // todo: enhance some day to also include a better label
+    this.subscriptions.add(
+      this.settings$.subscribe(settings => {
+        const types = settings.CreateTypes;
+        this.createEntityTypes = types
+          ? types
+              .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
+              .map((guid: string) => ({ label: null, guid }))
+          : [];
+      })
+    );
 
     const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
     const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
@@ -118,16 +120,6 @@ export class StateAdapter extends ServiceBase {
         logCtlSelected.distinctUntilChanged(),
       ),
       this.settings$.pipe(
-        tap(settings => {
-          // TODO: this looks bad - side-effect in observable
-          const types = settings.CreateTypes;
-          this.createEntityTypes = types
-            ? types
-                // use either \n or , as delimiter
-                .split(types.indexOf('\n') > -1 ? '\n' : ',')
-                .map((guid: string) => ({ label: null, guid }))
-            : [];
-        }),
         map(settings => ({
           Separator: settings.Separator,
           Options: settings._options,
