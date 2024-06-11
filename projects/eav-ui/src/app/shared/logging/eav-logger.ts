@@ -15,13 +15,13 @@ export class EavLogger {
 
   private nameWithSvcId: string;
 
-  inherit(log: EavLogger) {
-    this.enabled = log.enabled;
+  inherit(parent: EavLogger) {
+    this.enabled = this.enabled || parent.enabled;
 
     // if this results in log enabled, inform the console.
     // otherwise it's really hard to find out why a log is on
-    if (log.enabled)
-      this.a(`Inheriting log settings from parent ${log.nameWithSvcId}`);
+    if (parent.enabled)
+      this.a(`Enabled: Inheriting log settings from parent ${parent.nameWithSvcId}`);
   }
 
   /**

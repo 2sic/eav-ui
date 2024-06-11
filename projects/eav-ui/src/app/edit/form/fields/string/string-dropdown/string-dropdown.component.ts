@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerComponent, pickerProviders } from '../../picker/picker.component';
+import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
@@ -14,16 +14,16 @@ import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 @Component({
-    selector: InputTypeConstants.StringDropdown,
-    templateUrl: '../../picker/picker.component.html',
-    styleUrls: ['../../picker/picker.component.scss'],
-    providers: pickerProviders,
-    standalone: true,
-    imports: [
-        PickerPreviewComponent,
-        PickerDialogComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.StringDropdown,
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
+  providers: PickerProviders,
+  standalone: true,
+  imports: [
+    PickerPreviewComponent,
+    PickerDialogComponent,
+    AsyncPipe,
+  ],
 })
 @FieldMetadata({
   // wrappers: [WrappersConstants.LocalizationWrapper],
@@ -67,7 +67,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       this.group,
       (props: DeleteEntityProps) => state.doAfterDelete(props)
     );
-;
 
     state.init();
     source.init('StringDropdownComponent.createPickerAdapters');

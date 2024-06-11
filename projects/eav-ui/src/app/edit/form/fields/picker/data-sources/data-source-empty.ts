@@ -1,5 +1,5 @@
 import { PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, of, shareReplay, tap } from "rxjs";
+import { BehaviorSubject, of, shareReplay } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
@@ -28,14 +28,11 @@ export class DataSourceEmpty extends DataSourceBase {
       isMessage: true,
     };
 
+    const logData = this.log.rxTap('data$');
     this.data$ = of([dummyItem]).pipe(
       shareReplay(1),
-      tap(data => this.log.a('data$', [data]))
+      logData.shareReplay(),
     );
     return this;
-  }
-
-  destroy(): void {
-    super.destroy();
   }
 }

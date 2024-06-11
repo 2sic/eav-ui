@@ -36,10 +36,15 @@ export class RxTapDebug {
           const showData = data == null
             ? data  // if null or undefined, just show it
             : this.jsonify ? JSON.parse(JSON.stringify(data)) : data;
-          return this.logger.add(label + ` #${counter++}`, showData);
+          return this.logger.a(label + ` #${counter++}`, [showData]);
         })
       );
   };
+
+  /** Create a sub-rx-tap (not yet tested as of 2024-06-11) */
+  rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }) {
+    return new RxTapDebug(this.logger, `${this.name}-${name}`, enabled, jsonify);
+  }
 
 
   /**

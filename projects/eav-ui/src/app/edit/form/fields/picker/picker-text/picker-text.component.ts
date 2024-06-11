@@ -12,18 +12,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-    selector: 'app-picker-text',
-    templateUrl: './picker-text.component.html',
-    styleUrls: ['./picker-text.component.scss'],
-    standalone: true,
-    imports: [
-        FlexModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        AsyncPipe,
-    ],
+  selector: 'app-picker-text',
+  templateUrl: './picker-text.component.html',
+  styleUrls: ['./picker-text.component.scss'],
+  standalone: true,
+  imports: [
+    FlexModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    AsyncPipe,
+  ],
 })
 export class PickerTextComponent implements OnInit {
   @Input() pickerData: PickerData;
@@ -42,7 +42,6 @@ export class PickerTextComponent implements OnInit {
 
   ngOnInit(): void {
     const state = this.pickerData.state;
-    const source = this.pickerData.source;
 
     const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;

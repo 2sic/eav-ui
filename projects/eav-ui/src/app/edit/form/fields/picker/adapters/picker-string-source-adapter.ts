@@ -36,7 +36,6 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     useEmpty?: boolean,
   ): this {
     this.log.a(`setupString - useEmpty ${useEmpty}`);
-    // this.settings$ = settings$;
     this.disableAddNew$ = disableAddNew$;
     this.config = config;
     this.group = group;

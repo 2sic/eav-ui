@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerComponent, pickerProviders } from '../../picker/picker.component';
+import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -19,7 +19,7 @@ const logThis = false;
     selector: InputTypeConstants.EntityDefault,
     templateUrl: '../../picker/picker.component.html',
     styleUrls: ['../../picker/picker.component.scss'],
-    providers: pickerProviders,
+    providers: PickerProviders,
     standalone: true,
     imports: [
         PickerPreviewComponent,

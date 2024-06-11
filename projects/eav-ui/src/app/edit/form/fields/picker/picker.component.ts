@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './models/picker.models';
@@ -28,7 +28,7 @@ const logThis = false;
  * Otherwise the end up sharing the same instance of the service.
  * ...and when opened the second time, they will show an empty dropdown.
  */
-export const pickerProviders = [
+export const PickerProviders = [
   DataSourceString,
   DataSourceEntity,
   DataSourceQuery,
@@ -44,16 +44,16 @@ export const pickerProviders = [
 ];
 
 @Component({
-    // selector: InputTypeConstants.EntityDefault,
-    templateUrl: './picker.component.html',
-    styleUrls: ['./picker.component.scss'],
-    providers: pickerProviders,
-    standalone: true,
-    imports: [
-        PickerPreviewComponent,
-        PickerDialogComponent,
-        AsyncPipe,
-    ],
+  // selector: InputTypeConstants.EntityDefault,
+  templateUrl: './picker.component.html',
+  styleUrls: ['./picker.component.scss'],
+  providers: PickerProviders,
+  standalone: true,
+  imports: [
+    PickerPreviewComponent,
+    PickerDialogComponent,
+    AsyncPipe,
+  ],
 })
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;

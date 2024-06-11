@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerComponent, pickerProviders } from '../../picker/picker.component';
+import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
 import { PickerData } from '../../picker/picker-data';
 import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
@@ -16,16 +16,16 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 const logThis = false;
 
 @Component({
-    selector: InputTypeConstants.EntityQuery,
-    templateUrl: '../../picker/picker.component.html',
-    styleUrls: ['../../picker/picker.component.scss'],
-    providers: pickerProviders,
-    standalone: true,
-    imports: [
-        PickerPreviewComponent,
-        PickerDialogComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.EntityQuery,
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
+  providers: PickerProviders,
+  standalone: true,
+  imports: [
+    PickerPreviewComponent,
+    PickerDialogComponent,
+    AsyncPipe,
+  ],
 })
 @FieldMetadata({})
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
