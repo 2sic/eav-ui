@@ -5,7 +5,7 @@ import { EditRoutingService, FieldsSettingsService } from '../../../../shared/se
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { PickerData } from '../../picker/picker-data';
-import { PickerProviders } from '../../picker/picker.component';
+import { PickerProviders } from '../../picker/picker-providers.constant';
 import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
 import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
