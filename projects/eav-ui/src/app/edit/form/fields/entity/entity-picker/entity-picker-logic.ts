@@ -1,4 +1,4 @@
-import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
+import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
@@ -28,38 +28,42 @@ export class EntityPickerLogic extends FieldLogicBase {
     if(fs.DataSources?.length > 0) 
       dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
 
+    // Transfer configuration
+    const dataSource = dataSources[0];
+    const sourceIsQuery = dataSource?.Type.Name === PickerConfigModels.UiPickerSourceQuery;
+    const sourceIsEntity = dataSource?.Type.Name === PickerConfigModels.UiPickerSourceEntity;
+    const specs = tools.entityReader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
+    
+    // Properties to transfer from both query and entity
+    if (sourceIsEntity && sourceIsQuery) {
+      fs.CreateTypes = specs.CreateTypes ?? '';// possible multiple types
+      fs.MoreFields = specs.MoreFields ?? '';
+
+      fs.Label = specs.Label ?? '';
+      fs.ItemInformation = specs.ItemInformation ?? '';
+      fs.ItemTooltip = specs.ItemTooltip ?? '';
+      fs.ItemLink = specs.ItemLink ?? '';
+    }
+
     /** Query datasource */
-    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceQuery) {
+    if (sourceIsQuery) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceQuery;
-      const uiPickerSourceQuery = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceQuery;
 
-      fs.Query = uiPickerSourceQuery.Query ?? '';
-      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';// stream name could be multiple stream names
-      fs.UrlParameters = uiPickerSourceQuery.QueryParameters ?? '';
+      const specsQuery = specs as UiPickerSourceQuery;
+      fs.Query = specsQuery.Query ?? '';
+      fs.StreamName = specsQuery.StreamName ?? 'Default';// stream name could be multiple stream names
+      fs.UrlParameters = specsQuery.QueryParameters ?? '';
 
-      fs.Value = uiPickerSourceQuery.Value ?? '';
-      fs.Label = uiPickerSourceQuery.Label ?? '';
-      fs.CreateTypes = uiPickerSourceQuery.CreateTypes ?? '';// possible multiple types
-
-      fs.MoreFields = uiPickerSourceQuery.MoreFields ?? '';
-
-      fs.ItemInformation = uiPickerSourceQuery.ItemInformation ?? '';
-      fs.ItemTooltip = uiPickerSourceQuery.ItemTooltip ?? '';
-      fs.ItemLink = uiPickerSourceQuery.ItemLink ?? '';
+      // The Query may specify another value to be used as the value (but it's unlikely)
+      fs.Value = specsQuery.Value ?? '';
     }
 
     /** Entity datasource */
-    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceEntity) {
+    if (sourceIsEntity) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
-      const uiPickerSourceEntity = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceEntity;
 
-      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';// possible multiple types
-      fs.CreateTypes = uiPickerSourceEntity.CreateTypes ?? '';// possible multiple types
-      fs.MoreFields = uiPickerSourceEntity.MoreFields ?? '';
-
-      fs.ItemInformation = uiPickerSourceEntity.ItemInformation ?? '';
-      fs.ItemTooltip = uiPickerSourceEntity.ItemTooltip ?? '';
-      fs.ItemLink = uiPickerSourceEntity.ItemLink ?? '';
+      const specsEntity = specs as UiPickerSourceEntity;
+      fs.EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
     }
 
     /** WIP functionalities */
@@ -81,22 +85,22 @@ export class EntityPickerLogic extends FieldLogicBase {
       pickerDisplayConfigurations = tools.contentTypeItemService.getContentTypeItems(fs.PickerDisplayConfiguration);
 
     if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigModels.UiPickerModeTree) {
-      const uiPickerModeTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
+      const specsTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
       const pickerTreeConfiguration: UiPickerModeTree = {
-        Title: uiPickerModeTree.Title ?? '',
+        Title: specsTree.Title ?? '',
         ConfigModel: PickerConfigModels.UiPickerModeTree,
-        TreeRelationship: uiPickerModeTree.TreeRelationship ?? RelationshipParentChild,
-        TreeBranchesStream: uiPickerModeTree.TreeBranchesStream ?? 'Default',
-        TreeLeavesStream: uiPickerModeTree.TreeLeavesStream ?? 'Default',
-        TreeParentIdField: uiPickerModeTree.TreeParentIdField ?? 'Id',
-        TreeChildIdField: uiPickerModeTree.TreeChildIdField ?? 'Id',
-        TreeParentChildRefField: uiPickerModeTree.TreeParentChildRefField ?? 'Children',
-        TreeChildParentRefField: uiPickerModeTree.TreeChildParentRefField ?? 'Parent',
-        TreeShowRoot: uiPickerModeTree.TreeShowRoot ?? true, 
-        TreeDepthMax: uiPickerModeTree.TreeDepthMax ?? 10,
-        TreeAllowSelectRoot: uiPickerModeTree.TreeAllowSelectRoot ?? true,
-        TreeAllowSelectBranch: uiPickerModeTree.TreeAllowSelectBranch ?? true,
-        TreeAllowSelectLeaf: uiPickerModeTree.TreeAllowSelectLeaf ?? true,
+        TreeRelationship: specsTree.TreeRelationship ?? RelationshipParentChild,
+        TreeBranchesStream: specsTree.TreeBranchesStream ?? 'Default',
+        TreeLeavesStream: specsTree.TreeLeavesStream ?? 'Default',
+        TreeParentIdField: specsTree.TreeParentIdField ?? 'Id',
+        TreeChildIdField: specsTree.TreeChildIdField ?? 'Id',
+        TreeParentChildRefField: specsTree.TreeParentChildRefField ?? 'Children',
+        TreeChildParentRefField: specsTree.TreeChildParentRefField ?? 'Parent',
+        TreeShowRoot: specsTree.TreeShowRoot ?? true, 
+        TreeDepthMax: specsTree.TreeDepthMax ?? 10,
+        TreeAllowSelectRoot: specsTree.TreeAllowSelectRoot ?? true,
+        TreeAllowSelectBranch: specsTree.TreeAllowSelectBranch ?? true,
+        TreeAllowSelectLeaf: specsTree.TreeAllowSelectLeaf ?? true,
       };
       fs.PickerTreeConfiguration = pickerTreeConfiguration;
     }
