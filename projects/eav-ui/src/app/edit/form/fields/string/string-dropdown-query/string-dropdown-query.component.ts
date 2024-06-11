@@ -6,9 +6,9 @@ import { EntityQueryComponent } from '../../entity/entity-query/entity-query.com
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { PickerData } from '../../picker/picker-data';
 import { PickerProviders } from '../../picker/picker.component';
-import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { StateAdapterEntity } from '../../picker/adapters/picker-entity-state-adapter';
+import { StateAdapterString } from '../../picker/adapters/picker-string-state-adapter';
+import { DataAdapterQuery } from '../../picker/adapters/picker-query-source-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
@@ -31,9 +31,9 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     fieldsSettingsService: FieldsSettingsService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
-    stateRaw: PickerEntityStateAdapter,
-    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
-    querySourceAdapterRaw: PickerQuerySourceAdapter,
+    stateRaw: StateAdapterEntity,
+    private pickerStringStateAdapterRaw: StateAdapterString,
+    querySourceAdapterRaw: DataAdapterQuery,
   ) {
     super(
       fieldsSettingsService,

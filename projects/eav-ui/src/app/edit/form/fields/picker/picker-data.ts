@@ -1,6 +1,6 @@
 import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
-import { PickerSourceAdapter } from "./adapters/picker-source-adapter";
-import { PickerStateAdapter } from "./adapters/picker-state-adapter";
+import { DataAdapter } from "./adapters/picker-source-adapter";
+import { StateAdapter } from "./adapters/picker-state-adapter";
 import { PickerItem } from 'projects/edit-types';
 import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,12 +10,12 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 const logThis = true;
 
 export class PickerData extends ServiceBase {
-  
+
   public selectedItems$ = new Observable<PickerItem[]>;
 
   constructor(
-    public state: PickerStateAdapter,
-    public source: PickerSourceAdapter,
+    public state: StateAdapter,
+    public source: DataAdapter,
     private translate: TranslateService,
   ) {
     super(new EavLogger('PickerData', logThis));

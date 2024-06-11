@@ -1,12 +1,12 @@
 import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DeleteEntityProps } from '../models/picker.models';
-import { PickerSourceAdapter } from './picker-source-adapter';
+import { DataAdapter } from './picker-source-adapter';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';
 
-export abstract class PickerSourceAdapterBase extends ServiceBase implements PickerSourceAdapter {
+export abstract class DataAdapterBase extends ServiceBase implements DataAdapter {
   /**
    * The options to show.
    * Can be different from the underlying data, since it may have error or loading-entries.

@@ -7,8 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
 import { PickerData } from '../../picker/picker-data';
-import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { DataAdapterString } from '../../picker/adapters/picker-string-source-adapter';
+import { StateAdapterString } from '../../picker/adapters/picker-string-state-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
@@ -33,8 +33,8 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
-    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
+    private pickerStringSourceAdapterRaw: DataAdapterString,
+    private pickerStringStateAdapterRaw: StateAdapterString,
   ) {
     super(
       fieldsSettingsService,

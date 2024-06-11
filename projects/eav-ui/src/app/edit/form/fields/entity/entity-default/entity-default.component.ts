@@ -6,8 +6,8 @@ import { PickerComponent, PickerProviders } from '../../picker/picker.component'
 import { EntityDefaultLogic } from './entity-default-logic';
 import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
-import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { StateAdapterEntity } from '../../picker/adapters/picker-entity-state-adapter';
+import { DataAdapterEntity } from '../../picker/adapters/picker-entity-source-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
@@ -31,8 +31,8 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    private stateRaw: PickerEntityStateAdapter,
-    private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
+    private stateRaw: StateAdapterEntity,
+    private pickerEntitySourceAdapter: DataAdapterEntity,
   ) {
     super(
       fieldsSettingsService,

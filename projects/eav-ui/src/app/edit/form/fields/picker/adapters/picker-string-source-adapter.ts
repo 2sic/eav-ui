@@ -2,7 +2,7 @@ import { FormGroup } from "@angular/forms";
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
+import { DataAdapterBase } from "./picker-source-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -13,7 +13,7 @@ import { DataSourceEmpty } from '../data-sources/data-source-empty';
 const logThis = true;
 
 @Injectable()
-export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
+export class DataAdapterString extends DataAdapterBase {
   private dataSource: DataSourceBase;
 
   constructor(

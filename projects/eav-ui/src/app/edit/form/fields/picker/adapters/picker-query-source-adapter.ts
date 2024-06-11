@@ -5,25 +5,24 @@ import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsSer
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceQuery } from "../data-sources/data-source-query";
-import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
+import { DataAdapterEntityBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerComponent } from '../picker.component';
-import { PickerStateAdapter } from './picker-state-adapter';
+import { StateAdapter } from './picker-state-adapter';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
 
 @Injectable()
-export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
+export class DataAdapterQuery extends DataAdapterEntityBase {
   private paramsMask: FieldMask;
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
     public queryService: QueryService,
-    // public stringQueryCacheService: StringQueryCacheService,
     public entityCacheService: PickerDataCacheService,
     public entityService: EntityService,
     public formConfig: FormConfigService,
@@ -47,7 +46,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private error$: BehaviorSubject<string>;
   private isStringQuery: boolean;
 
-  public /* override */ setupFromComponent(component: PickerComponent, state: PickerStateAdapter): this {
+  override setupFromComponent(component: PickerComponent, state: StateAdapter): this {
     this.log.a('setupFromComponent');
     super.setupFromComponent(component, state);
     this.isStringQuery = component.isStringQuery;

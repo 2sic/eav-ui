@@ -5,9 +5,9 @@ import { EditRoutingService, FieldsSettingsService } from '../../../../shared/se
 import { PickerComponent, PickerProviders } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
 import { PickerData } from '../../picker/picker-data';
-import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
+import { StateAdapterEntity } from '../../picker/adapters/picker-entity-state-adapter';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { DataAdapterQuery } from '../../picker/adapters/picker-query-source-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
@@ -32,8 +32,8 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     fieldsSettingsService: FieldsSettingsService,
     protected translate: TranslateService,
     editRoutingService: EditRoutingService,
-    private stateRaw: PickerEntityStateAdapter,
-    protected querySourceAdapterRaw: PickerQuerySourceAdapter,
+    private stateRaw: StateAdapterEntity,
+    protected querySourceAdapterRaw: DataAdapterQuery,
   ) {
     super(
       fieldsSettingsService,

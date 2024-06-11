@@ -9,13 +9,13 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DataSourceEntity } from './data-sources/data-source-entity';
 import { DataSourceString } from './data-sources/data-source-string';
 import { DataSourceQuery } from './data-sources/data-source-query';
-import { PickerStringSourceAdapter } from './adapters/picker-string-source-adapter';
-import { PickerEntitySourceAdapter } from './adapters/picker-entity-source-adapter';
-import { PickerQuerySourceAdapter } from './adapters/picker-query-source-adapter';
+import { DataAdapterString } from './adapters/picker-string-source-adapter';
+import { DataAdapterEntity } from './adapters/picker-entity-source-adapter';
+import { DataAdapterQuery } from './adapters/picker-query-source-adapter';
 import { DataSourceEmpty } from './data-sources/data-source-empty';
-import { PickerStateAdapter } from './adapters/picker-state-adapter';
-import { PickerEntityStateAdapter } from './adapters/picker-entity-state-adapter';
-import { PickerStringStateAdapter } from './adapters/picker-string-state-adapter';
+import { StateAdapter } from './adapters/picker-state-adapter';
+import { StateAdapterEntity } from './adapters/picker-entity-state-adapter';
+import { StateAdapterString } from './adapters/picker-string-state-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
@@ -34,13 +34,13 @@ export const PickerProviders = [
   DataSourceQuery,
   DataSourceEmpty,
 
-  PickerStringSourceAdapter,
-  PickerEntitySourceAdapter,
-  PickerQuerySourceAdapter,
+  DataAdapterString,
+  DataAdapterEntity,
+  DataAdapterQuery,
 
-  PickerStateAdapter,
-  PickerStringStateAdapter,
-  PickerEntityStateAdapter,
+  StateAdapter,
+  StateAdapterString,
+  StateAdapterEntity,
 ];
 
 @Component({

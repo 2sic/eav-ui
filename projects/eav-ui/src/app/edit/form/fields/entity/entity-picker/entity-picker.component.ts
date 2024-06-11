@@ -5,11 +5,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { EntityPickerLogic } from './entity-picker-logic';
 import { PickerData } from '../../picker/picker-data';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
-import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { DataAdapterQuery } from '../../picker/adapters/picker-query-source-adapter';
+import { DataAdapterEntity } from '../../picker/adapters/picker-entity-source-adapter';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
+import { StateAdapterEntity } from '../../picker/adapters/picker-entity-state-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
@@ -33,9 +33,9 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    private stateRaw: PickerEntityStateAdapter,
-    private entitySourceAdapterRaw: PickerEntitySourceAdapter,
-    private querySourceAdapterRaw: PickerQuerySourceAdapter,
+    private stateRaw: StateAdapterEntity,
+    private entitySourceAdapterRaw: DataAdapterEntity,
+    private querySourceAdapterRaw: DataAdapterQuery,
   ) {
     super(
       fieldsSettingsService,
@@ -54,7 +54,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
 
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
+    let source: DataAdapterQuery | DataAdapterEntity;
 
     const state = this.stateRaw.attachToComponent(this);
 

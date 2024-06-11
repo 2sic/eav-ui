@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { combineLatest } from "rxjs";
 import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { DataSourceEntity } from "../data-sources/data-source-entity";
-import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
+import { DataAdapterEntityBase } from "./picker-source-entity-adapter-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem } from './picker-source-adapter-base';
 import { Injectable } from '@angular/core';
@@ -12,7 +12,7 @@ import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 const logThis = false;
 
 @Injectable()
-export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
+export class DataAdapterEntity extends DataAdapterEntityBase {
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,

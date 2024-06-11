@@ -6,12 +6,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { StringPickerLogic } from './string-picker-logic';
-import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
-import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { DataAdapterString } from '../../picker/adapters/picker-string-source-adapter';
+import { DataAdapterQuery } from '../../picker/adapters/picker-query-source-adapter';
+import { DataAdapterEntity } from '../../picker/adapters/picker-entity-source-adapter';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { StateAdapterString } from '../../picker/adapters/picker-string-state-adapter';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
@@ -35,10 +35,10 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
-    private sourceAdapterStringRaw: PickerStringSourceAdapter,
-    private stateAdapterStringRaw: PickerStringStateAdapter,
-    private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
-    private querySourceAdapterRaw: PickerQuerySourceAdapter,
+    private sourceAdapterStringRaw: DataAdapterString,
+    private stateAdapterStringRaw: StateAdapterString,
+    private pickerEntitySourceAdapter: DataAdapterEntity,
+    private querySourceAdapterRaw: DataAdapterQuery,
   ) {
     super(
       fieldsSettingsService,
@@ -57,7 +57,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
-    let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
+    let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;
 
     const state = this.stateAdapterStringRaw.attachToComponent(this);
 

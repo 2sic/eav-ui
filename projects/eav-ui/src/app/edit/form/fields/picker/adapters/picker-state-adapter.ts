@@ -20,7 +20,7 @@ const dumpSelected = true;
 const dumpProperties = false;
 
 @Injectable()
-export class PickerStateAdapter extends ServiceBase {
+export class StateAdapter extends ServiceBase {
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public error$: BehaviorSubject<string> = new BehaviorSubject('');
