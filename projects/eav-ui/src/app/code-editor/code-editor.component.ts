@@ -29,6 +29,7 @@ import { CodeTemplatesComponent } from './code-templates/code-templates.componen
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 
 @Component({
     selector: 'app-code-editor',
@@ -45,6 +46,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
         MonacoEditorComponent_1,
         MatButtonModule,
         AsyncPipe,
+        ClickStopPropagationDirective
     ],
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -211,7 +213,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     // This FileLocationDialogComponent dialog is currently never going to be opened because it has been replaced by mat-menu
     // in the code-templates.component.html template. If you want to use the dialog instead of the menu, you need to remove the
     // mat-menu and replace it with a button that opens the dialog with empty parameters.
-    // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if 
+    // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if
     // FileLocationDialogComponent dialog was used.
     // if (params.isShared == null) {
     //   const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {

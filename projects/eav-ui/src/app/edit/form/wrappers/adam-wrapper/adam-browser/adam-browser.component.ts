@@ -23,29 +23,40 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'adam-browser',
-    templateUrl: './adam-browser.component.html',
-    styleUrls: ['./adam-browser.component.scss'],
-    animations: [
-        trigger('adamShowAnimate', [
-            state('closed', style({
-                height: '0',
-                overflow: 'hidden',
-            })),
-            state('open', style({
-                height: '*',
-                overflow: 'hidden',
-            })),
-            transition('closed => open', [
-                animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-            ]),
-        ]),
-    ],
-    standalone: true,
-    imports: [NgClass, ExtendedModule, SharedComponentsModule, MatIconModule, PasteClipboardImageDirective, MatBadgeModule, AsyncPipe, TranslateModule]
+  // tslint:disable-next-line:component-selector
+  selector: 'adam-browser',
+  templateUrl: './adam-browser.component.html',
+  styleUrls: ['./adam-browser.component.scss'],
+  animations: [
+    trigger('adamShowAnimate', [
+      state('closed', style({
+        height: '0',
+        overflow: 'hidden',
+      })),
+      state('open', style({
+        height: '*',
+        overflow: 'hidden',
+      })),
+      transition('closed => open', [
+        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      ]),
+    ]),
+  ],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    SharedComponentsModule,
+    MatIconModule,
+    PasteClipboardImageDirective,
+    MatBadgeModule,
+    AsyncPipe,
+    TranslateModule,
+    ClickStopPropagationDirective,
+  ]
 })
 export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;

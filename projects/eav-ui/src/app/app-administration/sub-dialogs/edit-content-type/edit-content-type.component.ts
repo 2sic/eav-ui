@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 
 @Component({
     selector: 'app-edit-content-type',
@@ -38,6 +39,7 @@ import { FieldHintComponent } from '../../../shared/components/field-hint/field-
         MatDialogActions,
         AsyncPipe,
         FieldHintComponent,
+        ClickStopPropagationDirective,
     ],
     providers: [ContentTypesService],
 })

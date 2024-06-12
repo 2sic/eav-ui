@@ -38,10 +38,10 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     // DialogEntryComponent,
     // BooleanFilterComponent,
     // EntityFilterComponent,
+    // ClickStopPropagationDirective,
 
     FileUploadDialogComponent, // TODO:: Open
     AgBoolIconRenderer,
-    // ClickStopPropagationDirective,
     DragAndDropDirective,
     MousedownStopPropagationDirective,
     ToggleDebugDirective,
@@ -52,6 +52,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     SafeHtmlPipe,
   ],
   imports: [
+    // ClickStopPropagationDirective,
     RouterModule,
     CommonModule,
     MatFormFieldModule,
@@ -64,7 +65,6 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     MatButtonModule,
     MatDialogModule,
     BreadcrumbModule,
-    ClickStopPropagationDirective,
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
@@ -74,8 +74,8 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     // DialogEntryComponent,
     // BooleanFilterComponent,
     // EntityFilterComponent,
+    // ClickStopPropagationDirective,
     FileUploadDialogComponent,
-    ClickStopPropagationDirective,
     DragAndDropDirective,
     MousedownStopPropagationDirective,
     ToggleDebugDirective,

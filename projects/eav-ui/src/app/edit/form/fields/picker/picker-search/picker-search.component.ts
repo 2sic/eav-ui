@@ -28,6 +28,7 @@ import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -54,7 +55,8 @@ const logEachItemChecks = false;
         AsyncPipe,
         TranslateModule,
         PickerIconHelpComponent,
-        PickerIconInfoComponent
+        PickerIconInfoComponent,
+        ClickStopPropagationDirective,
     ]
 })
 export class PickerSearchComponent extends BaseComponent implements OnInit, OnDestroy, Field {
