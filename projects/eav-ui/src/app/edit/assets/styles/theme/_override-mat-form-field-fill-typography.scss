@@ -49,6 +49,11 @@
 //   padding-top: 12px;
 // }
 
+.eav-mat-form-field{
+  width: 100%;
+}
+
+// TODO:: @2dg Remove Class after check new Style with Daniel
 .eav-form-field {
   width: 100%;
   // height: calc(86px - 1.4375em);
@@ -138,7 +143,7 @@
 .entity-dropdown-button {
   cursor: text;
 
-  //TODO @SDV check if this or equivalent class exists 
+  //TODO @SDV check if this or equivalent class exists
   &.mat-private-button-disabled {
     cursor: default;
   }
@@ -157,7 +162,7 @@
     background-color: $accent-color;
     color: white;
 
-    //TODO @SDV check if this or equivalent class exists 
+    //TODO @SDV check if this or equivalent class exists
     &.mat-private-button-disabled {
       background-color: $editUI-label-disabled-color;
     }
@@ -166,7 +171,7 @@
 
 .eav-selection-suffix-inline {
   min-width: 80px;
-  
+
   .mat-icon-button {
     top: 3px;
 

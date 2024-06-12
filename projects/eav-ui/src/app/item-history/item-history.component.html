@@ -10,7 +10,7 @@
       <p>Check version history for this item and restore the version you need.</p>
       @if (vm.historyItems?.length > 0) {
         <div class="eav-compare-box">
-          <mat-form-field color="accent" class="eav-form-field eav-compare-box__dropdown">
+          <mat-form-field color="accent" class="eav-mat-form-field eav-compare-box__dropdown">
             <mat-select [value]="vm.compareWith" name="Scope" (selectionChange)="compareChange($event.value)">
               <mat-option value="previous">Compare with: Previous</mat-option>
               <mat-option value="live">Compare with: Live</mat-option>

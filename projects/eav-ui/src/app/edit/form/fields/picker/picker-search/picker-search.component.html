@@ -1,9 +1,9 @@
 @if (viewModel$ | async; as vm) {
   <div>
-    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent"
+    <mat-form-field [formGroup]="group" class="eav-mat-form-field" color="accent"
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }"
       (click)="filterSelectionList()">
-      <input matInput #autocomplete class="eav-translate-on-dblclick" [placeholder]="getPlaceholder(vm.options, vm.error)" 
+      <input matInput #autocomplete class="eav-translate-on-dblclick" [placeholder]="getPlaceholder(vm.options, vm.error)"
         [matAutocomplete]="auto" [disabled]="vm.isDisabled || !vm.enableAddExisting"
         [value]="showSelectedItem ? vm.selectedItem?.label : ''" (focus)="fetchEntities()" (blur)="markAsTouched()"
         (input)="filterSelectionList()">

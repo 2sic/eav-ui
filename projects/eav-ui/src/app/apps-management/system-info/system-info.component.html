@@ -160,7 +160,7 @@
             url.
             It can only be activated for short periods of time.
           </div>
-          <mat-form-field color="accent" class="eav-form-field">
+          <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Duration in Minutes</mat-label>
             <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
               name="Duration" #duration="ngModel" [disabled]="vm.loading">

@@ -18,7 +18,7 @@
         @for (field of fields; track field; let i = $index) {
           <div class="eav-row-container">
             <div class="eav-edit-input">
-              <mat-form-field color="accent" class="eav-form-field">
+              <mat-form-field color="accent" class="eav-mat-form-field">
                 <mat-label>Name</mat-label>
                 <input matInput [pattern]="fieldNamePattern" [appReservedNames]="reservedNames" [(ngModel)]="field.StaticName"
                   [name]="'StaticName' + i" #staticName="ngModel" [disabled]="editMode === 'inputType'">
@@ -35,7 +35,7 @@
                 }
               </div>
               <div class="eav-edit-input">
-                <mat-form-field color="accent" class="eav-form-field">
+                <mat-form-field color="accent" class="eav-mat-form-field">
                   <mat-label>Data Type</mat-label>
                   <mat-select (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
                     [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
@@ -54,7 +54,7 @@
                 <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
               </div>
               <div class="eav-edit-input">
-                <mat-form-field color="accent" class="eav-form-field">
+                <mat-form-field color="accent" class="eav-mat-form-field">
                   <mat-label>Input Type</mat-label>
                   <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
                     [disabled]="editMode === 'name'">

@@ -10,7 +10,7 @@
       <!-- Simple form -->
       @if (!isSource || !pipelineResultExists) {
         <!-- Label -->
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Label</mat-label>
           <input matInput type="text" formControlName="label" required>
         </mat-form-field>
@@ -30,7 +30,7 @@
       @if (isSource && pipelineResultExists) {
         <!-- Scope -->
         @if (advancedMode && guidedLabel) {
-          <mat-form-field color="accent" class="eav-form-field">
+          <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Scope</mat-label>
             <mat-select formControlName="scope" [placeholder]="!scopeOptions.length ? 'No items found' : ''">
               @for (scopeOption of scopeOptions; track scopeOption) {
@@ -46,7 +46,7 @@
           </app-field-hint>
         }
         <!-- Label -->
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Label</mat-label>
           @if (guidedLabel) {
             <mat-select formControlName="label" required

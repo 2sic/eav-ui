@@ -1,5 +1,5 @@
 @if (viewModel | async; as vm) {
-  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
+  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
     <div class="icon-option">
       @if (vm.controlStatus.value) {
         <i class="icon-preview {{ vm.previewCss }} {{ vm.controlStatus.value }}"></i>

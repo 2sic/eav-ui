@@ -33,12 +33,6 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
   declarations: [
-    // AG Grid Components - started creation by 2dm to be more generic / less code 2023-06-19
-    // TODO:: @2dg Remove after Test
-    // DialogEntryComponent,
-    // BooleanFilterComponent,
-    // EntityFilterComponent,
-
     FileUploadDialogComponent, // TODO:: Open
     AgBoolIconRenderer,
     // ClickStopPropagationDirective,
