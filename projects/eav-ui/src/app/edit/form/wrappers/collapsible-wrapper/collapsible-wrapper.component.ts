@@ -79,8 +79,13 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
       })
     );
 
+    // On language change, re-check the initial collapsed state in that language
     this.subscriptions.add(
-      this.languageStore.getLanguage$(this.formConfig.config.formId).subscribe(() => {
+      this.languageStore.getLanguage$(this.formConfig.config.formId).pipe(
+        map(l => l.current),
+        distinctUntilChanged(),
+      )
+      .subscribe(() => {
         const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
         this.collapsed$.next(settingsSnapshot.Collapsed);
       })
