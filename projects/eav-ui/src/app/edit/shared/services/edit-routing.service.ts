@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../../shared/models/edit-form.model';
 import { EditEntryComponent } from '../../dialog/entry/edit-entry.component';
@@ -14,7 +14,7 @@ import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
-export class EditRoutingService extends BaseSubsinkComponent implements OnDestroy {
+export class EditRoutingService extends BaseComponent implements OnDestroy {
   private childFormResult$: Subject<ChildFormResult>;
 
   constructor(

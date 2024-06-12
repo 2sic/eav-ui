@@ -8,7 +8,7 @@ import { PredefinedTemplate } from '../code-editor/models/predefined-template.mo
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 import { SanitizeHelper } from '../edit/shared/helpers';
-import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../shared/components/base.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -40,7 +40,7 @@ import { FieldHintComponent } from '../shared/components/field-hint/field-hint.c
   ],
   providers: [SourceService],
 })
-export class CreateFileDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;

@@ -1,20 +1,19 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FormulaEngine } from '../../../formulas/formula-engine';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
-import { FieldProps, FormValues, SxcAbstractControl } from '../../../shared/models';
+import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { AdamCacheService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
 import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
-import { FieldValue } from 'projects/edit-types';
 import { FieldLogicWithValueInit } from '../../shared/field-logic/field-logic-with-init';
 import { FieldLogicManager } from '../../shared/field-logic/field-logic-manager';
 import { EntityWrapperComponent } from '../entity-wrapper/entity-wrapper.component';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 @Component({
     selector: 'app-form-builder',
@@ -28,7 +27,7 @@ import { EntityWrapperComponent } from '../entity-wrapper/entity-wrapper.compone
         EntityWrapperComponent,
     ],
 })
-export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class FormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   form: UntypedFormGroup;

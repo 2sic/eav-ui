@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { BehaviorSubject, Observable, combineLatest, map, take } from 'rxjs';
 import { Field } from '../models/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -36,7 +36,7 @@ import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indic
       FeatureIconIndicatorComponent
     ]
 })
-export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];
   title: string;
   message: string;

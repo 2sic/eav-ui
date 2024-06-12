@@ -9,7 +9,7 @@ import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, o
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
 import { GeneralHelpers } from '../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
-import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../shared/components/base.component';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
@@ -47,7 +47,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
         AsyncPipe,
     ],
 })
-export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
   Explorers = Explorers;

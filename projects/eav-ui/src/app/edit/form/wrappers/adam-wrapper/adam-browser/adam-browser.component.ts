@@ -5,7 +5,6 @@ import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith, Subscription } from 'rxjs';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
@@ -23,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -47,7 +47,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
     standalone: true,
     imports: [NgClass, ExtendedModule, SharedComponentsModule, MatIconModule, PasteClipboardImageDirective, MatBadgeModule, AsyncPipe, TranslateModule]
 })
-export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
   @Output() openUpload = new EventEmitter<null>();

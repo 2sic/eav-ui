@@ -5,7 +5,6 @@ import { EditRoutingService, FieldsSettingsService } from '../../../../shared/se
 import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerData } from '../picker-data';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,6 +20,7 @@ import { PickerTextToggleComponent } from '../picker-text-toggle/picker-text-tog
 import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 const logThis = false;
 
@@ -44,7 +44,7 @@ const logThis = false;
         TranslateModule,
     ],
 })
-export class PickerPreviewComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
+export class PickerPreviewComponent extends BaseComponent implements OnInit, OnDestroy, Field {
   @Input() pickerData: PickerData;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

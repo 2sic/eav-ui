@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, N
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
-import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../base.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
 import { AppInstallSettingsService } from '../../services/getting-started.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -27,7 +27,7 @@ import { SafeHtmlPipeStandAlone } from '../../pipes/safe-htmlStandAlone.pipe';
   //   AsyncPipe,
   // ]
 })
-export class FileUploadDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   @Input() uploadType: UploadTypes;

@@ -1,7 +1,7 @@
 import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, tap } from 'rxjs';
-import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../base.component';
 import { EavLogger } from '../../logging/eav-logger';
 
 const logThis = false;
@@ -16,7 +16,7 @@ const logThis = false;
 // })
 // ...but then added abstract, so I think it doesn't actually need all that
 // tslint:disable-next-line:directive-class-suffix
-export abstract class BaseWithChildDialogComponent extends BaseSubsinkComponent implements OnDestroy {
+export abstract class BaseWithChildDialogComponent extends BaseComponent implements OnDestroy {
 
   constructor(
     protected router: Router,

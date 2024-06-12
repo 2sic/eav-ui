@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
@@ -17,6 +16,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 const logThis = true;
 
@@ -36,7 +36,7 @@ const logThis = true;
         AsyncPipe,
     ],
 })
-export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements FieldWrapper, OnInit, OnDestroy {
+export class CollapsibleWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;

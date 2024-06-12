@@ -4,7 +4,6 @@ import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialo
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
@@ -27,7 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../../shared/services/form-data.service';
-import { defaultFormulaNow } from '../../../formulas/formula.constants';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 @Component({
     selector: 'app-entity-wrapper',
@@ -50,7 +49,7 @@ import { defaultFormulaNow } from '../../../formulas/formula.constants';
         TranslateModule,
     ],
 })
-export class EntityWrapperComponent extends BaseSubsinkComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class EntityWrapperComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 

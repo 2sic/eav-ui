@@ -7,7 +7,7 @@ import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, shar
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeStrict, InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
@@ -51,7 +51,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
         FieldHintComponent,
     ],
 })
-export class EditContentTypeFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 

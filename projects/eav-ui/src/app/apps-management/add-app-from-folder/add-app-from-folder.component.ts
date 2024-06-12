@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
 import { FeaturesService } from '../../shared/services/features.service';
@@ -37,7 +37,7 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
         FeaturesService,
     ]
 })
-export class AddAppFromFolderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();

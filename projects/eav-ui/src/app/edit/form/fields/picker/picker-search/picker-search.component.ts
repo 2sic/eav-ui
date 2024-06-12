@@ -10,7 +10,6 @@ import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { PickerSearchViewModel } from './picker-search.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
@@ -28,6 +27,7 @@ import { messagePickerItem } from '../adapters/data-adapter-base';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -57,7 +57,7 @@ const logEachItemChecks = false;
         PickerIconInfoComponent
     ]
 })
-export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
+export class PickerSearchComponent extends BaseComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() pickerData: PickerData;

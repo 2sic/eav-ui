@@ -6,7 +6,6 @@ import { FieldsSettingsService } from '../../../../shared/services';
 import { EntityPickerDialogViewModel } from './picker-dialog.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { PickerData } from '../picker-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -19,6 +18,7 @@ import { FieldHelperTextComponent } from '../../../shared/field-helper-text/fiel
 import { PickerTextComponent } from '../picker-text/picker-text.component';
 import { PickerSearchComponent } from '../picker-search/picker-search.component';
 import { PickerListComponent } from '../picker-list/picker-list.component';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 @Component({
     selector: 'app-picker-dialog',
@@ -39,7 +39,7 @@ import { PickerListComponent } from '../picker-list/picker-list.component';
         TranslateModule,
     ],
 })
-export class PickerDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
+export class PickerDialogComponent extends BaseComponent implements OnInit, OnDestroy, Field {
   @Input() pickerData: PickerData;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

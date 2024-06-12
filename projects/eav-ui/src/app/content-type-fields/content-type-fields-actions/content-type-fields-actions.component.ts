@@ -5,7 +5,7 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { Field } from '../models/field.model';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +25,7 @@ import { MatRippleModule } from '@angular/material/core';
         MatMenuModule,
     ],
 })
-export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent implements ICellRendererAngularComp, OnDestroy {
+export class ContentTypeFieldsActionsComponent extends BaseComponent implements ICellRendererAngularComp, OnDestroy {
   field: Field;
   metadataCount: number;
   enablePermissions: boolean;

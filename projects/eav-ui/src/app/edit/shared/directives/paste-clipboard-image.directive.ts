@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, distinctUntilChanged, pipe, Subscription } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
@@ -15,7 +15,7 @@ import { ElementEventListener, PasteClipboardImageEventDetail } from '../models'
     selector: '[appPasteClipboardImage]',
     standalone: true
 })
-export class PasteClipboardImageDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class PasteClipboardImageDirective extends BaseComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];

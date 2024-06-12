@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Obser
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { GeneralHelpers } from '../../edit/shared/helpers';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
@@ -47,7 +47,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
       FieldHintComponent,
     ]
 })
-export class CreateMetadataDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   eavConstants = eavConstants;

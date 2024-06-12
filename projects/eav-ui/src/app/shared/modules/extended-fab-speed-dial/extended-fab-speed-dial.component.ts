@@ -1,7 +1,7 @@
 // tslint:disable-next-line:max-line-length
 import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith, Subscription } from 'rxjs';
-import { BaseSubsinkComponent } from '../../components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../components/base.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
@@ -13,7 +13,7 @@ import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-spee
   styleUrls: ['./extended-fab-speed-dial.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ExtendedFabSpeedDialComponent extends BaseSubsinkComponent implements AfterContentInit, OnDestroy {
+export class ExtendedFabSpeedDialComponent extends BaseComponent implements AfterContentInit, OnDestroy {
   @ContentChild(ExtendedFabSpeedDialTriggerContentDirective) trigger: ExtendedFabSpeedDialTriggerContentDirective;
   @ContentChild(ExtendedFabSpeedDialActionsContentDirective) actions: ExtendedFabSpeedDialActionsContentDirective;
   @ContentChildren(ExtendedFabSpeedDialActionDirective, { read: ElementRef }) actionButtons: QueryList<ElementRef<HTMLButtonElement>>;

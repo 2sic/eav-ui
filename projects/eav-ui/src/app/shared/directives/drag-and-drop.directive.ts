@@ -1,10 +1,10 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent, Subscription } from 'rxjs';
-import { BaseSubsinkComponent } from '../components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../components/base.component';
 
 @Directive({ selector: '[appDragAndDrop]' })
-export class DragAndDropDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class DragAndDropDirective extends BaseComponent implements OnInit, OnDestroy {
   @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
   /** Comma separated file types, e.g. 'txt,doc,docx' */
   @Input() allowedFileTypes = '';
