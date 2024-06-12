@@ -40,7 +40,7 @@ export class DataSourceEntity extends DataSourceBase {
       typeNameLog.shareReplay(),
     );
 
-    const fieldMask = this.getMaskHelper(true);
+    const fieldMask = this.getMaskHelper();
 
     // All the data which was retrieved from the server
     // Note that the backend should not be accessed till getAll$ is true
