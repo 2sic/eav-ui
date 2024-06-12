@@ -11,7 +11,7 @@
         App you expect, make sure that has happened.
       </p>
       <form [formGroup]="form">
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Inherit App</mat-label>
           <mat-select formControlName="inheritId"
             [placeholder]="vm.inheritableApps === undefined ? 'Loading...' : vm.inheritableApps === null || vm.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">

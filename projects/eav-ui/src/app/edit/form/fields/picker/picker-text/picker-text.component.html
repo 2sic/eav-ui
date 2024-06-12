@@ -1,6 +1,6 @@
 @if (viewModel$ | async; as vm) {
   <div fxLayout="row" fxLayoutAlign="start end">
-    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
+    <mat-form-field [formGroup]="group" class="eav-mat-form-field" color="accent">
       @if (vm.isSeparatorNewLine) {
         <textarea matInput [required]="vm.required" [formControlName]="config.fieldName"
           [placeholder]="vm.placeholder"></textarea>

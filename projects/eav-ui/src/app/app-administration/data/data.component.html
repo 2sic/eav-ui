@@ -5,7 +5,7 @@
     </ag-grid-angular>
     <mat-dialog-actions class="eav-dialog-actions">
       <div class="eav-dialog-actions-div">
-        <mat-form-field color="accent" class="eav-form-field eav-scope-dropdown">
+        <mat-form-field color="accent" class="eav-mat-form-field eav-scope-dropdown">
           <mat-select [ngModel]="vm.scope" name="Scope" (ngModelChange)="changeScope($event)">
             @for (scopeOption of (vm.scopeOptions); track scopeOption) {
               <mat-option [value]="scopeOption.name">
