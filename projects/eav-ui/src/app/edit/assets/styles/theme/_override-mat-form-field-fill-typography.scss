@@ -49,96 +49,112 @@
 //   padding-top: 12px;
 // }
 
-.eav-mat-form-field{
+.eav-mat-form-field {
   width: 100%;
-}
 
-// TODO:: @2dg Remove Class after check new Style with Daniel
-.eav-form-field {
-  width: 100%;
-  // height: calc(86px - 1.4375em);
-
-  // .mat-mdc-form-field-infix {
-  //   padding-bottom: 0px !important;
-  // }
-  .eav-translate-on-dblclick:disabled {
-    pointer-events: none
-  }
-
-  // Used so form-field doesn't have background color
-  .mat-mdc-text-field-wrapper,
-  .mat-mdc-form-field-subscript-wrapper {
-    background-color: transparent !important;
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-
-  // Used so form-field doesn't have background color on hover and focus
+  // Manipulate initial background color
   .mdc-text-field--filled:not(.mdc-text-field--disabled) {
     background-color: transparent !important;
   }
 
-  // Used so form-field doesn't have background color on hover and focus
+  // Manipulate background color on hover and focus
   .mat-mdc-form-field-focus-overlay {
     background-color: transparent !important;
   }
 
-  .mat-mdc-form-field-flex {
-    // padding-left: 8px;
-
-    .mat-mdc-form-field-infix {
-      min-height: 44px;
-      // padding-bottom: 0px !important;
-    }
-
-    .mat-mdc-form-field-icon-prefix,
-    .mat-mdc-form-field-icon-suffix {
-      align-self: baseline;
-    }
-  }
-
-  .mat-form-field-suffix {
-    .mat-icon-button {
-      top: 6px;
-      width: 30px !important;
-      height: 30px !important;
-      line-height: 30px;
-    }
-
-    .entity-dropdown-button {
-      cursor: text;
-
-      &.mat-button-disabled {
-        cursor: default;
-      }
-    }
-
-    .selection-suffix {
-      display: flex;
-
-      .mat-icon-button {
-        top: 0;
-
-        .mat-icon {
-          font-size: 18px;
-        }
-      }
-
-      .active {
-        background-color: $accent-color;
-        color: white;
-
-        &.mat-button-disabled {
-          background-color: $editUI-label-disabled-color;
-        }
-      }
-    }
-  }
-
-  .mat-mdc-icon-button {
-    background-color: transparent;
+  // Manipulate textfield padding
+  .mdc-text-field {
+    padding: 0px 6px !important;
   }
 }
+
+// TODO:: @2dg Remove Class after check new Style with Daniel and test all fields
+// .eav-form-field {
+//   width: 100%;
+//   // height: calc(86px - 1.4375em);
+
+//   // .mat-mdc-form-field-infix {
+//   //   padding-bottom: 0px !important;
+//   // }
+//   .eav-translate-on-dblclick:disabled {
+//     pointer-events: none;
+//   }
+
+//   // Used so form-field doesn't have background color
+//   .mat-mdc-text-field-wrapper,
+//   .mat-mdc-form-field-subscript-wrapper {
+//     background-color: transparent !important;
+//     padding-left: 0px;
+//     padding-right: 0px;
+//   }
+
+//   // Used so form-field doesn't have background color on hover and focus
+//   .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+//     background-color: transparent !important;
+//   }
+
+//   // Used so form-field doesn't have background color on hover and focus
+//   .mat-mdc-form-field-focus-overlay {
+//     background-color: transparent !important;
+//   }
+
+//   .mat-mdc-form-field-flex {
+//     // padding-left: 8px;
+
+//     .mat-mdc-form-field-infix {
+//       min-height: 44px;
+//       // padding-bottom: 0px !important;
+//     }
+
+//     .mat-mdc-form-field-icon-prefix,
+//     .mat-mdc-form-field-icon-suffix {
+//       align-self: baseline;
+//     }
+//   }
+
+//   .mat-form-field-suffix {
+//     .mat-icon-button {
+//       top: 6px;
+//       width: 30px !important;
+//       height: 30px !important;
+//       line-height: 30px;
+//     }
+
+//     .entity-dropdown-button {
+//       cursor: text;
+
+//       &.mat-button-disabled {
+//         cursor: default;
+//       }
+//     }
+
+//     .selection-suffix {
+//       display: flex;
+
+//       .mat-icon-button {
+//         top: 0;
+
+//         .mat-icon {
+//           font-size: 18px;
+//         }
+//       }
+
+//       .active {
+//         background-color: $accent-color;
+//         color: white;
+
+//         &.mat-button-disabled {
+//           background-color: $editUI-label-disabled-color;
+//         }
+//       }
+//     }
+//   }
+
+//   .mat-mdc-icon-button {
+//     background-color: transparent;
+//   }
+// }
+// TODO:: End
 
 .entity-dropdown-button {
   cursor: text;
@@ -154,7 +170,7 @@
   display: flex;
 
   .eav-selection-suffix-button {
-    scale: calc(4/5);
+    scale: calc(4 / 5);
     margin: 0px -4px;
   }
 
@@ -190,7 +206,6 @@
     }
   }
 }
-
 
 // TODO: @SDV Find out why this works here, but not from picker-search.component.scss
 .eav-picker-option.mat-mdc-option .mdc-list-item__primary-text {
