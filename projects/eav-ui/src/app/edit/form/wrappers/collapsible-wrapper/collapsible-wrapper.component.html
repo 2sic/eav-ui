@@ -3,7 +3,7 @@
   <div fxLayout="row" fxLayoutAlign="start center" class="eav-card-header-group-child">
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="eav-card-title-group mat-body-2">
-        <mat-icon class="title-arrow">{{ collapsedSig() ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+        <mat-icon class="title-arrow">{{ collapsed() ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
           {{ label() || config.fieldName }}
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <mat-card-content class="eav-card-content-group-child" [style.display]="collapsedSig() ? 'none' : 'block'">
+  <mat-card-content class="eav-card-content-group-child" [style.display]="collapsed() ? 'none' : 'block'">
     <div class="eav-layout-grid">
       <div class="eav-layout-grid__inner">
         @if (notes(); as note) {

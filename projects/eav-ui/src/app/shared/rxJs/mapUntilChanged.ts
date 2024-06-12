@@ -13,7 +13,18 @@ export function mapUntilChanged<T, R>(
     fn: (state: T) => R
 ): UnaryFunction<Observable<T>, Observable<R>> {
     return pipe(
-        map(fn),
-        distinctUntilChanged(),
-    );
+      distinctUntilChanged(),
+      map(fn),
+      distinctUntilChanged(),
+  );
 }
+
+// export function mapUntilObjChanged<T, R>(
+//   fn: (state: T) => R
+// ): UnaryFunction<Observable<T>, Observable<R>> {
+//   return pipe(
+//     distinctUntilChanged(),
+//     map(fn),
+//     distinctUntilChanged(GeneralHelpers.objectsEqual),
+// );
+// }
