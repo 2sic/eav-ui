@@ -2,20 +2,20 @@ import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged, pipe, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
-import { BaseComponent } from '../../../shared/components/base.component';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
+import { BaseDirective } from '../../../shared/directives/base.directive';
 
 @Directive({
-    selector: '[appPasteClipboardImage]',
-    standalone: true
+  selector: '[appPasteClipboardImage]',
+  standalone: true
 })
-export class PasteClipboardImageDirective extends BaseComponent implements OnInit, OnDestroy {
+export class PasteClipboardImageDirective extends BaseDirective implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
@@ -31,7 +31,7 @@ export class PasteClipboardImageDirective extends BaseComponent implements OnIni
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
     this.subscriptions.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)

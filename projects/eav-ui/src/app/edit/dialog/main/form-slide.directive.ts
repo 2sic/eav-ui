@@ -1,14 +1,14 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { delay, filter, fromEvent, map, merge, pairwise, Subscription } from 'rxjs';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
 import { FormConfigService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
+import { BaseDirective } from '../../../shared/directives/base.directive';
 
 @Directive({
     selector: '[appFormSlide]',
     standalone: true
 })
-export class FormSlideDirective extends BaseComponent implements OnInit, OnDestroy {
+export class FormSlideDirective extends BaseDirective implements OnInit, OnDestroy {
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
