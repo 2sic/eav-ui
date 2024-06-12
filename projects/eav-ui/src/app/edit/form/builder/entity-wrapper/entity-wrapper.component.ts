@@ -8,7 +8,7 @@ import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/feature
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
-import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
+import { LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavItem } from '../../../shared/models/eav';
 import { FormConfigService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -27,6 +27,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../../shared/services/form-data.service';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: 'app-entity-wrapper',
@@ -103,7 +104,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
         EditInstructions: settings.EditInstructions,
         Features: settings.Features,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
     const note$ = this.itemService.getItemNote$(this.entityGuid);
     const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(

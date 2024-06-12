@@ -5,7 +5,7 @@ import { SourceService } from '../../../../../code-editor/services/source.servic
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../create-file-dialog';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
+import { FieldMask } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -21,6 +21,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
     selector: InputTypeConstants.StringTemplatePicker,
@@ -130,7 +131,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     this.templateOptions$.next(filtered);
     const resetValue = this.resetIfNotFound && !filtered.some(template => template === this.control.value);
     if (resetValue) {
-      GeneralHelpers.patchControlValue(this.control, '');
+      ControlHelpers.patchControlValue(this.control, '');
     }
   }
 
@@ -159,7 +160,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
         } else {
           this.templates.push(result.name);
           this.setTemplateOptions();
-          GeneralHelpers.patchControlValue(this.control, result.name);
+          ControlHelpers.patchControlValue(this.control, result.name);
         }
       });
     });

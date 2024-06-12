@@ -1,11 +1,11 @@
 import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
-import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const logChildren = false;
@@ -104,9 +104,9 @@ export class DataSourceEntity extends DataSourceBase {
     const logGuidsToForceLoad = this.log.rxTap('guidsToForceLoad$', { enabled: true });
     const guidsToForceLoad$ = combineLatest([prefetchNotFoundGuids$, this.guidsToRefresh$]).pipe(
       logGuidsToForceLoad.pipe(),
-      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(GeneralHelpers.distinct)),
+      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(RxHelpers.distinct)),
       filter(guids => guids?.length > 0),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      distinctUntilChanged(RxHelpers.arraysEqual),
       logGuidsToForceLoad.distinctUntilChanged(),
     );
 

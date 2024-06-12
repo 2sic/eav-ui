@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { EntityPickerDialogViewModel } from './picker-dialog.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
@@ -19,6 +18,7 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
 import { PickerSearchComponent } from '../picker-search/picker-search.component';
 import { PickerListComponent } from '../picker-list/picker-list.component';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: 'app-picker-dialog',
@@ -68,7 +68,7 @@ export class PickerDialogComponent extends BaseComponent implements OnInit, OnDe
         EnableCreate: settings.EnableCreate,
         CreateTypes: settings.CreateTypes,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([

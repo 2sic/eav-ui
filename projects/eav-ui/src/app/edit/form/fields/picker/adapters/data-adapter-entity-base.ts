@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
-import { FieldMask, GeneralHelpers } from "../../../../shared/helpers";
+import { FieldMask } from "../../../../shared/helpers";
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -15,6 +15,7 @@ import { StateAdapter } from './state-adapter';
 import { PickerComponent } from '../picker.component';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
   private createEntityTypes: string = '';
@@ -87,7 +88,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
           EntityType: settings.EntityType,
           CreateEntityTypes: settings.CreateTypes,
         })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ).subscribe(settings => {
         this.createEntityTypes = settings.CreateEntityTypes;
         this.log.a('about to create contentTypeMask');

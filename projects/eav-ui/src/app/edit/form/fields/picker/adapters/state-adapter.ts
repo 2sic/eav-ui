@@ -1,6 +1,5 @@
 import { PickerItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
@@ -14,6 +13,8 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Optional } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const dumpSelected = true;
@@ -124,7 +125,7 @@ export class StateAdapter extends ServiceBase {
           Separator: settings.Separator,
           Options: settings._options,
         })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ),
     ]).pipe(
       logSelected.start(),
@@ -200,7 +201,7 @@ export class StateAdapter extends ServiceBase {
     }
 
     const newValue = this.createNewValue(valueArray);
-    GeneralHelpers.patchControlValue(this.control, newValue);
+    ControlHelpers.patchControlValue(this.control, newValue);
 
     if (action === 'delete' && !valueArray.length) {
       // move back to component

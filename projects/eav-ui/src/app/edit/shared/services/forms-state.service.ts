@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
-import { GeneralHelpers } from '../helpers';
 import { FormReadOnly } from '../models';
 import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
@@ -66,7 +66,7 @@ export class FormsStateService implements OnDestroy {
           isReadOnly: itemsReadOnly || !languageAllowed,
           reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
         };
-        if (!GeneralHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
+        if (!RxHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
           this.readOnly$.next(readOnly);
         }
       })

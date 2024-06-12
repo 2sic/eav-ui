@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -17,6 +16,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: InputTypeConstants.StringFontIconPicker,
@@ -59,7 +59,7 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
           CssPrefix: settings.CssPrefix,
           ShowPrefix: settings.ShowPrefix,
         })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ).subscribe(settings => {
         // load each file (usually CSS) in the settings
         this.scriptsLoaderService.load(settings.Files.split('\n'), () => {

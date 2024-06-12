@@ -8,7 +8,7 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
-import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
+import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: WrappersConstants.ExpandableWrapper,
@@ -113,7 +114,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
         }
         return previewHeight;
       }),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([

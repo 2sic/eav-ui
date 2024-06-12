@@ -1,8 +1,7 @@
 // tslint:disable-next-line:max-line-length
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
-import { GeneralHelpers } from '../../edit/shared/helpers';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
@@ -15,6 +14,8 @@ import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -66,8 +67,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     );
 
     const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
-      map(pipelineModel => GeneralHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      map(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([

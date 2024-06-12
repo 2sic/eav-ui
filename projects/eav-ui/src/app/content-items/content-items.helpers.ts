@@ -1,10 +1,10 @@
 import { ColDef, NumberFilterModel, TextFilterModel } from '@ag-grid-community/core';
-import { GeneralHelpers } from '../edit/shared/helpers';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { EntityFilterModel } from '../shared/components/entity-filter/entity-filter.model';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { PubMetaFilterModel } from './pub-meta-filter/pub-meta-filter.model';
+import { JsonHelpers } from '../shared/helpers/json.helpers';
 
 export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
   if (!urlFilters) { return; }
@@ -40,7 +40,7 @@ export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
     .forEach(([key, value]) => {
       const columnDef = columnDefs.find(c => c.headerName === key);
       if (columnDef?.filter === EntityFilterComponent) {
-        value = GeneralHelpers.tryParse(value) ?? value;
+        value = JsonHelpers.tryParse(value) ?? value;
         const filter: EntityFilterModel = {
           filterType: 'entity',
           filter: typeof value === 'string' ? value : undefined,

@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { QueryDefinitionService } from './query-definition.service';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
@@ -20,6 +19,7 @@ import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
 
 @Injectable()
 export class VisualQueryService extends BaseWithChildDialogComponent implements OnDestroy {
@@ -92,7 +92,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
 
   showDataSourceDetails(showDetails: boolean) {
     const pipelineModel = cloneDeep(this.pipelineModel$.value);
-    const visualDesignerData: Record<string, any> = GeneralHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
+    const visualDesignerData: Record<string, any> = JsonHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
     visualDesignerData.ShowDataSourceDetails = showDetails;
     pipelineModel.Pipeline.VisualDesignerData = JSON.stringify(visualDesignerData);
     this.pipelineModel$.next(pipelineModel);

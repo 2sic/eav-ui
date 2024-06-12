@@ -3,9 +3,9 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { FieldSettings, PickerItem, RelationshipParentChild } from 'projects/edit-types';
 import { Observable, combineLatest, distinctUntilChanged, map, shareReplay } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
@@ -30,12 +30,12 @@ export class PickerTreeDataService extends ServiceBase {
           displayMode: settings.PickerDisplayMode,
           isTree: settings.PickerDisplayMode === 'tree',
         })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ),
       // this is handled separately, so change-detection is property based, not object-reference based
       fieldSettings$.pipe(
         map(settings => settings.PickerTreeConfiguration),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ),
     ]).pipe(
       logTreeSettings.pipe(),
@@ -67,7 +67,7 @@ export class PickerTreeDataService extends ServiceBase {
         // return allItems.map(itm => this.treeHelper.preConvertItemToTreeItem(settings.pickerTreeConfig, itm, allItems));   
       }),
       treeDataLog.map(),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      distinctUntilChanged(RxHelpers.arraysEqual),
       shareReplay(1),
       treeDataLog.shareReplay(),
     );

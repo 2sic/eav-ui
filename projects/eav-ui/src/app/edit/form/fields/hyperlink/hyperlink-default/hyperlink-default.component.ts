@@ -4,7 +4,6 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -23,6 +22,8 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: InputTypeConstants.HyperlinkDefault,
@@ -99,7 +100,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
         ShowFileManager: settings.ShowFileManager,
         EnableImageConfiguration: settings.EnableImageConfiguration,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual)
+      distinctUntilChanged(RxHelpers.objectsEqual)
     );
 
     const adamItem$ = combineLatest([this.controlStatus$, this.config.adam.items$]).pipe(
@@ -161,7 +162,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
           Paths: settings.Paths,
           FileFilter: settings.FileFilter,
         })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ).subscribe(settings => {
         this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
         this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
@@ -177,6 +178,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   private setValue(item: AdamItem) {
     const usePath = this.settings$.value.ServerResourceMapping === 'url';
     const newValue = !usePath ? item.ReferenceId : item.Url;
-    GeneralHelpers.patchControlValue(this.control, newValue);
+    ControlHelpers.patchControlValue(this.control, newValue);
   }
 }

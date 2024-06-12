@@ -5,7 +5,6 @@ import { EditRoutingService, FieldsSettingsService } from '../../../../shared/se
 import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerData } from '../picker-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -21,6 +20,7 @@ import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
@@ -75,7 +75,7 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
         EnableCreate: settings.EnableCreate,
         CreateTypes: settings.CreateTypes,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([

@@ -1,7 +1,6 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
@@ -15,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: 'app-picker-list',
@@ -60,7 +60,7 @@ export class PickerListComponent implements OnInit {
         enableDelete: settings.EnableDelete,
         enableRemove: settings.EnableRemove,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
       settings$, label$, required$, controlStatus$, selectedItems$

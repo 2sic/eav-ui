@@ -3,7 +3,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
-import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -12,6 +11,7 @@ import { Injectable } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -172,7 +172,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
             Query: settings.Query,
             StreamName: settings.StreamName,
           })),
-          distinctUntilChanged(GeneralHelpers.objectsEqual),
+          distinctUntilChanged(RxHelpers.objectsEqual),
         ).subscribe(() => {
           this.optionsOrHints$.next(null);
         })
@@ -184,7 +184,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
             value: settings.Value,
             label: settings.Label,
           })),
-          distinctUntilChanged(GeneralHelpers.objectsEqual),
+          distinctUntilChanged(RxHelpers.objectsEqual),
         ).subscribe(() => {
           this.optionsOrHints$.next(null);
         })

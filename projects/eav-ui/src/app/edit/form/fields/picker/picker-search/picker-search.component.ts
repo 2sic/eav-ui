@@ -4,7 +4,6 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/ma
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, take } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { PickerSearchViewModel } from './picker-search.models';
@@ -29,6 +28,8 @@ import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.co
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -130,7 +131,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     const fieldSettings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName)
       .pipe(
         logFs.pipe(),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
         logFs.distinctUntilChanged(),
         shareReplay(1),
         logFs.shareReplay(),
@@ -149,7 +150,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
         enableReselect: settings.EnableReselect,
         showAsTree: settings.PickerDisplayMode === 'tree',
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
       logSets.distinctUntilChanged(),
     );
 
@@ -256,7 +257,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
 
   markAsTouched(): void {
     const control = this.group.controls[this.config.fieldName];
-    GeneralHelpers.markControlTouched(control);
+    ControlHelpers.markControlTouched(control);
   }
 
   fetchEntities(): void {

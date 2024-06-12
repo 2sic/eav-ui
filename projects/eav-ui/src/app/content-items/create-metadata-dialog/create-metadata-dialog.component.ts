@@ -2,10 +2,9 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { BaseComponent } from '../../shared/components/base.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
@@ -24,6 +23,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 
 @Component({
     selector: 'app-create-metadata-dialog',
@@ -163,7 +164,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     const formValues$ = this.form.valueChanges.pipe(
       startWith(this.form.getRawValue() as MetadataFormValues),
       map(() => this.form.getRawValue() as MetadataFormValues),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.subscriptions.add(
@@ -171,7 +172,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
         // keyTypeOptions depend on targetType and advanced
         const foundTargetType = this.targetTypeOptions.find(option => option.targetType === formValues.targetType);
         const keyTypeOptions = guidedMode && foundTargetType ? [foundTargetType.keyType] : [...this.keyTypeOptions];
-        if (!GeneralHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
+        if (!RxHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
           this.keyTypeOptions$.next(keyTypeOptions);
         }
 
@@ -192,8 +193,8 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
         }
 
         const keyTypeDisabled = guidedMode && this.keyTypeOptions$.value.length <= 1;
-        GeneralHelpers.disableControl(this.form.controls['keyType'], keyTypeDisabled);
-        GeneralHelpers.disableControl(this.form.controls['key'], isAppMetadata);
+        ControlHelpers.disableControl(this.form.controls['keyType'], keyTypeDisabled);
+        ControlHelpers.disableControl(this.form.controls['key'], isAppMetadata);
       })
     );
 

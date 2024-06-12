@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { EmptyMessageViewModel } from './empty-message.models';
@@ -9,6 +8,7 @@ import { ItemFieldVisibility } from '../../../../shared/services/item-field-visi
 import { AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
   selector: InputTypeConstants.EmptyMessage,
@@ -31,7 +31,7 @@ export class EmptyMessageComponent implements OnInit {
         Notes: settings.Notes,
         Visible: ItemFieldVisibility.mergedVisible(settings),
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
     this.viewModel = combineLatest([settings$]).pipe(
       map(([settings]) => {

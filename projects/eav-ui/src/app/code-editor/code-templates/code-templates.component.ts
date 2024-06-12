@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { ViewKey } from '../code-editor.models';
 import { FileAsset } from '../models/file-asset.model';
 import { SourceView } from '../models/source-view.model';
@@ -14,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { NgTemplateOutlet, NgClass } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 
 @Component({
   selector: 'app-code-templates',
@@ -70,7 +70,7 @@ export class CodeTemplatesComponent implements OnChanges {
 
   toggleItem(path: string, isShared: boolean): void {
     const toggledItems = isShared ? this.toggledItemsShared : this.toggledItemsApp;
-    GeneralHelpers.toggleInArray(path, toggledItems);
+    ArrayHelpers.toggleInArray(path, toggledItems);
   }
 
   addFile(folder?: string, isShared?: boolean): void {

@@ -2,10 +2,10 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { GeneralHelpers } from '../../../../edit/shared/helpers';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
+import { JsonHelpers } from 'projects/eav-ui/src/app/shared/helpers/json.helpers';
 
 @Component({
     selector: 'app-analyze-settings-value',
@@ -28,7 +28,7 @@ export class AnalyzeSettingsValueComponent implements ICellRendererAngularComp {
   }
 
   copy(text: string) {
-    text = GeneralHelpers.tryParse(text) ?? text;
+    text = JsonHelpers.tryParse(text) ?? text;
     copyToClipboard(text);
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }

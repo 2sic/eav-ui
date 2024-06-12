@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/materi
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FieldValue, PagePickerResult } from '../../../../../../../edit-types';
-import { GeneralHelpers } from '../../../shared/helpers';
 import { QueryService } from '../../../shared/services';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
 import { PageEntity, PagePickerDialogData, PagePickerViewModel, PageSearchItem, PageTreeItem } from './page-picker.models';
@@ -14,6 +13,7 @@ import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ArrayHelpers } from '../../../../shared/helpers/array.helpers';
 
 @Component({
     selector: 'app-page-picker',
@@ -97,7 +97,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   }
 
   toggle(pageId: number): void {
-    GeneralHelpers.toggleInArray(pageId, this.toggled);
+    ArrayHelpers.toggleInArray(pageId, this.toggled);
   }
 
   private closeDialog(pageId?: number): void {

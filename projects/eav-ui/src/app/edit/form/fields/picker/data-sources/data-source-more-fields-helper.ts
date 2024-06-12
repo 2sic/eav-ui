@@ -1,5 +1,5 @@
 import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
-import { GeneralHelpers } from '../../../../shared/helpers/general.helpers';
+import { RxHelpers } from '../../../../../shared/rxJs/rx.helpers';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
@@ -34,7 +34,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
 
     // in the end, we should deduplicate the fields
     const allFields = [...combinedFields, ...stringFields]
-      .filter(GeneralHelpers.distinct);
+      .filter(RxHelpers.distinct);
 
     // merging into one long string
     return allFields.join(',');

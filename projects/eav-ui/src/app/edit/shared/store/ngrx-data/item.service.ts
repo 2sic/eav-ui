@@ -5,7 +5,7 @@ import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { BestValueModes } from '../../constants';
-import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
+import { InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavItem, EavValue } from '../../models/eav';
 import { EavEntityBundleDto } from '../../models/json-format-v1';
@@ -13,6 +13,8 @@ import { BaseDataService } from './base-data.service';
 import { ItemEditIdentifier, ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FormLanguage } from '../../models/form-languages.model';
+import { ControlHelpers } from '../../helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
@@ -119,7 +121,7 @@ export class ItemService extends BaseDataService<EavItem> {
         continue;
       oldValues[name] = LocalizationHelpers.translate(language, values, null);
     }
-    const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+    const changes = ControlHelpers.getFormChanges(oldValues, newValues);
     if (changes == null) { return; }
 
     const newItem: EavItem = {
@@ -256,7 +258,7 @@ export class ItemService extends BaseDataService<EavItem> {
 
     return this.cache$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      distinctUntilChanged(RxHelpers.arraysEqual),
     );
   }
 

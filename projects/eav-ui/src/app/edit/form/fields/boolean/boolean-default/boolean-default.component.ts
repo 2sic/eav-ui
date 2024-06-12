@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -13,6 +12,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
     selector: InputTypeConstants.BooleanDefault,
@@ -89,7 +89,7 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
   updateValue(disabled: boolean) {
     if (!disabled) {
       const newValue = !this.control.value;
-      GeneralHelpers.patchControlValue(this.control, newValue);
+      ControlHelpers.patchControlValue(this.control, newValue);
     }
   }
 }

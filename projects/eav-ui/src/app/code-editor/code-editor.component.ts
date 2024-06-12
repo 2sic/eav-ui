@@ -4,10 +4,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import type * as Monaco from 'monaco-editor';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, switchMap } from 'rxjs';
 // tslint:disable-next-line:max-line-length
-import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
-import { GeneralHelpers } from '../edit/shared/helpers';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { BaseComponent } from '../shared/components/base.component';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
@@ -30,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
+import { RxHelpers } from '../shared/rxJs/rx.helpers';
 
 @Component({
     selector: 'app-code-editor',
@@ -113,7 +113,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
         if (templates.length === 0) { return; }
 
         let viewInfos = this.viewInfos$.value;
-        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey)));
+        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
         if (notLoaded.length === 0) { return; }
 
         forkJoin(
@@ -133,7 +133,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           let viewInfos1 = this.viewInfos$.value;
 
           results.forEach(([viewKey, view, snippets, tooltips]) => {
-            const selectedIndex = viewInfos1.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+            const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
             if (selectedIndex < 0) { return; }
 
             const newViewInfo: ViewInfo = {
@@ -157,7 +157,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
     this.subscriptions.add(
       combineLatest([this.activeView$, this.viewInfos$]).subscribe(([activeView, viewInfos]) => {
-        const active = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
+        const active = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
         const defaultTitle = 'Code Editor';
         const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
         const oldTitle = this.titleService.getTitle();
@@ -170,17 +170,17 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     this.viewModel$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
       map(([templates, activeView, openViews, viewInfos]) => {
         const tabs = openViews.map(viewKey => {
-          const viewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+          const viewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
           const label: Tab = {
             viewKey,
             label: viewInfo?.view?.FileName ?? viewKey.key,
-            isActive: GeneralHelpers.objectsEqual(viewKey, activeView),
+            isActive: RxHelpers.objectsEqual(viewKey, activeView),
             isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
             isLoading: viewInfo?.view == null,
           };
           return label;
         });
-        const activeViewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
+        const activeViewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
 
         const viewModel: CodeEditorViewModel = {
           activeView,
@@ -258,7 +258,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
   codeChanged(code: string, viewKey: ViewKey): void {
     let viewInfos = this.viewInfos$.value;
-    const selectedIndex = viewInfos.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+    const selectedIndex = viewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     const selectedViewInfo = viewInfos[selectedIndex];
     const newViewInfo: ViewInfo = {
       ...selectedViewInfo,
@@ -274,15 +274,15 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   openView(viewKey: ViewKey): void {
     // fix viewKey because it can be a templateId or a path, and file might already be open
     viewKey = this.viewInfos$.value.find(
-      v => !GeneralHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
+      v => !RxHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
     )?.viewKey ?? viewKey;
 
     const oldActiveView = this.activeView$.value;
-    if (!GeneralHelpers.objectsEqual(oldActiveView, viewKey)) {
+    if (!RxHelpers.objectsEqual(oldActiveView, viewKey)) {
       this.activeView$.next(viewKey);
     }
     const oldOpenViews = this.openViews$.value;
-    if (!oldOpenViews.some(v => GeneralHelpers.objectsEqual(v, viewKey))) {
+    if (!oldOpenViews.some(v => RxHelpers.objectsEqual(v, viewKey))) {
       const newOpenViews = [...oldOpenViews, viewKey];
       this.openViews$.next(newOpenViews);
     }
@@ -290,11 +290,11 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
   closeEditor(viewKey: ViewKey): void {
     const oldOpenViews = this.openViews$.value;
-    const newOpenViews = oldOpenViews.filter(key => !GeneralHelpers.objectsEqual(key, viewKey));
+    const newOpenViews = oldOpenViews.filter(key => !RxHelpers.objectsEqual(key, viewKey));
 
     const oldActiveView = this.activeView$.value;
-    if (GeneralHelpers.objectsEqual(oldActiveView, viewKey)) {
-      const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => GeneralHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
+    if (RxHelpers.objectsEqual(oldActiveView, viewKey)) {
+      const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => RxHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
       this.activeView$.next(newActiveView);
     }
 
@@ -303,7 +303,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
   save(viewKey?: ViewKey): void {
     viewKey ??= this.activeView$.value;
-    const viewInfo = this.viewInfos$.value.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+    const viewInfo = this.viewInfos$.value.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     if (viewInfo?.view == null) { return; }
 
     this.snackBar.open('Saving...');
@@ -316,7 +316,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
         }
 
         let newViewInfos = [...this.viewInfos$.value];
-        const selectedIndex = newViewInfos.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+        const selectedIndex = newViewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
         if (selectedIndex < 0) { return; }
 
         const selectedViewInfo = newViewInfos[selectedIndex];

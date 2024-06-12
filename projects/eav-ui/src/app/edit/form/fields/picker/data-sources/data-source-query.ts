@@ -3,13 +3,13 @@ import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, 
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
-import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from '../adapters/data-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const logRx = true;
@@ -114,7 +114,7 @@ export class DataSourceQuery extends DataSourceBase {
     );
 
     let combinedGuids$ = combineLatest([missingInPrefetch$, this.guidsToRefresh$]).pipe(
-      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(GeneralHelpers.distinct)),
+      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(RxHelpers.distinct)),
       filter(guids => guids?.length > 0),
       // distinctUntilChanged(GeneralHelpers.arraysEqual),
     );

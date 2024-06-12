@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: InputTypeConstants.HyperlinkLibrary,
@@ -50,7 +50,7 @@ export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implemen
           FolderDepth: settings.FolderDepth,
           MetadataContentTypes: settings.MetadataContentTypes,
         })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
+        distinctUntilChanged(RxHelpers.objectsEqual),
       ).subscribe(settings => {
         this.config.adam.setConfig({
           allowAssetsInRoot: settings.AllowAssetsInRoot,

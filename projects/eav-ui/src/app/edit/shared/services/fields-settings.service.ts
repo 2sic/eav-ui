@@ -7,7 +7,7 @@ import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-man
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
 // tslint:disable-next-line:max-line-length
-import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers } from '../helpers';
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
 // tslint:disable-next-line:max-line-length
@@ -22,6 +22,7 @@ import { ItemFieldVisibility } from './item-field-visibility';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { EavContentType, EavEntityAttributes } from '../models/eav';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 
 
 /**
@@ -367,7 +368,7 @@ export class FieldsSettingsService implements OnDestroy {
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -379,7 +380,7 @@ export class FieldsSettingsService implements OnDestroy {
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 

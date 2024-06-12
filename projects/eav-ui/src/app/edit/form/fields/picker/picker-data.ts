@@ -2,7 +2,7 @@ import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take
 import { DataAdapter } from "./adapters/data-adapter.interface";
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
-import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
+import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -31,17 +31,17 @@ export class PickerData extends ServiceBase {
     const logSelected = this.log.rxTap('selectedItems$', { enabled: true });
     this.selectedItems$ = combineLatest([
       state.selectedItems$.pipe(
-        distinctUntilChanged(GeneralHelpers.arraysEqual)
+        distinctUntilChanged(RxHelpers.arraysEqual)
       ),
       source.getDataFromSource().pipe(
-        distinctUntilChanged(GeneralHelpers.arraysEqual)
+        distinctUntilChanged(RxHelpers.arraysEqual)
       ),
     ]).pipe(
       logSelected.start(),
       map(([selectedItems, data]) =>
         this.createUIModel(selectedItems, data, this.translate)
       ),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      distinctUntilChanged(RxHelpers.arraysEqual),
       shareReplay(1),
       logSelected.end(),
     );

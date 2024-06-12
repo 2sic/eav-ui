@@ -5,7 +5,7 @@ import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/feature
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
-import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
+import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -28,6 +28,8 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
+import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -106,7 +108,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
         _buttonPage: settings.Buttons.includes('page'),
         EnableImageConfiguration: settings.EnableImageConfiguration,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
     const adamItem$ = combineLatest([this.controlStatus$, this.adamItems$]).pipe(
       map(([controlStatus, adamItems]) => {
@@ -173,13 +175,13 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   }
 
   markAsTouched() {
-    GeneralHelpers.markControlTouched(this.control);
+    ControlHelpers.markControlTouched(this.control);
   }
 
   setValue(event: Event) {
     const newValue = (event.target as HTMLInputElement).value;
     if (this.control.value === newValue) { return; }
-    GeneralHelpers.patchControlValue(this.control, newValue);
+    ControlHelpers.patchControlValue(this.control, newValue);
   }
 
   expandDialog() {

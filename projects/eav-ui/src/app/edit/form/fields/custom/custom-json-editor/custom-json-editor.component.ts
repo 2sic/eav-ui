@@ -4,7 +4,6 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { JsonSchema } from '../../../../../monaco-editor';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -15,6 +14,8 @@ import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-edito
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
     selector: InputTypeConstants.CustomJsonEditor,
@@ -68,7 +69,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
         };
         return jsonSchema;
       }),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
     const jsonComments$ = this.settings$.pipe(
       map(settings => {
@@ -107,7 +108,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
   }
 
   codeChanged(code: string): void {
-    GeneralHelpers.patchControlValue(this.control, code);
+    ControlHelpers.patchControlValue(this.control, code);
   }
 
   onFocused(): void {
@@ -116,7 +117,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
 
   onBlurred(): void {
     if (!this.control.touched) {
-      GeneralHelpers.markControlTouched(this.control);
+      ControlHelpers.markControlTouched(this.control);
     }
     this.config.focused$.next(false);
   }

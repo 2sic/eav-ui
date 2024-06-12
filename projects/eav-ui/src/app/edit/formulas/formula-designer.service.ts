@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EavWindow } from '../../shared/models/eav-window.model';
-import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { FormConfigService, LoggingService } from '../shared/services';
@@ -12,6 +12,7 @@ import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 
 declare const window: EavWindow;
 
@@ -88,7 +89,7 @@ export class FormulaDesignerService implements OnDestroy {
       map(formulas => formulas.find(
         f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
       ),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -296,7 +297,7 @@ export class FormulaDesignerService implements OnDestroy {
   getFormulaResult$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaResult> {
     return this.formulaResults$.pipe(
       map(results => results.find(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target)),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -333,7 +334,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns Designer state stream
    */
   getDesignerState$(): Observable<DesignerState> {
-    return this.designerState$.pipe(distinctUntilChanged(GeneralHelpers.objectsEqual));
+    return this.designerState$.pipe(distinctUntilChanged(RxHelpers.objectsEqual));
   }
 
   /**

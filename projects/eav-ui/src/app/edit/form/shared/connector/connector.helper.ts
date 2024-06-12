@@ -8,11 +8,12 @@ import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/ba
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
-import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
+import { InputFieldHelpers, PagePicker } from '../../../shared/helpers';
 import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
+import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 
 export class ConnectorHelper {
   private control: AbstractControl;
@@ -174,7 +175,7 @@ export class ConnectorHelper {
 
   private updateControl(control: AbstractControl, value: FieldValue) {
     if (control.disabled) { return; }
-    GeneralHelpers.patchControlValue(control, value);
+    ControlHelpers.patchControlValue(control, value);
   }
 
   private openFeatureDisabledWarning(featureNameId: string) { 

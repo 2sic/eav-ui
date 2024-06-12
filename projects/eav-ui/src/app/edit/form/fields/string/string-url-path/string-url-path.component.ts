@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { FieldMask, GeneralHelpers, UrlHelpers } from '../../../../shared/helpers';
+import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -13,6 +13,7 @@ import { FieldHelperTextComponent } from '../../../shared/field-helper-text/fiel
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
     selector: InputTypeConstants.StringUrlPath,
@@ -99,13 +100,13 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
     if (!cleaned) { return; }
     this.lastAutoCopy = cleaned;
     if (value === cleaned) { return; }
-    GeneralHelpers.patchControlValue(this.control, cleaned);
+    ControlHelpers.patchControlValue(this.control, cleaned);
   }
 
   clean(trimEnd: boolean) {
     const value = this.control.value;
     const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.settings$.value.AllowSlashes, trimEnd);
     if (value === cleaned) { return; }
-    GeneralHelpers.patchControlValue(this.control, cleaned);
+    ControlHelpers.patchControlValue(this.control, cleaned);
   }
 }

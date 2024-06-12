@@ -1,6 +1,5 @@
 import { PickerItem } from 'projects/eav-ui/src/app/edit/form/fields/picker/models/picker-item.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldSettings } from 'projects/edit-types';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -8,7 +7,7 @@ import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
-import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 export abstract class DataSourceBase extends ServiceBase {
   /** Stream containing the data */
@@ -61,13 +60,13 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   addToRefresh(additionalGuids: string[]): void {
-    const merged = [...this.guidsToRefresh$.value, ...additionalGuids].filter(GeneralHelpers.distinct);
+    const merged = [...this.guidsToRefresh$.value, ...additionalGuids].filter(RxHelpers.distinct);
     this.log.a('forceLoadGuids', ['before', this.guidsToRefresh$.value, 'after', additionalGuids, 'merged', merged]);
     this.guidsToRefresh$.next(merged);
   }
 
   initPrefetch(entityGuids: string[]): void {
-    const guids = entityGuids.filter(GeneralHelpers.distinct);
+    const guids = entityGuids.filter(RxHelpers.distinct);
     this.prefetchEntityGuids$.next(guids);
   }
 

@@ -4,11 +4,12 @@ import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
-import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
+import { FileTypeHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { Preview } from './hyperlink-default.models';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 // @Directive()
 @Component({
@@ -60,7 +61,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
     PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
       if (!page) { return; }
-      GeneralHelpers.patchControlValue(this.control, `page:${page.id}`);
+      ControlHelpers.patchControlValue(this.control, `page:${page.id}`);
     });
   }
 

@@ -3,7 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FormulaEngine } from '../../../formulas/formula-engine';
-import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
+import { ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { AdamCacheService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -14,6 +14,7 @@ import { FieldLogicWithValueInit } from '../../shared/field-logic/field-logic-wi
 import { FieldLogicManager } from '../../shared/field-logic/field-logic-manager';
 import { EntityWrapperComponent } from '../entity-wrapper/entity-wrapper.component';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 
 @Component({
     selector: 'app-form-builder',
@@ -86,7 +87,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           newValues[fieldName] = fieldProps.value;
         }
 
-        const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+        const changes = ControlHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
           // controls probably don't need to set touched and dirty for this kind of update.
           // This update usually happens for language change, formula or updates on same entity in another Edit Ui.
@@ -101,7 +102,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           const control = this.form.controls[fieldName];
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
-          GeneralHelpers.disableControl(control, disabled);
+          ControlHelpers.disableControl(control, disabled);
         }
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
@@ -143,7 +144,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     this.subscriptions.add(
       this.form.valueChanges.pipe(
         map(() => this.form.getRawValue() as FormValues),
-        distinctUntilChanged((previous, current) => GeneralHelpers.getFormChanges(previous, current) == null),
+        distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const language = this.languageStore.getLanguage(this.eavService.config.formId);
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, language);

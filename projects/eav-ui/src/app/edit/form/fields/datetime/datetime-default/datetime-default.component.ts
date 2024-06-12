@@ -7,7 +7,6 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
@@ -20,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
   selector: InputTypeConstants.DateTimeDefault,
@@ -90,6 +90,6 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
     // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
     const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
-    GeneralHelpers.patchControlValue(this.control, newValue);
+    ControlHelpers.patchControlValue(this.control, newValue);
   }
 }
