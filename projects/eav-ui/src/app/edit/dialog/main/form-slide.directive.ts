@@ -1,5 +1,5 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
+import { delay, distinct, distinctUntilChanged, filter, fromEvent, map, merge, pairwise } from 'rxjs';
 import { FormConfigService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 import { BaseDirective } from '../../../shared/directives/base.directive';
@@ -24,6 +24,7 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
       merge(
         this.languageInstanceService.getLanguage$(this.formConfig.config.formId).pipe(
           map(language => language.current),
+          distinctUntilChanged(),
           pairwise(),
           map(([previousLang, currentLang]) => {
             const languages = this.languageService.getLanguages();
