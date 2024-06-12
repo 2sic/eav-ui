@@ -1,10 +1,9 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef, signal } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef, effect, signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Subject, map } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { FieldsSettingsService } from '../../../shared/services';
 import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
@@ -65,32 +64,52 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
 
   constructor(
     private fieldsSettingsSvc: FieldsSettingsService,
-    private languageStore: LanguageInstanceService,
-    private formConfig: FormConfigService,
+    // reactivate in case we want to detect language change here
+    // private languageStore: LanguageInstanceService,
+    // private formConfig: FormConfigService,
   ) {
     super(new EavLogger('CollapsibleWrapper', logThis));
     EmptyDefaultLogic.importMe();
+
+    // temp, must be in constructor
+    const eff = effect(() => {
+      this.log.a('effect change', [{ collapsed: this.collapsed() }]);
+    });
+
   }
 
   ngOnInit(): void {
+    // If settings change the collapsed state (e.g. because of formula)
+    // Must happen before adding the first settings so it triggers with that
+    this.subscriptions.add(
+      this.settings$.pipe(
+        mapUntilChanged(settings => settings.Collapsed),
+      )
+        .subscribe(newCollapsed => {
+          const before = this.collapsed();
+          this.log.a('settings$.collapsed', [{ before, newCollapsed }]);
+          this.collapsed.set(newCollapsed);
+        })
+    );
+
     const fieldSettings$ = this.fieldsSettingsSvc.getFieldSettings$(this.config.fieldName);
     this.subscriptions.add(
       fieldSettings$.subscribe(settings => this.settings$.next(settings))
     );
 
-    // If settings change the collapsed state (e.g. because of formula)
-    this.subscriptions.add(
-      this.settings$.pipe(mapUntilChanged(settings => settings.Collapsed)).subscribe(collapsed => this.collapsed.set(collapsed))
-    );
+    // 2024-06-12 2dm - I think this is not needed, as switching languages could preserve collapsed state...
+    // ...but must monitor and maybe reenable
+    // ...if I reenable, I must be sure it doesn't re-collapse when it shouldn't - eg. when selecting a dropdown value...
+    // // On language change, re-check the initial collapsed state in that language
+    // this.subscriptions.add(
+    //   this.languageStore.getLanguage$(this.formConfig.config.formId)
+    //     .pipe(mapUntilChanged(l => l.current))
+    //     .subscribe(langCurrent => {
+    //       const snapShot = this.fieldsSettingsSvc.getFieldSettings(this.config.fieldName);
+    //       this.log.a('2dm changed language, will reset collapsed: ', [langCurrent, snapShot.Collapsed]);
+    //       this.collapsed.set(snapShot.Collapsed);
+    // }));
 
-    // On language change, re-check the initial collapsed state in that language
-    this.subscriptions.add(
-      this.languageStore.getLanguage$(this.formConfig.config.formId)
-        .pipe(mapUntilChanged(l => l.current))
-        .subscribe(() => {
-          const settingsSnapshot = this.fieldsSettingsSvc.getFieldSettings(this.config.fieldName);
-          this.collapsed.set(settingsSnapshot.Collapsed);
-    }));
   }
 
   toggleCollapse(): void {
