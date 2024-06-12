@@ -10,24 +10,26 @@ import { BooleanTristateLogic } from './boolean-tristate-logic';
 import { BooleanTristateViewModel } from './boolean-tristate.models';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-    selector: InputTypeConstants.BooleanTristate,
-    templateUrl: './boolean-tristate.component.html',
-    styleUrls: ['./boolean-tristate.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatSlideToggleModule,
-        NgClass,
-        ExtendedModule,
-        FieldHelperTextComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.BooleanTristate,
+  templateUrl: './boolean-tristate.component.html',
+  styleUrls: ['./boolean-tristate.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    NgClass,
+    ExtendedModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+    JsonPipe,
+
+  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> implements OnInit, OnDestroy {

@@ -1,27 +1,57 @@
 // When true (checked)
-:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+:host
+  ::ng-deep
+  .toggle-true.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(
+    .mat-disabled
+  )
+  .mdc-switch__shadow {
   background-color: #0088f4;
 }
 
-:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+:host
+  ::ng-deep
+  .toggle-true.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(
+    .mat-disabled
+  )
+  .mdc-switch__track::after {
   background-color: #7fc3f9 !important;
 }
 
 // When false (unchecked)
-:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+:host
+  ::ng-deep
+  .toggle-false.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(
+    .mat-disabled
+  )
+  .mdc-switch__shadow {
   background-color: #7fc3f9;
 }
 
-:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__track::before {
+:host
+  ::ng-deep
+  .toggle-false.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(
+    .mat-disabled
+  )
+  .mdc-switch__track::before {
   background-color: #bfe1fc !important;
 }
 
 // When null (middle)
-:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+:host
+  ::ng-deep
+  .toggle-null.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(
+    .mat-disabled
+  )
+  .mdc-switch__shadow {
   background-color: #7fc3f9;
 }
 
-:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__track::before {
+:host
+  ::ng-deep
+  .toggle-null.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(
+    .mat-disabled
+  )
+  .mdc-switch__track::before {
   background-image: linear-gradient(to right, #7fc3f9, #bfe1fc) !important;
 }
 
@@ -36,4 +66,9 @@
 .eav-toggle-hitbox {
   width: fit-content;
   cursor: pointer;
+}
+
+.eav-toggle-label {
+  color: grey;
+  cursor: default;
 }

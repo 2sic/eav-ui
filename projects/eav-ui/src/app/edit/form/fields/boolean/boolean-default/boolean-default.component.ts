@@ -10,7 +10,7 @@ import { BooleanDefaultLogic } from './boolean-default-logic';
 import { BooleanDefaultViewModel } from './boolean-default.models';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -27,6 +27,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         ExtendedModule,
         FieldHelperTextComponent,
         AsyncPipe,
+        JsonPipe,
     ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
