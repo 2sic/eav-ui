@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExportAppService } from '../../services';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 
 @Component({
     selector: 'app-export-app-parts',
@@ -35,6 +36,7 @@ import { FieldHintComponent } from '../../../shared/components/field-hint/field-
         MatDialogActions,
         AsyncPipe,
         FieldHintComponent,
+        ClickStopPropagationDirective
     ],
     providers:[ExportAppPartsService, ContentTypesService, ExportAppService]
 })

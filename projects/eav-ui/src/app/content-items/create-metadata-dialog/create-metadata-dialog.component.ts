@@ -23,6 +23,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 
 @Component({
     selector: 'app-create-metadata-dialog',
@@ -45,6 +46,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
       MatSlideToggleModule,
       AsyncPipe,
       FieldHintComponent,
+      ClickStopPropagationDirective,
     ]
 })
 export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {

@@ -7,6 +7,7 @@ import { KeyValuePipe } from '@angular/common';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 
 @Component({
     selector: 'app-code-snippets',
@@ -20,6 +21,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
         KeyValuePipe,
         TranslateModule,
         ObjectToArrayPipe,
+        ClickStopPropagationDirective
     ],
 })
 export class CodeSnippetsComponent {

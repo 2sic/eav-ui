@@ -13,22 +13,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { NgTemplateOutlet, NgClass } from '@angular/common';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 
 @Component({
-    selector: 'app-code-templates',
-    templateUrl: './code-templates.component.html',
-    styleUrls: ['./code-templates.component.scss'],
-    standalone: true,
-    imports: [
-        NgTemplateOutlet,
-        NgClass,
-        SharedComponentsModule,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        DepthPaddingPipe,
-        SortItemsPipe,
-    ],
+  selector: 'app-code-templates',
+  templateUrl: './code-templates.component.html',
+  styleUrls: ['./code-templates.component.scss'],
+  standalone: true,
+  imports: [
+    NgTemplateOutlet,
+    NgClass,
+    SharedComponentsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    DepthPaddingPipe,
+    SortItemsPipe,
+    ClickStopPropagationDirective,
+  ],
 })
 export class CodeTemplatesComponent implements OnChanges {
   @Input() view?: SourceView;
