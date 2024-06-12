@@ -27,32 +27,34 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 
 @Component({
-    selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
-    templateUrl: './hyperlink-default-expandable-wrapper.component.html',
-    styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
-    animations: [ContentExpandAnimation],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        FlexModule,
-        MatCardModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        ExtendedFabSpeedDialModule,
-        MatRippleModule,
-        NgStyle,
-        MatFormFieldModule,
-        MatInputModule,
-        PasteClipboardImageDirective,
-        FieldHelperTextComponent,
-        FeatureIconTextComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
+  templateUrl: './hyperlink-default-expandable-wrapper.component.html',
+  styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
+  animations: [ContentExpandAnimation],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatCardModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    ExtendedFabSpeedDialModule,
+    MatRippleModule,
+    NgStyle,
+    MatFormFieldModule,
+    MatInputModule,
+    PasteClipboardImageDirective,
+    FieldHelperTextComponent,
+    FeatureIconTextComponent,
+    AsyncPipe,
+    TranslateModule,
+    ClickStopPropagationDirective,
+  ],
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
