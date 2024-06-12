@@ -18,6 +18,8 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 
+const logThis = true;
+
 @Component({
     selector: WrappersConstants.CollapsibleWrapper,
     templateUrl: './collapsible-wrapper.component.html',

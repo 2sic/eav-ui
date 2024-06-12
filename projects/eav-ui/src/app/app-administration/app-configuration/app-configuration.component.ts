@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -53,7 +53,7 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
   ],
   providers: [FeatureDetailService ],
 })
-export class AppConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppConfigurationComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
@@ -122,7 +122,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
 
     this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;

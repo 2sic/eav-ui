@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
-import { BaseComponent } from '../../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../../shared/components/base-component/base.component';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
@@ -35,7 +35,7 @@ import { MatCardModule } from '@angular/material/card';
         AsyncPipe,
     ],
 })
-export class AppConfigurationCardComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppConfigurationCardComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   // More proper ViewModel
@@ -73,7 +73,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
   }
 
   ngOnDestroy() {

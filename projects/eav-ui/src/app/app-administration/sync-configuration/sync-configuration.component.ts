@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
@@ -29,7 +29,7 @@ import { MatCardModule } from '@angular/material/card';
         RouterOutlet,
     ],
 })
-export class SyncConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
+export class SyncConfigurationComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
 
 

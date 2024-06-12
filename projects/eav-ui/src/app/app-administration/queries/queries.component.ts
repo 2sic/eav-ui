@@ -7,7 +7,7 @@ import { ContentExportService } from '../../content-export/services/content-expo
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -45,7 +45,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
         SxcGridModule,
     ],
 })
-export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {
+export class QueriesComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -68,7 +68,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchQueries(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchQueries(); }));
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });

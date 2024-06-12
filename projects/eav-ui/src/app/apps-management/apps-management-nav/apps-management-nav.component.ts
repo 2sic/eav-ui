@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { combineLatest, filter, map, startWith } from 'rxjs';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -36,7 +36,7 @@ import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-
     AppDialogConfigService,
   ]
 })
-export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppsManagementNavComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
 
   zoneId = this.context.zoneId;
 
@@ -83,7 +83,7 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   ngOnInit() {
     this.fetchDialogSettings();
     this.subscription.add(
-      this.refreshOnChildClosedShallow().subscribe(() => {
+      this.childDialogClosed$().subscribe(() => {
         this.fetchDialogSettings();
       })
     );

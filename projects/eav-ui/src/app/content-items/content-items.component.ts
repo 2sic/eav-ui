@@ -13,7 +13,7 @@ import { DataTypeConstants } from '../content-type-fields/constants/data-type.co
 import { Field } from '../content-type-fields/models/field.model';
 import { GlobalConfigService } from '../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../metadata';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
@@ -61,7 +61,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
         AsyncPipe,
     ],
 })
-export class ContentItemsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ContentItemsComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   gridOptions: GridOptions = {
@@ -94,7 +94,7 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchItems(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
 
     this.viewModel$ = combineLatest([
       this.contentType$, this.items$, this.globalConfigService.getDebugEnabled$()

@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, map, Observable, Subscription } from 'r
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
-import { BaseComponent } from '../../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
@@ -37,7 +37,7 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
     ],
     providers: [ZoneService]
 })
-export class LanguagePermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class LanguagePermissionsComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
   gridOptions: GridOptions;
 
@@ -57,7 +57,7 @@ export class LanguagePermissionsComponent extends BaseComponent implements OnIni
 
   ngOnInit(): void {
     this.getLanguages();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.getLanguages(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.getLanguages(); }));
     this.viewModel$ = combineLatest([this.languages$]).pipe(
       map(([languages]) => ({ languages }))
     );

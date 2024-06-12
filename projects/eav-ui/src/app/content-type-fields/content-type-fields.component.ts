@@ -9,7 +9,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -50,7 +50,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
     ],
     providers: [ContentTypesService, ContentTypesFieldsService]
 })
-export class ContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -79,7 +79,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
 
   ngOnInit() {
     this.fetchFields();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchFields(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchFields(); }));
     this.viewModel$ = combineLatest([
       this.contentType$, this.fields$
     ]).pipe(

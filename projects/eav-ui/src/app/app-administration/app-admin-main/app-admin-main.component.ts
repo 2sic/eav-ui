@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, startWith, tap } from 'rxjs';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
@@ -44,7 +44,7 @@ const logThis = false;
         NavItemListComponent,
     ],
 })
-export class AppAdminMainComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppAdminMainComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
 
   constructor(
     protected router: Router,
@@ -98,7 +98,7 @@ export class AppAdminMainComponent extends BaseComponent implements OnInit, OnDe
   ngOnInit() {
     this.fetchDialogSettings();
     this.subscription.add(
-      this.refreshOnChildClosedShallow().subscribe(() => {
+      this.childDialogClosed$().subscribe(() => {
         this.fetchDialogSettings();
       })
     );

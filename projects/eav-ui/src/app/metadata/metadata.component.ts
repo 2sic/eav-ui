@@ -8,7 +8,7 @@ import { ContentItemsService } from '../content-items/services/content-items.ser
 import { EntitiesService } from '../content-items/services/entities.service';
 import { EavFor } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -59,7 +59,7 @@ const logThis = false;
   ],
   providers: [EntitiesService, MetadataService, FeatureDetailService, ContentItemsService]
 })
-export class MetadataComponent extends BaseComponent implements OnInit, OnDestroy {
+export class MetadataComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
   private metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
@@ -91,7 +91,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
     this.fetchFor();
     this.fetchMetadata();
     this.subscription.add(
-      this.refreshOnChildClosedShallow().subscribe(() => { this.fetchMetadata(); })
+      this.childDialogClosed$().subscribe(() => { this.fetchMetadata(); })
     );
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');

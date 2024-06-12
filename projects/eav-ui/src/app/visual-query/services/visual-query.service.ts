@@ -10,7 +10,7 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { QueryDefinitionService } from './query-definition.service';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -22,7 +22,7 @@ import { StreamErrorResultComponent } from '../stream-error-result/stream-error-
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
 
 @Injectable()
-export class VisualQueryService extends BaseComponent implements OnDestroy {
+export class VisualQueryService extends BaseComponentWithChildDialog implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
@@ -59,7 +59,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
+    this.subscription.add(this.childDialogClosed$().subscribe(() => {
       if (this.refreshPipeline || this.refreshDataSourceConfigs) {
         this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
       }

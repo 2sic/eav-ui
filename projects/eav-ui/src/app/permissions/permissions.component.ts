@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -43,7 +43,7 @@ import { EntitiesService } from '../content-items/services/entities.service';
     MetadataService,
     EntitiesService,]
 })
-export class PermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class PermissionsComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
   gridOptions = this.buildGridOptions();
 
@@ -71,7 +71,7 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnInit() {
     this.fetchPermissions();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchPermissions(); }));
+    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchPermissions(); }));
     this.viewModel$ = combineLatest([
       this.permissions$
     ]).pipe(map(([permissions]) => ({ permissions })));

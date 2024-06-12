@@ -1,12 +1,22 @@
 import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, pairwise, startWith } from 'rxjs';
+import { filter, map, pairwise, startWith, tap } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 import { EavLogger } from '../../logging/eav-logger';
 
-@Directive()
+const logThis = false;
+
+// 2024-06-12 2dm experimental - remove comments if all is good mid of June
+// - previously had
+// @Directive()   // Needs the @Directive() so the compiler allows OnDestroy to be implemented
+// ...then tried this
+// @Component({
+//   selector: 'app-base-component-with-child',
+//   template: ''
+// })
+// ...but then added abstract, so I think it doesn't actually need all that
 // tslint:disable-next-line:directive-class-suffix
-export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
+export abstract class BaseComponentWithChildDialog extends BaseSubsinkComponent implements OnDestroy {
 
   constructor(
     protected router: Router,
@@ -14,12 +24,13 @@ export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
     public log?: EavLogger
   ) {
     super();
-    this.log ??= new EavLogger('BaseComponent', false);
+    this.log ??= new EavLogger('BaseComponent', logThis);
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
+  // 2024-06-12 2dm - don't think this is needed since it's already on the base class
+  // ngOnDestroy() {
+  //   super.ngOnDestroy();
+  // }
 
   // TODO @2dg not longer in use after refactoring SideNav with Routing
   // protected refreshOnChildClosedDeep() {
@@ -32,13 +43,14 @@ export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
   //   )
   // }
 
-  protected refreshOnChildClosedShallow() {
+  protected childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       startWith(!!this.route.snapshot.firstChild),
       map(() => !!this.route.snapshot.firstChild),
       pairwise(),
-      filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      filter(([hadChildBefore, hasChildNow]) => hadChildBefore && !hasChildNow),
+      // tap(() => console.log('2dm ' + 'childDialogClosed$'))
     )
   }
 }

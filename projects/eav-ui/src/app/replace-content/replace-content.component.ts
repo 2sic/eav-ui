@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ReplaceOption } from './models/replace-option.model';
@@ -44,7 +44,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     ],
     providers: [ContentGroupService]
 })
-export class ReplaceContentComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ReplaceContentComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   viewModel$: Observable<ReplaceContentViewModel>;
@@ -95,7 +95,7 @@ export class ReplaceContentComponent extends BaseComponent implements OnInit, On
     );
 
     this.fetchConfig(false, null);
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
+    this.subscription.add(this.childDialogClosed$().subscribe(() => {
       const navigation = this.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
