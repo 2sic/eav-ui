@@ -1,6 +1,6 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef, signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Subject, distinctUntilChanged, map } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
@@ -17,65 +17,66 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = true;
 
 @Component({
-    selector: WrappersConstants.CollapsibleWrapper,
-    templateUrl: './collapsible-wrapper.component.html',
-    styleUrls: ['./collapsible-wrapper.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        NgClass,
-        ExtendedModule,
-        FlexModule,
-        MatIconModule,
-        ChangeAnchorTargetDirective,
-        SharedComponentsModule,
-        AsyncPipe,
-    ],
+  selector: WrappersConstants.CollapsibleWrapper,
+  templateUrl: './collapsible-wrapper.component.html',
+  styleUrls: ['./collapsible-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatIconModule,
+    ChangeAnchorTargetDirective,
+    SharedComponentsModule,
+    AsyncPipe,
+  ],
 })
 export class CollapsibleWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
+  
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
   
   controlConfig: FieldControlConfig = {};
 
-  visible$: Observable<boolean>;
-  collapsed$: BehaviorSubject<boolean>;
-  label$: Observable<string>;
-  notes$: Observable<string>;
+  /** Collapsed state - will be updated in various scenarios */
+  collapsedSig = signal(false);
 
-  private settings$: BehaviorSubject<FieldSettings>;
+  private settings$ = new Subject<FieldSettings>();
+
+  label = toSignal(this.settings$.pipe(map(s => s.Name)), { initialValue: '' });
+  notes = toSignal(this.settings$.pipe(map(s => s.Notes)), { initialValue: '' });
+  visible = toSignal(this.settings$.pipe(map(s => ItemFieldVisibility.mergedVisible(s))), { initialValue: false });
+
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
   ) {
-    super();
+    super(new EavLogger('CollapsibleWrapper', logThis));
     EmptyDefaultLogic.importMe();
   }
 
   ngOnInit(): void {
-    this.collapsed$ = new BehaviorSubject(false);
-    this.settings$ = new BehaviorSubject(null);
-
+    const fieldSettings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
     this.subscriptions.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
-        this.settings$.next(settings);
-      })
+      fieldSettings$.subscribe(settings => this.settings$.next(settings))
     );
 
-    this.visible$ = this.settings$.pipe(map(settings => ItemFieldVisibility.mergedVisible(settings)), distinctUntilChanged());
-    this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
-    this.notes$ = this.settings$.pipe(map(settings => settings.Notes), distinctUntilChanged());
-
     this.subscriptions.add(
-      this.settings$.pipe(map(settings => settings.Collapsed), distinctUntilChanged()).subscribe(collapsed => {
-        this.collapsed$.next(collapsed);
+      this.settings$.pipe(
+        map(settings => settings.Collapsed),
+        distinctUntilChanged()
+      ).subscribe(collapsed => {
+        this.collapsedSig.set(collapsed);
       })
     );
 
@@ -87,18 +88,13 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
       )
       .subscribe(() => {
         const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
-        this.collapsed$.next(settingsSnapshot.Collapsed);
+        this.collapsedSig.set(settingsSnapshot.Collapsed);
       })
     );
   }
 
-  ngOnDestroy(): void {
-    this.settings$.complete();
-    this.collapsed$.complete();
-    super.ngOnDestroy();
-  }
-
   toggleCollapse(): void {
-    this.collapsed$.next(!this.collapsed$.value);
+    this.log.a('toggleCollapse', [{ before: this.collapsedSig() }])
+    this.collapsedSig.update(prev => !prev);
   }
 }
