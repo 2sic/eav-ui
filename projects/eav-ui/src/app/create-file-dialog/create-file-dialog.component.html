@@ -15,7 +15,7 @@
         <div class="eav-field-container eav-multiple">
           <!-- Platform -->
           <div class="eav-multiple-field">
-            <mat-form-field color="accent" class="eav-form-field">
+            <mat-form-field color="accent" class="eav-mat-form-field">
               <mat-label>Platform</mat-label>
               <mat-select formControlName="platform">
                 @for (platform of vm.platforms; track platform) {
@@ -28,7 +28,7 @@
           </div>
           <!-- Purpose -->
           <div class="eav-multiple-field">
-            <mat-form-field color="accent" class="eav-form-field">
+            <mat-form-field color="accent" class="eav-mat-form-field">
               <mat-label>Purpose</mat-label>
               <mat-select formControlName="purpose">
                 @for (purpose of vm.purposes; track purpose) {
@@ -42,7 +42,7 @@
         </div>
         <!-- Template -->
         <div class="eav-field-container">
-          <mat-form-field color="accent" class="eav-form-field">
+          <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Template</mat-label>
             <mat-select formControlName="templateKey">
               @for (template of vm.templates; track template) {
@@ -55,7 +55,7 @@
         </div>
         <!-- Name -->
         <div class="eav-field-container">
-          <mat-form-field color="accent" class="eav-form-field">
+          <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Name</mat-label>
             <input matInput type="text" formControlName="name" required appMatInputAutofocus
               autofocusSelectValue="true">

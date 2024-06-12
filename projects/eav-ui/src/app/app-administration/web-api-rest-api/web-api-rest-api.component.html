@@ -1,5 +1,5 @@
 <form [formGroup]="webApiTypeForm">
-  <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+  <mat-form-field color="accent" class="eav-mat-form-field">
     <mat-label>Endpoint</mat-label>
     <mat-select formControlName="webApiType" (valueChange)="openRestApi($event)">
       @if (webApis$ | async; as endpoints) {

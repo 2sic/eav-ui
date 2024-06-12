@@ -1,5 +1,5 @@
 @if (viewModel | async; as vm) {
-  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field"
+  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field"
     [ngClass]="{'textarea-field': vm.rowCount > 1}">
     @if (vm.rowCount <= 1) {
       <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [placeholder]="vm.placeholder"

@@ -1,7 +1,7 @@
 <!-- This template is used for StringDropdown and NumberDropdown -->
 
 @if (viewModel$ | async; as vm) {
-  <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
+  <mat-form-field [formGroup]="group" class="eav-mat-form-field" color="accent">
     @if (!vm.freeTextMode) {
       <mat-select class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [required]="vm.required"
         [placeholder]="vm.placeholder">

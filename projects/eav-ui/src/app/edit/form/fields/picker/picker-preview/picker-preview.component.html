@@ -1,6 +1,6 @@
 @if (viewModel$ | async; as vm) {
   <div fxLayout="row" fxLayoutAlign="start center">
-    <div class="eav-div-around-picker">
+    <div class="eav-mat-form-field">
       @if (vm.selectedItems.length > 1 && !vm.freeTextMode) {
         <app-picker-pills
           [pickerData]="pickerData"

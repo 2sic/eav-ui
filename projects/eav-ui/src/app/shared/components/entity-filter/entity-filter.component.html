@@ -1,9 +1,9 @@
-<mat-form-field color="accent" class="eav-form-field">
+<mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>Value</mat-label>
   <input matInput type="text" [(ngModel)]="filter" (ngModelChange)="filterChanged()" #valueInput>
 </mat-form-field>
 
-<mat-form-field color="accent" class="eav-form-field">
+<mat-form-field color="accent" class="eav-mat-form-field">
   <mat-label>IDs (comma separated)</mat-label>
   <input matInput type="text" [(ngModel)]="idFilterString" (ngModelChange)="updateIdFilter(); filterChanged()">
 </mat-form-field>

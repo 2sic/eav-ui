@@ -6,7 +6,7 @@
     <div class="eav-dialog-content">
       <router-outlet></router-outlet>
       <form [formGroup]="form">
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Name</mat-label>
           <input matInput type="text" formControlName="name">
         </mat-form-field>
@@ -27,7 +27,7 @@
         }
         <br>
 
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Template</mat-label>
           <mat-select required="true" [(value)]="appTemplateId">
             <mat-option value="0">
