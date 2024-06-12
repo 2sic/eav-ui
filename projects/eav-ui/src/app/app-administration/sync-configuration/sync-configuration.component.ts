@@ -13,6 +13,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
     selector: 'app-sync-configuration',
@@ -28,6 +29,7 @@ import { MatCardModule } from '@angular/material/card';
         FeatureTextInfoComponent,
         RouterOutlet,
     ],
+    providers: [FeatureDetailService],
 })
 export class SyncConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
