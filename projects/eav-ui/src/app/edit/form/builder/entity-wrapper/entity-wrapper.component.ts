@@ -90,8 +90,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   ngOnInit() {
     const readOnly$ = this.formsStateService.readOnly$;
     const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
-    // const currentLanguage$ = this.languageStore.getCurrentLanguage$(this.formConfig.config.formId);
-    // const defaultLanguage$ = this.languageStore.getDefaultLanguage$(this.formConfig.config.formId);
+
     const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
       map(itemFor => getItemForTooltip(itemFor, this.translate)),
     );

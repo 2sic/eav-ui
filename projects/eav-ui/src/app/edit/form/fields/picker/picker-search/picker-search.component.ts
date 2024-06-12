@@ -87,9 +87,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** True/false trigger to trigger filtering */
   private triggerFilter = new BehaviorSubject(false);
 
-  /** normal log */
-  private log = new EavLogger('PickerSearchComponent', logThis);
-
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   private logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
 
@@ -105,7 +102,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     private fieldsSettingsService: FieldsSettingsService,
     private treeDataService: PickerTreeDataService,
   ) {
-    super();
+    super(new EavLogger('PickerSearchComponent', logThis));
   }
 
   ngOnInit(): void {
