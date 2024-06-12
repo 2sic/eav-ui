@@ -1,5 +1,5 @@
 import { PickerItem, FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
@@ -14,7 +14,7 @@ import { Injectable, Optional } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const dumpSelected = true;
@@ -116,17 +116,13 @@ export class StateAdapter extends ServiceBase {
     this.selectedItems$ = combineLatest([
       this.controlStatus$.pipe(
         logCtlSelected.pipe(),
-        map(controlStatus => controlStatus.value),
-        distinctUntilChanged(),
+        mapUntilChanged(controlStatus => controlStatus.value),
         logCtlSelected.distinctUntilChanged(),
       ),
-      this.settings$.pipe(
-        map(settings => ({
-          Separator: settings.Separator,
-          Options: settings._options,
-        })),
-        distinctUntilChanged(RxHelpers.objectsEqual),
-      ),
+      this.settings$.pipe(mapUntilObjChanged(settings => ({
+        Separator: settings.Separator,
+        Options: settings._options,
+      }))),
     ]).pipe(
       logSelected.start(),
       map(([controlValue, settings]) =>
@@ -135,15 +131,9 @@ export class StateAdapter extends ServiceBase {
       logSelected.end(),
     );
 
-    this.allowMultiValue$ = this.settings$.pipe(
-      map(settings => settings.AllowMultiValue),
-      distinctUntilChanged()
-    );
+    this.allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
 
-    this.isDialog$ = this.settings$.pipe(
-      map(settings => settings._isDialog),
-      distinctUntilChanged()
-    );
+    this.isDialog$ = this.settings$.pipe(mapUntilChanged(settings => settings._isDialog));
 
     this.shouldPickerListBeShown$ = combineLatest([
       this.freeTextMode$,
