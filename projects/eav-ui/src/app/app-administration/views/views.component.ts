@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -56,7 +56,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
         SxcGridModule,
     ],
 })
-export class ViewsComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class ViewsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   enableCode: boolean;
   enablePermissions: boolean;
   appIsGlobal: boolean;

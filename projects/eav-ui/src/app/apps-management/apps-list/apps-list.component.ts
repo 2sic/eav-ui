@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -66,7 +66,7 @@ const logThis = false;
     AppDialogConfigService,
   ],
 })
-export class AppsListComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class AppsListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();

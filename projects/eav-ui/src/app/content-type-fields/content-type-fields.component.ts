@@ -9,7 +9,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-component/base-with-child-dialog.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -50,7 +50,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
     ],
     providers: [ContentTypesService, ContentTypesFieldsService]
 })
-export class ContentTypeFieldsComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
   gridOptions = this.buildGridOptions();

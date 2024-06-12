@@ -11,7 +11,7 @@ import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 import { AppDialogConfigService } from '../app-administration/services';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { BaseComponentWithChildDialog } from '../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-component/base-with-child-dialog.component';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -38,7 +38,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
     ],
     providers: [ContentGroupService, AppDialogConfigService]
 })
-export class ManageContentListComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class ManageContentListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   private items$ = new BehaviorSubject<GroupHeader[]>(null);

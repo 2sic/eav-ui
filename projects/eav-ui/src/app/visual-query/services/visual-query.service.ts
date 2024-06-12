@@ -10,7 +10,7 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { QueryDefinitionService } from './query-definition.service';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -22,7 +22,7 @@ import { StreamErrorResultComponent } from '../stream-error-result/stream-error-
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
 
 @Injectable()
-export class VisualQueryService extends BaseComponentWithChildDialog implements OnDestroy {
+export class VisualQueryService extends BaseWithChildDialogComponent implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();

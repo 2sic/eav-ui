@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { combineLatest, filter, map, startWith } from 'rxjs';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -36,7 +36,7 @@ import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-
     AppDialogConfigService,
   ]
 })
-export class AppsManagementNavComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
   zoneId = this.context.zoneId;
 

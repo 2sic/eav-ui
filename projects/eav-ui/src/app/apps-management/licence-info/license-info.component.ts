@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -55,7 +55,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
     FeaturesConfigService,
   ]
 })
-export class LicenseInfoComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class LicenseInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   disabled$ = new BehaviorSubject(false);

@@ -9,7 +9,7 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -61,7 +61,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
         SxcGridModule,
     ],
 })
-export class DataComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);

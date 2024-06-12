@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseComponentWithChildDialog } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -57,7 +57,7 @@ declare const window: EavWindow;
     AppDialogConfigService,
   ],
 })
-export class SystemInfoComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class SystemInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;

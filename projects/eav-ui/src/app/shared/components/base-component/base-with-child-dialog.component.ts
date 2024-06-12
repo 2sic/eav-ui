@@ -16,7 +16,7 @@ const logThis = false;
 // })
 // ...but then added abstract, so I think it doesn't actually need all that
 // tslint:disable-next-line:directive-class-suffix
-export abstract class BaseComponentWithChildDialog extends BaseSubsinkComponent implements OnDestroy {
+export abstract class BaseWithChildDialogComponent extends BaseSubsinkComponent implements OnDestroy {
 
   constructor(
     protected router: Router,

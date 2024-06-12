@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
-import { BaseComponentWithChildDialog } from '../../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../../shared/components/base-component/base-with-child-dialog.component';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
@@ -35,7 +35,7 @@ import { MatCardModule } from '@angular/material/card';
         AsyncPipe,
     ],
 })
-export class AppConfigurationCardComponent extends BaseComponentWithChildDialog implements OnInit, OnDestroy {
+export class AppConfigurationCardComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   // More proper ViewModel
