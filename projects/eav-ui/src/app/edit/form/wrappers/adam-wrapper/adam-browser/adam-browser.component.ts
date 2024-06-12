@@ -111,7 +111,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         });
       },
     };
-    this.subscription.add(
+    this.subscriptions.add(
       this.adamConfig$.subscribe(() => {
         this.fetchItems();
       })
@@ -119,7 +119,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const allowPasteImageFromClipboard$ = this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard).pipe(
       distinctUntilChanged(),
     );
-    this.subscription.add(allowPasteImageFromClipboard$.pipe(distinctUntilChanged())
+    this.subscriptions.add(allowPasteImageFromClipboard$.pipe(distinctUntilChanged())
       .subscribe(this.isPasteImageFromClipboardEnabled$));
     const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const value$ = this.control.valueChanges.pipe(
@@ -431,7 +431,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
         this.fetchItems();
       })

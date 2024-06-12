@@ -59,7 +59,7 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
+    this.subscriptions.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
       .pipe(distinctUntilChanged())
       .subscribe(this.isAddFromFolderEnabled$)
     );

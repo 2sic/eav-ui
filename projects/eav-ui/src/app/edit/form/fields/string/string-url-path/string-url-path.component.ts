@@ -44,7 +44,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
   ngOnInit() {
     super.ngOnInit();
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(
         map(settings => settings.AutoGenerateMask),
         distinctUntilChanged(),
@@ -66,7 +66,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
     );
 
     // clean on value change
-    this.subscription.add(
+    this.subscriptions.add(
       this.control.valueChanges.subscribe(() => {
         this.clean(false);
       })

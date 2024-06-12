@@ -75,7 +75,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
   ) {
     super();
     this.dialogRef.disableClose = true;
-    this.subscription.add(
+    this.subscriptions.add(
       this.dialogRef.backdropClick().subscribe(() => {
         if (this.form.dirty || this.selectedFields.data.length > 0) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
@@ -88,10 +88,10 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   ngOnInit() {
     // TODO: @SDV Try to find a better way to do this
-    this.subscription.add(this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
+    this.subscriptions.add(this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
       this.shareableFields.data = shareableFields;
     }));
-    this.subscription.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => {
+    this.subscriptions.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => {
       const existingFields: ReservedNames = {};
       this.dialogData.existingFields.forEach(field => {
         existingFields[field.StaticName] = 'Field with this name already exists';

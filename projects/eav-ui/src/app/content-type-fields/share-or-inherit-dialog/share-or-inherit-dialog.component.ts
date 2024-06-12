@@ -117,10 +117,10 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
         FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
         if (this.state == SharingOrInheriting.Sharing) {
-          this.subscription.add(this.contentTypesFieldsService.share(this.dialogData.Id)
+          this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
             .subscribe(() => this.dialogRef.close()));
         } else if (this.state == SharingOrInheriting.Inheriting) {
-          this.subscription.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
+          this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
             .subscribe(() => this.dialogRef.close()));
         }
       }

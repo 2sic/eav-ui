@@ -40,7 +40,7 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
   }
 
   ngAfterViewInit() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.config.adam.getConfig$().subscribe(adamConfig => {
         const disabled = adamConfig?.disabled ?? true;
         if (this.adamDisabled$.value !== disabled) {

@@ -94,7 +94,7 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
 
     this.viewModel$ = combineLatest([
       this.contentType$, this.items$, this.globalConfigService.getDebugEnabled$()

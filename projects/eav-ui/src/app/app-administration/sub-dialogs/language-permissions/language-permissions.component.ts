@@ -50,14 +50,14 @@ export class LanguagePermissionsComponent extends BaseWithChildDialogComponent i
     private zoneService: ZoneService,
   ) {
     super(router, route);
-    this.subscription = new Subscription();
+    this.subscriptions = new Subscription();
     this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
     this.gridOptions = this.buildGridOptions();
   }
 
   ngOnInit(): void {
     this.getLanguages();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.getLanguages(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.getLanguages(); }));
     this.viewModel$ = combineLatest([this.languages$]).pipe(
       map(([languages]) => ({ languages }))
     );

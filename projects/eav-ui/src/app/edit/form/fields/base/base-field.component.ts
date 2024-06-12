@@ -47,7 +47,7 @@ export class BaseFieldComponent<T = FieldValue> extends BaseComponent implements
     });
 
     this.settings$ = new BehaviorSubject(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
-    this.subscription.add(
+    this.subscriptions.add(
       this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         this.settings$.next(settings);
       })

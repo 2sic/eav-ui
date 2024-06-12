@@ -59,7 +59,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
       this.scriptLoaded$.next(true);
     });
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.visualQueryService.putEntityCountOnConnections$.subscribe(result => {
         this.plumber.putEntityCountOnConnections(result);
       })
@@ -100,7 +100,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     // https://stackoverflow.com/questions/37087864/execute-a-function-when-ngfor-finished-in-angular-2/37088348#37088348
     const domDataSourcesLoaded$ = this.domDataSourcesRef.changes.pipe(map(() => true));
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
         if (!scriptLoaded || !domDataSourcesLoaded) { return; }
 

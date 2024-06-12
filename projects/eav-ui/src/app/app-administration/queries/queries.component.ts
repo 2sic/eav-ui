@@ -68,7 +68,7 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchQueries(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchQueries(); }));
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });

@@ -93,7 +93,7 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
   ngOnInit() {
     this.fetchScopes();
     this.refreshScopeOnRouteChange();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchContentTypes(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchContentTypes(); }));
 
     this.dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
@@ -283,7 +283,7 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
    * Note 2024-03-04 2dm - not sure if this auto-add feature is still needed though...
    */
   private refreshScopeOnRouteChange() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         map(() => this.route.snapshot.paramMap.get('scope')),

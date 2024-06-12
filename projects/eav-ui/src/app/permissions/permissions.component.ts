@@ -71,7 +71,7 @@ export class PermissionsComponent extends BaseWithChildDialogComponent implement
 
   ngOnInit() {
     this.fetchPermissions();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchPermissions(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchPermissions(); }));
     this.viewModel$ = combineLatest([
       this.permissions$
     ]).pipe(map(([permissions]) => ({ permissions })));

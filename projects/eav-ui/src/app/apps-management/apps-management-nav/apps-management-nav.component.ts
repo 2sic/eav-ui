@@ -82,7 +82,7 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscription.add(
+    this.subscriptions.add(
       this.childDialogClosed$().subscribe(() => {
         this.fetchDialogSettings();
       })

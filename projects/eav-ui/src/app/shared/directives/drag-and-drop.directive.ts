@@ -25,7 +25,7 @@ export class DragAndDropDirective extends BaseComponent implements OnInit, OnDes
     this.markStyleClass = `eav-droparea-${this.markStyle}`;
     this.element.classList.add(this.dropAreaClass, this.markStyleClass);
     this.zone.runOutsideAngular(() => {
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<DragEvent>(this.element, 'dragover').subscribe(event => {
           event.preventDefault();
           event.stopPropagation();
@@ -33,7 +33,7 @@ export class DragAndDropDirective extends BaseComponent implements OnInit, OnDes
           this.element.classList.add(this.dragClass);
         })
       );
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<DragEvent>(this.element, 'dragleave').subscribe(event => {
           event.preventDefault();
           event.stopPropagation();

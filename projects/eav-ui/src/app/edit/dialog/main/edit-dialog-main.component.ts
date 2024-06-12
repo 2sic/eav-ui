@@ -269,7 +269,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   private startSubscriptions() {
-    this.subscription.add(
+    this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
         if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
@@ -278,7 +278,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.formsStateService.saveForm$.subscribe(close => this.saveAll(close)),
     );
 

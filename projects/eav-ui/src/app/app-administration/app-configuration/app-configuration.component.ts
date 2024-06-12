@@ -122,7 +122,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
 
     this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;

@@ -59,7 +59,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       if (this.refreshPipeline || this.refreshDataSourceConfigs) {
         this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
       }
@@ -352,7 +352,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
 
   private attachKeyboardSave() {
     this.zone.runOutsideAngular(() => {
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown').pipe(
           filter(() => !this.route.snapshot.firstChild),
           filter(event => {

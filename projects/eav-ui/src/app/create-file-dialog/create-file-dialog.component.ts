@@ -109,7 +109,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
 
     this.controls = this.form.controls as any;
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(
@@ -128,7 +128,7 @@ export class CreateFileDialogComponent extends BaseComponent implements OnInit, 
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(

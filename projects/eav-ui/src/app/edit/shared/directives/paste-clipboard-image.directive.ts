@@ -34,7 +34,7 @@ export class PasteClipboardImageDirective extends BaseComponent implements OnIni
    }
 
   ngOnInit() {
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
+    this.subscriptions.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
       .pipe(distinctUntilChanged())
       .subscribe(this.pasteImageEnabled$));
 

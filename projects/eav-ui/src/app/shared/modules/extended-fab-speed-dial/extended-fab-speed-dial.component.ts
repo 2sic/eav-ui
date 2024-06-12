@@ -27,7 +27,7 @@ export class ExtendedFabSpeedDialComponent extends BaseComponent implements Afte
    }
 
   ngAfterContentInit(): void {
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([
         this.open$.pipe(distinctUntilChanged()),
         this.actionButtons.changes.pipe(startWith(undefined)),

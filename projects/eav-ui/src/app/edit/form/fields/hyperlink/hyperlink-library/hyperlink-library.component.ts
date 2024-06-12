@@ -41,7 +41,7 @@ export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implemen
   }
 
   private attachAdam() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(
         map(settings => ({
           AllowAssetsInRoot: settings.AllowAssetsInRoot,
@@ -67,7 +67,7 @@ export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implemen
 
   private attachAdamValidator() {
     let first = true;
-    this.subscription.add(
+    this.subscriptions.add(
       this.config.adam.items$.pipe(
         map(items => items.length),
         distinctUntilChanged(),

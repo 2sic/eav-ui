@@ -90,7 +90,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
   ngOnInit() {
     this.fetchFor();
     this.fetchMetadata();
-    this.subscription.add(
+    this.subscriptions.add(
       this.childDialogClosed$().subscribe(() => { this.fetchMetadata(); })
     );
 

@@ -73,7 +73,7 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
   }
 
   ngOnDestroy() {

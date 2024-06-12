@@ -85,7 +85,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   ) {
     super();
     this.dialogRef.disableClose = true;
-    this.subscription.add(
+    this.subscriptions.add(
       this.dialogRef.backdropClick().subscribe(event => {
         if (this.form.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');

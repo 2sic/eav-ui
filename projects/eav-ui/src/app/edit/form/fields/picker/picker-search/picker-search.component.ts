@@ -113,7 +113,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     // TODO: @2dm - maybe there is even a more elegant way to do this
     // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
     if (false) {
-      this.subscription.add(
+      this.subscriptions.add(
         this.fieldsSettingsService.processPickerItems$(this.config.fieldName, source.optionsOrHints$).subscribe((items) => this.optionItems$.next(items))
       );
     } else {

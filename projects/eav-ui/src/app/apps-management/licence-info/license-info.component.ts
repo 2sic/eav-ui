@@ -78,7 +78,7 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.refreshLicenses$.next(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshLicenses$.next(); }));
     this.viewModel$ = //combineLatest([
       this.refreshLicenses$.pipe(
         startWith(undefined),

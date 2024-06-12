@@ -155,7 +155,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   }
 
   private attachAdam() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(
         map(settings => ({
           Paths: settings.Paths,

@@ -63,7 +63,7 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
     this.collapsed$ = new BehaviorSubject(false);
     this.settings$ = new BehaviorSubject(null);
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         this.settings$.next(settings);
       })
@@ -73,13 +73,13 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
     this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
     this.notes$ = this.settings$.pipe(map(settings => settings.Notes), distinctUntilChanged());
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(map(settings => settings.Collapsed), distinctUntilChanged()).subscribe(collapsed => {
         this.collapsed$.next(collapsed);
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.languageStore.getLanguage$(this.formConfig.config.formId).subscribe(() => {
         const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
         this.collapsed$.next(settingsSnapshot.Collapsed);

@@ -108,7 +108,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
   private initHideHeader() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.route.params
         .pipe(
           map((params: EditParams) => params.detailsEntityGuid != null && params.detailsFieldId != null),
@@ -121,7 +121,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
   }
 
   private initChildFormResult() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         startWith(!!this.route.snapshot.firstChild),
@@ -164,7 +164,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
   }
 
   private refreshOnChildVersionsClosed() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         startWith(!!this.route.snapshot.firstChild),

@@ -50,7 +50,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     this.fieldsTranslateService.init(this.entityGuid);
 
     this.form = new UntypedFormGroup({});
-    this.subscription.add(
+    this.subscriptions.add(
       this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
@@ -119,7 +119,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
       distinctUntilChanged(),
     );
     const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([formValid$, itemHeader$]).pipe(
         map(([formValid, itemHeader]) => {
           if (itemHeader.IsEmpty) { return true; }
@@ -130,7 +130,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         this.formsStateService.setFormValid(this.entityGuid, isValid);
       })
     );
-    this.subscription.add(
+    this.subscriptions.add(
       this.form.valueChanges.pipe(
         map(() => this.form.dirty),
         startWith(this.form.dirty),
@@ -140,7 +140,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.form.valueChanges.pipe(
         map(() => this.form.getRawValue() as FormValues),
         distinctUntilChanged((previous, current) => GeneralHelpers.getFormChanges(previous, current) == null),

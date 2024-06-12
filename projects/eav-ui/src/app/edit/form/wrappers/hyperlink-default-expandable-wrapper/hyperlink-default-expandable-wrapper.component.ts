@@ -153,7 +153,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.subscription.add(
+    this.subscriptions.add(
       this.config.adam.items$.subscribe(items => {
         this.adamItems$.next(items);
       })

@@ -95,7 +95,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     this.form.addControl('scopeForContentTypes', new UntypedFormControl(eavConstants.scopes.default.value));
     this.form.addControl('key', new UntypedFormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.form.controls['scopeForContentTypes'].valueChanges.pipe(
         startWith(this.form.controls['scopeForContentTypes'].value),
         distinctUntilChanged(),
@@ -121,7 +121,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     );
 
     // reset key if target or keyType changed
-    this.subscription.add(
+    this.subscriptions.add(
       merge(
         this.form.controls['targetType'].valueChanges.pipe(distinctUntilChanged()),
         this.form.controls['keyType'].valueChanges.pipe(distinctUntilChanged()),
@@ -139,7 +139,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     );
 
     // reset key if contentTypeForContentItems changed
-    this.subscription.add(
+    this.subscriptions.add(
       this.form.controls['contentTypeForContentItems'].valueChanges.pipe(
         startWith(this.form.controls['contentTypeForContentItems'].value),
         distinctUntilChanged(),
@@ -164,7 +164,7 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([formValues$, this.guidedMode$]).subscribe(([formValues, guidedMode]) => {
         // keyTypeOptions depend on targetType and advanced
         const foundTargetType = this.targetTypeOptions.find(option => option.targetType === formValues.targetType);

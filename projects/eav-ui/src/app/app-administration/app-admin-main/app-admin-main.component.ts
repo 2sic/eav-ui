@@ -97,7 +97,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscription.add(
+    this.subscriptions.add(
       this.childDialogClosed$().subscribe(() => {
         this.fetchDialogSettings();
       })

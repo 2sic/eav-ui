@@ -20,7 +20,7 @@ export class FormSlideDirective extends BaseComponent implements OnInit, OnDestr
    }
 
   ngOnInit() {
-    this.subscription.add(
+    this.subscriptions.add(
       merge(
         this.languageInstanceService.getLanguage$(this.formConfig.config.formId).pipe(
           map(language => language.current),

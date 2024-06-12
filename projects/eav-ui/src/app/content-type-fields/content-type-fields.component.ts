@@ -79,7 +79,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
 
   ngOnInit() {
     this.fetchFields();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.fetchFields(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchFields(); }));
     this.viewModel$ = combineLatest([
       this.contentType$, this.fields$
     ]).pipe(

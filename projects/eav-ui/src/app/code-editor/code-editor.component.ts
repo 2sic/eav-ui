@@ -106,7 +106,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       this.templates$.next(templates);
     });
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([this.templates$, this.openViews$]).subscribe(([templates, openViews]) => {
         if (templates.length === 0) { return; }
 
@@ -153,7 +153,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([this.activeView$, this.viewInfos$]).subscribe(([activeView, viewInfos]) => {
         const active = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
         const defaultTitle = 'Code Editor';
@@ -369,7 +369,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
   private attachListeners(): void {
     this.zone.runOutsideAngular(() => {
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
           const allSaved = !this.viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
           if (allSaved) { return; }
@@ -377,7 +377,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           event.returnValue = ''; // fix for Chrome
         })
       );
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown').subscribe(event => {
           const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
           if (!CTRL_S) { return; }

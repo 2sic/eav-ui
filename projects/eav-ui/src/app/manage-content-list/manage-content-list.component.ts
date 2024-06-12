@@ -72,7 +72,7 @@ export class ManageContentListComponent extends BaseWithChildDialogComponent imp
     this.fetchList();
     this.fetchHeader();
     this.fetchDialogSettings();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       this.fetchList(true);
       this.fetchHeader();
     }));

@@ -138,7 +138,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   }
 
   ngAfterViewInit() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.config.adam.getConfig$().subscribe(adamConfig => {
         const disabled = adamConfig?.disabled ?? true;
         if (this.adamDisabled$.value !== disabled) {

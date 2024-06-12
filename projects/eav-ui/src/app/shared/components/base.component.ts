@@ -10,13 +10,13 @@ import { Subscription } from 'rxjs';
 })
 // tslint:disable-next-line:directive-class-suffix
 export abstract class BaseComponent implements OnDestroy {
-  // @2SDV TODO: rename to subscriptions
-  protected subscription = new Subscription();
+  /** Holds all subscriptions to be unsubscribed on destroy */
+  protected subscriptions = new Subscription();
 
   constructor() {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 }

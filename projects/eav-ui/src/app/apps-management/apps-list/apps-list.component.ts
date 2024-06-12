@@ -103,7 +103,7 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
       appsLog.shareReplay(),
     );
 
-    this.subscription.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
 
     const isAddFromFolderEnabledLog = this.log.rxTap('isAddFromFolderEnabled$');
     this.isAddFromFolderEnabled$ = this.featuresService

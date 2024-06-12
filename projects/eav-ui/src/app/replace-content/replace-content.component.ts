@@ -95,7 +95,7 @@ export class ReplaceContentComponent extends BaseWithChildDialogComponent implem
     );
 
     this.fetchConfig(false, null);
-    this.subscription.add(this.childDialogClosed$().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       const navigation = this.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];

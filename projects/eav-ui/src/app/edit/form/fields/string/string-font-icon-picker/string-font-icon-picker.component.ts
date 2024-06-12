@@ -52,7 +52,7 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
     super.ngOnInit();
     this.iconOptions$ = new BehaviorSubject<IconOption[]>([]);
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(
         map(settings => ({
           Files: settings.Files,

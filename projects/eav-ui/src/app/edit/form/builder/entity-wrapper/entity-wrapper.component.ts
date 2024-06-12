@@ -257,7 +257,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
         this.fetchNote();
       })

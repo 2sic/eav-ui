@@ -86,7 +86,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();

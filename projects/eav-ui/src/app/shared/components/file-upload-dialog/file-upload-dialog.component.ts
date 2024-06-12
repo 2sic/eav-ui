@@ -62,7 +62,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     super();
 
     // copied from 2sxc-ui app/installer
-    this.subscription.add(
+    this.subscriptions.add(
       this.installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
         this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
@@ -92,7 +92,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   );
 
   ngOnInit(): void {
-    this.subscription.add(
+    this.subscriptions.add(
       this.files$.subscribe(() => {
         if (this.result$.value !== undefined) {
           this.result$.next(undefined);
@@ -112,7 +112,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
     this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
 
     // copied from 2sxc-ui app/installer
-    this.subscription.add(this.messages$.pipe(
+    this.subscriptions.add(this.messages$.pipe(
       // Verify it's for this action
       filter(data => data.action === 'specs'),
       // Send message to iframe
@@ -135,7 +135,7 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
 
     // copied from 2sxc-ui app/installer
     // Subscription to listen to 'install' messages
-    this.subscription.add(this.messages$.pipe(
+    this.subscriptions.add(this.messages$.pipe(
       filter(data => data.action === 'install'),
       // Get packages from data.
       map(data => Object.values(data.packages)),
@@ -206,7 +206,7 @@ Please try again later or check how to manually install content-templates: https
 
   upload(): void {
     this.uploading$.next(true);
-    this.subscription.add(
+    this.subscriptions.add(
       this.dialogData.upload$(this.files$.value).pipe(take(1)).subscribe({
         next: (result) => {
           this.uploading$.next(false);

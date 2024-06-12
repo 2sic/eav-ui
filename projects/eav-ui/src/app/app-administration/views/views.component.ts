@@ -90,7 +90,7 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   ngOnInit() {
     this.fetchTemplates();
     this.fetchPolymorphism();
-    this.subscription.add(this.childDialogClosed$().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       this.fetchTemplates();
       this.fetchPolymorphism();
     }));

@@ -40,7 +40,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
       isKnownType: false,
       icon: '',
     });
-    this.subscription.add(
+    this.subscriptions.add(
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()).subscribe(value => {
         this.fetchLink(value);
       })
