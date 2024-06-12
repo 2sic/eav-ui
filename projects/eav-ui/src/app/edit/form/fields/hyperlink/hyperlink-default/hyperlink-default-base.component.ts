@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Directive, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
@@ -10,7 +10,11 @@ import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { Preview } from './hyperlink-default.models';
 
-@Directive()
+// @Directive()
+@Component({
+  selector: 'app-base-field-hyperlink-component',
+  template: ''
+})
 // tslint:disable-next-line:directive-class-suffix
 export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   preview$: BehaviorSubject<Preview>;

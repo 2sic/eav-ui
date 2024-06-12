@@ -1,4 +1,4 @@
-import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -8,9 +8,13 @@ import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder
 import { Field } from '../../builder/fields-builder/field.model';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
-@Directive()
+// @Directive()
+@Component({
+  selector: 'app-base-field-component',
+  template: ''
+})
 // tslint:disable-next-line:directive-class-suffix
-export class BaseFieldComponent<T = FieldValue> extends BaseComponent implements Field, OnInit, OnDestroy {
+export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
 
