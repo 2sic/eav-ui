@@ -39,22 +39,24 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
-    selector: 'app-views',
-    templateUrl: './views.component.html',
-    styleUrls: ['./views.component.scss'],
-    standalone: true,
-    imports: [
-        AgGridModule,
-        SharedComponentsModule,
-        MatDialogActions,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        AsyncPipe,
-        SxcGridModule,
-    ],
+  selector: 'app-views',
+  templateUrl: './views.component.html',
+  styleUrls: ['./views.component.scss'],
+  standalone: true,
+  imports: [
+    AgGridModule,
+    SharedComponentsModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+  ],
+  providers: [FeatureDetailService]
 })
 export class ViewsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   enableCode: boolean;
@@ -85,7 +87,7 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
-   }
+  }
 
   ngOnInit() {
     this.fetchTemplates();
@@ -233,18 +235,18 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
       items: [
         (view.lightSpeed != null)
           ? {
-              ...shared,
-              EntityId: view.lightSpeed.Id,
-            }
+            ...shared,
+            EntityId: view.lightSpeed.Id,
+          }
           : {
-              ...shared,
-              ContentTypeName: eavConstants.appMetadata.LightSpeed.ContentTypeName,
-              For: {
-                Target: eavConstants.metadata.entity.target,
-                TargetType: eavConstants.metadata.entity.targetType,
-                Guid: view.Guid,
-              },
+            ...shared,
+            ContentTypeName: eavConstants.appMetadata.LightSpeed.ContentTypeName,
+            For: {
+              Target: eavConstants.metadata.entity.target,
+              TargetType: eavConstants.metadata.entity.targetType,
+              Guid: view.Guid,
             },
+          },
       ],
     };
     this.openEdit(form);
@@ -261,9 +263,9 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
     }
 
     // Helper function for actions in the table below
-    const openLightSpeedFeatInfo = () => 
+    const openLightSpeedFeatInfo = () =>
       FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
-    
+
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
