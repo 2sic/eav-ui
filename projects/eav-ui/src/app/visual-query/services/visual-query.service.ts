@@ -10,7 +10,7 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { QueryDefinitionService } from './query-definition.service';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-component/base-with-child-dialog.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';

@@ -11,7 +11,7 @@ import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 import { AppDialogConfigService } from '../app-administration/services';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { BaseWithChildDialogComponent } from '../shared/components/base-component/base-with-child-dialog.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';

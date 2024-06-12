@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, map, Observable, Subscription } from 'r
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
-import { BaseWithChildDialogComponent } from '../../../shared/components/base-component/base-with-child-dialog.component';
+import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
 import { IdFieldComponent } from '../../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';

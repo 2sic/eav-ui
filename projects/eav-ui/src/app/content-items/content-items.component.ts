@@ -13,7 +13,7 @@ import { DataTypeConstants } from '../content-type-fields/constants/data-type.co
 import { Field } from '../content-type-fields/models/field.model';
 import { GlobalConfigService } from '../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../metadata';
-import { BaseWithChildDialogComponent } from '../shared/components/base-component/base-with-child-dialog.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';

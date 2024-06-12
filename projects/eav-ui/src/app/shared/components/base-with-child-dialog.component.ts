@@ -1,8 +1,8 @@
 import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, tap } from 'rxjs';
-import { BaseComponent } from '../base.component';
-import { EavLogger } from '../../logging/eav-logger';
+import { BaseComponent } from './base.component';
+import { EavLogger } from '../logging/eav-logger';
 
 const logThis = false;
 
