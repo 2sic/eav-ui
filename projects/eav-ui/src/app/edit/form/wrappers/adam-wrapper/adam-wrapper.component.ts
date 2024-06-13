@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../shared/constants';
@@ -28,7 +28,7 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 
   fullscreenAdam: boolean;
-  adamDisabled$ = new BehaviorSubject(true);
+  $adamDisabled = signal<boolean>(true);
 
   constructor(fieldsSettingsService: FieldsSettingsService) {
     super(fieldsSettingsService);
@@ -43,15 +43,15 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
     this.subscriptions.add(
       this.config.adam.getConfig$().subscribe(adamConfig => {
         const disabled = adamConfig?.disabled ?? true;
-        if (this.adamDisabled$.value !== disabled) {
-          this.adamDisabled$.next(disabled);
+        if (this.$adamDisabled()!== disabled) {
+          this.$adamDisabled.set(disabled);
         }
       })
     );
   }
 
   ngOnDestroy() {
-    this.adamDisabled$.complete();
+    this.subscriptions.unsubscribe();
     super.ngOnDestroy();
   }
 
