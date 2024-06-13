@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, Inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
@@ -15,6 +15,10 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Language } from '../../../../shared/models';
+import { FormLanguage } from '../../../../shared/models/form-languages.model';
+import { EavEntityAttributes } from '../../../../shared/models/eav';
 
 @Component({
   selector: 'app-translate-menu-dialog',
@@ -34,8 +38,12 @@ import { MatCardModule } from '@angular/material/card';
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
-  // viewModel$: Observable<TranslateMenuDialogViewModel>;
   viewModel: WritableSignal<TranslateMenuDialogViewModel> = signal(null);
+  translationState = signal<TranslationStateCore>(null);
+
+  langs = signal<Language[]>(null);
+  languageForm = signal<FormLanguage>(null);
+  attributes = signal<EavEntityAttributes>(null);
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
@@ -57,33 +65,43 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
+
+    this.translationState.set(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
-    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
-    const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
-    const languages$ = combineLatest([
-      this.languageService.getLanguages$(),
-      language$,
-      attributes$,
-      this.translationState$,
-    ]).pipe(
-      map(([languages, language, attributes, translationState]) =>
-        getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType)),
-    );
+    this.languageService.getLanguages$().subscribe(languages => {
+      this.langs.set(languages);
+    });
+    this.languageStore.getLanguage$(this.formConfig.config.formId).subscribe(languagesStore => {
+      this.languageForm.set(languagesStore);
+    });
 
-     combineLatest([language$, languages$, this.translationState$]).pipe(
-      map(([lang, languages, translationState]) => {
-        return {
-          primary: lang.primary,
-          languages,
-          translationState,
-          showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
-          i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
-          submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
-        };
-      }),
-    ).subscribe(v => this.viewModel.set(v));
+    this.itemService.getItemAttributes$(this.dialogData.config.entityGuid).subscribe(attributes => {
+      this.attributes.set(attributes);
+    });
+
+    const languages = computed(() => {
+      return getTemplateLanguages(
+        this.dialogData.config,
+        this.languageForm(),
+        this.langs(),
+        this.attributes(),
+        this.translationState().linkType
+      );
+    });
+    const viewModel = computed(() => {
+      const translationState = this.translationState();
+      return {
+        primary: this.languageForm().primary,
+        languages: languages(),
+        translationState,
+        showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
+        i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
+        submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
+      };
+    });
+
+    this.viewModel.set(viewModel());
   }
 
   ngOnDestroy(): void {
