@@ -1,5 +1,5 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
@@ -12,6 +12,7 @@ import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models'
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: WrappersConstants.DropzoneWrapper,
@@ -30,8 +31,11 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
+  dropzoneDisabled = signal(false);
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
-  dropzoneDisabled$: Observable<boolean>;
+  // TODO:: @2dm fragen
+  // dropzoneConfig = toSignal(this.settings$.pipe(map(s => s.Notes)), { initialValue: '' });
+
   imageTypes: string[] = ["image/jpeg", "image/png"];
   isStringWysiwyg = false;
 
@@ -46,7 +50,8 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   ngOnInit() {
     super.ngOnInit();
-    this.dropzoneDisabled$ = combineLatest([
+
+    combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.disabled), distinctUntilChanged()),
       this.dropzoneConfig$,
     ]).pipe(
@@ -54,7 +59,7 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
         const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
         return controlDisabled || dropzoneDisabled;
       }),
-    );
+    ).subscribe(value => this.dropzoneDisabled.set(value));
 
     this.config.dropzone = {
       setConfig: (config) => {

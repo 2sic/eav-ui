@@ -140,9 +140,6 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     ).subscribe(viewModel => this.viewModel.set(viewModel));
   }
 
-
-
-
 ngAfterViewInit() {
   this.subscriptions.add(
     this.config.adam.getConfig$().subscribe(adamConfig => {
