@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, computed, Input, OnInit, Signal, signal, ViewContainerRef, WritableSignal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs';
 import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
@@ -22,6 +22,7 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-translate-menu',
@@ -47,7 +48,15 @@ export class TranslateMenuComponent implements OnInit {
   @Input() hideTranslateButton: boolean;
 
   TranslationLinks = TranslationLinks;
-  viewModel$: Observable<TranslateMenuViewModel>;
+
+  viewModel: Signal<TranslateMenuViewModel>;
+  readOnly = toSignal(this.formsState.readOnly$);
+  language = toSignal(this.languageStore.getLanguage$(this.formConfig.config.formId));
+
+  translationState = signal<TranslationState>(null);
+  disableTranslation = signal<boolean>(false);
+  disableAutoTranslation = signal<boolean>(false);
+  disabled = signal<boolean>(false);
 
   constructor(
     private dialog: MatDialog,
@@ -60,42 +69,50 @@ export class TranslateMenuComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const readOnly$ = this.formsState.readOnly$;
-    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
-    const translationState$ = this.fieldSettings.getTranslationState$(this.config.fieldName);
-    const disableTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
+    this.fieldSettings.getTranslationState$(this.config.fieldName).subscribe(translationState => {
+      this.translationState.set(translationState);
+    });
+
+    this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
-      distinctUntilChanged(),
-    );
-    const disableAutoTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
+      distinctUntilChanged()
+    ).subscribe(disableTranslation => {
+      this.disableTranslation.set(disableTranslation);
+    });
+
+    this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableAutoTranslation),
-      distinctUntilChanged(),
-    );
+      distinctUntilChanged()
+    ).subscribe(disableAutoTranslation => {
+      this.disableAutoTranslation.set(disableAutoTranslation);
+    })
 
     const control = this.group.controls[this.config.fieldName];
-    const disabled$ = control.valueChanges.pipe(
+    control.valueChanges.pipe(
       map(() => control.disabled),
       startWith(control.disabled),
-      distinctUntilChanged(),
-    );
+      distinctUntilChanged()
+    ).subscribe(disabled => {
+      this.disabled.set(disabled);
+    });
 
-    this.viewModel$ = combineLatest([
-      readOnly$, language$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
-    ]).pipe(
-      map(([readOnly, language, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
-        const disableTranslateButton = readOnly.isReadOnly || disableTranslation;
-        const viewModel: TranslateMenuViewModel = {
-          ...language,
-          translationState,
-          translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
-          disableAutoTranslation,
-          disabled,
-
-          disableTranslateButton,
-        };
-        return viewModel;
-      }),
-    );
+    this.viewModel = computed(() => {
+      const readOnly = this.readOnly();
+      const language = this.language();
+      const translationState = this.translationState();
+      const disableTranslation = this.disableTranslation();
+      const disableAutoTranslation = this.disableAutoTranslation();
+      const disabled = this.disabled();
+      const disableTranslateButton = readOnly.isReadOnly || disableTranslation;
+      return {
+        ...language,
+        translationState,
+        translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
+        disableAutoTranslation,
+        disabled,
+        disableTranslateButton,
+      };
+    });
   }
 
   translate(): void {
