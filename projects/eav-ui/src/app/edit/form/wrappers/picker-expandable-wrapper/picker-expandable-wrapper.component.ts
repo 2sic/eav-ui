@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { Observable, distinctUntilChanged, share } from 'rxjs';
+import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { distinctUntilChanged, share } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -16,34 +16,35 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: WrappersConstants.PickerExpandableWrapper,
-    templateUrl: './picker-expandable-wrapper.component.html',
-    styleUrls: ['./picker-expandable-wrapper.component.scss'],
-    animations: [ContentExpandAnimation],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        FlexModule,
-        MatCardModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        CdkScrollable,
-        ExtendedFabSpeedDialModule,
-        MatRippleModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: WrappersConstants.PickerExpandableWrapper,
+  templateUrl: './picker-expandable-wrapper.component.html',
+  styleUrls: ['./picker-expandable-wrapper.component.scss'],
+  animations: [ContentExpandAnimation],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatCardModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    CdkScrollable,
+    ExtendedFabSpeedDialModule,
+    MatRippleModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class PickerExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
-  dialogIsOpen$: Observable<boolean>;
-  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
+  dialogIsOpen = signal(false);
+  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
 
   constructor(
     fieldsSettingsService: FieldsSettingsService,
@@ -55,10 +56,13 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
 
   ngOnInit() {
     super.ngOnInit();
-    this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    this.dialogIsOpen$.pipe(distinctUntilChanged()).subscribe(isOpen => {
-      this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
-     });
+
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
+      .pipe(distinctUntilChanged())
+      .subscribe(isOpen => {
+        this.dialogIsOpen.set(isOpen);
+        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
+      });
   }
 
   ngOnDestroy() {
