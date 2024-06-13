@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
 import { FieldsSettingsService } from '../../../shared/services';
@@ -8,16 +8,18 @@ import { ItemFieldVisibility } from '../../../shared/services/item-field-visibil
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: WrappersConstants.HiddenWrapper,
-    templateUrl: './hidden-wrapper.component.html',
-    styleUrls: ['./hidden-wrapper.component.scss'],
-    standalone: true,
-    imports: [AsyncPipe],
+  selector: WrappersConstants.HiddenWrapper,
+  templateUrl: './hidden-wrapper.component.html',
+  styleUrls: ['./hidden-wrapper.component.scss'],
+  standalone: true,
+  imports: [AsyncPipe],
 })
 export class HiddenWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  hidden$: Observable<boolean>;
+  // hidden$: Observable<boolean>;
+
+  hidden: WritableSignal<boolean> = signal(false);
 
   constructor(fieldsSettingsService: FieldsSettingsService) {
     super(fieldsSettingsService);
@@ -25,10 +27,19 @@ export class HiddenWrapperComponent extends BaseFieldComponent implements FieldW
 
   ngOnInit() {
     super.ngOnInit();
-    this.hidden$ = this.settings$.pipe(
+    // this.hidden$ = this.settings$.pipe(
+    //   map(settings => !ItemFieldVisibility.mergedVisible(settings)),
+    //   distinctUntilChanged(),
+    // );
+
+    // TODO:: Fix the settings$ to a Signal
+    this.settings$.pipe(
       map(settings => !ItemFieldVisibility.mergedVisible(settings)),
-      distinctUntilChanged(),
-    );
+      distinctUntilChanged()
+    ).subscribe(value => this.hidden.set(value));
+
+
+
   }
 
   ngOnDestroy() {
