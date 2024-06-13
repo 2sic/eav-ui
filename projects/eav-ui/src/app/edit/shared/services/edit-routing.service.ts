@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { CreateEffectOptions, effect, Injectable, Injector, OnDestroy, signal, Signal, WritableSignal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
@@ -23,7 +23,8 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     private router: Router,
     private languageInstanceService: LanguageInstanceService,
     private formConfig: FormConfigService,
-  ) { 
+    private injector: Injector
+  ) {
     super();
   }
 
@@ -54,6 +55,33 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
       map((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
       distinctUntilChanged()
     );
+  }
+
+  // TODO:: New @2dg: New with Signals effect, get WritableSignal<boolean> from isExpandedSignal
+  /** Tells if field with this index should be expanded */
+  $isExpandedSignal(fieldId: number, entityGuid: string): WritableSignal<boolean> {
+    const fieldIndex = fieldId.toString();
+    const $expandedSignal: WritableSignal<boolean> = signal(false);
+
+    // Create an effect that listens to the route params and updates the signal
+    effect(() => {
+      const subscription = this.route.params.pipe(
+        map((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
+        distinctUntilChanged()
+      ).subscribe(isExpanded => {
+        $expandedSignal.set(isExpanded);
+      });
+
+      // unsubscribe the subscription when the signal is disposed
+      return () => subscription.unsubscribe();
+    },
+      // Set options for the effect
+      // Injector is needed to inject services into the effect
+      // allowSignalWrites: true is needed to allow the effect to write to the signal in a effect
+      { allowSignalWrites: true, injector: this.injector } as CreateEffectOptions
+    );
+
+    return $expandedSignal;
   }
 
   /** Fires when child form is closed and has a result, new entity was added */
