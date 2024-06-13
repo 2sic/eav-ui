@@ -61,7 +61,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
 
   open: WritableSignal<boolean> = signal(false);
   viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
-  saveButtonDisabled = signal(false);
+  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
 
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
@@ -84,9 +84,6 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
 
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
     ).subscribe(value => this.open.set(value));
-
-    this.formsStateService.saveButtonDisabled$.pipe(
-    ).subscribe(value => this.saveButtonDisabled.set(value));
 
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(

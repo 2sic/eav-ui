@@ -30,6 +30,7 @@ import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -69,7 +70,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   // viewModel$: Observable<HyperlinkDefaultExpandableViewModel>;
 
   open: WritableSignal<boolean> = signal(false);
-  saveButtonDisabled = signal(false);
+  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
   viewModel: WritableSignal<HyperlinkDefaultExpandableViewModel> = signal(null);
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
@@ -99,8 +100,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       editRoutingService,
       formsStateService,
     );
-    this.formsStateService.saveButtonDisabled$.pipe(
-    ).subscribe(value => this.saveButtonDisabled.set(value));
+
   }
 
   ngOnInit() {
