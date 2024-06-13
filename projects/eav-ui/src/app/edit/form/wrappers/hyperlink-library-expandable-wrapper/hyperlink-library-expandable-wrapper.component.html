@@ -1,8 +1,8 @@
 <!-- dialog -->
-<div [ngClass]="$open() ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="open() ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
-    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': $open() }">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': open() }">
       <mat-card appearance="raised" class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
@@ -12,12 +12,12 @@
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="$open() ? 'closed' : 'open'">
+      <div [@itemShrinkAnimation]="open() ? 'closed' : 'open'">
       </div>
       <div
         class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-        value: $open() ? 'expanded' : 'closed',
+        value: open() ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
@@ -29,12 +29,12 @@
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="$saveButtonDisabled()"
+            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()"
               (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="$saveButtonDisabled()"
+            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()"
               (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
@@ -47,7 +47,7 @@
 </div>
 
 <!-- preview -->
-@if ($viewModel(); as vm) {
+@if (viewModel(); as vm) {
   <div class="c-ew__preview-holder">
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
       'mat-caption' : vm.itemsNumber > 0,

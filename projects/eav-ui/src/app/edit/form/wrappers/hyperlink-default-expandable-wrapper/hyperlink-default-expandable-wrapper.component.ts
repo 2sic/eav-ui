@@ -68,9 +68,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   // saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
   // viewModel$: Observable<HyperlinkDefaultExpandableViewModel>;
 
-  $open: WritableSignal<boolean> = signal(false);
-  $saveButtonDisabled = signal(false);
-  $viewModel: WritableSignal<HyperlinkDefaultExpandableViewModel> = signal(null);
+  open: WritableSignal<boolean> = signal(false);
+  saveButtonDisabled = signal(false);
+  viewModel: WritableSignal<HyperlinkDefaultExpandableViewModel> = signal(null);
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -100,7 +100,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       formsStateService,
     );
     this.formsStateService.saveButtonDisabled$.pipe(
-    ).subscribe(value => this.$saveButtonDisabled.set(value));
+    ).subscribe(value => this.saveButtonDisabled.set(value));
   }
 
   ngOnInit() {
@@ -108,9 +108,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
     // this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    // this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
-    // ).subscribe(value => this.open.set(value));
-    this.$open = this.editRoutingService.$isExpandedSignal(this.config.index, this.config.entityGuid);
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
+    ).subscribe(value => this.open.set(value));
 
     const settings$ = this.settings$.pipe(
       map(settings => ({
@@ -184,7 +183,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
           showAdamSponsor,
         };
       }),
-    ).subscribe(viewModel => this.$viewModel.set(viewModel));
+    ).subscribe(viewModel => this.viewModel.set(viewModel));
   }
 
   ngAfterViewInit() {

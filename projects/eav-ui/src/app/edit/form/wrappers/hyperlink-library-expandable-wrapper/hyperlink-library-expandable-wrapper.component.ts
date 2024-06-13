@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share, Subject } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
@@ -24,6 +24,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { HyperlinkDefaultExpandableViewModel } from '../hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.models';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
@@ -58,9 +59,10 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   // saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
   // viewModel$: Observable<HyperlinkLibraryExpandableViewModel>;
 
-  $open: WritableSignal<boolean> = signal(false);
-  $saveButtonDisabled = signal(false);
-  $viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
+  open: WritableSignal<boolean> = signal(false);
+  viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
+  saveButtonDisabled = signal(false);
+
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -78,11 +80,14 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   ngOnInit() {
     super.ngOnInit();
 
-    this.formsStateService.saveButtonDisabled$.pipe(
-    ).subscribe(value => this.$saveButtonDisabled.set(value));
-
     // this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    this.$open = this.editRoutingService.$isExpandedSignal(this.config.index, this.config.entityGuid);
+
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
+    ).subscribe(value => this.open.set(value));
+
+    this.formsStateService.saveButtonDisabled$.pipe(
+    ).subscribe(value => this.saveButtonDisabled.set(value));
+
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
@@ -129,7 +134,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
         showAdamSponsor,
       };
     }),
-  ).subscribe(viewModel => this.$viewModel.set(viewModel));
+  ).subscribe(viewModel => this.viewModel.set(viewModel));
 }
 
   ngAfterViewInit() {
