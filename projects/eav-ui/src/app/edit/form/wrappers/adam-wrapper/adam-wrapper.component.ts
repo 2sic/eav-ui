@@ -28,8 +28,7 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 
   fullscreenAdam: boolean;
-  $adamDisabled = signal<boolean>(true);
-
+  adamDisabled = signal<boolean>(true);
   constructor(fieldsSettingsService: FieldsSettingsService) {
     super(fieldsSettingsService);
   }
@@ -43,8 +42,8 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
     this.subscriptions.add(
       this.config.adam.getConfig$().subscribe(adamConfig => {
         const disabled = adamConfig?.disabled ?? true;
-        if (this.$adamDisabled()!== disabled) {
-          this.$adamDisabled.set(disabled);
+        if (this.adamDisabled()!== disabled) {
+          this.adamDisabled.set(disabled);
         }
       })
     );

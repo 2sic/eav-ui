@@ -1,5 +1,5 @@
 <mat-divider></mat-divider>
-@if (viewModel$ | async; as vm) {
+@if (viewModel(); as vm) {
   <div class="hint-box u-border-radius-bottom mat-caption u-shadow-top">
     <div class="hint-box__hint">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
     <div class="hint-box__sponsor">

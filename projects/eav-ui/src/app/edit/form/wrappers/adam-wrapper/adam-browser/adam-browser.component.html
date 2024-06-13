@@ -1,4 +1,4 @@
-@if (viewModel$ | async; as vm) {
+@if (viewModel() ; as vm) {
   <div class="dropzone" [@adamShowAnimate]="vm.adamConfig?.autoLoad ? 'open' : 'closed'">
     @if (vm.adamConfig?.autoLoad && vm.expanded) {
       <div [ngClass]="{
