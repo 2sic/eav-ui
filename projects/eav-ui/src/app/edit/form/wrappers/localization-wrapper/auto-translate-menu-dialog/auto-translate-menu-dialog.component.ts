@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
@@ -18,36 +18,35 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { FeatureTextInfoComponent } from '../../../../../features/feature-text-info/feature-text-info.component';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-    selector: 'app-auto-translate-menu-dialog',
-    templateUrl: './auto-translate-menu-dialog.component.html',
-    styleUrls: ['./auto-translate-menu-dialog.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        FeatureTextInfoComponent,
-        MatListModule,
-        NgClass,
-        ExtendedModule,
-        MatIconModule,
-        SharedComponentsModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-auto-translate-menu-dialog',
+  templateUrl: './auto-translate-menu-dialog.component.html',
+  styleUrls: ['./auto-translate-menu-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FeatureTextInfoComponent,
+    MatListModule,
+    NgClass,
+    ExtendedModule,
+    MatIconModule,
+    SharedComponentsModule,
+    TranslateModule,
+  ],
 })
 export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
-  viewModel$: Observable<TranslateMenuDialogViewModel>;
+  viewModel: WritableSignal<TranslateMenuDialogViewModel> = signal(null);
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
-  private noLanguageRequired: TranslationLink[];
   private isTranslateWithGoogleFeatureEnabled$ = new BehaviorSubject<boolean>(false);
+  private noLanguageRequired: TranslationLink[];
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -95,6 +94,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
 
     const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
+
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),
       language$,
@@ -108,9 +108,9 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.viewModel$ = combineLatest([language$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
+    combineLatest([language$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
       map(([lang, languages, translationState, isTranslateWithGoogleFeatureEnabled]) => {
-        const viewModel: TranslateMenuDialogViewModel = {
+        return {
           primary: lang.primary,
           languages,
           translationState,
@@ -119,9 +119,11 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
           isTranslateWithGoogleFeatureEnabled
         };
-        return viewModel;
       }),
-    );
+    ).subscribe(v => this.viewModel.set(v));
+
+
+
   }
 
   setLanguage(language: string): void {

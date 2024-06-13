@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 
@@ -28,14 +28,14 @@ import { MatCardModule } from '@angular/material/card';
     ExtendedModule,
     MatIconModule,
     MatButtonModule,
-    AsyncPipe,
     TranslateModule,
   ],
 })
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
-  viewModel$: Observable<TranslateMenuDialogViewModel>;
+  // viewModel$: Observable<TranslateMenuDialogViewModel>;
+  viewModel: WritableSignal<TranslateMenuDialogViewModel> = signal(null);
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
@@ -72,9 +72,9 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
         getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType)),
     );
 
-    this.viewModel$ = combineLatest([language$, languages$, this.translationState$]).pipe(
+     combineLatest([language$, languages$, this.translationState$]).pipe(
       map(([lang, languages, translationState]) => {
-        const viewModel: TranslateMenuDialogViewModel = {
+        return {
           primary: lang.primary,
           languages,
           translationState,
@@ -82,9 +82,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
           i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
         };
-        return viewModel;
       }),
-    );
+    ).subscribe(v => this.viewModel.set(v));
   }
 
   ngOnDestroy(): void {
