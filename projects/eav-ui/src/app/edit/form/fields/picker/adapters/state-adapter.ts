@@ -32,8 +32,6 @@ export class StateAdapter extends ServiceBase {
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
 
-  public isDialog$: Observable<boolean>;
-
   public createEntityTypes: { label: string, guid: string }[] = [];
 
   constructor(
@@ -58,7 +56,7 @@ export class StateAdapter extends ServiceBase {
 
   public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
   public readonly settings = signal<FieldSettings>(null);
-  // public allowMultiValue = computed(() => this.settings()?.AllowMultiValue ?? false);
+  
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
   public isExpanded$: Observable<boolean>;
   public label$: Observable<string>;
@@ -148,8 +146,6 @@ export class StateAdapter extends ServiceBase {
 
     var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
 
-    this.isDialog$ = this.settings$.pipe(mapUntilChanged(settings => settings._isDialog));
-
     this.shouldPickerListBeShown$ = combineLatest([
       // this.freeTextMode$,
       this.isExpanded$,
@@ -168,7 +164,6 @@ export class StateAdapter extends ServiceBase {
       this.selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
 
     if (dumpProperties) {
-      this.isDialog$.subscribe(isDialog => this.log.a(`isDialog ${isDialog}`));
       this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
     }
 
