@@ -49,11 +49,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.isStringQuery = false;
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     let source: DataAdapterQuery | DataAdapterEntity;

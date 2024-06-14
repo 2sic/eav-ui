@@ -10,7 +10,7 @@ import { FormConfigService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional, effect, signal } from '@angular/core';
+import { Injectable, Optional, computed, effect, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
@@ -22,15 +22,16 @@ const dumpProperties = false;
 
 @Injectable()
 export class StateAdapter extends ServiceBase {
-  public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public isInFreeTextMode = signal(false);
+
+  public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   // TODO: doesn't seem to be in use, but probably should?
   // my guess is it should detect if the open-dialog is shown
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
-  public allowMultiValue$: Observable<boolean>;
+
   public isDialog$: Observable<boolean>;
 
   public createEntityTypes: { label: string, guid: string }[] = [];
@@ -44,14 +45,20 @@ export class StateAdapter extends ServiceBase {
     this.cacheItems$ = entityCacheService.getEntities$();
 
     // experimental logging
-    effect(() => {
-      var settings = this.settings();
-      console.log('2dm settings changed', settings);
-    });
+    // effect(() => {
+    //   var settings = this.settings();
+    //   console.log('2dm settings changed', settings);
+    // });
+
+    // effect(() => {
+    //   var mf = this.allowMultiValue();
+    //   console.log('2dm allowMultiValue changed', mf);
+    // });
   }
 
   public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
-  private readonly settings = signal<FieldSettings>(null);
+  public readonly settings = signal<FieldSettings>(null);
+  // public allowMultiValue = computed(() => this.settings()?.AllowMultiValue ?? false);
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
   public isExpanded$: Observable<boolean>;
   public label$: Observable<string>;
@@ -139,14 +146,14 @@ export class StateAdapter extends ServiceBase {
       logSelected.end(),
     );
 
-    this.allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
+    var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
 
     this.isDialog$ = this.settings$.pipe(mapUntilChanged(settings => settings._isDialog));
 
     this.shouldPickerListBeShown$ = combineLatest([
       // this.freeTextMode$,
       this.isExpanded$,
-      this.allowMultiValue$,
+      allowMultiValue$,
       this.selectedItems$,
     ]).pipe(
       map(([/*freeTextMode, */ isExpanded, allowMultiValue, selectedItems]) => {
@@ -161,7 +168,6 @@ export class StateAdapter extends ServiceBase {
       this.selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
 
     if (dumpProperties) {
-      this.allowMultiValue$.subscribe(allowMv => this.log.a(`allowMultiValue ${allowMv}`));
       this.isDialog$.subscribe(isDialog => this.log.a(`isDialog ${isDialog}`));
       this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
     }

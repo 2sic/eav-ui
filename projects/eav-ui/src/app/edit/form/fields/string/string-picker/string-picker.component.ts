@@ -51,11 +51,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     this.isStringQuery = true;
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 

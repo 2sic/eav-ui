@@ -45,11 +45,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     EntityDefaultLogic.importMe();
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 

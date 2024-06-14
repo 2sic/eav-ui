@@ -42,11 +42,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     EntityDefaultLogic.importMe();
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     const state = this.pickerStringStateAdapterRaw.attachToComponent(this);

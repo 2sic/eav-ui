@@ -46,11 +46,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     EntityContentBlocksLogic.importMe();
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
   protected /* FYI: override */ createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     const state = this.pickerStateAdapterRaw.attachToComponent(this);
