@@ -2,7 +2,7 @@
   @if (!vm.allowMultiValue) {
     <mat-label class="field-label"
       [ngClass]="{ 'disabled': vm.csDisabled }">
-      {{ vm.label }} {{ vm.required ? '*': '' }}
+      {{ label() }} {{ vm.required ? '*': '' }}
     </mat-label>
   }
   @if (vm.selectedItems.length > 0) {

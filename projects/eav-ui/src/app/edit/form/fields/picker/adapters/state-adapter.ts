@@ -25,7 +25,6 @@ export class StateAdapter extends ServiceBase {
   public isInFreeTextMode = signal(false);
 
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   // TODO: doesn't seem to be in use, but probably should?
   // my guess is it should detect if the open-dialog is shown
@@ -59,7 +58,9 @@ export class StateAdapter extends ServiceBase {
   
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
   public isExpanded$: Observable<boolean>;
-  public label$: Observable<string>;
+  
+  public label = computed(() => this.settings()?.Name ?? '');
+
   public placeholder$: Observable<string>;
   public required$: Observable<boolean>;
   public cacheItems$: Observable<PickerItem[]>;
@@ -74,7 +75,6 @@ export class StateAdapter extends ServiceBase {
       component.config,
       component.controlStatus$,
       component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
-      component.label$,
       component.placeholder$,
       component.required$,
       component.control,
@@ -87,7 +87,6 @@ export class StateAdapter extends ServiceBase {
     config: FieldConfigSet,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
     isExpanded$: Observable<boolean>,
-    label$: Observable<string>,
     placeholder$: Observable<string>,
     required$: Observable<boolean>,
     control: AbstractControl,
@@ -98,7 +97,6 @@ export class StateAdapter extends ServiceBase {
     this.subscriptions.add(settings$.subscribe(this.settings.set));
     this.controlStatus$ = controlStatus$;
     this.isExpanded$ = isExpanded$;
-    this.label$ = label$;
     this.placeholder$ = placeholder$;
     this.required$ = required$;
     this.control = control;
@@ -174,7 +172,6 @@ export class StateAdapter extends ServiceBase {
     this.settings$.complete();
     this.controlStatus$.complete();
     this.disableAddNew$.complete();
-    this.error$.complete();
   }
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {

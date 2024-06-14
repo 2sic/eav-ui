@@ -53,8 +53,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
     this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
     this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$]);
-    const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
-      .setupQuery(state.error$);
+    const source = this.querySourceAdapterRaw.setupFromComponent(this, state);
 
     state.init('EntityQueryComponent');
     source.init('EntityQueryComponent');

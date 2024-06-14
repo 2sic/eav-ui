@@ -1,6 +1,6 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from "rxjs";
+import { combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { DataSourceQuery } from "../data-sources/data-source-query";
@@ -43,23 +43,12 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     );
   }
 
-  private error$: BehaviorSubject<string>;
   private isStringQuery: boolean;
 
   override setupFromComponent(component: PickerComponent, state: StateAdapter): this {
     this.log.a('setupFromComponent');
     super.setupFromComponent(component, state);
     this.isStringQuery = component.isStringQuery;
-    return this;
-  }
-
-
-  public setupQuery(
-    error$: BehaviorSubject<string>,
-  ): this {
-
-    this.log.a('setupQuery');
-    this.error$ = error$;
     return this;
   }
 
@@ -138,7 +127,6 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
   destroy(): void {
     this.paramsMask?.destroy();
-    this.error$.complete();
     super.destroy();
   }
 

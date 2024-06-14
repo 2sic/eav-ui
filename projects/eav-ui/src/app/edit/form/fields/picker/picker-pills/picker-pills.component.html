@@ -7,7 +7,7 @@
       'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !config.initialDisabled,
       'color__label-disabled' : config.initialDisabled
       }">
-      {{ vm.label }} {{ vm.required ? '*': '' }}
+      {{ label() }} {{ vm.required ? '*': '' }}
     </mat-label>
     <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
       [ngClass]="{

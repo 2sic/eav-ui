@@ -72,7 +72,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       );
     }
     else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery)
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state);
     else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
       source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
 

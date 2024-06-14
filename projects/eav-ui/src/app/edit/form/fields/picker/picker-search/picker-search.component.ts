@@ -97,6 +97,9 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Debug status for UI, mainly to show "add-null" button */
   debugEnabled = toSignal(this.globalConfigService.getDebugEnabled$(), { initialValue: false });
 
+  /** Label to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  label = computed(() => this.pickerData().state.label());
+
   /** Current applicable settings like "enableEdit" etc. */
   settings = computed(() => {
     const selected = this.selectedItem();
@@ -146,8 +149,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     }
 
     const controlStatus$ = state.controlStatus$;
-    const error$ = state.error$;
-    const label$ = state.label$;
     const required$ = state.required$;
 
     const fieldSettings$ = this.fieldsSettingsService.getFieldSettingsReplayed$(config.fieldName);
@@ -164,13 +165,13 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     // Create the default ViewModel used in the other modes
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
-      this.optionItems$, error$,
-      controlStatus$, label$, required$, this.triggerFilter,
+      this.optionItems$, 
+      controlStatus$, required$, this.triggerFilter,
     ]).pipe(
       logVm.pipe(),
       map(([
-        optionItems, error,
-        controlStatus, label, required, /* filter: only used for refresh */ _,
+        optionItems,
+        controlStatus, required, /* filter: only used for refresh */ _,
       ]) => {
         optionItems = optionItems ?? [];
 
@@ -189,9 +190,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
 
         const viewModel: PickerSearchViewModel = {
           options: optionItems,
-          error,
           controlStatus,
-          label,
           required,
           filteredItems: filterOrMessage,
 
@@ -292,12 +291,12 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     });
   }
 
-  getPlaceholder(availableEntities: PickerItem[], error: string): string {
+  getPlaceholder(availableEntities: PickerItem[]): string {
     // this.log.a(`getPlaceholder error: '${error}'`, availableEntities);
     var placeholder = availableEntities?.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.logItemChecks.add(`getPlaceholder error: '${error}'; result '${placeholder}'`, availableEntities);
+    this.logItemChecks.add(`getPlaceholder error: result '${placeholder}'`, availableEntities);
     return placeholder;
   }
 

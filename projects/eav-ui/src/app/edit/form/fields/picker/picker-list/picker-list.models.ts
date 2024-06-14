@@ -6,7 +6,6 @@ export interface EntityListViewModel {
   enableDelete: boolean;
   enableRemove: boolean;
   selectedItems: PickerItem[];
-  label: string;
   required: boolean;
 
   csDisabled: boolean;

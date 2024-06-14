@@ -11,7 +11,7 @@
     <mat-form-field [formGroup]="group" class="eav-mat-form-field" color="accent"
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }"
       (click)="filterSelectionList()">
-      <input matInput #autocomplete class="eav-translate-on-dblclick" [placeholder]="getPlaceholder(vm.options, vm.error)"
+      <input matInput #autocomplete class="eav-translate-on-dblclick" [placeholder]="getPlaceholder(vm.options)"
         [matAutocomplete]="auto" [disabled]="vm.isDisabled || !settings().enableAddExisting"
         [value]="showSelectedItem() ? selectedItem()?.label : ''" (focus)="fetchEntities()" (blur)="markAsTouched()"
         (input)="filterSelectionList()">
@@ -44,7 +44,7 @@
         </span>
       }
       <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
-        {{ vm.label }} {{ vm.required ? '*': '' }}
+        {{ label() }} {{ vm.required ? '*': '' }}
       </mat-label>
     </mat-form-field>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)" [hideSingleSelectionIndicator]="true"

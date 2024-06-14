@@ -64,7 +64,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
       this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state);
     }
 
     state.init('EntityPickerComponent');
