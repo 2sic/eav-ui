@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
@@ -12,7 +12,6 @@ import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 const logThis = false;
 
@@ -36,6 +35,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     editRoutingService: EditRoutingService,
     private pickerStateAdapterRaw: StateAdapter,
     private pickerEntitySourceAdapter: DataAdapterEntity,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -63,6 +63,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       state,
       source,
       this.translate,
+      this.injector,
     );
   }
 }

@@ -84,7 +84,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
 
   public selectedItems = computed(() => this.pickerData().selectedItemsSig());
 
-
   /**
    * Currently selected item, just 1, because this input will only ever show 1
    * and it needs to know if certain edit buttons should be shown.
@@ -168,12 +167,12 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     // Create the default ViewModel used in the other modes
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
-      pickerData.selectedItems$, this.optionItems$, error$,
+      this.optionItems$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.triggerFilter,
     ]).pipe(
       logVm.pipe(),
       map(([
-        selectedItems, optionItems, error,
+        optionItems, error,
         controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
       ]) => {
         optionItems = optionItems ?? [];
@@ -192,7 +191,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
           : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterValue })];
 
         const viewModel: PickerSearchViewModel = {
-          selectedItems,
           options: optionItems,
           error,
           controlStatus,

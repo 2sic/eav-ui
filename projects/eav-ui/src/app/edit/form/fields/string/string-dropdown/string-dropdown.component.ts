@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -33,6 +33,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     editRoutingService: EditRoutingService,
     private pickerStringSourceAdapterRaw: DataAdapterString,
     private pickerStringStateAdapterRaw: StateAdapterString,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -64,6 +65,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       state,
       source,
       this.translate,
+      this.injector,
     );
   }
 }

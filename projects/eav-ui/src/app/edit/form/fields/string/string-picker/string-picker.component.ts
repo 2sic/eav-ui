@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { PickerComponent } from '../../picker/picker.component';
@@ -40,6 +40,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     private stateAdapterStringRaw: StateAdapterString,
     private pickerEntitySourceAdapter: DataAdapterEntity,
     private querySourceAdapterRaw: DataAdapterQuery,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -87,6 +88,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
+      this.injector,
     );
   }
 }

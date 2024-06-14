@@ -1,4 +1,4 @@
-import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
+import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take } from 'rxjs';
 import { DataAdapter } from "./adapters/data-adapter.interface";
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
@@ -6,7 +6,8 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { computed, signal } from '@angular/core';
+import { Injector, Signal, computed, runInInjectionContext } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 
@@ -14,7 +15,7 @@ export class PickerData extends ServiceBase {
 
   public selectedItems$: Observable<PickerItem[]>;
 
-  public selectedItemsSig = signal<PickerItem[]>([]); // toSignal(this.selectedItems$, { initialValue: [] });
+  public selectedItemsSig: Signal<PickerItem[]>;
 
   public selectedItemSig = computed(() => this.selectedItemsSig()[0] ?? null);
 
@@ -22,6 +23,8 @@ export class PickerData extends ServiceBase {
     public state: StateAdapter,
     public source: DataAdapter,
     private translate: TranslateService,
+    /** the injector is needed so that signals can destroy when they are not needed any more */
+    injector: Injector,
   ) {
     super(new EavLogger('PickerData', logThis));
 
@@ -51,16 +54,10 @@ export class PickerData extends ServiceBase {
       logSelected.end(),
     );
 
-    // Temporary plumbing
-    const logToSignal = new EavLogger('PickerData', true).rxTap('selectedItemsSig', { enabled: true });
-    this.subscriptions.add(
-      this.selectedItems$
-        .pipe(
-          logToSignal.pipe(),
-        )
-        .subscribe(items => this.selectedItemsSig.set(items))
-    );
-
+    // Convert to signal; must happen inside the injection context
+    runInInjectionContext(injector, () => {
+      this.selectedItemsSig = toSignal(this.selectedItems$, { initialValue: [] });
+    });
   }
 
   override destroy() {

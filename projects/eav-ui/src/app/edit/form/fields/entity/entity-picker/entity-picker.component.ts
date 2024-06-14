@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
@@ -37,6 +37,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     private stateRaw: StateAdapterEntity,
     private entitySourceAdapterRaw: DataAdapterEntity,
     private querySourceAdapterRaw: DataAdapterQuery,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -77,6 +78,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
+      this.injector,
     );
   }
 }
