@@ -1,12 +1,12 @@
 @if (viewModel$ | async; as vm) {
   <app-picker-list
-    [pickerData]="pickerData"
+    [pickerData]="pickerData()"
     [config]="config"
     [group]="group">
   </app-picker-list>
   @if (!vm.freeTextMode) {
     <app-picker-search
-      [pickerData]="pickerData"
+      [pickerData]="pickerData()"
       [config]="config"
       [group]="group"
       [controlConfig]="controlConfig"
@@ -16,7 +16,7 @@
   }
   @if (vm.freeTextMode) {
     <app-picker-text
-      [pickerData]="pickerData"
+      [pickerData]="pickerData()"
       [config]="config"
       [group]="group">
     </app-picker-text>
@@ -24,7 +24,7 @@
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   <!-- add new entity -->
   @if (vm.showAddNewEntityButtonInDialog) {
-    @if (pickerData.state.createEntityTypes.length > 1) {
+    @if (pickerData().state.createEntityTypes.length > 1) {
       <div fxLayout="row" fxLayoutAlign="end center">
         <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
           [disabled]="vm.controlStatus.disabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
@@ -32,7 +32,7 @@
           <mat-icon>add</mat-icon>
         </button>
         <mat-menu #entityTypesMenu="matMenu">
-          @for (entityType of pickerData.state.createEntityTypes; track entityType) {
+          @for (entityType of pickerData().state.createEntityTypes; track entityType) {
             <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
               <span>{{ entityType.label }}</span>
             </button>

@@ -6,12 +6,17 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { computed, signal } from '@angular/core';
 
 const logThis = false;
 
 export class PickerData extends ServiceBase {
 
-  public selectedItems$ = new Observable<PickerItem[]>;
+  public selectedItems$: Observable<PickerItem[]>;
+
+  public selectedItemsSig = signal<PickerItem[]>([]); // toSignal(this.selectedItems$, { initialValue: [] });
+
+  public selectedItemSig = computed(() => this.selectedItemsSig()[0] ?? null);
 
   constructor(
     public state: StateAdapter,
@@ -45,6 +50,17 @@ export class PickerData extends ServiceBase {
       shareReplay(1),
       logSelected.end(),
     );
+
+    // Temporary plumbing
+    const logToSignal = new EavLogger('PickerData', true).rxTap('selectedItemsSig', { enabled: true });
+    this.subscriptions.add(
+      this.selectedItems$
+        .pipe(
+          logToSignal.pipe(),
+        )
+        .subscribe(items => this.selectedItemsSig.set(items))
+    );
+
   }
 
   override destroy() {

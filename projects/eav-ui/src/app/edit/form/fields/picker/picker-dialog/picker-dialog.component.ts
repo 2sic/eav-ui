@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -21,26 +21,26 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
-    selector: 'app-picker-dialog',
-    templateUrl: './picker-dialog.component.html',
-    styleUrls: ['./picker-dialog.component.scss'],
-    standalone: true,
-    imports: [
-        PickerListComponent,
-        PickerSearchComponent,
-        PickerTextComponent,
-        FieldHelperTextComponent,
-        FlexModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatMenuModule,
-        MatIconModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-picker-dialog',
+  templateUrl: './picker-dialog.component.html',
+  styleUrls: ['./picker-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    PickerListComponent,
+    PickerSearchComponent,
+    PickerTextComponent,
+    FieldHelperTextComponent,
+    FlexModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatMenuModule,
+    MatIconModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class PickerDialogComponent extends BaseComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerData: PickerData;
+  pickerData = input.required<PickerData>()
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
@@ -54,8 +54,8 @@ export class PickerDialogComponent extends BaseComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
-    const state = this.pickerData.state;
-    const source = this.pickerData.source;
+    const state = this.pickerData().state;
+    const source = this.pickerData().source;
 
     const freeTextMode$ = state.freeTextMode$;
     const disableAddNew$ = state.disableAddNew$;
@@ -98,10 +98,10 @@ export class PickerDialogComponent extends BaseComponent implements OnInit, OnDe
   }
 
   openNewEntityDialog(entityType: string): void {
-    this.pickerData.source.editItem(null, entityType);
+    this.pickerData().source.editItem(null, entityType);
   }
 
   getEntityTypesData(): void {
-    this.pickerData.state.getEntityTypesData();
+    this.pickerData().state.getEntityTypesData();
   }
 }
