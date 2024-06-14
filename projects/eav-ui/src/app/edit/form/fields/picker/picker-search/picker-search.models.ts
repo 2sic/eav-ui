@@ -5,7 +5,6 @@ export interface PickerSearchViewModel {
   options: PickerItem[];
   error: string;
   controlStatus: ControlStatus<string | string[]>;
-  freeTextMode: boolean;
   label: string;
   required: boolean;
   filteredItems: PickerItem[];

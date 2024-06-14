@@ -2,7 +2,7 @@ import { PickerItem } from 'projects/edit-types';
 
 export interface EntityPickerPreviewViewModel {
   selectedItems: PickerItem[];
-  freeTextMode: boolean;
+  // freeTextMode: boolean;
   enableTextEntry: boolean;
   disableAddNew: boolean;
 

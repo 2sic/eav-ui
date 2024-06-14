@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, shareReplay, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
@@ -23,6 +23,7 @@ import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { EavContentType, EavEntityAttributes } from '../models/eav';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 /**
@@ -380,6 +381,15 @@ export class FieldsSettingsService implements OnDestroy {
       shareReplay(1),
     );
   }
+
+  getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
+    const cached = this.signalsCache[fieldName];
+    if (cached) return cached;
+    
+    var obs = this.getFieldSettingsReplayed$(fieldName);
+    return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsCache: Record<string, Signal<FieldSettings>> = {};
 
   /**
    * Used for translation state stream for a specific field.

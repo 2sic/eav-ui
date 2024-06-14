@@ -82,12 +82,10 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
 
   private newValue: string = null;
 
+  /** All Selected Items */
   public selectedItems = computed(() => this.pickerData().selectedItemsSig());
 
-  /**
-   * Currently selected item, just 1, because this input will only ever show 1
-   * and it needs to know if certain edit buttons should be shown.
-   */
+  /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
   public selectedItem = computed(() => this.pickerData().selectedItemSig());
 
   /** True/false trigger to trigger filtering */
@@ -147,7 +145,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
       this.optionItems$ = source.optionsOrHints$;
     }
 
-    const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
     const error$ = state.error$;
     const label$ = state.label$;
@@ -168,12 +165,12 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
       this.optionItems$, error$,
-      controlStatus$, freeTextMode$, label$, required$, this.triggerFilter,
+      controlStatus$, label$, required$, this.triggerFilter,
     ]).pipe(
       logVm.pipe(),
       map(([
         optionItems, error,
-        controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
+        controlStatus, label, required, /* filter: only used for refresh */ _,
       ]) => {
         optionItems = optionItems ?? [];
 
@@ -194,7 +191,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
           options: optionItems,
           error,
           controlStatus,
-          freeTextMode,
           label,
           required,
           filteredItems: filterOrMessage,

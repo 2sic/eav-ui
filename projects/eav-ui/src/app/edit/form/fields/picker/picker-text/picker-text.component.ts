@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, computed, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PickerItem } from 'projects/edit-types';
 import { combineLatest, map, Observable } from 'rxjs';
@@ -26,9 +26,11 @@ import { FlexModule } from '@angular/flex-layout/flex';
   ],
 })
 export class PickerTextComponent implements OnInit {
-  @Input() pickerData: PickerData;
+  pickerData = input.required<PickerData>();
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
+
+  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
 
   selectedEntity: PickerItem | null = null;
   selectedEntities: PickerItem[] = [];
@@ -41,9 +43,8 @@ export class PickerTextComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const state = this.pickerData.state;
+    const state = this.pickerData().state;
 
-    const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
     const label$ = state.label$;
     const placeholder$ = state.placeholder$;
@@ -54,15 +55,14 @@ export class PickerTextComponent implements OnInit {
     );
 
     this.viewModel$ = combineLatest([
-      controlStatus$, freeTextMode$, label$, placeholder$, required$, separator$
+      controlStatus$, label$, placeholder$, required$, separator$
     ]).pipe(
       map(([
-        controlStatus, freeTextMode, label, placeholder, required, separator,
+        controlStatus, label, placeholder, required, separator,
       ]) => {
         const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
         const viewModel: EntityPickerTextViewModel = {
           controlStatus,
-          freeTextMode,
           label,
           placeholder,
           required,
@@ -76,6 +76,6 @@ export class PickerTextComponent implements OnInit {
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) { return; }
-    this.pickerData.state.toggleFreeTextMode();
+    this.pickerData().state.toggleFreeTextMode();
   }
 }

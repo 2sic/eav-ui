@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, computed, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -47,6 +47,9 @@ export class PickerDialogComponent extends BaseComponent implements OnInit, OnDe
 
   viewModel$: Observable<EntityPickerDialogViewModel>;
 
+  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
+
+
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
   ) {
@@ -55,9 +58,7 @@ export class PickerDialogComponent extends BaseComponent implements OnInit, OnDe
 
   ngOnInit(): void {
     const state = this.pickerData().state;
-    const source = this.pickerData().source;
 
-    const freeTextMode$ = state.freeTextMode$;
     const disableAddNew$ = state.disableAddNew$;
     const controlStatus$ = state.controlStatus$;
 
@@ -72,16 +73,15 @@ export class PickerDialogComponent extends BaseComponent implements OnInit, OnDe
     );
 
     this.viewModel$ = combineLatest([
-      settings$, controlStatus$, freeTextMode$, disableAddNew$
+      settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
-        settings, controlStatus, freeTextMode, disableAddNew
+        settings, controlStatus, disableAddNew
       ]) => {
-        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
+        const showAddNewEntityButtonInDialog = !this.isInFreeTextMode() && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
 
         const viewModel: EntityPickerDialogViewModel = {
           controlStatus,
-          freeTextMode,
           disableAddNew,
 
           // additional properties for easier readability in the template

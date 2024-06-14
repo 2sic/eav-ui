@@ -1,5 +1,5 @@
 import { PickerItem, FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
@@ -10,7 +10,7 @@ import { FormConfigService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional } from '@angular/core';
+import { Injectable, Optional, effect, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
@@ -23,7 +23,7 @@ const dumpProperties = false;
 @Injectable()
 export class StateAdapter extends ServiceBase {
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  public freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public isInFreeTextMode = signal(false);
   public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   // TODO: doesn't seem to be in use, but probably should?
@@ -42,9 +42,16 @@ export class StateAdapter extends ServiceBase {
   ) {
     super(logger ?? new EavLogger('PickerStateAdapter', logThis));
     this.cacheItems$ = entityCacheService.getEntities$();
+
+    // experimental logging
+    effect(() => {
+      var settings = this.settings();
+      console.log('2dm settings changed', settings);
+    });
   }
 
   public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
+  private readonly settings = signal<FieldSettings>(null);
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
   public isExpanded$: Observable<boolean>;
   public label$: Observable<string>;
@@ -83,6 +90,7 @@ export class StateAdapter extends ServiceBase {
   ): this {
     this.log.a('setupShared');
     this.settings$ = settings$;
+    this.subscriptions.add(settings$.subscribe(this.settings.set));
     this.controlStatus$ = controlStatus$;
     this.isExpanded$ = isExpanded$;
     this.label$ = label$;
@@ -136,13 +144,13 @@ export class StateAdapter extends ServiceBase {
     this.isDialog$ = this.settings$.pipe(mapUntilChanged(settings => settings._isDialog));
 
     this.shouldPickerListBeShown$ = combineLatest([
-      this.freeTextMode$,
+      // this.freeTextMode$,
       this.isExpanded$,
       this.allowMultiValue$,
       this.selectedItems$,
     ]).pipe(
-      map(([freeTextMode, isExpanded, allowMultiValue, selectedItems]) => {
-        return !freeTextMode
+      map(([/*freeTextMode, */ isExpanded, allowMultiValue, selectedItems]) => {
+        return !this.isInFreeTextMode()
           && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
           && (!allowMultiValue || (allowMultiValue && isExpanded));
       })
@@ -165,7 +173,6 @@ export class StateAdapter extends ServiceBase {
     this.settings$.complete();
     this.controlStatus$.complete();
     this.disableAddNew$.complete();
-    this.freeTextMode$.complete();
     this.error$.complete();
   }
 
@@ -223,7 +230,7 @@ export class StateAdapter extends ServiceBase {
   reorder(reorderIndexes: ReorderIndexes) { this.updateValue('reorder', reorderIndexes); }
 
   toggleFreeTextMode(): void {
-    this.freeTextMode$.next(!this.freeTextMode$.value);
+    this.isInFreeTextMode.update(p => !p);
   }
 
   getEntityTypesData(): void {

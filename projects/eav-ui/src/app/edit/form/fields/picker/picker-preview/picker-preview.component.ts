@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, computed, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
@@ -52,6 +52,8 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
 
   viewModel$: Observable<EntityPickerPreviewViewModel>;
 
+  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
+
   log = new EavLogger('PickerPreviewComponent', logThis);
 
   constructor(
@@ -65,7 +67,6 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
     const pickerData = this.pickerData();
     const state = pickerData.state;
     const selectedItems$ = pickerData.selectedItems$;
-    const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
     const disableAddNew$ = state.disableAddNew$;
 
@@ -80,10 +81,10 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
     );
 
     this.viewModel$ = combineLatest([
-      selectedItems$, freeTextMode$, settings$, controlStatus$, disableAddNew$
+      selectedItems$, settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
-        selectedItems, freeTextMode, settings, controlStatus, disableAddNew
+        selectedItems, settings, controlStatus, disableAddNew
       ]) => {
         const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
         const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
@@ -92,7 +93,6 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
 
         const viewModel: EntityPickerPreviewViewModel = {
           selectedItems,
-          freeTextMode,
           enableTextEntry: settings.EnableTextEntry,
           disableAddNew,
 

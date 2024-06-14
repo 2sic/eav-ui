@@ -1,7 +1,7 @@
 @if (viewModel$ | async; as vm) {
   <div fxLayout="row" fxLayoutAlign="start center">
     <div class="eav-mat-form-field">
-      @if (vm.selectedItems.length > 1 && !vm.freeTextMode) {
+      @if (vm.selectedItems.length > 1 && !isInFreeTextMode()) {
         <app-picker-pills
           [pickerData]="pickerData()"
           [config]="config"
@@ -10,11 +10,11 @@
             [pickerData]="pickerData()"
             [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
-            [freeTextMode]="vm.freeTextMode">
+            [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-pills>
       }
-      @if (vm.selectedItems.length <= 1 && !vm.freeTextMode) {
+      @if (vm.selectedItems.length <= 1 && !isInFreeTextMode()) {
         <app-picker-search
           [pickerData]="pickerData()"
           [config]="config"
@@ -26,11 +26,11 @@
             [pickerData]="pickerData()"
             [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
-            [freeTextMode]="vm.freeTextMode">
+            [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-search>
       }
-      @if (vm.freeTextMode) {
+      @if (isInFreeTextMode()) {
         <app-picker-text
           [pickerData]="pickerData()"
           [config]="config"
@@ -39,7 +39,7 @@
             [pickerData]="pickerData()"
             [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
-            [freeTextMode]="vm.freeTextMode">
+            [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-text>
       }

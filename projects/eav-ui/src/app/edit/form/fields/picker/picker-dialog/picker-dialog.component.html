@@ -4,7 +4,7 @@
     [config]="config"
     [group]="group">
   </app-picker-list>
-  @if (!vm.freeTextMode) {
+  @if (!isInFreeTextMode()) {
     <app-picker-search
       [pickerData]="pickerData()"
       [config]="config"
@@ -13,8 +13,8 @@
       [showSelectedItem]="false"
       [showItemEditButtons]="false">
     </app-picker-search>
-  }
-  @if (vm.freeTextMode) {
+  } 
+  @else {
     <app-picker-text
       [pickerData]="pickerData()"
       [config]="config"
