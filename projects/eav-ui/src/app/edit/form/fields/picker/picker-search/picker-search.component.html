@@ -44,7 +44,7 @@
         </span>
       }
       <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
-        {{ label() }} {{ vm.required ? '*': '' }}
+        {{ basics().labelWithRequired }}
       </mat-label>
     </mat-form-field>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)" [hideSingleSelectionIndicator]="true"

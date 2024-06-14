@@ -1,4 +1,4 @@
-import { Component, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Directive, Input, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -7,6 +7,7 @@ import { FieldsSettingsService } from '../../../shared/services';
 import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../builder/fields-builder/field.model';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 
 // @Directive()
 @Component({
@@ -26,6 +27,9 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   label$: Observable<string>;
   placeholder$: Observable<string>;
   required$: Observable<boolean>;
+
+  private settingsSignal = signal<FieldSettings>(null);
+  basics = computed(() => BasicControlSettings.fromSettings(this.settingsSignal()))
 
   // TODO: @2DM - GET RED OF THE FORMcONFIG HERE
   constructor(public fieldsSettingsService: FieldsSettingsService) { super(); }
@@ -52,10 +56,13 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
 
     this.settings$ = new BehaviorSubject(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
     this.subscriptions.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+      this.fieldsSettingsService.getFieldSettingsReplayed$(this.config.fieldName).subscribe(settings => {
         this.settings$.next(settings);
       })
     );
+    // WIP
+    this.subscriptions.add(this.settings$.subscribe(this.settingsSignal.set));
+
     this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
     this.required$ = this.settings$.pipe(map(settings => settings._currentRequired), distinctUntilChanged());

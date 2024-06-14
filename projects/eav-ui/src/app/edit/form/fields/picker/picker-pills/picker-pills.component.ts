@@ -32,8 +32,8 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
 
   viewModel$: Observable<PickerPillsViewModel>;
 
-  /** Label to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  label = computed(() => this.pickerData().state.label());
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
 
   constructor(
     fieldsSettingsService: FieldsSettingsService,
@@ -46,27 +46,24 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
     super.ngOnInit();
     const pd = this.pickerData();
     const state = pd.state;
-    const source = pd.source;
 
     const controlStatus$ = state.controlStatus$;
     const placeholder$ = state.placeholder$;
-    const required$ = state.required$;
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     const selectedItems$ = pd.selectedItems$;
     const settings$ = state.settings$;
 
     this.viewModel$ = combineLatest([
-      combineLatest([controlStatus$, placeholder$, required$]),
+      combineLatest([controlStatus$, placeholder$]),
       combineLatest([selectedItems$, isOpen$, settings$]),
     ]).pipe(
       map(([
-        [controlStatus, placeholder, required],
+        [controlStatus, placeholder],
         [selectedItems, isOpen, settings],
       ]) => {
         const viewModel: PickerPillsViewModel = {
           controlStatus,
           placeholder,
-          required,
           selectedItems,
           itemsNumber: selectedItems?.length || 0,
           isOpen,

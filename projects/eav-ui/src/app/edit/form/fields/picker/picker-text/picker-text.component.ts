@@ -38,8 +38,8 @@ export class PickerTextComponent implements OnInit {
   filteredEntities: PickerItem[] = [];
   viewModel$: Observable<EntityPickerTextViewModel>;
 
-  /** Label to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  label = computed(() => this.pickerData().state.label());
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
@@ -50,23 +50,21 @@ export class PickerTextComponent implements OnInit {
 
     const controlStatus$ = state.controlStatus$;
     const placeholder$ = state.placeholder$;
-    const required$ = state.required$;
 
     const separator$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.Separator),
     );
 
     this.viewModel$ = combineLatest([
-      controlStatus$, placeholder$, required$, separator$
+      controlStatus$, placeholder$, separator$
     ]).pipe(
       map(([
-        controlStatus, placeholder, required, separator,
+        controlStatus, placeholder, separator,
       ]) => {
         const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
         const viewModel: EntityPickerTextViewModel = {
           controlStatus,
           placeholder,
-          required,
 
           isSeparatorNewLine,
         };

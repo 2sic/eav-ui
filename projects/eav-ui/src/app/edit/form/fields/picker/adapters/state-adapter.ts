@@ -15,6 +15,7 @@ import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 
 const logThis = false;
 const dumpSelected = true;
@@ -57,12 +58,13 @@ export class StateAdapter extends ServiceBase {
   public readonly settings = signal<FieldSettings>(null);
   
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
-  public isExpanded$: Observable<boolean>;
+  private isExpanded$: Observable<boolean>;
   
-  public label = computed(() => this.settings()?.Name ?? '');
+  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
 
+  // TODO: REMOVE THIS NEXT @2DM
   public placeholder$: Observable<string>;
-  public required$: Observable<boolean>;
+
   public cacheItems$: Observable<PickerItem[]>;
   public control: AbstractControl;
   private focusOnSearchComponent: () => void;
@@ -98,7 +100,6 @@ export class StateAdapter extends ServiceBase {
     this.controlStatus$ = controlStatus$;
     this.isExpanded$ = isExpanded$;
     this.placeholder$ = placeholder$;
-    this.required$ = required$;
     this.control = control;
     this.focusOnSearchComponent = focusOnSearchComponent;
     return this;

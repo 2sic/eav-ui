@@ -41,8 +41,8 @@ export class PickerListComponent implements OnInit {
 
   viewModel$: Observable<EntityListViewModel>;
 
-  /** Label to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  label = computed(() => this.pickerData().state.label());
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
@@ -52,7 +52,6 @@ export class PickerListComponent implements OnInit {
     const pd = this.pickerData();
     const state = pd.state;
 
-    const required$ = state.required$;
     const controlStatus$ = state.controlStatus$;
     const selectedItems$ = pd.selectedItems$;
 
@@ -66,10 +65,10 @@ export class PickerListComponent implements OnInit {
       distinctUntilChanged(RxHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      settings$, required$, controlStatus$, selectedItems$
+      settings$, controlStatus$, selectedItems$
     ]).pipe(
       map(([
-        settings, required, controlStatus, selectedItems
+        settings, controlStatus, selectedItems
       ]) => {
         const csDisabled = controlStatus.disabled;
         const viewModel: EntityListViewModel = {
@@ -77,7 +76,6 @@ export class PickerListComponent implements OnInit {
           enableEdit: settings.enableEdit,
           enableDelete: settings.enableDelete,
           enableRemove: settings.enableRemove,
-          required,
           selectedItems,
 
           csDisabled,

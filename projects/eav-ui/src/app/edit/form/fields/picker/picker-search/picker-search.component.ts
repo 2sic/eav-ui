@@ -97,8 +97,8 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Debug status for UI, mainly to show "add-null" button */
   debugEnabled = toSignal(this.globalConfigService.getDebugEnabled$(), { initialValue: false });
 
-  /** Label to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  label = computed(() => this.pickerData().state.label());
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
 
   /** Current applicable settings like "enableEdit" etc. */
   settings = computed(() => {
@@ -149,7 +149,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     }
 
     const controlStatus$ = state.controlStatus$;
-    const required$ = state.required$;
 
     const fieldSettings$ = this.fieldsSettingsService.getFieldSettingsReplayed$(config.fieldName);
 
@@ -166,12 +165,14 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
       this.optionItems$, 
-      controlStatus$, required$, this.triggerFilter,
+      controlStatus$,
+      this.triggerFilter,
     ]).pipe(
       logVm.pipe(),
       map(([
         optionItems,
-        controlStatus, required, /* filter: only used for refresh */ _,
+        controlStatus,
+         /* filter: only used for refresh */ _,
       ]) => {
         optionItems = optionItems ?? [];
 
@@ -191,7 +192,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
         const viewModel: PickerSearchViewModel = {
           options: optionItems,
           controlStatus,
-          required,
           filteredItems: filterOrMessage,
 
           // figure out if tree, and save it for functions to use
