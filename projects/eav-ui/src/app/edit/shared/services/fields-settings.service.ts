@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, shareReplay, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
@@ -369,6 +369,15 @@ export class FieldsSettingsService implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged(RxHelpers.objectsEqual),
+    );
+  }
+
+  // todo: probably switch all uses above to this one
+  getFieldSettingsReplayed$(fieldName: string): Observable<FieldSettings> {
+    return this.fieldsProps$.pipe(
+      map(fieldsSettings => fieldsSettings[fieldName].settings),
+      distinctUntilChanged(RxHelpers.objectsEqual),
+      shareReplay(1),
     );
   }
 

@@ -17,16 +17,22 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 
 @Component({
-    selector: 'app-form-builder',
-    templateUrl: './form-builder.component.html',
-    styleUrls: ['./form-builder.component.scss'],
-    providers: [FieldsSettingsService, FieldsTranslateService, FormItemFormulaService, FormulaEngine, FormulaPromiseHandler],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        EntityWrapperComponent,
-    ],
+  selector: 'app-form-builder',
+  templateUrl: './form-builder.component.html',
+  styleUrls: ['./form-builder.component.scss'],
+  providers: [
+    FieldsSettingsService,
+    FieldsTranslateService,
+    FormItemFormulaService,
+    FormulaEngine,
+    FormulaPromiseHandler
+  ],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    EntityWrapperComponent,
+  ],
 })
 export class FormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
