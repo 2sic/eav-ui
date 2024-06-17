@@ -1,40 +1,18 @@
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { TranslateService } from "@ngx-translate/core";
 import { combineLatest } from "rxjs";
-import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem } from './data-adapter-base';
 import { Injectable } from '@angular/core';
-import { PickerDataCacheService } from '../cache/picker-data-cache.service';
-import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
 
-  constructor(
-    public fieldsSettingsService: FieldsSettingsService,
-    public entityCacheService: PickerDataCacheService,
-    public entityService: EntityService,
-    public formConfig: FormConfigService,
-    public editRoutingService: EditRoutingService,
-    public translate: TranslateService,
-    public snackBar: MatSnackBar,
-    private dsEntity: DataSourceEntity,
-    sourceEmpty: DataSourceEmpty,
-  ) {
+  constructor(private dsEntity: DataSourceEntity) {
     super(
-      entityCacheService,
-      entityService,
-      formConfig,
-      editRoutingService,
-      translate,
-      snackBar,
       dsEntity,
-      sourceEmpty,
       new EavLogger('PickerEntitySourceAdapter', logThis),
     );
   }

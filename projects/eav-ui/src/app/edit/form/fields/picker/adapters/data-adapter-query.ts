@@ -1,7 +1,4 @@
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { TranslateService } from "@ngx-translate/core";
 import { combineLatest, distinctUntilChanged, map } from "rxjs";
-import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
@@ -10,9 +7,7 @@ import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
-import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -21,27 +16,9 @@ const logName = 'PickerQuerySourceAdapter';
 export class DataAdapterQuery extends DataAdapterEntityBase {
   private paramsMask: FieldMask;
 
-  constructor(
-    protected fieldsSettingsService: FieldsSettingsService,
-    public queryService: QueryService,
-    protected entityCacheService: PickerDataCacheService,
-    protected entityService: EntityService,
-    protected formConfig: FormConfigService,
-    public editRoutingService: EditRoutingService,
-    public translate: TranslateService,
-    protected snackBar: MatSnackBar,
-    private dsQuery: DataSourceQuery,
-    sourceEmpty: DataSourceEmpty,
-  ) {
+  constructor(private dsQuery: DataSourceQuery) {
     super(
-      entityCacheService,
-      entityService,
-      formConfig,
-      editRoutingService,
-      translate,
-      snackBar,
       dsQuery,
-      sourceEmpty,
       new EavLogger(logName, logThis),
     );
   }

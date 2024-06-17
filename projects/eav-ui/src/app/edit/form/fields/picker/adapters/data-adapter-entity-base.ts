@@ -18,7 +18,8 @@ import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
-import { signal } from '@angular/core';
+import { inject, signal } from '@angular/core';
+
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
@@ -33,15 +34,18 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   protected dataSource: DataSourceBase;
 
+  protected entityCacheService = inject(PickerDataCacheService);
+  protected entityService = inject(EntityService);
+  protected formConfig = inject(FormConfigService);
+  protected editRoutingService = inject(EditRoutingService);
+  protected translate = inject(TranslateService);
+  protected snackBar = inject(MatSnackBar);
+  private dataSourceEmpty = inject(DataSourceEmpty);
+
   constructor(
-    protected entityCacheService: PickerDataCacheService,  // DI
-    protected entityService: EntityService, // DI
-    protected formConfig: FormConfigService, // DI
-    protected editRoutingService: EditRoutingService, // DI
-    protected translate: TranslateService, // DI
-    protected snackBar: MatSnackBar,
+    // protected snackBar: MatSnackBar,
     private dataSourceEntity: DataSourceBase,
-    private dataSourceEmpty: DataSourceEmpty,
+    // private dataSourceEmpty: DataSourceEmpty,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
