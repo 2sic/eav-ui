@@ -22,8 +22,13 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   controlConfig: FieldControlConfig = {};
 
   control: AbstractControl;
-  controlStatus$: BehaviorSubject<ControlStatus<T>>;
   settings$: BehaviorSubject<FieldSettings>;
+
+
+  controlStatus$: BehaviorSubject<ControlStatus<T>>;
+
+  // new
+  controlStatus = signal<ControlStatus<T>>(null);
 
   // TODO: @2dg - get rid of this, replace with basics().label or basics().labelWithRequired
   label$: Observable<string>;
@@ -34,6 +39,10 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   // TODO: @2dg - get rid of this, replace with basics().required
   required$: Observable<boolean>;
 
+  /**
+   * The signal containing the settings - will be setup later, as we need the exact name
+   * note that once the `config` is a signal input, we can change this.
+   */
   private settingsSignal = signal<FieldSettings>(null);
   basics = computed(() => BasicControlSettings.fromSettings(this.settingsSignal()))
 
@@ -41,23 +50,15 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   constructor(public fieldsSettingsService: FieldsSettingsService) { super(); }
 
   ngOnInit() {
+    // Remember current control and publish status on signal (new) and observable (old)
     this.control = this.group.controls[this.config.fieldName];
-
-    this.controlStatus$ = new BehaviorSubject({
-      dirty: this.control.dirty,
-      disabled: this.control.disabled,
-      invalid: this.control.invalid,
-      touched: this.control.touched,
-      value: this.control.value,
-    });
+    const initialControlStatus = controlToStatus<T>(this.control);
+    this.controlStatus$ = new BehaviorSubject(initialControlStatus);
+    this.controlStatus.set(initialControlStatus);
     this.control.valueChanges.subscribe(() => {
-      this.controlStatus$.next({
-        dirty: this.control.dirty,
-        disabled: this.control.disabled,
-        invalid: this.control.invalid,
-        touched: this.control.touched,
-        value: this.control.value,
-      });
+      const newStatus: ControlStatus<T> = controlToStatus(this.control);
+      this.controlStatus$.next(newStatus);
+      this.controlStatus.set(newStatus);
     });
 
     this.settings$ = new BehaviorSubject(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
@@ -79,4 +80,17 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
     this.settings$.complete();
     super.ngOnDestroy();
   }
+}
+
+function controlToStatus<T>(control: BaseFieldComponent<T>['control']): ControlStatus<T> {
+  const touched = control.touched;
+  const invalid = control.invalid;
+  return {
+    dirty: control.dirty,
+    disabled: control.disabled,
+    invalid,
+    touched,
+    touchedAndInvalid: touched && invalid,
+    value: control.value,
+  };
 }

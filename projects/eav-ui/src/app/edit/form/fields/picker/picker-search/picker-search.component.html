@@ -9,32 +9,32 @@
   </div> -->
   <div>
     <mat-form-field [formGroup]="group" class="eav-mat-form-field" color="accent"
-      [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }"
+      [ngClass]="{ 'mat-form-field-invalid': controlStatus().touchedAndInvalid }"
       (click)="filterSelectionList()">
       <input matInput #autocomplete class="eav-translate-on-dblclick" [placeholder]="getPlaceholder()"
-        [matAutocomplete]="auto" [disabled]="vm.isDisabled || !settings().enableAddExisting"
+        [matAutocomplete]="auto" [disabled]="controlStatus().disabled || !settings().enableAddExisting"
         [value]="showSelectedItem() ? selectedItem()?.label : ''" (focus)="fetchEntities()" (blur)="markAsTouched()"
         (input)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
-        [disabled]="vm.isDisabled || !settings().enableAddExisting">
+        [disabled]="controlStatus().disabled || !settings().enableAddExisting">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       @if (settings().enableEdit) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Edit' | translate"
-          [disabled]="vm.isDisabled || config().initialDisabled" appClickStopPropagation
+          [disabled]="controlStatus().disabled || config().initialDisabled" appClickStopPropagation
           (click)="edit(selectedItem()?.value, selectedItem()?.id)">
           <mat-icon>edit</mat-icon>
         </button>
       }
       @if (settings().enableDelete) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Delete' | translate"
-          [disabled]="vm.isDisabled" appClickStopPropagation (click)="deleteItem(0, selectedItem()?.value)">
+          [disabled]="controlStatus().disabled" appClickStopPropagation (click)="deleteItem(0, selectedItem()?.value)">
           <mat-icon>delete</mat-icon>
         </button>
       }
       @if (settings().enableRemove) {
         <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Remove' | translate"
-          [disabled]="vm.isDisabled" appClickStopPropagation (click)="removeItem(0)">
+          [disabled]="controlStatus().disabled" appClickStopPropagation (click)="removeItem(0)">
           <mat-icon>do_not_disturb_on</mat-icon>
         </button>
       }
@@ -43,7 +43,7 @@
           <ng-content select="[freeTextButtons]"></ng-content>
         </span>
       }
-      <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
+      <mat-label [ngClass]="{ 'mat-error': controlStatus().touchedAndInvalid }">
         {{ basics().labelWithRequired }}
       </mat-label>
     </mat-form-field>

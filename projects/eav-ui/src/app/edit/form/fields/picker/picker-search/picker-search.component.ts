@@ -88,6 +88,8 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
   public selectedItem = computed(() => this.pickerData().selectedItemSig());
 
+  public controlStatus = computed(() => this.pickerData().state.controlStatus());
+
   /** True/false trigger to trigger filtering */
   private triggerFilter = new BehaviorSubject(false);
 
@@ -135,9 +137,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   ngOnInit(): void {
     const pickerData = this.pickerData();
     const config = this.config();
-    const state = pickerData.state;
     const source = pickerData.source;
-
 
     let optionItems$ = new BehaviorSubject<PickerItem[]>(null);
     // process formulas on options...?
@@ -150,8 +150,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     } else {
       optionItems$ = source.optionsOrHints$;
     }
-
-    const controlStatus$ = state.controlStatus$;
 
     const fieldSettings$ = this.fieldsSettingsService.getFieldSettingsReplayed$(config.fieldName);
 
@@ -168,13 +166,11 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
       optionItems$, 
-      controlStatus$,
       this.triggerFilter,
     ]).pipe(
       logVm.pipe(),
       map(([
         optionItems,
-        controlStatus,
          /* filter: only used for refresh */ _,
       ]) => {
         optionItems = optionItems ?? [];
@@ -194,11 +190,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
 
         const viewModel: PickerSearchViewModel = {
           options: optionItems,
-          controlStatus,
           filteredItems: filterOrMessage,
-
-          // figure out if tree, and save it for functions to use
-          isDisabled: controlStatus.disabled,
         };
         return viewModel;
       }),

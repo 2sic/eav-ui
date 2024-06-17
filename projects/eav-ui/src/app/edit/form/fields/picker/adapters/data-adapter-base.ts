@@ -1,10 +1,11 @@
 import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { DeleteEntityProps } from '../models/picker.models';
 import { DataAdapter } from './data-adapter.interface';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export abstract class DataAdapterBase extends ServiceBase implements DataAdapter {
   /**
@@ -12,6 +13,15 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
    * Can be different from the underlying data, since it may have error or loading-entries.
    */
   public optionsOrHints$ = new BehaviorSubject<PickerItem[]>(null);
+
+  /**
+   * The options to show.
+   * Can be different from the underlying data, since it may have error or loading-entries.
+   * This is a signal, so it can be used in the template. it will _never_ be null.
+   * 
+   * WIP: Currently based on the observable
+   */
+  public optionsOrHints = toSignal(this.optionsOrHints$.pipe(map(list => list ?? [])), { initialValue: [] });
 
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 

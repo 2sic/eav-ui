@@ -10,7 +10,7 @@ import { FormConfigService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional, computed, effect, signal } from '@angular/core';
+import { Injectable, Optional, Signal, computed, effect, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
@@ -58,6 +58,9 @@ export class StateAdapter extends ServiceBase {
   public readonly settings = signal<FieldSettings>(null);
   
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
+
+  public controlStatus: Signal<ControlStatus<string | string[]>>;
+
   private isExpanded$: Observable<boolean>;
   
   public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
@@ -69,31 +72,42 @@ export class StateAdapter extends ServiceBase {
   public attachToComponent(component: PickerComponent): this  {
     this.log.a('setupFromComponent');
     this.log.inherit(component.log);
-    return this.attachDependencies(
-      component.settings$,
-      component.controlStatus$,
-      component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
-      component.control,
-      () => component.focusOnSearchComponent,
-    );
+
+    this.settings$ = component.settings$;
+    this.subscriptions.add(this.settings$.subscribe(this.settings.set));
+    this.controlStatus$ = component.controlStatus$;
+    this.controlStatus = component.controlStatus;
+    this.isExpanded$ = component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid);
+
+    this.control = component.control;
+    this.focusOnSearchComponent = component.focusOnSearchComponent;
+
+    return this;
+    // return this.attachDependencies(
+    //   // component.settings$,
+    //   // component.controlStatus$,
+    //   // component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
+    //   // component.control,
+    //   // () => component.focusOnSearchComponent,
+    // );
   }
 
-  private attachDependencies(
-    settings$: BehaviorSubject<FieldSettings>,
-    controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
-    isExpanded$: Observable<boolean>,
-    control: AbstractControl,
-    focusOnSearchComponent: () => void,
-  ): this {
-    this.log.a('setupShared');
-    this.settings$ = settings$;
-    this.subscriptions.add(settings$.subscribe(this.settings.set));
-    this.controlStatus$ = controlStatus$;
-    this.isExpanded$ = isExpanded$;
-    this.control = control;
-    this.focusOnSearchComponent = focusOnSearchComponent;
-    return this;
-  }
+  // private attachDependencies(
+  //   // settings$: BehaviorSubject<FieldSettings>,
+  //   // controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
+  //   // isExpanded$: Observable<boolean>,
+  //   // control: AbstractControl,
+  //   // focusOnSearchComponent: () => void,
+  // ): this {
+  //   this.log.a('setupShared');
+  //   // this.settings$ = settings$;
+  //   // this.subscriptions.add(settings$.subscribe(this.settings.set));
+  //   // this.controlStatus$ = controlStatus$;
+  //   // this.isExpanded$ = isExpanded$;
+  //   // this.control = control;
+  //   // this.focusOnSearchComponent = focusOnSearchComponent;
+  //   return this;
+  // }
 
 
   init(callerName: string) {
