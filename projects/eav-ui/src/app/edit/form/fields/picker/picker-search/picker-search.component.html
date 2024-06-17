@@ -3,7 +3,7 @@
   2dm settings: {{ settings() | json }} <br>
 </div> -->
 <div>
-  <mat-form-field [formGroup]="group" class="eav-mat-form-field" color="accent"
+  <mat-form-field [formGroup]="group()" class="eav-mat-form-field" color="accent"
     [ngClass]="{ 'mat-form-field-invalid': controlStatus().touchedAndInvalid }"
     (click)="filterSelectionList()">
     <input matInput #autocomplete class="eav-translate-on-dblclick"

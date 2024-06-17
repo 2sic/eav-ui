@@ -1,17 +1,15 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, Injector, OnDestroy, Signal, effect, runInInjectionContext } from '@angular/core';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { FieldSettings, PickerItem, RelationshipParentChild } from 'projects/edit-types';
-import { Observable, combineLatest, distinctUntilChanged, map, shareReplay } from 'rxjs';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
 @Injectable()
 export class PickerTreeDataService extends ServiceBase implements OnDestroy {
-  constructor(public treeHelper: PickerTreeDataHelper) {
+  constructor(public treeHelper: PickerTreeDataHelper, private inject: Injector) {
     super(new EavLogger('PickerTreeDataService', logThis));
   }
 
@@ -19,82 +17,38 @@ export class PickerTreeDataService extends ServiceBase implements OnDestroy {
     super.destroy();
   }
 
-  public init(fieldSettings$: Observable<FieldSettings>, allItems$: Observable<PickerItem[]>) {
+  public init(fieldSettings: Signal<FieldSettings>, allItems: Signal<PickerItem[]>) {
     this.log.a('init');
 
-    // Get only tree settings, make sure they don't fire unless they really change
-    const logTreeSettings = this.log.rxTap('treeSettings$');
-    const treeSettings$ = combineLatest([
-      fieldSettings$.pipe(
-        map(settings => ({
-          displayMode: settings.PickerDisplayMode,
-          isTree: settings.PickerDisplayMode === 'tree',
-        })),
-        distinctUntilChanged(RxHelpers.objectsEqual),
-      ),
-      // this is handled separately, so change-detection is property based, not object-reference based
-      fieldSettings$.pipe(
-        map(settings => settings.PickerTreeConfiguration),
-        distinctUntilChanged(RxHelpers.objectsEqual),
-      ),
-    ]).pipe(
-      logTreeSettings.pipe(),
-      map(([modeAndIsTree, pickerTreeConfig]) => ({
-        ...modeAndIsTree,
-        pickerTreeConfig,
-      })),
-      shareReplay(1),
-      logTreeSettings.shareReplay(),
-    );
-    
-    // Create the tree data stream, make sure it only fires if things really change
-    const treeDataLog = this.log.rxTap('treeData$');
-    const treeData$ = combineLatest([
-      allItems$.pipe(treeDataLog.part('optionItems$')),
-      treeSettings$.pipe(treeDataLog.part('treeSettings$')),
-    ]).pipe(
-      treeDataLog.pipe(),
-      map(([allItems, settings]) => {
-        if (!settings.isTree) //  && allItems && allItems[0]?.data != undefined) {
-          return [] as PickerTreeItem[];
+    const settings = fieldSettings();
+    const isTree = settings.PickerDisplayMode === 'tree';
 
+    // if not tree, quit early, nothing has to work then
+    if (!isTree) return;
+
+    // as of now, the tree config can not change at runtime, so pick up early
+    const treeConfig = settings.PickerTreeConfiguration;
+    const relationshipIsParentChild = treeConfig?.TreeRelationship == RelationshipParentChild;
+
+    runInInjectionContext(this.inject, () => {
+      effect(() => {
+        const all = allItems();
         // if the objects don't have a data property, we can't convert them to tree items
         // todo: not sure why this happens, possibly early cycles don't have it yet?
-        if (allItems?.[0]?.data == null)
-          return [] as PickerTreeItem[];
-
-        return this.treeHelper.preConvertAllItems(settings.pickerTreeConfig, allItems);
-        // return allItems.map(itm => this.treeHelper.preConvertItemToTreeItem(settings.pickerTreeConfig, itm, allItems));   
-      }),
-      treeDataLog.map(),
-      distinctUntilChanged(RxHelpers.arraysEqual),
-      shareReplay(1),
-      treeDataLog.shareReplay(),
-    );
-    
-    const treeLog = this.log.rxTap('tree$', { enabled: true });
-    const tree$ = combineLatest([
-      treeData$,
-      treeSettings$
-    ]).pipe(
-        treeLog.pipe(),
-      )
-      .subscribe(([treeItems, settings]) => {
-        if (!settings.isTree) 
-          return;
+        const treeItems = all?.[0]?.data == null
+            ? [] as PickerTreeItem[]
+            : this.treeHelper.preConvertAllItems(treeConfig, all);
 
         if (treeItems?.[0]?.data != undefined) {
-          const treeConfig = settings.pickerTreeConfig;
           this.treeHelper.updateConfig(treeConfig);
           this.treeHelper.addTreeItems(treeItems);
 
-          const filteredData = treeItems.filter(x => (treeConfig?.TreeRelationship == RelationshipParentChild) //check for two streams type also
+          const filteredData = treeItems.filter(x => relationshipIsParentChild //check for two streams type also
             ? !treeItems.some(y => y.data[treeConfig?.TreeParentChildRefField]?.some((z: { Id: number; }) => z.Id === x.id))
             : x.data[treeConfig?.TreeChildParentRefField]?.length == 0);
           this.treeHelper.updateSelectedData(filteredData);
         }
       });
-    this.subscriptions.add(tree$);
-
+    });
   }
 }

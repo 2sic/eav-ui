@@ -1,13 +1,12 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, computed, input, model, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, computed, input, signal, viewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, take } from 'rxjs';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
-import { Field } from '../../../builder/fields-builder/field.model';
+import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
 import { PickerData } from '../picker-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
@@ -61,22 +60,31 @@ const logEachItemChecks = false;
     JsonPipe,
   ]
 })
-export class PickerSearchComponent extends BaseComponent implements OnInit, OnDestroy, Omit<Field, 'config'> {
-  /** The input field for the search */
-  autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
+export class PickerSearchComponent extends BaseComponent implements OnInit, OnDestroy, FieldControlWithSignals /* replaces Field */ {
+  //#region Inputs
 
-  filterValue = model<string>('');
+  /** Picker Data Bundle with Source and state etc. */
+  pickerData = input.required<PickerData>();
 
-  pickerData = input.required<PickerData>()
-  config = input.required<FieldConfigSet>()
-  @Input({ required: true }) group: FormGroup;
-  @Input({ required: true }) controlConfig: FieldControlConfig;
+  /** Field Configuration */
+  config = input.required<FieldConfigSet>();
+
+  /** Form Group */
+  group = input.required<FormGroup>();
+
+  /** Field Control Configuration - mainly isPreview state */
+  controlConfig = input.required<FieldControlConfig>();
 
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
   showSelectedItem = input.required<boolean>();
 
   /** Determine if edit buttons are possible, eg. not in preview */
   showItemEditButtons = input.required<boolean>();
+
+  //#endregion
+
+  /** The input field for the search */
+  autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
 
   private newValue: string = null;
 
@@ -88,9 +96,9 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
   public selectedItem = computed(() => this.pickerData().selectedItemSig());
 
-  protected filter = computed(() => this.autocomplete()?.nativeElement.value ?? '');
-
+  /** special trigger to recalculate filtered items; not ideal, should happen automatically */
   private reFilter = signal(false);
+
   public filteredItems = computed(() => {
     const _ = this.reFilter(); // just make a dependency
     const all = this.pickerData().source.optionsOrHints();
@@ -133,6 +141,8 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     };
   });
 
+  private rawFieldSettings = computed(() => this.fieldsSettingsService.getFieldSettings(this.config().fieldName));
+
   /**
    * The tree helper which is used by the tree display.
    * Will only be initialized if we're really showing a tree.
@@ -153,26 +163,19 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     const config = this.config();
     const source = pickerData.source;
 
-    let optionItems$ = new BehaviorSubject<PickerItem[]>(null);
     // process formulas on options...?
     // TODO: @2dm - maybe there is even a more elegant way to do this
     if (false) {
-      this.subscriptions.add(
-        this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$).subscribe((items) => optionItems$.next(items))
-      );
-    } else {
-      optionItems$ = source.optionsOrHints$;
+      this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
     }
 
-    const fieldSettings$ = this.fieldsSettingsService.getFieldSettingsReplayed$(config.fieldName);
-
-    // Setup Tree Helper - but should only happen, if we're really doing trees
-    // ATM we're only doing this the first time, as these settings are not expected to change
-    fieldSettings$.pipe(take(1)).subscribe(settings => {
-      if (settings.PickerDisplayMode !== 'tree') return;
-      this.treeDataService.init(fieldSettings$, optionItems$);
+    const fieldSettings = this.rawFieldSettings;
+    if (fieldSettings().PickerDisplayMode === 'tree') {
+      // Setup Tree Helper - but should only happen, if we're really doing trees
+      // Only doing this the first time, as these settings are not expected to change
+      this.treeDataService.init(fieldSettings, this.pickerData().source.optionsOrHints);
       this.treeHelper = this.treeDataService.treeHelper;
-    });
+    }
   }
 
   displaySelected(item: PickerItem): string {
@@ -185,18 +188,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     this.logItemChecks.add(`displayFn: value: '${value}'; selectedItem: `, selectedItem);
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
-    let returnValue = '';
-    // if (typeof value === 'string') {
-      returnValue = this.pickerData().source.optionsOrHints().find(ae => ae.value == value)?.label;
-    // }
-    //  else if (Array.isArray(value)) {
-    //   if (typeof value[0] === 'string') {
-    //     returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
-    //   } else {
-    //     returnValue = (value[0] as PickerItem)?.label;
-    //   }
-    // } else
-    //   returnValue = (value as PickerItem)?.label;
+    let returnValue = this.pickerData().source.optionsOrHints().find(ae => ae.value == value)?.label;
 
     // If nothing yet, try to return label of selected or fallback to return the value
     // note: not quite sure, but I believe this is for scenarios where a manual entry was done
@@ -210,7 +202,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   }
 
   markAsTouched(): void {
-    const control = this.group.controls[this.config().fieldName];
+    const control = this.group().controls[this.config().fieldName];
     ControlHelpers.markControlTouched(control);
   }
 
@@ -239,6 +231,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   onClosed(): void {
     const selectedItems = this.selectedItems();
     const selectedItem = this.selectedItem();
+    const nativeElement = this.autocomplete().nativeElement;
     this.log.a('onClosed', [selectedItems, selectedItem]);
     if (this.showSelectedItem()) {
       // @SDV - improve this
@@ -246,10 +239,10 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
         //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
       }
       else if (selectedItem && selectedItems.length < 2)
-        this.autocomplete().nativeElement.value = selectedItem.label;
+        nativeElement.value = selectedItem.label;
     } else {
       // @SDV - improve this
-      this.autocomplete().nativeElement.value = '';
+      nativeElement.value = '';
     }
   }
 
@@ -270,13 +263,13 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.logItemChecks.add(`getPlaceholder error: result '${placeholder}'`, allOptions);
+    this.logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, allOptions);
     return placeholder;
   }
 
   toggleFreeText(disabled: boolean): void {
     this.log.a(`toggleFreeText ${disabled}`);
-    if (disabled) { return; }
+    if (disabled) return;
     this.pickerData().state.toggleFreeTextMode();
   }
 
