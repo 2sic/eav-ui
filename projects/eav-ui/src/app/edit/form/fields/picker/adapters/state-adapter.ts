@@ -71,7 +71,6 @@ export class StateAdapter extends ServiceBase {
     this.log.inherit(component.log);
     return this.attachDependencies(
       component.settings$,
-      component.config,
       component.controlStatus$,
       component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
       component.control,
@@ -81,7 +80,6 @@ export class StateAdapter extends ServiceBase {
 
   private attachDependencies(
     settings$: BehaviorSubject<FieldSettings>,
-    config: FieldConfigSet,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
     isExpanded$: Observable<boolean>,
     control: AbstractControl,

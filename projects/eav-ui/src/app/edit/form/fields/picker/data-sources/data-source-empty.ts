@@ -16,7 +16,7 @@ export class DataSourceEmpty extends DataSourceBase {
     super(new EavLogger('DataSourceEmpty', logThis));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): this {
+  override setup(settings$: BehaviorSubject<FieldSettings>): this {
     this.log.a('setup');
     super.setup(settings$);
     this.loading$ = of(false);

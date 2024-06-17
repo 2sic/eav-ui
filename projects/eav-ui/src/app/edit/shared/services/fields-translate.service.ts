@@ -233,16 +233,16 @@ export class FieldsTranslateService {
    * Returns true if translation is disabled for the field.
    */
   private isTranslationDisabled(fieldName: string) {
-    const fieldsProps = this.fieldsSettingsService.getFieldsProps();
-    return fieldsProps[fieldName].settings.DisableTranslation;
+    const settings = this.fieldsSettingsService.getFieldSettings(fieldName);
+    return settings.DisableTranslation;
   }
 
   /**
    * Returns true if auto translation is disabled for the field.
    */
   private isAutoTranslationDisabled(fieldName: string) {
-    const fieldsProps = this.fieldsSettingsService.getFieldsProps();
-    return fieldsProps[fieldName].settings.DisableAutoTranslation;
+    const settings = this.fieldsSettingsService.getFieldSettings(fieldName);
+    return settings.DisableAutoTranslation;
   }
 
   /**

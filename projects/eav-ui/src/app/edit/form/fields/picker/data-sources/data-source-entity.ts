@@ -21,7 +21,7 @@ export class DataSourceEntity extends DataSourceBase {
     super(new EavLogger('DataSourceEntity', logThis, logChildren));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): void {
+  setup(settings$: BehaviorSubject<FieldSettings>): this {
     this.log.a('setup - settings$', [settings$]);
     super.setup(settings$);
 
@@ -157,6 +157,8 @@ export class DataSourceEntity extends DataSourceBase {
       shareReplay(1),
       logData.shareReplay(),
     );
+
+    return this;
   }
 
   destroy(): void {
