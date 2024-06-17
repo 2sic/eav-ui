@@ -1,42 +1,40 @@
-@if (viewModel$ | async; as vm) {
-  <div class="c-ew__preview-holder">
-    <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : itemCount(),
-      'mat-empty' : !itemCount(),
-      'mat-error' : vm.controlStatus.invalid && vm.controlStatus.touched && !config().initialDisabled,
-      'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !config().initialDisabled,
-      'color__label-disabled' : config().initialDisabled
-      }">
-      {{ basics().labelWithRequired }}
-    </mat-label>
-    <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
-      [ngClass]="{
-      'c-ew__preview--invalid' : vm.controlStatus.invalid && vm.controlStatus.touched,
-      'c-ew__preview--disabled': config().initialDisabled
-      }">
-      <div [ngClass]="itemCount() ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-        <div fxLayout="row" fxLayoutAlign="start center">
-          @if (itemCount()) {
-            <mat-list fxLayout="row" class="eav-list">
-              @for (item of selectedItems(); track trackByFn($index, item)) {
-                <mat-list-item role="listitem" class="eav-list-item">
-                  <span mat-line>{{ item.label }}</span>
-                </mat-list-item>
-              }
-            </mat-list>
-          }
-          @if (itemCount() > 3) {
-            <span class="eav-more-entities" [ngClass]="{'eav-more-entities-margin-right': enableTextEntry() }">
-              {{ itemCount() }}
-            </span>
-          }
-          @if (enableTextEntry()) {
-            <span matSuffix class="eav-selection-suffix-inline">
-              <ng-content select="[freeTextButtons]"></ng-content>
-            </span>
-          }
-        </div>
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+    'mat-caption' : itemCount(),
+    'mat-empty' : !itemCount(),
+    'mat-error' : controlStatus().invalid && controlStatus().touched && !config().initialDisabled,
+    'color__primary' : !(controlStatus().invalid && controlStatus().touched) && !config().initialDisabled,
+    'color__label-disabled' : config().initialDisabled
+    }">
+    {{ basics().labelWithRequired }}
+  </mat-label>
+  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
+    [ngClass]="{
+    'c-ew__preview--invalid' : controlStatus().invalid && controlStatus().touched,
+    'c-ew__preview--disabled': config().initialDisabled
+    }">
+    <div [ngClass]="itemCount() ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        @if (itemCount()) {
+          <mat-list fxLayout="row" class="eav-list">
+            @for (item of selectedItems(); track trackByFn($index, item)) {
+              <mat-list-item role="listitem" class="eav-list-item">
+                <span mat-line>{{ item.label }}</span>
+              </mat-list-item>
+            }
+          </mat-list>
+        }
+        @if (itemCount() > 3) {
+          <span class="eav-more-entities" [ngClass]="{'eav-more-entities-margin-right': enableTextEntry() }">
+            {{ itemCount() }}
+          </span>
+        }
+        @if (enableTextEntry()) {
+          <span matSuffix class="eav-selection-suffix-inline">
+            <ng-content select="[freeTextButtons]"></ng-content>
+          </span>
+        }
       </div>
     </div>
   </div>
-}
+</div>
