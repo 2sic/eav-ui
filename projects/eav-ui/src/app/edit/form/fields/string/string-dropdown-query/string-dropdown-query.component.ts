@@ -1,7 +1,6 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditRoutingService } from '../../../../shared/services';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { PickerData } from '../../picker/picker-data';
@@ -12,7 +11,6 @@ import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -30,7 +28,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   constructor(
     translate: TranslateService,
-    editRoutingService: EditRoutingService,
     stateRaw: StateAdapterEntity,
     private pickerStringStateAdapterRaw: StateAdapterString,
     querySourceAdapterRaw: DataAdapterQuery,
@@ -38,7 +35,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   ) {
     super(
       translate,
-      editRoutingService,
       stateRaw,
       querySourceAdapterRaw,
       injector,

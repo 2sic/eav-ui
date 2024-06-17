@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, signal } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, signal, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EditRoutingService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
@@ -35,10 +35,10 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   public showPreview: Signal<boolean>;
 
-  public log: EavLogger = new EavLogger('PickerComponent', logThis);
+  public editRoutingService = inject(EditRoutingService);
 
-  constructor(public editRoutingService: EditRoutingService) {
-    super();
+  constructor(log?: EavLogger) {
+    super(log ?? new EavLogger('PickerComponent', logThis));
   }
 
   ngOnInit(): void {

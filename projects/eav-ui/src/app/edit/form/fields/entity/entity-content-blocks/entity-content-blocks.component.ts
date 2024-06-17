@@ -1,7 +1,6 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditRoutingService } from '../../../../shared/services';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
@@ -31,14 +30,11 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   constructor(
     private translate: TranslateService,
-    editRoutingService: EditRoutingService,
     private pickerStateAdapterRaw: StateAdapter,
     private pickerEntitySourceAdapter: DataAdapterEntity,
     private injector: Injector,
   ) {
-    super(
-      editRoutingService,
-    );
+    super();
     this.log = new EavLogger('EntityContentBlockComponent', logThis);
     this.log.a('constructor');
     EntityContentBlocksLogic.importMe();

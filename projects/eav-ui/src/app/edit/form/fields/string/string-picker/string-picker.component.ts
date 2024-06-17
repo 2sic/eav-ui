@@ -1,6 +1,5 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditRoutingService } from '../../../../shared/services';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,16 +33,13 @@ const logThis = false;
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     private translate: TranslateService,
-    editRoutingService: EditRoutingService,
     private sourceAdapterStringRaw: DataAdapterString,
     private stateAdapterStringRaw: StateAdapterString,
     private pickerEntitySourceAdapter: DataAdapterEntity,
     private querySourceAdapterRaw: DataAdapterQuery,
     private injector: Injector,
   ) {
-    super(
-      editRoutingService,
-    );
+    super();
     this.log = new EavLogger('StringPickerComponent', logThis);
     StringPickerLogic.importMe();
     this.isStringQuery = true;
