@@ -59,7 +59,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       this.log.inherit(component.log);
 
     this.dataSource = useEmpty
-      ? this.dataSourceEmpty.setup(component.settings$)
+      ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(component.settings$)
       : this.dataSourceEntity.setup(component.settings$);
 
     return this.setupShared(

@@ -51,7 +51,8 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       state.disableAddNew$,
       this.config,
       this.group,
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
+      (props: DeleteEntityProps) => state.doAfterDelete(props),
+      false,
     );
 
     state.init('StringDropdownComponent');

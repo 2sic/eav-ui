@@ -31,7 +31,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     public translate: TranslateService,
     protected snackBar: MatSnackBar,
     private dsQuery: DataSourceQuery,
-    private sourceEmpty: DataSourceEmpty,
+    sourceEmpty: DataSourceEmpty,
   ) {
     super(
       entityCacheService,

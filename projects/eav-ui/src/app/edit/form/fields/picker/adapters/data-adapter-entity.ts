@@ -9,7 +9,6 @@ import { messagePickerItem } from './data-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
-import { DataSourceBase } from '../data-sources/data-source-base';
 
 const logThis = false;
 

@@ -51,7 +51,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     this.isStringQuery = true;
   }
 
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
     let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;

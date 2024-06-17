@@ -16,14 +16,21 @@ export class DataSourceEmpty extends DataSourceBase {
     super(new EavLogger('DataSourceEmpty', logThis));
   }
 
-  override setup(settings$: BehaviorSubject<FieldSettings>): this {
+  private label: string;
+
+  public preSetup(label: string): this {
+    this.label = label;
+    return this;
+  }
+
+  public override setup(settings$: BehaviorSubject<FieldSettings>): this {
     this.log.a('setup');
     super.setup(settings$);
     this.loading$ = of(false);
 
     const dummyItem: PickerItem = {
       value: '',
-      label: 'No options available',
+      label: this.label ?? 'No options available',
       notSelectable: true,
       isMessage: true,
     };

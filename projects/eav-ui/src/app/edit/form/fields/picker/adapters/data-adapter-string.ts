@@ -33,7 +33,7 @@ export class DataAdapterString extends DataAdapterBase {
     config: FieldConfigSet,
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
-    useEmpty?: boolean,
+    useEmpty: boolean,
   ): this {
     this.log.a(`setupString - useEmpty ${useEmpty}`);
     this.disableAddNew$ = disableAddNew$;
