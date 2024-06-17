@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { FieldSettings, PickerItem, RelationshipParentChild } from 'projects/edit-types';
@@ -10,12 +10,12 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 const logThis = false;
 
 @Injectable()
-export class PickerTreeDataService extends ServiceBase {
+export class PickerTreeDataService extends ServiceBase implements OnDestroy {
   constructor(public treeHelper: PickerTreeDataHelper) {
     super(new EavLogger('PickerTreeDataService', logThis));
   }
 
-  override destroy() {
+  ngOnDestroy(): void {
     super.destroy();
   }
 

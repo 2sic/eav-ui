@@ -92,7 +92,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
 
   focusOnSearchComponent(): void {
-    this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
+    this.entitySearchComponent.autocomplete()?.nativeElement.focus();
   }
 
   private refreshOnChildClosed(): void {

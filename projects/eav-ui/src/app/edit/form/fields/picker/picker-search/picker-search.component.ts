@@ -1,12 +1,11 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, input } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, computed, input, model, signal, viewChild } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, map, Observable, switchAll, take } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { PickerSearchViewModel } from './picker-search.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { PickerData } from '../picker-data';
@@ -29,9 +28,9 @@ import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.co
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-const logThis = false;
+const logThis = true;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
 
@@ -63,7 +62,10 @@ const logEachItemChecks = false;
   ]
 })
 export class PickerSearchComponent extends BaseComponent implements OnInit, OnDestroy, Omit<Field, 'config'> {
-  @ViewChild('autocomplete') autocompleteRef?: ElementRef;
+  /** The input field for the search */
+  autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
+
+  filterValue = model<string>('');
 
   pickerData = input.required<PickerData>()
   config = input.required<FieldConfigSet>()
@@ -76,11 +78,9 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Determine if edit buttons are possible, eg. not in preview */
   showItemEditButtons = input.required<boolean>();
 
-  viewModel$: Observable<PickerSearchViewModel>;
-
-  // private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
-
   private newValue: string = null;
+
+  public controlStatus = computed(() => this.pickerData().state.controlStatus());
 
   /** All Selected Items */
   public selectedItems = computed(() => this.pickerData().selectedItemsSig());
@@ -88,10 +88,24 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
   public selectedItem = computed(() => this.pickerData().selectedItemSig());
 
-  public controlStatus = computed(() => this.pickerData().state.controlStatus());
+  protected filter = computed(() => this.autocomplete()?.nativeElement.value ?? '');
 
-  /** True/false trigger to trigger filtering */
-  private triggerFilter = new BehaviorSubject(false);
+  private reFilter = signal(false);
+  public filteredItems = computed(() => {
+    const _ = this.reFilter(); // just make a dependency
+    const all = this.pickerData().source.optionsOrHints();
+    const filterInDom = this.autocomplete()?.nativeElement.value;
+    const filter = filterInDom?.toLocaleLowerCase();
+
+    const result = !filter
+      ? all
+      : all.filter(oItem => ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(filter));
+
+    // If the list is empty, show a message about this.
+    return result.length > 0
+      ? result
+      : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterInDom })];
+  });
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   private logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
@@ -142,7 +156,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     let optionItems$ = new BehaviorSubject<PickerItem[]>(null);
     // process formulas on options...?
     // TODO: @2dm - maybe there is even a more elegant way to do this
-    // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
     if (false) {
       this.subscriptions.add(
         this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$).subscribe((items) => optionItems$.next(items))
@@ -160,47 +173,10 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
       this.treeDataService.init(fieldSettings$, optionItems$);
       this.treeHelper = this.treeDataService.treeHelper;
     });
-
-
-    // Create the default ViewModel used in the other modes
-    const logVm = this.log.rxTap('viewModel$', { enabled: true });
-    this.viewModel$ = combineLatest([
-      optionItems$, 
-      this.triggerFilter,
-    ]).pipe(
-      logVm.pipe(),
-      map(([
-        optionItems,
-         /* filter: only used for refresh */ _,
-      ]) => {
-        optionItems = optionItems ?? [];
-
-        const filterValue = this.autocompleteRef?.nativeElement.value;
-        const filterLc = filterValue?.toLocaleLowerCase();
-        let filteredItems = !filterValue
-          ? optionItems
-          : optionItems.filter(oItem => ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(filterLc));
-          // idea to combine key & value - needs further thinking, otherwise the GUID is in there too
-          // : optionItems.filter(opt => (`${opt.label} ${opt.value}`).toLocaleLowerCase().includes(filterLc));
-
-        // If the list is empty, show a message about this.
-        const filterOrMessage = filteredItems.length > 0
-          ? filteredItems
-          : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterValue })];
-
-        const viewModel: PickerSearchViewModel = {
-          options: optionItems,
-          filteredItems: filterOrMessage,
-        };
-        return viewModel;
-      }),
-      logVm.end(),
-    );
-
   }
 
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
+  displaySelected(item: PickerItem): string {
+    return this.showSelectedItem() ? (item?.label ?? '') : '';
   }
 
   // 2024-04-30 2dm: seems this is always a string, will simplify the code
@@ -243,17 +219,18 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   }
 
   filterSelectionList(): void {
-    this.triggerFilter.next(true);
+    this.reFilter.update(x => !x);
   }
 
   /**
    * Event triggered when opening the auto-complete / search
    */
   onOpened(isTreeDisplayMode: boolean): void {
-    const domElement = this.autocompleteRef.nativeElement;
+    const domElement = this.autocomplete().nativeElement;
     this.log.a(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);
     // flush the input so the user can use it to search, otherwise the list is filtered
     domElement.value = '';
+    this.reFilter.update(x => !x);
     // If tree, we need to blur so tree reacts to the first click, otherwise the user must click 2x
     if (isTreeDisplayMode)
       domElement.blur();
@@ -269,10 +246,10 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
         //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
       }
       else if (selectedItem && selectedItems.length < 2)
-        this.autocompleteRef.nativeElement.value = selectedItem.label;
+        this.autocomplete().nativeElement.value = selectedItem.label;
     } else {
       // @SDV - improve this
-      this.autocompleteRef.nativeElement.value = '';
+      this.autocomplete().nativeElement.value = '';
     }
   }
 
@@ -284,7 +261,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     this.pickerData().state.addSelected(selected);
     // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
-      this.autocompleteRef.nativeElement.blur();
+      this.autocomplete().nativeElement.blur();
     });
   }
 
@@ -336,33 +313,5 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   }
 
   hasChild = (_: number, item: PickerTreeItem) => this.treeHelper.hasChild(_, item);
-
-
-
-  /* Experiments */
-  // This was a test, it worked, but felt much too complicated...
-  settingsTest = toSignal(
-    combineLatest([
-      toObservable(this.config),
-      toObservable(this.showItemEditButtons),
-      toObservable(this.selectedItem)
-    ]).pipe(
-      map(([cnf, showButtons, sel]) => this.fieldsSettingsService.getFieldSettingsReplayed$(cnf.fieldName).pipe(
-        map(sts => {
-          const show = showButtons && !!sel;
-          return {
-            allowMultiValue: sts.AllowMultiValue,
-            enableAddExisting: sts.EnableAddExisting,
-            enableTextEntry: sts.EnableTextEntry,
-            enableEdit: sts.EnableEdit && show && !sel?.noEdit,
-            enableDelete: sts.EnableDelete && show && !sel?.noDelete,
-            enableRemove: sts.EnableRemove && show,
-            enableReselect: sts.EnableReselect,
-            showAsTree: sts.PickerDisplayMode === 'tree',
-          };
-        }),
-      )),
-      switchAll(),
-    ), { initialValue: {} as any });
 
 }

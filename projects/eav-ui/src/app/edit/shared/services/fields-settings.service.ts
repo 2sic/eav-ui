@@ -24,7 +24,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
