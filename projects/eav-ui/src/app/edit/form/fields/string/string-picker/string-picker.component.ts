@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { PickerComponent } from '../../picker/picker.component';
@@ -40,6 +40,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     private stateAdapterStringRaw: StateAdapterString,
     private pickerEntitySourceAdapter: DataAdapterEntity,
     private querySourceAdapterRaw: DataAdapterQuery,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -50,12 +51,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     this.isStringQuery = true;
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
     let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;
@@ -76,9 +72,9 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       );
     }
     else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery)
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
     else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
-      source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+      source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
 
 
     state.init('StringPickerComponent');
@@ -87,6 +83,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
+      this.injector,
     );
   }
 }

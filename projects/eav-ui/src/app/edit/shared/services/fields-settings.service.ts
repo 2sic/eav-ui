@@ -1,16 +1,13 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subject, Subscription } from 'rxjs';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, shareReplay } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-// tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
-// tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
-// tslint:disable-next-line:max-line-length
 import { ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
@@ -23,17 +20,20 @@ import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { EavContentType, EavEntityAttributes } from '../models/eav';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { EavLogger } from '../../../shared/logging/eav-logger';
 
+const logThis = false;
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
  */
 @Injectable()
-export class FieldsSettingsService implements OnDestroy {
+export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
   private fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
-  private subscription: Subscription;
   public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
   private itemFieldVisibility: ItemFieldVisibility;
@@ -60,6 +60,7 @@ export class FieldsSettingsService implements OnDestroy {
     private formItemFormulaService: FormItemFormulaService,
     private formulaPromiseHandler: FormulaPromiseHandler,
   ) {
+    super(new EavLogger('FieldsSettingsService', logThis));
     formulaPromiseHandler.init(this);
     formItemFormulaService.init(this.itemService);
     formulaEngine.init(this, this.formulaPromiseHandler, this.contentTypeSettings$);
@@ -69,11 +70,10 @@ export class FieldsSettingsService implements OnDestroy {
     this.contentTypeSettings$?.complete();
     this.fieldsProps$?.complete();
     this.forceRefreshSettings$?.complete();
-    this.subscription?.unsubscribe();
+    super.destroy();
   }
 
   init(entityGuid: string): void {
-    this.subscription = new Subscription();
     this.entityGuid = entityGuid;
 
     const item = this.itemService.getItem(entityGuid);
@@ -85,7 +85,7 @@ export class FieldsSettingsService implements OnDestroy {
     this.itemHeader$ = this.itemService.getItemHeader$(entityGuid);
     this.entityReader$ = this.languageInstanceService.getEntityReader$(this.formConfig.config.formId);
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([this.contentType$, this.itemHeader$, this.entityReader$]).pipe(
         map(([contentType, itemHeader, entityReader]) => {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
@@ -186,19 +186,26 @@ export class FieldsSettingsService implements OnDestroy {
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
-    this.subscription.add(
+    const logUpdateFieldProps = this.log.rxTap('updateFieldProps', { enabled: true });
+    this.subscriptions.add(
       combineLatest([
-        this.contentType$, this.itemAttributes$, this.itemHeader$, this.entityReader$,
-        formReadOnly$, this.forceRefreshSettings$, debugEnabled$, this.constantFieldParts$
+        this.contentType$,
+        this.itemAttributes$,
+        this.itemHeader$,
+        this.entityReader$,
+        formReadOnly$,
+        this.forceRefreshSettings$,
+        debugEnabled$,
+        this.constantFieldParts$
       ]).pipe(
+        logUpdateFieldProps.pipe(),
         map(([
           contentType, itemAttributes, itemHeader, entityReader,
           formReadOnly, _, debugEnabled, constantFieldParts
         ]) => {
           const formValues: FormValues = {};
-          for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
+          for (const [fieldName, fieldValues] of Object.entries(itemAttributes))
             formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
-          }
 
           const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
           const logicTools: FieldLogicTools = {
@@ -207,7 +214,6 @@ export class FieldsSettingsService implements OnDestroy {
             debug: debugEnabled,
             contentTypeItemService: this.contentTypeItemService,
           };
-
           if (Object.keys(this.latestFieldProps).length) {
             const status = this.formulaPromiseHandler.updateValuesFromQueue(
               entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
@@ -280,7 +286,9 @@ export class FieldsSettingsService implements OnDestroy {
           this.formItemFormulaService.valueFormulaCounter = 0;
           return fieldsProps;
         }),
+        logUpdateFieldProps.map(),
         filter(fieldsProps => !!fieldsProps),
+        logUpdateFieldProps.filter(),
       ).subscribe(fieldsProps => {
         consoleLogEditForm('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
         this.fieldsProps$.next(fieldsProps);
@@ -293,7 +301,12 @@ export class FieldsSettingsService implements OnDestroy {
   //           -> Consider multiple streams (one for each picker)
   processPickerItems$(fieldName: string, availableItems$: BehaviorSubject<PickerItem[]>): Observable<PickerItem[]> {
     return combineLatest([
-      availableItems$, this.contentType$, this.itemAttributes$, this.entityReader$, this.constantFieldParts$, this.itemHeader$,
+      availableItems$,
+      this.contentType$,
+      this.itemAttributes$,
+      this.entityReader$,
+      this.constantFieldParts$,
+      this.itemHeader$,
     ]).pipe(map(([
         availableItems, contentType, itemAttributes, entityReader, constantFieldParts, itemHeader
       ]) => {
@@ -372,6 +385,24 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
+  // todo: probably switch all uses above to this one
+  getFieldSettingsReplayed$(fieldName: string): Observable<FieldSettings> {
+    return this.fieldsProps$.pipe(
+      map(fieldsSettings => fieldsSettings[fieldName].settings),
+      distinctUntilChanged(RxHelpers.objectsEqual),
+      shareReplay(1),
+    );
+  }
+
+  getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
+    const cached = this.signalsCache[fieldName];
+    if (cached) return cached;
+    
+    var obs = this.getFieldSettingsReplayed$(fieldName);
+    return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsCache: Record<string, Signal<FieldSettings>> = {};
+
   /**
    * Used for translation state stream for a specific field.
    * @param fieldName 
@@ -394,6 +425,9 @@ export class FieldsSettingsService implements OnDestroy {
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
     const props = this.latestFieldProps[fieldName];
     const newSettings = { ...props.settings, ...update };
-    this.fieldsProps$.next({ ...this.latestFieldProps, [fieldName]: { ...props, settings: newSettings } });
+    this.fieldsProps$.next({
+      ...this.latestFieldProps,
+      [fieldName]: { ...props, settings: newSettings }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
@@ -12,7 +12,6 @@ import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 const logThis = false;
 
@@ -35,6 +34,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     editRoutingService: EditRoutingService,
     private stateRaw: StateAdapterEntity,
     private pickerEntitySourceAdapter: DataAdapterEntity,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -45,19 +45,14 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     EntityDefaultLogic.importMe();
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
-
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
     const state = this.stateRaw.attachToComponent(this);
 
     this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
 
-    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
 
     state.init('EntityDefaultComponent');
     source.init('EntityDefaultComponent');
@@ -65,6 +60,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       state,
       source,
       this.translate,
+      this.injector,
     );
 
   }

@@ -17,16 +17,22 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 
 @Component({
-    selector: 'app-form-builder',
-    templateUrl: './form-builder.component.html',
-    styleUrls: ['./form-builder.component.scss'],
-    providers: [FieldsSettingsService, FieldsTranslateService, FormItemFormulaService, FormulaEngine, FormulaPromiseHandler],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        EntityWrapperComponent,
-    ],
+  selector: 'app-form-builder',
+  templateUrl: './form-builder.component.html',
+  styleUrls: ['./form-builder.component.scss'],
+  providers: [
+    FieldsSettingsService,
+    FieldsTranslateService,
+    FormItemFormulaService,
+    FormulaEngine,
+    FormulaPromiseHandler
+  ],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    EntityWrapperComponent,
+  ],
 })
 export class FormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
@@ -56,11 +62,10 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const inputType = fieldProps.calculatedInputType.inputType;
-          // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
-          // if (empties.includes(inputType)) { continue; }
-          if (EmptyFieldHelpers.isEmptyInputType(inputType)) { continue; }
 
-          if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          if (EmptyFieldHelpers.isEmptyInputType(inputType)) continue;
+
+          if (this.form.controls.hasOwnProperty(fieldName)) continue;
 
           if (inputType === InputTypeConstants.StringWysiwyg) {
             if (fieldProps.value != '' && fieldProps.value != null && fieldProps.value != undefined) {
@@ -83,7 +88,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         const oldValues: FormValues = this.form.getRawValue();
         const newValues: FormValues = {};
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          if (!this.form.controls.hasOwnProperty(fieldName)) continue;
           newValues[fieldName] = fieldProps.value;
         }
 
@@ -98,7 +103,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 3. sync disabled
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          if (!this.form.controls.hasOwnProperty(fieldName)) continue;
           const control = this.form.controls[fieldName];
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
@@ -107,7 +112,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          if (!this.form.controls.hasOwnProperty(fieldName)) continue;
           const control = this.form.controls[fieldName];
           control.updateValueAndValidity();
         }
@@ -123,7 +128,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     this.subscriptions.add(
       combineLatest([formValid$, itemHeader$]).pipe(
         map(([formValid, itemHeader]) => {
-          if (itemHeader.IsEmpty) { return true; }
+          if (itemHeader.IsEmpty) return true;
           return formValid;
         }),
         distinctUntilChanged(),

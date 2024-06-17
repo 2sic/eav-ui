@@ -57,6 +57,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
   ngOnDestroy(): void {
     this.loaded$.complete();
+    super.destroy();
   }
 
   fetchFormData(): void {

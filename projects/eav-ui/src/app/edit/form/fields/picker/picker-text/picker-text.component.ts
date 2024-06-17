@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, computed, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PickerItem } from 'projects/edit-types';
 import { combineLatest, map, Observable } from 'rxjs';
@@ -26,9 +26,11 @@ import { FlexModule } from '@angular/flex-layout/flex';
   ],
 })
 export class PickerTextComponent implements OnInit {
-  @Input() pickerData: PickerData;
+  pickerData = input.required<PickerData>();
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
+
+  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
 
   selectedEntity: PickerItem | null = null;
   selectedEntities: PickerItem[] = [];
@@ -36,37 +38,33 @@ export class PickerTextComponent implements OnInit {
   filteredEntities: PickerItem[] = [];
   viewModel$: Observable<EntityPickerTextViewModel>;
 
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
+
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit(): void {
-    const state = this.pickerData.state;
+    const state = this.pickerData().state;
 
-    const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
-    const label$ = state.label$;
-    const placeholder$ = state.placeholder$;
-    const required$ = state.required$;
 
     const separator$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.Separator),
     );
 
     this.viewModel$ = combineLatest([
-      controlStatus$, freeTextMode$, label$, placeholder$, required$, separator$
+      controlStatus$,
+      separator$
     ]).pipe(
       map(([
-        controlStatus, freeTextMode, label, placeholder, required, separator,
+        controlStatus,
+        separator,
       ]) => {
         const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
         const viewModel: EntityPickerTextViewModel = {
           controlStatus,
-          freeTextMode,
-          label,
-          placeholder,
-          required,
-
           isSeparatorNewLine,
         };
         return viewModel;
@@ -76,6 +74,6 @@ export class PickerTextComponent implements OnInit {
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) { return; }
-    this.pickerData.state.toggleFreeTextMode();
+    this.pickerData().state.toggleFreeTextMode();
   }
 }

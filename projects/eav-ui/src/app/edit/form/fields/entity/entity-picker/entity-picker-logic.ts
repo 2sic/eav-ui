@@ -32,6 +32,7 @@ export class EntityPickerLogic extends FieldLogicBase {
     const dataSource = dataSources[0];
     const sourceIsQuery = dataSource?.Type.Name === PickerConfigModels.UiPickerSourceQuery;
     const sourceIsEntity = dataSource?.Type.Name === PickerConfigModels.UiPickerSourceEntity;
+    // DataSource may not be configured yet, in which case the object is just {}
     const specs = tools.entityReader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
     
     // Properties to transfer from both query and entity

@@ -8,6 +8,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem } from './data-adapter-base';
 import { Injectable } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 
@@ -23,6 +24,7 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
     public translate: TranslateService,
     public snackBar: MatSnackBar,
     private dsEntity: DataSourceEntity,
+    sourceEmpty: DataSourceEmpty,
   ) {
     super(
       entityCacheService,
@@ -32,6 +34,7 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
       translate,
       snackBar,
       dsEntity,
+      sourceEmpty,
       new EavLogger('PickerEntitySourceAdapter', logThis),
     );
   }

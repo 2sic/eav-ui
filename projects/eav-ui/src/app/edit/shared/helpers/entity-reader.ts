@@ -16,7 +16,8 @@ export class EntityReader implements FormLanguage {
   }
 
   public flattenAll<T>(metadataItems: EavEntity[]): T {
-    if (metadataItems == null) { return {} as T; }
+    if (metadataItems == null || metadataItems.length === 0 || metadataItems[0] == null)
+      return {} as T;
 
     const merged: Record<string, any> = {};
     // copy metadata settings which are not @All

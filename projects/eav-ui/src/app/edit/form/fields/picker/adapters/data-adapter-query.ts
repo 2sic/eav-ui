@@ -1,6 +1,6 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from "rxjs";
+import { combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, FormConfigService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { DataSourceQuery } from "../data-sources/data-source-query";
@@ -12,6 +12,7 @@ import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -21,15 +22,16 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   private paramsMask: FieldMask;
 
   constructor(
-    public fieldsSettingsService: FieldsSettingsService,
+    protected fieldsSettingsService: FieldsSettingsService,
     public queryService: QueryService,
-    public entityCacheService: PickerDataCacheService,
-    public entityService: EntityService,
-    public formConfig: FormConfigService,
+    protected entityCacheService: PickerDataCacheService,
+    protected entityService: EntityService,
+    protected formConfig: FormConfigService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
-    public snackBar: MatSnackBar,
+    protected snackBar: MatSnackBar,
     private dsQuery: DataSourceQuery,
+    sourceEmpty: DataSourceEmpty,
   ) {
     super(
       entityCacheService,
@@ -39,27 +41,17 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
       translate,
       snackBar,
       dsQuery,
+      sourceEmpty,
       new EavLogger(logName, logThis),
     );
   }
 
-  private error$: BehaviorSubject<string>;
   private isStringQuery: boolean;
 
-  override setupFromComponent(component: PickerComponent, state: StateAdapter): this {
+  override setupFromComponent(component: PickerComponent, state: StateAdapter, useEmpty: boolean): this {
     this.log.a('setupFromComponent');
-    super.setupFromComponent(component, state);
+    super.setupFromComponent(component, state, useEmpty);
     this.isStringQuery = component.isStringQuery;
-    return this;
-  }
-
-
-  public setupQuery(
-    error$: BehaviorSubject<string>,
-  ): this {
-
-    this.log.a('setupQuery');
-    this.error$ = error$;
     return this;
   }
 
@@ -138,7 +130,6 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
   destroy(): void {
     this.paramsMask?.destroy();
-    this.error$.complete();
     super.destroy();
   }
 

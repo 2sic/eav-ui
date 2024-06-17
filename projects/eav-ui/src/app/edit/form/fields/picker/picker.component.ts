@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, computed, signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
@@ -33,6 +33,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   viewModel$: Observable<PickerViewModel>;
 
+  public showPreview: Signal<boolean>;
+
   public log: EavLogger = new EavLogger('PickerComponent', logThis);
 
   constructor(fieldsSettingsService: FieldsSettingsService, public editRoutingService: EditRoutingService) {
@@ -43,13 +45,19 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.log.a('ngOnInit');
     super.ngOnInit();
     this.refreshOnChildClosed();
+    this.initAdaptersAndViewModel();
+
+    const pd = this.pickerData;
+    const allowMultiValue = pd.state.settings().AllowMultiValue;
+    const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview);
+    this.showPreview = signal(showPreview);
   }
 
   /**
    * Initialize the Picker Adapter and View Model
    * If the PickerData already exists, it will be reused
    */
-  initAdaptersAndViewModel(): void {
+  private initAdaptersAndViewModel(): void {
     this.log.a('initAdaptersAndViewModel');
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
@@ -63,10 +71,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
       this.log.a('createPickerAdapters: config', [this.config]);
       this.config.pickerData = this.pickerData;
     }
-
-    // Now create the View model
-    this.createViewModel();
   }
+
 
   ngAfterViewInit(): void {
     this.log.a('ngAfterViewInit');
@@ -84,23 +90,9 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     throw new Error('Method not implemented. Must be overridden by inheriting class.');
   }
 
-  createViewModel(): void {
-    this.log.a('createViewModel');
-    this.viewModel$ = this.pickerData.state.allowMultiValue$
-      .pipe(
-        map(allowMultiValue => {
-          // allowMultiValue is used to determine if we even use control with preview and dialog
-          const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
-          const viewModel: PickerViewModel = {
-            showPreview,
-          };
-          return viewModel;
-        }),
-      );
-  }
 
   focusOnSearchComponent(): void {
-    this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
+    this.entitySearchComponent.autocomplete()?.nativeElement.focus();
   }
 
   private refreshOnChildClosed(): void {

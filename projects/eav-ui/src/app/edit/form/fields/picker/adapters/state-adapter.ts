@@ -1,5 +1,5 @@
 import { PickerItem, FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
@@ -10,11 +10,12 @@ import { FormConfigService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional } from '@angular/core';
+import { Injectable, Optional, Signal, computed, effect, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 
 const logThis = false;
 const dumpSelected = true;
@@ -22,16 +23,14 @@ const dumpProperties = false;
 
 @Injectable()
 export class StateAdapter extends ServiceBase {
+  public isInFreeTextMode = signal(false);
+
   public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  public freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   // TODO: doesn't seem to be in use, but probably should?
   // my guess is it should detect if the open-dialog is shown
   public shouldPickerListBeShown$: Observable<boolean>;
   public selectedItems$: Observable<PickerItem[]>;
-  public allowMultiValue$: Observable<boolean>;
-  public isDialog$: Observable<boolean>;
 
   public createEntityTypes: { label: string, guid: string }[] = [];
 
@@ -42,14 +41,30 @@ export class StateAdapter extends ServiceBase {
   ) {
     super(logger ?? new EavLogger('PickerStateAdapter', logThis));
     this.cacheItems$ = entityCacheService.getEntities$();
+
+    // experimental logging
+    // effect(() => {
+    //   var settings = this.settings();
+    //   console.log('2dm settings changed', settings);
+    // });
+
+    // effect(() => {
+    //   var mf = this.allowMultiValue();
+    //   console.log('2dm allowMultiValue changed', mf);
+    // });
   }
 
   public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
+  public readonly settings = signal<FieldSettings>(null);
+  
   public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
-  public isExpanded$: Observable<boolean>;
-  public label$: Observable<string>;
-  public placeholder$: Observable<string>;
-  public required$: Observable<boolean>;
+
+  public controlStatus: Signal<ControlStatus<string | string[]>>;
+
+  private isExpanded$: Observable<boolean>;
+  
+  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
+
   public cacheItems$: Observable<PickerItem[]>;
   public control: AbstractControl;
   private focusOnSearchComponent: () => void;
@@ -57,41 +72,42 @@ export class StateAdapter extends ServiceBase {
   public attachToComponent(component: PickerComponent): this  {
     this.log.a('setupFromComponent');
     this.log.inherit(component.log);
-    return this.attachDependencies(
-      component.settings$,
-      component.config,
-      component.controlStatus$,
-      component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
-      component.label$,
-      component.placeholder$,
-      component.required$,
-      component.control,
-      () => component.focusOnSearchComponent,
-    );
+
+    this.settings$ = component.settings$;
+    this.subscriptions.add(this.settings$.subscribe(this.settings.set));
+    this.controlStatus$ = component.controlStatus$;
+    this.controlStatus = component.controlStatus;
+    this.isExpanded$ = component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid);
+
+    this.control = component.control;
+    this.focusOnSearchComponent = component.focusOnSearchComponent;
+
+    return this;
+    // return this.attachDependencies(
+    //   // component.settings$,
+    //   // component.controlStatus$,
+    //   // component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
+    //   // component.control,
+    //   // () => component.focusOnSearchComponent,
+    // );
   }
 
-  private attachDependencies(
-    settings$: BehaviorSubject<FieldSettings>,
-    config: FieldConfigSet,
-    controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
-    isExpanded$: Observable<boolean>,
-    label$: Observable<string>,
-    placeholder$: Observable<string>,
-    required$: Observable<boolean>,
-    control: AbstractControl,
-    focusOnSearchComponent: () => void,
-  ): this {
-    this.log.a('setupShared');
-    this.settings$ = settings$;
-    this.controlStatus$ = controlStatus$;
-    this.isExpanded$ = isExpanded$;
-    this.label$ = label$;
-    this.placeholder$ = placeholder$;
-    this.required$ = required$;
-    this.control = control;
-    this.focusOnSearchComponent = focusOnSearchComponent;
-    return this;
-  }
+  // private attachDependencies(
+  //   // settings$: BehaviorSubject<FieldSettings>,
+  //   // controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
+  //   // isExpanded$: Observable<boolean>,
+  //   // control: AbstractControl,
+  //   // focusOnSearchComponent: () => void,
+  // ): this {
+  //   this.log.a('setupShared');
+  //   // this.settings$ = settings$;
+  //   // this.subscriptions.add(settings$.subscribe(this.settings.set));
+  //   // this.controlStatus$ = controlStatus$;
+  //   // this.isExpanded$ = isExpanded$;
+  //   // this.control = control;
+  //   // this.focusOnSearchComponent = focusOnSearchComponent;
+  //   return this;
+  // }
 
 
   init(callerName: string) {
@@ -131,18 +147,16 @@ export class StateAdapter extends ServiceBase {
       logSelected.end(),
     );
 
-    this.allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
-
-    this.isDialog$ = this.settings$.pipe(mapUntilChanged(settings => settings._isDialog));
+    var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
 
     this.shouldPickerListBeShown$ = combineLatest([
-      this.freeTextMode$,
+      // this.freeTextMode$,
       this.isExpanded$,
-      this.allowMultiValue$,
+      allowMultiValue$,
       this.selectedItems$,
     ]).pipe(
-      map(([freeTextMode, isExpanded, allowMultiValue, selectedItems]) => {
-        return !freeTextMode
+      map(([/*freeTextMode, */ isExpanded, allowMultiValue, selectedItems]) => {
+        return !this.isInFreeTextMode()
           && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
           && (!allowMultiValue || (allowMultiValue && isExpanded));
       })
@@ -153,8 +167,6 @@ export class StateAdapter extends ServiceBase {
       this.selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
 
     if (dumpProperties) {
-      this.allowMultiValue$.subscribe(allowMv => this.log.a(`allowMultiValue ${allowMv}`));
-      this.isDialog$.subscribe(isDialog => this.log.a(`isDialog ${isDialog}`));
       this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
     }
 
@@ -165,8 +177,6 @@ export class StateAdapter extends ServiceBase {
     this.settings$.complete();
     this.controlStatus$.complete();
     this.disableAddNew$.complete();
-    this.freeTextMode$.complete();
-    this.error$.complete();
   }
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
@@ -223,7 +233,7 @@ export class StateAdapter extends ServiceBase {
   reorder(reorderIndexes: ReorderIndexes) { this.updateValue('reorder', reorderIndexes); }
 
   toggleFreeTextMode(): void {
-    this.freeTextMode$.next(!this.freeTextMode$.value);
+    this.isInFreeTextMode.update(p => !p);
   }
 
   getEntityTypesData(): void {

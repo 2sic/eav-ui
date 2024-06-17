@@ -3,26 +3,29 @@ This template is used for all entity like fields,
 e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
 <!-- <pre>Field.Picker Start</pre> -->
-@if (viewModel$ | async; as vm) {
-  @if (vm.showPreview) {
-    @defer {
+<!-- @if (viewModel$ | async; as vm) { -->
+  @if (showPreview()) {
+    <!-- Had to disable defer 2024-06-14 2dm when Upgrading to Angular 17.3 from 17.0 before, seems to be module-related
+         can probably reactivate once modules are gone
+    -->
+    <!-- @defer { -->
       <app-picker-preview
         [pickerData]="pickerData"
         [config]="config"
         [group]="group"
         [controlConfig]="controlConfig">
       </app-picker-preview>
-    }
+    <!-- } -->
   }
-  @if (!vm.showPreview) {
-    @defer {
+  @else {
+    <!-- @defer { -->
       <app-picker-dialog
         [pickerData]="pickerData"
         [config]="config"
         [group]="group"
         [controlConfig]="controlConfig">
       </app-picker-dialog>
-    }
+    <!-- } -->
   }
-}
+<!-- } -->
 <!-- <pre>Field.Picker End</pre> -->

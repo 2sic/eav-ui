@@ -1,45 +1,45 @@
 @if (viewModel$ | async; as vm) {
   <div fxLayout="row" fxLayoutAlign="start center">
     <div class="eav-mat-form-field">
-      @if (vm.selectedItems.length > 1 && !vm.freeTextMode) {
+      @if (vm.selectedItems.length > 1 && !isInFreeTextMode()) {
         <app-picker-pills
-          [pickerData]="pickerData"
+          [pickerData]="pickerData()"
           [config]="config"
           [group]="group">
           <app-picker-toggle-text freeTextButtons
-            [pickerData]="pickerData"
+            [pickerData]="pickerData()"
             [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
-            [freeTextMode]="vm.freeTextMode">
+            [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-pills>
       }
-      @if (vm.selectedItems.length <= 1 && !vm.freeTextMode) {
+      @if (vm.selectedItems.length <= 1 && !isInFreeTextMode()) {
         <app-picker-search
-          [pickerData]="pickerData"
+          [pickerData]="pickerData()"
           [config]="config"
           [group]="group"
           [controlConfig]="controlConfig"
           [showSelectedItem]="true"
           [showItemEditButtons]="true">
           <app-picker-toggle-text freeTextButtons
-            [pickerData]="pickerData"
+            [pickerData]="pickerData()"
             [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
-            [freeTextMode]="vm.freeTextMode">
+            [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-search>
       }
-      @if (vm.freeTextMode) {
+      @if (isInFreeTextMode()) {
         <app-picker-text
-          [pickerData]="pickerData"
+          [pickerData]="pickerData()"
           [config]="config"
           [group]="group">
           <app-picker-toggle-text freeTextButtons
-            [pickerData]="pickerData"
+            [pickerData]="pickerData()"
             [csDisabled]="vm.csDisabled"
             [allowText]="vm.enableTextEntry"
-            [freeTextMode]="vm.freeTextMode">
+            [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-text>
       }
@@ -47,14 +47,14 @@
     <div fxLayoutAlign="end end">
       <!-- create new entity to add to this list -->
       @if (vm.showAddNewEntityButton) {
-        @if (pickerData.state.createEntityTypes.length > 1) {
+        @if (pickerData().state.createEntityTypes.length > 1) {
           <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
             [disabled]="vm.csDisabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
             (click)="getEntityTypesData()">
             <mat-icon>add_circle_outline</mat-icon>
           </button>
           <mat-menu #entityTypesMenu="matMenu">
-            @for (entityType of pickerData.state.createEntityTypes; track entityType) {
+            @for (entityType of pickerData().state.createEntityTypes; track entityType) {
               <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
                 <span>{{ entityType.label }}</span>
               </button>

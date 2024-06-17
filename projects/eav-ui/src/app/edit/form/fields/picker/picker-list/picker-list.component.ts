@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, computed, input } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
@@ -35,23 +35,25 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     ],
 })
 export class PickerListComponent implements OnInit {
-  @Input() pickerData: PickerData;
+  pickerData = input.required<PickerData>();
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   viewModel$: Observable<EntityListViewModel>;
+
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit(): void {
-    const state = this.pickerData.state;
+    const pd = this.pickerData();
+    const state = pd.state;
 
-    const label$ = state.label$;
-    const required$ = state.required$;
     const controlStatus$ = state.controlStatus$;
-    const selectedItems$ = this.pickerData.selectedItems$;
+    const selectedItems$ = pd.selectedItems$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
@@ -63,10 +65,10 @@ export class PickerListComponent implements OnInit {
       distinctUntilChanged(RxHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      settings$, label$, required$, controlStatus$, selectedItems$
+      settings$, controlStatus$, selectedItems$
     ]).pipe(
       map(([
-        settings, label, required, controlStatus, selectedItems
+        settings, controlStatus, selectedItems
       ]) => {
         const csDisabled = controlStatus.disabled;
         const viewModel: EntityListViewModel = {
@@ -74,8 +76,6 @@ export class PickerListComponent implements OnInit {
           enableEdit: settings.enableEdit,
           enableDelete: settings.enableDelete,
           enableRemove: settings.enableRemove,
-          label,
-          required,
           selectedItems,
 
           csDisabled,
@@ -95,18 +95,18 @@ export class PickerListComponent implements OnInit {
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex,
     };
-    this.pickerData.state.reorder(reorderIndexes);
+    this.pickerData().state.reorder(reorderIndexes);
   }
 
   edit(entityGuid: string, entityId: number): void {
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
+    this.pickerData().source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
-    this.pickerData.state.removeSelected(index);
+    this.pickerData().state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
-    this.pickerData.source.deleteItem({ index, entityGuid });
+    this.pickerData().source.deleteItem({ index, entityGuid });
   }
 }

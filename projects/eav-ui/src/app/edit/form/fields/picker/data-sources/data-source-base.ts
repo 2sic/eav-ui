@@ -40,8 +40,9 @@ export abstract class DataSourceBase extends ServiceBase {
   protected noItemsLoadingFalse: DataWithLoading<PickerItem[]> = { data: [], loading: false };
   protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
 
-  protected setup(settings$: BehaviorSubject<FieldSettings>) {
+  public setup(settings$: BehaviorSubject<FieldSettings>): this {
     this.settings$ = settings$;
+    return this;
   }
 
   destroy(): void {

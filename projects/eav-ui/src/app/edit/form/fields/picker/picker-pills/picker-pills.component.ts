@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, computed, input } from '@angular/core';
 import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { PickerPillsViewModel } from './picker-pills.models';
 import { FormConfigService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
@@ -28,9 +28,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     ],
 })
 export class PickerPillsComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
-  @Input() pickerData: PickerData;
+  pickerData = input.required<PickerData>();
 
   viewModel$: Observable<PickerPillsViewModel>;
+
+  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  basics = computed(() => this.pickerData().state.basics());
 
   constructor(
     fieldsSettingsService: FieldsSettingsService,
@@ -41,30 +44,25 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
 
   ngOnInit(): void {
     super.ngOnInit();
-    const state = this.pickerData.state;
-    const source = this.pickerData.source;
+    const pd = this.pickerData();
+    const state = pd.state;
 
     const controlStatus$ = state.controlStatus$;
-    const label$ = state.label$;
-    const placeholder$ = state.placeholder$;
-    const required$ = state.required$;
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
-    const selectedItems$ = this.pickerData.selectedItems$;
+    const selectedItems$ = pd.selectedItems$;
     const settings$ = state.settings$;
 
     this.viewModel$ = combineLatest([
-      combineLatest([controlStatus$, label$, placeholder$, required$]),
+      combineLatest([controlStatus$]),
       combineLatest([selectedItems$, isOpen$, settings$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
+        [controlStatus,
+        ],
         [selectedItems, isOpen, settings],
       ]) => {
         const viewModel: PickerPillsViewModel = {
           controlStatus,
-          label,
-          placeholder,
-          required,
           selectedItems,
           itemsNumber: selectedItems?.length || 0,
           isOpen,

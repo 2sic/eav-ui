@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, computed, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
@@ -25,32 +25,34 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 const logThis = false;
 
 @Component({
-    selector: 'app-picker-preview',
-    templateUrl: './picker-preview.component.html',
-    styleUrls: ['./picker-preview.component.scss'],
-    standalone: true,
-    imports: [
-        FlexModule,
-        PickerPillsComponent,
-        PickerTextToggleComponent,
-        PickerSearchComponent,
-        PickerTextComponent,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatMenuModule,
-        MatIconModule,
-        FieldHelperTextComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-picker-preview',
+  templateUrl: './picker-preview.component.html',
+  styleUrls: ['./picker-preview.component.scss'],
+  standalone: true,
+  imports: [
+    FlexModule,
+    PickerPillsComponent,
+    PickerTextToggleComponent,
+    PickerSearchComponent,
+    PickerTextComponent,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatMenuModule,
+    MatIconModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class PickerPreviewComponent extends BaseComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerData: PickerData;
+  pickerData = input.required<PickerData>()
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
 
   viewModel$: Observable<EntityPickerPreviewViewModel>;
+
+  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
 
   log = new EavLogger('PickerPreviewComponent', logThis);
 
@@ -62,9 +64,9 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
   }
 
   ngOnInit(): void {
-    const state = this.pickerData.state;
-    const selectedItems$ = this.pickerData.selectedItems$;
-    const freeTextMode$ = state.freeTextMode$;
+    const pickerData = this.pickerData();
+    const state = pickerData.state;
+    const selectedItems$ = pickerData.selectedItems$;
     const controlStatus$ = state.controlStatus$;
     const disableAddNew$ = state.disableAddNew$;
 
@@ -79,10 +81,10 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
     );
 
     this.viewModel$ = combineLatest([
-      selectedItems$, freeTextMode$, settings$, controlStatus$, disableAddNew$
+      selectedItems$, settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
-        selectedItems, freeTextMode, settings, controlStatus, disableAddNew
+        selectedItems, settings, controlStatus, disableAddNew
       ]) => {
         const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
         const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
@@ -91,7 +93,6 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
 
         const viewModel: EntityPickerPreviewViewModel = {
           selectedItems,
-          freeTextMode,
           enableTextEntry: settings.EnableTextEntry,
           disableAddNew,
 
@@ -112,7 +113,7 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
 
   openNewEntityDialog(entityType: string): void {
     this.log.a(`openNewEntityDialog: '${entityType}'`);
-    this.pickerData.source.editItem(null, entityType);
+    this.pickerData().source.editItem(null, entityType);
   }
 
   expandDialog() {
@@ -121,6 +122,6 @@ export class PickerPreviewComponent extends BaseComponent implements OnInit, OnD
   }
 
   getEntityTypesData(): void {
-    this.pickerData.state.getEntityTypesData();
+    this.pickerData().state.getEntityTypesData();
   }
 }

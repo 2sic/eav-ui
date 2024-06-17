@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
@@ -15,7 +15,7 @@ import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
-const logThis = false;
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityPicker,
@@ -37,6 +37,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     private stateRaw: StateAdapterEntity,
     private entitySourceAdapterRaw: DataAdapterEntity,
     private querySourceAdapterRaw: DataAdapterQuery,
+    private injector: Injector,
   ) {
     super(
       fieldsSettingsService,
@@ -46,11 +47,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log.a('constructor');
     EntityPickerLogic.importMe();
     this.isStringQuery = false;
-  }
-
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
   }
 
   protected /* FYI: override */ createPickerAdapters(): void {
@@ -64,11 +60,14 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
-      source = this.entitySourceAdapterRaw.setupFromComponent(this, state);
+      source = this.entitySourceAdapterRaw.setupFromComponent(this, state, false);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
       this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
+    } else {
+      // not configured yet, should get some empty-not-configured source
+      source = this.entitySourceAdapterRaw.setupFromComponent(this, state, true);
     }
 
     state.init('EntityPickerComponent');
@@ -77,6 +76,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
+      this.injector,
     );
   }
 }
