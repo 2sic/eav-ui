@@ -48,22 +48,21 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
     const state = pd.state;
 
     const controlStatus$ = state.controlStatus$;
-    const placeholder$ = state.placeholder$;
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     const selectedItems$ = pd.selectedItems$;
     const settings$ = state.settings$;
 
     this.viewModel$ = combineLatest([
-      combineLatest([controlStatus$, placeholder$]),
+      combineLatest([controlStatus$]),
       combineLatest([selectedItems$, isOpen$, settings$]),
     ]).pipe(
       map(([
-        [controlStatus, placeholder],
+        [controlStatus,
+        ],
         [selectedItems, isOpen, settings],
       ]) => {
         const viewModel: PickerPillsViewModel = {
           controlStatus,
-          placeholder,
           selectedItems,
           itemsNumber: selectedItems?.length || 0,
           isOpen,

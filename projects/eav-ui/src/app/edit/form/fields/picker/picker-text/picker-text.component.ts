@@ -49,23 +49,22 @@ export class PickerTextComponent implements OnInit {
     const state = this.pickerData().state;
 
     const controlStatus$ = state.controlStatus$;
-    const placeholder$ = state.placeholder$;
 
     const separator$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.Separator),
     );
 
     this.viewModel$ = combineLatest([
-      controlStatus$, placeholder$, separator$
+      controlStatus$,
+      separator$
     ]).pipe(
       map(([
-        controlStatus, placeholder, separator,
+        controlStatus,
+        separator,
       ]) => {
         const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
         const viewModel: EntityPickerTextViewModel = {
           controlStatus,
-          placeholder,
-
           isSeparatorNewLine,
         };
         return viewModel;

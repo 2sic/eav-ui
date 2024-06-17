@@ -62,9 +62,6 @@ export class StateAdapter extends ServiceBase {
   
   public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
 
-  // TODO: REMOVE THIS NEXT @2DM
-  public placeholder$: Observable<string>;
-
   public cacheItems$: Observable<PickerItem[]>;
   public control: AbstractControl;
   private focusOnSearchComponent: () => void;
@@ -77,8 +74,6 @@ export class StateAdapter extends ServiceBase {
       component.config,
       component.controlStatus$,
       component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
-      component.placeholder$,
-      component.required$,
       component.control,
       () => component.focusOnSearchComponent,
     );
@@ -89,8 +84,6 @@ export class StateAdapter extends ServiceBase {
     config: FieldConfigSet,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
     isExpanded$: Observable<boolean>,
-    placeholder$: Observable<string>,
-    required$: Observable<boolean>,
     control: AbstractControl,
     focusOnSearchComponent: () => void,
   ): this {
@@ -99,7 +92,6 @@ export class StateAdapter extends ServiceBase {
     this.subscriptions.add(settings$.subscribe(this.settings.set));
     this.controlStatus$ = controlStatus$;
     this.isExpanded$ = isExpanded$;
-    this.placeholder$ = placeholder$;
     this.control = control;
     this.focusOnSearchComponent = focusOnSearchComponent;
     return this;
