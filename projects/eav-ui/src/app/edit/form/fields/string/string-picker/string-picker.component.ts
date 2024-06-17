@@ -17,6 +17,7 @@ import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
+const nameOfThis = 'StringPickerComponent';
 
 @Component({
   selector: InputTypeConstants.StringPicker,
@@ -40,7 +41,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     private injector: Injector,
   ) {
     super();
-    this.log = new EavLogger('StringPickerComponent', logThis);
+    this.log = new EavLogger(nameOfThis, logThis);
     StringPickerLogic.importMe();
     this.isStringQuery = true;
   }
@@ -71,8 +72,8 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
 
 
-    state.init('StringPickerComponent');
-    source.init('StringPickerComponent');
+    state.init(nameOfThis);
+    source.init(nameOfThis);
     this.pickerData = new PickerData(
       state,
       source,

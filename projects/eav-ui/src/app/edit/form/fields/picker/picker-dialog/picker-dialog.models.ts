@@ -1,7 +1,6 @@
-import { ControlStatus } from '../../../../shared/models';
 
 export interface EntityPickerDialogViewModel {
-  controlStatus: ControlStatus<string | string[]>;
+  // controlStatus: ControlStatus<string | string[]>;
   // freeTextMode: boolean;
   disableAddNew: boolean;
 

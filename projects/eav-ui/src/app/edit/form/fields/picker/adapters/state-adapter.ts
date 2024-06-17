@@ -7,10 +7,9 @@ import { DeleteEntityProps } from '../models/picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormConfigService } from '../../../../shared/services';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional, Signal, computed, effect, signal } from '@angular/core';
+import { Injectable, Optional, Signal, computed, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
@@ -125,12 +124,11 @@ export class StateAdapter extends ServiceBase {
     var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
 
     this.shouldPickerListBeShown$ = combineLatest([
-      // this.freeTextMode$,
       this.isExpanded$,
       allowMultiValue$,
       this.selectedItems$,
     ]).pipe(
-      map(([/*freeTextMode, */ isExpanded, allowMultiValue, selectedItems]) => {
+      map(([isExpanded, allowMultiValue, selectedItems]) => {
         return !this.isInFreeTextMode()
           && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
           && (!allowMultiValue || (allowMultiValue && isExpanded));

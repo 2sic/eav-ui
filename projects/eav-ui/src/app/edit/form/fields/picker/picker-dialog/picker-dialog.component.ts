@@ -1,11 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, computed, input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { FieldsSettingsService } from '../../../../shared/services';
-import { EntityPickerDialogViewModel } from './picker-dialog.models';
-import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
-import { Field } from '../../../builder/fields-builder/field.model';
-import { PickerData } from '../picker-data';
+import { Component, OnDestroy, computed } from '@angular/core';
+import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,8 +11,7 @@ import { FieldHelperTextComponent } from '../../../shared/field-helper-text/fiel
 import { PickerTextComponent } from '../picker-text/picker-text.component';
 import { PickerSearchComponent } from '../picker-search/picker-search.component';
 import { PickerListComponent } from '../picker-list/picker-list.component';
-import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -39,62 +32,20 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     TranslateModule,
   ],
 })
-export class PickerDialogComponent extends BaseComponent implements OnInit, OnDestroy, Field {
-  pickerData = input.required<PickerData>()
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-  @Input() controlConfig: FieldControlConfig;
+export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy, FieldControlWithSignals {
 
-  viewModel$: Observable<EntityPickerDialogViewModel>;
+  protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
 
-  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
+  protected disableAddNew = computed(() => this.pickerData().state.disableAddNew$.value);
 
+  protected showAddNewEntityButtonInDialog = computed(() => { 
+    const settings = this.pickerData().state.settings();
+    const showAddNewEntityButtonInDialog = !this.isInFreeTextMode() && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
+    return showAddNewEntityButtonInDialog;
+  });
 
-  constructor(
-    private fieldsSettingsService: FieldsSettingsService,
-  ) {
+  constructor() {
     super();
-  }
-
-  ngOnInit(): void {
-    const state = this.pickerData().state;
-
-    const disableAddNew$ = state.disableAddNew$;
-    const controlStatus$ = state.controlStatus$;
-
-
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => ({
-        AllowMultiValue: settings.AllowMultiValue,
-        EnableCreate: settings.EnableCreate,
-        CreateTypes: settings.CreateTypes,
-      })),
-      distinctUntilChanged(RxHelpers.objectsEqual),
-    );
-
-    this.viewModel$ = combineLatest([
-      settings$, controlStatus$, disableAddNew$
-    ]).pipe(
-      map(([
-        settings, controlStatus, disableAddNew
-      ]) => {
-        const showAddNewEntityButtonInDialog = !this.isInFreeTextMode() && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
-
-        const viewModel: EntityPickerDialogViewModel = {
-          controlStatus,
-          disableAddNew,
-
-          // additional properties for easier readability in the template
-          showAddNewEntityButtonInDialog,
-        };
-
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
   }
 
   openNewEntityDialog(entityType: string): void {
