@@ -2,7 +2,9 @@
 <app-picker-list
   [pickerData]="pickerData()"
   [config]="config()"
-  [group]="group()">
+  [group]="group()"
+  [controlConfig]="controlConfig()"
+>
 </app-picker-list>
 @if (!isInFreeTextMode()) {
   <app-picker-search

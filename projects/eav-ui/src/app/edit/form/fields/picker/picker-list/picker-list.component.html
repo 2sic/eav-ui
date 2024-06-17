@@ -1,32 +1,32 @@
-@if (viewModel$ | async; as vm) {
-  @if (!vm.allowMultiValue) {
+<!-- @if (viewModel$ | async; as vm) { -->
+  @if (!mySettings().allowMultiValue) {
     <mat-label class="field-label"
-      [ngClass]="{ 'disabled': vm.csDisabled }">
+      [ngClass]="{ 'disabled': controlStatus().disabled }">
       {{ basics().labelWithRequired }}
     </mat-label>
   }
-  @if (vm.selectedItems.length > 0) {
+  @if (selectedItems().length > 0) {
     <div cdkDropList
-      [cdkDropListDisabled]="!vm.allowMultiValue || vm.csDisabled"
-      (cdkDropListDropped)="drop($event, vm.selectedItems)"
+      [cdkDropListDisabled]="!mySettings().allowMultiValue || controlStatus().disabled"
+      (cdkDropListDropped)="drop($event)"
       [ngClass]="{
-      'normal-list': !vm.allowMultiValue,
-      'dnd-list': vm.allowMultiValue
+      'normal-list': !mySettings().allowMultiValue,
+      'dnd-list': mySettings().allowMultiValue
       }">
       <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
-      @for (item of vm.selectedItems; track trackByFn(index, item); let index = $index) {
+      @for (item of selectedItems(); track trackByFn(index, item); let index = $index) {
         <div
           cdkDrag
           [ngClass]="{
-          'normal-item': !vm.allowMultiValue,
-          'dnd-item': vm.allowMultiValue,
-          'disabled': vm.csDisabled
+          'normal-item': !mySettings().allowMultiValue,
+          'dnd-item': mySettings().allowMultiValue,
+          'disabled': controlStatus().disabled
           }">
-          <div class="item-title" [ngClass]="{ 'disabled': vm.csDisabled }">
-            @if (vm.allowMultiValue) {
+          <div class="item-title" [ngClass]="{ 'disabled': controlStatus().disabled }">
+            @if (mySettings().allowMultiValue) {
               <mat-icon class="item-title__icon"
                 [tippy]="'Fields.Picker.DragMove' | translate"
-                [tippyDisabled]="vm.csDisabled">
+                [tippyDisabled]="controlStatus().disabled">
                 drag_handle
               </mat-icon>
             }
@@ -36,28 +36,28 @@
           </div>
           <div class="item-actions">
             <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-            @if (vm.enableEdit && !item.noEdit) {
+            @if (mySettings().enableEdit && !item.noEdit) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Picker.Edit' | translate"
-                [disabled]="config.initialDisabled"
+                [disabled]="config().initialDisabled"
                 appMousedownStopPropagation
                 (click)="edit(item.value, item.id)">
                 <mat-icon>edit</mat-icon>
               </button>
             }
-            @if (vm.enableDelete && !item.noDelete) {
+            @if (mySettings().enableDelete && !item.noDelete) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Picker.Delete' | translate"
-                [disabled]="vm.csDisabled"
+                [disabled]="controlStatus().disabled"
                 appMousedownStopPropagation
                 (click)="deleteItem(index, item.value)">
                 <mat-icon>delete</mat-icon>
               </button>
             }
-            @if (vm.enableRemove) {
+            @if (mySettings().enableRemove) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Picker.Remove' | translate"
-                [disabled]="vm.csDisabled"
+                [disabled]="controlStatus().disabled"
                 appMousedownStopPropagation
                 (click)="removeItem(index)">
                 <mat-icon>do_not_disturb_on</mat-icon>
@@ -68,4 +68,4 @@
       }
     </div>
   }
-}
+<!-- } -->
