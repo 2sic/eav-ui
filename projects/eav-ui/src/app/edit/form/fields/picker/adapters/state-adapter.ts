@@ -9,7 +9,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormConfigService } from '../../../../shared/services';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional, Signal, computed, signal } from '@angular/core';
+import { Injectable, Optional, Signal, computed, inject, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
@@ -20,6 +20,7 @@ import { PickerFeatures } from '../picker-features.model';
 const logThis = false;
 const dumpSelected = true;
 const dumpProperties = false;
+const nameOfThis = 'StateAdapter';
 
 @Injectable()
 export class StateAdapter extends ServiceBase {
@@ -34,13 +35,14 @@ export class StateAdapter extends ServiceBase {
 
   public createEntityTypes: { label: string, guid: string }[] = [];
 
+  public formConfigSvc = inject(FormConfigService);
+  private entityCacheService = inject(PickerDataCacheService);
+
   constructor(
-    public formConfigSvc: FormConfigService,
-    entityCacheService: PickerDataCacheService,
     @Optional() logger: EavLogger = null,
   ) {
-    super(logger ?? new EavLogger('PickerStateAdapter', logThis));
-    this.cacheItems$ = entityCacheService.getEntities$();
+    super(logger ?? new EavLogger(nameOfThis, logThis));
+    this.cacheItems$ = this.entityCacheService.getEntities$();
 
     // experimental logging
     // effect(() => {
