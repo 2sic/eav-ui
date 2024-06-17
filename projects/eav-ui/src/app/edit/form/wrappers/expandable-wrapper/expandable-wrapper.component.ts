@@ -129,10 +129,10 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
         [focused, previewHeight],
       ]) => {
        return {
-          controlStatus,
-          label,
-          placeholder,
-          required,
+          controlStatus,  // drop
+          label,  // drop
+          placeholder, // drop
+          required, // drop
           focused,
           previewHeight,
         };

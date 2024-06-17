@@ -39,12 +39,12 @@ const logThis = true;
   ],
 })
 export class CollapsibleWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
-  
+
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
-  
+
   controlConfig: FieldControlConfig = {};
 
   /** Collapsed state - will be updated in various scenarios */
@@ -53,12 +53,15 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
   /** Settings, will be filled onInit. Must be subject, so it doesn't start the signals yet. */
   private settings$ = new Subject<FieldSettings>();
 
+  // TODO: @2dg - use directly from basics()...
   /** The label of the group */
   label = toSignal(this.settings$.pipe(map(s => s.Name)), { initialValue: '' });
 
+  // TODO: @2dg - use directly from basics()...
   /** Notes / Intro message */
   notes = toSignal(this.settings$.pipe(map(s => s.Notes)), { initialValue: '' });
 
+  // TODO: @2dg - use directly from basics()...
   /** Visible state */
   visible = toSignal(this.settings$.pipe(map(s => ItemFieldVisibility.mergedVisible(s))), { initialValue: false });
 
