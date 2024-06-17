@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
@@ -24,7 +24,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -65,19 +64,13 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   @Output() openUpload = new EventEmitter<null>();
 
   viewModel$: Observable<AdamBrowserViewModel>;
-  viewModel = signal<AdamBrowserViewModel>(null);
 
-
-    /** The Items  */
-  // items = toSignal(this.settings$.pipe(map(s => s.Name)), { initialValue: '' });
-
-  private items$: BehaviorSubject<AdamItem[]>;
   private adamConfig$: BehaviorSubject<AdamConfig>;
-  private isPasteImageFromClipboardEnabled$ = new BehaviorSubject<boolean>(false);
-
+  private items$: BehaviorSubject<AdamItem[]>;
   private control: AbstractControl;
   private url: string;
   private firstFetch = true;
+  private isPasteImageFromClipboardEnabled$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private adamService: AdamService,
@@ -150,23 +143,9 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       distinctUntilChanged(),
     );
 
-    // this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
-    //   map(([adamConfig, expanded, items, value, disabled, allowPasteImageFromClipboard]) => {
-    //     const viewModel: AdamBrowserViewModel = {
-    //       adamConfig,
-    //       expanded,
-    //       items,
-    //       value,
-    //       disabled,
-    //       allowPasteImageFromClipboard
-    //     };
-    //     return viewModel;
-    //   }),
-    // );
-
-    combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
+    this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
       map(([adamConfig, expanded, items, value, disabled, allowPasteImageFromClipboard]) => {
-        return {
+        const viewModel: AdamBrowserViewModel = {
           adamConfig,
           expanded,
           items,
@@ -174,9 +153,9 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
           disabled,
           allowPasteImageFromClipboard
         };
+        return viewModel;
       }),
-    ).subscribe(viewModel => this.viewModel.set(viewModel));
-
+    );
   }
 
   ngOnDestroy() {

@@ -19,10 +19,7 @@ import { FieldSettings } from '../../../../../../../edit-types';
 export class HiddenWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  // hidden$: Observable<boolean>;
-
   hidden: WritableSignal<boolean> = signal(false);
-
 
   constructor(fieldsSettingsService: FieldsSettingsService) {
     super(fieldsSettingsService);
@@ -30,10 +27,6 @@ export class HiddenWrapperComponent extends BaseFieldComponent implements FieldW
 
   ngOnInit() {
     super.ngOnInit();
-    // this.hidden$ = this.settings$.pipe(
-    //   map(settings => !ItemFieldVisibility.mergedVisible(settings)),
-    //   distinctUntilChanged(),
-    // );
 
     this.settings$.pipe(
       map(settings => !ItemFieldVisibility.mergedVisible(settings)),

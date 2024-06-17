@@ -55,10 +55,6 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  // open$: Observable<boolean>;
-  // saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  // viewModel$: Observable<HyperlinkLibraryExpandableViewModel>;
-
   open: WritableSignal<boolean> = signal(false);
   viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
   saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
@@ -80,8 +76,6 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   ngOnInit() {
     super.ngOnInit();
 
-    // this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
     ).subscribe(value => this.open.set(value));
 
@@ -90,28 +84,6 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );
-
-  //   this.viewModel$ = combineLatest([
-  //     combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-  //     combineLatest([this.adamItems$, showAdamSponsor$]),
-  //   ]).pipe(
-  //     map(([
-  //       [controlStatus, label, placeholder, required],
-  //       [adamItems, showAdamSponsor],
-  //     ]) => {
-  //       const viewModel: HyperlinkLibraryExpandableViewModel = {
-  //         controlStatus,
-  //         label,
-  //         placeholder,
-  //         required,
-  //         items: adamItems.slice(0, 9),
-  //         itemsNumber: adamItems.length,
-  //         showAdamSponsor,
-  //       };
-  //       return viewModel;
-  //     }),
-  //   );
-  // }
 
   combineLatest([
     combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),

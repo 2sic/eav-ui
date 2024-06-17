@@ -1,4 +1,4 @@
-@if (viewModel(); as vm) {
+@if (viewModel$ | async; as vm) {
   @if (vm.current !== vm.primary) {
     <div fxLayoutAlign="end center">
       <div fxLayoutAlign="end center" class="eav-shared-languages-container" [ngClass]="vm.translationStateClass">

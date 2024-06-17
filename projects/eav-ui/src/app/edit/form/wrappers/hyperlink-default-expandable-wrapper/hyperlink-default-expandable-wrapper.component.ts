@@ -65,10 +65,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  // open$: Observable<boolean>;
-  // saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  // viewModel$: Observable<HyperlinkDefaultExpandableViewModel>;
-
   open: WritableSignal<boolean> = signal(false);
   saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
   viewModel: WritableSignal<HyperlinkDefaultExpandableViewModel> = signal(null);
@@ -136,31 +132,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );
-
-    //   this.viewModel$ = combineLatest([
-    //     combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-    //     combineLatest([this.preview$, settings$, adamItem$, showAdamSponsor$]),
-    //   ]).pipe(
-    //     map(([
-    //       [controlStatus, label, placeholder, required],
-    //       [preview, settings, adamItem, showAdamSponsor],
-    //     ]) => {
-    //       const viewModel: HyperlinkDefaultExpandableViewModel = {
-    //         controlStatus,
-    //         label,
-    //         placeholder,
-    //         required,
-    //         preview,
-    //         buttonAdam: settings._buttonAdam,
-    //         buttonPage: settings._buttonPage,
-    //         adamItem,
-    //         enableImageConfiguration: settings.EnableImageConfiguration,
-    //         showAdamSponsor,
-    //       };
-    //       return viewModel;
-    //     }),
-    //   );
-    // }
 
     combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
