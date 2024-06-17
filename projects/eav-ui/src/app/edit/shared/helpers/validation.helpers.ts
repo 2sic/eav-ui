@@ -50,8 +50,8 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (!settings._currentRequired) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (!settings._currentRequired) return null;
 
       return Validators.required(control);
     };
@@ -61,8 +61,8 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (!settings._currentRequired) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (!settings._currentRequired) return null;
 
       return (control as AdamControl).adamItems === 0 ? { required: true } : null;
     };
@@ -72,8 +72,8 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (!settings.ValidationRegExJavaScript) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (!settings.ValidationRegExJavaScript) return null;
 
       return Validators.pattern(settings.ValidationRegExJavaScript)(control);
     };
@@ -83,9 +83,9 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (settings.Decimals == null || settings.Decimals < 0) { return null; }
-      if (control.value == null) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (settings.Decimals == null || settings.Decimals < 0) return null;
+      if (control.value == null) return null;
 
       const matchString = settings.Decimals === 0 ? `^-?[0-9]+$` : `^-?[0-9]+(\.[0-9]{1,${settings.Decimals}})?$`;
       const matches = (control.value as number).toString().match(matchString);
@@ -97,8 +97,8 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (settings.Min == null) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (settings.Min == null) return null;
 
       return Validators.min(settings.Min)(control);
     };
@@ -108,8 +108,8 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (settings.Max == null) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (settings.Max == null) return null;
 
       return Validators.max(settings.Max)(control);
     };
@@ -119,13 +119,13 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) return null;
 
       const lessThanMin = (Array.isArray(control.value)
         ? control.value.length
         : convertValueToArray(control.value, settings.Separator, settings._options).length)
-        < settings.AllowMultiMin
+          < settings.AllowMultiMin
       return lessThanMin ? { minNoItems: settings.AllowMultiMin } : null;
     };
   }
@@ -134,8 +134,8 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) { return null; }
+      if (this.ignoreValidators(settings)) return null;
+      if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) return null;
 
       const moreThanMax = (Array.isArray(control.value)
         ? control.value.length

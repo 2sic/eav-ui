@@ -73,7 +73,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   private newValue: string = null;
 
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
-  public selectedItem = computed(() => this.pickerData().selectedItemSig());
+  public selectedItem = computed(() => this.pickerData().selectedOne());
 
   /** special trigger to recalculate filtered items; not ideal, should happen automatically */
   private reFilter = signal(false);

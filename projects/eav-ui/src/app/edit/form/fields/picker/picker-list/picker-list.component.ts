@@ -54,7 +54,7 @@ export class PickerListComponent extends PickerPartBaseComponent implements OnDe
   }
 
   drop(event: CdkDragDrop<PickerItem[]>): void {
-    const selectedEntities = this.pickerData().selectedItemsSig();
+    const selectedEntities = this.pickerData().selectedAll();
     moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,

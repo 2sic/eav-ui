@@ -1,4 +1,4 @@
-import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, shareReplay, take } from 'rxjs';
 import { DataAdapter } from "./adapters/data-adapter.interface";
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
@@ -14,11 +14,9 @@ const logThis = false;
 
 export class PickerData extends ServiceBase {
 
-  public selectedItems$: Observable<PickerItem[]>;
+  public selectedAll: Signal<PickerItem[]>;
 
-  public selectedItemsSig: Signal<PickerItem[]>;
-
-  public selectedItemSig = computed(() => this.selectedItemsSig()[0] ?? null);
+  public selectedOne = computed(() => this.selectedAll()[0] ?? null);
 
   public features = computed(() => {
     const fromSource = this.source.features();
@@ -44,7 +42,7 @@ export class PickerData extends ServiceBase {
 
     // 2. Selected Items 
     const logSelected = this.log.rxTap('selectedItems$', { enabled: true });
-    this.selectedItems$ = combineLatest([
+    const selectedItems$ = combineLatest([
       state.selectedItems$.pipe(
         distinctUntilChanged(RxHelpers.arraysEqual)
       ),
@@ -63,7 +61,7 @@ export class PickerData extends ServiceBase {
 
     // Convert to signal; must happen inside the injection context
     runInInjectionContext(injector, () => {
-      this.selectedItemsSig = toSignal(this.selectedItems$, { initialValue: [] });
+      this.selectedAll = toSignal(selectedItems$, { initialValue: [] });
     });
   }
 

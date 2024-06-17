@@ -33,7 +33,7 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy,
   public controlStatus = computed(() => this.pickerData().state.controlStatus());
 
   /** All Selected Items */
-  public selectedItems = computed(() => this.pickerData().selectedItemsSig());
+  public selectedItems = computed(() => this.pickerData().selectedAll());
 
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
   basics = computed(() => this.pickerData().state.basics());

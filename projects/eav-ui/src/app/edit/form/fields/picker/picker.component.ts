@@ -1,12 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, signal, inject } from '@angular/core';
-import { Observable } from 'rxjs';
 import { EditRoutingService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerViewModel } from './models/picker.models';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
 import { PickerProviders } from './picker-providers.constant';
@@ -22,7 +19,6 @@ const logThis = false;
   imports: [
     PickerPreviewComponent,
     PickerDialogComponent,
-    AsyncPipe,
   ],
 })
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
@@ -30,8 +26,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   pickerData: PickerData;
   isStringQuery: boolean;
-
-  viewModel$: Observable<PickerViewModel>;
 
   public showPreview: Signal<boolean>;
 

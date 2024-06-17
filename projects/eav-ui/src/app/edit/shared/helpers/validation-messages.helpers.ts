@@ -46,11 +46,11 @@ export class ValidationMessagesHelpers {
     for (const [controlKey, control] of Object.entries(form.controls)) {
       ControlHelpers.markControlTouched(control);
 
-      if (!control.invalid) { continue; }
+      if (!control.invalid) continue;
 
       for (const errorKey of Object.keys(control.errors)) {
         errors[controlKey] = this.validationMessages[errorKey]?.(undefined);
-        if (errors[controlKey]) { break; }
+        if (errors[controlKey]) break;
       }
     }
     return errors;
@@ -59,8 +59,8 @@ export class ValidationMessagesHelpers {
   /** Calculates error message */
   static getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
     let error = '';
-    if (!control.invalid) { return error; }
-    if (!control.dirty && !control.touched) { return error; }
+    if (!control.invalid) return error;
+    if (!control.dirty && !control.touched) return error;
 
     for (const errorKey of Object.keys(control.errors)) {
       if (errorKey === 'formulaError') {
@@ -68,7 +68,7 @@ export class ValidationMessagesHelpers {
       } else {
         error = this.validationMessages[errorKey]?.(config);
       }
-      if (error) { break; }
+      if (error) break;
     }
 
     return error;
@@ -85,7 +85,7 @@ export class ValidationMessagesHelpers {
       } else {
         warning = this.warningMessages[warningKey];
       }
-      if (warning) { break; }
+      if (warning) break;
     }
     return warning;
   }
