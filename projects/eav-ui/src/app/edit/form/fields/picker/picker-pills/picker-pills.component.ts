@@ -11,6 +11,10 @@ import { MatRippleModule } from '@angular/material/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { FormGroup } from '@angular/forms';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 @Component({
   selector: 'app-picker-pills',
@@ -27,13 +31,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     AsyncPipe,
   ],
 })
-export class PickerPillsComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
-  pickerData = input.required<PickerData>();
+export class PickerPillsComponent extends PickerPartBaseComponent /* BaseFieldComponent<string | string[]> */ implements OnInit, OnDestroy {
+  // pickerData = input.required<PickerData>();
+
+  // /** Field Configuration */
+  // config = input.required<FieldConfigSet>();
+
+  // /** Form Group */
+  // group = input.required<FormGroup>();
 
   viewModel$: Observable<PickerPillsViewModel>;
 
-  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = computed(() => this.pickerData().state.basics());
+  // /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
+  // basics = computed(() => this.pickerData().state.basics());
+
+  enableTextEntry = computed(() => this.pickerData().state.settings().EnableTextEntry);
+
+  // selectedItems = computed(() => this.pickerData().selectedItemsSig());
+
+  itemCount = computed(() => this.selectedItems().length);
+
+  // controlStatus = computed(() => this.pickerData().state.controlStatus());
 
   constructor(
     private editRoutingService: EditRoutingService,
@@ -42,29 +60,28 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
   }
 
   ngOnInit(): void {
-    super.ngOnInit();
     const pd = this.pickerData();
     const state = pd.state;
 
     const controlStatus$ = state.controlStatus$;
-    const selectedItems$ = pd.selectedItems$;
-    const settings$ = state.settings$;
+    // const selectedItems$ = pd.selectedItems$;
+    // const settings$ = state.settings$;
 
     this.viewModel$ = combineLatest([
       controlStatus$, 
-      selectedItems$,
-      settings$
+      // selectedItems$,
+      // settings$
     ]).pipe(
       map(([
         controlStatus,
-        selectedItems,
-        settings,
+        // selectedItems,
+        // settings,
       ]) => {
         const viewModel: PickerPillsViewModel = {
           controlStatus,
-          selectedItems,
-          itemsNumber: selectedItems?.length || 0,
-          enableTextEntry: settings.EnableTextEntry,
+          // selectedItems,
+          // itemsNumber: selectedItems?.length || 0,
+          // enableTextEntry: settings.EnableTextEntry,
         };
         return viewModel;
       }),
@@ -76,7 +93,8 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
   }
 
   expandDialog() {
-    if (this.config.initialDisabled) { return; }
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
+    const config = this.config();
+    if (config.initialDisabled) return;
+    this.editRoutingService.expand(true, config.index, config.entityGuid);
   }
 }

@@ -1,13 +1,11 @@
 import { Component, ElementRef, OnDestroy, OnInit, computed, input, signal, viewChild } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
-import { PickerData } from '../picker-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
@@ -15,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
@@ -24,10 +22,10 @@ import { messagePickerItem } from '../adapters/data-adapter-base';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
-import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
 
 const logThis = true;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -56,24 +54,10 @@ const logEachItemChecks = false;
     PickerIconHelpComponent,
     PickerIconInfoComponent,
     ClickStopPropagationDirective,
-    // WIP
-    JsonPipe,
   ]
 })
-export class PickerSearchComponent extends BaseComponent implements OnInit, OnDestroy, FieldControlWithSignals /* replaces Field */ {
+export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit, OnDestroy, FieldControlWithSignals /* replaces Field */ {
   //#region Inputs
-
-  /** Picker Data Bundle with Source and state etc. */
-  pickerData = input.required<PickerData>();
-
-  /** Field Configuration */
-  config = input.required<FieldConfigSet>();
-
-  /** Form Group */
-  group = input.required<FormGroup>();
-
-  /** Field Control Configuration - mainly isPreview state */
-  controlConfig = input.required<FieldControlConfig>();
 
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
   showSelectedItem = input.required<boolean>();
@@ -87,11 +71,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
 
   private newValue: string = null;
-
-  public controlStatus = computed(() => this.pickerData().state.controlStatus());
-
-  /** All Selected Items */
-  public selectedItems = computed(() => this.pickerData().selectedItemsSig());
 
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
   public selectedItem = computed(() => this.pickerData().selectedItemSig());
@@ -121,9 +100,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
   /** Debug status for UI, mainly to show "add-null" button */
   debugEnabled = toSignal(this.globalConfigService.getDebugEnabled$(), { initialValue: false });
 
-  /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = computed(() => this.pickerData().state.basics());
-
   /** Current applicable settings like "enableEdit" etc. */
   settings = computed(() => {
     const selected = this.selectedItem();
@@ -140,8 +116,6 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
       showAsTree: sts.PickerDisplayMode === 'tree',
     };
   });
-
-  private rawFieldSettings = computed(() => this.fieldsSettingsService.getFieldSettings(this.config().fieldName));
 
   /**
    * The tree helper which is used by the tree display.
@@ -169,7 +143,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
       this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
     }
 
-    const fieldSettings = this.rawFieldSettings;
+    const fieldSettings = this.pickerData().state.settings;// this.rawFieldSettings;
     if (fieldSettings().PickerDisplayMode === 'tree') {
       // Setup Tree Helper - but should only happen, if we're really doing trees
       // Only doing this the first time, as these settings are not expected to change

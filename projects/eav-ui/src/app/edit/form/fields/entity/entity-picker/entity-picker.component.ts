@@ -15,6 +15,7 @@ import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = true;
+const nameOfThis = 'EntityPickerComponent';
 
 @Component({
   selector: InputTypeConstants.EntityPicker,
@@ -37,13 +38,13 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     private injector: Injector,
   ) {
     super();
-    this.log = new EavLogger('EntityPickerComponent', logThis);
+    this.log = new EavLogger(nameOfThis, logThis);
     this.log.a('constructor');
     EntityPickerLogic.importMe();
     this.isStringQuery = false;
   }
 
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     let source: DataAdapterQuery | DataAdapterEntity;
 
@@ -64,8 +65,8 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       source = this.entitySourceAdapterRaw.setupFromComponent(this, state, true);
     }
 
-    state.init('EntityPickerComponent');
-    source.init('EntityPickerComponent');
+    state.init(nameOfThis);
+    source.init(nameOfThis);
     this.pickerData = new PickerData(
       state,
       source,

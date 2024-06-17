@@ -13,6 +13,7 @@ import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
+const nameOfThis = 'EntityDefaultComponent';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -34,7 +35,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     private injector: Injector,
   ) {
     super();
-    this.log = new EavLogger('EntityDefaultComponent', logThis);
+    this.log = new EavLogger(nameOfThis, logThis);
     this.log.a('constructor');
     EntityDefaultLogic.importMe();
   }
@@ -48,8 +49,8 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
 
     const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
 
-    state.init('EntityDefaultComponent');
-    source.init('EntityDefaultComponent');
+    state.init(nameOfThis);
+    source.init(nameOfThis);
     this.pickerData = new PickerData(
       state,
       source,

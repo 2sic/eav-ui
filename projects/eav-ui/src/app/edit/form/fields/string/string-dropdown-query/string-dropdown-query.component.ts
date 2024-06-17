@@ -12,6 +12,7 @@ import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
+const nameOfThis = 'StringDropdownQueryComponent';
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
   templateUrl: '../../picker/picker.component.html',
@@ -50,8 +51,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
     const source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
 
-    state.init('StringDropdownQueryComponent');
-    source.init('StringDropdownQueryComponent');
+    state.init(nameOfThis);
+    source.init(nameOfThis);
     this.pickerData = new PickerData(
       state,
       source,
