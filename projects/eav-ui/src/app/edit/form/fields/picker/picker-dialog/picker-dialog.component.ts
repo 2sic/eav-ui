@@ -40,8 +40,11 @@ export class PickerDialogComponent extends PickerPartBaseComponent implements On
 
   protected showAddNewEntityButtonInDialog = computed(() => { 
     const settings = this.pickerData().state.settings();
-    const showAddNewEntityButtonInDialog = !this.isInFreeTextMode() && settings.EnableCreate && settings.CreateTypes && settings.AllowMultiValue;
-    return showAddNewEntityButtonInDialog;
+    const showAddNew = !this.isInFreeTextMode()
+      && settings.EnableCreate
+      && settings.CreateTypes
+      && settings.AllowMultiValue;
+    return showAddNew;
   });
 
   constructor() {
