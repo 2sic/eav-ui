@@ -83,32 +83,7 @@ export class StateAdapter extends ServiceBase {
     this.focusOnSearchComponent = component.focusOnSearchComponent;
 
     return this;
-    // return this.attachDependencies(
-    //   // component.settings$,
-    //   // component.controlStatus$,
-    //   // component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid),
-    //   // component.control,
-    //   // () => component.focusOnSearchComponent,
-    // );
   }
-
-  // private attachDependencies(
-  //   // settings$: BehaviorSubject<FieldSettings>,
-  //   // controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
-  //   // isExpanded$: Observable<boolean>,
-  //   // control: AbstractControl,
-  //   // focusOnSearchComponent: () => void,
-  // ): this {
-  //   this.log.a('setupShared');
-  //   // this.settings$ = settings$;
-  //   // this.subscriptions.add(settings$.subscribe(this.settings.set));
-  //   // this.controlStatus$ = controlStatus$;
-  //   // this.isExpanded$ = isExpanded$;
-  //   // this.control = control;
-  //   // this.focusOnSearchComponent = focusOnSearchComponent;
-  //   return this;
-  // }
-
 
   init(callerName: string) {
     this.log.a('init from ' + callerName);

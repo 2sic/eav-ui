@@ -1,7 +1,7 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService } from '../../../../shared/services';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
 import { EntityQueryLogic } from './entity-query-logic';
@@ -30,7 +30,6 @@ const logThis = false;
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     protected translate: TranslateService,
     editRoutingService: EditRoutingService,
     private stateRaw: StateAdapterEntity,
@@ -38,7 +37,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     protected injector: Injector,
   ) {
     super(
-      fieldsSettingsService,
       editRoutingService,
     );
     this.log = new EavLogger('EntityQueryComponent', logThis);

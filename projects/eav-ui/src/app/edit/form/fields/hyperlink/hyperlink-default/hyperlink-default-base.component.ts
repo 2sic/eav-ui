@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, Directive, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { FileTypeHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { Preview } from './hyperlink-default.models';
@@ -22,7 +22,6 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
 
   constructor(
     private formConfig: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
     public adamService: AdamService,
     public dialog: MatDialog,
     public viewContainerRef: ViewContainerRef,
@@ -31,7 +30,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
     public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

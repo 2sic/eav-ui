@@ -7,7 +7,6 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
-import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { DatetimeDefaultViewModel } from './datetime-default.models';
@@ -46,12 +45,11 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
   viewModel: Observable<DatetimeDefaultViewModel>;
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private matDayjsDateAdapter: MatDayjsDateAdapter,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
-    super(fieldsSettingsService);
+    super();
     dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);

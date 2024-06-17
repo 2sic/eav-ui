@@ -1,4 +1,4 @@
-import { Component, Directive, Input, OnDestroy, OnInit, computed, signal } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -8,6 +8,7 @@ import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder
 import { Field } from '../../builder/fields-builder/field.model';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 // @Directive()
 @Component({
@@ -46,8 +47,13 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   private settingsSignal = signal<FieldSettings>(null);
   basics = computed(() => BasicControlSettings.fromSettings(this.settingsSignal()))
 
+  /** The Field-Settings-Service - experimental with new inject */
+  public fieldsSettingsService = inject(FieldsSettingsService);
+
   // TODO: @2DM - GET RED OF THE FORMcONFIG HERE
-  constructor(public fieldsSettingsService: FieldsSettingsService) { super(); }
+  constructor(public log?: EavLogger) {
+    super(log);
+  }
 
   ngOnInit() {
     // Remember current control and publish status on signal (new) and observable (old)

@@ -1,31 +1,30 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
+import { FormConfigService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: WrappersConstants.DropzoneWrapper,
-    templateUrl: './dropzone-wrapper.component.html',
-    styleUrls: ['./dropzone-wrapper.component.scss'],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        DropzoneModule,
-        AsyncPipe,
-    ],
-    providers: [PickerTreeDataHelper],
+  selector: WrappersConstants.DropzoneWrapper,
+  templateUrl: './dropzone-wrapper.component.html',
+  styleUrls: ['./dropzone-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    DropzoneModule,
+    AsyncPipe,
+  ],
+  providers: [PickerTreeDataHelper],
 })
 export class DropzoneWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
@@ -41,11 +40,10 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   constructor(
     private formConfig: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

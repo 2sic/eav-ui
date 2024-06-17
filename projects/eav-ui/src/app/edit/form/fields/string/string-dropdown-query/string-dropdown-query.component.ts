@@ -1,7 +1,7 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService } from '../../../../shared/services';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { PickerData } from '../../picker/picker-data';
@@ -29,7 +29,6 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
     stateRaw: StateAdapterEntity,
@@ -38,7 +37,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     injector: Injector,
   ) {
     super(
-      fieldsSettingsService,
       translate,
       editRoutingService,
       stateRaw,

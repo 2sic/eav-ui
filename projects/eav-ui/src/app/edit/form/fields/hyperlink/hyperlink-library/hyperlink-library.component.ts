@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
@@ -25,8 +24,8 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 })
 export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implements OnInit, OnDestroy {
 
-  constructor(fieldsSettingsService: FieldsSettingsService) {
-    super(fieldsSettingsService);
+  constructor() {
+    super();
     HyperlinkLibraryLogic.importMe();
   }
 

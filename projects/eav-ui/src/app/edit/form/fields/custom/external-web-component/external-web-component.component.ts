@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../../shared/helpers/console-log-angular.helper';
-import { EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
+import { EditRoutingService, ScriptsLoaderService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomGpsLogic } from './custom-gps-logic';
 import { ExternalWebComponentViewModel } from './external-web-component.models';
@@ -28,11 +28,10 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
   private loading$: BehaviorSubject<boolean>;
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     private scriptsLoaderService: ScriptsLoaderService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(fieldsSettingsService);
+    super();
     StringWysiwygLogic.importMe();
     CustomGpsLogic.importMe();
   }

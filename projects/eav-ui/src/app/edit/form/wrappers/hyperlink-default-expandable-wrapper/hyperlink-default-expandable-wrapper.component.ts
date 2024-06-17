@@ -1,12 +1,12 @@
-import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
@@ -74,7 +74,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   constructor(
     eavService: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
     adamService: AdamService,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
@@ -87,7 +86,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   ) {
     super(
       eavService,
-      fieldsSettingsService,
       adamService,
       dialog,
       viewContainerRef,

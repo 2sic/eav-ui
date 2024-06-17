@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { distinctUntilChanged, share } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
-import { EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { EditRoutingService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -47,11 +47,10 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
   saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

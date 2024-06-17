@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, computed, signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, signal } from '@angular/core';
+import { Observable } from 'rxjs';
+import { EditRoutingService } from '../../../shared/services';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerViewModel } from './models/picker.models';
@@ -37,8 +37,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   public log: EavLogger = new EavLogger('PickerComponent', logThis);
 
-  constructor(fieldsSettingsService: FieldsSettingsService, public editRoutingService: EditRoutingService) {
-    super(fieldsSettingsService);
+  constructor(public editRoutingService: EditRoutingService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -92,7 +92,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
 
   focusOnSearchComponent(): void {
-    this.entitySearchComponent.autocomplete()?.nativeElement.focus();
+    // TODO: I don't think this actually works, since I can't see where it would be set
+    this.entitySearchComponent?.autocomplete()?.nativeElement.focus();
   }
 
   private refreshOnChildClosed(): void {

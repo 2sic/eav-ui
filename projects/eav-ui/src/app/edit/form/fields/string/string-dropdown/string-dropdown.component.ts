@@ -1,7 +1,6 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { EditRoutingService } from '../../../../shared/services';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,7 +27,6 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     editRoutingService: EditRoutingService,
     private pickerStringSourceAdapterRaw: DataAdapterString,
@@ -36,7 +34,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     private injector: Injector,
   ) {
     super(
-      fieldsSettingsService,
       editRoutingService,
     );
     EntityDefaultLogic.importMe();

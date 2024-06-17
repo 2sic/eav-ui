@@ -6,7 +6,6 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../create-file-dialog';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask } from '../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { templateTypes } from './string-template-picker.constants';
@@ -24,23 +23,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
-    selector: InputTypeConstants.StringTemplatePicker,
-    templateUrl: './string-template-picker.component.html',
-    styleUrls: ['./string-template-picker.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        FieldHelperTextComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: InputTypeConstants.StringTemplatePicker,
+  templateUrl: './string-template-picker.component.html',
+  styleUrls: ['./string-template-picker.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringTemplatePickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
@@ -56,12 +55,11 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
   private resetIfNotFound = false;
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     private sourceService: SourceService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

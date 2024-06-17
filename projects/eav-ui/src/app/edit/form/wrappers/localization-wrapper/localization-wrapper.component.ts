@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
@@ -10,16 +10,16 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { FormLanguage } from '../../../shared/models/form-languages.model';
 
 @Component({
-    selector: WrappersConstants.LocalizationWrapper,
-    templateUrl: './localization-wrapper.component.html',
-    styleUrls: ['./localization-wrapper.component.scss'],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        TranslateMenuComponent,
-        AsyncPipe,
-    ],
+  selector: WrappersConstants.LocalizationWrapper,
+  templateUrl: './localization-wrapper.component.html',
+  styleUrls: ['./localization-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    TranslateMenuComponent,
+    AsyncPipe,
+  ],
 })
 export class LocalizationWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
@@ -30,12 +30,11 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   constructor(
     private formConfig: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
     private languageStore: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

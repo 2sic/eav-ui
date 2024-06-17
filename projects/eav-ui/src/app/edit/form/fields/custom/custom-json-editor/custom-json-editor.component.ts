@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { JsonSchema } from '../../../../../monaco-editor';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { FormConfigService, FieldsSettingsService } from '../../../../shared/services';
+import { FormConfigService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
@@ -49,8 +49,8 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
     fixedOverflowWidgets: true,
   };
 
-  constructor(private formConfig: FormConfigService, fieldsSettingsService: FieldsSettingsService) {
-    super(fieldsSettingsService);
+  constructor(private formConfig: FormConfigService) {
+    super();
     CustomJsonEditorLogic.importMe();
     StringJsonLogic.importMe();
   }

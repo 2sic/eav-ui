@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
+import { ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
@@ -19,23 +19,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
-    selector: InputTypeConstants.StringFontIconPicker,
-    templateUrl: './string-font-icon-picker.component.html',
-    styleUrls: ['./string-font-icon-picker.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        CdkVirtualScrollViewport,
-        CdkFixedSizeVirtualScroll,
-        CdkVirtualForOf,
-        MatOptionModule,
-        FieldHelperTextComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.StringFontIconPicker,
+  templateUrl: './string-font-icon-picker.component.html',
+  styleUrls: ['./string-font-icon-picker.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatOptionModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringFontIconPickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
@@ -43,8 +43,8 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
 
   private iconOptions$: BehaviorSubject<IconOption[]>;
 
-  constructor(fieldsSettingsService: FieldsSettingsService, private scriptsLoaderService: ScriptsLoaderService) {
-    super(fieldsSettingsService);
+  constructor(private scriptsLoaderService: ScriptsLoaderService) {
+    super();
     StringFontIconPickerLogic.importMe();
   }
 

@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
@@ -26,26 +26,26 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
-    selector: InputTypeConstants.HyperlinkDefault,
-    templateUrl: './hyperlink-default.component.html',
-    styleUrls: ['./hyperlink-default.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        NgClass,
-        ExtendedModule,
-        MatMenuModule,
-        MatCardModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        PasteClipboardImageDirective,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: InputTypeConstants.HyperlinkDefault,
+  templateUrl: './hyperlink-default.component.html',
+  styleUrls: ['./hyperlink-default.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    NgClass,
+    ExtendedModule,
+    MatMenuModule,
+    MatCardModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    PasteClipboardImageDirective,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 @FieldMetadata({
   wrappers: [
@@ -60,7 +60,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   constructor(
     eavService: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
     adamService: AdamService,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
@@ -71,7 +70,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   ) {
     super(
       eavService,
-      fieldsSettingsService,
       adamService,
       dialog,
       viewContainerRef,

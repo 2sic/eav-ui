@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { NumberDefaultViewModel } from './number-default.models';
@@ -32,8 +31,8 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 export class NumberDefaultComponent extends BaseFieldComponent<number> implements OnInit, OnDestroy {
   viewModel: Observable<NumberDefaultViewModel>;
 
-  constructor(fieldsSettingsService: FieldsSettingsService) {
-    super(fieldsSettingsService);
+  constructor() {
+    super();
     NumberDefaultLogic.importMe();
   }
 

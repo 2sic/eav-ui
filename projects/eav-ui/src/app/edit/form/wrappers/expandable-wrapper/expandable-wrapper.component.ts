@@ -3,13 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, fromEvent, map, Observable, share, startWith } from 'rxjs';
+import { combineLatest, distinctUntilChanged, fromEvent, map, share, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
@@ -69,7 +69,6 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
 
   constructor(
     private formConfig: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
@@ -84,7 +83,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     private zone: NgZone,
     private formsStateService: FormsStateService,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { EditRoutingService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -23,31 +23,30 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { HyperlinkDefaultExpandableViewModel } from '../hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.models';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
-    templateUrl: './hyperlink-library-expandable-wrapper.component.html',
-    styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
-    animations: [ContentExpandAnimation],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        FlexModule,
-        MatCardModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        ExtendedFabSpeedDialModule,
-        MatRippleModule,
-        MatFormFieldModule,
-        FieldHelperTextComponent,
-        FeatureIconTextComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
+  templateUrl: './hyperlink-library-expandable-wrapper.component.html',
+  styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
+  animations: [ContentExpandAnimation],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatCardModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    ExtendedFabSpeedDialModule,
+    MatRippleModule,
+    MatFormFieldModule,
+    FieldHelperTextComponent,
+    FeatureIconTextComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
@@ -64,13 +63,12 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
     private featuresService: FeaturesService,
   ) {
-    super(fieldsSettingsService);
+    super();
   }
 
   ngOnInit() {

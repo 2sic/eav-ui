@@ -3,7 +3,6 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
@@ -16,18 +15,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
-    selector: InputTypeConstants.StringUrlPath,
-    templateUrl: './string-url-path.component.html',
-    styleUrls: ['./string-url-path.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        FieldHelperTextComponent,
-        AsyncPipe,
-    ],
+  selector: InputTypeConstants.StringUrlPath,
+  templateUrl: './string-url-path.component.html',
+  styleUrls: ['./string-url-path.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringUrlPathComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
@@ -37,8 +36,8 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
-  constructor(fieldsSettingsService: FieldsSettingsService) {
-    super(fieldsSettingsService);
+  constructor() {
+    super();
     StringUrlPathLogic.importMe();
   }
 

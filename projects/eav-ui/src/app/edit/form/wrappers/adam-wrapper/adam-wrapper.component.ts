@@ -1,8 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
@@ -11,17 +9,17 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
 
 @Component({
-    selector: WrappersConstants.AdamWrapper,
-    templateUrl: './adam-wrapper.component.html',
-    styleUrls: ['./adam-wrapper.component.scss'],
-    standalone: true,
-    imports: [
-        AdamBrowserComponent,
-        NgClass,
-        ExtendedModule,
-        AdamHintComponent,
-        AsyncPipe,
-    ],
+  selector: WrappersConstants.AdamWrapper,
+  templateUrl: './adam-wrapper.component.html',
+  styleUrls: ['./adam-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    AdamBrowserComponent,
+    NgClass,
+    ExtendedModule,
+    AdamHintComponent,
+    AsyncPipe,
+  ],
 })
 export class AdamWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
@@ -29,8 +27,9 @@ export class AdamWrapperComponent extends BaseFieldComponent implements FieldWra
 
   fullscreenAdam: boolean;
   adamDisabled = signal<boolean>(true);
-  constructor(fieldsSettingsService: FieldsSettingsService) {
-    super(fieldsSettingsService);
+
+  constructor() {
+    super();
   }
 
   ngOnInit() {
