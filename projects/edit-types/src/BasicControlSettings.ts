@@ -8,11 +8,17 @@ import { FieldSettings } from './FieldSettings';
  */
 export class BasicControlSettings
 {
+  /** Label to show on an input field */
   label: string;
-  placeholder: string;
-  required: boolean;
 
+  /** Label with a * if required */
   labelWithRequired: string;
+
+  /** Placeholder to show on an input field */
+  placeholder: string;
+
+  /** If the field is required */
+  required: boolean;
 
   static fromSettings(s: FieldSettings): BasicControlSettings {
     const label = s?.Name ?? 'loading...';

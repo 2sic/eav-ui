@@ -24,8 +24,14 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   control: AbstractControl;
   controlStatus$: BehaviorSubject<ControlStatus<T>>;
   settings$: BehaviorSubject<FieldSettings>;
+
+  // TODO: @2dg - get rid of this, replace with basics().label or basics().labelWithRequired
   label$: Observable<string>;
+
+  // TODO: @2dg - get rid of this, replace with basics().placeholder
   placeholder$: Observable<string>;
+
+  // TODO: @2dg - get rid of this, replace with basics().required
   required$: Observable<boolean>;
 
   private settingsSignal = signal<FieldSettings>(null);
