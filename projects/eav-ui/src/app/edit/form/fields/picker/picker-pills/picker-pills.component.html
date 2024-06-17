@@ -2,15 +2,15 @@
   <mat-label class="c-ew__preview-label" [ngClass]="{
     'mat-caption' : itemCount(),
     'mat-empty' : !itemCount(),
-    'mat-error' : controlStatus().invalid && controlStatus().touched && !config().initialDisabled,
-    'color__primary' : !(controlStatus().invalid && controlStatus().touched) && !config().initialDisabled,
+    'mat-error' : controlStatus().touchedAndInvalid && !config().initialDisabled,
+    'color__primary' : !controlStatus().touchedAndInvalid && !config().initialDisabled,
     'color__label-disabled' : config().initialDisabled
     }">
     {{ basics().labelWithRequired }}
   </mat-label>
   <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
     [ngClass]="{
-    'c-ew__preview--invalid' : controlStatus().invalid && controlStatus().touched,
+    'c-ew__preview--invalid' : controlStatus().touchedAndInvalid,
     'c-ew__preview--disabled': config().initialDisabled
     }">
     <div [ngClass]="itemCount() ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">

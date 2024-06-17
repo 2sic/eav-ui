@@ -49,7 +49,7 @@
       'mat-caption' : vm.controlStatus.value,
       'mat-empty' : !vm.controlStatus.value,
       'mat-error' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty) && !vm.controlStatus.disabled,
-      'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !vm.controlStatus.disabled,
+      'color__primary' : !(vm.controlStatus.touchedAndInvalid) && !vm.controlStatus.disabled,
       'color__label-disabled' : vm.controlStatus.disabled,
       'c-ew__preview-label--focused': vm.focused
       }">

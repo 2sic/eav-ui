@@ -2,7 +2,7 @@
   <div class="json-field" [ngClass]="{
     'disabled': vm.controlStatus.disabled,
     'focused': vm.focused,
-    'error': vm.controlStatus.touched && vm.controlStatus.invalid
+    'error': vm.controlStatus.touchedAndInvalid
     }">
     <mat-label class="label">{{ vm.label }} {{ vm.required ? '*' : '' }}</mat-label>
     <app-monaco-editor class="editor" [ngStyle]="{ 'height': vm.editorHeight }" [filename]="filename"

@@ -72,7 +72,7 @@
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
         <mat-form-field color="accent" class="eav-mat-form-field" [ngClass]="{
-              'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched
+              'mat-form-field-invalid': vm.controlStatus.touchedAndInvalid
               }">
           <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
             tippyPlacement="top" [placeholder]="vm.placeholder" (change)="setValue($event)"
@@ -110,7 +110,7 @@
             }
           </div>
           }
-          <mat-label [ngClass]="{ 'mat-error' : vm.controlStatus.invalid && vm.controlStatus.touched }">
+          <mat-label [ngClass]="{ 'mat-error' : vm.controlStatus.touchedAndInvalid }">
             {{ vm.label }}
             {{ vm.required ? '*': '' }}
           </mat-label>
