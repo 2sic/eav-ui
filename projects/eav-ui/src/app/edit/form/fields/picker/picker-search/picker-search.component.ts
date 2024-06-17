@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, Signal, ViewChild, computed, effect, input } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, computed, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -78,7 +78,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
 
   viewModel$: Observable<PickerSearchViewModel>;
 
-  private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
+  // private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
 
   private newValue: string = null;
 
@@ -138,14 +138,17 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     const state = pickerData.state;
     const source = pickerData.source;
 
+
+    let optionItems$ = new BehaviorSubject<PickerItem[]>(null);
+    // process formulas on options...?
     // TODO: @2dm - maybe there is even a more elegant way to do this
     // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
     if (false) {
       this.subscriptions.add(
-        this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$).subscribe((items) => this.optionItems$.next(items))
+        this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$).subscribe((items) => optionItems$.next(items))
       );
     } else {
-      this.optionItems$ = source.optionsOrHints$;
+      optionItems$ = source.optionsOrHints$;
     }
 
     const controlStatus$ = state.controlStatus$;
@@ -156,7 +159,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     // ATM we're only doing this the first time, as these settings are not expected to change
     fieldSettings$.pipe(take(1)).subscribe(settings => {
       if (settings.PickerDisplayMode !== 'tree') return;
-      this.treeDataService.init(fieldSettings$, this.optionItems$);
+      this.treeDataService.init(fieldSettings$, optionItems$);
       this.treeHelper = this.treeDataService.treeHelper;
     });
 
@@ -164,7 +167,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     // Create the default ViewModel used in the other modes
     const logVm = this.log.rxTap('viewModel$', { enabled: true });
     this.viewModel$ = combineLatest([
-      this.optionItems$, 
+      optionItems$, 
       controlStatus$,
       this.triggerFilter,
     ]).pipe(
@@ -216,7 +219,7 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     if (value == null) return '';
     let returnValue = '';
     // if (typeof value === 'string') {
-      returnValue = this.optionItems$.value?.find(ae => ae.value == value)?.label;
+      returnValue = this.pickerData().source.optionsOrHints().find(ae => ae.value == value)?.label;
     // }
     //  else if (Array.isArray(value)) {
     //   if (typeof value[0] === 'string') {
@@ -264,7 +267,9 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
       domElement.blur();
   }
 
-  onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void {
+  onClosed(): void {
+    const selectedItems = this.selectedItems();
+    const selectedItem = this.selectedItem();
     this.log.a('onClosed', [selectedItems, selectedItem]);
     if (this.showSelectedItem()) {
       // @SDV - improve this
@@ -291,12 +296,12 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     });
   }
 
-  getPlaceholder(availableEntities: PickerItem[]): string {
-    // this.log.a(`getPlaceholder error: '${error}'`, availableEntities);
-    var placeholder = availableEntities?.length > 0
+  getPlaceholder(): string {
+    const allOptions = this.pickerData().source.optionsOrHints();
+    var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.logItemChecks.add(`getPlaceholder error: result '${placeholder}'`, availableEntities);
+    this.logItemChecks.add(`getPlaceholder error: result '${placeholder}'`, allOptions);
     return placeholder;
   }
 
@@ -311,9 +316,10 @@ export class PickerSearchComponent extends BaseComponent implements OnInit, OnDe
     this.pickerData().state.addSelected(null);
   }
 
-  isOptionDisabled(value: string, selectedEntities: PickerItem[]): boolean {
-    const isSelected = selectedEntities.some(entity => entity.value === value);
-    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selectedEntities);
+  isOptionDisabled(value: string): boolean {
+    const selected = this.selectedItems();
+    const isSelected = selected.some(entity => entity.value === value);
+    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selected);
     return isSelected;
   }
 
