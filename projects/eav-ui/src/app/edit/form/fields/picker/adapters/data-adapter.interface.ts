@@ -2,6 +2,7 @@ import { PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { DeleteEntityProps } from "../models/picker.models";
 import { Signal } from '@angular/core';
+import { PickerFeatures } from '../picker-features.model';
 
 export interface DataAdapter {
 
@@ -16,6 +17,8 @@ export interface DataAdapter {
 
   optionsOrHints$: BehaviorSubject<PickerItem[]>;
   editEntityGuid$: BehaviorSubject<string>;
+
+  features: Signal<Partial<PickerFeatures>>;
 
   init(callerName: string): void;
   onAfterViewInit(): void;

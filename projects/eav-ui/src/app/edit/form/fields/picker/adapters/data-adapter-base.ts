@@ -6,8 +6,13 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Signal } from '@angular/core';
+import { PickerFeatures } from '../picker-features.model';
 
 export abstract class DataAdapterBase extends ServiceBase implements DataAdapter {
+
+  public abstract features: Signal<Partial<PickerFeatures>>;
+
   /**
    * The options to show.
    * Can be different from the underlying data, since it may have error or loading-entries.

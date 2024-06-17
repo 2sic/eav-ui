@@ -8,6 +8,7 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injector, Signal, computed, runInInjectionContext } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { PickerFeatures } from './picker-features.model';
 
 const logThis = false;
 
@@ -18,6 +19,12 @@ export class PickerData extends ServiceBase {
   public selectedItemsSig: Signal<PickerItem[]>;
 
   public selectedItemSig = computed(() => this.selectedItemsSig()[0] ?? null);
+
+  public features = computed(() => {
+    const fromSource = this.source.features();
+    const fromState = this.state.features();
+    return PickerFeatures.merge(fromSource, fromState);
+  });
 
   constructor(
     public state: StateAdapter,

@@ -41,7 +41,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
     const source = this.pickerStringSourceAdapterRaw.setupString(
       state.settings$,
-      state.disableAddNew$,
       this.config,
       this.group,
       (props: DeleteEntityProps) => state.doAfterDelete(props),

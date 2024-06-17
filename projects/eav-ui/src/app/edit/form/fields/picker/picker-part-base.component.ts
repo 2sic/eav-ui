@@ -38,6 +38,9 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy,
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
   basics = computed(() => this.pickerData().state.basics());
 
+  /** Features */
+  features = computed(() => this.pickerData().features());
+
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger(nameOfThis, logThis));
   }

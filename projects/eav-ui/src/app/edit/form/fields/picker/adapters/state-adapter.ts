@@ -15,6 +15,7 @@ import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
+import { PickerFeatures } from '../picker-features.model';
 
 const logThis = false;
 const dumpSelected = true;
@@ -24,7 +25,7 @@ const dumpProperties = false;
 export class StateAdapter extends ServiceBase {
   public isInFreeTextMode = signal(false);
 
-  public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public features = signal({} as Partial<PickerFeatures>);
 
   // TODO: doesn't seem to be in use, but probably should?
   // my guess is it should detect if the open-dialog is shown
@@ -45,11 +46,6 @@ export class StateAdapter extends ServiceBase {
     // effect(() => {
     //   var settings = this.settings();
     //   console.log('2dm settings changed', settings);
-    // });
-
-    // effect(() => {
-    //   var mf = this.allowMultiValue();
-    //   console.log('2dm allowMultiValue changed', mf);
     // });
   }
 
@@ -149,7 +145,6 @@ export class StateAdapter extends ServiceBase {
     this.log.a('destroy');
     this.settings$.complete();
     this.controlStatus$.complete();
-    this.disableAddNew$.complete();
   }
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {

@@ -17,8 +17,13 @@ import { DataSourceBase } from '../data-sources/data-source-base';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
+import { PickerFeatures } from '../picker-features.model';
+import { signal } from '@angular/core';
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
+
+  public features = signal<Partial<PickerFeatures>>( { create: false } satisfies Partial<PickerFeatures>);
+
   private createEntityTypes: string = '';
   protected contentTypeMask: FieldMask;
   protected contentType: string;
@@ -43,7 +48,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('constructor');
   }
 
-  disableAddNew$: BehaviorSubject<boolean>;
   settings$: BehaviorSubject<FieldSettings>;
   protected config: FieldConfigSet;
   protected group: FormGroup;
@@ -62,31 +66,11 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(component.settings$)
       : this.dataSourceEntity.setup(component.settings$);
 
-    return this.setupShared(
-      component.settings$,
-      component.config,
-      component.group,
-      component.control,
-      state.disableAddNew$,
-      (props: DeleteEntityProps) => state.doAfterDelete(props),
-    );
-  }
-
-  private setupShared(
-    settings$: BehaviorSubject<FieldSettings>,
-    config: FieldConfigSet,
-    group: FormGroup,
-    control: AbstractControl,
-    disableAddNew$: BehaviorSubject<boolean>,
-    deleteCallback: (props: DeleteEntityProps) => void,
-  ): this {
-    this.log.a('setupShared');
-    this.settings$ = settings$;
-    this.config = config;
-    this.group = group;
-    this.control = control;
-    this.disableAddNew$ = disableAddNew$;
-    super.setup(deleteCallback);
+    this.settings$ = component.settings$;
+    this.config = component.config;
+    this.group = component.group;
+    this.control = component.control;
+    super.setup(state.doAfterDelete);
     return this;
   }
 
@@ -165,7 +149,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   updateAddNew(): void {
     this.log.a('updateAddNew');
     // const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!this.contentType && !this.createEntityTypes);
+    const disableCreate = !this.contentType && !this.createEntityTypes;
+    this.features.update(p => ({ ...p, create: !disableCreate } satisfies Partial<PickerFeatures>));
   }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity

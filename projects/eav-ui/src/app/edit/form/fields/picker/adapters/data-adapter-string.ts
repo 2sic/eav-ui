@@ -6,37 +6,39 @@ import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
+import { PickerFeatures } from '../picker-features.model';
 
 const logThis = false;
+const nameOfThis = 'DataAdapterString';
 
 @Injectable()
 export class DataAdapterString extends DataAdapterBase {
+
+  public features = signal( { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
+
   private dataSource: DataSourceBase;
 
   constructor(
     private stringFieldDataSource: DataSourceString,
     private pickerDataSourceEmpty: DataSourceEmpty,
   ) {
-    super(new EavLogger('PickerStringSourceAdapter', logThis));
+    super(new EavLogger(nameOfThis, logThis));
   }
 
-  disableAddNew$: BehaviorSubject<boolean>;
   protected config: FieldConfigSet;
   protected group: FormGroup;
 
   public setupString(
     settings$: BehaviorSubject<FieldSettings>,
-    disableAddNew$: BehaviorSubject<boolean>,
     config: FieldConfigSet,
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
     useEmpty: boolean,
   ): this {
     this.log.a(`setupString - useEmpty ${useEmpty}`);
-    this.disableAddNew$ = disableAddNew$;
     this.config = config;
     this.group = group;
     this.setup(deleteCallback);

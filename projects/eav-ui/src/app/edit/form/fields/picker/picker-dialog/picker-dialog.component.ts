@@ -36,8 +36,6 @@ export class PickerDialogComponent extends PickerPartBaseComponent implements On
 
   protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
 
-  protected disableAddNew = computed(() => this.pickerData().state.disableAddNew$.value);
-
   protected showAddNewEntityButtonInDialog = computed(() => { 
     const settings = this.pickerData().state.settings();
     const showAddNew = !this.isInFreeTextMode()

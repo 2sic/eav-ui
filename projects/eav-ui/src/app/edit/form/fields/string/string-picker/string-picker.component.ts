@@ -40,8 +40,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     private querySourceAdapterRaw: DataAdapterQuery,
     private injector: Injector,
   ) {
-    super();
-    this.log = new EavLogger(nameOfThis, logThis);
+    super(new EavLogger(nameOfThis, logThis));
     StringPickerLogic.importMe();
     this.isStringQuery = true;
   }
@@ -59,7 +58,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
       source = this.sourceAdapterStringRaw.setupString(
         state.settings$,
-        state.disableAddNew$,
         this.config,
         this.group,
         (props: DeleteEntityProps) => state.doAfterDelete(props),

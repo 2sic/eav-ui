@@ -1,83 +1,82 @@
-@if (viewModel$ | async; as vm) {
-  <div fxLayout="row" fxLayoutAlign="start center">
-    <div class="eav-mat-form-field">
-      @if (vm.selectedItems.length > 1 && !isInFreeTextMode()) {
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="eav-mat-form-field">
+    @if (isInFreeTextMode()) {
+      <app-picker-text
+        [pickerData]="pickerData()"
+        [config]="config()"
+        [group]="group()">
+        <app-picker-toggle-text freeTextButtons
+          [pickerData]="pickerData()"
+          [csDisabled]="controlStatus().disabled"
+          [allowText]="mySettings().enableTextEntry"
+          [freeTextMode]="isInFreeTextMode()">
+        </app-picker-toggle-text>
+      </app-picker-text>
+    }
+    @else {
+      @if (selectedItems().length > 1) {
         <app-picker-pills
           [pickerData]="pickerData()"
-          [config]="config"
-          [group]="group"
-          [controlConfig]="controlConfig"
-        >
+          [config]="config()"
+          [group]="group()"
+          [controlConfig]="controlConfig()">
           <app-picker-toggle-text freeTextButtons
             [pickerData]="pickerData()"
-            [csDisabled]="vm.csDisabled"
-            [allowText]="vm.enableTextEntry"
+            [csDisabled]="controlStatus().disabled"
+            [allowText]="mySettings().enableTextEntry"
             [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-pills>
       }
-      @if (vm.selectedItems.length <= 1 && !isInFreeTextMode()) {
+      @else {
         <app-picker-search
           [pickerData]="pickerData()"
-          [config]="config"
-          [group]="group"
-          [controlConfig]="controlConfig"
+          [config]="config()"
+          [group]="group()"
+          [controlConfig]="controlConfig()"
           [showSelectedItem]="true"
           [showItemEditButtons]="true">
           <app-picker-toggle-text freeTextButtons
             [pickerData]="pickerData()"
-            [csDisabled]="vm.csDisabled"
-            [allowText]="vm.enableTextEntry"
+            [csDisabled]="controlStatus().disabled"
+            [allowText]="mySettings().enableTextEntry"
             [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
         </app-picker-search>
       }
-      @if (isInFreeTextMode()) {
-        <app-picker-text
-          [pickerData]="pickerData()"
-          [config]="config"
-          [group]="group">
-          <app-picker-toggle-text freeTextButtons
-            [pickerData]="pickerData()"
-            [csDisabled]="vm.csDisabled"
-            [allowText]="vm.enableTextEntry"
-            [freeTextMode]="isInFreeTextMode()">
-          </app-picker-toggle-text>
-        </app-picker-text>
-      }
-    </div>
-    <div fxLayoutAlign="end end">
-      <!-- create new entity to add to this list -->
-      @if (vm.showAddNewEntityButton) {
-        @if (pickerData().state.createEntityTypes.length > 1) {
-          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-            [disabled]="vm.csDisabled || vm.disableAddNew" [matMenuTriggerFor]="entityTypesMenu"
-            (click)="getEntityTypesData()">
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-          <mat-menu #entityTypesMenu="matMenu">
-            @for (entityType of pickerData().state.createEntityTypes; track entityType) {
-              <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
-                <span>{{ entityType.label }}</span>
-              </button>
-            }
-          </mat-menu>
-        } @else {
-          <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-            [disabled]="vm.csDisabled || vm.disableAddNew" (click)="openNewEntityDialog(null)">
-            <mat-icon>add_circle_outline</mat-icon>
-          </button>
-        }
-      }
-      @if (vm.showGoToListDialogButton) {
-        <button mat-icon-button class="eav-suffix-button"
-          [disabled]="vm.csDisabled"
-          [tippy]="'Fields.Picker.OpenMultiselect' | translate"
-          (click)="expandDialog()">
-          <mat-icon>post_add</mat-icon>
+    }
+  </div>
+  <div fxLayoutAlign="end end">
+    <!-- create new entity to add to this list -->
+    @if (mySettings().showAddNewEntityButton) {
+      @if (pickerData().state.createEntityTypes.length > 1) {
+        <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
+          [disabled]="controlStatus().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu"
+          (click)="getEntityTypesData()">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+        <mat-menu #entityTypesMenu="matMenu">
+          @for (entityType of pickerData().state.createEntityTypes; track entityType) {
+            <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
+              <span>{{ entityType.label }}</span>
+            </button>
+          }
+        </mat-menu>
+      } @else {
+        <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
+          [disabled]="controlStatus().disabled || !features().create" (click)="openNewEntityDialog(null)">
+          <mat-icon>add_circle_outline</mat-icon>
         </button>
       }
-    </div>
+    }
+    @if (mySettings().showGoToListDialogButton) {
+      <button mat-icon-button class="eav-suffix-button"
+        [disabled]="controlStatus().disabled"
+        [tippy]="'Fields.Picker.OpenMultiselect' | translate"
+        (click)="expandDialog()">
+        <mat-icon>post_add</mat-icon>
+      </button>
+    }
   </div>
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-}
+</div>
+<app-field-helper-text [config]="config()" [group]="group()"></app-field-helper-text>
