@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, computed } from '@angular/core';
-import { ReorderIndexes } from './picker-list.models';
+import { ReorderIndexes } from './reorder-index.models';
 import { PickerItem } from 'projects/edit-types';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';

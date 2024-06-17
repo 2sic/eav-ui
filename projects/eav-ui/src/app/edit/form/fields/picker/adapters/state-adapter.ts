@@ -1,7 +1,7 @@
 import { PickerItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
-import { ReorderIndexes } from '../picker-list/picker-list.models';
+import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
 import { AbstractControl } from '@angular/forms';
