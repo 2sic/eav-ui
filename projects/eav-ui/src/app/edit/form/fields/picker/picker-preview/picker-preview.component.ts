@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit, computed } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
+import { Component, OnDestroy, computed } from '@angular/core';
 import { EditRoutingService } from '../../../../shared/services';
-import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
 import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -39,8 +37,6 @@ const nameOfThis = 'PickerPreviewComponent';
     FieldHelperTextComponent,
     AsyncPipe,
     TranslateModule,
-
-    JsonPipe,
   ],
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy, FieldControlWithSignals {

@@ -29,9 +29,7 @@ export class PickerPillsComponent extends PickerPartBaseComponent implements OnD
 
   itemCount = computed(() => this.selectedItems().length);
 
-  constructor(
-    private editRoutingService: EditRoutingService,
-  ) {
+  constructor(private editRoutingService: EditRoutingService) {
     super();
   }
 

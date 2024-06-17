@@ -43,9 +43,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   private dataSourceEmpty = inject(DataSourceEmpty);
 
   constructor(
-    // protected snackBar: MatSnackBar,
     private dataSourceEntity: DataSourceBase,
-    // private dataSourceEmpty: DataSourceEmpty,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
