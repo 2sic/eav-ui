@@ -15,7 +15,7 @@ import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
-const logThis = false;
+const logThis = true;
 
 @Component({
   selector: InputTypeConstants.EntityPicker,
@@ -60,11 +60,14 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
-      source = this.entitySourceAdapterRaw.setupFromComponent(this, state);
+      source = this.entitySourceAdapterRaw.setupFromComponent(this, state, false);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
       this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state);
+      source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
+    } else {
+      // not configured yet, should get some empty-not-configured source
+      source = this.entitySourceAdapterRaw.setupFromComponent(this, state, true);
     }
 
     state.init('EntityPickerComponent');

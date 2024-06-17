@@ -12,6 +12,7 @@ import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -21,15 +22,16 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   private paramsMask: FieldMask;
 
   constructor(
-    public fieldsSettingsService: FieldsSettingsService,
+    protected fieldsSettingsService: FieldsSettingsService,
     public queryService: QueryService,
-    public entityCacheService: PickerDataCacheService,
-    public entityService: EntityService,
-    public formConfig: FormConfigService,
+    protected entityCacheService: PickerDataCacheService,
+    protected entityService: EntityService,
+    protected formConfig: FormConfigService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
-    public snackBar: MatSnackBar,
+    protected snackBar: MatSnackBar,
     private dsQuery: DataSourceQuery,
+    private sourceEmpty: DataSourceEmpty,
   ) {
     super(
       entityCacheService,
@@ -39,15 +41,16 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
       translate,
       snackBar,
       dsQuery,
+      sourceEmpty,
       new EavLogger(logName, logThis),
     );
   }
 
   private isStringQuery: boolean;
 
-  override setupFromComponent(component: PickerComponent, state: StateAdapter): this {
+  override setupFromComponent(component: PickerComponent, state: StateAdapter, useEmpty: boolean): this {
     this.log.a('setupFromComponent');
-    super.setupFromComponent(component, state);
+    super.setupFromComponent(component, state, useEmpty);
     this.isStringQuery = component.isStringQuery;
     return this;
   }

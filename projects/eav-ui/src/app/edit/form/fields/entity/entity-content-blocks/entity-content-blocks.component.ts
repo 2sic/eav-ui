@@ -46,11 +46,11 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     EntityContentBlocksLogic.importMe();
   }
 
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     const state = this.pickerStateAdapterRaw.attachToComponent(this);
 
-    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
 
     state.init('EntityContentBlockComponent');
     source.init('EntityContentBlockComponent');

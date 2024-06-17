@@ -16,6 +16,7 @@ import { PickerComponent } from '../picker.component';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
   private createEntityTypes: string = '';
@@ -23,14 +24,19 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected contentType: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
+  protected useEmpty: boolean = false;
+
+  protected dataSource: DataSourceBase;
+
   constructor(
-    public entityCacheService: PickerDataCacheService,  // DI
-    public entityService: EntityService, // DI
-    public formConfig: FormConfigService, // DI
-    public editRoutingService: EditRoutingService, // DI
+    protected entityCacheService: PickerDataCacheService,  // DI
+    protected entityService: EntityService, // DI
+    protected formConfig: FormConfigService, // DI
+    protected editRoutingService: EditRoutingService, // DI
     protected translate: TranslateService, // DI
-    public snackBar: MatSnackBar,
-    protected dataSource: DataSourceBase,
+    protected snackBar: MatSnackBar,
+    private dataSourceEntity: DataSourceBase,
+    private dataSourceEmpty: DataSourceEmpty,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
@@ -46,10 +52,16 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   public setupFromComponent(
     component: PickerComponent,
     state: StateAdapter,
+    useEmpty: boolean,
   ): this  {
     this.log.a('setupFromComponent');
     if (!this.log.enabled)
       this.log.inherit(component.log);
+
+    this.dataSource = useEmpty
+      ? this.dataSourceEmpty.setup(component.settings$)
+      : this.dataSourceEntity.setup(component.settings$);
+
     return this.setupShared(
       component.settings$,
       component.config,
@@ -60,7 +72,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     );
   }
 
-  public setupShared(
+  private setupShared(
     settings$: BehaviorSubject<FieldSettings>,
     config: FieldConfigSet,
     group: FormGroup,
@@ -75,7 +87,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.control = control;
     this.disableAddNew$ = disableAddNew$;
     super.setup(deleteCallback);
-
     return this;
   }
 

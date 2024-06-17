@@ -45,14 +45,14 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     EntityDefaultLogic.importMe();
   }
 
-  protected /* FYI: override */ createPickerAdapters(): void {
+  protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
     const state = this.stateRaw.attachToComponent(this);
 
     this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
 
-    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
 
     state.init('EntityDefaultComponent');
     source.init('EntityDefaultComponent');
