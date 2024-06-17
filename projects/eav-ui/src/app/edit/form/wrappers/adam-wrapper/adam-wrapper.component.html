@@ -4,12 +4,12 @@
   </div>
   <adam-browser (openUpload)="openUpload()" [config]="config" [group]="group" class="u-shadow-top" [ngClass]="{
     'adam-browser-container--short u-hide-scrollbar': !fullscreenAdam,
-    'u-display-none': adamDisabled$ | async
+    'u-display-none': adamDisabled()
   }">
   </adam-browser>
-  <div class="{{ config.dropzonePreviewsClass }}" [ngClass]="{ 'u-display-none': adamDisabled$ | async }">
+  <div class="{{ config.dropzonePreviewsClass }}" [ngClass]="{ 'u-display-none': adamDisabled() }">
     <div class="dropzone-previews"></div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
   </div>
-  <adam-hint class="field-hints" [ngClass]="{ 'u-display-none': adamDisabled$ | async }"></adam-hint>
+  <adam-hint class="field-hints" [ngClass]="{ 'u-display-none': adamDisabled() }"></adam-hint>
 </div>

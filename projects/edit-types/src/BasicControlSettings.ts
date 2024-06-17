@@ -20,14 +20,29 @@ export class BasicControlSettings
   /** If the field is required */
   required: boolean;
 
+  visible: boolean;
+
+  visibleDisabled: boolean;
+
+  visibleAndEnabled: boolean;
+
   static fromSettings(s: FieldSettings): BasicControlSettings {
     const label = s?.Name ?? 'loading...';
     const required = s?._currentRequired ?? false;
+    const visible = s?.Visible ?? true;
+    const visibleDisabled = s?.VisibleDisabled ?? false;
+    const visibleAndEnabled = visible && !visibleDisabled;
+    // if (label == 'Text') {
+    //   console.log('s', s);
+    // }
     return {
       label,
       placeholder: s?.Placeholder ?? 'loading...',
       required,
       labelWithRequired: label + (required ? ' *' : ''),
+      visible,
+      visibleDisabled,
+      visibleAndEnabled,
     };
   }
 }

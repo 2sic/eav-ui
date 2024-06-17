@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { CreateEffectOptions, effect, Injectable, Injector, OnDestroy, signal, Signal, WritableSignal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
@@ -23,7 +23,8 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     private router: Router,
     private languageInstanceService: LanguageInstanceService,
     private formConfig: FormConfigService,
-  ) { 
+    private injector: Injector
+  ) {
     super();
   }
 
@@ -55,7 +56,6 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
       distinctUntilChanged()
     );
   }
-
   /** Fires when child form is closed and has a result, new entity was added */
   childFormResult(fieldId: number, entityGuid: string) {
     return this.childFormResult$.pipe(

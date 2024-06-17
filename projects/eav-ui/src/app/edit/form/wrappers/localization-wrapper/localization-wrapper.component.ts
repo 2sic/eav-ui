@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -26,7 +25,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 
-  language$: Observable<FormLanguage>;
+  $language = signal<FormLanguage>(null);
   hideTranslateButton: boolean = true;
 
   constructor(
@@ -41,7 +40,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
+    this.languageStore.getLanguage$(this.formConfig.config.formId).subscribe( d => this.$language.set(d));
   }
 
   ngOnDestroy() {

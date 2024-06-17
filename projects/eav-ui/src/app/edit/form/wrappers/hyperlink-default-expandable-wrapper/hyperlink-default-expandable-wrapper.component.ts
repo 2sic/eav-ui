@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
@@ -30,6 +30,7 @@ import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -64,9 +65,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  open$: Observable<boolean>;
-  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  viewModel$: Observable<HyperlinkDefaultExpandableViewModel>;
+  open: WritableSignal<boolean> = signal(false);
+  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
+  viewModel: WritableSignal<HyperlinkDefaultExpandableViewModel> = signal(null);
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -95,13 +96,17 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       editRoutingService,
       formsStateService,
     );
+
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
-    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+    // this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
+    ).subscribe(value => this.open.set(value));
+
     const settings$ = this.settings$.pipe(
       map(settings => ({
         _buttonAdam: settings.Buttons.includes('adam'),
@@ -128,7 +133,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       distinctUntilChanged(),
     );
 
-    this.viewModel$ = combineLatest([
+    combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.preview$, settings$, adamItem$, showAdamSponsor$]),
     ]).pipe(
@@ -136,7 +141,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
         [controlStatus, label, placeholder, required],
         [preview, settings, adamItem, showAdamSponsor],
       ]) => {
-        const viewModel: HyperlinkDefaultExpandableViewModel = {
+        return {
           controlStatus,
           label,
           placeholder,
@@ -148,9 +153,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
           enableImageConfiguration: settings.EnableImageConfiguration,
           showAdamSponsor,
         };
-        return viewModel;
       }),
-    );
+    ).subscribe(viewModel => this.viewModel.set(viewModel));
   }
 
   ngAfterViewInit() {

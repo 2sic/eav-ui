@@ -1,7 +1,7 @@
-<div [ngClass]="(dialogIsOpen$ | async) ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="dialogIsOpen() ? 'c-ew__container' : 'u-display-none'">
   <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
-    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen$ | async }">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen() }">
       <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
@@ -11,11 +11,11 @@
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="(dialogIsOpen$ | async) ? 'closed' : 'open'">
+      <div [@itemShrinkAnimation]="dialogIsOpen() ? 'closed' : 'open'">
       </div>
       <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
       <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" cdkScrollable [@contentExpandAnimation]="{
-        value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
+        value: dialogIsOpen() ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
       }">
         <div class="eav-layout-grid">
@@ -34,12 +34,12 @@
           </button>
         </ng-template>
         <ng-template extendedFabSpeedDialActionsContent>
-          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()"
             (click)="saveAll(false)">
             <span>{{ 'Form.Buttons.Save' | translate }}</span>
             <mat-icon>save</mat-icon>
           </button>
-          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()"
             (click)="saveAll(true)">
             <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
             <mat-icon>done_all</mat-icon>

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -28,29 +28,30 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: WrappersConstants.ExpandableWrapper,
-    templateUrl: './expandable-wrapper.component.html',
-    styleUrls: ['./expandable-wrapper.component.scss'],
-    animations: [ContentExpandAnimation],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        FlexModule,
-        MatCardModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        ExtendedFabSpeedDialModule,
-        MatRippleModule,
-        MatFormFieldModule,
-        NgStyle,
-        FieldHelperTextComponent,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: WrappersConstants.ExpandableWrapper,
+  templateUrl: './expandable-wrapper.component.html',
+  styleUrls: ['./expandable-wrapper.component.scss'],
+  animations: [ContentExpandAnimation],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatCardModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    ExtendedFabSpeedDialModule,
+    MatRippleModule,
+    MatFormFieldModule,
+    NgStyle,
+    FieldHelperTextComponent,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class ExpandableWrapperComponent extends BaseFieldComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
@@ -58,10 +59,10 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  open$: Observable<boolean>;
-  adamDisabled$ = new BehaviorSubject(true);
-  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  viewModel$: Observable<ExpandableWrapperViewModel>;
+  open = signal(false);
+  viewModel: WritableSignal<ExpandableWrapperViewModel> = signal(null);
+  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
+  adamDisabled = signal<boolean>(true);
 
   private connectorCreator: ConnectorHelper;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -88,7 +89,9 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
+      .subscribe(value => this.open.set(value));
 
     const previewHeight$ = combineLatest([
       this.fieldsSettingsService.getFieldSettings$(this.config.fieldName),
@@ -117,7 +120,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
       distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
-    this.viewModel$ = combineLatest([
+    combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.config.focused$, previewHeight$]),
     ]).pipe(
@@ -125,78 +128,76 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
         [controlStatus, label, placeholder, required],
         [focused, previewHeight],
       ]) => {
-        const viewModel: ExpandableWrapperViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
+       return {
+          controlStatus,  // drop
+          label,  // drop
+          placeholder, // drop
+          required, // drop
           focused,
           previewHeight,
         };
-        return viewModel;
       }),
-    );
+    ).subscribe(viewModel => this.viewModel.set(viewModel));
   }
 
-  ngAfterViewInit() {
-    this.subscriptions.add(
-      this.config.adam.getConfig$().subscribe(adamConfig => {
-        const disabled = adamConfig?.disabled ?? true;
-        if (this.adamDisabled$.value !== disabled) {
-          this.adamDisabled$.next(disabled);
-        }
-      })
-    );
+ngAfterViewInit() {
+  this.subscriptions.add(
+    this.config.adam.getConfig$().subscribe(adamConfig => {
+      const disabled = adamConfig?.disabled ?? true;
+      if (this.adamDisabled()!== disabled) {
+        this.adamDisabled.set(disabled);
+      }
+    })
+  );
 
-    const componentTag = `field-${this.config.inputType}`;
-    consoleLogEditForm('ExpandableWrapper created for:', componentTag);
-    this.connectorCreator = new ConnectorHelper(
-      this.config,
-      this.group,
-      this.previewContainerRef,
-      componentTag,
-      this.formConfig,
-      this.translateService,
-      this.contentTypeService,
-      this.inputTypeService,
-      this.featuresService,
-      this.editRoutingService,
-      this.adamService,
-      this.dialog,
-      this.viewContainerRef,
-      this.changeDetectorRef,
-      this.fieldsSettingsService,
-      // this.entityCacheService,
-      this.snackBar,
-      this.zone,
-    );
+  const componentTag = `field-${this.config.inputType}`;
+  consoleLogEditForm('ExpandableWrapper created for:', componentTag);
+  this.connectorCreator = new ConnectorHelper(
+    this.config,
+    this.group,
+    this.previewContainerRef,
+    componentTag,
+    this.formConfig,
+    this.translateService,
+    this.contentTypeService,
+    this.inputTypeService,
+    this.featuresService,
+    this.editRoutingService,
+    this.adamService,
+    this.dialog,
+    this.viewContainerRef,
+    this.changeDetectorRef,
+    this.fieldsSettingsService,
+    // this.entityCacheService,
+    this.snackBar,
+    this.zone,
+  );
 
-    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
-    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
-    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-  }
+  this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+  this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+  this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
+}
 
-  ngOnDestroy() {
-    consoleLogEditForm('ExpandableWrapper destroyed');
-    this.adamDisabled$.complete();
-    this.connectorCreator.destroy();
-    this.dropzoneDraggingHelper.detach();
-    super.ngOnDestroy();
-  }
+ngOnDestroy() {
+  consoleLogEditForm('ExpandableWrapper destroyed');
+  this.connectorCreator.destroy();
+  this.dropzoneDraggingHelper.detach();
+  super.ngOnDestroy();
+}
 
-  expandDialog() {
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
-  }
+expandDialog() {
+  this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
+}
 
-  closeDialog() {
-    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
-  }
+closeDialog() {
+  this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+}
 
-  saveAll(close: boolean) {
-    this.formsStateService.saveForm$.next(close);
-  }
+saveAll(close: boolean) {
+  this.formsStateService.saveForm$.next(close);
+}
 
-  calculateBottomPixels() {
-    return window.innerWidth > 600 ? '100px' : '50px';
-  }
+calculateBottomPixels() {
+  return window.innerWidth > 600 ? '100px' : '50px';
+}
 }

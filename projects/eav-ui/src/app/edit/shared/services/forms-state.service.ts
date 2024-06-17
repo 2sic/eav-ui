@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subject, Subscription } from 'rxjs';
+import { computed, Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, sample, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { FormReadOnly } from '../models';
 import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
@@ -43,6 +43,14 @@ export class FormsStateService implements OnDestroy {
       map(([readOnly, formsValid]) => readOnly.isReadOnly || !formsValid),
       distinctUntilChanged(),
     );
+
+    // TODO:: Signals combineLatest, gibt direkt einen Wert zurück und nicht erst dann, wenn alle Werte vorhanden sind
+  //   const $v = computed(() => $foo() * $bar());
+  //   // same as
+  //   const v$ = combineLatest([foo$, bar$]).pipe(
+  //     map(([foo, bar]) => foo * bar)
+  // );
+
     this.formsValid = {};
     this.formsDirty = {};
     for (const entityGuid of this.formConfig.config.itemGuids) {
