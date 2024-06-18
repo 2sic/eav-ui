@@ -44,8 +44,8 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
    * The signal containing the settings - will be setup later, as we need the exact name
    * note that once the `config` is a signal input, we can change this.
    */
-  private settingsSignal = signal<FieldSettings>(null);
-  basics = computed(() => BasicControlSettings.fromSettings(this.settingsSignal()))
+  protected settings = signal<FieldSettings>(null);
+  basics = computed(() => BasicControlSettings.fromSettings(this.settings()))
 
   /** The Field-Settings-Service - experimental with new inject */
   public fieldsSettingsService = inject(FieldsSettingsService);
@@ -74,7 +74,7 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
       })
     );
     // WIP
-    this.subscriptions.add(this.settings$.subscribe(this.settingsSignal.set));
+    this.subscriptions.add(this.settings$.subscribe(this.settings.set));
 
     this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());

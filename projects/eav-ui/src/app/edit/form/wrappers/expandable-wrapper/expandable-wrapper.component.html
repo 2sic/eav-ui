@@ -27,13 +27,11 @@
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()"
-              (click)="saveAll(false)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()"
-              (click)="saveAll(true)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
             </button>
@@ -43,8 +41,8 @@
     </div>
   </div>
 </div>
-  <div class="c-ew__preview-holder">
-    <mat-label class="c-ew__preview-label" [ngClass]="{
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
       'mat-caption' : controlStatus().value,
       'mat-empty' : !controlStatus().value,
       'mat-error' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty) && !controlStatus().disabled,
@@ -52,22 +50,22 @@
       'color__label-disabled' : controlStatus().disabled,
       'c-ew__preview-label--focused': focused()
       }">
-      {{basics().labelWithRequired}}
-    </mat-label>
-    <div class="c-ew__preview" [ngClass]="{
+    {{basics().labelWithRequired}}
+  </mat-label>
+  <div class="c-ew__preview" [ngClass]="{
       'c-ew__preview--invalid' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty),
       'c-ew__preview--disabled': controlStatus().disabled,
       'c-ew__preview--focused': focused()
       }">
-      <div class="c-ew__preview-container">
-        <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
+    <div class="c-ew__preview-container">
+      <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
           'c-ew__preview-content--disabled': controlStatus().disabled
           }" [ngStyle]="{
           'min-height': previewHeight().minHeight,
           'max-height': previewHeight().maxHeight
           }">
-        </div>
       </div>
     </div>
-    <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   </div>
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</div>

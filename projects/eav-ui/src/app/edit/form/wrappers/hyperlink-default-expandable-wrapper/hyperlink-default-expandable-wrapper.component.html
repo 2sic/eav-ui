@@ -28,11 +28,11 @@
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(false)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(true)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
             </button>

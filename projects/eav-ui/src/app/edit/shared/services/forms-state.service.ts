@@ -1,4 +1,4 @@
-import { computed, Injectable, OnDestroy } from '@angular/core';
+import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, sample, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { FormReadOnly } from '../models';
@@ -12,6 +12,11 @@ export class FormsStateService implements OnDestroy {
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
   saveButtonDisabled$: Observable<boolean>;
+
+  // new with Signal
+  readOnly = signal<FormReadOnly>({ isReadOnly: true, reason: undefined });
+  formsValidTemp = signal<boolean>(false);
+  saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
 
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
@@ -36,6 +41,7 @@ export class FormsStateService implements OnDestroy {
     this.subscription = new Subscription();
     this.saveForm$ = new Subject();
     const initialReadOnly: FormReadOnly = { isReadOnly: true, reason: undefined };
+
     this.readOnly$ = new BehaviorSubject(initialReadOnly);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
@@ -43,13 +49,6 @@ export class FormsStateService implements OnDestroy {
       map(([readOnly, formsValid]) => readOnly.isReadOnly || !formsValid),
       distinctUntilChanged(),
     );
-
-    // TODO:: Signals combineLatest, gibt direkt einen Wert zurück und nicht erst dann, wenn alle Werte vorhanden sind
-  //   const $v = computed(() => $foo() * $bar());
-  //   // same as
-  //   const v$ = combineLatest([foo$, bar$]).pipe(
-  //     map(([foo, bar]) => foo * bar)
-  // );
 
     this.formsValid = {};
     this.formsDirty = {};
@@ -76,6 +75,8 @@ export class FormsStateService implements OnDestroy {
         };
         if (!RxHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
           this.readOnly$.next(readOnly);
+          this.readOnly.set(readOnly);
+          // this.readOnly.update(v => readOnly);
         }
       })
     );
@@ -89,7 +90,9 @@ export class FormsStateService implements OnDestroy {
     this.formsValid[entityGuid] = isValid;
 
     const allValid = !Object.values(this.formsValid).some(valid => valid === false);
-    if (allValid !== this.formsValid$.value) {
+    if (allValid !== this.formsValidTemp()) {
+      // if (allValid !== this.formsValid$.value) {
+      this.formsValidTemp.set(allValid);
       this.formsValid$.next(allValid);
     }
   }

@@ -64,9 +64,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  open: WritableSignal<boolean> = signal(false);
-  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
-  viewModel: WritableSignal<HyperlinkDefaultExpandableViewModel> = signal(null);
+  open = signal(false);
+  viewModel = signal<HyperlinkDefaultExpandableViewModel>(null);
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -80,7 +79,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     linkCacheService: LinkCacheService,
     editRoutingService: EditRoutingService,
     private zone: NgZone,
-    formsStateService: FormsStateService,
+    public formsStateService: FormsStateService,
     private featuresService: FeaturesService,
   ) {
     super(
@@ -93,16 +92,14 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       editRoutingService,
       formsStateService,
     );
-
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
-    // this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
-    ).subscribe(value => this.open.set(value));
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
+      .subscribe(this.open.set);
 
     const settings$ = this.settings$.pipe(
       map(settings => ({

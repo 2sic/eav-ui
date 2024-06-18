@@ -55,8 +55,6 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
 
   open: WritableSignal<boolean> = signal(false);
   viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
-  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
-
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -64,7 +62,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   constructor(
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
-    private formsStateService: FormsStateService,
+    public formsStateService: FormsStateService,
     private featuresService: FeaturesService,
   ) {
     super();
@@ -73,8 +71,8 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   ngOnInit() {
     super.ngOnInit();
 
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid).pipe(
-    ).subscribe(value => this.open.set(value));
+    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
+      .subscribe(this.open.set);
 
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
