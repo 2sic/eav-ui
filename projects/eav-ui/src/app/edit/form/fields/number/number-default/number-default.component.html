@@ -1,8 +1,11 @@
-@if (viewModel | async; as vm) {
-  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-    <input matInput type="number" class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [required]="basics().required"
-      [placeholder]="basics().placeholder" [min]="vm.min" [max]="vm.max">
-    <mat-label>{{ basics().label }}</mat-label>
-  </mat-form-field>
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-}
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
+  <input matInput type="number"
+    class="eav-translate-on-dblclick"
+    [formControlName]="config.fieldName"
+    [required]="basics().required"
+    [placeholder]="basics().placeholder"
+    [min]="settings().Min"
+    [max]="settings().Max">
+  <mat-label>{{ basics().label }}</mat-label>
+</mat-form-field>
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

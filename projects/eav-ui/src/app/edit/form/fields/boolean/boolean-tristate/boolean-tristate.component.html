@@ -1,26 +1,14 @@
 <!-- New -->
-@if (viewModel$ | async; as vm) {
-<!-- <div>
-
-  Check State: {{vm.checked }}
-  <br>
-  Old Label: {{vm.buttonLabel }}
-  <br>
-  New Label: {{basics().label}}
-  <br>
-  Changeable: {{changedLabel()}}
-</div> -->
-
 <div [formGroup]="group">
   <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
-    <mat-slide-toggle [checked]="vm.checked" [disabled]="controlStatus().disabled" [ngClass]="{
-          'toggle-false': vm.checked === false,
-          'toggle-true': vm.checked === true,
-          'toggle-null': vm.checked === null,
-          'changeable-label-tristate-mat-slide-toggle': vm.changeable
+    <mat-slide-toggle [checked]="checkedState()" [disabled]="controlStatus().disabled" [ngClass]="{
+          'toggle-false': checkedState() === false,
+          'toggle-true': checkedState() === true,
+          'toggle-null': checkedState() === null,
+          'changeable-label-tristate-mat-slide-toggle': changedLabel() !== basics().label
             }" />
-    <span [ngClass]="!vm.checked ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ changedLabel() ?? basics().label  }}</span>
+    <span [ngClass]="!checkedState() ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ changedLabel() ??
+      basics().label }}</span>
   </div>
   <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
 </div>
-}

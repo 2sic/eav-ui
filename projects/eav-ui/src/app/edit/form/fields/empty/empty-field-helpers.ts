@@ -24,7 +24,7 @@ export class EmptyFieldHelpers {
   //   return this.endsPreviousGroup(inputType.inputType);
   //   // const itName = inputType.inputType;
   //   // return itName === InputTypeConstants.EmptyDefault || itName === InputTypeConstants.EmptyEnd;
-  // }  
+  // }
 
   static isGroupStart(inputType: InputTypeStrict): boolean {
     return inputType === InputTypeConstants.EmptyDefault;

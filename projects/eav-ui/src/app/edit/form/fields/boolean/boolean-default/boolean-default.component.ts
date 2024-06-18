@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
@@ -14,24 +14,32 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 
 @Component({
-    selector: InputTypeConstants.BooleanDefault,
-    templateUrl: './boolean-default.component.html',
-    styleUrls: ['./boolean-default.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatSlideToggleModule,
-        NgClass,
-        ExtendedModule,
-        FieldHelperTextComponent,
-        AsyncPipe,
-        JsonPipe,
-    ],
+  selector: InputTypeConstants.BooleanDefault,
+  templateUrl: './boolean-default.component.html',
+  styleUrls: ['./boolean-default.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    NgClass,
+    ExtendedModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+    JsonPipe,
+  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanDefaultComponent extends BaseFieldComponent<boolean> implements OnInit, OnDestroy {
-  viewModel$: Observable<BooleanDefaultViewModel>;
+  // viewModel$: Observable<BooleanDefaultViewModel>;
+
+  changedLabel = computed(() => this.settings()._label)
+
+  checkedState = computed(() => {
+    const value = this.controlStatus().value;
+    const reverseToggle = this.settings().ReverseToggle;
+    return reverseToggle ? !value : value;
+  })
 
   constructor() {
     super();
@@ -40,41 +48,6 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
 
   ngOnInit() {
     super.ngOnInit();
-    const changeable$: Observable<boolean> = combineLatest([
-      this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
-    ]).pipe(
-      map(([TitleTrue, TitleFalse]) => !!(TitleTrue && TitleFalse)),
-      distinctUntilChanged(),
-    );
-
-    const checked$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged())
-    ]).pipe(
-      map(([value, reverseToogle]) => reverseToogle ? !value: value),
-      distinctUntilChanged(),
-    );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([changeable$]),
-      combineLatest([checked$])
-    ]).pipe(
-      map(([
-        [changeable],
-        [checked],
-      ]) => {
-        const viewModel: BooleanDefaultViewModel = {
-          changeable,
-          checked,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   updateValue(disabled: boolean) {

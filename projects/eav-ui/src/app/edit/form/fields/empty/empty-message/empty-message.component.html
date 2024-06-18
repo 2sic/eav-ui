@@ -1,5 +1,3 @@
-@if (viewModel | async; as vm) {
-  @if (vm.visible) {
-    <div class="message-box" [innerHtml]="vm.notes | safeHtml"></div>
-  }
+@if (basics().visible) {
+<div class="message-box" [innerHtml]="basics().notes | safeHtml"></div>
 }

@@ -1,7 +1,8 @@
-@if (viewModel$ | async; as vm) {
+
+<h1>{{checkedState()}}</h1>
 <div [formGroup]="group">
   <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
-    <mat-slide-toggle [checked]="vm.checked" [disabled]="controlStatus().disabled"
+    <mat-slide-toggle [checked]="checkedState()" [disabled]="controlStatus().disabled"
       [ngClass]="!controlStatus().value ? 'changeable-label-mat-slide-toggle' : ''" />
     <span [ngClass]="!controlStatus().value ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">
       {{ changedLabel() ?? basics().label }}
@@ -9,4 +10,3 @@
   </div>
   <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
 </div>
-}

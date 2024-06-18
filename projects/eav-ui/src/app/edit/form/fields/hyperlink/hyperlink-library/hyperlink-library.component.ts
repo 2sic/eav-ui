@@ -35,10 +35,6 @@ export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implemen
     this.attachAdamValidator();
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   private attachAdam() {
     this.subscriptions.add(
       this.settings$.pipe(
