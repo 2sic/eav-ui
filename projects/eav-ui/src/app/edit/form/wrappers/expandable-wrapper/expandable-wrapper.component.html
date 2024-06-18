@@ -1,3 +1,5 @@
+<h1>Test</h1>
+
 <div [ngClass]="open() ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
@@ -43,34 +45,31 @@
     </div>
   </div>
 </div>
-@if (viewModel() ; as vm) {
   <div class="c-ew__preview-holder">
     <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : vm.controlStatus.value,
-      'mat-empty' : !vm.controlStatus.value,
-      'mat-error' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty) && !vm.controlStatus.disabled,
-      'color__primary' : !(vm.controlStatus.touchedAndInvalid) && !vm.controlStatus.disabled,
-      'color__label-disabled' : vm.controlStatus.disabled,
-      'c-ew__preview-label--focused': vm.focused
+      'mat-caption' : controlStatus().value,
+      'mat-empty' : !controlStatus().value,
+      'mat-error' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty) && !controlStatus().disabled,
+      'color__primary' : !(controlStatus().touchedAndInvalid) && !controlStatus().disabled,
+      'color__label-disabled' : controlStatus().disabled,
+      'c-ew__preview-label--focused': focused()
       }">
-      {{ vm.label }}
-      {{ vm.required ? '*': '' }}
+      {{basics().labelWithRequired}}
     </mat-label>
     <div class="c-ew__preview" [ngClass]="{
-      'c-ew__preview--invalid' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty),
-      'c-ew__preview--disabled': vm.controlStatus.disabled,
-      'c-ew__preview--focused': vm.focused
+      'c-ew__preview--invalid' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty),
+      'c-ew__preview--disabled': controlStatus().disabled,
+      'c-ew__preview--focused': focused()
       }">
       <div class="c-ew__preview-container">
         <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
-          'c-ew__preview-content--disabled': vm.controlStatus.disabled
+          'c-ew__preview-content--disabled': controlStatus().disabled
           }" [ngStyle]="{
-          'min-height': vm.previewHeight.minHeight,
-          'max-height': vm.previewHeight.maxHeight
+          'min-height': previewHeight().minHeight,
+          'max-height': previewHeight().maxHeight
           }">
         </div>
       </div>
     </div>
     <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   </div>
-}

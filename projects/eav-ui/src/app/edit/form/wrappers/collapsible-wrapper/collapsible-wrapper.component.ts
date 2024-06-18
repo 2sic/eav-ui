@@ -47,21 +47,22 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
 
   controlConfig: FieldControlConfig = {};
 
+  //
+  // Wait, This is the outer one and has a delay so that the control is empty first
+  //
+
   /** Collapsed state - will be updated in various scenarios */
   collapsed = signal(false);
 
   /** Settings, will be filled onInit. Must be subject, so it doesn't start the signals yet. */
   private settings$ = new Subject<FieldSettings>();
 
-  // TODO: @2dg - use directly from basics()...
   /** The label of the group */
   label = toSignal(this.settings$.pipe(map(s => s.Name)), { initialValue: '' });
 
-  // TODO: @2dg - use directly from basics()...
   /** Notes / Intro message */
   notes = toSignal(this.settings$.pipe(map(s => s.Notes)), { initialValue: '' });
 
-  // TODO: @2dg - use directly from basics()...
   /** Visible state */
   visible = toSignal(this.settings$.pipe(map(s => ItemFieldVisibility.mergedVisible(s))), { initialValue: false });
 

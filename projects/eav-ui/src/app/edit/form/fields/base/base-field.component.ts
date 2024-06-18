@@ -89,6 +89,16 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
 }
 
 function controlToStatus<T>(control: BaseFieldComponent<T>['control']): ControlStatus<T> {
+  // in the first cycle(s) control may not exist yet
+  // if (!control)
+  //   return {
+  //     dirty: false,
+  //     disabled: true,
+  //     invalid: false,
+  //     touched: false,
+  //     touchedAndInvalid: false,
+  //     value: null,
+  //   } satisfies ControlStatus<T>;
   const touched = control.touched;
   const invalid = control.invalid;
   return {
