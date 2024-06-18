@@ -1,6 +1,10 @@
 
 export class RxHelpers {
 
+  static stringEquals(x: string, y: string): boolean {
+    return x === y;
+  }
+
   static objectsEqual<T>(x: T, y: T): boolean {
     if (x == null || y == null) return x === y;
 
