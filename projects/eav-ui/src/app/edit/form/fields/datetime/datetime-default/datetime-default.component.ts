@@ -62,11 +62,9 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker), distinctUntilChanged());
 
     this.viewModel = combineLatest([
-      // combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([useTimePicker$]),
     ]).pipe(
       map(([
-        // [controlStatus, label, placeholder, required],
         [useTimePicker],
       ]) => {
         const viewModel: DatetimeDefaultViewModel = {

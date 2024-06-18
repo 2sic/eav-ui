@@ -40,8 +40,6 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
 
   ngOnInit() {
     super.ngOnInit();
-    // this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
-
     const changeable$: Observable<boolean> = combineLatest([
       this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
       this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
@@ -59,20 +57,14 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
     );
 
     this.viewModel$ = combineLatest([
-      // combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([changeable$]),
       combineLatest([checked$])
     ]).pipe(
       map(([
-        // [controlStatus, label, placeholder, required],
         [changeable],
         [checked],
       ]) => {
         const viewModel: BooleanDefaultViewModel = {
-          // controlStatus,
-          // label,
-          // placeholder,
-          // required,
           changeable,
           checked,
         };
