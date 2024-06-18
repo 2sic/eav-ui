@@ -1,4 +1,4 @@
-import { ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Directive, EnvironmentInjector, Injector, Input, OnDestroy, OnInit, Type, ViewContainerRef, createEnvironmentInjector, inject, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -7,7 +7,7 @@ import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { CustomDefaultComponent } from '../../fields/custom/custom-default/custom-default.component';
 import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
-import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
+import { FieldConfigSet, FieldControlConfig, FieldState } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
@@ -25,6 +25,8 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   @Input() group: UntypedFormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
+  private injector = inject(Injector);
+  private envInjector = inject(EnvironmentInjector);
 
   constructor(
     private mainContainerRef: ViewContainerRef,
@@ -66,26 +68,25 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
-    for (const fieldConfig of this.fieldConfigs) {
+    for (const fieldConfig of this.fieldConfigs)
       fieldConfig.focused$.complete();
-    }
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
     let wrapperInfo = new WrapperInfo(null, containerRef);
-    if (fieldProps.wrappers) {
-      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
-    }
+    if (fieldProps.wrappers)
+      wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers, fieldConfig);
     return wrapperInfo.contentsRef;
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
     this.log.a('createComponent', [fieldProps.calculatedInputType]);
 
-    let wrapperInfo = new WrapperInfo(null, containerRef);
-    if (fieldProps.wrappers) {
-      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
-    }
+    // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
+    const injectors = this.getInjectors(fieldConfig, false);
+    let wrapperInfo = new WrapperInfo(null, containerRef, injectors);
+    if (fieldProps.wrappers)
+      wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers, fieldConfig);
 
     const componentType = fieldProps.calculatedInputType.isExternal
       ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
@@ -97,26 +98,27 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
 
     // generate wrappers if they are defined
     if (fieldMetadata?.wrappers)
-      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldMetadata.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo, fieldMetadata.wrappers, fieldConfig);
 
     // generate the real input field component
     this.log.a('createComponent - add component', [componentType]);
-    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, false);
+    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, wrapperInfo.injectors, false);
 
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
       this.log.a('createComponent - add preview', [previewType]);
-      this.generateAndAttachField(previewType, pickerPreviewContainerRef, fieldConfig, true);
+      this.generateAndAttachField(previewType, pickerPreviewContainerRef, fieldConfig, wrapperInfo.injectors, true);
     }
   }
 
-  private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean) {
-    const realFieldRef = targetRef.createComponent(componentType);
+  private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet,
+    injectors: InjectorBundle, isPreview: boolean) {
+
+    const realFieldRef = targetRef.createComponent(componentType, injectors);
     // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
     const controlConfig: FieldControlConfig = { isPreview };
-
     Object.assign<Field, Field>(realFieldRef.instance, {
       config: fieldConfig,
       controlConfig,
@@ -126,23 +128,22 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     // return realFieldRef;
   }
 
-  private createWrappers(containerRef: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): WrapperInfo {
-    let wrapperInfo = new WrapperInfo(null, containerRef);
-    for (const wrapper of wrappers) {
-      wrapperInfo = this.createWrapper(wrapperInfo.contentsRef, wrapper, fieldConfig);
-    }
+  private createWrappers(outerWrapper: WrapperInfo, wrappers: string[], fieldConfig: FieldConfigSet): WrapperInfo {
+    let wrapperInfo = outerWrapper;
+    for (const wrapperName of wrappers)
+      wrapperInfo = this.createWrapper(wrapperInfo, wrapperName, fieldConfig);
     return wrapperInfo;
   }
 
-  private createWrapper(containerRef: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): WrapperInfo {
-    const componentType = this.readComponentType(wrapper);
-    const ref = containerRef.createComponent(componentType);
+  private createWrapper(wrapperInfo: WrapperInfo, wrapperName: string, fieldConfig: FieldConfigSet): WrapperInfo {
+    const componentType = this.readComponentType(wrapperName);
+    const ref = wrapperInfo.contentsRef.createComponent(componentType, wrapperInfo.injectors);
 
     Object.assign<FieldWrapper, Partial<FieldWrapper>>(ref.instance, {
       config: fieldConfig,
       group: this.group,
     });
-
+    // Sub-wrappers should not include the injectors any more
     return new WrapperInfo(ref, ref.instance.fieldComponent);
   }
 
@@ -154,11 +155,51 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     }
     return componentType;
   }
+
+  private getInjectors(fieldConfig: FieldConfigSet, isPreview: boolean) {
+    // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
+    const controlConfig1: FieldControlConfig = { isPreview };
+
+    // 2024-06-18 2dm experimental new injector with fieldConfig etc.
+    const fieldState = new FieldState(
+      fieldConfig.fieldName,
+      fieldConfig,
+      controlConfig1,
+      this.group,
+      this.group.controls[fieldConfig.fieldName]
+    );
+
+    const providers = [
+      { provide: FieldState, useValue: fieldState },
+      // { provide: TEST_TOKEN, useValue: 'test' }
+    ];
+    const componentInjector = Injector.create({
+      providers: providers,
+      parent: this.injector,
+      name: 'FieldInjector',
+    });
+
+    const newEnvInjector = createEnvironmentInjector(
+      providers,
+      this.envInjector,
+      'FieldEnvInjector'
+    );
+
+    const createComponentInjectors: InjectorBundle = { injector: componentInjector, environmentInjector: newEnvInjector };
+    return createComponentInjectors;
+  }
 }
 
 class WrapperInfo {
   constructor(
     public wrapperRef: ComponentRef<FieldWrapper>,
     public contentsRef: ViewContainerRef,
+    // will only need to be set the first time
+    public injectors: InjectorBundle = null
   ) {}
+}
+
+interface InjectorBundle {
+  injector: Injector;
+  environmentInjector: EnvironmentInjector;
 }

@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldsSettingsService } from '../../../shared/services';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldConfigSet, FieldState } from '../../builder/fields-builder/field-config-set.model';
 import { FieldHelperTextViewModel } from './field-helper-text.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
@@ -12,22 +12,23 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
+import { EntityFormStateService } from '../../entity-form-state.service';
 
 @Component({
-    selector: 'app-field-helper-text',
-    templateUrl: './field-helper-text.component.html',
-    styleUrls: ['./field-helper-text.component.scss'],
-    standalone: true,
-    imports: [
-        NgClass,
-        ExtendedModule,
-        MatFormFieldModule,
-        FlexModule,
-        ChangeAnchorTargetDirective,
-        SharedComponentsModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-field-helper-text',
+  templateUrl: './field-helper-text.component.html',
+  styleUrls: ['./field-helper-text.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    MatFormFieldModule,
+    FlexModule,
+    ChangeAnchorTargetDirective,
+    SharedComponentsModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
@@ -35,14 +36,24 @@ export class FieldHelperTextComponent implements OnInit {
   @Input() disableError = false;
   @Input() hyperlinkDefaultWrapperFix = false;
 
+  // WIP continue here
+  protected groupNew = inject(EntityFormStateService).formGroup();
+
+
+  protected fieldState = inject(FieldState);
+
   isFullText = false;
   control: AbstractControl;
   viewModel$: Observable<FieldHelperTextViewModel>;
 
+
+
   constructor(private fieldsSettingsService: FieldsSettingsService) { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.fieldName];
+    // WIP continue here
+    this.control = this.fieldState.control;// this.groupNew.controls[this.config.fieldName];
+    // this.control = this.groupNew.controls[this.config.fieldName];
 
     const invalid$ = this.control.valueChanges.pipe(
       map(() => this.control.invalid),
@@ -54,7 +65,8 @@ export class FieldHelperTextComponent implements OnInit {
       startWith(this.control.disabled),
       distinctUntilChanged(),
     );
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
+
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.fieldState.name);
 
     this.viewModel$ = combineLatest([invalid$, disabled$, settings$]).pipe(
       map(([invalid, disabled, settings]) => {
@@ -84,7 +96,7 @@ export class FieldHelperTextComponent implements OnInit {
   }
 
   getErrorMessage() {
-    return ValidationMessagesHelpers.getErrorMessage(this.control, this.config);
+    return ValidationMessagesHelpers.getErrorMessage(this.control, this.fieldState.config);
   }
 
   getWarningMessage() {
