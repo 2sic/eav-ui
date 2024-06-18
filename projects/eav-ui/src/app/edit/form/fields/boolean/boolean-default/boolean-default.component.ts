@@ -57,17 +57,14 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
     );
 
     this.viewModel$ = combineLatest([
-      combineLatest([this.label$]),
       combineLatest([changeable$]),
       combineLatest([checked$])
     ]).pipe(
       map(([
-        [buttonLabel],
         [changeable],
         [checked],
       ]) => {
         const viewModel: BooleanDefaultViewModel = {
-          buttonLabel,
           changeable,
           checked,
         };

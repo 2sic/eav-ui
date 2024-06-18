@@ -1,35 +1,26 @@
-<!-- @if (viewModel$ | async; as vm) {
-  <div [formGroup]="group">
-    <div class="eav-toggle-hitbox" (click)="updateValue(vm.controlStatus.disabled)">
-      <mat-slide-toggle
-      [checked]="vm.checked"
-      [disabled]="vm.controlStatus.disabled"
-      [ngClass]="{
-        'toggle-false': vm.checked === false,
-        'toggle-true': vm.checked === true,
-        'toggle-null': vm.checked === null,
-        'changeable-label-tristate-mat-slide-toggle': vm.changeable
-          }" />
-      <span [ngClass]="!vm.checked ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ vm.label }}</span>
-    </div>
-    <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
-  </div>
-} -->
-
-
 <!-- New -->
 @if (viewModel$ | async; as vm) {
- Check State: {{vm.checked }}
-  <div [formGroup]="group">
-    <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
-      <mat-slide-toggle [checked]="vm.checked" [disabled]="controlStatus().disabled" [ngClass]="{
+<!-- <div>
+
+  Check State: {{vm.checked }}
+  <br>
+  Old Label: {{vm.buttonLabel }}
+  <br>
+  New Label: {{basics().label}}
+  <br>
+  Changeable: {{changedLabel()}}
+</div> -->
+
+<div [formGroup]="group">
+  <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
+    <mat-slide-toggle [checked]="vm.checked" [disabled]="controlStatus().disabled" [ngClass]="{
           'toggle-false': vm.checked === false,
           'toggle-true': vm.checked === true,
           'toggle-null': vm.checked === null,
           'changeable-label-tristate-mat-slide-toggle': vm.changeable
             }" />
-      <span [ngClass]="!vm.checked ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ vm.buttonLabel }}</span>
-    </div>
-    <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
+    <span [ngClass]="!vm.checked ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ changedLabel() ?? basics().label  }}</span>
   </div>
-  }
+  <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
+</div>
+}

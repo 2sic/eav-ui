@@ -39,9 +39,9 @@ export class BasicControlSettings {
     const visibleDisabled = s?.VisibleDisabled ?? false;
     const visibleAndEnabled = visible && !visibleDisabled;
     const collapsed = s?.Collapsed ?? false;
-    if (label == 'loading...') {
-      console.log('s', s);
-    }
+    // if (label == 'loading...') {
+    //   console.log('s', s);
+    // }
     return {
       label,
       notes,

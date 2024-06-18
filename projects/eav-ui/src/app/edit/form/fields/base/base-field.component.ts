@@ -31,19 +31,22 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   // new
   controlStatus = signal<ControlStatus<T>>(null);
 
-  // TODO: @2dg - get rid of this, replace with basics().label or basics().labelWithRequired
-  label$: Observable<string>;
-  // TODO: @2dg - get rid of this, replace with basics().placeholder
-  placeholder$: Observable<string>;
-  // TODO: @2dg - get rid of this, replace with basics().required
-  required$: Observable<boolean>;
+  // // TODO: @2dg - get rid of this, replace with basics().label or basics().labelWithRequired
+  // label$: Observable<string>;
+  // // TODO: @2dg - get rid of this, replace with basics().placeholder
+  // placeholder$: Observable<string>;
+  // // TODO: @2dg - get rid of this, replace with basics().required
+  // required$: Observable<boolean>;
 
   /**
    * The signal containing the settings - will be setup later, as we need the exact name
    * note that once the `config` is a signal input, we can change this.
    */
   protected settings = signal<FieldSettings>(null);
-  basics = computed(() => BasicControlSettings.fromSettings(this.settings()))
+  basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
+
+  /** Is in used by the Boolean Label, shows different label based on status   */
+  changedLabel = computed(() => this.settings()._label);
 
   /** The Field-Settings-Service - experimental with new inject */
   public fieldsSettingsService = inject(FieldsSettingsService);
@@ -74,9 +77,9 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
     // WIP
     this.subscriptions.add(this.settings$.subscribe(this.settings.set));
 
-    this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
-    this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
-    this.required$ = this.settings$.pipe(map(settings => settings._currentRequired), distinctUntilChanged());
+    // this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
+    // this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
+    // this.required$ = this.settings$.pipe(map(settings => settings._currentRequired), distinctUntilChanged());
   }
 
   ngOnDestroy() {
