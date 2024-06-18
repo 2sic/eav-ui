@@ -1,9 +1,9 @@
 @if (viewModel$ | async; as vm) {
   <div class="c-fht__container" [ngClass]="{
     'c-fht__container--no-hint': !vm.description && !(vm.invalid && !disableError),
-    'c-fht__container--last': config.isLastInGroup,
-    'c-fht__container--last--no-hint': config.isLastInGroup && !vm.description && !(vm.invalid && !disableError),
-    'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !config.isLastInGroup
+    'c-fht__container--last': fieldState.config.isLastInGroup,
+    'c-fht__container--last--no-hint': fieldState.config.isLastInGroup && !vm.description && !(vm.invalid && !disableError),
+    'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup
     }">
     @if (vm.description) {
       <mat-hint class="mat-caption" (click)="toggleHint($event)"
