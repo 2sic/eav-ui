@@ -1,17 +1,17 @@
 @if (viewModel$ | async; as vm) {
   <!-- {{vm | json}} -->
   <div [formGroup]="group">
-    <div class="eav-toggle-hitbox" (click)="updateValue(vm.controlStatus.disabled)">
+    <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
       <mat-slide-toggle
       [checked]="vm.checked"
-      [disabled]="vm.controlStatus.disabled"
+      [disabled]="controlStatus().disabled"
       [ngClass]="{
         'toggle-false': vm.checked === false,
         'toggle-true': vm.checked === true,
         'toggle-null': vm.checked === null,
         'changeable-label-tristate-mat-slide-toggle': vm.changeable
           }" />
-      <span [ngClass]="!vm.checked ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ vm.label }}</span>
+      <span [ngClass]="!vm.checked ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ basics().label }}</span>
     </div>
     <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
   </div>

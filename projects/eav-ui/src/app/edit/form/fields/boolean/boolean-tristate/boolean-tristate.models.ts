@@ -1,6 +1,6 @@
 import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
 
-export interface BooleanTristateViewModel extends BaseFieldViewModel {
+export interface BooleanTristateViewModel {
   checked: boolean | '';
   changeable: boolean;
 }
