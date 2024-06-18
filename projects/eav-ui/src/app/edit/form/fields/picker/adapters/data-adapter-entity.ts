@@ -21,7 +21,7 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
     this.log.a('init');
     super.init(callerName);
 
-    this.dsEntity.setup(this.settings$);
+    this.dsEntity.setup(this.settings);
 
     this.subscriptions.add(combineLatest([
       this.dataSource.data$,
@@ -41,14 +41,9 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
     this.dsEntity.contentType(this.contentType);
   }
 
-  destroy(): void {
-    this.contentTypeMask.destroy();
-    super.destroy();
-  }
-
   fetchItems(): void {
     // this.contentType = this.contentTypeMask.resolve();
     this.dsEntity.contentType(this.contentType);
-    this.dataSource.getAll();
+    this.dataSource.triggerGetAll();
   }
 }

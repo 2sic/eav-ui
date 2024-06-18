@@ -1,20 +1,18 @@
-import { combineLatest, distinctUntilChanged, map, shareReplay, take } from 'rxjs';
+import { take } from 'rxjs';
 import { DataAdapter } from "./adapters/data-adapter.interface";
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injector, Signal, computed, runInInjectionContext } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Signal, computed } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 
 const logThis = false;
 
 export class PickerData extends ServiceBase {
 
-  public selectedAll: Signal<PickerItem[]>;
+  selectedAll = computed(() => this.createUIModel(this.state.selectedItems(), this.source.optionsOrHints(), this.translate));
 
   public selectedOne = computed(() => this.selectedAll()[0] ?? null);
 
@@ -29,40 +27,15 @@ export class PickerData extends ServiceBase {
     public source: DataAdapter,
     private translate: TranslateService,
     /** the injector is needed so that signals can destroy when they are not needed any more */
-    injector: Injector,
+    // injector: Injector,
   ) {
     super(new EavLogger('PickerData', logThis));
 
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
-    state.selectedItems$
-      .pipe(take(1))
-      .subscribe(items => source.initPrefetch(items.map(item => item.value)))
-
-    // 2. Selected Items 
-    const logSelected = this.log.rxTap('selectedItems$', { enabled: true });
-    const selectedItems$ = combineLatest([
-      state.selectedItems$.pipe(
-        distinctUntilChanged(RxHelpers.arraysEqual)
-      ),
-      source.getDataFromSource().pipe(
-        distinctUntilChanged(RxHelpers.arraysEqual)
-      ),
-    ]).pipe(
-      logSelected.start(),
-      map(([selectedItems, data]) =>
-        this.createUIModel(selectedItems, data, this.translate)
-      ),
-      distinctUntilChanged(RxHelpers.arraysEqual),
-      shareReplay(1),
-      logSelected.end(),
-    );
-
-    // Convert to signal; must happen inside the injection context
-    runInInjectionContext(injector, () => {
-      this.selectedAll = toSignal(selectedItems$, { initialValue: [] });
-    });
+    const initiallySelected = state.selectedItems();
+    source.initPrefetch(initiallySelected.map(item => item.value));
   }
 
   override destroy() {

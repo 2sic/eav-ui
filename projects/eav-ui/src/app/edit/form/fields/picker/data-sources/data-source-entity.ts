@@ -1,9 +1,9 @@
 import { FieldSettings, PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
+import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
@@ -21,9 +21,11 @@ export class DataSourceEntity extends DataSourceBase {
     super(new EavLogger('DataSourceEntity', logThis, logChildren));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): this {
-    this.log.a('setup - settings$', [settings$]);
-    super.setup(settings$);
+  public override data = signal([] as PickerItem[]);
+
+  public override setup(settings: Signal<FieldSettings>): this {
+    this.log.a('setup - settings$', [settings()]);
+    super.setup(settings);
 
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
@@ -56,7 +58,7 @@ export class DataSourceEntity extends DataSourceBase {
       mergeMap(([typeName, _]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: [],
-        fields: this.fieldsToRetrieve(this.settings$.value),
+        fields: this.fieldsToRetrieve(this.settings()),
         log: 'all$'
       }).pipe(
         logAllOfTypeGetEntities.pipe(),
@@ -119,7 +121,7 @@ export class DataSourceEntity extends DataSourceBase {
       mergeMap(([typeName, guids]) => this.queryService.getEntities({
         contentTypes: [typeName],
         itemIds: guids,
-        fields: this.fieldsToRetrieve(this.settings$.value),
+        fields: this.fieldsToRetrieve(this.settings()),
         log: logOverrides.name,
       }).pipe(
           map(data => {
@@ -156,6 +158,11 @@ export class DataSourceEntity extends DataSourceBase {
       }),
       shareReplay(1),
       logData.shareReplay(),
+    );
+
+    // WIP - make sure we have data as signal
+    this.subscriptions.add(
+      this.data$.subscribe(this.data.set)
     );
 
     return this;

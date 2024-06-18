@@ -2,7 +2,7 @@ import { PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, of, shareReplay } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, computed, signal } from '@angular/core';
 
 const logThis = false;
 
@@ -16,21 +16,28 @@ export class DataSourceEmpty extends DataSourceBase {
     super(new EavLogger('DataSourceEmpty', logThis));
   }
 
-  private label: string;
+  private label = signal('');
 
   public preSetup(label: string): this {
-    this.label = label;
+    this.label.set(label);
     return this;
   }
 
-  public override setup(settings$: BehaviorSubject<FieldSettings>): this {
+  public override data = computed(() => [{
+    value: '',
+    label: this.label() ?? 'No options available',
+    notSelectable: true,
+    isMessage: true,
+  }]);
+
+  public override setup(settings: Signal<FieldSettings>): this {
     this.log.a('setup');
-    super.setup(settings$);
+    super.setup(settings);
     this.loading$ = of(false);
 
     const dummyItem: PickerItem = {
       value: '',
-      label: this.label ?? 'No options available',
+      label: this.label() ?? 'No options available',
       notSelectable: true,
       isMessage: true,
     };

@@ -14,11 +14,10 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapter } from './state-adapter';
 import { PickerComponent } from '../picker.component';
 import { DataSourceBase } from '../data-sources/data-source-base';
-import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
-import { inject, signal } from '@angular/core';
+import { Signal, inject, signal } from '@angular/core';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -26,31 +25,29 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   public features = signal<Partial<PickerFeatures>>( { create: false } satisfies Partial<PickerFeatures>);
 
   private createEntityTypes: string = '';
-  protected contentTypeMask: FieldMask;
+  private contentTypeMask: FieldMask;
   protected contentType: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
-  protected useEmpty: boolean = false;
-
   protected dataSource: DataSourceBase;
 
-  protected entityCacheService = inject(PickerDataCacheService);
-  protected entityService = inject(EntityService);
+  private entityService = inject(EntityService);
   protected formConfig = inject(FormConfigService);
-  protected editRoutingService = inject(EditRoutingService);
+  private editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
-  protected snackBar = inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar);
   private dataSourceEmpty = inject(DataSourceEmpty);
 
   constructor(
-    private dataSourceEntity: DataSourceBase,
+    private dataSourceEntityOrQuery: DataSourceBase,
     logSpecs: EavLogger,
   ) {
     super(logSpecs);
     this.log.a('constructor');
   }
 
-  settings$: BehaviorSubject<FieldSettings>;
+  private settings$: BehaviorSubject<FieldSettings>;
+  settings: Signal<FieldSettings>;
   protected config: FieldConfigSet;
   protected group: FormGroup;
   public control: AbstractControl;
@@ -65,10 +62,11 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       this.log.inherit(component.log);
 
     this.dataSource = useEmpty
-      ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(component.settings$)
-      : this.dataSourceEntity.setup(component.settings$);
+      ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(state.settings)
+      : this.dataSourceEntityOrQuery.setup(state.settings);
 
     this.settings$ = component.settings$;
+    this.settings = state.settings;
     this.config = component.config;
     this.group = component.group;
     this.control = component.control;
@@ -93,12 +91,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
         this.contentTypeMask = new FieldMask(
           settings.EntityType,
           this.group.controls,
-          () => {
-            // 2024-06-06 2dm temp - the function isn't used,
-            // but the mask only watches if it gets a function for now
-            // this.optionsOrHints$.next(null);
-            // this.updateAddNew();
-          },
+          () => { /* callback not used, but expected as parameter, otherwise watcher fails */ },
           null,
           this.formConfig.config,
           this.config,
@@ -140,6 +133,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   destroy(): void {
     this.settings$.complete();
     this.dataSource.destroy();
+    this.contentTypeMask?.destroy();
     super.destroy();
   }
 
@@ -236,7 +230,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.formConfig.config,
+      const prefillMask = new FieldMask(this.settings().Prefill, this.group.controls, null, null, this.formConfig.config,
         null,
         'LogPrefill');
       const prefill = prefillMask.resolve();

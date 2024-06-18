@@ -140,8 +140,9 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
     // process formulas on options...?
     // TODO: @2dm - maybe there is even a more elegant way to do this
-    if (false) {
-      this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
+    const enableFormulas = false;
+    if (enableFormulas) {
+      // this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
     }
 
     const fieldSettings = this.pickerData().state.settings;// this.rawFieldSettings;

@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
@@ -23,7 +23,9 @@ const nameOfThis = 'StringPickerComponent';
   selector: InputTypeConstants.StringPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
-  providers: PickerProviders,
+  providers: [
+    ...PickerProviders,
+  ],
   standalone: true,
   imports: [
     PickerPreviewComponent,
@@ -32,14 +34,15 @@ const nameOfThis = 'StringPickerComponent';
   ],
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
-  constructor(
-    private translate: TranslateService,
-    private sourceAdapterStringRaw: DataAdapterString,
-    private stateAdapterStringRaw: StateAdapterString,
-    private pickerEntitySourceAdapter: DataAdapterEntity,
-    private querySourceAdapterRaw: DataAdapterQuery,
-    private injector: Injector,
-  ) {
+
+  private translate = inject(TranslateService);
+  private sourceAdapterStringRaw = inject(DataAdapterString);
+  private stateAdapterStringRaw = inject(StateAdapterString);
+  private pickerEntitySourceAdapter = inject(DataAdapterEntity);
+  private querySourceAdapterRaw = inject(DataAdapterQuery);
+  private injector = inject(Injector);
+
+  constructor() {
     super(new EavLogger(nameOfThis, logThis));
     StringPickerLogic.importMe();
     this.isStringQuery = true;
@@ -57,7 +60,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
       source = this.sourceAdapterStringRaw.setupString(
-        state.settings$,
+        state.settings,
         this.config,
         this.group,
         (props: DeleteEntityProps) => state.doAfterDelete(props),
@@ -76,7 +79,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
-      this.injector,
+      // this.injector,
     );
   }
 }

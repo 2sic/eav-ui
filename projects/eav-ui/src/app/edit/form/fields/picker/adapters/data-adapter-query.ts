@@ -1,20 +1,22 @@
-import { combineLatest, distinctUntilChanged, map } from "rxjs";
+import { combineLatest } from "rxjs";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector, effect, inject, runInInjectionContext, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = false;
+const logThis = true;
 const logName = 'PickerQuerySourceAdapter';
 
 @Injectable()
 export class DataAdapterQuery extends DataAdapterEntityBase {
-  private paramsMask: FieldMask;
+  /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
+  private queryParamsMask = signal<FieldMask>(null);
+
+  private injector = inject(Injector);
 
   constructor(private dsQuery: DataSourceQuery) {
     super(
@@ -29,58 +31,45 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     this.log.a('setupFromComponent');
     super.setupFromComponent(component, state, useEmpty);
     this.isStringQuery = component.isStringQuery;
+
+    // Note: not quite perfect.
+    // If we could get the settings injected (instead of late-added)
+    // this could just be a calculated
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        const settings = this.settings();
+        this.log.a('init in QuerySourceAdapter, about to create paramsMask')
+        this.queryParamsMask.set(new FieldMask(
+          settings.UrlParameters,
+          this.group.controls,
+          () => { /* callback not used */ },
+          null,
+          this.formConfig.config,
+          this.config,
+          logName, // log name
+          true, // overrideLog
+        ));
+      }, { allowSignalWrites: true /* necessary because the mask has an observable which is set */ });
+    });
+
     return this;
   }
 
   init(callerName: string): void {
     super.init(callerName);
 
-    this.subscriptions.add(
-      this.settings$.pipe(
-        map(settings => settings.UrlParameters),
-        distinctUntilChanged(),
-      ).subscribe(urlParameters => {
-        this.log.a('init in QuerySourceAdapter, about to create paramsMask')
-        this.paramsMask?.destroy();
-        this.paramsMask = new FieldMask(
-          urlParameters,
-          this.group.controls,
-          () => { this.optionsOrHints$.next(null); },
-          null,
-          this.formConfig.config,
-          this.config,
-          logName, // log name
-          true, // overrideLog
-        );
-
-        this.paramsMask.value$.subscribe(value => {
-          this.log.a(`paramsMask.value$ - value: '${value}'`);
-          // this.dsQuery.params(value);
-        });
-
-        this.optionsOrHints$.next(null);
-      })
-    );
-
     this.log.a(`init - isStringQuery: ${this.isStringQuery}`);
 
     this.dsQuery.setupQuery(
-      this.settings$,
+      this.settings,
       this.isStringQuery,
       this.config.entityGuid,
       this.config.fieldName,
       this.formConfig.config.appId,
     );
 
-    // this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
-    //   this.settings$,
-    //   this.isStringQuery,
-    //   this.config.entityGuid,
-    //   this.config.fieldName,
-    //   this.eavService.eavConfig.appId,
-    // );
-
-    this.flushAvailableEntities();
+    // #cleanUpCaAugust2024
+    // this.setupFlushOnSettingsChange();
 
     this.subscriptions.add(combineLatest([
       this.dataSource.data$,
@@ -102,11 +91,11 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dsQuery.params(this.paramsMask.resolve());
+    this.dsQuery.params(this.queryParamsMask()?.resolve());
   }
 
   destroy(): void {
-    this.paramsMask?.destroy();
+    // this.queryParamsMask?.destroy();
     super.destroy();
   }
 
@@ -116,47 +105,86 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // console.warn('2dm content-type', this.contentType);
     // this.entityFieldDataSource.contentType(this.contentType);
 
-    this.dsQuery.params(this.paramsMask.resolve());
-    const settings = this.settings$.value;
-    if (!settings.Query) {
+    this.dsQuery.params(this.queryParamsMask()?.resolve());
+    if (!this.settings().Query) {
       this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')]);
       return;
     }
 
-    this.dsQuery.getAll();
+    this.dsQuery.triggerGetAll();
   }
 
-  /**
-   * TODO: it's a bit unclear what this is for.
-   * 2024-04-29 2dm I believe it should flush the optionsOrHints$ when the settings change.
-   * ...but I'm not quite sure how they would ever change at runtime.
-   */
-  flushAvailableEntities(): void {
-    this.log.a(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
-    if (!this.isStringQuery) {
-      this.subscriptions.add(
-        this.settings$.pipe(
-          map(settings => ({
-            Query: settings.Query,
-            StreamName: settings.StreamName,
-          })),
-          distinctUntilChanged(RxHelpers.objectsEqual),
-        ).subscribe(() => {
-          this.optionsOrHints$.next(null);
-        })
-      );
-    } else {
-      this.subscriptions.add(
-        this.settings$.pipe(
-          map(settings => ({
-            value: settings.Value,
-            label: settings.Label,
-          })),
-          distinctUntilChanged(RxHelpers.objectsEqual),
-        ).subscribe(() => {
-          this.optionsOrHints$.next(null);
-        })
-      );
-    }
-  }
+  // 2024-06-18 2dm enhanced, but I'm not sure if it's even relevant, so I'll disable for now
+  // #cleanUpCaAugust2024
+  // /**
+  //  * TODO: it's a bit unclear what this is for.
+  //  * 2024-04-29 2dm I believe it should flush the optionsOrHints$ when the settings change.
+  //  * ...but I'm not quite sure how they would ever change at runtime.
+  //  * Probably when configuring a new query where the stream is from a mask...
+  //  */
+  // setupFlushOnSettingsChange(): void {
+  //   this.log.a(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
+
+  //   const isStringQuery = this.isStringQuery;
+  //   function getPartsToCompareFromSettings(settings: FieldSettings) {
+  //     return isStringQuery
+  //       ? {
+  //           value: settings.Value,
+  //           label: settings.Label,
+  //         }
+  //       : {
+  //           Query: settings.Query,
+  //           StreamName: settings.StreamName,
+  //         };
+  //   }
+  //   let previous = getPartsToCompareFromSettings(this.settings());
+  //   runInInjectionContext(this.injector, () => {
+  //     effect(() => {
+  //       const settings = this.settings();
+  //       const current = getPartsToCompareFromSettings(settings);
+  //       if (RxHelpers.objectsEqual(previous, current))
+  //         return;
+  //       this.log.a('flushing optionsOrHints$');
+  //       this.optionsOrHints$.next(null);
+  //       previous = current;
+  //     }, { allowSignalWrites: true /* necessary because we're changing something */ });
+  //   });
+  // }
 }
+
+/* Old code, keep for now, not sure if it's actually relevant */
+
+
+// /**
+//  * TODO: it's a bit unclear what this is for.
+//  * 2024-04-29 2dm I believe it should flush the optionsOrHints$ when the settings change.
+//  * ...but I'm not quite sure how they would ever change at runtime.
+//  */
+// flushAvailableEntities(): void {
+//   this.log.a(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
+//   if (!this.isStringQuery) {
+//     this.subscriptions.add(
+//       this.settings$.pipe(
+//         map(settings => ({
+//           Query: settings.Query,
+//           StreamName: settings.StreamName,
+//         })),
+//         distinctUntilChanged(RxHelpers.objectsEqual),
+//       ).subscribe(() => {
+//         this.optionsOrHints$.next(null);
+//       })
+//     );
+//   } else {
+//     this.subscriptions.add(
+//       this.settings$.pipe(
+//         map(settings => ({
+//           value: settings.Value,
+//           label: settings.Label,
+//         })),
+//         distinctUntilChanged(RxHelpers.objectsEqual),
+//       ).subscribe(() => {
+//         this.optionsOrHints$.next(null);
+//       })
+//     );
+//   }
+// }

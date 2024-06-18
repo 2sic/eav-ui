@@ -31,18 +31,22 @@ export class StateAdapter extends ServiceBase {
   // TODO: doesn't seem to be in use, but probably should?
   // my guess is it should detect if the open-dialog is shown
   public shouldPickerListBeShown$: Observable<boolean>;
-  public selectedItems$: Observable<PickerItem[]>;
+
+  public selectedItems = signal<PickerItem[]>([]);
 
   public createEntityTypes: { label: string, guid: string }[] = [];
 
   public formConfigSvc = inject(FormConfigService);
-  private entityCacheService = inject(PickerDataCacheService);
+
+  public readonly settings = signal<FieldSettings>(null);
+  public controlStatus: Signal<ControlStatus<string | string[]>>;
+  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
+
 
   constructor(
     @Optional() logger: EavLogger = null,
   ) {
     super(logger ?? new EavLogger(nameOfThis, logThis));
-    this.cacheItems$ = this.entityCacheService.getEntities$();
 
     // experimental logging
     // effect(() => {
@@ -51,18 +55,13 @@ export class StateAdapter extends ServiceBase {
     // });
   }
 
-  public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
-  public readonly settings = signal<FieldSettings>(null);
   
-  public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
+  private settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
+  private controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
 
-  public controlStatus: Signal<ControlStatus<string | string[]>>;
 
   private isExpanded$: Observable<boolean>;
   
-  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
-
-  public cacheItems$: Observable<PickerItem[]>;
   public control: AbstractControl;
   private focusOnSearchComponent: () => void;
 
@@ -71,7 +70,7 @@ export class StateAdapter extends ServiceBase {
     this.log.inherit(component.log);
 
     this.settings$ = component.settings$;
-    this.subscriptions.add(this.settings$.subscribe(this.settings.set));
+    this.subscriptions.add(component.settings$.subscribe(this.settings.set));
     this.controlStatus$ = component.controlStatus$;
     this.controlStatus = component.controlStatus;
     this.isExpanded$ = component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid);
@@ -101,7 +100,7 @@ export class StateAdapter extends ServiceBase {
 
     const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
     const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
-    this.selectedItems$ = combineLatest([
+    const selectedItems$ = combineLatest([
       this.controlStatus$.pipe(
         logCtlSelected.pipe(),
         mapUntilChanged(controlStatus => controlStatus.value),
@@ -124,7 +123,7 @@ export class StateAdapter extends ServiceBase {
     this.shouldPickerListBeShown$ = combineLatest([
       this.isExpanded$,
       allowMultiValue$,
-      this.selectedItems$,
+      selectedItems$,
     ]).pipe(
       map(([isExpanded, allowMultiValue, selectedItems]) => {
         return !this.isInFreeTextMode()
@@ -133,9 +132,14 @@ export class StateAdapter extends ServiceBase {
       })
     );
 
+    // signal
+    this.subscriptions.add(
+      selectedItems$.subscribe(this.selectedItems.set)
+    );
+
     // log a lot
     if (dumpSelected)
-      this.selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
+      selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
 
     if (dumpProperties) {
       this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
@@ -155,7 +159,7 @@ export class StateAdapter extends ServiceBase {
     switch (action) {
       case 'add':
         const guid = value as string;
-        if(this.settings$.value.AllowMultiValue)
+        if(this.settings().AllowMultiValue)
           valueArray.push(guid);
         else
           valueArray = [guid];
@@ -183,13 +187,13 @@ export class StateAdapter extends ServiceBase {
 
   protected createNewValue(valueArray: string[]): string | string[] {
     return typeof this.control.value === 'string'
-      ? convertArrayToString(valueArray, this.settings$.value.Separator)
+      ? convertArrayToString(valueArray, this.settings().Separator)
       : valueArray;
   }
 
   createValueArray(): string[] {
     if (typeof this.control.value === 'string') {
-      return convertValueToArray(this.control.value, this.settings$.value.Separator);
+      return convertValueToArray(this.control.value, this.settings().Separator);
     }
     return [...this.control.value];
   }
@@ -207,9 +211,10 @@ export class StateAdapter extends ServiceBase {
   }
 
   getEntityTypesData(): void {
-    if (this.createEntityTypes[0].label) { return; }
+    if (this.createEntityTypes[0].label) return;
     this.createEntityTypes.forEach(entityType => {
-      const ct = this.formConfigSvc.settings.ContentTypes.find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
+      const ct = this.formConfigSvc.settings.ContentTypes
+        .find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
       entityType.label = ct?.Name ?? entityType.guid + " (not found)";
       entityType.guid = ct?.Id ?? entityType.guid;
     });

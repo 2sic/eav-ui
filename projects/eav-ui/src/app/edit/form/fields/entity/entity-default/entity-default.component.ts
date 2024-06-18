@@ -55,7 +55,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       state,
       source,
       this.translate,
-      this.injector,
+      // this.injector,
     );
 
   }

@@ -6,7 +6,7 @@ import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, signal } from '@angular/core';
+import { Injectable, Signal, inject, signal } from '@angular/core';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
@@ -21,10 +21,10 @@ export class DataAdapterString extends DataAdapterBase {
 
   private dataSource: DataSourceBase;
 
-  constructor(
-    private stringFieldDataSource: DataSourceString,
-    private pickerDataSourceEmpty: DataSourceEmpty,
-  ) {
+  private stringFieldDataSource = inject(DataSourceString);
+  private pickerDataSourceEmpty = inject(DataSourceEmpty);
+
+  constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }
 
@@ -32,7 +32,7 @@ export class DataAdapterString extends DataAdapterBase {
   protected group: FormGroup;
 
   public setupString(
-    settings$: BehaviorSubject<FieldSettings>,
+    settings: Signal<FieldSettings>,
     config: FieldConfigSet,
     group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
@@ -44,8 +44,8 @@ export class DataAdapterString extends DataAdapterBase {
     this.setup(deleteCallback);
 
     this.dataSource = useEmpty
-      ? this.pickerDataSourceEmpty.setup(settings$)
-      : this.stringFieldDataSource.setup(settings$);
+      ? this.pickerDataSourceEmpty.setup(settings)
+      : this.stringFieldDataSource.setup(settings);
 
     return this;
   }
@@ -61,7 +61,6 @@ export class DataAdapterString extends DataAdapterBase {
 
   destroy(): void {
     this.dataSource.destroy();
-
     super.destroy();
   }
 
@@ -78,7 +77,7 @@ export class DataAdapterString extends DataAdapterBase {
   }
 
   fetchItems(): void {
-    this.dataSource.getAll();
+    this.dataSource.triggerGetAll();
     this.subscriptions.add(this.dataSource.data$.subscribe(this.optionsOrHints$));
   }
 

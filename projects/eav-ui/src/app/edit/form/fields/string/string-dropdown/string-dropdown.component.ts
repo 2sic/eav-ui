@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
@@ -11,6 +11,10 @@ import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
 import { AsyncPipe } from '@angular/common';
 import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'StringDropdownComponent';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
@@ -25,13 +29,14 @@ import { PickerPreviewComponent } from '../../picker/picker-preview/picker-previ
   ],
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
-  constructor(
-    private translate: TranslateService,
-    private pickerStringSourceAdapterRaw: DataAdapterString,
-    private pickerStringStateAdapterRaw: StateAdapterString,
-    private injector: Injector,
-  ) {
-    super();
+
+  private translate = inject(TranslateService);
+  private pickerStringSourceAdapterRaw = inject(DataAdapterString);
+  private pickerStringStateAdapterRaw = inject(StateAdapterString);
+  private injector = inject(Injector);
+
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
     EntityDefaultLogic.importMe();
   }
 
@@ -40,7 +45,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
     const source = this.pickerStringSourceAdapterRaw.setupString(
-      state.settings$,
+      state.settings,
       this.config,
       this.group,
       (props: DeleteEntityProps) => state.doAfterDelete(props),
@@ -53,7 +58,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       state,
       source,
       this.translate,
-      this.injector,
+      // this.injector,
     );
   }
 }

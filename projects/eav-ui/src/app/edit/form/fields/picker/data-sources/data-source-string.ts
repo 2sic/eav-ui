@@ -2,8 +2,9 @@ import { FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, distinctUntilChanged, map, of, shareReplay } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector, Signal, computed, inject, runInInjectionContext } from '@angular/core';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const logChildren = false;
@@ -11,23 +12,27 @@ const logRx = false;
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
+  private injector = inject(Injector);
+
   constructor() {
     super(new EavLogger('DataSourceString', logThis, logChildren));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): this {
-    this.log.a('setup - settings$', [settings$]);
-    super.setup(settings$);
+
+  public override setup(settings: Signal<FieldSettings>): this {
+    this.log.a('setup - settings$', [settings()]);
+    super.setup(settings);
     this.loading$ = of(false);
 
     // Make sure the converter/builder uses the "Value" field for the final 'value'
     const maskHelper = this.getMaskHelper();
     maskHelper.patchMasks({ value: 'Value' })
     this.log.a('maskHelper', [maskHelper.getMasks()]);
-    const rxLog = this.log.rxTap('data$', { enabled: logRx });
-    this.data$ = this.settings$.pipe(
-      rxLog.pipe(),
-      map(settings => settings._options.map(option => {
+
+    // New: signal
+    this.data = computed(() => {
+      const sets = settings();
+      return sets._options.map(option => {
         const asEntity: EntityBasicWithFields = {
           Id: null,
           Guid: null,
@@ -40,10 +45,12 @@ export class DataSourceString extends DataSourceBase {
         const pickerItem = maskHelper.entity2PickerItem({ entity: asEntity, streamName: null, mustUseGuid: false });
         this.log.a('final data', [pickerItem]);
         return pickerItem;
-      })),
-      distinctUntilChanged(),
-      shareReplay(1),
-    );
+      });
+    });
+
+    runInInjectionContext(this.injector, () => {
+      this.data$ = toObservable(this.data);
+    });
 
     return this;
   }

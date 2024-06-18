@@ -8,10 +8,13 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { Signal } from '@angular/core';
 
 export abstract class DataSourceBase extends ServiceBase {
   /** Stream containing the data */
   public data$: Observable<PickerItem[]>;
+
+  public data: Signal<PickerItem[]>;
 
   /** Stream containing loading-status */
   public loading$: Observable<boolean>;
@@ -31,7 +34,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
 
-  protected settings$: BehaviorSubject<FieldSettings>;
+  protected settings: Signal<FieldSettings>;
 
   constructor(logSpecs: EavLogger) {
     super(logSpecs);
@@ -40,8 +43,8 @@ export abstract class DataSourceBase extends ServiceBase {
   protected noItemsLoadingFalse: DataWithLoading<PickerItem[]> = { data: [], loading: false };
   protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
 
-  public setup(settings$: BehaviorSubject<FieldSettings>): this {
-    this.settings$ = settings$;
+  public setup(settings: Signal<FieldSettings>): this {
+    this.settings = settings;
     return this;
   }
 
@@ -56,7 +59,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   protected helpers = new DataSourceHelpers();
 
-  getAll(): void {
+  triggerGetAll(): void {
     this.getAll$.next(true);
   }
 
@@ -72,7 +75,7 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   protected getMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
-    return new DataSourceMasksHelper(this.settings$.value, this.log, enableLog);
+    return new DataSourceMasksHelper(this.settings(), this.log, enableLog);
   }
 
   protected fieldsToRetrieve(settings: FieldSettings): string {

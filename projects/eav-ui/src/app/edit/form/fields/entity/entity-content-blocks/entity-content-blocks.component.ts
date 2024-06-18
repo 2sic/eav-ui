@@ -53,7 +53,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       state,
       source,
       this.translate,
-      this.injector,
+      // this.injector,
     );
   }
 }

@@ -1,12 +1,12 @@
 import { PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
+import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from '../adapters/data-adapter-base';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
@@ -26,29 +26,27 @@ export class DataSourceQuery extends DataSourceBase {
     super(new EavLogger('DataSourceQuery', logThis));
   }
 
-  // private isStringQuery: boolean;
-  // private entityGuid: string;
-  // private fieldName: string;
   private appId: number;
 
   setupQuery(
-    settings$: BehaviorSubject<FieldSettings>,
+    settings: Signal<FieldSettings>,
     isForStringField: boolean,
     entityGuid: string,
     fieldName: string,
     appId: string
   ): void {
-    this.log.a('setupQuery', ['settings$', settings$, 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
+    this.log.a('setupQuery', ['settings()', settings(), 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
 
     this.appId = Number(appId);
-    super.setup(settings$);
-    const settings = settings$.value;
-    const streamName = settings.StreamName;
+    super.setup(settings);
+    //const settings = settings$.value;
+    const sett = settings();
+    const streamName = sett.StreamName;
     
     // If the configuration isn't complete, the query can be empty
-    const queryName = settings.Query;
+    const queryName = sett.Query;
     const queryUrl = !!queryName
-      ? queryName.includes('/') ? settings.Query : `${settings.Query}/${streamName}`
+      ? queryName.includes('/') ? sett.Query : `${sett.Query}/${streamName}`
       : null;
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
@@ -79,7 +77,7 @@ export class DataSourceQuery extends DataSourceBase {
         // Default case, get the data
         const lGetQs = this.log.rxTap('queryService', { enabled: logRx });
         return this.queryService
-          .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), [])
+          .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings()), [])
           .pipe(
             lGetQs.pipe(),
             map(data => { return { data, loading: false }; }),
@@ -121,7 +119,7 @@ export class DataSourceQuery extends DataSourceBase {
 
     const overrides$ = combineLatest([params$, combinedGuids$]).pipe(
       mergeMap(([params, guids]) => this.queryService
-        .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings$.value), guids)
+        .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings()), guids)
         .pipe(
           map(data => { return { data, loading: false }; }),
           startWith({ data: {} as QueryStreams, loading: true })

@@ -71,7 +71,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
-      this.injector,
+      // this.injector,
     );
   }
 }

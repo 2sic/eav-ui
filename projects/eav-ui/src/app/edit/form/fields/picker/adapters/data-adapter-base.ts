@@ -11,6 +11,7 @@ import { PickerFeatures } from '../picker-features.model';
 
 export abstract class DataAdapterBase extends ServiceBase implements DataAdapter {
 
+  /** Picker Features of this DataAdapter */
   public abstract features: Signal<Partial<PickerFeatures>>;
 
   /**

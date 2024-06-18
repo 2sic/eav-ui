@@ -13,6 +13,6 @@ export class StateAdapterString extends StateAdapter {
   }
 
   protected createNewValue(valueArray: string[]): string | string[] {
-    return convertArrayToString(valueArray, this.settings$.value.Separator);
+    return convertArrayToString(valueArray, this.settings().Separator);
   }
 }

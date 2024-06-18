@@ -57,7 +57,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       state,
       source,
       this.translate,
-      this.injector,
+      // this.injector,
     );
   }
 }
