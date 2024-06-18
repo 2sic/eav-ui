@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,10 +27,12 @@ import { FormDataService } from './form-data.service';
 import { FormLanguage } from '../models/form-languages.model';
 
 const logThis = false;
+const nameOfThis = 'EditInitializerService';
 
 @Injectable()
 export class EditInitializerService extends ServiceBase implements OnDestroy {
-  loaded$ = new BehaviorSubject(false);
+
+  loaded = signal(false);
 
   private initialFormValues: Record<string, FormValues> = {};
 
@@ -52,11 +54,10 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     private featuresService: FeaturesService,
     private formDataService: FormDataService,
   ) {
-    super(new EavLogger('EditInitializerService', logThis));
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnDestroy(): void {
-    this.loaded$.complete();
     super.destroy();
   }
 
@@ -107,7 +108,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       this.keepInitialValues();
       this.initMissingValues();
 
-      this.loaded$.next(true);
+      this.loaded.set(true);
     });
   }
 

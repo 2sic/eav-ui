@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
 import { EditInitializerService, LoggingService } from '../../shared/services';
-import { EditEntryViewModel } from './edit-entry.models';
 import { AsyncPipe } from '@angular/common';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
 import { RouterOutlet } from '@angular/router';
@@ -31,20 +29,10 @@ import { FormDataService } from '../../shared/services/form-data.service';
   standalone: true,
 })
 export class EditEntryComponent implements OnInit {
-  viewModel$: Observable<EditEntryViewModel>;
 
-  constructor(private editInitializerService: EditInitializerService) { }
+  constructor(protected editInitializerService: EditInitializerService) { }
 
   ngOnInit(): void {
-    this.viewModel$ = combineLatest([this.editInitializerService.loaded$]).pipe(
-      map(([loaded]) => {
-        console.log('2dm loaded', loaded);
-        const viewModel: EditEntryViewModel = {
-          loaded,
-        };
-        return viewModel;
-      }),
-    );
     this.editInitializerService.fetchFormData();
   }
 }

@@ -1,7 +1,5 @@
 <router-outlet></router-outlet>
 
-@if (viewModel$ | async; as vm) {
-  @if (vm.loaded) {
-    <app-edit-dialog-main></app-edit-dialog-main>
-  }
+@if (editInitializerService.loaded()) {
+  <app-edit-dialog-main></app-edit-dialog-main>
 }
