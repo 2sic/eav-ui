@@ -4,6 +4,7 @@ import { FormConfiguration } from '../models';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { signal } from '@angular/core';
 
 const logThis = false;
 const logChanges = false;
@@ -24,7 +25,9 @@ export class FieldMask extends ServiceBase {
   /**
    * Value observable containing result of the field-mask.
    */
-  public value$: BehaviorSubject<string>;
+  public value$ = new BehaviorSubject<string>('');
+
+  public signal = signal<string>('');
 
   /** Fields used in the mask */
   private fieldsUsedInMask: string[] = [];
@@ -42,22 +45,40 @@ export class FieldMask extends ServiceBase {
   ) {
     super(new EavLogger('FieldMask' + (logName ? `-${logName}` : ''), overrideLog ?? logThis));
     
-    this.mask = mask ?? '';
-    this.value$ = new BehaviorSubject<string>(this.mask);
-    this.fieldsUsedInMask = this.fieldList();
-
+    // Attach any processing events before the mask is resolved the first time
     if (overloadPreCleanValues)
       this.preClean = overloadPreCleanValues;
 
-    // bind auto-watch only if needed...
-    if (model && changeEvent)
-      this.watchAllFields();
+    this.updateMask(mask);
+    // this.mask = mask ?? '';
+    // // this.value$.next(this.mask);// = new BehaviorSubject<string>(this.mask);
+    // // this.signal.set(this.mask);
+    // this.fieldsUsedInMask = this.fieldList();
+
+    // // bind auto-watch only if needed...
+    // // otherwise it's just on-demand
+    // if (this.changeEvent)
+    //   this.watchAllFields();
 
     // optionally log everything that happens during dev
     if (logChanges)
       this.subscriptions.add(
         this.value$.subscribe(value => this.log.a(`Value of mask: '${mask}' changed to: '${value}'`))
       );
+  }
+
+  public updateMask(mask: string) {
+    this.mask = mask ?? '';
+    // this.value$.next(this.mask);
+    // this.signal.set(this.mask);
+    this.fieldsUsedInMask = this.fieldList();
+
+    // bind auto-watch only if needed...
+    // otherwise it's just on-demand
+    if (this.changeEvent)
+      this.watchAllFields();
+
+    this.onChange();
   }
 
   
@@ -107,7 +128,7 @@ export class FieldMask extends ServiceBase {
     return result;
   }
 
-  /** Default preClean function */
+  /** Default preClean function, if no other function was specified for this */
   private preClean(key: string, value: string): string {
     return value;
   }
@@ -115,7 +136,8 @@ export class FieldMask extends ServiceBase {
   /** Change-event - will only fire if it really changes */
   private onChange() {
     const maybeNew = this.resolve();
-    if (this.value$.value !== maybeNew) {
+    if (this.signal() !== maybeNew) {
+      this.signal.set(maybeNew);
       this.value$.next(maybeNew);
       this.changeEvent(maybeNew);
     }
@@ -125,14 +147,11 @@ export class FieldMask extends ServiceBase {
   private watchAllFields() {
     // add a watch for each field in the field-mask
     this.fieldsUsedInMask.forEach(field => {
-      if (!this.model[field]) { return; }
-      const valueSub = this.model[field].valueChanges.subscribe(_ => this.onChange());
+      const control = this.model[field];
+      if (!control) return;
+      const valueSub = control.valueChanges.subscribe(_ => this.onChange());
       this.subscriptions.add(valueSub);
     });
-  }
-
-  destroy() {
-    super.destroy();
   }
 }
 

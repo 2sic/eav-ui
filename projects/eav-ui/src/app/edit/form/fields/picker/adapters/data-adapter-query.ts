@@ -4,9 +4,11 @@ import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
-import { Injectable, Injector, effect, inject, runInInjectionContext, signal } from '@angular/core';
+import { Injectable, Injector, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 const logThis = true;
 const logName = 'PickerQuerySourceAdapter';
@@ -15,8 +17,6 @@ const logName = 'PickerQuerySourceAdapter';
 export class DataAdapterQuery extends DataAdapterEntityBase {
   /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
   private queryParamsMask = signal<FieldMask>(null);
-
-  private injector = inject(Injector);
 
   constructor(private dsQuery: DataSourceQuery) {
     super(
@@ -32,23 +32,36 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     super.setupFromComponent(component, state, useEmpty);
     this.isStringQuery = component.isStringQuery;
 
+    const urlParametersSettings = computed(() => this.settings().UrlParameters, SignalHelpers.stringChanges);
+
     // Note: not quite perfect.
     // If we could get the settings injected (instead of late-added)
     // this could just be a calculated
+    // let before = 'not-yet-set'; // make sure it runs once
     runInInjectionContext(this.injector, () => {
+      // let count = 100;
       effect(() => {
-        const settings = this.settings();
-        this.log.a('init in QuerySourceAdapter, about to create paramsMask')
-        this.queryParamsMask.set(new FieldMask(
-          settings.UrlParameters,
-          this.group.controls,
-          () => { /* callback not used */ },
-          null,
-          this.formConfig.config,
-          this.config,
-          logName, // log name
-          true, // overrideLog
-        ));
+        // count--;
+        // if (count < 0) {
+        //   console.error('Error: Could not create contentTypeMask in EntitySourceAdapter');
+        //   return;
+        // }
+        const urlParameters = urlParametersSettings();
+
+        // Don't track these accesses as dependencies!
+        untracked(() => {
+          this.log.a('init in QuerySourceAdapter, about to create paramsMask')
+          this.queryParamsMask.set(new FieldMask(
+            urlParameters,
+            this.group.controls,
+            () => { /* callback not used */ },
+            null,
+            this.formConfig.config,
+            this.config,
+            logName, // log name
+            true, // overrideLog
+          ));
+        });
       }, { allowSignalWrites: true /* necessary because the mask has an observable which is set */ });
     });
 

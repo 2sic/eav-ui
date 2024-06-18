@@ -38,12 +38,12 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dsEntity.contentType(this.contentType);
+    this.dsEntity.contentType(this.contentType());
   }
 
   fetchItems(): void {
     // this.contentType = this.contentTypeMask.resolve();
-    this.dsEntity.contentType(this.contentType);
+    this.dsEntity.contentType(this.contentType());
     this.dataSource.triggerGetAll();
   }
 }
