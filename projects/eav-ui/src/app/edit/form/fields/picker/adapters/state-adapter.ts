@@ -11,11 +11,11 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Optional, Signal, computed, inject, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
-import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { PickerFeatures } from '../picker-features.model';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const dumpSelected = true;
@@ -40,7 +40,7 @@ export class StateAdapter extends ServiceBase {
 
   public readonly settings = signal<FieldSettings>(null);
   public controlStatus: Signal<ControlStatus<string | string[]>>;
-  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
+  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()), { equal: RxHelpers.objectsEqual });
 
 
   constructor(

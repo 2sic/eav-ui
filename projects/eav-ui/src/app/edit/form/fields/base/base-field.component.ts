@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { ControlStatus } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
@@ -9,6 +9,7 @@ import { Field } from '../../builder/fields-builder/field.model';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 // @Directive()
 @Component({
@@ -34,8 +35,8 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
    * The signal containing the settings - will be setup later, as we need the exact name
    * note that once the `config` is a signal input, we can change this.
    */
-  protected settings = signal<FieldSettings>(null);
-  basics = computed(() => BasicControlSettings.fromSettings(this.settings()));
+  protected settings = signal<FieldSettings>(null, { equal: RxHelpers.objectsEqual });
+  basics = computed(() => BasicControlSettings.fromSettings(this.settings()), { equal: RxHelpers.objectsEqual });
 
 
 
