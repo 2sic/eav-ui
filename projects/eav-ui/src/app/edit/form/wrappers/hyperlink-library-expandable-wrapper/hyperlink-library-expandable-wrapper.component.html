@@ -8,7 +8,7 @@
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ label$ | async }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>
@@ -52,18 +52,18 @@
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
       'mat-caption' : vm.itemsNumber > 0,
       'mat-empty' : vm.itemsNumber === 0,
-      'mat-error' : vm.controlStatus.invalid && !config.initialDisabled,
-      'color__primary' : !vm.controlStatus.invalid && !config.initialDisabled,
+      'mat-error' : controlStatus().invalid && !config.initialDisabled,
+      'color__primary' : !controlStatus().invalid && !config.initialDisabled,
       'color__label-disabled' : config.initialDisabled
       }">
-      {{ vm.label }} {{ vm.required ? '*': '' }}
+      {{basics().labelWithRequired}}
     </mat-label>
     <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
       [ngClass]="{
-      'c-ew__preview--invalid': vm.controlStatus.invalid,
+      'c-ew__preview--invalid': controlStatus().invalid,
       'c-ew__preview--disabled': config.initialDisabled
       }">
-      <div [ngClass]="vm.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <div [ngClass]="controlStatus().value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
           @for (item of vm.items; track trackByFn($index, item)) {
             <!-- folders -->

@@ -83,26 +83,20 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
       distinctUntilChanged(),
     );
 
-  combineLatest([
-    combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-    combineLatest([this.adamItems$, showAdamSponsor$]),
-  ]).pipe(
-    map(([
-      [controlStatus, label, placeholder, required],
-      [adamItems, showAdamSponsor],
-    ]) => {
-      return {
-        controlStatus,
-        label,
-        placeholder,
-        required,
-        items: adamItems.slice(0, 9),
-        itemsNumber: adamItems.length,
-        showAdamSponsor,
-      };
-    }),
-  ).subscribe(viewModel => this.viewModel.set(viewModel));
-}
+    combineLatest([
+      combineLatest([this.adamItems$, showAdamSponsor$]),
+    ]).pipe(
+      map(([
+        [adamItems, showAdamSponsor],
+      ]) => {
+        return {
+          items: adamItems.slice(0, 9),
+          itemsNumber: adamItems.length,
+          showAdamSponsor,
+        };
+      }),
+    ).subscribe(viewModel => this.viewModel.set(viewModel));
+  }
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);

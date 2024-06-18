@@ -126,24 +126,19 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       }),
       distinctUntilChanged(),
     );
+
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );
 
     combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.preview$, settings$, adamItem$, showAdamSponsor$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [preview, settings, adamItem, showAdamSponsor],
       ]) => {
         return {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           preview,
           buttonAdam: settings._buttonAdam,
           buttonPage: settings._buttonPage,
