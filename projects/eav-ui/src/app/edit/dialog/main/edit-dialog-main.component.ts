@@ -64,6 +64,8 @@ import { FormDataService } from '../../shared/services/form-data.service';
     FormsStateService,
     FormulaDesignerService,
     SourceService,
+
+    // TODO: probably move to each picker component
     PickerTreeDataService,
     PickerTreeDataHelper,
   ],

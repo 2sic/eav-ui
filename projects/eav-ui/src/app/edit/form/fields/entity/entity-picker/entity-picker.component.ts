@@ -35,10 +35,8 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     private stateRaw: StateAdapterEntity,
     private entitySourceAdapterRaw: DataAdapterEntity,
     private querySourceAdapterRaw: DataAdapterQuery,
-    private injector: Injector,
   ) {
-    super();
-    this.log = new EavLogger(nameOfThis, logThis);
+    super(new EavLogger(nameOfThis, logThis));
     this.log.a('constructor');
     EntityPickerLogic.importMe();
     this.isStringQuery = false;

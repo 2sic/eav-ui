@@ -2,7 +2,11 @@ import { VersioningOptions } from '.';
 import { DialogContext } from '../../../app-administration/models';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
 
-/** WARNING! These are constants that form was loaded with. They do not change while form is running */
+/** 
+ * IMPORTANT! These are constants that form was loaded with. They do not change while form is running
+ * 
+ * These values apply to the entire form, having multiple entities
+ */
 export interface FormConfiguration {
   zoneId: string;
   appId: string;

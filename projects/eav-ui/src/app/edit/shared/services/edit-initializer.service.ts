@@ -2,7 +2,6 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
 import { FormConfigService } from '.';
 import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
@@ -29,10 +28,16 @@ import { FormLanguage } from '../models/form-languages.model';
 const logThis = false;
 const nameOfThis = 'EditInitializerService';
 
+/**
+ * Service to initialize an edit form. Will:
+ * - Load form data
+ * - store it in various services, rxStore etc.
+ * - Load initial values for formulas
+ */
 @Injectable()
 export class EditInitializerService extends ServiceBase implements OnDestroy {
 
-  loaded = signal(false);
+  public loaded = signal(false);
 
   private initialFormValues: Record<string, FormValues> = {};
 
@@ -154,6 +159,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     this.publishStatusService.setPublishMode(publishMode, formId, this.formConfig);
   }
 
+  //#region Initial Values for Formulas to retrieve if needed
+
   /**
    * Preserve initial values for future use in formulas which may need to know the initial value
    */
@@ -181,6 +188,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   getInitialValues(entityGuid: string, language: string): FormValues {
     return this.initialFormValues[this.initialValuesCacheKey(entityGuid, language)];
   }
+  //#endregion
 
   private initMissingValues(): void {
     const l = this.log.fn('initMissingValues');

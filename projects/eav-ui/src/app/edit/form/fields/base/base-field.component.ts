@@ -10,7 +10,6 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 // @Directive()
 @Component({
