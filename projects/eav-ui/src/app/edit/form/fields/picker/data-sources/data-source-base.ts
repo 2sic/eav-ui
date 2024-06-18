@@ -44,9 +44,12 @@ export abstract class DataSourceBase extends ServiceBase {
   protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
 
   public setup(settings: Signal<FieldSettings>): this {
+    if (this.alreadySetup) throw new Error('Already setup');
+    this.alreadySetup = true;
     this.settings = settings;
     return this;
   }
+  private alreadySetup = false;
 
   destroy(): void {
     this.prefetchEntityGuids$.complete();
@@ -60,6 +63,7 @@ export abstract class DataSourceBase extends ServiceBase {
   protected helpers = new DataSourceHelpers();
 
   triggerGetAll(): void {
+    console.log('triggerGetAll');
     this.getAll$.next(true);
   }
 

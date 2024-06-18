@@ -1,5 +1,5 @@
 import { FieldSettings, PickerItem } from "projects/edit-types";
-import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
+import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith, tap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -7,8 +7,9 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = false;
+const logThis = true;
 const logChildren = false;
+const nameOfThis = 'DataSourceEntity';
 
 @Injectable()
 export class DataSourceEntity extends DataSourceBase {
@@ -18,7 +19,7 @@ export class DataSourceEntity extends DataSourceBase {
     private queryService: QueryService,
     private entityCacheService: PickerDataCacheService,
   ) {
-    super(new EavLogger('DataSourceEntity', logThis, logChildren));
+    super(new EavLogger(nameOfThis, logThis, logChildren));
   }
 
   public override data = signal([] as PickerItem[]);
@@ -30,7 +31,7 @@ export class DataSourceEntity extends DataSourceBase {
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
     // Note that logging is disabled if debugThis (above) is false or enabled: false
-    const typeNameLog = this.log.rxTap('typeName$', { enabled: false });
+    const typeNameLog = this.log.rxTap('typeName$', { enabled: true });
 
     // List of type names (comma separated) to prefetch.
     // This rarely changes, except when the name comes from a `[...]` token
@@ -48,11 +49,11 @@ export class DataSourceEntity extends DataSourceBase {
     // Note that the backend should not be accessed till getAll$ is true
     // So the stream should be prefilled with an empty array
     // and shared
-    const logAllOfType = this.log.rxTap('allOfType$', { enabled: false });
-    const logAllOfTypeGetEntities = this.log.rxTap('allOfType$/getEntities', { enabled: false });
+    const logAllOfType = this.log.rxTap('allOfType$', { enabled: true });
+    const logAllOfTypeGetEntities = this.log.rxTap('allOfType$/getEntities', { enabled: true });
     const allOfType$ = combineLatest([
       typeName$,
-      this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
+      this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll), tap(getall => console.log('getAll:' + getall) )),
     ]).pipe(
       logAllOfType.pipe(),
       mergeMap(([typeName, _]) => this.queryService.getEntities({

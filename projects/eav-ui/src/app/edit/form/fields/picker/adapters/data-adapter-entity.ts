@@ -21,8 +21,6 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
     this.log.a('init');
     super.init(callerName);
 
-    this.dsEntity.setup(this.settings);
-
     this.subscriptions.add(combineLatest([
       this.dataSource.data$,
       this.dataSource.loading$,

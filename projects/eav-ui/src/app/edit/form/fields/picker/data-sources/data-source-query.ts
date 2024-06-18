@@ -101,7 +101,6 @@ export class DataSourceQuery extends DataSourceBase {
           distinctUntilChanged(),
           filter(entityGuids => entityGuids?.length > 0),
           mergeMap(entityGuids => this.entityCacheService.getEntities$(entityGuids)),
-          map(entities => entities as PickerItem[]),
           startWith([] as PickerItem[]),
           shareReplay(1),
         );

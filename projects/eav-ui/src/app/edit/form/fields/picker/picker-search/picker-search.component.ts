@@ -26,10 +26,9 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
 const nameOfThis = 'PickerSearchComponent';

@@ -4,13 +4,12 @@ import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
-import { Injectable, Injector, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
+import { Injectable, computed, effect, runInInjectionContext, signal, untracked } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
-const logThis = true;
+const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
 
 @Injectable()

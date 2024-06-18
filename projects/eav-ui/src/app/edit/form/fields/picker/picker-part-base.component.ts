@@ -7,7 +7,7 @@ import { FieldControlWithSignals } from '../../builder/fields-builder/field.mode
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'PickerPartBaseComponent';
 
 /**
