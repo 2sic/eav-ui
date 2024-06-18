@@ -38,8 +38,6 @@ export class DataSourceQuery extends DataSourceBase {
     this.log.a('setupQuery', ['settings()', settings(), 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
 
     this.appId = Number(appId);
-    super.setup(settings);
-    //const settings = settings$.value;
     const sett = settings();
     const streamName = sett.StreamName;
     

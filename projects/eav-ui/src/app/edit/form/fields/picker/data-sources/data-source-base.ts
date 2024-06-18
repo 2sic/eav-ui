@@ -63,7 +63,6 @@ export abstract class DataSourceBase extends ServiceBase {
   protected helpers = new DataSourceHelpers();
 
   triggerGetAll(): void {
-    console.log('triggerGetAll');
     this.getAll$.next(true);
   }
 

@@ -40,7 +40,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   private stateAdapterStringRaw = inject(StateAdapterString);
   private pickerEntitySourceAdapter = inject(DataAdapterEntity);
   private querySourceAdapterRaw = inject(DataAdapterQuery);
-  private injector = inject(Injector);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
