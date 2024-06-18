@@ -51,18 +51,12 @@ export class StringDefaultComponent extends BaseFieldComponent<string> implement
     );
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([settings$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [settings],
       ]) => {
         const viewModel: StringDefaultViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           inputFontFamily: settings.InputFontFamily,
           rowCount: settings.RowCount,
         };

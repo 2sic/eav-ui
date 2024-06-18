@@ -116,18 +116,12 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     );
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([open$, this.preview$, settings$, adamItem$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [open, preview, settings, adamItem],
       ]) => {
         const viewModel: HyperlinkDefaultViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           open,
           buttonAdam: settings._buttonAdam,
           buttonPage: settings._buttonPage,

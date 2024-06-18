@@ -78,18 +78,12 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.templateOptions$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [templateOptions],
       ]) => {
         const viewModel: StringTemplatePickerViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           templateOptions,
         };
         return viewModel;
@@ -148,7 +142,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
-    
+
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 

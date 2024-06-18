@@ -84,18 +84,12 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
     );
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([filteredIcons$, previewCss$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [filteredIcons, previewCss],
       ]) => {
         const viewModel: StringFontIconPickerViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           filteredIcons,
           previewCss,
         };

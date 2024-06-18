@@ -47,18 +47,12 @@ export class NumberDefaultComponent extends BaseFieldComponent<number> implement
     );
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([settings$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [settings],
       ]) => {
         const viewModel: NumberDefaultViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           min: settings.Min,
           max: settings.Max,
         };

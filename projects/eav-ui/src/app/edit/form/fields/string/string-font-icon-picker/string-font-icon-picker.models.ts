@@ -1,5 +1,3 @@
-import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
-
 export interface IconOption {
   rule: CSSRule;
   class: string;
@@ -9,7 +7,7 @@ export interface IconOption {
   label: string;
 }
 
-export interface StringFontIconPickerViewModel extends BaseFieldViewModel {
+export interface StringFontIconPickerViewModel {
   filteredIcons: IconOption[];
   previewCss: string;
 }

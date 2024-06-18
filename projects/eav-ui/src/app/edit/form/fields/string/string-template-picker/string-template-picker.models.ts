@@ -1,6 +1,4 @@
-import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
-
-export interface StringTemplatePickerViewModel extends BaseFieldViewModel {
+export interface StringTemplatePickerViewModel {
   templateOptions: string[];
 }
 

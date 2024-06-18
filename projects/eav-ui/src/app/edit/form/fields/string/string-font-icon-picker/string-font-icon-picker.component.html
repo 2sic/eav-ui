@@ -1,24 +1,24 @@
 @if (viewModel | async; as vm) {
-  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
-    <div class="icon-option">
-      @if (vm.controlStatus.value) {
-        <i class="icon-preview {{ vm.previewCss }} {{ vm.controlStatus.value }}"></i>
-      }
-      <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [placeholder]="vm.placeholder" [required]="vm.required"
-        [matAutocomplete]="auto">
-    </div>
-    <mat-autocomplete #auto="matAutocomplete" [hideSingleSelectionIndicator]="true">
-      <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
-        [style.height.px]="vm.filteredIcons.length < 6 ? vm.filteredIcons.length * 48 : 240">
-        <mat-option *cdkVirtualFor="let icon of vm.filteredIcons" [value]="icon.class">
-          <div class="icon-option">
-            <i class="icon-preview {{ vm.previewCss }} {{ icon.class }}"></i>
-            <span>{{ icon.label }}</span>
-          </div>
-        </mat-option>
-      </cdk-virtual-scroll-viewport>
-    </mat-autocomplete>
-    <mat-label>{{ vm.label }}</mat-label>
-  </mat-form-field>
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
+  <div class="icon-option">
+    @if (controlStatus().value) {
+    <i class="icon-preview {{ vm.previewCss }} {{ controlStatus().value }}"></i>
+    }
+    <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName"
+      [placeholder]="basics().placeholder" [required]="basics().required" [matAutocomplete]="auto">
+  </div>
+  <mat-autocomplete #auto="matAutocomplete" [hideSingleSelectionIndicator]="true">
+    <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
+      [style.height.px]="vm.filteredIcons.length < 6 ? vm.filteredIcons.length * 48 : 240">
+      <mat-option *cdkVirtualFor="let icon of vm.filteredIcons" [value]="icon.class">
+        <div class="icon-option">
+          <i class="icon-preview {{ vm.previewCss }} {{ icon.class }}"></i>
+          <span>{{ icon.label }}</span>
+        </div>
+      </mat-option>
+    </cdk-virtual-scroll-viewport>
+  </mat-autocomplete>
+  <mat-label>{{ basics().label }}</mat-label>
+</mat-form-field>
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 }

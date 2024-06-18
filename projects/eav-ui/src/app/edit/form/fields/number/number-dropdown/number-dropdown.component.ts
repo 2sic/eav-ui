@@ -64,18 +64,12 @@ export class NumberDropdownComponent extends BaseFieldComponent<number> implemen
     const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options), distinctUntilChanged());
 
     this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([enableTextEntry$, dropdownOptions$, freeTextMode$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [enableTextEntry, dropdownOptions, freeTextMode],
       ]) => {
         const viewModel: NumberDropdownViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           enableTextEntry,
           dropdownOptions,
           freeTextMode,

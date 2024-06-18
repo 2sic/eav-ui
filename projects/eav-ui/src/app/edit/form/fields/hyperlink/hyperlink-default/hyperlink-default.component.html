@@ -3,7 +3,7 @@
     <div class="fabs-box">
       @if (vm.buttonAdam) {
         <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
-          [disabled]="vm.controlStatus.disabled" (click)="toggleAdam(false, false)">
+          [disabled]="controlStatus().disabled" (click)="toggleAdam(false, false)">
           <mat-icon svgIcon="apple-outlined"></mat-icon>
         </button>
       }
@@ -17,13 +17,13 @@
       </button>
       @if (vm.buttonPage) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
-          [disabled]="vm.controlStatus.disabled" (click)="openPagePicker()">
+          [disabled]="controlStatus().disabled" (click)="openPagePicker()">
           <mat-icon svgIcon="sitemap"></mat-icon>
         </button>
       }
       @if (vm.buttonMore) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
-          [disabled]="vm.controlStatus.disabled" [matMenuTriggerFor]="menu">
+          [disabled]="controlStatus().disabled" [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
       }
@@ -64,14 +64,14 @@
             <!-- input -->
             <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
               <input matInput [formControlName]="config.fieldName" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
-                tippyPlacement="top" [placeholder]="vm.placeholder" [required]="vm.required" appPasteClipboardImage
+                tippyPlacement="top" [placeholder]="basics().placeholder" [required]="basics().required" appPasteClipboardImage
                 [config]="config" [elementType]="'input'">
-              <mat-label>{{ vm.label }}</mat-label>
+              <mat-label>{{ basics().label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
             @if (vm.preview?.floatingText) {
               <div class="hyperlink-floating">
-                <div class="hyperlink-floating__value">{{ vm.controlStatus.value }}</div>
+                <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
                 <div class="hyperlink-floating__url-box">
                   <a [href]="vm.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.preview.url">
                     <span>{{ vm.preview.floatingText }}</span>
@@ -80,7 +80,7 @@
               </div>
             }
           </div>
-          @if (vm.controlStatus.value && vm.preview) {
+          @if (controlStatus().value && vm.preview) {
             <div class="preview-wrapper">
               <!-- image -->
               @if (vm.preview.isImage) {

@@ -1,6 +1,4 @@
 import { AdamItem } from '../../../../../../../../edit-types';
-import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
-
 export interface Preview {
   url: string;
   thumbnailUrl: string;
@@ -11,7 +9,7 @@ export interface Preview {
   icon: string;
 }
 
-export interface HyperlinkDefaultViewModel extends BaseFieldViewModel {
+export interface HyperlinkDefaultViewModel {
   open: boolean;
   buttonAdam: boolean;
   buttonPage: boolean;

@@ -2,15 +2,15 @@
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field"
     [ngClass]="{'textarea-field': vm.rowCount > 1}">
     @if (vm.rowCount <= 1) {
-      <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [placeholder]="vm.placeholder"
-        [required]="vm.required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
+      <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [placeholder]="basics().placeholder"
+        [required]="basics().required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
     }
     @if (vm.rowCount > 1) {
       <textarea matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [rows]="vm.rowCount"
-        [placeholder]="vm.placeholder" [required]="vm.required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
+        [placeholder]="basics().placeholder" [required]="basics().required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
       </textarea>
     }
-    <mat-label>{{ vm.label }}</mat-label>
+    <mat-label>{{ basics().label }}</mat-label>
   </mat-form-field>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 }
