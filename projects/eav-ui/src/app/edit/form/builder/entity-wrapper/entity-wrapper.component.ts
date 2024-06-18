@@ -30,25 +30,25 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
-    selector: 'app-entity-wrapper',
-    templateUrl: './entity-wrapper.component.html',
-    styleUrls: ['./entity-wrapper.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        FlexModule,
-        MatIconModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        CdkDrag,
-        CdkDragHandle,
-        MatSlideToggleModule,
-        EntityTranslateMenuComponent,
-        ChangeAnchorTargetDirective,
-        FieldsBuilderDirective,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-entity-wrapper',
+  templateUrl: './entity-wrapper.component.html',
+  styleUrls: ['./entity-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FlexModule,
+    MatIconModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    CdkDrag,
+    CdkDragHandle,
+    MatSlideToggleModule,
+    EntityTranslateMenuComponent,
+    ChangeAnchorTargetDirective,
+    FieldsBuilderDirective,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class EntityWrapperComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;

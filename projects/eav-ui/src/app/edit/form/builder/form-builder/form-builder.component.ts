@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -15,6 +15,7 @@ import { FieldLogicManager } from '../../shared/field-logic/field-logic-manager'
 import { EntityWrapperComponent } from '../entity-wrapper/entity-wrapper.component';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { EntityFormStateService } from '../../entity-form-state.service';
 
 @Component({
   selector: 'app-form-builder',
@@ -25,7 +26,10 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
     FieldsTranslateService,
     FormItemFormulaService,
     FormulaEngine,
-    FormulaPromiseHandler
+    FormulaPromiseHandler,
+
+    // new
+    EntityFormStateService,
   ],
   standalone: true,
   imports: [
@@ -37,7 +41,10 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 export class FormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
-  form: UntypedFormGroup;
+  form = new UntypedFormGroup({});
+
+  /** Inject the form state service, but automatically add the form for later use */
+  private formStateService = inject(EntityFormStateService).setup(this.form);
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
@@ -56,7 +63,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     this.fieldsSettingsService.init(this.entityGuid);
     this.fieldsTranslateService.init(this.entityGuid);
 
-    this.form = new UntypedFormGroup({});
+    const form = this.form;
+
     this.subscriptions.add(
       this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
         // 1. create missing controls
@@ -65,7 +73,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
           if (EmptyFieldHelpers.isEmptyInputType(inputType)) continue;
 
-          if (this.form.controls.hasOwnProperty(fieldName)) continue;
+          if (form.controls.hasOwnProperty(fieldName)) continue;
 
           if (inputType === InputTypeConstants.StringWysiwyg) {
             if (fieldProps.value != '' && fieldProps.value != null && fieldProps.value != undefined) {
@@ -80,15 +88,15 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
           const newControl = this.formBuilder.control({ disabled, value }, validators);
           // TODO: build all fields at once. That should be faster
-          this.form.addControl(fieldName, newControl);
-          ValidationHelpers.ensureWarning(this.form.controls[fieldName]);
+          form.addControl(fieldName, newControl);
+          ValidationHelpers.ensureWarning(form.controls[fieldName]);
         }
 
         // 2. sync values
-        const oldValues: FormValues = this.form.getRawValue();
+        const oldValues: FormValues = form.getRawValue();
         const newValues: FormValues = {};
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!this.form.controls.hasOwnProperty(fieldName)) continue;
+          if (!form.controls.hasOwnProperty(fieldName)) continue;
           newValues[fieldName] = fieldProps.value;
         }
 
@@ -98,13 +106,13 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           // This update usually happens for language change, formula or updates on same entity in another Edit Ui.
           // In case controls should be updated, update with control.markAsTouched and control.markAsDirty.
           // Marking the form will not mark controls, but marking controls marks the form
-          this.form.patchValue(changes);
+          form.patchValue(changes);
         }
 
         // 3. sync disabled
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!this.form.controls.hasOwnProperty(fieldName)) continue;
-          const control = this.form.controls[fieldName];
+          if (!form.controls.hasOwnProperty(fieldName)) continue;
+          const control = form.controls[fieldName];
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
           ControlHelpers.disableControl(control, disabled);
@@ -112,16 +120,16 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!this.form.controls.hasOwnProperty(fieldName)) continue;
-          const control = this.form.controls[fieldName];
+          if (!form.controls.hasOwnProperty(fieldName)) continue;
+          const control = form.controls[fieldName];
           control.updateValueAndValidity();
         }
       })
     );
 
-    const formValid$ = this.form.valueChanges.pipe(
-      map(() => !this.form.invalid),
-      startWith(!this.form.invalid),
+    const formValid$ = form.valueChanges.pipe(
+      map(() => !form.invalid),
+      startWith(!form.invalid),
       distinctUntilChanged(),
     );
     const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
@@ -137,9 +145,9 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
       })
     );
     this.subscriptions.add(
-      this.form.valueChanges.pipe(
-        map(() => this.form.dirty),
-        startWith(this.form.dirty),
+      form.valueChanges.pipe(
+        map(() => form.dirty),
+        startWith(form.dirty),
         // distinctUntilChanged(), // cant have distinctUntilChanged because dirty state is not reset on form save
       ).subscribe(isDirty => {
         this.formsStateService.setFormDirty(this.entityGuid, isDirty);
@@ -147,8 +155,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     );
 
     this.subscriptions.add(
-      this.form.valueChanges.pipe(
-        map(() => this.form.getRawValue() as FormValues),
+      form.valueChanges.pipe(
+        map(() => form.getRawValue() as FormValues),
         distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const language = this.languageStore.getLanguage(this.eavService.config.formId);

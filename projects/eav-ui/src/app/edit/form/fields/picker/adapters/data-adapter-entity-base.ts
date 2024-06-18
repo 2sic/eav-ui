@@ -4,7 +4,7 @@ import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { FieldMask } from "../../../../shared/helpers";
 import { BehaviorSubject, Observable } from "rxjs";
-import { FormGroup, AbstractControl } from "@angular/forms";
+import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, PickerItem } from "projects/edit-types";
@@ -19,6 +19,7 @@ import { PickerFeatures } from '../picker-features.model';
 import { Injector, Signal, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { EntityFormStateService } from '../../../entity-form-state.service';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -60,7 +61,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   settings: Signal<FieldSettings>;
   protected config: FieldConfigSet;
-  protected group: FormGroup;
+
+  // protected group: FormGroup;
+  protected group = inject(EntityFormStateService).formGroup();
   public control: AbstractControl;
 
   public setupFromComponent(
@@ -78,7 +81,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
     this.settings = state.settings;
     this.config = component.config;
-    this.group = component.group;
+    // this.group = component.group;
     this.control = component.control;
     super.setup(state.doAfterDelete);
     return this;
