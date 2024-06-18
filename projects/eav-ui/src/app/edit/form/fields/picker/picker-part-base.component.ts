@@ -5,6 +5,7 @@ import { PickerData } from './picker-data';
 import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { FieldControlWithSignals } from '../../builder/fields-builder/field.model';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = true;
 const nameOfThis = 'PickerPartBaseComponent';
@@ -36,7 +37,7 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy,
   public selectedItems = computed(() => this.pickerData().selectedAll());
 
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = computed(() => this.pickerData().state.basics());
+  basics = computed(() => this.pickerData().state.basics(), { equal: RxHelpers.objectsEqual });
 
   /** Features */
   features = computed(() => this.pickerData().features());

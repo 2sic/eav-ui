@@ -8,6 +8,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: 'app-picker-pills',
@@ -25,9 +26,9 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 })
 export class PickerPillsComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  enableTextEntry = computed(() => this.pickerData().state.settings().EnableTextEntry);
+  enableTextEntry = computed(() => this.pickerData().state.settings().EnableTextEntry, SignalHelpers.boolEquals);
 
-  itemCount = computed(() => this.selectedItems().length);
+  itemCount = computed(() => this.selectedItems().length, SignalHelpers.numberEquals);
 
   constructor(private editRoutingService: EditRoutingService) {
     super();

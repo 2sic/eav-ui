@@ -26,6 +26,8 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = true;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -74,7 +76,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   private newValue: string = null;
 
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
-  public selectedItem = computed(() => this.pickerData().selectedOne());
+  public selectedItem = computed(() => this.pickerData().selectedOne(), { equal: RxHelpers.objectsEqual });
 
   /** special trigger to recalculate filtered items; not ideal, should happen automatically */
   private reFilter = signal(false);
@@ -116,7 +118,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
       enableReselect: sts.EnableReselect,
       showAsTree: sts.PickerDisplayMode === 'tree',
     };
-  });
+  }, { equal: RxHelpers.objectsEqual });
 
   /**
    * The tree helper which is used by the tree display.

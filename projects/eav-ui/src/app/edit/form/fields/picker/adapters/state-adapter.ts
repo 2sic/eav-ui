@@ -16,6 +16,7 @@ import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/sha
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { PickerFeatures } from '../picker-features.model';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 const logThis = false;
 const dumpSelected = true;
@@ -24,7 +25,7 @@ const nameOfThis = 'StateAdapter';
 
 @Injectable()
 export class StateAdapter extends ServiceBase {
-  public isInFreeTextMode = signal(false);
+  public isInFreeTextMode = signal(false, SignalHelpers.boolEquals);
 
   public features = signal({} as Partial<PickerFeatures>);
 

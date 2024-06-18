@@ -32,7 +32,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     super.setupFromComponent(component, state, useEmpty);
     this.isStringQuery = component.isStringQuery;
 
-    const urlParametersSettings = computed(() => this.settings().UrlParameters, SignalHelpers.stringChanges);
+    const urlParametersSettings = computed(() => this.settings().UrlParameters, SignalHelpers.stringEquals);
 
     // Note: not quite perfect.
     // If we could get the settings injected (instead of late-added)

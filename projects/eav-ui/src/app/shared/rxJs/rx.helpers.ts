@@ -1,7 +1,15 @@
 
 export class RxHelpers {
 
+  static boolEquals(x: boolean, y: boolean): boolean {
+    return x === y;
+  }
+
   static stringEquals(x: string, y: string): boolean {
+    return x === y;
+  }
+
+  static valueEquals<T>(x: T, y: T): boolean {
     return x === y;
   }
 

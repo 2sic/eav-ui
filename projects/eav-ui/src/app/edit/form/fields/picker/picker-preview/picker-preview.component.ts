@@ -15,6 +15,8 @@ import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const nameOfThis = 'PickerPreviewComponent';
@@ -57,7 +59,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent implements O
       showAddNewEntityButton,
       showGoToListDialogButton,
     };
-  });
+  }, { equal: RxHelpers.objectsEqual });
 
   constructor(
     private editRoutingService: EditRoutingService,

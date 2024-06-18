@@ -12,6 +12,7 @@ import { PickerTextComponent } from '../picker-text/picker-text.component';
 import { PickerSearchComponent } from '../picker-search/picker-search.component';
 import { PickerListComponent } from '../picker-list/picker-list.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -34,7 +35,7 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 })
 export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy, FieldControlWithSignals {
 
-  protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
+  protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode(), SignalHelpers.boolEquals);
 
   protected showAddNewEntityButtonInDialog = computed(() => { 
     const settings = this.pickerData().state.settings();
@@ -43,7 +44,7 @@ export class PickerDialogComponent extends PickerPartBaseComponent implements On
       && settings.CreateTypes
       && settings.AllowMultiValue;
     return showAddNew;
-  });
+  }, SignalHelpers.boolEquals);
 
   constructor() {
     super();

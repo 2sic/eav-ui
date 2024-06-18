@@ -11,6 +11,8 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const nameOfThis = 'PickerListComponent';
@@ -43,7 +45,7 @@ export class PickerListComponent extends PickerPartBaseComponent implements OnDe
       enableDelete: settings.EnableDelete,
       enableRemove: settings.EnableRemove,
     };
-  });
+  }, { equal: RxHelpers.objectsEqual });
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));

@@ -1,12 +1,12 @@
-import { take } from 'rxjs';
 import { DataAdapter } from "./adapters/data-adapter.interface";
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Signal, computed } from '@angular/core';
+import { computed } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
@@ -14,13 +14,13 @@ export class PickerData extends ServiceBase {
 
   selectedAll = computed(() => this.createUIModel(this.state.selectedItems(), this.source.optionsOrHints(), this.translate));
 
-  public selectedOne = computed(() => this.selectedAll()[0] ?? null);
+  public selectedOne = computed(() => this.selectedAll()[0] ?? null, { equal: RxHelpers.objectsEqual });
 
   public features = computed(() => {
     const fromSource = this.source.features();
     const fromState = this.state.features();
     return PickerFeatures.merge(fromSource, fromState);
-  });
+  }, { equal: RxHelpers.objectsEqual });
 
   constructor(
     public state: StateAdapter,
