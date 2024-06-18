@@ -6,11 +6,14 @@
   <mat-form-field [formGroup]="group()" class="eav-mat-form-field" color="accent"
     [ngClass]="{ 'mat-form-field-invalid': controlStatus().touchedAndInvalid }"
     (click)="filterSelectionList()">
-    <input matInput #autocomplete class="eav-translate-on-dblclick"
-      [placeholder]="getPlaceholder()"
+    <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
+    <input matInput
+      class="eav-translate-on-dblclick"
+      #autocomplete
       [matAutocomplete]="auto"
+      [value]="displaySelected(selectedItem())"
+      [placeholder]="getPlaceholder()"
       [disabled]="controlStatus().disabled || !settings().enableAddExisting"
-      (displayWith)="displaySelected(selectedItem())"
       (focus)="fetchEntities()"
       (blur)="markAsTouched()"
       (input)="filterSelectionList()"
@@ -47,9 +50,13 @@
       {{ basics().labelWithRequired }}
     </mat-label>
   </mat-form-field>
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)" [hideSingleSelectionIndicator]="true"
+
+  <mat-autocomplete #auto="matAutocomplete"
+    [displayWith]="displayFn.bind(this)"
+    [hideSingleSelectionIndicator]="true"
     (optionSelected)="optionSelected($event, settings().allowMultiValue, selectedItem())"
-    (closed)="onClosed()" (opened)="onOpened(settings().showAsTree)">
+    (closed)="onClosed()" (opened)="onOpened(settings().showAsTree)"
+  >
     <!-- List Display Mode -->
     @if (!settings().showAsTree) {
         @for (item of filteredItems(); track item) {

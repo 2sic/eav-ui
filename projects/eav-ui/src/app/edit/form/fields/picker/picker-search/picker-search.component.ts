@@ -30,6 +30,7 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 const logThis = true;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
+const nameOfThis = 'PickerSearchComponent';
 
 @Component({
   selector: 'app-picker-search',
@@ -129,7 +130,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     private fieldsSettingsService: FieldsSettingsService,
     private treeDataService: PickerTreeDataService,
   ) {
-    super(new EavLogger('PickerSearchComponent', logThis));
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit(): void {
