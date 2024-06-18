@@ -20,7 +20,8 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
-const logThis = true;
+const logThis = false;
+const nameOfThis = 'CollapsibleWrapperComponent'
 
 @Component({
   selector: WrappersConstants.CollapsibleWrapper,
@@ -72,7 +73,7 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
     // private languageStore: LanguageInstanceService,
     // private formConfig: FormConfigService,
   ) {
-    super(new EavLogger('CollapsibleWrapper', logThis));
+    super(new EavLogger(nameOfThis, logThis));
     EmptyDefaultLogic.importMe();
 
     // temp, must be in constructor
