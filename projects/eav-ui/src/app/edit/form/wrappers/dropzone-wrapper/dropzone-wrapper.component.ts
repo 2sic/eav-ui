@@ -32,8 +32,6 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   dropzoneDisabled = signal(false);
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
-  // TODO:: @2dm fragen
-  // dropzoneConfig = toSignal(this.settings$.pipe(map(s => s.Notes)), { initialValue: '' });
 
   imageTypes: string[] = ["image/jpeg", "image/png"];
   isStringWysiwyg = false;
@@ -50,14 +48,16 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
     super.ngOnInit();
 
     combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.disabled), distinctUntilChanged()),
       this.dropzoneConfig$,
     ]).pipe(
-      map(([controlDisabled, dropzoneConfig]) => {
+      map(([dropzoneConfig]) => {
         const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
-        return controlDisabled || dropzoneDisabled;
+        return this.controlStatus().disabled || dropzoneDisabled;
       }),
-    ).subscribe(value => this.dropzoneDisabled.set(value));
+    ).subscribe(value => {
+      this.dropzoneDisabled.set(value)
+    }
+    );
 
     this.config.dropzone = {
       setConfig: (config) => {

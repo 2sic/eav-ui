@@ -43,11 +43,10 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
   dialogIsOpen = signal(false);
-  saveButtonDisabled = toSignal(this.formsStateService.saveButtonDisabled$.pipe(share()), { initialValue: false });
 
   constructor(
     private editRoutingService: EditRoutingService,
-    private formsStateService: FormsStateService,
+    public formsStateService: FormsStateService,
   ) {
     super();
   }

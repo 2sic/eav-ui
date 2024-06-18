@@ -24,7 +24,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 
-  $language = signal<FormLanguage>(null);
+  language = signal<FormLanguage>(null);
   hideTranslateButton: boolean = true;
 
   constructor(
@@ -38,7 +38,8 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.languageStore.getLanguage$(this.formConfig.config.formId).subscribe( d => this.$language.set(d));
+    this.languageStore.getLanguage$(this.formConfig.config.formId)
+      .subscribe(this.language.set);
   }
 
   ngOnDestroy() {
@@ -46,7 +47,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
   }
 
   translate() {
-    if (this.formsStateService.readOnly$.value.isReadOnly) return;
+    if (this.formsStateService.readOnly().isReadOnly) return;
     const language = this.languageStore.getLanguage(this.formConfig.config.formId);
     if (language.current === language.primary) return;
     if (!this.control.disabled) return;
