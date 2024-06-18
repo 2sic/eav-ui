@@ -54,7 +54,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     PasteClipboardImageDirective,
     FieldHelperTextComponent,
     FeatureIconTextComponent,
-    AsyncPipe,
     TranslateModule,
     ClickStopPropagationDirective,
   ],

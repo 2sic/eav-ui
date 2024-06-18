@@ -18,7 +18,6 @@ import { FormLanguage } from '../../../shared/models/form-languages.model';
     NgClass,
     ExtendedModule,
     TranslateMenuComponent,
-    AsyncPipe,
   ],
 })
 export class LocalizationWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {

@@ -5,7 +5,7 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
 
 @Component({
@@ -18,7 +18,6 @@ import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
     NgClass,
     ExtendedModule,
     AdamHintComponent,
-    AsyncPipe,
   ],
 })
 export class AdamWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {

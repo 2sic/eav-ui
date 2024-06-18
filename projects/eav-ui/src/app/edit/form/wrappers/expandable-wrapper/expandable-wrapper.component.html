@@ -7,7 +7,7 @@
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ label$ | async }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>

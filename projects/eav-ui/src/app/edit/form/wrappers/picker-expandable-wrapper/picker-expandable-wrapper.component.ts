@@ -35,7 +35,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     CdkScrollable,
     ExtendedFabSpeedDialModule,
     MatRippleModule,
-    AsyncPipe,
     TranslateModule,
   ],
 })

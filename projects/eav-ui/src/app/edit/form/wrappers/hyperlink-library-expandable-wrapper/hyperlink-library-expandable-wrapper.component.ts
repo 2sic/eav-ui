@@ -44,7 +44,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     MatFormFieldModule,
     FieldHelperTextComponent,
     FeatureIconTextComponent,
-    AsyncPipe,
     TranslateModule,
   ],
 })
