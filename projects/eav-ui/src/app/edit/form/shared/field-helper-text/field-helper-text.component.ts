@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, computed, inject } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { ValidationMessagesHelpers } from '../../../shared/helpers';
-import { FieldsSettingsService } from '../../../shared/services';
 import { FieldState } from '../../builder/fields-builder/field-config-set.model';
 import { FieldHelperTextViewModel } from './field-helper-text.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,6 +10,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -34,10 +34,14 @@ export class FieldHelperTextComponent implements OnInit {
 
   protected fieldState = inject(FieldState);
 
+  protected settings = this.fieldState.settings;
+
+  protected notes = computed(() => this.settings().Notes, SignalHelpers.stringEquals);
+
   isFullText = false;
   viewModel$: Observable<FieldHelperTextViewModel>;
 
-  constructor(private fieldsSettingsService: FieldsSettingsService) { }
+  constructor() { }
 
   ngOnInit() {
     const control = this.fieldState.control;
@@ -53,15 +57,11 @@ export class FieldHelperTextComponent implements OnInit {
       distinctUntilChanged(),
     );
 
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.fieldState.name);
-
-    this.viewModel$ = combineLatest([invalid$, disabled$, settings$]).pipe(
-      map(([invalid, disabled, settings]) => {
+    this.viewModel$ = combineLatest([invalid$, disabled$]).pipe(
+      map(([invalid, disabled]) => {
         const viewModel: FieldHelperTextViewModel = {
           invalid,
           disabled,
-          description: settings.Notes,
-          settings,
         };
         return viewModel;
       }),
@@ -72,11 +72,11 @@ export class FieldHelperTextComponent implements OnInit {
   toggleHint(event: MouseEvent) {
     let target = event.target as HTMLElement;
 
-    if (target.nodeName.toLocaleLowerCase() === 'a') { return; }
+    if (target.nodeName.toLocaleLowerCase() === 'a') return;
     while (target && target.classList && !target.classList.contains('notes-container')) {
       target = target.parentNode as HTMLElement;
-      if (!target) { return; }
-      if (target.nodeName.toLocaleLowerCase() === 'a') { return; }
+      if (!target) return;
+      if (target.nodeName.toLocaleLowerCase() === 'a') return;
     }
 
     this.isFullText = !this.isFullText;

@@ -1,21 +1,21 @@
 @if (viewModel$ | async; as vm) {
   <div class="c-fht__container" [ngClass]="{
-    'c-fht__container--no-hint': !vm.description && !(vm.invalid && !disableError),
+    'c-fht__container--no-hint': !notes() && !(vm.invalid && !disableError),
     'c-fht__container--last': fieldState.config.isLastInGroup,
-    'c-fht__container--last--no-hint': fieldState.config.isLastInGroup && !vm.description && !(vm.invalid && !disableError),
+    'c-fht__container--last--no-hint': fieldState.config.isLastInGroup && !notes() && !(vm.invalid && !disableError),
     'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !fieldState.config.isLastInGroup
     }">
-    @if (vm.description) {
+    @if (notes()) {
       <mat-hint class="mat-caption" (click)="toggleHint($event)"
         [ngClass]="vm.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start" fxLayout="row"
         fxLayoutAlign="start start">
         <span class="notes-container" [ngClass]="{ 'c-fht__container-hint--ellipsis': !isFullText }" appChangeAnchorTarget
-          [innerHtml]="vm.description | safeHtml">
+          [innerHtml]="notes() | safeHtml">
         </span>
       </mat-hint>
     }
     @if (vm.invalid && !disableError && getErrorMessage(); as error) {
-      <mat-error class="mat-caption">{{ error | translate:{ param:vm.settings } }}</mat-error>
+      <mat-error class="mat-caption">{{ error | translate:{ param: settings() } }}</mat-error>
     }
     @if (!vm.invalid && !disableError && getWarningMessage(); as warning) {
       <mat-error class="mat-caption warning">{{ warning | translate }}</mat-error>

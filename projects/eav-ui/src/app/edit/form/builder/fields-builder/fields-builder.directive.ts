@@ -1,4 +1,4 @@
-import { ComponentRef, Directive, EnvironmentInjector, Injector, Input, OnDestroy, OnInit, Type, ViewContainerRef, createEnvironmentInjector, inject, Inject } from '@angular/core';
+import { ComponentRef, Directive, EnvironmentInjector, Injector, Input, OnDestroy, OnInit, Type, ViewContainerRef, createEnvironmentInjector, inject, runInInjectionContext, Signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -14,6 +14,7 @@ import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { InputComponents } from './input-components.constant';
+import { FieldSettings } from 'projects/edit-types';
 
 const logThis = false;
 
@@ -158,20 +159,26 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
 
   private getInjectors(fieldConfig: FieldConfigSet, isPreview: boolean) {
     // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
-    const controlConfig1: FieldControlConfig = { isPreview };
+    const controlConfig: FieldControlConfig = { isPreview };
 
     // 2024-06-18 2dm experimental new injector with fieldConfig etc.
+    const fieldName = fieldConfig.fieldName;
+    let settings: Signal<FieldSettings>;
+    runInInjectionContext(this.injector, () => {
+      settings = this.fieldsSettingsService.getFieldSettingsSignal(fieldName);
+    });
+
     const fieldState = new FieldState(
-      fieldConfig.fieldName,
+      fieldName,
       fieldConfig,
-      controlConfig1,
+      controlConfig,
       this.group,
-      this.group.controls[fieldConfig.fieldName]
+      this.group.controls[fieldName],
+      settings,
     );
 
     const providers = [
       { provide: FieldState, useValue: fieldState },
-      // { provide: TEST_TOKEN, useValue: 'test' }
     ];
     const componentInjector = Injector.create({
       providers: providers,
@@ -185,8 +192,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       'FieldEnvInjector'
     );
 
-    const createComponentInjectors: InjectorBundle = { injector: componentInjector, environmentInjector: newEnvInjector };
-    return createComponentInjectors;
+    return { injector: componentInjector, environmentInjector: newEnvInjector };
   }
 }
 

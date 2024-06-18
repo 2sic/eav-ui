@@ -1,9 +1,9 @@
 import { BehaviorSubject } from 'rxjs';
-import { Adam, Dropzone } from '../../../../../../../edit-types';
+import { Adam, Dropzone, FieldSettings } from '../../../../../../../edit-types';
 import { FieldConstants } from '../../../shared/models';
 import { PickerData } from '../../fields/picker/picker-data';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { InjectionToken } from '@angular/core';
+import { Signal } from '@angular/core';
 
 /**
  * Experimental 2dm
@@ -15,10 +15,9 @@ export class FieldState {
     public controlConfig: FieldControlConfig,
     public group: UntypedFormGroup,
     public control: AbstractControl,
+    public settings: Signal<FieldSettings>,
   ) { }
 }
-
-// export const TEST_TOKEN = new InjectionToken<string>('TEST_TOKEN');
 
 export interface FieldConfigSet extends FieldConstants {
   name: string;
