@@ -42,18 +42,12 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
     const isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.loading$, isExpanded$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
         [loading, isExpanded],
       ]) => {
         const viewModel: ExternalWebComponentViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           loading,
           isExpanded,
         };

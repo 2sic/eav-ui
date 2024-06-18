@@ -80,18 +80,14 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
     );
 
     this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.config.focused$]),
+      combineLatest([this.config.focused$]),
       combineLatest([rowCount$, jsonSchema$, jsonComments$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required, focused],
+        [focused],
         [rowCount, jsonSchema, jsonComments],
       ]) => {
         const viewModel: CustomJsonEditorViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           focused,
           rowCount,
           editorHeight: rowCount * this.monacoOptions.lineHeight + 'px',

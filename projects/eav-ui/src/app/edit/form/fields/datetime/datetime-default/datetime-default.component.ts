@@ -62,18 +62,15 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker), distinctUntilChanged());
 
     this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      // combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([useTimePicker$]),
     ]).pipe(
       map(([
-        [controlStatus, label, placeholder, required],
+        // [controlStatus, label, placeholder, required],
         [useTimePicker],
       ]) => {
         const viewModel: DatetimeDefaultViewModel = {
-          controlStatus: { ...controlStatus, value: controlStatus.value?.replace('Z', '') }, // remove Z - to get 'neutral' time for OwlDateTime picker
-          label,
-          placeholder,
-          required,
+          controlStatus: { ...this.controlStatus(), value: this.controlStatus().value?.replace('Z', '') }, // remove Z - to get 'neutral' time for OwlDateTime picker
           useTimePicker,
         };
         return viewModel;

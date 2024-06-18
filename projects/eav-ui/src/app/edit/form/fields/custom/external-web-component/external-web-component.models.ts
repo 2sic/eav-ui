@@ -1,6 +1,4 @@
-import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
-
-export interface ExternalWebComponentViewModel extends BaseFieldViewModel {
+export interface ExternalWebComponentViewModel {
   loading: boolean;
   isExpanded: boolean;
 }

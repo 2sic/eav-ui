@@ -1,5 +1,6 @@
-import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
+import { ControlStatus } from '../../../../shared/models';
 
-export interface DatetimeDefaultViewModel extends BaseFieldViewModel {
+export interface DatetimeDefaultViewModel {
+  controlStatus: ControlStatus;
   useTimePicker: boolean;
 }
