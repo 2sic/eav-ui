@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef, effect, signal } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Subject, map } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
@@ -19,6 +19,7 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 const logThis = false;
 const nameOfThis = 'CollapsibleWrapperComponent'
@@ -45,6 +46,11 @@ export class CollapsibleWrapperComponent extends BaseComponent implements FieldW
 
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
+
+  protected fieldState = inject(FieldState);
+  // protected config = this.fieldState.config;
+  // protected group = this.fieldState.group;
+
 
   controlConfig: FieldControlConfig = {};
 

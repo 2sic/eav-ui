@@ -1,11 +1,8 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { Component, inject, signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../../shared/helpers/console-log-angular.helper';
 import { EditRoutingService, ScriptsLoaderService } from '../../../../shared/services';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomGpsLogic } from './custom-gps-logic';
-import { ExternalWebComponentViewModel } from './external-web-component.models';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 import { AsyncPipe } from '@angular/common';
 import { ConnectorComponent } from '../../../shared/connector/connector.component';
@@ -23,15 +20,13 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
     AsyncPipe,
   ],
 })
-export class ExternalWebComponentComponent  {
-  viewModel: Observable<ExternalWebComponentViewModel>;
+export class ExternalWebComponentComponent {
 
   protected fieldState = inject(FieldState);
-
   protected config = this.fieldState.config;
-  protected group = this.fieldState.group;
 
-  private loading$: BehaviorSubject<boolean>;
+  protected isExpanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+  protected loading = signal<boolean>(true)
 
   constructor(
     private scriptsLoaderService: ScriptsLoaderService,
@@ -42,27 +37,7 @@ export class ExternalWebComponentComponent  {
   }
 
   ngOnInit() {
-    this.loading$ = new BehaviorSubject(true);
-    const isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-
-    this.viewModel = combineLatest([
-      combineLatest([this.loading$, isExpanded$]),
-    ]).pipe(
-      map(([
-        [loading, isExpanded],
-      ]) => {
-        const viewModel: ExternalWebComponentViewModel = {
-          loading,
-          isExpanded,
-        };
-        return viewModel;
-      }),
-    );
     this.loadAssets();
-  }
-
-  ngOnDestroy() {
-    this.loading$.complete();
   }
 
   private loadAssets() {
@@ -73,6 +48,6 @@ export class ExternalWebComponentComponent  {
 
   private assetsLoaded() {
     consoleLogEditForm('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
-    this.loading$.next(false);
+    this.loading.set(false);
   }
 }

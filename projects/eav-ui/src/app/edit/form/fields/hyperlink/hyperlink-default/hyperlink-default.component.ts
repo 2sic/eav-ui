@@ -58,6 +58,8 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
   viewModel: Observable<HyperlinkDefaultViewModel>;
 
+  // open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+
   constructor(
     eavService: FormConfigService,
     adamService: AdamService,

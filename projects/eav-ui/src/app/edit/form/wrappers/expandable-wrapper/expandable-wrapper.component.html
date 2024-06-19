@@ -7,7 +7,7 @@
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basicsTemp().label }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>
@@ -43,23 +43,23 @@
 </div>
 <div class="c-ew__preview-holder">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : controlStatusTemp().value,
-      'mat-empty' : !controlStatusTemp().value,
-      'mat-error' : controlStatusTemp().invalid && (controlStatusTemp().touched || controlStatusTemp().dirty) && !controlStatusTemp().disabled,
-      'color__primary' : !(controlStatusTemp().touchedAndInvalid) && !controlStatusTemp().disabled,
-      'color__label-disabled' : controlStatusTemp().disabled,
+      'mat-caption' : controlStatus().value,
+      'mat-empty' : !controlStatus().value,
+      'mat-error' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty) && !controlStatus().disabled,
+      'color__primary' : !(controlStatus().touchedAndInvalid) && !controlStatus().disabled,
+      'color__label-disabled' : controlStatus().disabled,
       'c-ew__preview-label--focused': focused()
       }">
-    {{basicsTemp().labelWithRequired}}
+    {{basics().labelWithRequired}}
   </mat-label>
   <div class="c-ew__preview" [ngClass]="{
-      'c-ew__preview--invalid' : controlStatusTemp().invalid && (controlStatusTemp().touched || controlStatusTemp().dirty),
-      'c-ew__preview--disabled': controlStatusTemp().disabled,
+      'c-ew__preview--invalid' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty),
+      'c-ew__preview--disabled': controlStatus().disabled,
       'c-ew__preview--focused': focused()
       }">
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
-          'c-ew__preview-content--disabled': controlStatusTemp().disabled
+          'c-ew__preview-content--disabled': controlStatus().disabled
           }" [ngStyle]="{
           'min-height': previewHeight().minHeight,
           'max-height': previewHeight().maxHeight

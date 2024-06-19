@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, OnInit, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -8,10 +8,8 @@ import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angul
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
+import { AdamService, FormConfigService, EditRoutingService, FormsStateService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ContentExpandAnimation } from './content-expand.animation';
 import { PreviewHeight } from './expandable-wrapper.models';
@@ -52,34 +50,35 @@ import { ControlStatus } from '../../../shared/models';
     JsonPipe,
   ],
 })
-export class ExpandableWrapperComponent extends BaseFieldComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class ExpandableWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewContainer') private previewContainerRef: ElementRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
+  public fieldsSettingsService = inject(FieldsSettingsService);
+
   protected fieldState = inject(FieldState);
-  protected configTemp = this.fieldState.config;
-  protected groupTemp = this.fieldState.group;
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
 
-  protected basicsTemp = this.fieldState.basics;
-  protected settingsTemp = this.fieldState.settings;
-  protected controlStatusTemp = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected basics = this.fieldState.basics;
+  protected settings = this.fieldState.settings;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
 
-
-  open = signal(false);
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
   focused = signal(false);
 
   adamDisabled = signal<boolean>(true);
 
   previewHeight = computed(() => {
-    const settings = this.settingsTemp();
+    const settings = this.settings();
     const previewHeight: PreviewHeight = {
       minHeight: '36px',
       maxHeight: '50vh',
     };
 
-    if (this.configTemp.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
+    if (this.config.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
       return previewHeight;
 
     let rows = parseInt(settings.InlineInitialHeight, 10);
@@ -115,36 +114,27 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     private snackBar: MatSnackBar,
     private zone: NgZone,
     public formsStateService: FormsStateService,
-  ) {
-    super();
-  }
+  ) { }
 
   ngOnInit() {
-    super.ngOnInit();
 
-    this.editRoutingService.isExpanded$(this.configTemp.index, this.configTemp.entityGuid)
-      .subscribe(this.open.set);
-
-    this.configTemp.focused$
+    this.config.focused$
       .subscribe(this.focused.set);
-
   }
 
   ngAfterViewInit() {
-    this.subscriptions.add(
-      this.configTemp.adam.getConfig$().subscribe(adamConfig => {
-        const disabled = adamConfig?.disabled ?? true;
-        if (this.adamDisabled() !== disabled) {
-          this.adamDisabled.set(disabled);
-        }
-      })
-    );
+    this.config.adam.getConfig$().subscribe(adamConfig => {
+      const disabled = adamConfig?.disabled ?? true;
+      if (this.adamDisabled() !== disabled) {
+        this.adamDisabled.set(disabled);
+      }
+    })
 
-    const componentTag = `field-${this.configTemp.inputType}`;
+    const componentTag = `field-${this.config.inputType}`;
     consoleLogEditForm('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
-      this.configTemp,
-      this.groupTemp,
+      this.config,
+      this.group,
       this.previewContainerRef,
       componentTag,
       this.formConfig,
@@ -171,15 +161,14 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     consoleLogEditForm('ExpandableWrapper destroyed');
     this.connectorCreator.destroy();
     this.dropzoneDraggingHelper.detach();
-    super.ngOnDestroy();
   }
 
   expandDialog() {
-    this.editRoutingService.expand(true, this.configTemp.index, this.configTemp.entityGuid);
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.configTemp.index, this.configTemp.entityGuid);
+    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 
   saveAll(close: boolean) {

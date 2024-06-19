@@ -70,7 +70,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected controlStatusTemp = this.fieldState.controlStatus;
   protected basicsTemp = this.fieldState.basics;
 
-  open = signal(false);
+  open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
+
   viewModel = signal<HyperlinkDefaultExpandableViewModel>(null);
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
@@ -104,10 +105,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     super.ngOnInit();
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
-      .subscribe(this.open.set);
-
-    const settings$ = this.settings$.pipe(
+    const settings$ = this.fieldState.settings$.pipe(
       map(settings => ({
         _buttonAdam: settings.Buttons.includes('adam'),
         _buttonPage: settings.Buttons.includes('page'),

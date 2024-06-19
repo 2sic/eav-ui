@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
@@ -24,6 +24,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -59,9 +60,15 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
   ]
 })
 export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
-  @Input() config: FieldConfigSet;
-  @Input() group: UntypedFormGroup;
   @Output() openUpload = new EventEmitter<null>();
+
+  protected fieldState = inject(FieldState);
+
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
+
+
+  // expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   viewModel$: Observable<AdamBrowserViewModel>;
 

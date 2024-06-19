@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
@@ -22,6 +22,7 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: 'app-translate-menu',
@@ -42,9 +43,12 @@ import { FlexModule } from '@angular/flex-layout/flex';
   ],
 })
 export class TranslateMenuComponent implements OnInit {
-  @Input() config: FieldConfigSet;
-  @Input() group: UntypedFormGroup;
   @Input() hideTranslateButton: boolean;
+
+  protected fieldState = inject(FieldState);
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
+
 
   TranslationLinks = TranslationLinks;
   viewModel$: Observable<TranslateMenuViewModel>;

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,6 +9,7 @@ import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsServi
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHelper } from './connector.helper';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
     selector: 'app-connector',
@@ -19,8 +20,10 @@ import { ConnectorHelper } from './connector.helper';
 export class ConnectorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: UntypedFormGroup;
+  protected fieldState = inject(FieldState);
+
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
 
   private connectorCreator: ConnectorHelper;
 

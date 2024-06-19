@@ -1,8 +1,6 @@
-@if (viewModel | async; as vm) {
-  @if (vm.loading) {
-    <mat-spinner color="accent"></mat-spinner>
-  }
-  @if (!vm.loading && vm.isExpanded) {
-    <app-connector [config]="config" [group]="group"></app-connector>
-  }
+@if (loading()) {
+<mat-spinner color="accent"></mat-spinner>
+}
+@else if (isExpanded()) {
+<app-connector></app-connector>
 }

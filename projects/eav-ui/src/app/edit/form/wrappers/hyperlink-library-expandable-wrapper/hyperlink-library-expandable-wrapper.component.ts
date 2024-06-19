@@ -49,18 +49,19 @@ import { FieldState } from '../../builder/fields-builder/field-state';
   ],
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class HyperlinkLibraryExpandableWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
   protected fieldState = inject(FieldState);
 
-  protected configTemp = this.fieldState.config;
-  protected controlStatusTemp = this.fieldState.controlStatus;
-  protected basicsTemp = this.fieldState.basics;
+  protected config = this.fieldState.config;
+  protected controlStatus = this.fieldState.controlStatus;
+  protected basics = this.fieldState.basics;
 
-  open: WritableSignal<boolean> = signal(false);
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+
   viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
@@ -71,15 +72,9 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
     private featuresService: FeaturesService,
-  ) {
-    super();
-  }
+  ) { }
 
   ngOnInit() {
-    super.ngOnInit();
-
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
-      .subscribe(this.open.set);
 
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
@@ -106,17 +101,15 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.subscriptions.add(
-      this.config.adam.items$.subscribe(items => {
-        this.adamItems$.next(items);
-      })
-    );
+
+    this.config.adam.items$.subscribe(items => {
+      this.adamItems$.next(items);
+    })
   }
 
   ngOnDestroy() {
     this.dropzoneDraggingHelper.detach();
     this.adamItems$.complete();
-    super.ngOnDestroy();
   }
 
   calculateBottomPixels() {

@@ -12,6 +12,7 @@ import { EditParams } from '../../edit-matcher.models';
 import { UrlHelpers } from '../helpers';
 import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class EditRoutingService extends BaseComponent implements OnDestroy {
@@ -56,6 +57,13 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
       distinctUntilChanged()
     );
   }
+
+  isExpandedSignal(fieldId: number, entityGuid: string): Signal<boolean> {
+    return toSignal(this.isExpanded$(fieldId, entityGuid));
+  }
+
+
+
   /** Fires when child form is closed and has a result, new entity was added */
   childFormResult(fieldId: number, entityGuid: string) {
     return this.childFormResult$.pipe(

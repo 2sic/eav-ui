@@ -18,6 +18,4 @@ export class EmptyMessageComponent {
   protected fieldState = inject(FieldState);
   protected basics = this.fieldState.basics;
 
-  @Input() config: FieldConfigSet;
-
 }
