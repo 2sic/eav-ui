@@ -38,6 +38,8 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
 
   // protected settingsTemp = this.fieldState.settings;
   protected basicsTemp = this.fieldState.basics;
+  protected controlTemp = this.fieldState.control;
+
 
   private fieldMask: FieldMask;
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
@@ -59,7 +61,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
         this.fieldMask?.destroy();
         this.fieldMask = new FieldMask(
           autoGenerateMask,
-          this.group.controls,
+          this.groupTemp.controls,
           (newValue) => { this.onSourcesChanged(newValue); },
           // remove slashes which could look like path-parts
           (key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value,
@@ -74,7 +76,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
 
     // clean on value change
     this.subscriptions.add(
-      this.control.valueChanges.subscribe(() => {
+      this.controlTemp.valueChanges.subscribe(() => {
         this.clean(false);
       })
     );
@@ -86,7 +88,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
   }
 
   private onSourcesChanged(newValue: string) {
-    const value = this.control.value;
+    const value = this.controlTemp.value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
     if (value && value !== this.lastAutoCopy) { return; }
 
@@ -94,11 +96,11 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
     if (!cleaned) { return; }
     this.lastAutoCopy = cleaned;
     if (value === cleaned) { return; }
-    ControlHelpers.patchControlValue(this.control, cleaned);
+    ControlHelpers.patchControlValue(this.controlTemp, cleaned);
   }
 
   clean(trimEnd: boolean) {
-    const value = this.control.value;
+    const value = this.controlTemp.value;
     const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.settings$.value.AllowSlashes, trimEnd);
     if (value === cleaned) { return; }
     ControlHelpers.patchControlValue(this.control, cleaned);
