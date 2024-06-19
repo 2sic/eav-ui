@@ -39,7 +39,7 @@ export class StringDefaultComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected rowCount = computed(() => this.settings().RowCount);
+  protected rowCount = computed(() => this.settings().RowCount, SignalHelpers.numberEquals);
   protected inputFontFamily = computed(() => this.settings().InputFontFamily, SignalHelpers.stringEquals);
 
   constructor() {

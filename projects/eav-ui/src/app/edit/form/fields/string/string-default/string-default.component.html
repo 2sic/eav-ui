@@ -1,23 +1,23 @@
 
-  <!-- <h1>{{settings().InputFontFamily}}</h1> -->
-  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field"
-    [ngClass]="{'textarea-field': rowCount() > 1}">
-    @if (rowCount() <= 1) {
-      <input matInput class="eav-translate-on-dblclick"
-        [formControlName]="config.fieldName"
-        [placeholder]="basics().placeholder"
-        [required]="basics().required"
-        [ngStyle]="{ 'font-family': inputFontFamily() }">
-    }
-    @if (rowCount() > 1) {
-      <textarea matInput class="eav-translate-on-dblclick"
-        [formControlName]="config.fieldName"
-        [rows]="rowCount()"
-        [placeholder]="basics().placeholder"
-        [required]="basics().required"
-        [ngStyle]="{ 'font-family': inputFontFamily() }">
-      </textarea>
-    }
-    <mat-label>{{ basics().label }}</mat-label>
-  </mat-form-field>
-  <app-field-helper-text></app-field-helper-text>
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field" [ngClass]="{'textarea-field': rowCount() > 1}">
+  @if (rowCount() <= 1) {
+    <!-- Single Line field -->
+    <input matInput class="eav-translate-on-dblclick"
+      [formControlName]="config.fieldName"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required"
+      [ngStyle]="{ 'font-family': inputFontFamily() }">
+  }
+  @else {
+    <!-- Multi Line field -->
+    <textarea matInput class="eav-translate-on-dblclick"
+      [formControlName]="config.fieldName"
+      [rows]="rowCount()"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required"
+      [ngStyle]="{ 'font-family': inputFontFamily() }">
+    </textarea>
+  }
+  <mat-label>{{ basics().label }}</mat-label>
+</mat-form-field>
+<app-field-helper-text></app-field-helper-text>
