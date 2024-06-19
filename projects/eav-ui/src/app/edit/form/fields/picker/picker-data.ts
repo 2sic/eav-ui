@@ -26,8 +26,6 @@ export class PickerData extends ServiceBase {
     public state: StateAdapter,
     public source: DataAdapter,
     private translate: TranslateService,
-    /** the injector is needed so that signals can destroy when they are not needed any more */
-    // injector: Injector,
   ) {
     super(new EavLogger('PickerData', logThis));
 
