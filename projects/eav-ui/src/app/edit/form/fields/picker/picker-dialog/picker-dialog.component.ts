@@ -1,5 +1,4 @@
 import { Component, OnDestroy, computed } from '@angular/core';
-import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,12 +32,12 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     TranslateModule,
   ],
 })
-export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy, FieldControlWithSignals {
+export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy {
 
   protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode(), SignalHelpers.boolEquals);
 
   protected showAddNewEntityButtonInDialog = computed(() => { 
-    const settings = this.pickerData().state.settings();
+    const settings = this.fieldState.settings();
     const showAddNew = !this.isInFreeTextMode()
       && settings.EnableCreate
       && settings.CreateTypes

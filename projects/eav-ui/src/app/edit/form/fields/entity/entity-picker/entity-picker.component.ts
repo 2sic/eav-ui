@@ -48,7 +48,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
 
     const state = this.stateRaw.attachToComponent(this);
 
-    const dataSourceType = this.settings$.value.DataSourceType;
+    const dataSourceType = this.fieldState.settings().DataSourceType;
     this.log.a(`createPickerAdapters: dataSourceType: '${dataSourceType}'`);
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
@@ -56,7 +56,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       source = this.entitySourceAdapterRaw.setupFromComponent(this, state, false);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-      this.log.a('specs', ['isStringQuery', this.isStringQuery, 'state', state, 'control', this.control, 'config', this.config, 'settings$', this.settings$])
       source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
     } else {
       // not configured yet, should get some empty-not-configured source

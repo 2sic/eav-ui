@@ -1,6 +1,5 @@
 import { Component, OnDestroy, computed } from '@angular/core';
 import { EditRoutingService } from '../../../../shared/services';
-import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
@@ -15,7 +14,6 @@ import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
@@ -41,12 +39,12 @@ const nameOfThis = 'PickerPreviewComponent';
     TranslateModule,
   ],
 })
-export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy, FieldControlWithSignals {
+export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy {
 
   isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
 
   mySettings = computed(() => {
-    const settings = this.pickerData().state.settings();
+    const settings = this.fieldState.settings();
     // const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
     const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
     const showGoToListDialogButton = settings.AllowMultiValue;
@@ -73,7 +71,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent implements O
   }
 
   expandDialog() {
-    const config = this.config();
+    const config = this.fieldState.config;
     if (config.initialDisabled) { return; }
     this.editRoutingService.expand(true, config.index, config.entityGuid);
   }

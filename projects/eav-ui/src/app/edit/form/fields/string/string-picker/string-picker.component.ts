@@ -54,14 +54,14 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
 
     const state = this.stateAdapterStringRaw.attachToComponent(this);
 
-    const dataSourceType = this.settings$.value.DataSourceType;
+    const dataSourceType = this.fieldState.settings().DataSourceType;
     const isEmpty = !dataSourceType;
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
       source = this.sourceAdapterStringRaw.setupString(
-        state.settings,
-        this.config,
-        this.group,
+        this.fieldState.settings,
+        this.fieldState.config,
+        this.fieldState.group,
         (props: DeleteEntityProps) => state.doAfterDelete(props),
         isEmpty,
       );

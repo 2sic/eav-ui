@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed, input } from '@angular/core';
+import { Component, OnDestroy, computed, inject, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { PickerData } from './picker-data';
@@ -6,6 +6,7 @@ import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder
 import { FieldControlWithSignals } from '../../builder/fields-builder/field.model';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 const logThis = false;
 const nameOfThis = 'PickerPartBaseComponent';
@@ -17,7 +18,10 @@ const nameOfThis = 'PickerPartBaseComponent';
   selector: 'app-picker-part-base',
   template: '',
 })
-export class PickerPartBaseComponent extends BaseComponent implements OnDestroy, FieldControlWithSignals {
+export class PickerPartBaseComponent extends BaseComponent implements OnDestroy {
+
+  /** Entire Field State */
+  fieldState = inject(FieldState);
 
   /** Picker Data Bundle with Source and state etc. */
   pickerData = input.required<PickerData>();

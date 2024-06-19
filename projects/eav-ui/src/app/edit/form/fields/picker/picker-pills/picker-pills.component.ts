@@ -26,7 +26,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
 })
 export class PickerPillsComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  enableTextEntry = computed(() => this.pickerData().state.settings().EnableTextEntry, SignalHelpers.boolEquals);
+  enableTextEntry = computed(() => this.fieldState.settings().EnableTextEntry, SignalHelpers.boolEquals);
 
   itemCount = computed(() => this.selectedItems().length, SignalHelpers.numberEquals);
 
@@ -39,7 +39,7 @@ export class PickerPillsComponent extends PickerPartBaseComponent implements OnD
   }
 
   expandDialog() {
-    const config = this.config();
+    const config = this.fieldState.config;
     if (config.initialDisabled) return;
     this.editRoutingService.expand(true, config.index, config.entityGuid);
   }

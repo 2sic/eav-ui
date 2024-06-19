@@ -7,6 +7,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
 import { PickerProviders } from './picker-providers.constant';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 const logThis = false;
 
@@ -24,7 +25,7 @@ const logThis = false;
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
-  // protected fieldState = inject(FieldState);
+  public fieldState = inject(FieldState);
 
   // protected group = this.fieldState.group;
   // protected config = this.fieldState.config;

@@ -38,7 +38,7 @@ const nameOfThis = 'PickerListComponent';
 export class PickerListComponent extends PickerPartBaseComponent implements OnDestroy {
 
   mySettings = computed(() => {
-    const settings = this.pickerData().state.settings();
+    const settings = this.fieldState.settings();
     return {
       allowMultiValue: settings.AllowMultiValue,
       enableEdit: settings.EnableEdit,

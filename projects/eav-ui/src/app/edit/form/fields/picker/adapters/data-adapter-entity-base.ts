@@ -75,14 +75,15 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     if (!this.log.enabled)
       this.log.inherit(component.log);
 
+    const settings = component.fieldState.settings
     this.dataSource = useEmpty
-      ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(state.settings)
-      : this.dataSourceEntityOrQuery.setup(state.settings);
+      ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(settings)
+      : this.dataSourceEntityOrQuery.setup(settings);
 
-    this.settings = state.settings;
-    this.config = component.config;
+    this.settings = settings;
+    this.config = component.fieldState.config;
     // this.group = component.group;
-    this.control = component.control;
+    this.control = component.fieldState.control;
     super.setup(state.doAfterDelete);
     return this;
   }

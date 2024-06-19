@@ -30,7 +30,7 @@ export class PickerTextComponent extends PickerPartBaseComponent implements OnDe
   filteredEntities: PickerItem[] = [];
 
   useMultiLine = computed(() => {
-    const settings = this.pickerData().state.settings();
+    const settings = this.fieldState.settings();
     const separator = settings.Separator;
     const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
     return isSeparatorNewLine;

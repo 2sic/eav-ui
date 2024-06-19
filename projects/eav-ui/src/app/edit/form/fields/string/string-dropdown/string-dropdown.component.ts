@@ -33,7 +33,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   private translate = inject(TranslateService);
   private pickerStringSourceAdapterRaw = inject(DataAdapterString);
   private pickerStringStateAdapterRaw = inject(StateAdapterString);
-  private injector = inject(Injector);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -45,9 +44,9 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
     const source = this.pickerStringSourceAdapterRaw.setupString(
-      state.settings,
-      this.config,
-      this.group,
+      this.fieldState.settings,
+      this.fieldState.config,
+      this.fieldState.group,
       (props: DeleteEntityProps) => state.doAfterDelete(props),
       false,
     );
@@ -58,7 +57,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       state,
       source,
       this.translate,
-      // this.injector,
     );
   }
 }
