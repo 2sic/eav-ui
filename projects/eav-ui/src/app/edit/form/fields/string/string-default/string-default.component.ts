@@ -1,18 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Component, computed, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDefaultLogic } from './string-default-logic';
-import { StringDefaultViewModel } from './string-default.models';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatInputModule } from '@angular/material/input';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { NgClass, NgStyle } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-config-set.model';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.StringDefault,
@@ -28,44 +26,24 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     MatInputModule,
     NgStyle,
     FieldHelperTextComponent,
-    AsyncPipe,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class StringDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  viewModel: Observable<StringDefaultViewModel>;
+export class StringDefaultComponent {
+
+  protected fieldState = inject(FieldState);
+
+  protected group = this.fieldState.group;
+  protected config = this.fieldState.config;
+
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+
+  protected rowCount = computed(() => this.settings().RowCount);
+  protected inputFontFamily = computed(() => this.settings().InputFontFamily, SignalHelpers.stringEquals);
 
   constructor() {
-    super();
     StringDefaultLogic.importMe();
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-    const settings$ = this.settings$.pipe(
-      map(settings => ({
-        InputFontFamily: settings.InputFontFamily,
-        RowCount: settings.RowCount,
-      })),
-      distinctUntilChanged(RxHelpers.objectsEqual),
-    );
-
-    this.viewModel = combineLatest([
-      combineLatest([settings$]),
-    ]).pipe(
-      map(([
-        [settings],
-      ]) => {
-        const viewModel: StringDefaultViewModel = {
-          inputFontFamily: settings.InputFontFamily,
-          rowCount: settings.RowCount,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
 }

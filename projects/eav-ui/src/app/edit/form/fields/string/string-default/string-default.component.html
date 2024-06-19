@@ -1,16 +1,23 @@
-@if (viewModel | async; as vm) {
+
+  <!-- <h1>{{settings().InputFontFamily}}</h1> -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field"
-    [ngClass]="{'textarea-field': vm.rowCount > 1}">
-    @if (vm.rowCount <= 1) {
-      <input matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [placeholder]="basics().placeholder"
-        [required]="basics().required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
+    [ngClass]="{'textarea-field': rowCount() > 1}">
+    @if (rowCount() <= 1) {
+      <input matInput class="eav-translate-on-dblclick"
+        [formControlName]="config.fieldName"
+        [placeholder]="basics().placeholder"
+        [required]="basics().required"
+        [ngStyle]="{ 'font-family': inputFontFamily() }">
     }
-    @if (vm.rowCount > 1) {
-      <textarea matInput class="eav-translate-on-dblclick" [formControlName]="config.fieldName" [rows]="vm.rowCount"
-        [placeholder]="basics().placeholder" [required]="basics().required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
+    @if (rowCount() > 1) {
+      <textarea matInput class="eav-translate-on-dblclick"
+        [formControlName]="config.fieldName"
+        [rows]="rowCount()"
+        [placeholder]="basics().placeholder"
+        [required]="basics().required"
+        [ngStyle]="{ 'font-family': inputFontFamily() }">
       </textarea>
     }
     <mat-label>{{ basics().label }}</mat-label>
   </mat-form-field>
   <app-field-helper-text></app-field-helper-text>
-}
