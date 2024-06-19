@@ -4,6 +4,7 @@ import { FieldConstants } from '../../../shared/models';
 import { PickerData } from '../../fields/picker/picker-data';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
+import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 
 /**
  * Experimental 2dm.
@@ -19,6 +20,7 @@ export class FieldState {
     public control: AbstractControl,
     public settings$: Observable<FieldSettings>,
     public settings: Signal<FieldSettings>,
+    public basics: Signal<BasicControlSettings>,
   ) { }
 }
 

@@ -1,4 +1,4 @@
-import { ComponentRef, Directive, EnvironmentInjector, Injector, Input, OnDestroy, OnInit, Type, ViewContainerRef, createEnvironmentInjector, inject, runInInjectionContext, Signal } from '@angular/core';
+import { ComponentRef, Directive, EnvironmentInjector, Injector, Input, OnDestroy, OnInit, Type, ViewContainerRef, createEnvironmentInjector, inject, runInInjectionContext, Signal, computed } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -15,6 +15,8 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { InputComponents } from './input-components.constant';
 import { FieldSettings } from 'projects/edit-types';
+import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
@@ -168,6 +170,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     runInInjectionContext(this.injector, () => {
       settings = this.fieldsSettingsService.getFieldSettingsSignal(fieldName);
     });
+    const basics = computed(() => BasicControlSettings.fromSettings(settings()), { equal: RxHelpers.objectsEqual });
 
     const fieldState = new FieldState(
       fieldName,
@@ -177,6 +180,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       this.group.controls[fieldName],
       settings$,
       settings,
+      basics,
     );
 
     const providers = [
