@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../../shared/helpers/console-log-angular.helper';
@@ -10,6 +10,7 @@ import { StringWysiwygLogic } from './string-wysiwyg-logic';
 import { AsyncPipe } from '@angular/common';
 import { ConnectorComponent } from '../../../shared/connector/connector.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.ExternalWebComponent,
@@ -22,8 +23,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     AsyncPipe,
   ],
 })
-export class ExternalWebComponentComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
+export class ExternalWebComponentComponent  {
   viewModel: Observable<ExternalWebComponentViewModel>;
+
+  protected fieldState = inject(FieldState);
+
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
 
   private loading$: BehaviorSubject<boolean>;
 
@@ -31,13 +37,11 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
     private scriptsLoaderService: ScriptsLoaderService,
     private editRoutingService: EditRoutingService,
   ) {
-    super();
     StringWysiwygLogic.importMe();
     CustomGpsLogic.importMe();
   }
 
   ngOnInit() {
-    super.ngOnInit();
     this.loading$ = new BehaviorSubject(true);
     const isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
@@ -59,7 +63,6 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
 
   ngOnDestroy() {
     this.loading$.complete();
-    super.ngOnDestroy();
   }
 
   private loadAssets() {

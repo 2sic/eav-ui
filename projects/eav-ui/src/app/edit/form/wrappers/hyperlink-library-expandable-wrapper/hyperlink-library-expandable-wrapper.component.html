@@ -52,18 +52,18 @@
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
       'mat-caption' : vm.itemsNumber > 0,
       'mat-empty' : vm.itemsNumber === 0,
-      'mat-error' : controlStatus().invalid && !configTemp.initialDisabled,
-      'color__primary' : !controlStatus().invalid && !configTemp.initialDisabled,
+      'mat-error' : controlStatusTemp().invalid && !configTemp.initialDisabled,
+      'color__primary' : !controlStatusTemp().invalid && !configTemp.initialDisabled,
       'color__label-disabled' : configTemp.initialDisabled
       }">
       {{basicsTemp().labelWithRequired}}
     </mat-label>
     <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
       [ngClass]="{
-      'c-ew__preview--invalid': controlStatus().invalid,
+      'c-ew__preview--invalid': controlStatusTemp().invalid,
       'c-ew__preview--disabled': configTemp.initialDisabled
       }">
-      <div [ngClass]="controlStatus().value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <div [ngClass]="controlStatusTemp().value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
           @for (item of vm.items; track trackByFn($index, item)) {
             <!-- folders -->

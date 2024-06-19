@@ -1,9 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, OnInit, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { share } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
@@ -27,7 +26,8 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, JsonPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { FieldState } from '../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../shared/models';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -58,19 +58,28 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
+  protected fieldState = inject(FieldState);
+  protected configTemp = this.fieldState.config;
+  protected groupTemp = this.fieldState.group;
+
+  protected basicsTemp = this.fieldState.basics;
+  protected settingsTemp = this.fieldState.settings;
+  protected controlStatusTemp = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+
+
   open = signal(false);
   focused = signal(false);
 
   adamDisabled = signal<boolean>(true);
 
   previewHeight = computed(() => {
-    const settings = this.settings();
+    const settings = this.settingsTemp();
     const previewHeight: PreviewHeight = {
       minHeight: '36px',
       maxHeight: '50vh',
     };
 
-    if (this.config.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
+    if (this.configTemp.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
       return previewHeight;
 
     let rows = parseInt(settings.InlineInitialHeight, 10);
@@ -113,17 +122,17 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   ngOnInit() {
     super.ngOnInit();
 
-    this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
+    this.editRoutingService.isExpanded$(this.configTemp.index, this.configTemp.entityGuid)
       .subscribe(this.open.set);
 
-    this.config.focused$
+    this.configTemp.focused$
       .subscribe(this.focused.set);
 
   }
 
   ngAfterViewInit() {
     this.subscriptions.add(
-      this.config.adam.getConfig$().subscribe(adamConfig => {
+      this.configTemp.adam.getConfig$().subscribe(adamConfig => {
         const disabled = adamConfig?.disabled ?? true;
         if (this.adamDisabled() !== disabled) {
           this.adamDisabled.set(disabled);
@@ -131,11 +140,11 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
       })
     );
 
-    const componentTag = `field-${this.config.inputType}`;
+    const componentTag = `field-${this.configTemp.inputType}`;
     consoleLogEditForm('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
-      this.config,
-      this.group,
+      this.configTemp,
+      this.groupTemp,
       this.previewContainerRef,
       componentTag,
       this.formConfig,
@@ -166,11 +175,11 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   }
 
   expandDialog() {
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
+    this.editRoutingService.expand(true, this.configTemp.index, this.configTemp.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+    this.editRoutingService.expand(false, this.configTemp.index, this.configTemp.entityGuid);
   }
 
   saveAll(close: boolean) {

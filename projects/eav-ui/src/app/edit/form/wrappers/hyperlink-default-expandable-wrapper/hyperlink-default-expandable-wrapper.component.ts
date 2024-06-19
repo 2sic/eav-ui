@@ -67,7 +67,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected fieldState = inject(FieldState);
 
   protected configTemp = this.fieldState.config;
-  // protected controlStatusTemp = this.fieldState.controlStatus;
+  protected controlStatusTemp = this.fieldState.controlStatus;
   protected basicsTemp = this.fieldState.basics;
 
   open = signal(false);

@@ -6,7 +6,7 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormLanguage } from '../../../shared/models/form-languages.model';
 
 @Component({
@@ -23,6 +23,7 @@ import { FormLanguage } from '../../../shared/models/form-languages.model';
 export class LocalizationWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
+
 
   language = signal<FormLanguage>(null);
   hideTranslateButton: boolean = true;

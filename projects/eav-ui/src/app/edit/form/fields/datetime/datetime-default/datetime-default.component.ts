@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
@@ -7,7 +7,6 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
@@ -17,6 +16,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../../shared/models';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.DateTimeDefault,
@@ -38,20 +39,24 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
 
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
+export class DatetimeDefaultComponent {
 
   protected fieldState = inject(FieldState);
 
-  protected groupTemp = this.fieldState.group;
-  // protected controlStatusTemp = this.fieldState.controlStatus;
-  protected basicsTemp = this.fieldState.basics;
+  protected group = this.fieldState.group;
+  protected control = this.fieldState.control;
+
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+
+  protected useTimePicker = computed(() => this.settings().UseTimePicker, SignalHelpers.boolEquals);
 
   constructor(
     private translate: TranslateService,
     private matDayjsDateAdapter: MatDayjsDateAdapter,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
-    super();
     dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);

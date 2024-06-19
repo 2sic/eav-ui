@@ -1,10 +1,11 @@
-
-<div [formGroup]="groupTemp">
+<div [formGroup]="group">
   <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
-    <mat-slide-toggle [checked]="checkedState()" [disabled]="controlStatus().disabled"
+    <mat-slide-toggle
+      [checked]="checkedState()"
+      [disabled]="controlStatus().disabled"
       [ngClass]="!controlStatus().value ? 'changeable-label-mat-slide-toggle' : ''" />
     <span [ngClass]="!controlStatus().value ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">
-      {{ changedLabel() ?? basicsTemp().label }}
+      {{ changedLabel() ?? basics().label }}
     </span>
   </div>
   <app-field-helper-text [disableError]="true"></app-field-helper-text>

@@ -42,9 +42,11 @@ export class FieldInjectorService {
     // Control and Control Status
     const control = this.group.controls[fieldName];
     let controlStatusChangeSignal: Signal<ControlStatus<unknown>>;
+    if (fieldName === 'Icon')
+      console.log('2dg - FieldInjectorService.getInjectors - control:', control);
     runInInjectionContext(this.injector, () => {
       controlStatusChangeSignal = toSignal(control.valueChanges.pipe(
-        mapUntilObjChanged(ctrl => controlToControlStatus(ctrl)
+        mapUntilObjChanged(_ => controlToControlStatus(control)
       )), { initialValue: controlToControlStatus(control) });
     });
 
@@ -58,6 +60,7 @@ export class FieldInjectorService {
       settings,
       basics,
       controlStatusChangeSignal,
+      this.injector
     );
 
     const providers = [

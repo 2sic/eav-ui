@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -11,6 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../../shared/models';
 
 @Component({
   selector: InputTypeConstants.BooleanTristate,
@@ -27,27 +28,28 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> implements OnInit, OnDestroy {
+export class BooleanTristateComponent {
 
   protected fieldState = inject(FieldState);
 
-  protected groupTemp = this.fieldState.group;
-  // protected controlStatusTemp = this.fieldState.controlStatus;
+  protected group = this.fieldState.group;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean | ''>> ;
+  protected control = this.fieldState.control;
 
-  protected settingsTemp = this.fieldState.settings;
-  protected basicsTemp = this.fieldState.basics;
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
 
-  changedLabel = computed(() => this.settingsTemp()._label)
+
+  changedLabel = computed(() => this.settings()._label)
   checkedState = computed(() => {
     const value = this.controlStatus().value;
-    const reverseToggle = this.settingsTemp().ReverseToggle;
+    const reverseToggle = this.settings().ReverseToggle;
     return reverseToggle
       ? (value === true ? false : value === false ? true : value)
       : (value === '' ? null : value);
   });
 
   constructor() {
-    super();
     BooleanTristateLogic.importMe();
   }
 

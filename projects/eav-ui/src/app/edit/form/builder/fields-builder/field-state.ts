@@ -1,10 +1,12 @@
 import { Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { Signal } from '@angular/core';
+import { Injector, runInInjectionContext, Signal } from '@angular/core';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
-import { ControlStatus } from '../../../shared/models';
+import { ControlStatus, controlToControlStatus } from '../../../shared/models';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -37,5 +39,20 @@ export class FieldState {
     public basics: Signal<BasicControlSettings>,
 
     public controlStatus: Signal<ControlStatus<unknown>>,
+
+    private injector: Injector,
   ) { }
+
+  // public getControlStatus<T>(): Signal<ControlStatus<T>> {
+  //   let controlStatusChangeSignal: Signal<ControlStatus<unknown>>;
+  //   if (this.name === 'Icon')
+  //     console.log('2dg - FieldInjectorService.getInjectors - control:', this.control);
+  //   runInInjectionContext(this.injector, () => {
+  //     controlStatusChangeSignal = toSignal(this.control.valueChanges.pipe(
+  //       mapUntilObjChanged(_ => controlToControlStatus(this.control)
+  //     )), { initialValue: controlToControlStatus(this.control)});
+  //   });
+  //   return controlStatusChangeSignal as Signal<ControlStatus<T>>;
+  // }
+
 }

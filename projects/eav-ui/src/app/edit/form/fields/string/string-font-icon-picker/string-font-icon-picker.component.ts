@@ -18,6 +18,7 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { ControlStatus } from '../../../../shared/models';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,
@@ -38,18 +39,18 @@ import { ControlStatus } from '../../../../shared/models';
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class StringFontIconPickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
+export class StringFontIconPickerComponent {
 
   protected fieldState = inject(FieldState);
 
-  protected groupFileState = this.fieldState.group;
-  protected configFileState = this.fieldState.config;
-  protected controlStatusTemp = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected group = this.fieldState.group;
+  protected config = this.fieldState.config;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
 
-  protected settingsFileState = this.fieldState.settings;
-  protected basicsFileState = this.fieldState.basics;
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
 
-  protected previewCss = computed(() => this.settingsFileState().PreviewCss, SignalHelpers.stringEquals);
+  protected previewCss = computed(() => this.settings().PreviewCss, SignalHelpers.stringEquals);
 
   private iconOptions = signal<IconOption[]>([], { equal: RxHelpers.arraysEqual });
 
@@ -64,15 +65,12 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
   private injector = inject(Injector);
 
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
-    super();
     StringFontIconPickerLogic.importMe();
   }
 
   ngOnInit() {
-    super.ngOnInit();
-
     const fileLoadSettings = computed(() => {
-      const s = this.settingsFileState();
+      const s = this.settings();
       return {
         Files: s.Files,
         CssPrefix: s.CssPrefix,

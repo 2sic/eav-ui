@@ -1,12 +1,12 @@
-<mat-form-field [formGroup]="groupFileState" color="accent" class="eav-mat-form-field">
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
   <div class="icon-option">
     @if (controlStatus().value) {
-    <i class="icon-preview {{ previewCss() }} {{ controlStatus().value }}"></i>
+      <i class="icon-preview {{ previewCss() }} {{ controlStatus().value }}"></i>
     }
     <input matInput class="eav-translate-on-dblclick"
-      [formControlName]="configFileState.fieldName"
-      [placeholder]="basicsFileState().placeholder"
-      [required]="basicsFileState().required"
+      [formControlName]="config.fieldName"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required"
       [matAutocomplete]="auto">
   </div>
   <mat-autocomplete #auto="matAutocomplete" [hideSingleSelectionIndicator]="true">
@@ -20,6 +20,6 @@
       </mat-option>
     </cdk-virtual-scroll-viewport>
   </mat-autocomplete>
-  <mat-label>{{ basicsFileState().label }}</mat-label>
+  <mat-label>{{ basics().label }}</mat-label>
 </mat-form-field>
 <app-field-helper-text></app-field-helper-text>

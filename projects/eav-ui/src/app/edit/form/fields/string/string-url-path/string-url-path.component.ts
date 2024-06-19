@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.StringUrlPath,
@@ -29,6 +30,14 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringUrlPathComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
+
+  protected fieldState = inject(FieldState);
+
+  protected groupTemp = this.fieldState.group;
+  protected configTemp = this.fieldState.config;
+
+  // protected settingsTemp = this.fieldState.settings;
+  protected basicsTemp = this.fieldState.basics;
 
   private fieldMask: FieldMask;
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */

@@ -1,30 +1,30 @@
-@if (!settings().UseTimePicker) {
-<mat-form-field [formGroup]="groupTemp" color="accent" class="eav-mat-form-field">
+@if (!useTimePicker()) {
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
   <input matInput class="eav-translate-on-dblclick"
     [disabled]="controlStatus().disabled"
     [matDatepicker]="picker"
-    [placeholder]="basicsTemp().placeholder"
-    [required]="basicsTemp().required" [value]="controlStatus().value"
+    [placeholder]="basics().placeholder"
+    [required]="basics().required" [value]="controlStatus().value"
     (dateChange)="updateValue($event)">
   <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
   </mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
-  <mat-label>{{ basicsTemp().label }}</mat-label>
+  <mat-label>{{ basics().label }}</mat-label>
 </mat-form-field>
 }
 
-@if (settings().UseTimePicker) {
-<mat-form-field [formGroup]="groupTemp" color="accent" class="eav-mat-form-field">
+@if (useTimePicker()) {
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
   <input matInput class="eav-translate-on-dblclick"
     [disabled]="controlStatus().disabled"
     [owlDateTime]="owlPicker"
-    [placeholder]="basicsTemp().placeholder"
-    [required]="basicsTemp().required" [value]="controlStatus().value"
+    [placeholder]="basics().placeholder"
+    [required]="basics().required" [value]="controlStatus().value"
     (dateTimeChange)="updateValue($event)">
   <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" [tippy]="'Fields.DateTime.Open' | translate">
   </mat-datepicker-toggle>
   <owl-date-time #owlPicker></owl-date-time>
-  <mat-label>{{ basicsTemp().label }}</mat-label>
+  <mat-label>{{ basics().label }}</mat-label>
 </mat-form-field>
 }
 <app-field-helper-text></app-field-helper-text>
