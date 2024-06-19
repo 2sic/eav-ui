@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';

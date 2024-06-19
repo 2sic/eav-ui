@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
@@ -36,7 +36,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
   protected groupTemp = this.fieldState.group;
   protected configTemp = this.fieldState.config;
 
-  // protected settingsTemp = this.fieldState.settings;
+  protected settingsTemp = this.fieldState.settings;
   protected basicsTemp = this.fieldState.basics;
   protected controlTemp = this.fieldState.control;
 
@@ -54,7 +54,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
     super.ngOnInit();
 
     this.subscriptions.add(
-      this.settings$.pipe(
+      this.fieldState.settings$.pipe(
         map(settings => settings.AutoGenerateMask),
         distinctUntilChanged(),
       ).subscribe(autoGenerateMask => {
@@ -92,6 +92,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
     if (value && value !== this.lastAutoCopy) { return; }
 
+    // TODO::  this.settings$.value.AllowSlashes to signal, settings has no value or AllowSlashes
     const cleaned = UrlHelpers.stripNonUrlCharacters(newValue, this.settings$.value.AllowSlashes, true);
     if (!cleaned) { return; }
     this.lastAutoCopy = cleaned;
