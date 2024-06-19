@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDayJsDateTimeModule } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.DateTimeDefault,
@@ -38,6 +39,12 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
+
+  protected fieldState = inject(FieldState);
+
+  protected groupTemp = this.fieldState.group;
+  // protected controlStatusTemp = this.fieldState.controlStatus;
+  protected basicsTemp = this.fieldState.basics;
 
   constructor(
     private translate: TranslateService,

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, share } from 'rxjs';
@@ -24,6 +24,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
@@ -52,6 +53,12 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
+
+  protected fieldState = inject(FieldState);
+
+  protected configTemp = this.fieldState.config;
+  // protected controlStatusTemp = this.fieldState.controlStatus;
+  protected basicsTemp = this.fieldState.basics;
 
   open: WritableSignal<boolean> = signal(false);
   viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);

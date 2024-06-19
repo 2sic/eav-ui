@@ -8,7 +8,7 @@
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basicsTemp().label }}</span>
       </mat-card>
     </div>
     <div>
@@ -48,7 +48,7 @@
 <div class="c-hyperlink-default-field-preview">
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
         'c-ew__preview--disabled': controlStatus().disabled,
-        'c-ew__preview--last-in-group': config.isLastInGroup
+        'c-ew__preview--last-in-group': configTemp.isLastInGroup
         }">
     <!-- image / icon -->
     <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
@@ -75,9 +75,9 @@
               'mat-form-field-invalid': controlStatus().touchedAndInvalid
               }">
           <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
-            tippyPlacement="top" [placeholder]="basics().placeholder" (change)="setValue($event)"
+            tippyPlacement="top" [placeholder]="basicsTemp().placeholder" (change)="setValue($event)"
             [disabled]="controlStatus().disabled" (blur)="markAsTouched()" [value]="controlStatus().value"
-            (keyup)="setValue($event)" appPasteClipboardImage [config]="config" [elementType]="'input'">
+            (keyup)="setValue($event)" appPasteClipboardImage [config]="configTemp" [elementType]="'input'">
           @if (vm.buttonAdam || vm.buttonPage) {
           <div matTextSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
@@ -111,7 +111,7 @@
           </div>
           }
           <mat-label [ngClass]="{ 'mat-error' : controlStatus().touchedAndInvalid }">
-            {{basics().labelWithRequired}}
+            {{basicsTemp().labelWithRequired}}
           </mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->

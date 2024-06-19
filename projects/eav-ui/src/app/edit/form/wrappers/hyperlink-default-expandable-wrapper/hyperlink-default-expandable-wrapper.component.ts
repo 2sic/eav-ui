@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
@@ -30,6 +30,7 @@ import { NgClass, NgStyle } from '@angular/common';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -62,6 +63,12 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
+
+  protected fieldState = inject(FieldState);
+
+  protected configTemp = this.fieldState.config;
+  // protected controlStatusTemp = this.fieldState.controlStatus;
+  protected basicsTemp = this.fieldState.basics;
 
   open = signal(false);
   viewModel = signal<HyperlinkDefaultExpandableViewModel>(null);

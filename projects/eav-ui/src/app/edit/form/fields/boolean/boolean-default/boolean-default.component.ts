@@ -1,4 +1,4 @@
-import { Component, computed, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -10,6 +10,7 @@ import { NgClass } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.BooleanDefault,
@@ -27,10 +28,19 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanDefaultComponent extends BaseFieldComponent<boolean> implements OnInit, OnDestroy {
-  changedLabel = computed(() => this.settings()._label)
+
+  protected fieldState = inject(FieldState);
+
+  protected groupTemp = this.fieldState.group;
+  // protected controlStatusTemp = this.fieldState.controlStatus;
+
+  protected settingsTemp = this.fieldState.settings;
+  protected basicsTemp = this.fieldState.basics;
+
+  changedLabel = computed(() => this.settingsTemp()._label)
   checkedState = computed(() => {
     const value = this.controlStatus().value;
-    const reverseToggle = this.settings().ReverseToggle;
+    const reverseToggle = this.settingsTemp().ReverseToggle;
     return reverseToggle ? !value : value;
   })
 

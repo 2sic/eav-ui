@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
   selector: WrappersConstants.HiddenWrapper,
@@ -10,10 +9,12 @@ import { BaseFieldComponent } from '../../fields/base/base-field.component';
   standalone: true,
   imports: [],
 })
-export class HiddenWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
+export class HiddenWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
+  protected fieldState = inject(FieldState);
+  protected basics = this.fieldState.basics;
+
   constructor() {
-    super();
   }
 }
