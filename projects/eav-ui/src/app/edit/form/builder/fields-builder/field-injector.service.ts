@@ -6,6 +6,9 @@ import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettin
 import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
 import { FieldState } from './field-state';
 import { EntityFormStateService } from '../../entity-form-state.service';
+import { ControlStatus, controlToControlStatus } from '../../../shared/models';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 /**
  * This service creates custom injectors for each field.
@@ -36,15 +39,25 @@ export class FieldInjectorService {
     });
     const basics = computed(() => BasicControlSettings.fromSettings(settings()), { equal: RxHelpers.objectsEqual });
 
+    // Control and Control Status
+    const control = this.group.controls[fieldName];
+    let controlStatusChangeSignal: Signal<ControlStatus<unknown>>;
+    runInInjectionContext(this.injector, () => {
+      controlStatusChangeSignal = toSignal(control.valueChanges.pipe(
+        mapUntilObjChanged(ctrl => controlToControlStatus(ctrl)
+      )), { initialValue: controlToControlStatus(control) });
+    });
+
     const fieldState = new FieldState(
       fieldName,
       fieldConfig,
       controlConfig,
       this.group,
-      this.group.controls[fieldName],
+      control,
       settings$,
       settings,
       basics,
+      controlStatusChangeSignal,
     );
 
     const providers = [
