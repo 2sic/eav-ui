@@ -3,9 +3,6 @@ import { Preview } from '../../fields/hyperlink/hyperlink-default/hyperlink-defa
 
 export interface HyperlinkDefaultExpandableViewModel {
   preview: Preview;
-  buttonAdam: boolean;
-  buttonPage: boolean;
   adamItem: AdamItem;
-  enableImageConfiguration: boolean;
   showAdamSponsor: boolean;
 }

@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
 import { EntityReader } from '../../helpers';
 import { FormLanguageInStore } from '../../models';
 import { BaseDataService } from './base-data.service';
 import { FormLanguage } from '../../models/form-languages.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends BaseDataService<FormLanguageInStore> {
@@ -47,17 +48,17 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
    */
   getEntityReader$(formId: number) {
     return this.getLanguage$(formId)
-    .pipe(
-      map((language) => new EntityReader(language.current, language.primary)),
-      // Ensure we don't fire too often
-      distinctUntilChanged(),
-      // Ensure the EntityReader is reused and not recreated every time
-      shareReplay(1)
-    );
+      .pipe(
+        map((language) => new EntityReader(language.current, language.primary)),
+        // Ensure we don't fire too often
+        distinctUntilChanged(),
+        // Ensure the EntityReader is reused and not recreated every time
+        shareReplay(1)
+      );
   }
 
   getLanguage$(formId: number): Observable<FormLanguage> {
-    if (this.get$Cache[formId]) 
+    if (this.get$Cache[formId])
       return this.get$Cache[formId];
 
     return this.get$Cache[formId] = this.cache$.pipe(
@@ -75,6 +76,10 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
     );
   }
   private get$Cache: Record<number, Observable<FormLanguage>> = {};
+
+  getLanguageSignal(formId: number,): Signal<FormLanguage> {
+    return toSignal(this.getLanguage$(formId));
+  }
 
 
   /** Get hideHeader for the form. Fix for safari and mobile browsers */

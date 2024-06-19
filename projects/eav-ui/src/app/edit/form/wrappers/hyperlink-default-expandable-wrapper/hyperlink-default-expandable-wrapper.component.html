@@ -28,11 +28,13 @@
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(false)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()"
+              (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(true)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()"
+              (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
             </button>
@@ -78,14 +80,14 @@
             tippyPlacement="top" [placeholder]="basicsTemp().placeholder" (change)="setValue($event)"
             [disabled]="controlStatusTemp().disabled" (blur)="markAsTouched()" [value]="controlStatusTemp().value"
             (keyup)="setValue($event)" appPasteClipboardImage [config]="configTemp" [elementType]="'input'">
-          @if (vm.buttonAdam || vm.buttonPage) {
+          @if (buttonAdam() || buttonPage()) {
           <div matTextSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
                         'c-ew__preview-suffix-text--disabled': controlStatusTemp().disabled
                         }">
-              {{ vm.buttonAdam ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
+              {{ buttonAdam() ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
             </div>
-            @if (vm.buttonAdam) {
+            @if (buttonAdam()) {
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
               [disabled]="controlStatusTemp().disabled" (click)="expandDialog()">
@@ -98,10 +100,10 @@
               [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
               (click)="openImageConfiguration(vm.adamItem)">
               <mat-icon
-                [tippy]="(vm.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
+                [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
                 [tippyDisabled]="vm.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
             </button>
-            @if (vm.buttonPage) {
+            @if (buttonPage()) {
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
               [disabled]="controlStatusTemp().disabled" (click)="openPagePicker()">
@@ -131,7 +133,7 @@
       <div class="c__helper-wrapper">
         <app-field-helper-text class="c__helper-wrapper--left" [hyperlinkDefaultWrapperFix]="true">
         </app-field-helper-text>
-        @if (vm.buttonAdam) {
+        @if (buttonAdam()) {
         <div align="end" style="display: flex;" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
           fxShow.gt-xs>
           <span>{{

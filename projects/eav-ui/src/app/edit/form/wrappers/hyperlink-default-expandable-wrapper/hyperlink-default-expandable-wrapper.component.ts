@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
@@ -31,6 +31,7 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -70,6 +71,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected controlStatusTemp = this.fieldState.controlStatus;
   protected basicsTemp = this.fieldState.basics;
 
+  protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
+  protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
+  protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
+
   open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
 
   viewModel = signal<HyperlinkDefaultExpandableViewModel>(null);
@@ -105,14 +110,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     super.ngOnInit();
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
-    const settings$ = this.fieldState.settings$.pipe(
-      map(settings => ({
-        _buttonAdam: settings.Buttons.includes('adam'),
-        _buttonPage: settings.Buttons.includes('page'),
-        EnableImageConfiguration: settings.EnableImageConfiguration,
-      })),
-      distinctUntilChanged(RxHelpers.objectsEqual),
-    );
     const adamItem$ = combineLatest([this.controlStatus$, this.adamItems$]).pipe(
       map(([controlStatus, adamItems]) => {
         if (!controlStatus.value || !adamItems.length) { return; }
@@ -133,17 +130,14 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
 
     combineLatest([
-      combineLatest([this.preview$, settings$, adamItem$, showAdamSponsor$]),
+      combineLatest([this.preview$, adamItem$, showAdamSponsor$]),
     ]).pipe(
       map(([
-        [preview, settings, adamItem, showAdamSponsor],
+        [preview, adamItem, showAdamSponsor],
       ]) => {
         return {
           preview,
-          buttonAdam: settings._buttonAdam,
-          buttonPage: settings._buttonPage,
           adamItem,
-          enableImageConfiguration: settings.EnableImageConfiguration,
           showAdamSponsor,
         };
       }),

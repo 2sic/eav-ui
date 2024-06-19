@@ -39,8 +39,7 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.languageStore.getLanguage$(this.formConfig.config.formId)
-      .subscribe(this.language.set);
+    this.language.set(this.languageStore.getLanguage(this.formConfig.config.formId));
   }
 
   ngOnDestroy() {
