@@ -25,6 +25,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { FeatureDetailService } from 'projects/eav-ui/src/app/features/services/feature-detail.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -57,6 +58,9 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
     AsyncPipe,
     TranslateModule,
     ClickStopPropagationDirective,
+  ],
+  providers: [
+    FeatureDetailService
   ]
 })
 export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
