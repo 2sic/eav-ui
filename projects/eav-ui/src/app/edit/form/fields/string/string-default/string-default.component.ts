@@ -9,8 +9,8 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FieldState } from '../../../builder/fields-builder/field-config-set.model';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.StringDefault,
