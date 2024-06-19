@@ -16,12 +16,4 @@ export class CustomDefaultComponent extends BaseFieldComponent<null> implements 
   constructor() {
     super();
   }
-
-  ngOnInit() {
-    super.ngOnInit();
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
 }

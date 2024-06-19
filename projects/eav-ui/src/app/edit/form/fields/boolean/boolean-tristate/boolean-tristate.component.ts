@@ -6,7 +6,7 @@ import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
@@ -23,20 +23,11 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
     NgClass,
     ExtendedModule,
     FieldHelperTextComponent,
-    AsyncPipe,
-    JsonPipe,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> implements OnInit, OnDestroy {
   changedLabel = computed(() => this.settings()._label)
-
-  // checkedState = computed(() => {
-  //   const value = this.controlStatus().value;
-  //   const reverseToggle = this.settings().ReverseToggle;
-  //   return value === '' ? null : reverseToggle ? !value : value;
-  // }
-
   checkedState = computed(() => {
     const value = this.controlStatus().value;
     const reverseToggle = this.settings().ReverseToggle;
@@ -48,10 +39,6 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
   constructor() {
     super();
     BooleanTristateLogic.importMe();
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
   }
 
   updateValue(disabled: boolean) {
