@@ -1,28 +1,14 @@
 
-<app-picker-list
-  [pickerData]="pickerData()"
-  [config]="config()"
-  [group]="group()"
-  [controlConfig]="controlConfig()"
->
-</app-picker-list>
+<app-picker-list [pickerData]="pickerData()"></app-picker-list>
 @if (!isInFreeTextMode()) {
   <app-picker-search
     [pickerData]="pickerData()"
-    [config]="config()"
-    [group]="group()"
-    [controlConfig]="controlConfig()"
     [showSelectedItem]="false"
     [showItemEditButtons]="false">
   </app-picker-search>
 } 
 @else {
-  <app-picker-text
-    [pickerData]="pickerData()"
-    [config]="config()"
-    [group]="group()"
-    [controlConfig]="controlConfig()">
-  </app-picker-text>
+  <app-picker-text [pickerData]="pickerData()"></app-picker-text>
 }
 <app-field-helper-text></app-field-helper-text>
 <!-- add new entity -->

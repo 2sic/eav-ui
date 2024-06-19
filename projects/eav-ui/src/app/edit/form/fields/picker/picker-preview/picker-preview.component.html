@@ -1,11 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="start center">
   <div class="eav-mat-form-field">
     @if (isInFreeTextMode()) {
-      <app-picker-text
-        [pickerData]="pickerData()"
-        [config]="config()"
-        [group]="group()"
-        [controlConfig]="controlConfig()">
+      <app-picker-text [pickerData]="pickerData()">
         <app-picker-toggle-text freeTextButtons
           [pickerData]="pickerData()"
           [csDisabled]="controlStatus().disabled"
@@ -16,11 +12,7 @@
     }
     @else {
       @if (selectedItems().length > 1) {
-        <app-picker-pills
-          [pickerData]="pickerData()"
-          [config]="config()"
-          [group]="group()"
-          [controlConfig]="controlConfig()">
+        <app-picker-pills [pickerData]="pickerData()">
           <app-picker-toggle-text freeTextButtons
             [pickerData]="pickerData()"
             [csDisabled]="controlStatus().disabled"
@@ -32,9 +24,6 @@
       @else {
         <app-picker-search
           [pickerData]="pickerData()"
-          [config]="config()"
-          [group]="group()"
-          [controlConfig]="controlConfig()"
           [showSelectedItem]="true"
           [showItemEditButtons]="true">
           <app-picker-toggle-text freeTextButtons

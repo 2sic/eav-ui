@@ -7,6 +7,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
 import { PickerProviders } from './picker-providers.constant';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { FieldState } from '../../builder/fields-builder/field-state';
 
 const logThis = false;
@@ -22,14 +23,10 @@ const logThis = false;
     PickerDialogComponent,
   ],
 })
-export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
+export class PickerComponent extends /* BaseComponent /* */ BaseFieldComponent<string | string[]> /* */ implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   public fieldState = inject(FieldState);
-
-  // protected group = this.fieldState.group;
-  // protected config = this.fieldState.config;
-  // protected controlConfig = this.fieldState.controlConfig;
 
   pickerData: PickerData;
   isStringQuery: boolean;
@@ -49,6 +46,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.initAdaptersAndViewModel();
 
     const allowMultiValue = this.fieldState.settings().AllowMultiValue;
+    // TODO: 2DM CONTINUE HERE - problem with this.controlConfig always being {} and not having isPreview
+    // which seems to work, and the fieldSettings.controlConfig fails!
     const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview);
     this.showPreview = signal(showPreview);
   }
@@ -59,17 +58,18 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    */
   private initAdaptersAndViewModel(): void {
     this.log.a('initAdaptersAndViewModel');
+    const config = this.fieldState.config;
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
-    if (this.config.pickerData) {
+    if (config.pickerData) {
       this.log.a('createPickerAdapters: pickerData already exists, will reuse');
-      this.pickerData = this.config.pickerData;
+      this.pickerData = config.pickerData;
     } else {
       // this method is overridden in each variant as of now
       this.createPickerAdapters();
-      this.log.a('createPickerAdapters: config', [this.config]);
-      this.config.pickerData = this.pickerData;
+      this.log.a('createPickerAdapters: config', [config]);
+      config.pickerData = this.pickerData;
     }
   }
 
@@ -98,8 +98,9 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   private refreshOnChildClosed(): void {
     // this is used when new entity is created in child form it automatically adds it to the picker as selected item
+    const config = this.fieldState.config;
     this.subscriptions.add(
-      this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
+      this.editRoutingService.childFormResult(config.index, config.entityGuid).subscribe(result => {
         // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
         if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {

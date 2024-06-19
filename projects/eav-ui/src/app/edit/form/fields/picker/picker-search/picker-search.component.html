@@ -3,7 +3,7 @@
   2dm settings: {{ settings() | json }} <br>
 </div> -->
 <div>
-  <mat-form-field [formGroup]="group()" class="eav-mat-form-field" color="accent"
+  <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field" color="accent"
     [ngClass]="{ 'mat-form-field-invalid': controlStatus().touchedAndInvalid }"
     (click)="filterSelectionList()">
     <!-- The initial input showing the selected value - one only. As soon as there are more, this control won't show any more -->
@@ -24,7 +24,7 @@
     </button>
     @if (settings().enableEdit) {
       <button mat-icon-button matSuffix class="eav-suffix-button" [tippy]="'Fields.Picker.Edit' | translate"
-        [disabled]="controlStatus().disabled || config().initialDisabled" appClickStopPropagation
+        [disabled]="controlStatus().disabled || config.initialDisabled" appClickStopPropagation
         (click)="edit(selectedItem()?.value, selectedItem()?.id)">
         <mat-icon>edit</mat-icon>
       </button>

@@ -39,7 +39,7 @@
             @if (mySettings().enableEdit && !item.noEdit) {
               <button mat-icon-button class="eav-action-button"
                 [tippy]="'Fields.Picker.Edit' | translate"
-                [disabled]="config().initialDisabled"
+                [disabled]="config.initialDisabled"
                 appMousedownStopPropagation
                 (click)="edit(item.value, item.id)">
                 <mat-icon>edit</mat-icon>
