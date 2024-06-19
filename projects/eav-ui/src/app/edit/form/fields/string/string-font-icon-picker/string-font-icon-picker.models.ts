@@ -7,7 +7,3 @@ export interface IconOption {
   label: string;
 }
 
-export interface StringFontIconPickerViewModel {
-  filteredIcons: IconOption[];
-  previewCss: string;
-}

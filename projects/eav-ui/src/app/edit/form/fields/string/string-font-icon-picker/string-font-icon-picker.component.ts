@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Component, computed, effect, inject, Injector, OnDestroy, OnInit, signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { ScriptsLoaderService } from '../../../../shared/services';
@@ -7,8 +6,7 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
-import { IconOption, StringFontIconPickerViewModel } from './string-font-icon-picker.models';
-import { AsyncPipe } from '@angular/common';
+import { IconOption } from './string-font-icon-picker.models';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatOptionModule } from '@angular/material/core';
 import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
@@ -17,6 +15,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,
@@ -34,14 +34,32 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     CdkVirtualForOf,
     MatOptionModule,
     FieldHelperTextComponent,
-    AsyncPipe,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringFontIconPickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  viewModel: Observable<StringFontIconPickerViewModel>;
 
-  private iconOptions$: BehaviorSubject<IconOption[]>;
+  protected fieldState = inject(FieldState);
+
+  protected groupFileState = this.fieldState.group;
+  protected configFileState = this.fieldState.config;
+
+  protected settingsFileState = this.fieldState.settings;
+  protected basicsFileState = this.fieldState.basics;
+
+  protected previewCss = computed(() => this.settingsFileState().PreviewCss, SignalHelpers.stringEquals);
+
+  private iconOptions = signal<IconOption[]>([], { equal: RxHelpers.arraysEqual });
+
+  filteredIcons = computed(() => {
+    const search = this.controlStatus().value;
+    const filtered = search
+      ? this.iconOptions().filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
+      : this.iconOptions();
+    return filtered;
+  });
+
+  private injector = inject(Injector);
 
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
     super();
@@ -50,56 +68,22 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
 
   ngOnInit() {
     super.ngOnInit();
-    this.iconOptions$ = new BehaviorSubject<IconOption[]>([]);
 
-    this.subscriptions.add(
-      this.settings$.pipe(
-        map(settings => ({
-          Files: settings.Files,
-          CssPrefix: settings.CssPrefix,
-          ShowPrefix: settings.ShowPrefix,
-        })),
-        distinctUntilChanged(RxHelpers.objectsEqual),
-      ).subscribe(settings => {
-        // load each file (usually CSS) in the settings
-        this.scriptsLoaderService.load(settings.Files.split('\n'), () => {
-          const newIconOptions = findAllIconsInCss(settings.CssPrefix, settings.ShowPrefix);
-          this.iconOptions$.next(newIconOptions);
-        });
-      })
-    );
+    const fileLoadSettings = computed(() => {
+      const s = this.settingsFileState();
+      return {
+        Files: s.Files,
+        CssPrefix: s.CssPrefix,
+        ShowPrefix: s.ShowPrefix,
+      };
+    }, { equal: RxHelpers.objectsEqual });
 
-    const previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss), distinctUntilChanged());
-    const filteredIcons$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.iconOptions$,
-    ]).pipe(
-      map(([search, iconList]) => {
-        // if we have a filter param, use it, otherwise don't filter
-        const filtered = search
-          ? iconList.filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
-          : iconList;
-        return filtered;
-      }),
-    );
-
-    this.viewModel = combineLatest([
-      combineLatest([filteredIcons$, previewCss$]),
-    ]).pipe(
-      map(([
-        [filteredIcons, previewCss],
-      ]) => {
-        const viewModel: StringFontIconPickerViewModel = {
-          filteredIcons,
-          previewCss,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    this.iconOptions$.complete();
-    super.ngOnDestroy();
+    effect(() => {
+      const settings = fileLoadSettings();
+      this.scriptsLoaderService.load(settings.Files.split('\n'), () => {
+        const newIconOptions = findAllIconsInCss(settings.CssPrefix, settings.ShowPrefix);
+        this.iconOptions.set(newIconOptions);
+      });
+    }, { allowSignalWrites: true, injector: this.injector });
   }
 }

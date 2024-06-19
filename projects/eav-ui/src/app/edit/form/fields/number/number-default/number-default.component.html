@@ -4,8 +4,8 @@
     [formControlName]="config.fieldName"
     [required]="basics().required"
     [placeholder]="basics().placeholder"
-    [min]="settings().Min"
-    [max]="settings().Max">
+    [min]="min()"
+    [max]="max()">
   <mat-label>{{ basics().label }}</mat-label>
 </mat-form-field>
 <app-field-helper-text></app-field-helper-text>
