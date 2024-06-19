@@ -14,7 +14,7 @@
     .mat-disabled
   )
   .mdc-switch__track::after {
-  background-color: #7fc3f9 !important;
+  background-color: #7fc3f9;
 }
 
 // When false (unchecked)
@@ -24,7 +24,7 @@
     .mat-disabled
   )
   .mdc-switch__shadow {
-  background-color: #7fc3f9;
+  background-color: #7fc3f9 !important;
 }
 
 :host
@@ -56,7 +56,7 @@
 }
 
 :host ::ng-deep .toggle-null .mdc-switch__handle {
-  margin-left: 8px;
+  margin-left: 8px !important;
 }
 
 .eav-slide-toggle-label {
