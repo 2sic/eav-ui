@@ -1,4 +1,4 @@
-import { ComponentRef, Directive, EnvironmentInjector, Injector, Input, OnDestroy, OnInit, Type, ViewContainerRef, createEnvironmentInjector, inject, runInInjectionContext, Signal, computed } from '@angular/core';
+import { Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef, inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -8,29 +8,29 @@ import { FieldsSettingsService } from '../../../shared/services';
 import { CustomDefaultComponent } from '../../fields/custom/custom-default/custom-default.component';
 import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
 import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
-import { FieldState } from './field-state';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { InputComponents } from './input-components.constant';
-import { FieldSettings } from 'projects/edit-types';
-import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { InjectorBundle } from './injector-bundle.model';
+import { DynamicControlInfo } from './dynamic-control-info.model';
+import { FieldInjectorService } from './field-injector.service';
 
 const logThis = false;
 
 @Directive({
   selector: '[appFieldsBuilder]',
-  standalone: true
+  standalone: true,
+  providers: [FieldInjectorService],
 })
 export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
   @Input() group: UntypedFormGroup;
+  
+  private fieldInjector = inject(FieldInjectorService);
+  
   private fieldConfigs: FieldConfigSet[] = [];
-
-  private injector = inject(Injector);
-  private envInjector = inject(EnvironmentInjector);
 
   constructor(
     private mainContainerRef: ViewContainerRef,
@@ -77,7 +77,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
-    let wrapperInfo = new WrapperInfo(null, containerRef);
+    let wrapperInfo = new DynamicControlInfo(null, containerRef);
     if (fieldProps.wrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers, fieldConfig);
     return wrapperInfo.contentsRef;
@@ -87,8 +87,8 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     this.log.a('createComponent', [fieldProps.calculatedInputType]);
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
-    const injectors = this.getInjectors(fieldConfig, false);
-    let wrapperInfo = new WrapperInfo(null, containerRef, injectors);
+    const injectors = this.fieldInjector.getInjectors(fieldConfig, false);
+    let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.wrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers, fieldConfig);
 
@@ -132,14 +132,14 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     // return realFieldRef;
   }
 
-  private createWrappers(outerWrapper: WrapperInfo, wrappers: string[], fieldConfig: FieldConfigSet): WrapperInfo {
+  private createWrappers(outerWrapper: DynamicControlInfo, wrappers: string[], fieldConfig: FieldConfigSet): DynamicControlInfo {
     let wrapperInfo = outerWrapper;
     for (const wrapperName of wrappers)
       wrapperInfo = this.createWrapper(wrapperInfo, wrapperName, fieldConfig);
     return wrapperInfo;
   }
 
-  private createWrapper(wrapperInfo: WrapperInfo, wrapperName: string, fieldConfig: FieldConfigSet): WrapperInfo {
+  private createWrapper(wrapperInfo: DynamicControlInfo, wrapperName: string, fieldConfig: FieldConfigSet): DynamicControlInfo {
     const componentType = this.readComponentType(wrapperName);
     const ref = wrapperInfo.contentsRef.createComponent(componentType, wrapperInfo.injectors);
 
@@ -148,7 +148,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       group: this.group,
     });
     // Sub-wrappers should not include the injectors any more
-    return new WrapperInfo(ref, ref.instance.fieldComponent);
+    return new DynamicControlInfo(ref, ref.instance.fieldComponent);
   }
 
   private readComponentType(selector: string): Type<any> {
@@ -160,59 +160,4 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     return componentType;
   }
 
-  private getInjectors(fieldConfig: FieldConfigSet, isPreview: boolean) {
-    // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
-    const controlConfig: FieldControlConfig = { isPreview };
-
-    // 2024-06-18 2dm experimental new injector with fieldConfig etc.
-    const fieldName = fieldConfig.fieldName;
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
-    let settings: Signal<FieldSettings>;
-    runInInjectionContext(this.injector, () => {
-      settings = this.fieldsSettingsService.getFieldSettingsSignal(fieldName);
-    });
-    const basics = computed(() => BasicControlSettings.fromSettings(settings()), { equal: RxHelpers.objectsEqual });
-
-    const fieldState = new FieldState(
-      fieldName,
-      fieldConfig,
-      controlConfig,
-      this.group,
-      this.group.controls[fieldName],
-      settings$,
-      settings,
-      basics,
-    );
-
-    const providers = [
-      { provide: FieldState, useValue: fieldState },
-    ];
-    const componentInjector = Injector.create({
-      providers: providers,
-      parent: this.injector,
-      name: 'FieldInjector',
-    });
-
-    const newEnvInjector = createEnvironmentInjector(
-      providers,
-      this.envInjector,
-      'FieldEnvInjector'
-    );
-
-    return { injector: componentInjector, environmentInjector: newEnvInjector };
-  }
-}
-
-class WrapperInfo {
-  constructor(
-    public wrapperRef: ComponentRef<FieldWrapper>,
-    public contentsRef: ViewContainerRef,
-    // will only need to be set the first time
-    public injectors: InjectorBundle = null
-  ) {}
-}
-
-interface InjectorBundle {
-  injector: Injector;
-  environmentInjector: EnvironmentInjector;
 }
