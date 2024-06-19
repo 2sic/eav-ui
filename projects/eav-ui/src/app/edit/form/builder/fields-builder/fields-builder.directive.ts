@@ -20,6 +20,10 @@ import { FieldInjectorService } from './field-injector.service';
 
 const logThis = false;
 
+/**
+ * This directive is responsible for creating the dynamic fields based on the field settings.
+ * It will create the fields based on the settings and attach them to the view.
+ */
 @Directive({
   selector: '[appFieldsBuilder]',
   standalone: true,

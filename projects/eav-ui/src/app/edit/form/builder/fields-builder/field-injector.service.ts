@@ -7,6 +7,10 @@ import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
 import { FieldState } from './field-state';
 import { EntityFormStateService } from '../../entity-form-state.service';
 
+/**
+ * This service creates custom injectors for each field.
+ * It's used in the fields-builder to initialize dynamic controls.
+ */
 @Injectable()
 export class FieldInjectorService {
 
@@ -18,7 +22,6 @@ export class FieldInjectorService {
   private group = this.entityForm.formGroup();
 
   constructor() { }
-
 
   public getInjectors(fieldConfig: FieldConfigSet, isPreview: boolean) {
     // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
@@ -47,12 +50,15 @@ export class FieldInjectorService {
     const providers = [
       { provide: FieldState, useValue: fieldState },
     ];
+
+    // Component injector, not actually sure if it's used, because standalone only use environmentInjector AFAIK
     const componentInjector = Injector.create({
       providers: providers,
       parent: this.injector,
       name: 'FieldInjector',
     });
 
+    // Environment injector
     const newEnvInjector = createEnvironmentInjector(
       providers,
       this.envInjector,
