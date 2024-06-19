@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, computed, inject } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { ValidationMessagesHelpers } from '../../../shared/helpers';
-import { FieldState } from '../../builder/fields-builder/field-config-set.model';
+import { FieldState } from '../../builder/fields-builder/field-state';
 import { FieldHelperTextViewModel } from './field-helper-text.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
