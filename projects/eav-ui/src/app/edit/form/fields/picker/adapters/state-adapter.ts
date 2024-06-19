@@ -9,7 +9,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormConfigService } from '../../../../shared/services';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Optional, Signal, computed, inject, signal } from '@angular/core';
+import { Injectable, Injector, Optional, Signal, computed, inject, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
@@ -17,6 +17,8 @@ import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettin
 import { PickerFeatures } from '../picker-features.model';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const dumpSelected = true;
@@ -31,7 +33,7 @@ export class StateAdapter extends ServiceBase {
 
   // TODO: doesn't seem to be in use, but probably should?
   // my guess is it should detect if the open-dialog is shown
-  public shouldPickerListBeShown$: Observable<boolean>;
+  // public shouldPickerListBeShown$: Observable<boolean>;
 
   public selectedItems = signal<PickerItem[]>([]);
 
@@ -39,10 +41,12 @@ export class StateAdapter extends ServiceBase {
 
   public formConfigSvc = inject(FormConfigService);
 
-  public readonly settings = signal<FieldSettings>(null);
+  private fieldState = inject(FieldState);
+  protected readonly settings = this.fieldState.settings;
   public controlStatus: Signal<ControlStatus<string | string[]>>;
-  public basics = computed(() => BasicControlSettings.fromSettings(this.settings()), { equal: RxHelpers.objectsEqual });
+  public basics = this.fieldState.basics; // computed(() => BasicControlSettings.fromSettings(this.fieldState.settings()), { equal: RxHelpers.objectsEqual });
 
+  private injector = inject(Injector);
 
   constructor(
     @Optional() logger: EavLogger = null,
@@ -57,26 +61,29 @@ export class StateAdapter extends ServiceBase {
   }
 
   
-  private settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
-  private controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
+  private settings$: Observable<FieldSettings>;// = new BehaviorSubject(null);
+  // private controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
 
 
-  private isExpanded$: Observable<boolean>;
+  // todo: make signal, if useful
+  // private isExpanded$: Observable<boolean>;
   
-  public control: AbstractControl;
+  // private control: AbstractControl;
   private focusOnSearchComponent: () => void;
 
   public attachToComponent(component: PickerComponent): this  {
     this.log.a('setupFromComponent');
     this.log.inherit(component.log);
 
-    this.settings$ = component.settings$;
-    this.subscriptions.add(component.settings$.subscribe(this.settings.set));
-    this.controlStatus$ = component.controlStatus$;
-    this.controlStatus = component.controlStatus;
-    this.isExpanded$ = component.editRoutingService.isExpanded$(component.config.index, component.config.entityGuid);
+    const fs = this.fieldState;
+    this.settings$ = fs.settings$;
+    // this.subscriptions.add(fs.settings$.subscribe(this.settings.set));
+    // this.controlStatus$ = component.controlStatus$;
+    this.controlStatus = fs.controlStatus as Signal<ControlStatus<string | string[]>>;
+    // const config = fs.config
+    // this.isExpanded$ = component.editRoutingService.isExpanded$(config.index, config.entityGuid);
 
-    this.control = component.control;
+    // this.control = fs.control;
     this.focusOnSearchComponent = component.focusOnSearchComponent;
 
     return this;
@@ -101,8 +108,10 @@ export class StateAdapter extends ServiceBase {
 
     const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
     const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
+
+    const controlStatus$ = toObservable(this.controlStatus, { injector: this.injector });
     const selectedItems$ = combineLatest([
-      this.controlStatus$.pipe(
+      controlStatus$.pipe(
         logCtlSelected.pipe(),
         mapUntilChanged(controlStatus => controlStatus.value),
         logCtlSelected.distinctUntilChanged(),
@@ -119,19 +128,25 @@ export class StateAdapter extends ServiceBase {
       logSelected.end(),
     );
 
-    var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
+    
+    // Temp centralize logic if pickerList should show, but not in use yet.
+    // Commented out, till we need it, then refactor to signals
+    // var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
+    // this.shouldPickerListBeShown$ = combineLatest([
+    //   this.isExpanded$,
+    //   allowMultiValue$,
+    //   selectedItems$,
+    // ]).pipe(
+    //   map(([isExpanded, allowMultiValue, selectedItems]) => {
+    //     return !this.isInFreeTextMode()
+    //       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
+    //       && (!allowMultiValue || (allowMultiValue && isExpanded));
+    //   })
+    // );
+    // if (dumpProperties) {
+    //   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
+    // }
 
-    this.shouldPickerListBeShown$ = combineLatest([
-      this.isExpanded$,
-      allowMultiValue$,
-      selectedItems$,
-    ]).pipe(
-      map(([isExpanded, allowMultiValue, selectedItems]) => {
-        return !this.isInFreeTextMode()
-          && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
-          && (!allowMultiValue || (allowMultiValue && isExpanded));
-      })
-    );
 
     // signal
     this.subscriptions.add(
@@ -142,16 +157,13 @@ export class StateAdapter extends ServiceBase {
     if (dumpSelected)
       selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
 
-    if (dumpProperties) {
-      this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
-    }
-
   }
 
   destroy() {
     this.log.a('destroy');
-    this.settings$.complete();
-    this.controlStatus$.complete();
+    // don't kill here, as it's reused
+    // this.settings$.complete();
+    // this.controlStatus$.complete();
   }
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
@@ -160,7 +172,7 @@ export class StateAdapter extends ServiceBase {
     switch (action) {
       case 'add':
         const guid = value as string;
-        if(this.settings().AllowMultiValue)
+        if(this.fieldState.settings().AllowMultiValue)
           valueArray.push(guid);
         else
           valueArray = [guid];
@@ -176,7 +188,7 @@ export class StateAdapter extends ServiceBase {
     }
 
     const newValue = this.createNewValue(valueArray);
-    ControlHelpers.patchControlValue(this.control, newValue);
+    ControlHelpers.patchControlValue(this.fieldState.control, newValue);
 
     if (action === 'delete' && !valueArray.length) {
       // move back to component
@@ -187,16 +199,16 @@ export class StateAdapter extends ServiceBase {
   }
 
   protected createNewValue(valueArray: string[]): string | string[] {
-    return typeof this.control.value === 'string'
-      ? convertArrayToString(valueArray, this.settings().Separator)
+    return typeof this.fieldState.control.value === 'string'
+      ? convertArrayToString(valueArray, this.fieldState.settings().Separator)
       : valueArray;
   }
 
   createValueArray(): string[] {
-    if (typeof this.control.value === 'string') {
-      return convertValueToArray(this.control.value, this.settings().Separator);
-    }
-    return [...this.control.value];
+    const fs = this.fieldState;
+    if (typeof fs.control.value === 'string')
+      return convertValueToArray(fs.control.value, fs.settings().Separator);
+    return [...fs.control.value];
   }
 
   doAfterDelete(props: DeleteEntityProps) {

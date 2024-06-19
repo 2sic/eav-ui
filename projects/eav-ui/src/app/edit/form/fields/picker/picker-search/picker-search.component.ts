@@ -5,7 +5,6 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { FieldControlWithSignals } from '../../../builder/fields-builder/field.model';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
@@ -58,7 +57,7 @@ const nameOfThis = 'PickerSearchComponent';
     ClickStopPropagationDirective,
   ]
 })
-export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit, OnDestroy, FieldControlWithSignals /* replaces Field */ {
+export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit, OnDestroy {
   //#region Inputs
 
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
@@ -106,7 +105,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   settings = computed(() => {
     const selected = this.selectedItem();
     const show = this.showItemEditButtons() && !!selected;
-    const sts = this.fieldsSettingsService.getFieldSettings(this.config().fieldName);
+    const sts = this.fieldState.settings();
     return {
       allowMultiValue: sts.AllowMultiValue,
       enableAddExisting: sts.EnableAddExisting,
@@ -135,10 +134,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   ngOnInit(): void {
-    const pickerData = this.pickerData();
-    const config = this.config();
-    const source = pickerData.source;
-
     // process formulas on options...?
     // TODO: @2dm - maybe there is even a more elegant way to do this
     const enableFormulas = false;
@@ -146,7 +141,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
       // this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
     }
 
-    const fieldSettings = this.pickerData().state.settings;// this.rawFieldSettings;
+    const fieldSettings = this.fieldState.settings;
     if (fieldSettings().PickerDisplayMode === 'tree') {
       // Setup Tree Helper - but should only happen, if we're really doing trees
       // Only doing this the first time, as these settings are not expected to change
@@ -179,8 +174,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   markAsTouched(): void {
-    const control = this.group().controls[this.config().fieldName];
-    ControlHelpers.markControlTouched(control);
+    ControlHelpers.markControlTouched(this.fieldState.control);
   }
 
   fetchEntities(): void {

@@ -48,8 +48,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.refreshOnChildClosed();
     this.initAdaptersAndViewModel();
 
-    const pd = this.pickerData;
-    const allowMultiValue = pd.state.settings().AllowMultiValue;
+    const allowMultiValue = this.fieldState.settings().AllowMultiValue;
     const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview);
     this.showPreview = signal(showPreview);
   }
