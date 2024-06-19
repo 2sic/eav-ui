@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, Injector, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, Injector, OnDestroy, OnInit, Signal, signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { ScriptsLoaderService } from '../../../../shared/services';
@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { ControlStatus } from '../../../../shared/models';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,
@@ -43,6 +44,7 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
 
   protected groupFileState = this.fieldState.group;
   protected configFileState = this.fieldState.config;
+  protected controlStatusTemp = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
 
   protected settingsFileState = this.fieldState.settings;
   protected basicsFileState = this.fieldState.basics;

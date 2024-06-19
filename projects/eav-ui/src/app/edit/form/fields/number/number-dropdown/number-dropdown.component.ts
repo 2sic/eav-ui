@@ -9,7 +9,7 @@ import { FieldHelperTextComponent } from '../../../shared/field-helper-text/fiel
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
@@ -38,24 +38,24 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     SharedComponentsModule,
     MatIconModule,
     FieldHelperTextComponent,
-    AsyncPipe,
     TranslateModule,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class NumberDropdownComponent extends BaseFieldComponent<number> implements OnInit, OnDestroy {
+export class NumberDropdownComponent {
 
   protected fieldState = inject(FieldState);
 
-  protected groupFileState = this.fieldState.group;
-  protected configFileState = this.fieldState.config;
+  protected group = this.fieldState.group;
+  protected config = this.fieldState.config;
+  protected controlStatus = this.fieldState.controlStatus;
 
-  protected settingsFileState = this.fieldState.settings;
-  protected basicsFileState = this.fieldState.basics;
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
 
-  protected enableTextEntry = computed(() => this.settingsFileState().EnableTextEntry, SignalHelpers.boolEquals);
+  protected enableTextEntry = computed(() => this.settings().EnableTextEntry, SignalHelpers.boolEquals);
 
-  dropdownOptions = computed(() => this.settingsFileState()._options, { equal: RxHelpers.arraysEqual });
+  dropdownOptions = computed(() => this.settings()._options, { equal: RxHelpers.arraysEqual });
 
   toggleFreeText = signal<boolean>(false);
   freeTextMode = computed(() => {
@@ -63,7 +63,6 @@ export class NumberDropdownComponent extends BaseFieldComponent<number> implemen
   });
 
   constructor() {
-    super();
     NumberDropdownLogic.importMe();
   }
 
