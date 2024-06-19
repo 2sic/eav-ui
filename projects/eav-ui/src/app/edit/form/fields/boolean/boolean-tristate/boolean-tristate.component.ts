@@ -1,8 +1,7 @@
-import { Component, computed, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -33,7 +32,7 @@ export class BooleanTristateComponent {
   protected fieldState = inject(FieldState);
 
   protected group = this.fieldState.group;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean | ''>> ;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean | ''>>;
   protected control = this.fieldState.control;
 
   protected settings = this.fieldState.settings;

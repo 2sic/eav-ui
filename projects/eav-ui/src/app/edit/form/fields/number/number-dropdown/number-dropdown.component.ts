@@ -1,9 +1,8 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { NumberDropdownLogic } from './number-dropdown-logic';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatIconModule } from '@angular/material/icon';

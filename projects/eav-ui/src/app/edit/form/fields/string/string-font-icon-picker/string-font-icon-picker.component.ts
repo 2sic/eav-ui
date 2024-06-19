@@ -1,9 +1,8 @@
-import { Component, computed, effect, inject, Injector, OnDestroy, OnInit, Signal, signal } from '@angular/core';
+import { Component, computed, effect, inject, Injector, Signal, signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
 import { IconOption } from './string-font-icon-picker.models';
@@ -18,7 +17,6 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { ControlStatus } from '../../../../shared/models';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,

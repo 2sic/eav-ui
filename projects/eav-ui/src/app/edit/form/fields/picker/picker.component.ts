@@ -24,6 +24,12 @@ const logThis = false;
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
+  // protected fieldState = inject(FieldState);
+
+  // protected group = this.fieldState.group;
+  // protected config = this.fieldState.config;
+  // protected controlConfig = this.fieldState.controlConfig;
+
   pickerData: PickerData;
   isStringQuery: boolean;
 
