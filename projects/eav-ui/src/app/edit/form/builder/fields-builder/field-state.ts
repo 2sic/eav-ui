@@ -4,6 +4,7 @@ import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
+import { ControlStatus } from '../../../shared/models';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -31,8 +32,10 @@ export class FieldState {
 
     /** The settings as a signal - use this for most cases */
     public settings: Signal<FieldSettings>,
-    
+
     /** The basic settings - use this for most cases as it will change less than the settings signal */
-    public basics: Signal<BasicControlSettings>
+    public basics: Signal<BasicControlSettings>,
+
+    public controlStatus: Signal<ControlStatus<unknown>>,
   ) { }
 }

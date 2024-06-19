@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, computed, inject, signal } from '@
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
-import { ControlStatus } from '../../../shared/models';
+import { ControlStatus, controlToControlStatus } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../builder/fields-builder/field.model';
@@ -51,11 +51,11 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   ngOnInit() {
     // Remember current control and publish status on signal (new) and observable (old)
     this.control = this.group.controls[this.config.fieldName];
-    const initialControlStatus = controlToStatus<T>(this.control);
+    const initialControlStatus = controlToControlStatus<T>(this.control);
     this.controlStatus$ = new BehaviorSubject(initialControlStatus);
     this.controlStatus.set(initialControlStatus);
     this.control.valueChanges.subscribe(() => {
-      const newStatus: ControlStatus<T> = controlToStatus(this.control);
+      const newStatus: ControlStatus<T> = controlToControlStatus(this.control);
       this.controlStatus$.next(newStatus);
       this.controlStatus.set(newStatus);
     });
@@ -77,25 +77,15 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   }
 }
 
-function controlToStatus<T>(control: BaseFieldComponent<T>['control']): ControlStatus<T> {
-  // in the first cycle(s) control may not exist yet
-  // if (!control)
-  //   return {
-  //     dirty: false,
-  //     disabled: true,
-  //     invalid: false,
-  //     touched: false,
-  //     touchedAndInvalid: false,
-  //     value: null,
-  //   } satisfies ControlStatus<T>;
-  const touched = control.touched;
-  const invalid = control.invalid;
-  return {
-    dirty: control.dirty,
-    disabled: control.disabled,
-    invalid,
-    touched,
-    touchedAndInvalid: touched && invalid,
-    value: control.value,
-  };
-}
+// function controlToStatus<T>(control: BaseFieldComponent<T>['control']): ControlStatus<T> {
+//   const touched = control.touched;
+//   const invalid = control.invalid;
+//   return {
+//     dirty: control.dirty,
+//     disabled: control.disabled,
+//     invalid,
+//     touched,
+//     touchedAndInvalid: touched && invalid,
+//     value: control.value,
+//   };
+// }
