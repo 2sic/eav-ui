@@ -3,15 +3,12 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { DatetimeDefaultViewModel } from './datetime-default.models';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
-import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
@@ -34,7 +31,6 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
     SharedComponentsModule,
     OwlDateTimeModule,
     FieldHelperTextComponent,
-    AsyncPipe,
     TranslateModule,
     OwlDayJsDateTimeModule,
   ],
@@ -42,7 +38,6 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  viewModel: Observable<DatetimeDefaultViewModel>;
 
   constructor(
     private translate: TranslateService,
@@ -55,29 +50,6 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-    const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker), distinctUntilChanged());
-
-    this.viewModel = combineLatest([
-      combineLatest([useTimePicker$]),
-    ]).pipe(
-      map(([
-        [useTimePicker],
-      ]) => {
-        const viewModel: DatetimeDefaultViewModel = {
-          controlStatus: { ...this.controlStatus(), value: this.controlStatus().value?.replace('Z', '') }, // remove Z - to get 'neutral' time for OwlDateTime picker
-          useTimePicker,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
