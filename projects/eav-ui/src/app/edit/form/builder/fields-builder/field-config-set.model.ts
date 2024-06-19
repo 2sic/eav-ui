@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Adam, Dropzone, FieldSettings } from '../../../../../../../edit-types';
 import { FieldConstants } from '../../../shared/models';
 import { PickerData } from '../../fields/picker/picker-data';
@@ -6,7 +6,9 @@ import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 
 /**
- * Experimental 2dm
+ * Experimental 2dm.
+ * 
+ * This is provided / injected at the fields-builder for every single field.
  */
 export class FieldState {
   constructor(
@@ -15,6 +17,7 @@ export class FieldState {
     public controlConfig: FieldControlConfig,
     public group: UntypedFormGroup,
     public control: AbstractControl,
+    public settings$: Observable<FieldSettings>,
     public settings: Signal<FieldSettings>,
   ) { }
 }

@@ -163,6 +163,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
 
     // 2024-06-18 2dm experimental new injector with fieldConfig etc.
     const fieldName = fieldConfig.fieldName;
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
     let settings: Signal<FieldSettings>;
     runInInjectionContext(this.injector, () => {
       settings = this.fieldsSettingsService.getFieldSettingsSignal(fieldName);
@@ -174,6 +175,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       controlConfig,
       this.group,
       this.group.controls[fieldName],
+      settings$,
       settings,
     );
 
