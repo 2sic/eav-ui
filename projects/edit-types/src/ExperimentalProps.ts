@@ -6,6 +6,7 @@ import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
 import { FieldValue } from './FieldValue';
+import { FieldMask } from 'projects/eav-ui/src/app/edit/shared/helpers';
 
 export interface ExperimentalProps {
   entityGuid: string;
@@ -25,4 +26,7 @@ export interface ExperimentalProps {
   // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
   // getEntityCache(guids?: string[]): PickerItem[];
   // getEntityCache$(guids?: string[]): Observable<PickerItem[]>;
+
+  /** 2024-06-20 2dm - temporary solutions as GPS needs the mask */
+  getFieldMask(mask: string, name?: string, watch?: boolean): FieldMask;
 }

@@ -5,7 +5,8 @@ import { Injectable, inject, signal, Injector } from '@angular/core';
 import { FieldState } from '../../form/builder/fields-builder/field-state';
 import { FormConfigService } from '../services';
 
-const logThis = true;
+const logThis = false;
+const nameOfThis = 'FieldMask';
 const logChanges = false;
 
 const FieldsFind = /\[.*?\]/ig;
@@ -57,7 +58,7 @@ export class FieldMask extends ServiceBase {
   private mask: string | null;
 
   constructor() {
-    super(new EavLogger('FieldMask', logThis));
+    super(new EavLogger(nameOfThis, logThis));
     this.log.a('constructor');
   }
 

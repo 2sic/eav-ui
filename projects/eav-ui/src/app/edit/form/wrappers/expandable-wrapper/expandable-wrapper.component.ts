@@ -1,15 +1,11 @@
 import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { AdamService, FormConfigService, EditRoutingService, FormsStateService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { EditRoutingService, FormsStateService, FieldsSettingsService } from '../../../shared/services';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ContentExpandAnimation } from './content-expand.animation';
 import { PreviewHeight } from './expandable-wrapper.models';
@@ -49,9 +45,14 @@ import { ControlStatus } from '../../../shared/models';
     TranslateModule,
     JsonPipe,
   ],
+  providers: [
+    ConnectorHelper,
+  ],
 })
 export class ExpandableWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+
+  /** Child tag which will contain the inner html */
   @ViewChild('previewContainer') private previewContainerRef: ElementRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
@@ -59,8 +60,7 @@ export class ExpandableWrapperComponent {
   public fieldsSettingsService = inject(FieldsSettingsService);
 
   protected fieldState = inject(FieldState);
-  protected config = this.fieldState.config;
-  protected group = this.fieldState.group;
+  private config = this.fieldState.config;
 
   protected basics = this.fieldState.basics;
   protected settings = this.fieldState.settings;
@@ -97,21 +97,13 @@ export class ExpandableWrapperComponent {
     return previewHeight;
   })
 
-  private connectorCreator: ConnectorHelper;
+  private connectorCreator = inject(ConnectorHelper);
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    private formConfig: FormConfigService,
-    private translateService: TranslateService,
-    private contentTypeService: ContentTypeService,
-    private inputTypeService: InputTypeService,
-    private featuresService: FeaturesService,
     private editRoutingService: EditRoutingService,
-    private adamService: AdamService,
-    private dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
-    private snackBar: MatSnackBar,
     private zone: NgZone,
     public formsStateService: FormsStateService,
   ) { }
@@ -125,31 +117,17 @@ export class ExpandableWrapperComponent {
   ngAfterViewInit() {
     this.config.adam.getConfig$().subscribe(adamConfig => {
       const disabled = adamConfig?.disabled ?? true;
-      if (this.adamDisabled() !== disabled) {
+      if (this.adamDisabled() !== disabled)
         this.adamDisabled.set(disabled);
-      }
     })
 
-    const componentTag = `field-${this.config.inputType}`;
-    consoleLogEditForm('ExpandableWrapper created for:', componentTag);
-    this.connectorCreator = new ConnectorHelper(
-      this.config,
-      this.group,
+    const componentTagName = `field-${this.config.inputType}`;
+    consoleLogEditForm('ExpandableWrapper created for:', componentTagName);
+    this.connectorCreator.init(
+      componentTagName,
       this.previewContainerRef,
-      componentTag,
-      this.formConfig,
-      this.translateService,
-      this.contentTypeService,
-      this.inputTypeService,
-      this.featuresService,
-      this.editRoutingService,
-      this.adamService,
-      this.dialog,
       this.viewContainerRef,
       this.changeDetectorRef,
-      this.fieldsSettingsService,
-      this.snackBar,
-      this.zone,
     );
 
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
@@ -159,7 +137,6 @@ export class ExpandableWrapperComponent {
 
   ngOnDestroy() {
     consoleLogEditForm('ExpandableWrapper destroyed');
-    this.connectorCreator.destroy();
     this.dropzoneDraggingHelper.detach();
   }
 

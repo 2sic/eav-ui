@@ -15,7 +15,7 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'StringUrlPathComponent';
 @Component({
   selector: InputTypeConstants.StringUrlPath,

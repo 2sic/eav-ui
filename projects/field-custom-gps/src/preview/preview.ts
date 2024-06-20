@@ -1,10 +1,13 @@
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
 import { CoordinatesDto } from './coordinates';
+import { EavLogger } from '../../../eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FieldCustomGps';
 
 const gpsTag = 'field-custom-gps';
 
@@ -17,16 +20,18 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor() {
     super();
-    consoleLogWebpack(`${gpsTag} constructor called`);
+    this.log.a(`${gpsTag} constructor called`);
     this.fieldInitialized = false;
   }
 
   connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
-    consoleLogWebpack(`${gpsTag} connectedCallback called`);
+    this.log.a(`${gpsTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default);
     const mapIconContainer = this.querySelector<HTMLDivElement>('#map-icon-container');
@@ -73,7 +78,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${gpsTag} disconnectedCallback called`);
+    this.log.a(`${gpsTag} disconnectedCallback called`);
     this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });

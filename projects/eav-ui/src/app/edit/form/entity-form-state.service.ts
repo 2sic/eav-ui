@@ -3,7 +3,7 @@ import { ServiceBase } from '../../shared/services/service-base'
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { UntypedFormGroup } from '@angular/forms';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'EntityFormStateService';
 
 /**
