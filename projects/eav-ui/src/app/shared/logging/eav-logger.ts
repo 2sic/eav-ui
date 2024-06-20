@@ -9,7 +9,12 @@ export class EavLogger {
   enableChildren: boolean;
 
   constructor(public name: string, public enabled: boolean, enableChildren?: boolean) { 
-    this.enableChildren = enableChildren /* ?? enabled */ ?? false;
+    this.enableChildren = enableChildren ?? false;
+    this.nameWithSvcId = `${name}-${this.svcId}`;
+  }
+
+  public rename(name: string) {
+    this.name = name;
     this.nameWithSvcId = `${name}-${this.svcId}`;
   }
 

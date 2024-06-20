@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { SourceService } from '../../../../../code-editor/services/source.service';
@@ -46,8 +46,11 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
   viewModel: Observable<StringTemplatePickerViewModel>;
 
   private templateOptions$: BehaviorSubject<string[]>;
-  private typeMask: FieldMask;
-  private locationMask: FieldMask;
+  // needed to create more FieldMasks as needed
+  private injector = inject(Injector);
+  private typeMask = FieldMask.createTransient(this.injector);
+  private locationMask = FieldMask.createTransient(this.injector);
+
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
   private global = false;
@@ -68,11 +71,16 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
 
     // If we have a configured type, use that, otherwise use the field mask
     // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-    const typeFilterMask = this.settings$.value.FileType ?? '[Type]';
+    const typeFilterMask = this.settings().FileType ?? '[Type]';
 
     // set change-watchers to the other values
-    this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null, null, null, 'String-TypeMask');
-    this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null, null, null, 'String-LocationMask');
+    console.log('2dm: typedMask', this.typeMask);
+    this.typeMask
+      .initCallback(this.setFileConfig.bind(this))
+      .init('String-TypeMask', typeFilterMask);
+    this.locationMask 
+      .initCallback(this.onLocationChange.bind(this))
+      .init('String-LocationMask', '[Location]');
 
     this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
     this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
@@ -128,7 +136,12 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
   }
 
   createTemplate() {
-    const nameMask = new FieldMask('[Name]', this.group.controls, null, null, null, null, 'String-NameMask');
+    const nameMask = FieldMask.createTransient(this.injector)
+    // new FieldMask(
+      // '[Name]',
+      //  this.group.controls
+      //)
+      .init('String-NameMask', '[Name]', false); //, null, null, null, 'String-NameMask');
     const data: CreateFileDialogData = {
       global: this.global,
       purpose: this.activeSpec.purpose,

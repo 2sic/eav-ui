@@ -10,7 +10,6 @@ import { PickerItem } from "projects/edit-types";
 import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapter } from './state-adapter';
-import { PickerComponent } from '../picker.component';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
@@ -52,6 +51,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   private dataSourceEmpty = inject(DataSourceEmpty);
   protected injector = inject(Injector);
 
+  protected fieldState = inject(FieldState);
+  protected group = inject(EntityFormStateService).formGroup();
+
   constructor(
     private dataSourceEntityOrQuery: DataSourceBase,
     logSpecs: EavLogger,
@@ -59,11 +61,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     super(logSpecs);
     this.log.a('constructor');
   }
-
-  protected fieldState = inject(FieldState);
-
-  // protected group: FormGroup;
-  protected group = inject(EntityFormStateService).formGroup();
 
   public linkLog(log: EavLogger): this {
     if (!this.log.enabled)
@@ -117,16 +114,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
           // In this new signals are created, which would be tracked as dependencies of this signal
           // if not inside untracked.
-          const newMask = new FieldMask(
-            typeMask,
-            this.group.controls,
-            () => { /* callback not used, but expected as parameter, otherwise watcher fails */ },
-            null,
-            this.formConfig.config,
-            this.fieldState.config,
-            'PickerSource-EntityType',
-            true, // override log
-          );
+          const newMask = FieldMask.createTransient(this.injector)
+            .init('PickerSource-EntityType', typeMask, true)
+            .logChanges();
 
           this.contentTypeMaskLazy.set(newMask);
         });
@@ -288,9 +278,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillMask = new FieldMask(this.fieldState.settings().Prefill, this.group.controls, null, null, this.formConfig.config,
-        null,
-        'LogPrefill');
+      const prefillRaw = this.fieldState.settings().Prefill;
+      const prefillMask = FieldMask.createTransient(this.injector)
+        .init('Prefill', prefillRaw, false);
       const prefill = prefillMask.resolve();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

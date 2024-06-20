@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Injector, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
@@ -13,7 +13,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
+const logThis = true;
+const nameOfThis = 'StringUrlPathComponent';
 @Component({
   selector: InputTypeConstants.StringUrlPath,
   templateUrl: './string-url-path.component.html',
@@ -41,34 +44,31 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
   protected controlTemp = this.fieldState.control;
 
 
-  private fieldMask: FieldMask;
+  private fieldMask = FieldMask.createTransient(inject(Injector));
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
   constructor() {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
     StringUrlPathLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
+    this.log.a('ngOnInit');
+
 
     this.subscriptions.add(
       this.fieldState.settings$.pipe(
         map(settings => settings.AutoGenerateMask),
         distinctUntilChanged(),
       ).subscribe(autoGenerateMask => {
-        this.fieldMask?.destroy();
-        this.fieldMask = new FieldMask(
-          autoGenerateMask,
-          this.groupTemp.controls,
-          (newValue) => { this.onSourcesChanged(newValue); },
-          // remove slashes which could look like path-parts
-          (key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value,
-          null,
-          null,
-          'UrlPath',
-        );
+  
+        this.fieldMask
+          .initPreClean((key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
+          .initCallback((newValue) => { this.onSourcesChanged(newValue); })
+          .init('UrlPath', autoGenerateMask)
+          .logChanges();
 
         this.onSourcesChanged(this.fieldMask.resolve());
       })

@@ -53,16 +53,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
         // Don't track these accesses as dependencies!
         untracked(() => {
           this.log.a('init in QuerySourceAdapter, about to create paramsMask')
-          this.queryParamsMask.set(new FieldMask(
-            urlParameters,
-            this.group.controls,
-            () => { /* callback not used */ },
-            null,
-            this.formConfig.config,
-            this.fieldState.config,
-            logName, // log name
-            true, // overrideLog
-          ));
+          this.queryParamsMask.set(FieldMask.createTransient(this.injector).init(logName, urlParameters, true));
         });
       }, { allowSignalWrites: true /* necessary because the mask has an observable which is set */ });
     });

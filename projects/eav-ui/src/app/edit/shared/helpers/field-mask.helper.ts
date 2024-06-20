@@ -1,12 +1,11 @@
-import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { FormConfiguration } from '../models';
-import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { signal } from '@angular/core';
+import { Injectable, inject, signal, Injector } from '@angular/core';
+import { FieldState } from '../../form/builder/fields-builder/field-state';
+import { FormConfigService } from '../services';
 
-const logThis = false;
+const logThis = true;
 const logChanges = false;
 
 const FieldsFind = /\[.*?\]/ig;
@@ -21,7 +20,19 @@ const FieldUnwrap = /[\[\]]/ig;
  * @param model usually FormGroup controls, passed into here
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
+@Injectable()
 export class FieldMask extends ServiceBase {
+
+  /**
+   * Field masks will usually be needed as standalone copies of each.
+   * This is not what Angular does though, so we should do it like this.
+   * @param injector 
+   */
+  static createTransient(injector: Injector): FieldMask
+  {
+    return Injector.create({ providers: [FieldMask], parent: injector }).get(FieldMask)
+  }
+
   /**
    * Value observable containing result of the field-mask.
    */
@@ -29,53 +40,65 @@ export class FieldMask extends ServiceBase {
 
   public signal = signal<string>('');
 
+  public watch = false;
+
   /** Fields used in the mask */
   private fieldsUsedInMask: string[] = [];
 
+  private fieldState = inject(FieldState);
 
-  constructor(
-    private mask: string | null,
-    private model: Record<string, AbstractControl>,
-    private changeEvent: (newValue: string) => void,
-    overloadPreCleanValues: (key: string, value: string) => string,
-    private eavConfig?: FormConfiguration,
-    private fieldConfig?: FieldConfigSet,
-    logName?: string,
-    overrideLog?: boolean
-  ) {
-    super(new EavLogger('FieldMask' + (logName ? `-${logName}` : ''), overrideLog ?? logThis));
-    
-    // Attach any processing events before the mask is resolved the first time
-    if (overloadPreCleanValues)
-      this.preClean = overloadPreCleanValues;
+  private controls = this.fieldState.group.controls;
+  private fieldConfig = this.fieldState.config;
 
-    this.updateMask(mask);
-    // this.mask = mask ?? '';
-    // // this.value$.next(this.mask);// = new BehaviorSubject<string>(this.mask);
-    // // this.signal.set(this.mask);
-    // this.fieldsUsedInMask = this.fieldList();
+  protected formConfig = inject(FormConfigService);
 
-    // // bind auto-watch only if needed...
-    // // otherwise it's just on-demand
-    // if (this.changeEvent)
-    //   this.watchAllFields();
+  private callback?: (newValue: string) => void;
 
-    // optionally log everything that happens during dev
-    if (logChanges)
-      this.subscriptions.add(
-        this.value$.subscribe(value => this.log.a(`Value of mask: '${mask}' changed to: '${value}'`))
-      );
+  private mask: string | null;
+
+  constructor() {
+    super(new EavLogger('FieldMask', logThis));
+    this.log.a('constructor');
   }
 
+  /** Attach any processing events before the mask is resolved the first time */
+  public initPreClean(overloadPreCleanValues: (key: string, value: string) => string): this {
+    this.log.a('initPreClean');
+    this.preClean = overloadPreCleanValues;
+    return this;
+  }
+
+  public initCallback(callback: (newValue: string) => void): this {
+    this.log.a('initCallback');
+    this.callback = callback;
+    this.watch = true;
+    return this;
+  }
+
+  public init(name: string, mask: string, watch?: boolean): this {
+    this.log.rename(`${this.log.name}-${name}`);
+    // mut happen before updateMask
+    if (watch != null)
+      this.watch = watch;
+    this.updateMask(mask);
+    return this;
+  }
+  
+  public logChanges(): this {
+    this.subscriptions.add(
+      this.value$.subscribe(value => this.log.a(`Value of mask: '${this.mask}' changed to: '${value}'`))
+    );
+    return this;
+  }
+
+  
   public updateMask(mask: string) {
     this.mask = mask ?? '';
-    // this.value$.next(this.mask);
-    // this.signal.set(this.mask);
     this.fieldsUsedInMask = this.fieldList();
 
     // bind auto-watch only if needed...
     // otherwise it's just on-demand
-    if (this.changeEvent)
+    if (this.watch || this.callback)
       this.watchAllFields();
 
     this.onChange();
@@ -91,10 +114,10 @@ export class FieldMask extends ServiceBase {
       return this.mask;
 
     let value = lowercaseInsideSquareBrackets(this.mask);
-    if (this.eavConfig != null)
+    if (this.formConfig != null)
       value = value
-        .replace('[app:appid]', this.eavConfig.appId)
-        .replace('[app:zoneid]', this.eavConfig.zoneId);
+        .replace('[app:appid]', this.formConfig.config.appId)
+        .replace('[app:zoneid]', this.formConfig.config.zoneId);
 
     if (this.fieldConfig != null)
       value = value
@@ -102,7 +125,7 @@ export class FieldMask extends ServiceBase {
         .replace('[id]', this.fieldConfig.entityId.toString());
 
     this.fieldsUsedInMask.forEach((e, i) => {
-      const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
+      const replaceValue = this.controls.hasOwnProperty(e) && this.controls[e] && this.controls[e].value ? this.controls[e].value : '';
       const cleaned = this.preClean(e, replaceValue);
       value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
@@ -139,7 +162,7 @@ export class FieldMask extends ServiceBase {
     if (this.signal() !== maybeNew) {
       this.signal.set(maybeNew);
       this.value$.next(maybeNew);
-      this.changeEvent(maybeNew);
+      this.callback?.(maybeNew);
     }
   }
 
@@ -147,7 +170,7 @@ export class FieldMask extends ServiceBase {
   private watchAllFields() {
     // add a watch for each field in the field-mask
     this.fieldsUsedInMask.forEach(field => {
-      const control = this.model[field];
+      const control = this.controls[field];
       if (!control) return;
       const valueSub = control.valueChanges.subscribe(_ => this.onChange());
       this.subscriptions.add(valueSub);
