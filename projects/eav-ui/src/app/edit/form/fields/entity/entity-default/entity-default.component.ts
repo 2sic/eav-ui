@@ -2,15 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
-import { PickerProviders } from '../../picker/picker-providers.constant';
+import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
-import { AsyncPipe } from '@angular/common';
-import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
-import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
 const nameOfThis = 'EntityDefaultComponent';
@@ -21,11 +18,7 @@ const nameOfThis = 'EntityDefaultComponent';
   styleUrls: ['../../picker/picker.component.scss'],
   providers: PickerProviders,
   standalone: true,
-  imports: [
-    PickerPreviewComponent,
-    PickerDialogComponent,
-    AsyncPipe,
-  ],
+  imports: PickerImports,
 })
 export class EntityDefaultComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(

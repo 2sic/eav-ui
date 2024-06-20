@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
-import { PickerProviders } from '../../picker/picker-providers.constant';
+import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
 import { PickerData } from '../../picker/picker-data';
@@ -12,9 +12,6 @@ import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
-import { AsyncPipe } from '@angular/common';
-import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
-import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
 const nameOfThis = 'StringPickerComponent';
@@ -23,15 +20,9 @@ const nameOfThis = 'StringPickerComponent';
   selector: InputTypeConstants.StringPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
-  providers: [
-    ...PickerProviders,
-  ],
+  providers: PickerProviders,
   standalone: true,
-  imports: [
-    PickerPreviewComponent,
-    PickerDialogComponent,
-    AsyncPipe,
-  ],
+  imports: PickerImports,
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 

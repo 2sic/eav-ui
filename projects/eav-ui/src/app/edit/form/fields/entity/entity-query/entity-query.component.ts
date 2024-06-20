@@ -2,17 +2,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
-import { PickerProviders } from '../../picker/picker-providers.constant';
+import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
 import { EntityQueryLogic } from './entity-query-logic';
 import { PickerData } from '../../picker/picker-data';
 import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
-import { AsyncPipe } from '@angular/common';
-import { PickerDialogComponent } from '../../picker/picker-dialog/picker-dialog.component';
-import { PickerPreviewComponent } from '../../picker/picker-preview/picker-preview.component';
 
 const logThis = false;
+const nameOfThis = 'EntityQueryComponent';
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
@@ -20,11 +18,7 @@ const logThis = false;
   styleUrls: ['../../picker/picker.component.scss'],
   providers: PickerProviders,
   standalone: true,
-  imports: [
-    PickerPreviewComponent,
-    PickerDialogComponent,
-    AsyncPipe,
-  ],
+  imports: PickerImports,
 })
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
 
@@ -34,7 +28,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     protected querySourceAdapterRaw: DataAdapterQuery,
   ) {
     super();
-    this.log = new EavLogger('EntityQueryComponent', logThis);
+    this.log = new EavLogger(nameOfThis, logThis);
     this.log.a('constructor');
     EntityQueryLogic.importMe();
   }

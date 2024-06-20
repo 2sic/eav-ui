@@ -3,14 +3,13 @@ import { EditRoutingService } from '../../../shared/services';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
-import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
-import { PickerProviders } from './picker-providers.constant';
+import { PickerImports, PickerProviders } from './picker-providers.constant';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 const logThis = false;
+const nameOfThis = 'PickerComponent';
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
@@ -18,10 +17,7 @@ const logThis = false;
   styleUrls: ['./picker.component.scss'],
   providers: PickerProviders,
   standalone: true,
-  imports: [
-    PickerPreviewComponent,
-    PickerDialogComponent,
-  ],
+  imports: PickerImports,
 })
 export class PickerComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
@@ -40,7 +36,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   controlConfig: FieldControlConfig = {};
 
   constructor(log?: EavLogger) {
-    super(log ?? new EavLogger('PickerComponent', logThis));
+    super(log ?? new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit(): void {

@@ -8,6 +8,8 @@ import { DataSourceEmpty } from './data-sources/data-source-empty';
 import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
 import { StateAdapterString } from './adapters/state-adapter-string';
+import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
 
 /**
  * These providers must be added to all the picker controls.
@@ -30,3 +32,8 @@ export const PickerProviders = [
   StateAdapterString,
   StateAdapterEntity,
 ];
+
+export const PickerImports = [
+  PickerPreviewComponent,
+  PickerDialogComponent,
+]
