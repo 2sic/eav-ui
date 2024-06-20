@@ -9,17 +9,7 @@ const logThis = false;
 export class DataAdapterEntity extends DataAdapterEntityBase {
 
   constructor(private dsEntity: DataSourceEntity) {
-    super(
-      dsEntity,
-      new EavLogger('PickerEntitySourceAdapter', logThis),
-    );
-  }
-
-  init(callerName: string): void {
-    this.log.a('init');
-    super.init(callerName);
-
-    this.postInit();
+    super(dsEntity, new EavLogger('PickerEntitySourceAdapter', logThis));
   }
 
   onAfterViewInit(): void {

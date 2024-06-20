@@ -16,6 +16,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     super(dsQuery, new EavLogger(logName, logThis));
   }
 
+  /** Url Parameters - often mask - from settings; debounced */
   private urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalHelpers.stringEquals);
 
   /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
@@ -52,8 +53,6 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
     // #cleanUpCaAugust2024
     // this.setupFlushOnSettingsChange();
-
-    this.postInit();
   }
 
   onAfterViewInit(): void {
@@ -64,8 +63,10 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   fetchItems(): void {
     this.log.a('fetchItems');
     this.dsQuery.params(this.queryParamsMask()?.resolve());
+    // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
-      this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')]);
+      const errors = [placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')];
+      this.errorOptions.set(errors);
       return;
     }
     this.dsQuery.triggerGetAll();

@@ -41,14 +41,6 @@ export class DataAdapterString extends DataAdapterBase {
     return this;
   }
 
-  init(callerName: string): void {
-    super.init(callerName);
-
-    // this.subscriptions.add(
-    //   this.dataSource().data$.subscribe(this.optionsOrHints$)
-    // );
-  }
-
   /** should never be needed as we have synchronously all data in settings */
   override initPrefetch(prefetchGuids: string[]): void { }
 
