@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
@@ -39,7 +39,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     super(new EavLogger(nameOfThis, logThis));
     this.log.a('constructor');
     EntityPickerLogic.importMe();
-    this.isStringQuery = false;
   }
 
   protected override createPickerAdapters(): void {
@@ -53,13 +52,13 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
-      source = this.entitySourceAdapterRaw.setupFromComponent(this, state, false);
+      source = this.entitySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
+      source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
     } else {
       // not configured yet, should get some empty-not-configured source
-      source = this.entitySourceAdapterRaw.setupFromComponent(this, state, true);
+      source = this.entitySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, true);
     }
 
     state.init(nameOfThis);
@@ -68,7 +67,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
-      // this.injector,
     );
   }
 }

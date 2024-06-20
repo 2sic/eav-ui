@@ -24,14 +24,17 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     );
   }
 
-  private isStringQuery: boolean;
+  /**
+   * Behavior changes a bit if the query is meant to supply data for string-inputs
+   * ...mainly because the value is allowed to be any field, not just the Guid.
+   */
+  private isStringQuery = this.fieldState.config.inputType?.toString().startsWith('string');
 
-  override setupFromComponent(component: PickerComponent, state: StateAdapter, useEmpty: boolean): this {
+  override setupFromComponent(state: StateAdapter, useEmpty: boolean): this {
     this.log.a('setupFromComponent');
-    super.setupFromComponent(component, state, useEmpty);
-    this.isStringQuery = component.isStringQuery;
+    super.setupFromComponent(state, useEmpty);
 
-    const urlParametersSettings = computed(() => this.settings().UrlParameters, SignalHelpers.stringEquals);
+    const urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalHelpers.stringEquals);
 
     // Note: not quite perfect.
     // If we could get the settings injected (instead of late-added)
@@ -56,7 +59,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
             () => { /* callback not used */ },
             null,
             this.formConfig.config,
-            this.config,
+            this.fieldState.config,
             logName, // log name
             true, // overrideLog
           ));
@@ -72,11 +75,12 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
     this.log.a(`init - isStringQuery: ${this.isStringQuery}`);
 
+    const config = this.fieldState.config;
     this.dsQuery.setupQuery(
-      this.settings,
+      this.fieldState.settings,
       this.isStringQuery,
-      this.config.entityGuid,
-      this.config.fieldName,
+      config.entityGuid,
+      config.fieldName,
       this.formConfig.config.appId,
     );
 
@@ -118,7 +122,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // this.entityFieldDataSource.contentType(this.contentType);
 
     this.dsQuery.params(this.queryParamsMask()?.resolve());
-    if (!this.settings().Query) {
+    if (!this.fieldState.settings().Query) {
       this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')]);
       return;
     }

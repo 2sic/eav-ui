@@ -61,29 +61,20 @@ export class StateAdapter extends ServiceBase {
   }
 
   
-  private settings$: Observable<FieldSettings>;// = new BehaviorSubject(null);
-  // private controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
-
+  private settings$: Observable<FieldSettings>;
 
   // todo: make signal, if useful
   // private isExpanded$: Observable<boolean>;
   
-  // private control: AbstractControl;
   private focusOnSearchComponent: () => void;
 
   public attachToComponent(component: PickerComponent): this  {
-    this.log.a('setupFromComponent');
+    this.log.a('attachToComponent');
     this.log.inherit(component.log);
 
     const fs = this.fieldState;
     this.settings$ = fs.settings$;
-    // this.subscriptions.add(fs.settings$.subscribe(this.settings.set));
-    // this.controlStatus$ = component.controlStatus$;
     this.controlStatus = fs.controlStatus as Signal<ControlStatus<string | string[]>>;
-    // const config = fs.config
-    // this.isExpanded$ = component.editRoutingService.isExpanded$(config.index, config.entityGuid);
-
-    // this.control = fs.control;
     this.focusOnSearchComponent = component.focusOnSearchComponent;
 
     return this;

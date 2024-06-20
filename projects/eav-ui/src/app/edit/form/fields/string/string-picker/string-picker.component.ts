@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerProviders } from '../../picker/picker-providers.constant';
@@ -44,7 +44,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
     StringPickerLogic.importMe();
-    this.isStringQuery = true;
   }
 
   protected override createPickerAdapters(): void {
@@ -67,9 +66,9 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       );
     }
     else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery)
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
+      source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
     else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
-      source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
+      source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
 
 
     state.init(nameOfThis);
@@ -78,7 +77,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       state,
       source,
       this.translate,
-      // this.injector,
     );
   }
 }

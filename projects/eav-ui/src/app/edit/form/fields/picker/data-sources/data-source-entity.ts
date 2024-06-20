@@ -7,7 +7,7 @@ import { Injectable, Signal, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 const logChildren = false;
 const nameOfThis = 'DataSourceEntity';
 

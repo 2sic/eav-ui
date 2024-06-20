@@ -4,22 +4,21 @@ import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { FieldMask } from "../../../../shared/helpers";
 import { BehaviorSubject, Observable } from "rxjs";
-import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, PickerItem } from "projects/edit-types";
+import { PickerItem } from "projects/edit-types";
 import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
-import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapter } from './state-adapter';
 import { PickerComponent } from '../picker.component';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
-import { Injector, Signal, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
+import { Injector, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { EntityFormStateService } from '../../../entity-form-state.service';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -32,13 +31,15 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   /**
    * The features depend on contentType names being available to support create
    */
-  public features = computed<Partial<PickerFeatures>>(() => {
-    // if we don't know the content-type, we can't create new entities
-    const disableCreate = !this.contentType() && !this.createEntityTypes();
-    return { create: !disableCreate } satisfies Partial<PickerFeatures>;
-  }, { equal: RxHelpers.objectsEqual });
+  public features = computed<Partial<PickerFeatures>>(
+    () => {
+      // if we don't know the content-type, we can't create new entities
+      const disableCreate = !this.contentType() && !this.createEntityTypes();
+      return { create: !disableCreate } satisfies Partial<PickerFeatures>;
+    },
+    { equal: RxHelpers.objectsEqual }
+  );
 
-  // protected contentTypeOld: string;
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
   protected dataSource: DataSourceBase;
@@ -59,31 +60,25 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('constructor');
   }
 
-  settings: Signal<FieldSettings>;
-  protected config: FieldConfigSet;
+  protected fieldState = inject(FieldState);
 
   // protected group: FormGroup;
   protected group = inject(EntityFormStateService).formGroup();
-  public control: AbstractControl;
 
-  public setupFromComponent(
-    component: PickerComponent,
-    state: StateAdapter,
-    useEmpty: boolean,
-  ): this  {
-    this.log.a('setupFromComponent');
+  public linkLog(log: EavLogger): this {
     if (!this.log.enabled)
-      this.log.inherit(component.log);
+      this.log.inherit(log);
+    return this;
+  };
 
-    const settings = component.fieldState.settings
+  public setupFromComponent(state: StateAdapter, useEmpty: boolean): this  {
+    this.log.a('setupFromComponent');
+
+    const settings = this.fieldState.settings
     this.dataSource = useEmpty
       ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(settings)
       : this.dataSourceEntityOrQuery.setup(settings);
 
-    this.settings = settings;
-    this.config = component.fieldState.config;
-    // this.group = component.group;
-    this.control = component.fieldState.control;
     super.setup(state.doAfterDelete);
     return this;
   }
@@ -92,8 +87,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     super.init(callerName);
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
 
-    const typeMaskFromSettings = computed(() => this.settings().EntityType, SignalHelpers.stringEquals);
-    const createTypesFromSettings = computed(() => this.settings().CreateTypes, SignalHelpers.stringEquals);
+    const settings = this.fieldState.settings
+    const typeMaskFromSettings = computed(() => settings().EntityType, SignalHelpers.stringEquals);
+    const createTypesFromSettings = computed(() => settings().CreateTypes, SignalHelpers.stringEquals);
 
     // let typeMaskBefore: string = null;
     runInInjectionContext(this.injector, () => {
@@ -127,7 +123,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
             () => { /* callback not used, but expected as parameter, otherwise watcher fails */ },
             null,
             this.formConfig.config,
-            this.config,
+            this.fieldState.config,
             'PickerSource-EntityType',
             true, // override log
           );
@@ -239,7 +235,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
         items: [{ EntityId: entity?.id ?? editParams.entityId }],
       };
     }
-    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
+    const config = this.fieldState.config;
+    this.editRoutingService.open(config.index, config.entityGuid, form);
   }
 
   deleteItem(props: DeleteEntityProps): void {
@@ -248,8 +245,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const id = entity.id;
     const title = entity.label;
     const contentType = this.contentType();
-    const parentId = this.config.entityId;
-    const parentField = this.config.fieldName;
+    const config = this.fieldState.config;
+    const parentId = config.entityId;
+    const parentField = config.fieldName;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) { return; }
@@ -290,7 +288,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefillMask = new FieldMask(this.settings().Prefill, this.group.controls, null, null, this.formConfig.config,
+      const prefillMask = new FieldMask(this.fieldState.settings().Prefill, this.group.controls, null, null, this.formConfig.config,
         null,
         'LogPrefill');
       const prefill = prefillMask.resolve();

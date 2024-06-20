@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
@@ -33,7 +33,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     private translate: TranslateService,
     private pickerStateAdapterRaw: StateAdapter,
     private pickerEntitySourceAdapter: DataAdapterEntity,
-    private injector: Injector,
   ) {
     super();
     this.log = new EavLogger(nameOfThis, logThis);
@@ -45,7 +44,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     this.log.a('createPickerAdapters');
     const state = this.pickerStateAdapterRaw.attachToComponent(this);
 
-    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
+    const source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
 
     state.init(nameOfThis);
     source.init(nameOfThis);
@@ -53,7 +52,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       state,
       source,
       this.translate,
-      // this.injector,
     );
   }
 }

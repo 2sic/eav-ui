@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
@@ -32,13 +32,11 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     protected translate: TranslateService,
     private stateRaw: StateAdapterEntity,
     protected querySourceAdapterRaw: DataAdapterQuery,
-    protected injector: Injector,
   ) {
     super();
     this.log = new EavLogger('EntityQueryComponent', logThis);
     this.log.a('constructor');
     EntityQueryLogic.importMe();
-    this.isStringQuery = false;
   }
 
   protected override createPickerAdapters(): void {
@@ -46,7 +44,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     const state = this.stateRaw.attachToComponent(this);
 
     this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-    const source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
+    const source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
 
     state.init('EntityQueryComponent');
     source.init('EntityQueryComponent');
@@ -54,7 +52,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       state,
       source,
       this.translate,
-      // this.injector,
     );
   }
 }

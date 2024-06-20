@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
@@ -32,16 +32,13 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     stateRaw: StateAdapterEntity,
     private pickerStringStateAdapterRaw: StateAdapterString,
     querySourceAdapterRaw: DataAdapterQuery,
-    injector: Injector,
   ) {
     super(
       translate,
       stateRaw,
       querySourceAdapterRaw,
-      injector,
     );
     StringDropdownQueryLogic.importMe();
-    this.isStringQuery = true;
   }
 
 
@@ -49,7 +46,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     this.log.a('createPickerAdapters');
     const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
-    const source = this.querySourceAdapterRaw.setupFromComponent(this, state, false);
+    const source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
 
     state.init(nameOfThis);
     source.init(nameOfThis);
@@ -57,7 +54,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       state,
       source,
       this.translate,
-      // this.injector,
     );
   }
 }

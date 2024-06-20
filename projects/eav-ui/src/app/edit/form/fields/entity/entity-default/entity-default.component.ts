@@ -44,7 +44,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
 
     const state = this.stateRaw.attachToComponent(this);
 
-    const source = this.pickerEntitySourceAdapter.setupFromComponent(this, state, false);
+    const source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
 
     state.init(nameOfThis);
     source.init(nameOfThis);
