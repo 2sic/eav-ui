@@ -1,27 +1,34 @@
-import { combineLatest } from "rxjs";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
-import { Injectable, computed, effect, runInInjectionContext, signal, untracked } from '@angular/core';
-import { StateAdapter } from './state-adapter';
+import { Injectable, computed, untracked } from '@angular/core';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { placeholderPickerItem } from '../models/picker-item.model';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
 
 @Injectable()
 export class DataAdapterQuery extends DataAdapterEntityBase {
-  /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
-  private queryParamsMask = signal<FieldMask>(null);
 
   constructor(private dsQuery: DataSourceQuery) {
-    super(
-      dsQuery,
-      new EavLogger(logName, logThis),
-    );
+    super(dsQuery, new EavLogger(logName, logThis));
   }
+
+  private urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalHelpers.stringEquals);
+
+  /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
+  private queryParamsMask = computed(() => {
+    const urlParameters = this.urlParametersSettings();
+    // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
+    let fieldMask: FieldMask;
+    untracked(() => {
+      fieldMask = FieldMask.createTransient(this.injector).init(logName, urlParameters, true);
+    });
+    console.log('2dm queryParamsMask2', fieldMask?.resolve());
+    return fieldMask;
+  });
 
   /**
    * Behavior changes a bit if the query is meant to supply data for string-inputs
@@ -29,36 +36,6 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
    */
   private isStringQuery = this.fieldState.config.inputType?.toString().startsWith('string');
 
-  override setupFromComponent(state: StateAdapter, useEmpty: boolean): this {
-    this.log.a('setupFromComponent');
-    super.setupFromComponent(state, useEmpty);
-
-    const urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalHelpers.stringEquals);
-
-    // Note: not quite perfect.
-    // If we could get the settings injected (instead of late-added)
-    // this could just be a calculated
-    // let before = 'not-yet-set'; // make sure it runs once
-    runInInjectionContext(this.injector, () => {
-      // let count = 100;
-      effect(() => {
-        // count--;
-        // if (count < 0) {
-        //   console.error('Error: Could not create contentTypeMask in EntitySourceAdapter');
-        //   return;
-        // }
-        const urlParameters = urlParametersSettings();
-
-        // Don't track these accesses as dependencies!
-        untracked(() => {
-          this.log.a('init in QuerySourceAdapter, about to create paramsMask')
-          this.queryParamsMask.set(FieldMask.createTransient(this.injector).init(logName, urlParameters, true));
-        });
-      }, { allowSignalWrites: true /* necessary because the mask has an observable which is set */ });
-    });
-
-    return this;
-  }
 
   init(callerName: string): void {
     super.init(callerName);
@@ -67,7 +44,6 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
     const config = this.fieldState.config;
     this.dsQuery.setupQuery(
-      this.fieldState.settings,
       this.isStringQuery,
       config.entityGuid,
       config.fieldName,
@@ -77,22 +53,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // #cleanUpCaAugust2024
     // this.setupFlushOnSettingsChange();
 
-    this.subscriptions.add(combineLatest([
-      this.dataSource().data$,
-      this.dataSource().loading$,
-      this.deletedItemGuids$,
-    ]).subscribe({
-      next: ([data, loading, deleted]) => {
-        const items = data.filter(item => !deleted.some(guid => guid === item.value));
-        this.optionsOrHints$.next(loading
-          ? [messagePickerItem(this.translate, 'Fields.Picker.Loading'), ...items]
-          : items
-        );
-      },
-      error: (error) => {
-        this.optionsOrHints$.next([messagePickerItem(this.translate, 'Fields.Picker.QueryError', { error: error.data })]);
-      }
-    }));
+    this.postInit();
   }
 
   onAfterViewInit(): void {
@@ -107,7 +68,6 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
       this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')]);
       return;
     }
-
     this.dsQuery.triggerGetAll();
   }
 

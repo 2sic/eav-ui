@@ -2,7 +2,7 @@ import { Component, ElementRef, OnDestroy, OnInit, computed, input, signal, view
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { PickerItem } from 'projects/edit-types';
+import { PickerItem, messagePickerItem } from 'projects/edit-types';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
@@ -16,7 +16,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
-import { messagePickerItem } from '../adapters/data-adapter-base';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";

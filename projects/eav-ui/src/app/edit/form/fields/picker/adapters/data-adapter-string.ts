@@ -32,8 +32,8 @@ export class DataAdapterString extends DataAdapterBase {
     this.setup(deleteCallback);
 
     this.dataSource.set(useEmpty
-      ? this.pickerDataSourceEmpty.setup(this.fieldState.settings)
-      : this.stringFieldDataSource.setup(this.fieldState.settings)
+      ? this.pickerDataSourceEmpty//.setup(this.fieldState.settings)
+      : this.stringFieldDataSource//.setup(this.fieldState.settings)
     );
 
     this.useDataSourceStream.set(true);

@@ -1,12 +1,11 @@
-import { PickerItem, FieldSettings } from "projects/edit-types";
+import { PickerItem, messagePickerItem, placeholderPickerItem } from "projects/edit-types";
 import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { messagePickerItem, placeholderPickerItem } from '../adapters/data-adapter-base';
-import { Injectable, Signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
@@ -17,6 +16,8 @@ const logRx = true;
 @Injectable()
 export class DataSourceQuery extends DataSourceBase {
   private params$ = new Subject<string>();
+
+  public override data = signal([] as PickerItem[]);
 
   constructor(
     private queryService: QueryService,
@@ -29,16 +30,15 @@ export class DataSourceQuery extends DataSourceBase {
   private appId: number;
 
   setupQuery(
-    settings: Signal<FieldSettings>,
     isForStringField: boolean,
     entityGuid: string,
     fieldName: string,
     appId: string
   ): void {
-    this.log.a('setupQuery', ['settings()', settings(), 'appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
+    this.log.a('setupQuery', ['appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
 
     this.appId = Number(appId);
-    const sett = settings();
+    const sett = this.settings();
     const streamName = sett.StreamName;
     
     // If the configuration isn't complete, the query can be empty
@@ -131,6 +131,9 @@ export class DataSourceQuery extends DataSourceBase {
       map(([all, overrides]) => all.loading || overrides.loading),
     );
 
+    // WIP
+    this.loading$.subscribe(this.loading.set);
+
     const lData = this.log.rxTap('data$', { enabled: true });
     this.data$ = combineLatest([all$, overrides$, prefetch$]).pipe(
       lData.pipe(),
@@ -141,6 +144,9 @@ export class DataSourceQuery extends DataSourceBase {
       }),
       shareReplay(1),
     );
+
+    // WIP
+    this.data$.subscribe(this.data.set);
   }
 
   destroy(): void {

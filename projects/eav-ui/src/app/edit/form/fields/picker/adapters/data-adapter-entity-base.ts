@@ -3,7 +3,7 @@ import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model"
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { FieldMask } from "../../../../shared/helpers";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, combineLatest } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
@@ -17,6 +17,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { EntityFormStateService } from '../../../entity-form-state.service';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { messagePickerItem } from '../models/picker-item.model';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -68,10 +69,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   public setupFromComponent(state: StateAdapter, useEmpty: boolean): this  {
     this.log.a('setupFromComponent');
 
-    const settings = this.fieldState.settings
     this.dataSource.set(useEmpty
-      ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(settings)
-      : this.dataSourceEntityOrQuery.setup(settings)
+      ? this.dataSourceEmpty.preSetup("Error: configuration missing")
+      : this.dataSourceEntityOrQuery.setup()
     );
     if (useEmpty) 
       this.useDataSourceStream.set(true);
@@ -160,6 +160,26 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     //     this.updateAddNew();
     //   })
     // );
+  }
+
+  protected postInit() {
+    this.subscriptions.add(combineLatest([
+      this.dataSource().data$,
+      this.dataSource().loading$,
+      this.deletedItemGuids$,
+    ]).subscribe({
+      next: ([data, loading, deleted]) => {
+        const items = data.filter(item => !deleted.some(guid => guid === item.value));
+        this.optionsOrHints$.next(loading
+          ? [messagePickerItem(this.translate, 'Fields.Picker.Loading'), ...items]
+          : items
+        );
+      },
+      error: (error) => {
+        this.optionsOrHints$.next([messagePickerItem(this.translate, 'Fields.Picker.QueryError', { error: error.data })]);
+      }
+    }));
+
   }
 
 

@@ -13,6 +13,7 @@ const nameOfThis = 'DataSourceEmpty';
 @Injectable()
 export class DataSourceEmpty extends DataSourceBase {
 
+  loading = signal(false);
   loading$ = of(false);
 
   constructor() {

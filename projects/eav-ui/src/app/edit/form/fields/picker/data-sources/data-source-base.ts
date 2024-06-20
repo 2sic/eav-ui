@@ -8,7 +8,7 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { Signal, inject } from '@angular/core';
+import { Signal, inject, signal } from '@angular/core';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 
 export abstract class DataSourceBase extends ServiceBase {
@@ -17,6 +17,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   public data: Signal<PickerItem[]>;
 
+  public loading = signal(true);
   /** Stream containing loading-status */
   public loading$: Observable<boolean>;
 
@@ -36,7 +37,7 @@ export abstract class DataSourceBase extends ServiceBase {
   protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
 
   protected fieldState = inject(FieldState);
-  protected settings = this.fieldState.settings; //: Signal<FieldSettings>;
+  protected settings = this.fieldState.settings;
 
   constructor(logSpecs: EavLogger) {
     super(logSpecs);
@@ -45,13 +46,7 @@ export abstract class DataSourceBase extends ServiceBase {
   protected noItemsLoadingFalse: DataWithLoading<PickerItem[]> = { data: [], loading: false };
   protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
 
-  public setup(settings: Signal<FieldSettings>): this {
-    if (this.alreadySetup) throw new Error('Already setup');
-    this.alreadySetup = true;
-    // this.settings = settings;
-    return this;
-  }
-  private alreadySetup = false;
+  public setup(): this { return this; }
 
   destroy(): void {
     this.prefetchEntityGuids$.complete();

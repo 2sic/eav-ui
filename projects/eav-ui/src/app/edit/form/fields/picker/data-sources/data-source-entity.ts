@@ -6,6 +6,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Signal, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const logChildren = false;
@@ -24,9 +25,9 @@ export class DataSourceEntity extends DataSourceBase {
 
   public override data = signal([] as PickerItem[]);
 
-  public override setup(settings: Signal<FieldSettings>): this {
-    this.log.a('setup - settings$', [settings()]);
-    super.setup(settings);
+  public setup(): this {
+    this.log.a('setup - settings$');
+    // super.setup(settings);
 
     // Logging helper for the stream typeName$
     // This convention is used a lot below as well
@@ -145,6 +146,9 @@ export class DataSourceEntity extends DataSourceBase {
       distinctUntilChanged(),
       logLoading.distinctUntilChanged(),
     );
+
+    // WIP
+    this.loading$.subscribe(this.loading.set);
 
     // Create the main data$ stream merging all, overrides and prefetches
     const logData = this.log.rxTap('data$', { enabled: false });

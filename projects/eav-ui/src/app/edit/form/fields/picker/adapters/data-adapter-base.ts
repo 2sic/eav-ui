@@ -1,5 +1,5 @@
 import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { DeleteEntityProps } from '../models/picker.models';
 import { DataAdapter } from './data-adapter.interface';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
@@ -68,28 +68,4 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
   abstract editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void;
 
   abstract fetchItems(): void;
-}
-
-/** Generate a placeholder item to show in the list to show during loading or in case of error */
-export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
-  return {
-    label: translate.instant(i18nLabel) + (suffix ?? ''),
-    value: null,
-    notSelectable: true,
-    isMessage: true,
-    noDelete: true,
-    noEdit: true,
-  } satisfies PickerItem;
-}
-
-/** Generate a placeholder item to show in the list to show during loading or in case of error */
-export function messagePickerItem(translate: TranslateService, i18nLabel: string, params?: object): PickerItem {
-  return {
-    label: translate.instant(i18nLabel, params),
-    value: null,
-    notSelectable: true,
-    isMessage: true,
-    noDelete: true,
-    noEdit: true,
-  } satisfies PickerItem;
 }

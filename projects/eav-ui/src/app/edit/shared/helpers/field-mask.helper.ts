@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { Injectable, inject, signal, Injector } from '@angular/core';
+import { Injectable, inject, signal, Injector, OnDestroy } from '@angular/core';
 import { FieldState } from '../../form/builder/fields-builder/field-state';
 import { FormConfigService } from '../services';
 
@@ -22,7 +22,7 @@ const FieldUnwrap = /[\[\]]/ig;
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
 @Injectable()
-export class FieldMask extends ServiceBase {
+export class FieldMask extends ServiceBase implements OnDestroy {
 
   /**
    * Field masks will usually be needed as standalone copies of each.
@@ -60,6 +60,10 @@ export class FieldMask extends ServiceBase {
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
     this.log.a('constructor');
+  }
+
+  ngOnDestroy() {
+    this.destroy();
   }
 
   /** Attach any processing events before the mask is resolved the first time */

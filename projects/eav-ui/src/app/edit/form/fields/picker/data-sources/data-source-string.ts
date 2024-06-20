@@ -1,7 +1,7 @@
 import { of } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, computed } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 
@@ -12,6 +12,7 @@ const logChildren = false;
 @Injectable()
 export class DataSourceString extends DataSourceBase {
 
+  loading = signal(false);
   loading$ = of(false);
 
   private dataMaskHelper = (() => {
