@@ -78,8 +78,8 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // this.setupFlushOnSettingsChange();
 
     this.subscriptions.add(combineLatest([
-      this.dataSource.data$,
-      this.dataSource.loading$,
+      this.dataSource().data$,
+      this.dataSource().loading$,
       this.deletedItemGuids$,
     ]).subscribe({
       next: ([data, loading, deleted]) => {

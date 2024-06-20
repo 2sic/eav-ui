@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
-import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
@@ -127,7 +126,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
-    private fieldsSettingsService: FieldsSettingsService,
     private treeDataService: PickerTreeDataService,
   ) {
     super(new EavLogger(nameOfThis, logThis));

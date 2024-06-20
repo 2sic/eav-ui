@@ -3,10 +3,9 @@ import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model"
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { FieldMask } from "../../../../shared/helpers";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { PickerItem } from "projects/edit-types";
 import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapter } from './state-adapter';
@@ -41,8 +40,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
 
-  protected dataSource: DataSourceBase;
-
   private entityService = inject(EntityService);
   protected formConfig = inject(FormConfigService);
   private editRoutingService = inject(EditRoutingService);
@@ -72,9 +69,12 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('setupFromComponent');
 
     const settings = this.fieldState.settings
-    this.dataSource = useEmpty
+    this.dataSource.set(useEmpty
       ? this.dataSourceEmpty.preSetup("Error: configuration missing").setup(settings)
-      : this.dataSourceEntityOrQuery.setup(settings);
+      : this.dataSourceEntityOrQuery.setup(settings)
+    );
+    if (useEmpty) 
+      this.useDataSourceStream.set(true);
 
     super.setup(state.doAfterDelete);
     return this;
@@ -105,7 +105,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
           return;
         }
         const typeMask = typeMaskFromSettings();
-        console.log('typeMask', typeMask); // should only fire on changes
+
         this.log.a('init in EntitySourceAdapter, about to create contentTypeMask');
 
         // Don't track these accesses as dependencies!
@@ -163,16 +163,12 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   }
 
 
-  getDataFromSource(): Observable<PickerItem[]> {
-    return this.dataSource.data$;
-  }
-
   initPrefetch(prefetchGuids: string[]): void {
-    this.dataSource.initPrefetch(prefetchGuids);
+    this.dataSource().initPrefetch(prefetchGuids);
   }
 
   forceReloadData(missingData: string[]): void {
-    this.dataSource.addToRefresh(missingData);
+    this.dataSource().addToRefresh(missingData);
   }
 
 
@@ -199,7 +195,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
       };
     } else {
-      const entity = this.optionsOrHints$.value.find(item => item.value === editParams.entityGuid);
+      const entity = this.optionsOrHints().find(item => item.value === editParams.entityGuid);
       // if (entity != null) {
       //   form = {
       //     items: [{ EntityId: entity.id }],
@@ -219,7 +215,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   deleteItem(props: DeleteEntityProps): void {
     this.log.a('deleteItem', [props]);
-    const entity = this.optionsOrHints$.value.find(item => item.value === props.entityGuid);
+    const entity = this.optionsOrHints().find(item => item.value === props.entityGuid);
     const id = entity.id;
     const title = entity.label;
     const contentType = this.contentType();

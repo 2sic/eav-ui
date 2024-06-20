@@ -6,19 +6,23 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Signal } from '@angular/core';
+import { Signal, computed, signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
+import { DataSourceBase } from '../data-sources/data-source-base';
 
 export abstract class DataAdapterBase extends ServiceBase implements DataAdapter {
 
-  /** Picker Features of this DataAdapter */
+  /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
   public abstract features: Signal<Partial<PickerFeatures>>;
+
+  /** a signal for data-sources - may not need a signal, if it's unchanging... */
+  public dataSource = signal<DataSourceBase>(null satisfies DataSourceBase);
 
   /**
    * The options to show.
    * Can be different from the underlying data, since it may have error or loading-entries.
    */
-  public optionsOrHints$ = new BehaviorSubject<PickerItem[]>(null);
+  protected optionsOrHints$ = new BehaviorSubject<PickerItem[]>(null);
 
   /**
    * The options to show.
@@ -27,7 +31,9 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
    * 
    * WIP: Currently based on the observable
    */
-  public optionsOrHints = toSignal(this.optionsOrHints$.pipe(map(list => list ?? [])), { initialValue: [] });
+  private optionsOrHintsTemp = toSignal(this.optionsOrHints$.pipe(map(list => list ?? [])), { initialValue: [] });
+  protected useDataSourceStream = signal(false);
+  public optionsOrHints = computed(() => (this.useDataSourceStream() ? this.dataSource().data() : this.optionsOrHintsTemp()) ?? []);
 
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
@@ -52,8 +58,6 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
     this.editEntityGuid$.complete();
     super.destroy();
   }
-
-  abstract getDataFromSource(): Observable<PickerItem[]>;
 
   abstract initPrefetch(prefetchGuids: string[]): void;
 

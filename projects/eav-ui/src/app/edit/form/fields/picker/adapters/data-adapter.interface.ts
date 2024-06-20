@@ -15,7 +15,7 @@ export interface DataAdapter {
    */
   optionsOrHints: Signal<PickerItem[]>;
 
-  optionsOrHints$: BehaviorSubject<PickerItem[]>;
+  // optionsOrHints$: BehaviorSubject<PickerItem[]>;
   editEntityGuid$: BehaviorSubject<string>;
 
   features: Signal<Partial<PickerFeatures>>;
@@ -23,7 +23,6 @@ export interface DataAdapter {
   init(callerName: string): void;
   onAfterViewInit(): void;
   destroy(): void;
-  getDataFromSource(): Observable<PickerItem[]>;
   initPrefetch(prefetchGuids: string[]): void;
   forceReloadData(missingData: string[]): void;
   deleteItem(props: DeleteEntityProps): void;

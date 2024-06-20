@@ -1,26 +1,19 @@
-import { FormGroup } from "@angular/forms";
-import { FieldSettings, PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Observable } from "rxjs";
-import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataSourceString } from "../data-sources/data-source-string";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Signal, inject, signal } from '@angular/core';
-import { DataSourceBase } from '../data-sources/data-source-base';
+import { Injectable, inject, signal } from '@angular/core';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'DataAdapterString';
 
 @Injectable()
 export class DataAdapterString extends DataAdapterBase {
 
   public features = signal( { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
-
-  private dataSource: DataSourceBase;
 
   private stringFieldDataSource = inject(DataSourceString);
   private pickerDataSourceEmpty = inject(DataSourceEmpty);
@@ -38,9 +31,12 @@ export class DataAdapterString extends DataAdapterBase {
     this.log.a(`setupString - useEmpty ${useEmpty}`);
     this.setup(deleteCallback);
 
-    this.dataSource = useEmpty
+    this.dataSource.set(useEmpty
       ? this.pickerDataSourceEmpty.setup(this.fieldState.settings)
-      : this.stringFieldDataSource.setup(this.fieldState.settings);
+      : this.stringFieldDataSource.setup(this.fieldState.settings)
+    );
+
+    this.useDataSourceStream.set(true);
 
     return this;
   }
@@ -48,32 +44,20 @@ export class DataAdapterString extends DataAdapterBase {
   init(callerName: string): void {
     super.init(callerName);
 
-    const l = this.log.rxTap('data$');
-    this.subscriptions.add(
-      this.dataSource.data$.pipe(l.pipe()).subscribe(this.optionsOrHints$)
-    );
+    // this.subscriptions.add(
+    //   this.dataSource().data$.subscribe(this.optionsOrHints$)
+    // );
   }
 
-  destroy(): void {
-    this.dataSource.destroy();
-    super.destroy();
-  }
+  /** should never be needed as we have synchronously all data in settings */
+  override initPrefetch(prefetchGuids: string[]): void { }
 
-  getDataFromSource(): Observable<PickerItem[]> {
-    return this.dataSource.data$;
-  }
-
-  initPrefetch(prefetchGuids: string[]): void {
-    // should never be needed as we have synchronously all data in settings
-  }
-
-  forceReloadData(missingData: string[]): void {
-    // should never be needed as we can't add new data
-  }
+  /** should never be needed as we can't add new data */
+  override forceReloadData(missingData: string[]): void { }
 
   fetchItems(): void {
-    this.dataSource.triggerGetAll();
-    this.subscriptions.add(this.dataSource.data$.subscribe(this.optionsOrHints$));
+    this.log.a('fetchItems');
+    this.dataSource().triggerGetAll();
   }
 
   deleteItem(props: DeleteEntityProps): void {

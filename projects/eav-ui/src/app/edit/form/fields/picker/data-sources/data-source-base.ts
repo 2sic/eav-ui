@@ -8,7 +8,8 @@ import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { Signal } from '@angular/core';
+import { Signal, inject } from '@angular/core';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 export abstract class DataSourceBase extends ServiceBase {
   /** Stream containing the data */
@@ -34,7 +35,8 @@ export abstract class DataSourceBase extends ServiceBase {
 
   protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
 
-  protected settings: Signal<FieldSettings>;
+  protected fieldState = inject(FieldState);
+  protected settings = this.fieldState.settings; //: Signal<FieldSettings>;
 
   constructor(logSpecs: EavLogger) {
     super(logSpecs);
@@ -46,7 +48,7 @@ export abstract class DataSourceBase extends ServiceBase {
   public setup(settings: Signal<FieldSettings>): this {
     if (this.alreadySetup) throw new Error('Already setup');
     this.alreadySetup = true;
-    this.settings = settings;
+    // this.settings = settings;
     return this;
   }
   private alreadySetup = false;

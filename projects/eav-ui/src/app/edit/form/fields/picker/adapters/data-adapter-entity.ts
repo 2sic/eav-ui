@@ -22,8 +22,8 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
     super.init(callerName);
 
     this.subscriptions.add(combineLatest([
-      this.dataSource.data$,
-      this.dataSource.loading$,
+      this.dataSource().data$,
+      this.dataSource().loading$,
       this.deletedItemGuids$,
     ]).subscribe(([data, loading, deleted]) => {
       const items = data.filter(item => !deleted.some(guid => guid === item.value));
@@ -41,6 +41,6 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
 
   fetchItems(): void {
     this.dsEntity.contentType(this.contentType());
-    this.dataSource.triggerGetAll();
+    this.dataSource().triggerGetAll();
   }
 }
