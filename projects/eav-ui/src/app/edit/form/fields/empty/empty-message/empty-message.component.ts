@@ -1,6 +1,5 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { FieldState } from '../../../builder/fields-builder/field-state';
@@ -12,6 +11,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
   standalone: true,
   imports: [SharedComponentsModule],
 })
+// TODO: @2dm - remove empty FieldMetadata as not needed any more
 @FieldMetadata({ /* This is needed for the field to work */ })
 export class EmptyMessageComponent {
 

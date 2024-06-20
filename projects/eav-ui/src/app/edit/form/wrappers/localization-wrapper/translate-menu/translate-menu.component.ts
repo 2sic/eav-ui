@@ -1,12 +1,10 @@
 import { Component, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AutoTranslateDisabledWarningDialog } from '../auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
