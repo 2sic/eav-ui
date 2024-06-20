@@ -1,4 +1,3 @@
-import { of } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, computed, signal } from '@angular/core';
@@ -14,7 +13,6 @@ const nameOfThis = 'DataSourceEmpty';
 export class DataSourceEmpty extends DataSourceBase {
 
   loading = signal(false);
-  loading$ = of(false);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));

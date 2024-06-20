@@ -17,9 +17,8 @@ export abstract class DataSourceBase extends ServiceBase {
 
   public data: Signal<PickerItem[]>;
 
+  /** Signal with loading-status */
   public loading = signal(true);
-  /** Stream containing loading-status */
-  public loading$: Observable<boolean>;
 
   /** Toggle to trigger a full refresh. */
   protected getAll$ = new BehaviorSubject<boolean>(false);

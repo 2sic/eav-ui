@@ -127,12 +127,12 @@ export class DataSourceQuery extends DataSourceBase {
       shareReplay(1),
     );
 
-    this.loading$ = combineLatest([all$, overrides$]).pipe(
+    const loading$ = combineLatest([all$, overrides$]).pipe(
       map(([all, overrides]) => all.loading || overrides.loading),
     );
 
     // WIP
-    this.loading$.subscribe(this.loading.set);
+    loading$.subscribe(this.loading.set);
 
     const lData = this.log.rxTap('data$', { enabled: true });
     this.data$ = combineLatest([all$, overrides$, prefetch$]).pipe(

@@ -1,12 +1,11 @@
-import { FieldSettings, PickerItem } from "projects/edit-types";
+import { PickerItem } from "projects/edit-types";
 import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith, tap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { QueryService } from "../../../../shared/services";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Signal, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const logChildren = false;
@@ -140,7 +139,7 @@ export class DataSourceEntity extends DataSourceBase {
 
     // Create a loading$ stream to indicate if we are loading
     const logLoading = this.log.rxTap('loading$', { enabled: false });
-    this.loading$ = combineLatest([allOfType$, overrides$]).pipe(
+    const loading$ = combineLatest([allOfType$, overrides$]).pipe(
       logLoading.pipe(),
       map(([all, overrides]) => all.loading || overrides.loading),
       distinctUntilChanged(),
@@ -148,7 +147,7 @@ export class DataSourceEntity extends DataSourceBase {
     );
 
     // WIP
-    this.loading$.subscribe(this.loading.set);
+    loading$.subscribe(this.loading.set);
 
     // Create the main data$ stream merging all, overrides and prefetches
     const logData = this.log.rxTap('data$', { enabled: false });
