@@ -15,7 +15,7 @@
       </mat-hint>
     }
     @if (vm.invalid && !disableError && getErrorMessage(); as error) {
-      <mat-error class="mat-caption">{{ error | translate:{ param: settings() } }}</mat-error>
+      <mat-error class="mat-caption">{{ error | translate: settings() }}</mat-error>
     }
     @if (!vm.invalid && !disableError && getWarningMessage(); as warning) {
       <mat-error class="mat-caption warning">{{ warning | translate }}</mat-error>
