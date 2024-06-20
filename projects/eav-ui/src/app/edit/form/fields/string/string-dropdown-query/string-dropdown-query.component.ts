@@ -1,14 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
-import { PickerData } from '../../picker/picker-data';
 import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
-import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
-import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 
+const logThis = false;
 const nameOfThis = 'StringDropdownQueryComponent';
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -20,17 +17,10 @@ const nameOfThis = 'StringDropdownQueryComponent';
 })
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
-  constructor(
-    translate: TranslateService,
-    stateRaw: StateAdapterEntity,
-    private pickerStringStateAdapterRaw: StateAdapterString,
-    querySourceAdapterRaw: DataAdapterQuery,
-  ) {
-    super(
-      translate,
-      stateRaw,
-      querySourceAdapterRaw,
-    );
+  private pickerStringStateAdapterRaw = inject(StateAdapterString);
+
+  constructor() {
+    super();
     StringDropdownQueryLogic.importMe();
   }
 
@@ -41,12 +31,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
     const source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
 
-    state.init(nameOfThis);
-    source.init(nameOfThis);
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

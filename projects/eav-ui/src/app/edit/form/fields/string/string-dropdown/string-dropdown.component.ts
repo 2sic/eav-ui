@@ -2,10 +2,8 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
-import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
-import { PickerData } from '../../picker/picker-data';
 import { DataAdapterString } from '../../picker/adapters/data-adapter-string';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -23,7 +21,6 @@ const nameOfThis = 'StringDropdownComponent';
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  private translate = inject(TranslateService);
   private pickerStringSourceAdapterRaw = inject(DataAdapterString);
   private pickerStringStateAdapterRaw = inject(StateAdapterString);
 
@@ -37,19 +34,10 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
 
     const source = this.pickerStringSourceAdapterRaw.setupString(
-      this.fieldState.settings,
-      this.fieldState.config,
-      this.fieldState.group,
       (props: DeleteEntityProps) => state.doAfterDelete(props),
       false,
     );
 
-    state.init('StringDropdownComponent');
-    source.init('StringDropdownComponent');
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

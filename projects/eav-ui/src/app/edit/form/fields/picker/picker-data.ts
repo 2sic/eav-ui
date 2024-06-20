@@ -4,13 +4,14 @@ import { PickerItem } from 'projects/edit-types';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { computed } from '@angular/core';
+import { Injectable, OnDestroy, computed, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 
-export class PickerData extends ServiceBase {
+@Injectable()
+export class PickerData extends ServiceBase implements OnDestroy {
 
   selectedAll = computed(() => this.createUIModel(this.state.selectedItems(), this.source.optionsOrHints(), this.translate));
 
@@ -22,23 +23,32 @@ export class PickerData extends ServiceBase {
     return PickerFeatures.merge(fromSource, fromState);
   }, { equal: RxHelpers.objectsEqual });
 
-  constructor(
-    public state: StateAdapter,
-    public source: DataAdapter,
-    private translate: TranslateService,
-  ) {
-    super(new EavLogger('PickerData', logThis));
+  public state: StateAdapter;
+  public source: DataAdapter;
 
+  private translate = inject(TranslateService);
+  
+  constructor() {
+    super(new EavLogger('PickerData', logThis));
+  }
+
+  public setup(name: string, state: StateAdapter, source: DataAdapter): this {
+    state.init(name);
+    source.init(name);
+    this.state = state;
+    this.source = source;
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
     const initiallySelected = state.selectedItems();
     source.initPrefetch(initiallySelected.map(item => item.value));
+    return this;
   }
 
-  override destroy() {
-    this.source.destroy();
-    this.state.destroy();
+  ngOnDestroy() {
+    // don't destroy source/state, as it will be destroyed by the original maker
+    // this.source.destroy();
+    // this.state.destroy();
     super.destroy();
   }
 

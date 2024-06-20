@@ -1,21 +1,18 @@
 import { PickerItem, FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
-import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormConfigService } from '../../../../shared/services';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Injector, Optional, Signal, computed, inject, signal } from '@angular/core';
+import { Injectable, Injector, Optional, Signal, inject, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
-import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
 import { PickerFeatures } from '../picker-features.model';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -44,7 +41,7 @@ export class StateAdapter extends ServiceBase {
   private fieldState = inject(FieldState);
   protected readonly settings = this.fieldState.settings;
   public controlStatus: Signal<ControlStatus<string | string[]>>;
-  public basics = this.fieldState.basics; // computed(() => BasicControlSettings.fromSettings(this.fieldState.settings()), { equal: RxHelpers.objectsEqual });
+  public basics = this.fieldState.basics;
 
   private injector = inject(Injector);
 

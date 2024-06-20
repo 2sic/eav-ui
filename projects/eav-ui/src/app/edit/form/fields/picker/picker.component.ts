@@ -26,7 +26,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   
   public editRoutingService = inject(EditRoutingService);
 
-  pickerData: PickerData;
+  pickerData = inject(PickerData);
   protected showPreview: Signal<boolean>;
 
   /**

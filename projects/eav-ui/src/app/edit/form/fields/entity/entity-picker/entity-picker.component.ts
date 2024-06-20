@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
-import { TranslateService } from '@ngx-translate/core';
 import { EntityPickerLogic } from './entity-picker-logic';
-import { PickerData } from '../../picker/picker-data';
 import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
@@ -23,14 +21,12 @@ const nameOfThis = 'EntityPickerComponent';
   imports: PickerImports,
 })
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
-  constructor(
-    private translate: TranslateService,
-    private stateRaw: StateAdapterEntity,
-    private entitySourceAdapterRaw: DataAdapterEntity,
-    private querySourceAdapterRaw: DataAdapterQuery,
-  ) {
+  private stateRaw = inject(StateAdapterEntity);
+  private entitySourceAdapterRaw = inject(DataAdapterEntity);
+  private querySourceAdapterRaw = inject(DataAdapterQuery);
+
+  constructor() {
     super(new EavLogger(nameOfThis, logThis));
-    this.log.a('constructor');
     EntityPickerLogic.importMe();
   }
 
@@ -54,12 +50,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       source = this.entitySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, true);
     }
 
-    state.init(nameOfThis);
-    source.init(nameOfThis);
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

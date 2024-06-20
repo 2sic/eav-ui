@@ -10,6 +10,7 @@ import { StateAdapterEntity } from './adapters/state-adapter-entity';
 import { StateAdapterString } from './adapters/state-adapter-string';
 import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
+import { PickerData } from './picker-data';
 
 /**
  * These providers must be added to all the picker controls.
@@ -31,6 +32,8 @@ export const PickerProviders = [
   StateAdapter,
   StateAdapterString,
   StateAdapterEntity,
+
+  PickerData,
 ];
 
 export const PickerImports = [

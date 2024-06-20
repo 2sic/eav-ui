@@ -7,15 +7,15 @@ import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 const logThis = false;
+const nameOfThis = 'DataSourceString';
 const logChildren = false;
-const logRx = false;
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
   private injector = inject(Injector);
 
   constructor() {
-    super(new EavLogger('DataSourceString', logThis, logChildren));
+    super(new EavLogger(nameOfThis, logThis, logChildren));
   }
 
 

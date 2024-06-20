@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
-import { PickerData } from '../../picker/picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { StateAdapter } from '../../picker/adapters/state-adapter';
 import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
@@ -22,14 +20,11 @@ const nameOfThis = 'EntityContentBlockComponent';
 })
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  constructor(
-    private translate: TranslateService,
-    private pickerStateAdapterRaw: StateAdapter,
-    private pickerEntitySourceAdapter: DataAdapterEntity,
-  ) {
-    super();
-    this.log = new EavLogger(nameOfThis, logThis);
-    this.log.a('constructor');
+  private pickerStateAdapterRaw = inject(StateAdapter);
+  private pickerEntitySourceAdapter = inject(DataAdapterEntity);
+
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
     EntityContentBlocksLogic.importMe();
   }
 
@@ -39,12 +34,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
     const source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
 
-    state.init(nameOfThis);
-    source.init(nameOfThis);
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

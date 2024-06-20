@@ -2,9 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
-import { TranslateService } from '@ngx-translate/core';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
-import { PickerData } from '../../picker/picker-data';
 import { StringPickerLogic } from './string-picker-logic';
 import { DataAdapterString } from '../../picker/adapters/data-adapter-string';
 import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
@@ -26,7 +24,6 @@ const nameOfThis = 'StringPickerComponent';
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  private translate = inject(TranslateService);
   private sourceAdapterStringRaw = inject(DataAdapterString);
   private stateAdapterStringRaw = inject(StateAdapterString);
   private pickerEntitySourceAdapter = inject(DataAdapterEntity);
@@ -49,9 +46,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
       source = this.sourceAdapterStringRaw.setupString(
-        this.fieldState.settings,
-        this.fieldState.config,
-        this.fieldState.group,
         (props: DeleteEntityProps) => state.doAfterDelete(props),
         isEmpty,
       );
@@ -62,12 +56,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
 
 
-    state.init(nameOfThis);
-    source.init(nameOfThis);
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

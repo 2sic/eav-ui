@@ -10,6 +10,7 @@ import { Injectable, Signal, inject, signal } from '@angular/core';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 const logThis = false;
 const nameOfThis = 'DataAdapterString';
@@ -24,28 +25,22 @@ export class DataAdapterString extends DataAdapterBase {
   private stringFieldDataSource = inject(DataSourceString);
   private pickerDataSourceEmpty = inject(DataSourceEmpty);
 
+  private fieldState = inject(FieldState);
+
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }
 
-  protected config: FieldConfigSet;
-  protected group: FormGroup;
-
   public setupString(
-    settings: Signal<FieldSettings>,
-    config: FieldConfigSet,
-    group: FormGroup,
     deleteCallback: (props: DeleteEntityProps) => void,
     useEmpty: boolean,
   ): this {
     this.log.a(`setupString - useEmpty ${useEmpty}`);
-    this.config = config;
-    this.group = group;
     this.setup(deleteCallback);
 
     this.dataSource = useEmpty
-      ? this.pickerDataSourceEmpty.setup(settings)
-      : this.stringFieldDataSource.setup(settings);
+      ? this.pickerDataSourceEmpty.setup(this.fieldState.settings)
+      : this.stringFieldDataSource.setup(this.fieldState.settings);
 
     return this;
   }
