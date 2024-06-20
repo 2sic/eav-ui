@@ -1,14 +1,15 @@
 import { PickerItem, messagePickerItem, placeholderPickerItem } from "projects/edit-types";
-import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
+import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith, tap } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const logRx = true;
@@ -16,8 +17,26 @@ const logRx = true;
 @Injectable()
 export class DataSourceQuery extends DataSourceBase {
   private params$ = new Subject<string>();
+  private _queryParams = toSignal(this.params$);
+  private _queryParams2 = computed(() => this._queryParams(), { equal: RxHelpers.stringEquals });
 
-  public override data = signal([] as PickerItem[]);
+  private _all = signal<DataWithLoading<PickerItem[]>>({ data: [], loading: true });
+  private _overrides = signal<DataWithLoading<PickerItem[]>>({ data: [], loading: true });
+  private _prefetch = signal<DataWithLoading<PickerItem[]>>({ data: [], loading: true });
+  public override data = computed(() => {
+    const data = [...new Map([
+      ...this._prefetch().data,
+      ...this._all().data,
+      ...this._overrides().data
+    ].map(item => [item.value, item])).values()];
+    console.log('2dm data:');
+    return data;
+  }, { equal: RxHelpers.arraysEqual });
+
+  /** Signal with loading-status */
+  public override loading = computed(() => this._all().loading || this._overrides().loading) as any;
+
+
 
   constructor(
     private queryService: QueryService,
@@ -127,26 +146,16 @@ export class DataSourceQuery extends DataSourceBase {
       shareReplay(1),
     );
 
-    const loading$ = combineLatest([all$, overrides$]).pipe(
-      map(([all, overrides]) => all.loading || overrides.loading),
-    );
-
-    // WIP
-    loading$.subscribe(this.loading.set);
-
     const lData = this.log.rxTap('data$', { enabled: true });
-    this.data$ = combineLatest([all$, overrides$, prefetch$]).pipe(
+    combineLatest([all$, overrides$, prefetch$]).pipe(
       lData.pipe(),
-      map(([all, overrides, prefetch]) => {
-        // data always takes the last unique value in the array (should be most recent)
-        const data = [...new Map([...prefetch, ...all.data, ...overrides.data].map(item => [item.value, item])).values()];
-        return data;
+      tap(([all, overrides, prefetch]) => {
+        this._all.set(all);
+        this._overrides.set(overrides);
+        this._prefetch.set({ data: prefetch, loading: false });
       }),
-      shareReplay(1),
-    );
+    ).subscribe();
 
-    // WIP
-    this.data$.subscribe(this.data.set);
   }
 
   destroy(): void {

@@ -1,5 +1,5 @@
 import { PickerItem } from 'projects/eav-ui/src/app/edit/form/fields/picker/models/picker-item.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from 'projects/edit-types';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -10,11 +10,14 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { Signal, inject, signal } from '@angular/core';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export abstract class DataSourceBase extends ServiceBase {
-  /** Stream containing the data */
-  public data$: Observable<PickerItem[]>;
+  
+  /** Field State with settings etc. */
+  protected fieldState = inject(FieldState);
 
+  /** Signal containing the data */
   public data: Signal<PickerItem[]>;
 
   /** Signal with loading-status */
@@ -22,6 +25,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   /** Toggle to trigger a full refresh. */
   protected getAll$ = new BehaviorSubject<boolean>(false);
+  private getAll = signal(false);
 
   /**
    * Force refresh of the entities with these guids.
@@ -32,10 +36,11 @@ export abstract class DataSourceBase extends ServiceBase {
    * In future we may enhance this, but we must be sure that previous retrievals are preserved.
    */
   protected guidsToRefresh$ = new BehaviorSubject<string[]>([]);
+  protected guidsToRefresh = toSignal(this.guidsToRefresh$);
 
   protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
+  protected prefetchEntityGuids = toSignal(this.prefetchEntityGuids$);
 
-  protected fieldState = inject(FieldState);
   protected settings = this.fieldState.settings;
 
   constructor(logSpecs: EavLogger) {
@@ -60,11 +65,12 @@ export abstract class DataSourceBase extends ServiceBase {
 
   triggerGetAll(): void {
     this.getAll$.next(true);
+    this.getAll.set(true);
   }
 
   addToRefresh(additionalGuids: string[]): void {
-    const merged = [...this.guidsToRefresh$.value, ...additionalGuids].filter(RxHelpers.distinct);
-    this.log.a('forceLoadGuids', ['before', this.guidsToRefresh$.value, 'after', additionalGuids, 'merged', merged]);
+    const merged = [...this.guidsToRefresh(), ...additionalGuids].filter(RxHelpers.distinct);
+    this.log.a('forceLoadGuids', ['before', this.guidsToRefresh(), 'after', additionalGuids, 'merged', merged]);
     this.guidsToRefresh$.next(merged);
   }
 

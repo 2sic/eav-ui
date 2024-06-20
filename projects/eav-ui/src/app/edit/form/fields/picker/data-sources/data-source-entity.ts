@@ -137,21 +137,19 @@ export class DataSourceEntity extends DataSourceBase {
       logOverrides.shareReplay(),
     );
 
+    // WIP
     // Create a loading$ stream to indicate if we are loading
     const logLoading = this.log.rxTap('loading$', { enabled: false });
-    const loading$ = combineLatest([allOfType$, overrides$]).pipe(
+    combineLatest([allOfType$, overrides$]).pipe(
       logLoading.pipe(),
       map(([all, overrides]) => all.loading || overrides.loading),
       distinctUntilChanged(),
       logLoading.distinctUntilChanged(),
-    );
-
-    // WIP
-    loading$.subscribe(this.loading.set);
+    ).subscribe(this.loading.set);
 
     // Create the main data$ stream merging all, overrides and prefetches
     const logData = this.log.rxTap('data$', { enabled: false });
-    this.data$ = combineLatest([prefetchInCache$, allOfType$, overrides$]).pipe(
+    const data$ = combineLatest([prefetchInCache$, allOfType$, overrides$]).pipe(
       logData.pipe(),
       map(([prefetch, all, overrides]) => {
         // merge and take the last unique value in the array (should be most recent)
@@ -166,7 +164,7 @@ export class DataSourceEntity extends DataSourceBase {
 
     // WIP - make sure we have data as signal
     this.subscriptions.add(
-      this.data$.subscribe(this.data.set)
+      data$.subscribe(this.data.set)
     );
 
     return this;
