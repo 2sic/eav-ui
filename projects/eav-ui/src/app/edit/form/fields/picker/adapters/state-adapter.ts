@@ -1,5 +1,3 @@
-import { PickerItem, FieldSettings } from 'projects/edit-types';
-import { combineLatest, map, Observable } from 'rxjs';
 import { ControlStatus } from '../../../../shared/models';
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
@@ -8,35 +6,28 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormConfigService } from '../../../../shared/services';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Injector, Optional, Signal, computed, inject, signal } from '@angular/core';
+import { Injectable, Optional, Signal, computed, inject, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
-import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { PickerFeatures } from '../picker-features.model';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
-const dumpSelected = true;
-const dumpProperties = false;
 const nameOfThis = 'StateAdapter';
 
 @Injectable()
 export class StateAdapter extends ServiceBase {
+
+  public formConfigSvc = inject(FormConfigService);
+  private fieldState = inject(FieldState);
+
   public isInFreeTextMode = signal(false, SignalHelpers.boolEquals);
 
   public features = signal({} as Partial<PickerFeatures>);
 
-  // TODO: doesn't seem to be in use, but probably should?
-  // my guess is it should detect if the open-dialog is shown
-  // public shouldPickerListBeShown$: Observable<boolean>;
-
-  public selectedItems = signal<PickerItem[]>([]);
-
-  /**  Create list of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
-  // public createEntityTypes = signal<{ label: string, guid: string }[]>([]);
+  /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
   public createEntityTypes = computed(() => {
     const types = this.fieldState.settings().CreateTypes;
     return types
@@ -46,26 +37,30 @@ export class StateAdapter extends ServiceBase {
         : []
   }, { equal: RxHelpers.arraysEqual });
 
-  public formConfigSvc = inject(FormConfigService);
-
-  private fieldState = inject(FieldState);
   protected readonly settings = this.fieldState.settings;
-  public controlStatus: Signal<ControlStatus<string | string[]>>;
+  public controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string | string[]>>;
   public basics = this.fieldState.basics;
 
-  private injector = inject(Injector);
 
-  constructor(
-    @Optional() logger: EavLogger = null,
-  ) {
+  private _value = computed(() => this.controlStatus().value, { equal: RxHelpers.manyEquals });
+  private _sepAndOpts = computed(() => {
+    const settings = this.fieldState.settings();
+    return { separator: settings.Separator, options: settings._options };
+  }, { equal: RxHelpers.objectsEqual });
+
+  public selectedItems = computed(() => {
+    const sAndO = this._sepAndOpts();
+    return correctStringEmptyValue(this._value(), sAndO.separator, sAndO.options);
+  }, { equal: RxHelpers.objectsEqual });
+
+
+  constructor(@Optional() logger: EavLogger = null) {
     super(logger ?? new EavLogger(nameOfThis, logThis));
-
-    // experimental logging
-    // effect(() => {
-    //   var settings = this.settings();
-    //   console.log('2dm settings changed', settings);
-    // });
   }
+
+  // todo: doesn't seem to be in use, but probably should?
+  // my guess is it should detect if the open-dialog is shown
+  // public shouldPickerListBeShown$: Observable<boolean>;
 
   // todo: make signal, if useful
   // private isExpanded$: Observable<boolean>;
@@ -76,74 +71,8 @@ export class StateAdapter extends ServiceBase {
     this.log.a('attachToComponent');
     this.log.inherit(component.log);
 
-    const fs = this.fieldState;
-    this.controlStatus = fs.controlStatus as Signal<ControlStatus<string | string[]>>;
     this.focusOnSearchComponent = component.focusOnSearchComponent;
-
     return this;
-  }
-
-  init(callerName: string) {
-    this.log.a('init from ' + callerName);
-
-    const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
-    const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
-
-    const controlStatus$ = toObservable(this.controlStatus, { injector: this.injector });
-    const selectedItems$ = combineLatest([
-      controlStatus$.pipe(
-        logCtlSelected.pipe(),
-        mapUntilChanged(controlStatus => controlStatus.value),
-        logCtlSelected.distinctUntilChanged(),
-      ),
-      this.fieldState.settings$.pipe(mapUntilObjChanged(settings => ({
-        Separator: settings.Separator,
-        Options: settings._options,
-      }))),
-    ]).pipe(
-      logSelected.start(),
-      map(([controlValue, settings]) =>
-        correctStringEmptyValue(controlValue, settings.Separator, settings.Options)
-      ),
-      logSelected.end(),
-    );
-
-    
-    // Temp centralize logic if pickerList should show, but not in use yet.
-    // Commented out, till we need it, then refactor to signals
-    // var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
-    // this.shouldPickerListBeShown$ = combineLatest([
-    //   this.isExpanded$,
-    //   allowMultiValue$,
-    //   selectedItems$,
-    // ]).pipe(
-    //   map(([isExpanded, allowMultiValue, selectedItems]) => {
-    //     return !this.isInFreeTextMode()
-    //       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
-    //       && (!allowMultiValue || (allowMultiValue && isExpanded));
-    //   })
-    // );
-    // if (dumpProperties) {
-    //   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
-    // }
-
-
-    // signal
-    this.subscriptions.add(
-      selectedItems$.subscribe(this.selectedItems.set)
-    );
-
-    // log a lot
-    if (dumpSelected)
-      selectedItems$.subscribe(selItems => this.log.a('selectedItems', selItems));
-
-  }
-
-  destroy() {
-    this.log.a('destroy');
-    // don't kill here, as it's reused
-    // this.settings$.complete();
-    // this.controlStatus$.complete();
   }
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
@@ -213,3 +142,29 @@ export class StateAdapter extends ServiceBase {
     });
   }
 }
+
+// 2024-06-20 Keep in case we need it later
+
+    // Temp centralize logic if pickerList should show, but not in use yet.
+    // Commented out, till we need it, then refactor to signals
+    // var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
+    // this.shouldPickerListBeShown$ = combineLatest([
+    //   this.isExpanded$,
+    //   allowMultiValue$,
+    //   selectedItems$,
+    // ]).pipe(
+    //   map(([isExpanded, allowMultiValue, selectedItems]) => {
+    //     return !this.isInFreeTextMode()
+    //       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
+    //       && (!allowMultiValue || (allowMultiValue && isExpanded));
+    //   })
+    // );
+    // if (dumpProperties) {
+    //   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
+    // }
+
+
+    // // signal
+    // this.subscriptions.add(
+    //   selectedItems$.subscribe(this.selectedItems.set)
+    // );

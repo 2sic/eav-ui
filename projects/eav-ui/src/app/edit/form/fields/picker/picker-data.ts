@@ -33,7 +33,6 @@ export class PickerData extends ServiceBase implements OnDestroy {
   }
 
   public setup(name: string, state: StateAdapter, source: DataAdapter): this {
-    state.init(name);
     source.init(name);
     this.state = state;
     this.source = source;

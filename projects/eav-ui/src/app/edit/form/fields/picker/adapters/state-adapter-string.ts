@@ -12,7 +12,7 @@ export class StateAdapterString extends StateAdapter {
     super(new EavLogger(nameOfThis, logThis));
   }
 
-  protected createNewValue(valueArray: string[]): string | string[] {
+  protected override createNewValue(valueArray: string[]): string | string[] {
     return convertArrayToString(valueArray, this.settings().Separator);
   }
 }
