@@ -68,26 +68,24 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
 
 /** Generate a placeholder item to show in the list to show during loading or in case of error */
 export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
-  const item: PickerItem = {
+  return {
     label: translate.instant(i18nLabel) + (suffix ?? ''),
     value: null,
     notSelectable: true,
     isMessage: true,
     noDelete: true,
     noEdit: true,
-  };
-  return item;
+  } satisfies PickerItem;
 }
 
 /** Generate a placeholder item to show in the list to show during loading or in case of error */
 export function messagePickerItem(translate: TranslateService, i18nLabel: string, params?: object): PickerItem {
-  const item: PickerItem = {
+  return {
     label: translate.instant(i18nLabel, params),
     value: null,
     notSelectable: true,
     isMessage: true,
     noDelete: true,
     noEdit: true,
-  };
-  return item;
+  } satisfies PickerItem;
 }

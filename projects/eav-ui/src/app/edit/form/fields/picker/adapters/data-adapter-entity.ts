@@ -40,7 +40,6 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
   }
 
   fetchItems(): void {
-    // this.contentType = this.contentTypeMask.resolve();
     this.dsEntity.contentType(this.contentType());
     this.dataSource.triggerGetAll();
   }

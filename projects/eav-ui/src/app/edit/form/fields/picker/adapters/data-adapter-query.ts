@@ -5,7 +5,6 @@ import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { messagePickerItem, placeholderPickerItem } from './data-adapter-base';
 import { Injectable, computed, effect, runInInjectionContext, signal, untracked } from '@angular/core';
-import { PickerComponent } from '../picker.component';
 import { StateAdapter } from './state-adapter';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
@@ -101,17 +100,8 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     this.dsQuery.params(this.queryParamsMask()?.resolve());
   }
 
-  destroy(): void {
-    // this.queryParamsMask?.destroy();
-    super.destroy();
-  }
-
   fetchItems(): void {
     this.log.a('fetchItems');
-    // this.contentType = this.contentTypeMask.resolve();
-    // console.warn('2dm content-type', this.contentType);
-    // this.entityFieldDataSource.contentType(this.contentType);
-
     this.dsQuery.params(this.queryParamsMask()?.resolve());
     if (!this.fieldState.settings().Query) {
       this.optionsOrHints$.next([placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')]);

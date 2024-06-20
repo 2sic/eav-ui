@@ -176,18 +176,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   }
 
 
-
-
-  destroy(): void {
-    this.dataSource.destroy();
-    super.destroy();
-  }
-
-  onAfterViewInit(): void {
-    this.log.a('onAfterViewInit');
-    // this.contentType = this.contentTypeMask.resolve();
-  }
-
   // private updateAddNew(): void {
   //   this.log.a('updateAddNew');
   //   // const contentTypeName = this.contentTypeMask.resolve();

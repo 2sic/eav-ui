@@ -77,13 +77,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.log.a('ngAfterViewInit');
     this.pickerData.source.onAfterViewInit();
   }
-
-  ngOnDestroy(): void {
-    this.log.a('ngOnDestroy');
-    this.pickerData.destroy();
-    super.ngOnDestroy();
-  }
-
+  
   /** Create the Picker Adapter - MUST be overridden in each inheriting class */
   protected createPickerAdapters(): void {
     throw new Error('Method not implemented. Must be overridden by inheriting class.');
