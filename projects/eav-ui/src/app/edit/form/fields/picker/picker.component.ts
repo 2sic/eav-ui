@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, signal, inject } from '@angular/core';
 import { EditRoutingService } from '../../../shared/services';
-import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -9,6 +8,7 @@ import { PickerPreviewComponent } from './picker-preview/picker-preview.componen
 import { PickerProviders } from './picker-providers.constant';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 const logThis = false;
 
@@ -23,7 +23,7 @@ const logThis = false;
     PickerDialogComponent,
   ],
 })
-export class PickerComponent extends /* BaseComponent /* */ BaseFieldComponent<string | string[]> /* */ implements OnInit, AfterViewInit, OnDestroy {
+export class PickerComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   public fieldState = inject(FieldState);
@@ -32,13 +32,13 @@ export class PickerComponent extends /* BaseComponent /* */ BaseFieldComponent<s
 
   pickerData: PickerData;
   isStringQuery: boolean;
-  public showPreview: Signal<boolean>;
+  protected showPreview: Signal<boolean>;
 
-  // /**
-  //  * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
-  //  * since the same control can be used in the dialog but also in the form directly
-  //  */
-  // controlConfig: FieldControlConfig = {};
+  /**
+   * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
+   * since the same control can be used in the dialog but also in the form directly
+   */
+  controlConfig: FieldControlConfig = {};
 
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger('PickerComponent', logThis));
@@ -46,7 +46,6 @@ export class PickerComponent extends /* BaseComponent /* */ BaseFieldComponent<s
 
   ngOnInit(): void {
     this.log.a('ngOnInit');
-    super.ngOnInit();
     this.refreshOnChildClosed();
     this.initAdaptersAndViewModel();
 

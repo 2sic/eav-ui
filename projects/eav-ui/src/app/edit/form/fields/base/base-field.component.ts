@@ -38,9 +38,7 @@ export abstract class BaseFieldComponent<T = FieldValue> extends BaseComponent i
   protected settings = signal<FieldSettings>(null, { equal: RxHelpers.objectsEqual });
   basics = computed(() => BasicControlSettings.fromSettings(this.settings()), { equal: RxHelpers.objectsEqual });
 
-
-
-  /** The Field-Settings-Service - experimental with new inject */
+  /** The Field-Settings-Service */
   public fieldsSettingsService = inject(FieldsSettingsService);
 
   // TODO: @2DM - GET RED OF THE FORMcONFIG HERE
