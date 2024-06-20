@@ -3,7 +3,7 @@ import { FieldsSettingsService } from '../../../shared/services/fields-settings.
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldSettings } from 'projects/edit-types';
 import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettings';
-import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
+import { FieldConfigSet } from './field-config-set.model';
 import { FieldState } from './field-state';
 import { EntityFormStateService } from '../../entity-form-state.service';
 import { ControlStatus, controlToControlStatus } from '../../../shared/models';
@@ -26,10 +26,7 @@ export class FieldInjectorService {
 
   constructor() { }
 
-  public getInjectors(fieldConfig: FieldConfigSet, isPreview: boolean) {
-    // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
-    const controlConfig: FieldControlConfig = { isPreview };
-
+  public getInjectors(fieldConfig: FieldConfigSet) {
     // 2024-06-18 2dm experimental new injector with fieldConfig etc.
     const fieldName = fieldConfig.fieldName;
     const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
@@ -53,14 +50,12 @@ export class FieldInjectorService {
     const fieldState = new FieldState(
       fieldName,
       fieldConfig,
-      controlConfig,
       this.group,
       control,
       settings$,
       settings,
       basics,
       controlStatusChangeSignal,
-      this.injector
     );
 
     const providers = [

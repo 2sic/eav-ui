@@ -1,5 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,7 +6,6 @@ import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/feature
 import { consoleLogDev } from '../../../../shared/helpers/console-log-angular.helper';
 import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHelper } from './connector.helper';
 import { FieldState } from '../../builder/fields-builder/field-state';
 

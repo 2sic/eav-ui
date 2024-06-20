@@ -7,8 +7,8 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerDialogComponent } from './picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './picker-preview/picker-preview.component';
 import { PickerProviders } from './picker-providers.constant';
-import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { FieldState } from '../../builder/fields-builder/field-state';
+import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 
 const logThis = false;
 
@@ -27,13 +27,18 @@ export class PickerComponent extends /* BaseComponent /* */ BaseFieldComponent<s
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   public fieldState = inject(FieldState);
+  
+  public editRoutingService = inject(EditRoutingService);
 
   pickerData: PickerData;
   isStringQuery: boolean;
-
   public showPreview: Signal<boolean>;
 
-  public editRoutingService = inject(EditRoutingService);
+  // /**
+  //  * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
+  //  * since the same control can be used in the dialog but also in the form directly
+  //  */
+  // controlConfig: FieldControlConfig = {};
 
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger('PickerComponent', logThis));

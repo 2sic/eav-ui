@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { distinctUntilChanged, share } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
 import { EditRoutingService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -15,8 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { NgClass } from '@angular/common';
+import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,
@@ -44,6 +44,13 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
 
   dialogIsOpen = signal(false);
 
+  // /**
+  //  * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
+  //  * since the same control can be used in the dialog but also in the form directly
+  //  */
+  // controlConfig: FieldControlConfig = {};
+
+
   constructor(
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
@@ -62,6 +69,7 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
       });
   }
 
+  // TODO: @2dm - search for all of these, remove
   ngOnDestroy() {
     super.ngOnDestroy();
   }
