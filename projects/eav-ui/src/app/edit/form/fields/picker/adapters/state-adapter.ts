@@ -8,7 +8,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormConfigService } from '../../../../shared/services';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Injector, Optional, Signal, inject, signal } from '@angular/core';
+import { Injectable, Injector, Optional, Signal, computed, inject, signal } from '@angular/core';
 import { PickerComponent } from '../picker.component';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
@@ -16,6 +16,7 @@ import { PickerFeatures } from '../picker-features.model';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
 const dumpSelected = true;
@@ -34,7 +35,16 @@ export class StateAdapter extends ServiceBase {
 
   public selectedItems = signal<PickerItem[]>([]);
 
-  public createEntityTypes: { label: string, guid: string }[] = [];
+  /**  Create list of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
+  // public createEntityTypes = signal<{ label: string, guid: string }[]>([]);
+  public createEntityTypes = computed(() => {
+    const types = this.fieldState.settings().CreateTypes;
+    return types
+        ? types
+            .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
+            .map((guid: string) => ({ label: null, guid }))
+        : []
+  }, { equal: RxHelpers.arraysEqual });
 
   public formConfigSvc = inject(FormConfigService);
 
@@ -57,9 +67,6 @@ export class StateAdapter extends ServiceBase {
     // });
   }
 
-  
-  private settings$: Observable<FieldSettings>;
-
   // todo: make signal, if useful
   // private isExpanded$: Observable<boolean>;
   
@@ -70,7 +77,6 @@ export class StateAdapter extends ServiceBase {
     this.log.inherit(component.log);
 
     const fs = this.fieldState;
-    this.settings$ = fs.settings$;
     this.controlStatus = fs.controlStatus as Signal<ControlStatus<string | string[]>>;
     this.focusOnSearchComponent = component.focusOnSearchComponent;
 
@@ -79,20 +85,6 @@ export class StateAdapter extends ServiceBase {
 
   init(callerName: string) {
     this.log.a('init from ' + callerName);
-
-    // Create list of entity types to create for the (+) button
-    // ATM exclusively used in the new pickers for selecting the source.
-    // todo: enhance some day to also include a better label
-    this.subscriptions.add(
-      this.settings$.subscribe(settings => {
-        const types = settings.CreateTypes;
-        this.createEntityTypes = types
-          ? types
-              .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
-              .map((guid: string) => ({ label: null, guid }))
-          : [];
-      })
-    );
 
     const logSelected = this.log.rxTap('selectedItems$', {enabled: true});
     const logCtlSelected = logSelected.rxTap('controlStatus$', {enabled: true});
@@ -104,7 +96,7 @@ export class StateAdapter extends ServiceBase {
         mapUntilChanged(controlStatus => controlStatus.value),
         logCtlSelected.distinctUntilChanged(),
       ),
-      this.settings$.pipe(mapUntilObjChanged(settings => ({
+      this.fieldState.settings$.pipe(mapUntilObjChanged(settings => ({
         Separator: settings.Separator,
         Options: settings._options,
       }))),
@@ -212,8 +204,8 @@ export class StateAdapter extends ServiceBase {
   }
 
   getEntityTypesData(): void {
-    if (this.createEntityTypes[0].label) return;
-    this.createEntityTypes.forEach(entityType => {
+    if (this.createEntityTypes()[0].label) return;
+    this.createEntityTypes().forEach(entityType => {
       const ct = this.formConfigSvc.settings.ContentTypes
         .find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
       entityType.label = ct?.Name ?? entityType.guid + " (not found)";

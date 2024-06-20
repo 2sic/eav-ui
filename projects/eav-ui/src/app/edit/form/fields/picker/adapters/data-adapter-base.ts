@@ -1,4 +1,3 @@
-import { BehaviorSubject } from 'rxjs';
 import { DeleteEntityProps } from '../models/picker.models';
 import { DataAdapter } from './data-adapter.interface';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';

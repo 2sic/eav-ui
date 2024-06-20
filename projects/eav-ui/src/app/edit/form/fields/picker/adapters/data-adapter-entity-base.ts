@@ -3,7 +3,6 @@ import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model"
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { FieldMask } from "../../../../shared/helpers";
-import { BehaviorSubject, combineLatest } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { EntityService, FormConfigService, EditRoutingService } from "../../../../shared/services";
@@ -12,13 +11,12 @@ import { StateAdapter } from './state-adapter';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
-import { Injector, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
+import { Injector, computed, inject, signal, untracked } from '@angular/core';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { EntityFormStateService } from '../../../entity-form-state.service';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { PickerItem, messagePickerItem } from '../models/picker-item.model';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -56,8 +54,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   );
 
   // WIP
-  private deletedItemGuids$ = new BehaviorSubject<string[]>([]);
-  private deletedItemsGuids = toSignal(this.deletedItemGuids$, { initialValue: [] });
+  private deletedItemsGuids = signal<string[]>([]);
 
   private entityService = inject(EntityService);
   protected formConfig = inject(FormConfigService);
@@ -182,7 +179,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.deleteCallback(props); // removes value from selected values
-        this.deletedItemGuids$.next([...this.deletedItemsGuids(), props.entityGuid]);
+        this.deletedItemsGuids.update(p => [...p, props.entityGuid]);
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
@@ -192,7 +189,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.deleteCallback(props); // removes value from selected values
-            this.deletedItemGuids$.next([...this.deletedItemsGuids(), props.entityGuid]);
+            this.deletedItemsGuids.update(p => [...p, props.entityGuid]);
           },
           error: (error2: HttpErrorResponse) => {
             this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
