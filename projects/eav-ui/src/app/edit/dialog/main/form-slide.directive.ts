@@ -49,8 +49,4 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
       })
     );
   }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
 }

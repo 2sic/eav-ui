@@ -97,10 +97,6 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
     );
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   closeDialog() {
     this.dialogRef.close();
   }

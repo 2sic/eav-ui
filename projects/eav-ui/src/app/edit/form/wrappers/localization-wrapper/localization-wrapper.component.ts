@@ -42,10 +42,6 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
     this.language.set(this.languageStore.getLanguage(this.formConfig.config.formId));
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   translate() {
     if (this.formsStateService.readOnly().isReadOnly) return;
     const language = this.languageStore.getLanguage(this.formConfig.config.formId);

@@ -88,10 +88,6 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
     }
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   chooseShare() {
     this.guid = null;
     this.state = SharingOrInheriting.Sharing;

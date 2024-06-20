@@ -69,11 +69,6 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
       });
   }
 
-  // TODO: @2dm - search for all of these, remove
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   calculateBottomPixels() {
     return window.innerWidth > 600 ? '100px' : '50px';
   }

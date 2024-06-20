@@ -141,10 +141,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     );
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
