@@ -25,7 +25,7 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
   protected useDataSourceStream = signal(false);
   public optionsOrHints = computed(() => (this.dataSource().data()) ?? []);
 
-  public editEntityGuid$ = new BehaviorSubject<string>(null);
+  public editEntityGuid = signal<string>(null);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
 
@@ -43,7 +43,7 @@ export abstract class DataAdapterBase extends ServiceBase implements DataAdapter
 
   destroy() {
     // this.optionsOrHints$.complete();
-    this.editEntityGuid$.complete();
+    // this.editEntityGuid$.complete();
     super.destroy();
   }
 

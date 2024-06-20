@@ -137,7 +137,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
     this.log.a('editItem', [editParams]);
     if (editParams)
-      this.editEntityGuid$.next(editParams.entityGuid);
+      this.editEntityGuid.set(editParams.entityGuid);
     let form: EditForm;
     if (editParams?.entityGuid == null) {
       const contentTypeName = entityType ?? this.contentType();

@@ -16,7 +16,7 @@ export interface DataAdapter {
   optionsOrHints: Signal<PickerItem[]>;
 
   // optionsOrHints$: BehaviorSubject<PickerItem[]>;
-  editEntityGuid$: BehaviorSubject<string>;
+  editEntityGuid: Signal<string>;
 
   features: Signal<Partial<PickerFeatures>>;
 

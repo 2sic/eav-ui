@@ -83,7 +83,7 @@ export class DataSourceQuery extends DataSourceBase {
           );
       }),
       lAll.map('before'),
-      map(set => { return { ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) } }),
+      map(set => ({ ...set, data: this.transformData(set.data, streamName, /* mustUseGuid: */ !isForStringField) })),
       lAll.map('after'),
       startWith(this.noItemsLoadingFalse),
       shareReplay(1),

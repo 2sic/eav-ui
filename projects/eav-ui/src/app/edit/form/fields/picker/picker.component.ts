@@ -105,8 +105,8 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     // this is used when new entity is created/changed in child form it automatically fetched again
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
-        if (this.pickerData.source.editEntityGuid$.value)
-          this.pickerData.source.forceReloadData([this.pickerData.source.editEntityGuid$.value]);
+        if (this.pickerData.source.editEntityGuid())
+          this.pickerData.source.forceReloadData([this.pickerData.source.editEntityGuid()]);
       })
     );
   }
