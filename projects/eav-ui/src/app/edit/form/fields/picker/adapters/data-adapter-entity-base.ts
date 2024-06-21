@@ -17,6 +17,7 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { EntityFormStateService } from '../../../entity-form-state.service';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { PickerItem, messagePickerItem } from '../models/picker-item.model';
+import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -112,7 +113,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   }
 
   initPrefetch(prefetchGuids: string[]): void {
-    this.dataSource().initPrefetch(prefetchGuids);
+    (this.dataSource() as DataSourceEntityQueryBase).initPrefetch?.(prefetchGuids);
   }
 
   forceReloadData(missingData: string[]): void {

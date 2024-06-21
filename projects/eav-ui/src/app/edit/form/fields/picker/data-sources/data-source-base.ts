@@ -17,6 +17,10 @@ export abstract class DataSourceBase extends ServiceBase {
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
+  constructor(logSpecs: EavLogger) { super(logSpecs); 
+
+  }
+
   /** Signal containing the data */
   public data: Signal<PickerItem[]>;
 
@@ -25,7 +29,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   /** Toggle to trigger a full refresh. */
   protected getAll$ = new BehaviorSubject<boolean>(false);
-  private getAll = signal(false);
+  protected getAll = signal(false);
 
   /**
    * Force refresh of the entities with these guids.
@@ -38,14 +42,7 @@ export abstract class DataSourceBase extends ServiceBase {
   protected guidsToRefresh$ = new BehaviorSubject<string[]>([]);
   protected guidsToRefresh = toSignal(this.guidsToRefresh$);
 
-  protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
-  protected prefetchEntityGuids = toSignal(this.prefetchEntityGuids$);
-
   protected settings = this.fieldState.settings;
-
-  constructor(logSpecs: EavLogger) {
-    super(logSpecs);
-  }
 
   protected noItemsLoadingFalse: DataWithLoading<PickerItem[]> = { data: [], loading: false };
   protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
@@ -53,7 +50,6 @@ export abstract class DataSourceBase extends ServiceBase {
   public setup(): this { return this; }
 
   destroy(): void {
-    this.prefetchEntityGuids$.complete();
     this.guidsToRefresh$.complete();
     this.getAll$.complete();
     super.destroy();
@@ -72,11 +68,6 @@ export abstract class DataSourceBase extends ServiceBase {
     const merged = [...this.guidsToRefresh(), ...additionalGuids].filter(RxHelpers.distinct);
     this.log.a('forceLoadGuids', ['before', this.guidsToRefresh(), 'after', additionalGuids, 'merged', merged]);
     this.guidsToRefresh$.next(merged);
-  }
-
-  initPrefetch(entityGuids: string[]): void {
-    const guids = entityGuids.filter(RxHelpers.distinct);
-    this.prefetchEntityGuids$.next(guids);
   }
 
   protected getMaskHelper(enableLog?: boolean): DataSourceMasksHelper {

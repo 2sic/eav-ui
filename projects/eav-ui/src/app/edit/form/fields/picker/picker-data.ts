@@ -8,10 +8,16 @@ import { Injectable, OnDestroy, computed, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = false;
+const logThis = true;
+const nameOfThis = 'PickerData';
 
 @Injectable()
 export class PickerData extends ServiceBase implements OnDestroy {
+
+  constructor() { super(new EavLogger(nameOfThis, logThis)); }
+
+  public state: StateAdapter;
+  public source: DataAdapter;
 
   selectedAll = computed(() => this.createUIModel(this.state.selectedItems(), this.source.optionsOrHints(), this.translate));
 
@@ -23,15 +29,8 @@ export class PickerData extends ServiceBase implements OnDestroy {
     return PickerFeatures.merge(fromSource, fromState);
   }, { equal: RxHelpers.objectsEqual });
 
-  public state: StateAdapter;
-  public source: DataAdapter;
-
   private translate = inject(TranslateService);
   
-  constructor() {
-    super(new EavLogger('PickerData', logThis));
-  }
-
   public setup(name: string, state: StateAdapter, source: DataAdapter): this {
     source.init(name);
     this.state = state;
@@ -40,6 +39,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
     const initiallySelected = state.selectedItems();
+    this.log.a('setup', ['initiallySelected', initiallySelected])
     source.initPrefetch(initiallySelected.map(item => item.value));
     return this;
   }
