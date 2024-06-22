@@ -1,108 +1,59 @@
 import { PickerItem, messagePickerItem, placeholderPickerItem } from "projects/edit-types";
-import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, of, shareReplay, startWith } from "rxjs";
+import { Observable, map, of, startWith } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Injector, WritableSignal, computed, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 
 const logThis = false;
 const nameOfThis = 'DataSourceQuery';
-const logRx = true;
+
+
+// NEXT STEPS
+// 1. ✅ create a class for params - so it can be used by both query and entity and not be confusing
+// 2. ✅ neutralize the getObservable to be a simple function with same params query/entity
+// 3. then move the Overrides into a calculated on the base class
+// ... where query/entity override the getObservable
+// 4. then clean up the rest
+//
+// 5. afterwards check all edge cases.
 
 @Injectable()
 export class DataSourceQuery extends DataSourceEntityQueryBase {
 
-  //#region Inject and blank constructor
-
   private translate = inject(TranslateService);
-  private injector = inject(Injector);
 
   constructor() { super(new EavLogger(nameOfThis, logThis)); }
 
-  //#endregion
-  
-  private params$ = new Subject<string>();
-  private _queryParams = toSignal(this.params$);
-  private _queryParamsDebounce = computed(() => this._queryParams(), { equal: RxHelpers.stringEquals });
-
   private appId: number;
-
   private isForStringField = signal(false);
+  private streamName = computed(() => this.settings().StreamName);
 
+  // TODO: SEE IF WE CAN RETRIEVE THESE VALUES DIRECTLY, NOT THROUGH PARAMETERS
   setupQuery(isForStringField: boolean, entityGuid: string, fieldName: string, appId: string): void {
     this.log.a('setupQuery', ['appId', appId, 'isForStringField', isForStringField, 'entityGuid', entityGuid, 'fieldName', fieldName]);
 
     this.isForStringField.set(isForStringField);
-
-    this.appId = Number(appId);
-    const sett = this.settings();
-    const streamName = sett.StreamName;
-    
-
-    const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
-
-    // TODO: SHOULD BE able to change this to not use an effect at all
-    // Get all the "main" data
-    effect(() => {
-      // Wait till get-all is triggered
-      if (!this.getAll()) return;
-      const params = this._queryParamsDebounce();
-      this.observableFromQuery(streamName, params, [])
-        .pipe(
-          map(set => ({ ...set, data: this.transformData(set.data, streamName) })),
-        )
-        .subscribe(this._all.set);
-    }, { injector: this.injector, allowSignalWrites: true });
-
-
-
-    // Figure out the prefetch
-    // Note that if we're using a string-data based query, there will be no prefetch
-    // So it just needs to return an empty list
-    const prefetch$ = this.getPrefetchStream();
-    // this.fillSignal(prefetch$, this._prefetch);
-
-    const missingInPrefetch$ = combineLatest([prefetch$, this.prefetchEntityGuids$]).pipe(
-      // return guids from prefetchEntityGuids that are not in prefetch
-      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.data.find(item => item.value === guid))),
-    );
-
-    const guidsToForceLoad$ = combineLatest([missingInPrefetch$, this.guidsToRefresh$]).pipe(
-      map(([missingInPrefetch, refreshGuids]) => [...missingInPrefetch, ...refreshGuids].filter(RxHelpers.distinct)),
-      filter(guids => guids?.length > 0),
-      // distinctUntilChanged(GeneralHelpers.arraysEqual),
-    );
-
-    const overrides$ = combineLatest([params$, guidsToForceLoad$]).pipe(
-      mergeMap(([params, guids]) => this.observableFromQuery(streamName, params, guids)),
-      map(set => ({
-        data: this.transformData(set.data, streamName),
-        loading: set.loading,
-      })),
-      startWith(this.noItemsLoadingFalse),
-      shareReplay(1),
-    );
-
-    this.fillSignal(overrides$, this._overrides);
+    this.appId = Number(appId);    
   }
 
   /** Get the data from a query - all or only the ones listed in the guids */
-  observableFromQuery(streamName: string, params: string, guids: string[])
-    : Observable<DataWithLoading<QueryStreams>> {
+  getFromBackend(params: string, guids: string[], purpose: string)
+    : Observable<DataWithLoading<PickerItem[]>> {
     // If the configuration isn't complete, the query can be empty
     const sett = this.settings();
+    const streamName = this.streamName();
     const queryName = sett.Query;
     const queryUrl = !!queryName
       ? queryName.includes('/') ? sett.Query : `${sett.Query}/${streamName}`
       : null;
 
     // If no query, return a dummy item with a message
+    let source: Observable<DataWithLoading<QueryStreams>>;
     if (!queryUrl)
-      return of<DataWithLoading<QueryStreams>>({
+      source = of<DataWithLoading<QueryStreams>>({
           data: {
             'Default': [
               {
@@ -115,21 +66,22 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
           loading: true,
         }
       );
+    else {
+      // Default case, get the data
+      source = this.querySvc
+        .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings()), guids)
+        .pipe(
+          map(data => ({ data, loading: false } as DataWithLoading<QueryStreams>)),
+          startWith({ data: {} as QueryStreams, loading: true } as DataWithLoading<QueryStreams>)
+        );
+    }
 
-    // Default case, get the data
-    const lGetQs = this.log.rxTap('queryService', { enabled: logRx });
-    return this.querySvc
-      .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings()), guids)
-      .pipe(
-        lGetQs.pipe(),
-        map(data => ({ data, loading: false } as DataWithLoading<QueryStreams>)),
-        startWith({ data: {} as QueryStreams, loading: true } as DataWithLoading<QueryStreams>)
-      );
-  }
-
-  destroy(): void {
-    this.params$.complete();
-    super.destroy();
+    return source.pipe(
+      map(set => ({
+        data: this.transformData(set.data, streamName),
+        loading: set.loading,
+      } as DataWithLoading<PickerItem[]>)),
+    );
   }
 
   params(params: string): void {
