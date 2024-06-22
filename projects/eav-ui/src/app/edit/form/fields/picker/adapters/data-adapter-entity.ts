@@ -14,11 +14,11 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dsEntity.contentType(this.contentType());
+    this.dsEntity.setParams(this.contentType());
   }
 
   fetchItems(): void {
-    this.dsEntity.contentType(this.contentType());
+    this.dsEntity.setParams(this.contentType());
     this.dataSource().triggerGetAll();
   }
 }

@@ -33,7 +33,4 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
       )
   }
 
-  contentType(contentTypeName: string): void {
-    this.params$.next(contentTypeName);
-  }
 }

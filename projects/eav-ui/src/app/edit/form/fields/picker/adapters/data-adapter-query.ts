@@ -31,38 +31,20 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     return fieldMask;
   });
 
-  /**
-   * Behavior changes a bit if the query is meant to supply data for string-inputs
-   * ...mainly because the value is allowed to be any field, not just the Guid.
-   */
-  private isStringQuery = this.fieldState.config.inputType?.toString().startsWith('string');
-
-
   init(callerName: string): void {
     super.init(callerName);
-
-    this.log.a(`init - isStringQuery: ${this.isStringQuery}`);
-
-    const config = this.fieldState.config;
-    this.dsQuery.setupQuery(
-      this.isStringQuery,
-      config.entityGuid,
-      config.fieldName,
-      this.formConfig.config.appId,
-    );
-
     // #cleanUpCaAugust2024
     // this.setupFlushOnSettingsChange();
   }
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dsQuery.params(this.queryParamsMask()?.resolve());
+    this.dsQuery.setParams(this.queryParamsMask()?.resolve());
   }
 
   fetchItems(): void {
     this.log.a('fetchItems');
-    this.dsQuery.params(this.queryParamsMask()?.resolve());
+    this.dsQuery.setParams(this.queryParamsMask()?.resolve());
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
       const errors = [placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')];

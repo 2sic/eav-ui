@@ -1,5 +1,5 @@
 import { PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
+import { BehaviorSubject, Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -9,13 +9,18 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
+/**
+ * This is the base class for data-sources providing data from
+ * - entities
+ * - queries
+ */
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   //#region Inject and blank constructor
 
   protected querySvc = inject(QueryService);
-  protected entityCacheService = inject(PickerDataCacheService);
+  protected entityCacheSvc = inject(PickerDataCacheService);
 
   constructor(logger: EavLogger) { super(logger); }
 
@@ -39,7 +44,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   private prefetchEntityGuids = toSignal(this.prefetchEntityGuids$);
 
   /** Prefetch the data from the initially specified guids - from the prefetch-cache */
-  protected _prefetch = toSignal(this.getPrefetchStream());
+  protected _prefetch = toSignal(this.getPrefetchStream(), { initialValue: this.noItemsLoadingFalse });
 
   /**
    * Guids of items which _should_ be refreshed from the backend.
@@ -115,10 +120,9 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
         // only retrieve things if there are entity-guids
         filter(entityGuids => entityGuids?.length > 0),
         // get and keep the latest retrieved entities
-        mergeMap(entityGuids => this.entityCacheService.getEntities$(entityGuids).pipe(
+        mergeMap(entityGuids => this.entityCacheSvc.getEntities$(entityGuids).pipe(
           map(data => ({ data, loading: false } as DataWithLoading<PickerItem[]>))
         )),
-        startWith(this.noItemsLoadingFalse),
         shareReplay(1),
       );
   }
@@ -132,6 +136,11 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   /** Get the data from a query - all or only the ones listed in the guids */
   abstract getFromBackend(params: string, guids: string[], purpose: string)
     : Observable<DataWithLoading<PickerItem[]>>;
+
+  /** Set parameters for retrieval - either contentTypeName or query url parameters */
+  setParams(params: string): void {
+    this.params$.next(params);
+  }
 
 
   destroy(): void {
