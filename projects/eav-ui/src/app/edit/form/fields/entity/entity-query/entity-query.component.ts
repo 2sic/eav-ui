@@ -20,7 +20,7 @@ const nameOfThis = 'EntityQueryComponent';
 })
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  private stateRaw = inject(StateAdapterEntity);
+  private stateEntity = inject(StateAdapterEntity);
   protected querySourceAdapterRaw = inject(DataAdapterQuery);
 
   constructor() {
@@ -31,10 +31,10 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.stateRaw.attachToComponent(this);
+    const state = this.stateEntity.attachToComponent(this);
 
     this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-    const source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
+    const source = this.querySourceAdapterRaw.linkLog(this.log).connectState(state, false);
 
     this.pickerData.setup(nameOfThis, state, source);
   }

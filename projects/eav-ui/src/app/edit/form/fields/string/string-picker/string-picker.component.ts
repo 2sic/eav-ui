@@ -24,10 +24,10 @@ const nameOfThis = 'StringPickerComponent';
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  private sourceAdapterStringRaw = inject(DataAdapterString);
-  private stateAdapterStringRaw = inject(StateAdapterString);
-  private pickerEntitySourceAdapter = inject(DataAdapterEntity);
-  private querySourceAdapterRaw = inject(DataAdapterQuery);
+  private stateString = inject(StateAdapterString);
+  private sourceAdapterString = inject(DataAdapterString);
+  private sourceAdapterEntity = inject(DataAdapterEntity);
+  private sourceAdapterQuery = inject(DataAdapterQuery);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -39,21 +39,21 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
 
     let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;
 
-    const state = this.stateAdapterStringRaw.attachToComponent(this);
+    const state = this.stateString.attachToComponent(this);
 
     const dataSourceType = this.fieldState.settings().DataSourceType;
     const isEmpty = !dataSourceType;
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
-      source = this.sourceAdapterStringRaw.setupString(
+      source = this.sourceAdapterString.setupString(
         (props: DeleteEntityProps) => state.doAfterDelete(props),
         isEmpty,
       );
     }
     else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery)
-      source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
+      source = this.sourceAdapterQuery.linkLog(this.log).connectState(state, false);
     else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
-      source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
+      source = this.sourceAdapterEntity.linkLog(this.log).connectState(state, false);
 
 
     this.pickerData.setup(nameOfThis, state, source);

@@ -21,8 +21,8 @@ const nameOfThis = 'StringDropdownComponent';
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  private pickerStringSourceAdapterRaw = inject(DataAdapterString);
-  private pickerStringStateAdapterRaw = inject(StateAdapterString);
+  private sourceAdapterString = inject(DataAdapterString);
+  private stateString = inject(StateAdapterString);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -31,9 +31,9 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
+    const state = this.stateString.attachToComponent(this);
 
-    const source = this.pickerStringSourceAdapterRaw.setupString(
+    const source = this.sourceAdapterString.setupString(
       (props: DeleteEntityProps) => state.doAfterDelete(props),
       false,
     );

@@ -7,6 +7,7 @@ import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
 
 const logThis = false;
 const nameOfThis = 'StringDropdownQueryComponent';
+
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
   templateUrl: '../../picker/picker.component.html',
@@ -17,7 +18,7 @@ const nameOfThis = 'StringDropdownQueryComponent';
 })
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
-  private pickerStringStateAdapterRaw = inject(StateAdapterString);
+  private stateString = inject(StateAdapterString);
 
   constructor() {
     super();
@@ -27,9 +28,9 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.pickerStringStateAdapterRaw.attachToComponent(this);
+    const state = this.stateString.attachToComponent(this);
 
-    const source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
+    const source = this.querySourceAdapterRaw.linkLog(this.log).connectState(state, false);
 
     this.pickerData.setup(nameOfThis, state, source);
   }

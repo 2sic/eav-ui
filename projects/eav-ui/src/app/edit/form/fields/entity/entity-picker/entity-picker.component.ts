@@ -31,23 +31,24 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
   }
 
   protected override createPickerAdapters(): void {
-    this.log.a('createPickerAdapters');
+    const nameOfMethod = 'createPickerAdapters';
+    this.log.a(nameOfMethod);
     let source: DataAdapterQuery | DataAdapterEntity;
 
     const state = this.stateRaw.attachToComponent(this);
 
     const dataSourceType = this.fieldState.settings().DataSourceType;
-    this.log.a(`createPickerAdapters: dataSourceType: '${dataSourceType}'`);
+    this.log.a(`${nameOfMethod}: dataSourceType: '${dataSourceType}'`);
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
-      this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceEntity');
-      source = this.entitySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
+      this.log.a(`${nameOfMethod}: UiPickerSourceEntity`);
+      source = this.entitySourceAdapterRaw.linkLog(this.log).connectState(state, false);
     } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
-      this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
-      source = this.querySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, false);
+      this.log.a(`${nameOfMethod}: UiPickerSourceQuery`);
+      source = this.querySourceAdapterRaw.linkLog(this.log).connectState(state, false);
     } else {
       // not configured yet, should get some empty-not-configured source
-      source = this.entitySourceAdapterRaw.linkLog(this.log).setupFromComponent(state, true);
+      source = this.entitySourceAdapterRaw.linkLog(this.log).connectState(state, true);
     }
 
     this.pickerData.setup(nameOfThis, state, source);

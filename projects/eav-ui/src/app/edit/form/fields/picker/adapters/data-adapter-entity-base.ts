@@ -101,7 +101,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     return this;
   };
 
-  public setupFromComponent(state: StateAdapter, useEmpty: boolean): this  {
+  public connectState(state: StateAdapter, useEmpty: boolean): this  {
     this.log.a('setupFromComponent');
 
     this.dataSource.set(useEmpty

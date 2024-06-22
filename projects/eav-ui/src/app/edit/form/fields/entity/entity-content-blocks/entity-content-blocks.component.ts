@@ -20,8 +20,8 @@ const nameOfThis = 'EntityContentBlockComponent';
 })
 export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {
 
-  private pickerStateAdapterRaw = inject(StateAdapter);
-  private pickerEntitySourceAdapter = inject(DataAdapterEntity);
+  private stateRaw = inject(StateAdapter);
+  private entitySourceAdapter = inject(DataAdapterEntity);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -30,9 +30,9 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.pickerStateAdapterRaw.attachToComponent(this);
+    const state = this.stateRaw.attachToComponent(this);
 
-    const source = this.pickerEntitySourceAdapter.linkLog(this.log).setupFromComponent(state, false);
+    const source = this.entitySourceAdapter.linkLog(this.log).connectState(state, false);
 
     this.pickerData.setup(nameOfThis, state, source);
   }

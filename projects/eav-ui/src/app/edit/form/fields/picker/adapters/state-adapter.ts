@@ -70,7 +70,6 @@ export class StateAdapter extends ServiceBase {
   public attachToComponent(component: PickerComponent): this  {
     this.log.a('attachToComponent');
     this.log.inherit(component.log);
-
     this.focusOnSearchComponent = component.focusOnSearchComponent;
     return this;
   }
