@@ -18,7 +18,7 @@ export class DataSourceEmpty extends DataSourceBase {
     super(new EavLogger(nameOfThis, logThis));
   }
 
-  private label = signal('');
+  private label = signal(`something is wrong - using ${nameOfThis}`);
 
   public preSetup(label: string): this {
     this.label.set(label);

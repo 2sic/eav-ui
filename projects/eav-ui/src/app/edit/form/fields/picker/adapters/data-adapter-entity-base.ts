@@ -24,7 +24,11 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   /** Content Type Mask */
   private typeMaskFromSettings = computed(() => this.fieldState.settings().EntityType, SignalHelpers.stringEquals);
-  /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
+
+  /**
+   * This is a text or mask containing all query parameters.
+   * Since it's a mask, it can also contain values from the current item
+   */
   private contentTypeMaskLazy = computed(() => {
     const typeMask = this.typeMaskFromSettings();
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
@@ -41,7 +45,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   protected contentType = computed(() => this.contentTypeMaskLazy()?.signal() ?? '', SignalHelpers.stringEquals);
 
-  // private createEntityTypes = signal<string>('', SignalHelpers.stringEquals);
   private createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalHelpers.stringEquals);
 
   /** The features depend on contentType names being available to support create */
