@@ -10,19 +10,18 @@ const logThis = false;
 
 @Injectable()
 export class QueryService extends ServiceBase {
+
   constructor(private http: HttpClient, private context: Context) {
     super(new EavLogger('QueryService', logThis));
   }
 
-  getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
-    this.log.a('getAvailableEntities', ['queryUrl', queryUrl, 'includeGuid', includeGuid, 'params', params, 'fields', fields, 'entitiesFilter', entitiesFilter]);
+  getAvailableEntities(queryUrl: string, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
+    this.log.a('getAvailableEntities', ['queryUrl', queryUrl, 'params', params, 'fields', fields, 'entitiesFilter', entitiesFilter]);
     // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
     const hasParams = !!params;
     const paramsLower = params?.toLocaleLowerCase() ?? '';
     const hasAppId = paramsLower.includes('appid=') ?? false;
-    const hasGuid = paramsLower.includes('includeguid=') ?? false;
-    const allParams =
-      '' // 2024-04-02 2dm removed now - monitor: (hasGuid ? '' : `&includeGuid=${includeGuid}`)//TODO: @SDV remove this when $select is respected
+    const allParams = ''
       + (hasAppId ? '' : `&appId=${this.context.appId}`)
       + (hasParams ? `&${params}` : '')
       + '&$select=' + (fields ?? '' /* special catch to avoid the word "null" */);

@@ -69,7 +69,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
     else {
       // Default case, get the data
       source = this.querySvc
-        .getAvailableEntities(queryUrl, true, params, this.fieldsToRetrieve(this.settings()), guids)
+        .getAvailableEntities(queryUrl, params, this.fieldsToRetrieve(this.settings()), guids)
         .pipe(
           map(data => ({ data, loading: false } as DataWithLoading<QueryStreams>)),
           startWith({ data: {} as QueryStreams, loading: true } as DataWithLoading<QueryStreams>)
