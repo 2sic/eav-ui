@@ -43,8 +43,9 @@ export class QueryService extends ServiceBase {
       + '&$select=' + (fields ?? '' /* special catch to avoid the word "null" */);
     // trim initial & because it will always start with an & and it should't
     const urlParams = allParams.substring(1);
-    return this.http.post<QueryStreams>(`app/auto/query/System.EntityPicker/Default?${urlParams}`,
-      /*{ Guids: entitiesFilter },*/{}
+    return this.http.post<QueryStreams>(
+      `app/auto/query/System.EntityPicker/Default?${urlParams}`,
+      {}
     );
   }
 }

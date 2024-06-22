@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject, combineLatest, distinctUntilChang
 import { QueryService } from "../../../../shared/services";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
@@ -21,22 +21,33 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   //#endregion
   
-  /** The params are either query-url params or the type-name */
+  /**
+   * The params are either query-url params or the type-name.
+   * Implemented as observable, since all requests depend on observables.
+   * If there is ever an httpSignal service or something, then this should be migrated.
+   */
   protected params$ = new Subject<string>();
   private paramsDebounced$ = this.params$.pipe(distinctUntilChanged());
 
-  private _paramsSignal = toSignal(this.params$);
-  protected _paramsDebounced = computed(() => this._paramsSignal(), { equal: RxHelpers.stringEquals });
-  
-  // WIP
-  protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
-  protected prefetchEntityGuids = toSignal(this.prefetchEntityGuids$);
+  /**
+   * Guids of items which _should_ be in the prefetched cache.
+   * It's an observable, since it's mostly used as that.
+   * There is also a corresponding signal.
+   * @memberof DataSourceEntityQueryBase
+   */
+  private prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
+  private prefetchEntityGuids = toSignal(this.prefetchEntityGuids$);
 
   /** Prefetch the data from the initially specified guids - from the prefetch-cache */
   protected _prefetch = toSignal(this.getPrefetchStream());
 
-  // WIP 2DM - CONTINUE HERE!
-  protected _guidsToForceLoad = computed(() => {
+  /**
+   * Guids of items which _should_ be refreshed from the backend.
+   * These are either prefetches which were missing in the cache,
+   * or items which have been updated or added.
+   * @memberof DataSourceEntityQueryBase
+   */
+  private _guidsToForceLoad = computed(() => {
     // Check if anything should be prefetched but was missing
     // so we can retrieve it from the server
     const alreadyFetched = this._prefetch();
@@ -47,7 +58,12 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     return mergedDistinct;
   });
 
-  protected _overrides = toSignal(combineLatest([
+  /**
+   * Overriding data items which should be added to the "all" list
+   * or replace the items in the "all" list.
+   * @memberof DataSourceEntityQueryBase
+   */
+  private _overrides = toSignal(combineLatest([
     this.paramsDebounced$,
     toObservable(this._guidsToForceLoad)
   ]).pipe(
@@ -68,7 +84,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     mergeMap(([typeName]) => this.getFromBackend(typeName, [], 'getAll')),
   ), { initialValue: this.noItemsLoadingFalse });
 
-  
+
 
   public override data = computed(() => {
     const data = [...new Map([
@@ -82,12 +98,6 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   /** Signal with loading-status */
   public override loading = computed(() => this._all().loading || this._overrides().loading) as any;
-
-
-  protected fillSignal<T>(rx: Observable<T>, signal: WritableSignal<T>): void {
-    this.subscriptions.add(rx.subscribe(signal.set));
-  }
-
 
 
   protected getPrefetchStream(): Observable<DataWithLoading<PickerItem[]>> {
@@ -127,8 +137,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   destroy(): void {
     this.params$.complete();
     this.prefetchEntityGuids$.complete();
-    // this.guidsToRefresh$.complete();
-    // this.getAll$.complete();
+    this.getAll$.complete();
     super.destroy();
   }
 }
