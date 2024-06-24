@@ -1,0 +1,12 @@
+// NOTE: THIS is a shared file between 2sxc-ui/cms and eav-ui
+// The original should be maintained in 2sxc-ui/cms and copied to eav-ui
+
+// Initial variables which always apply, unless overridden by a specific column configuration
+:root {
+  // Amount of cols, must be changed on each img
+  --wysiwyg-cols: 1;
+  // Amount of cols for a specific image, is usually 1, but will be 2 on 66% or 3 on 75%
+  --wysiwyg-this-cols: 1;
+  // 1 if this is the last image in a row, 0 if not
+  --wysiwyg-cols-last: 0;
+}
