@@ -67,8 +67,8 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
         this.fieldMask
           .initPreClean((key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
           .initCallback((newValue) => { this.onSourcesChanged(newValue); })
-          .init('UrlPath', autoGenerateMask)
-          .logChanges();
+          .init('UrlPath', autoGenerateMask);
+          // .logChanges();
 
         this.onSourcesChanged(this.fieldMask.resolve());
       })

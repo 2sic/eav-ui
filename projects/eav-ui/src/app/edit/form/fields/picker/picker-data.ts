@@ -8,7 +8,7 @@ import { Injectable, OnDestroy, computed, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'PickerData';
 
 @Injectable()

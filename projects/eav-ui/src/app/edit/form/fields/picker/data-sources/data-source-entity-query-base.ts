@@ -97,7 +97,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
       ...this._all().data,
       ...this._overrides().data
     ].map(item => [item.value, item])).values()];
-    console.log('2dm merge data');
+    // console.log('2dm merge data');
     return data;
   }, { equal: RxHelpers.arraysEqual });
 

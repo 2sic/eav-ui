@@ -25,10 +25,10 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
-      fieldMask = FieldMask.createTransient(this.injector).init(logName, urlParameters, true)
-        .logChanges();
+      fieldMask = FieldMask.createTransient(this.injector).init(logName, urlParameters, true);
+        // .logChanges();
     });
-    console.log('2dm queryParamsMask2', fieldMask?.resolve());
+    // console.log('2dm queryParamsMask2', fieldMask?.resolve());
     return fieldMask;
   });
 

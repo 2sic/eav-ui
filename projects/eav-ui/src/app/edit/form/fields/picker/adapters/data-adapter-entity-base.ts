@@ -35,10 +35,10 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     let fieldMask: FieldMask;
     untracked(() => {
       fieldMask = FieldMask.createTransient(this.injector)
-        .init('PickerSource-EntityType', typeMask, true)
-        .logChanges();
+        .init('PickerSource-EntityType', typeMask, true);
+        // .logChanges();
     });
-    console.log('2dm contentTypeMaskLazy2', fieldMask?.resolve());
+    // console.log('2dm contentTypeMaskLazy2', fieldMask?.resolve());
     return fieldMask;
   });
   

@@ -74,7 +74,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     const typeFilterMask = this.settings().FileType ?? '[Type]';
 
     // set change-watchers to the other values
-    console.log('2dm: typedMask', this.typeMask);
+    // console.log('2dm: typedMask', this.typeMask);
     this.typeMask
       .initCallback(this.setFileConfig.bind(this))
       .init('String-TypeMask', typeFilterMask);

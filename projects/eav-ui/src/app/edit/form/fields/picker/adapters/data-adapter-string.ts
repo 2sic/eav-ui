@@ -6,7 +6,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'DataAdapterString';
 
 @Injectable()
