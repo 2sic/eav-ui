@@ -1,8 +1,8 @@
 import { EavLogger } from './eav-logger';
 
-export class EavLoggerFn<T> {
-  constructor(private parent: EavLogger, private fnName: string, message?: string, data?: unknown[]) {
-    this.parent.a(fnName + '() ' + message, data);
+export class EavLoggerFn {
+  constructor(private parent: EavLogger, private fnName: string, message?: string, data?: Record<string, unknown>) {
+    this.parent.a(fnName + '() ' + message, [data]);
   }
 
   v(name: string, value: unknown, intro?: string): void {
@@ -15,13 +15,13 @@ export class EavLoggerFn<T> {
     Object.keys(data).forEach(key => this.v(key, data[key], intro));
   }
 
-  a(message: string, data?: unknown[]): void {
-    this.parent.a(`${this.fnName}/${message}`, data);
+  a(message: string, data?: Record<string, unknown>): void {
+    this.parent.a(`${this.fnName}/${message}`, [data]);
   }
 
   /** Return */
-  r(value: T, message?: string): T {
-    this.parent.a(`${this.fnName}/return ${message}`, [value]);
+  r<TResult>(value: TResult, message?: string): TResult {
+    this.parent.a(`${this.fnName}/return${message ? ' ' + message : ''}`, [value]);
     return value;
   }
 

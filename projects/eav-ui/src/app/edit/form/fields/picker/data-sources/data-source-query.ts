@@ -1,14 +1,14 @@
 import { PickerItem, messagePickerItem, placeholderPickerItem } from "projects/edit-types";
-import { Observable, map, of, startWith } from "rxjs";
+import { Observable, map, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { FormConfigService } from '../../../../shared/services';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'DataSourceQuery';
 
 
@@ -83,7 +83,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
   private transformData(data: QueryStreams, streamName: string | null): PickerItem[] {
     const valueMustBeGuid = !this.isForStringField;
-    this.log.a('transformData', ['data', data, 'streamName', streamName, 'isForStringField']);
+    const l = this.log.fn('transformData', null, { data, streamName, isForStringField: this.isForStringField });
     if (!data)
       return [messagePickerItem(this.translate, 'Fields.Picker.QueryErrorNoData')];
 
@@ -101,7 +101,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
         mustUseGuid: valueMustBeGuid
       })));
     });
-    return [...errors, ...this.setDisableEdit(items)];
+    return l.r([...errors, ...this.setDisableEdit(items)]);
   }
 
   private setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {

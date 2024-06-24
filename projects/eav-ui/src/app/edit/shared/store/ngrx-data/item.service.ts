@@ -270,7 +270,7 @@ export class ItemService extends BaseDataService<EavItem> {
     languages: Language[],
     defaultLanguage: string,
   ): FieldValue {
-    const l = this.log.fn<FieldValue>('setDefaultValue', `Name: ${ctAttribute.Name}`, [item, ctAttribute, inputType, settings, languages, defaultLanguage]);
+    const l = this.log.fn('setDefaultValue', `Name: ${ctAttribute.Name}`, { item, ctAttribute, inputType, settings, languages, defaultLanguage });
     const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(

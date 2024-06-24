@@ -62,7 +62,7 @@ export class EavLogger {
     logAlways(`[${this.nameWithSvcId}] value of ${name}:`, [value]);
   }
 
-  fn<T>(name: string, message?: string, data?: unknown[]): EavLoggerFn<T> {
+  fn(name: string, message?: string, data?: Record<string, unknown>): EavLoggerFn {
     return new EavLoggerFn(this, name, message, data);
   }
 }
