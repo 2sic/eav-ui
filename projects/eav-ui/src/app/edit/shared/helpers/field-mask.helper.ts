@@ -1,13 +1,11 @@
-import { BehaviorSubject } from 'rxjs';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { Injectable, inject, signal, Injector, OnDestroy } from '@angular/core';
+import { Injectable, inject, signal, Injector, OnDestroy, effect } from '@angular/core';
 import { FieldState } from '../../form/builder/fields-builder/field-state';
 import { FormConfigService } from '../services';
 
 const logThis = false;
 const nameOfThis = 'FieldMask';
-const logChanges = false;
 
 const FieldsFind = /\[.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
@@ -34,11 +32,6 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     return Injector.create({ providers: [FieldMask], parent: injector }).get(FieldMask)
   }
 
-  /**
-   * Value observable containing result of the field-mask.
-   */
-  public value$ = new BehaviorSubject<string>('');
-
   public signal = signal<string>('');
 
   public watch = false;
@@ -57,7 +50,7 @@ export class FieldMask extends ServiceBase implements OnDestroy {
 
   private mask: string | null;
 
-  constructor() {
+  constructor(private injector: Injector) {
     super(new EavLogger(nameOfThis, logThis));
     this.log.a('constructor');
   }
@@ -90,16 +83,19 @@ export class FieldMask extends ServiceBase implements OnDestroy {
   }
   
   public logChanges(): this {
-    this.subscriptions.add(
-      this.value$.subscribe(value => this.log.a(`Value of mask: '${this.mask}' changed to: '${value}'`))
-    );
+    // use logger, but if not enabled, create new just for this
+    const l = this.log.enabled ? this.log : new EavLogger(nameOfThis, true);
+    effect(() => {
+      const latest = this.signal();
+      l.a(`Mask '${this.mask}' value changed to: ${latest}`);
+    }, { injector: this.injector });
     return this;
   }
 
   
   public updateMask(mask: string) {
     this.mask = mask ?? '';
-    this.fieldsUsedInMask = this.fieldList();
+    this.fieldsUsedInMask = this.extractFieldNames(this.mask);
 
     // bind auto-watch only if needed...
     // otherwise it's just on-demand
@@ -138,21 +134,21 @@ export class FieldMask extends ServiceBase implements OnDestroy {
   }
 
   /** Retrieves a list of all fields used in the mask */
-  fieldList(): string[] {
+  private extractFieldNames(mask: string): string[] {
     // exit early if mask very simple or not a mask
-    if (!this.mask || !hasPlaceholders(this.mask))
+    if (!mask || !hasPlaceholders(mask))
       return [];
     
     const result: string[] = [];
-    const matches = this.mask.match(FieldsFind);
-    if (matches) {
-      matches.forEach((e, i) => {
-        const staticName = e.replace(FieldUnwrap, '');
+    const matches = mask.match(FieldsFind);
+    if (matches)
+      matches.forEach((fieldName) => {
+        const staticName = fieldName.replace(FieldUnwrap, '');
         result.push(staticName);
       });
-    } else { // TODO: ask is this good
+    else
+      // TODO: ask is this good
       result.push(this.mask);
-    }
     return result;
   }
 
@@ -166,7 +162,7 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     const maybeNew = this.resolve();
     if (this.signal() !== maybeNew) {
       this.signal.set(maybeNew);
-      this.value$.next(maybeNew);
+      // this.value$.next(maybeNew);
       this.callback?.(maybeNew);
     }
   }
