@@ -162,12 +162,14 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     const maybeNew = this.resolve();
     if (this.signal() !== maybeNew) {
       this.signal.set(maybeNew);
-      // this.value$.next(maybeNew);
       this.callback?.(maybeNew);
     }
   }
 
-  /** Add watcher and execute onChange */
+  /**
+   * Add watcher and execute onChange.
+   * Uses observables, since that's what angular provides on valueChanges.
+   */
   private watchAllFields() {
     // add a watch for each field in the field-mask
     this.fieldsUsedInMask.forEach(field => {
