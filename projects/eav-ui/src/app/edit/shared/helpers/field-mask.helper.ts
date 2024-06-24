@@ -66,6 +66,12 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     return this;
   }
 
+  /**
+   * attach a callback.
+   * Someday should simply be replaced to use the signal instead.
+   * @param callback 
+   * @returns 
+   */
   public initCallback(callback: (newValue: string) => void): this {
     this.log.a('initCallback');
     this.callback = callback;

@@ -82,28 +82,23 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
     );
   }
 
-  ngOnDestroy() {
-    this.fieldMask?.destroy();
-    super.ngOnDestroy();
-  }
-
   private onSourcesChanged(newValue: string) {
     const value = this.controlTemp.value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
-    if (value && value !== this.lastAutoCopy) { return; }
+    if (value && value !== this.lastAutoCopy) return;
 
     // TODO::  this.settings$.value.AllowSlashes to signal, settings has no value or AllowSlashes
     const cleaned = UrlHelpers.stripNonUrlCharacters(newValue, this.settings$.value.AllowSlashes, true);
-    if (!cleaned) { return; }
+    if (!cleaned) return;
     this.lastAutoCopy = cleaned;
-    if (value === cleaned) { return; }
+    if (value === cleaned) return;
     ControlHelpers.patchControlValue(this.controlTemp, cleaned);
   }
 
   clean(trimEnd: boolean) {
     const value = this.controlTemp.value;
     const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.settings$.value.AllowSlashes, trimEnd);
-    if (value === cleaned) { return; }
+    if (value === cleaned) return;
     ControlHelpers.patchControlValue(this.control, cleaned);
   }
 }
