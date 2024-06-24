@@ -82,8 +82,8 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
 
   private transformData(data: QueryStreams, streamName: string | null): PickerItem[] {
-    const valueMustBeGuid = this.isForStringField;
-    this.log.a('transformData', ['data', data, 'streamName', streamName]);
+    const valueMustBeGuid = !this.isForStringField;
+    this.log.a('transformData', ['data', data, 'streamName', streamName, 'isForStringField']);
     if (!data)
       return [messagePickerItem(this.translate, 'Fields.Picker.QueryErrorNoData')];
 
