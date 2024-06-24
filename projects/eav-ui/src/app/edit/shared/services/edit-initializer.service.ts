@@ -149,7 +149,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (isParentDialog) {
-      const sortedLanguages = sortLanguages(langs.current, langs.list);
+      const sortedLanguages = sortLanguages(langs.primary, langs.list);
       this.languageService.loadLanguages(sortedLanguages);
     }
     this.languageStore.addToStore(formId, langs.current, langs.primary, false);

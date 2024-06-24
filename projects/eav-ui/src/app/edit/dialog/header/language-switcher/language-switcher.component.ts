@@ -14,16 +14,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 
 @Component({
-    selector: 'app-language-switcher',
-    templateUrl: './language-switcher.component.html',
-    styleUrls: ['./language-switcher.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatButtonModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-language-switcher',
+  templateUrl: './language-switcher.component.html',
+  styleUrls: ['./language-switcher.component.scss'],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    MatButtonModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;
