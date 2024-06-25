@@ -50,6 +50,11 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
   //  */
   // controlConfig: FieldControlConfig = {};
 
+  // protected fieldState = inject(FieldState);
+
+  // protected basics = this.fieldState.basics;
+  // protected config = this.fieldState.config;
+
 
   constructor(
     private editRoutingService: EditRoutingService,

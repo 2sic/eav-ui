@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import { Component, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, share } from 'rxjs';
@@ -6,8 +6,6 @@ import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EditRoutingService, FormsStateService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { HyperlinkLibraryExpandableViewModel } from './hyperlink-library-expandable-wrapper.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,8 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({

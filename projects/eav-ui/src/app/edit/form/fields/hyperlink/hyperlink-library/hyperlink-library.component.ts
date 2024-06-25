@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
     selector: InputTypeConstants.HyperlinkLibrary,
@@ -22,22 +22,24 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     WrappersConstants.AdamWrapper,
   ],
 })
-export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implements OnInit, OnDestroy {
+export class HyperlinkLibraryComponent /*extends BaseFieldComponent<null>*/ implements OnInit {
+
+  protected fieldState = inject(FieldState);
 
   constructor() {
-    super();
+    // super();
     HyperlinkLibraryLogic.importMe();
   }
 
   ngOnInit() {
-    super.ngOnInit();
+    // super.ngOnInit();
     this.attachAdam();
     this.attachAdamValidator();
   }
 
   private attachAdam() {
-    this.subscriptions.add(
-      this.settings$.pipe(
+    // this.subscriptions.add(
+      this.fieldState.settings$.pipe(
         map(settings => ({
           AllowAssetsInRoot: settings.AllowAssetsInRoot,
           Paths: settings.Paths,
@@ -47,7 +49,7 @@ export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implemen
         })),
         distinctUntilChanged(RxHelpers.objectsEqual),
       ).subscribe(settings => {
-        this.config.adam.setConfig({
+        this.fieldState.config.adam.setConfig({
           allowAssetsInRoot: settings.AllowAssetsInRoot,
           autoLoad: true,
           enableSelect: false,
@@ -57,22 +59,22 @@ export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implemen
           metadataContentTypes: settings.MetadataContentTypes,
         });
       })
-    );
+    // );
   }
 
   private attachAdamValidator() {
     let first = true;
-    this.subscriptions.add(
-      this.config.adam.items$.pipe(
+    // this.subscriptions.add(
+      this.fieldState.config.adam.items$.pipe(
         map(items => items.length),
         distinctUntilChanged(),
       ).subscribe(itemsCount => {
-        (this.control as AdamControl).adamItems = itemsCount;
+        (this.fieldState.control as AdamControl).adamItems = itemsCount;
         if (!first) {
-          this.control.updateValueAndValidity();
+          this.fieldState.control.updateValueAndValidity();
         }
         first = false;
       })
-    );
+    // );
   }
 }

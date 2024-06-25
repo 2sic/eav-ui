@@ -1,8 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../shared/constants';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
