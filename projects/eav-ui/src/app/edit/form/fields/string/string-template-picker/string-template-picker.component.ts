@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.StringTemplatePicker,
@@ -42,8 +43,18 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class StringTemplatePickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
+export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   viewModel: Observable<StringTemplatePickerViewModel>;
+
+  protected fieldState = inject(FieldState);
+  protected group = this.fieldState.group;
+  protected config = this.fieldState.config;
+
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+  protected controlStatus = this.fieldState.controlStatus;
+  protected control = this.fieldState.control;
+
 
   private templateOptions$: BehaviorSubject<string[]>;
   // needed to create more FieldMasks as needed
@@ -62,23 +73,23 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super();
+    // super();
   }
 
   ngOnInit() {
-    super.ngOnInit();
+    // super.ngOnInit();
     this.templateOptions$ = new BehaviorSubject<string[]>([]);
 
     // If we have a configured type, use that, otherwise use the field mask
     // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-    const typeFilterMask = this.settings().FileType ?? '[Type]';
+    const typeFilterMask = this.fieldState.settings().FileType ?? '[Type]';
 
     // set change-watchers to the other values
     // console.log('2dm: typedMask', this.typeMask);
     this.typeMask
       .initCallback(this.setFileConfig.bind(this))
       .init('String-TypeMask', typeFilterMask);
-    this.locationMask 
+    this.locationMask
       .initCallback(this.onLocationChange.bind(this))
       .init('String-LocationMask', '[Location]');
 
@@ -103,7 +114,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     this.templateOptions$.complete();
     this.typeMask.destroy();
     this.locationMask.destroy();
-    super.ngOnDestroy();
+    // super.ngOnDestroy();
   }
 
   private setFileConfig(type: string) {
