@@ -1,4 +1,4 @@
-import { EnvironmentInjector, Injectable, Injector, Signal, computed, createEnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
+import { EnvironmentInjector, Injectable, Injector, Signal, computed, createEnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldSettings } from 'projects/edit-types';
@@ -6,9 +6,10 @@ import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettin
 import { FieldConfigSet } from './field-config-set.model';
 import { FieldState } from './field-state';
 import { EntityFormStateService } from '../../entity-form-state.service';
-import { ControlStatus, controlToControlStatus } from '../../../shared/models';
+import { CalculatedInputType, ControlStatus, controlToControlStatus } from '../../../shared/models';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 
 /**
  * This service creates custom injectors for each field.
@@ -26,8 +27,8 @@ export class FieldInjectorService {
 
   constructor() { }
 
-  public getInjectors(fieldConfig: FieldConfigSet) {
-    // 2024-06-18 2dm experimental new injector with fieldConfig etc.
+  public getInjectors(fieldConfig: FieldConfigSet, inputType: CalculatedInputType) {
+    // Create settings() and basics() signal for further use
     const fieldName = fieldConfig.fieldName;
     const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
     let settings: Signal<FieldSettings>;
@@ -39,13 +40,30 @@ export class FieldInjectorService {
     // Control and Control Status
     const control = this.group.controls[fieldName];
     let controlStatusChangeSignal: Signal<ControlStatus<unknown>>;
-    if (fieldName === 'Icon')
-      console.log('2dg - FieldInjectorService.getInjectors - control:', control);
-    runInInjectionContext(this.injector, () => {
-      controlStatusChangeSignal = toSignal(control.valueChanges.pipe(
-        mapUntilObjChanged(_ => controlToControlStatus(control)
-      )), { initialValue: controlToControlStatus(control) });
-    });
+
+    // if (fieldName === 'Icon')
+    //   console.log('2dg - FieldInjectorService.getInjectors - control:', control);
+
+    // Create a signal to watch for value changes
+    // Note: 2dm is not sure if this is a good thing to provide, since it could be misused
+    // This signal spreads value changes even if they don't spread to the state/store
+    // so we must be careful with what we do with it
+    if (control) {
+      runInInjectionContext(this.injector, () => {
+        controlStatusChangeSignal = toSignal(control.valueChanges.pipe(
+          mapUntilObjChanged(_ => controlToControlStatus(control)
+        )), { initialValue: controlToControlStatus(control) });
+      });
+    } else {
+      // No control found - could be a problem, could be expected
+      // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
+      if (!EmptyFieldHelpers.isEmptyField(inputType)) {
+        console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
+        // try to have a temporary result, so that in most cases it won't just fail
+        controlStatusChangeSignal = signal({ value: null, disabled: true, dirty: false, invalid: false, touched: false, touchedAndInvalid: false } satisfies ControlStatus<unknown>);
+      }
+    }
+
 
     const fieldState = new FieldState(
       fieldName,

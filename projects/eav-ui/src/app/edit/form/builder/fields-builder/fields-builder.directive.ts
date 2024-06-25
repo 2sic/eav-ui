@@ -95,7 +95,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     this.log.a('createComponent', [fieldProps.calculatedInputType]);
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
-    const injectors = this.fieldInjector.getInjectors(fieldConfig);
+    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.calculatedInputType);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.wrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers, fieldConfig);
