@@ -1,13 +1,12 @@
-import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FormLanguage } from '../../../shared/models/form-languages.model';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
   selector: WrappersConstants.LocalizationWrapper,
@@ -20,9 +19,14 @@ import { FormLanguage } from '../../../shared/models/form-languages.model';
     TranslateMenuComponent,
   ],
 })
-export class LocalizationWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
+export class LocalizationWrapperComponent  implements OnInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
+
+  protected fieldState = inject(FieldState);
+
+  protected config = this.fieldState.config;
+  protected control = this.fieldState.control;
 
 
   language = signal<FormLanguage>(null);
@@ -34,11 +38,9 @@ export class LocalizationWrapperComponent extends BaseFieldComponent implements 
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
   ) {
-    super();
   }
 
   ngOnInit() {
-    super.ngOnInit();
     this.language.set(this.languageStore.getLanguage(this.formConfig.config.formId));
   }
 
