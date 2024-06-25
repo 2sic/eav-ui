@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
-import { EditRoutingService, FormsStateService } from '../../../shared/services';
+import { EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRippleModule } from '@angular/material/core';
@@ -17,6 +16,8 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
+import { FieldState } from '../../builder/fields-builder/field-state';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,
@@ -38,34 +39,31 @@ import { FieldControlConfig } from '../../builder/fields-builder/field-config-se
     TranslateModule,
   ],
 })
-export class PickerExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
+export class PickerExpandableWrapperComponent extends BaseComponent implements FieldWrapper,  OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
   dialogIsOpen = signal(false);
 
-  // /**
-  //  * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
-  //  * since the same control can be used in the dialog but also in the form directly
-  //  */
-  // controlConfig: FieldControlConfig = {};
+  /**
+   * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
+   * since the same control can be used in the dialog but also in the form directly
+   */
+  controlConfig: FieldControlConfig = { isPreview: true };
 
-  // protected fieldState = inject(FieldState);
-
-  // protected basics = this.fieldState.basics;
-  // protected config = this.fieldState.config;
-
+  private fieldState = inject(FieldState);
+  protected basics = this.fieldState.basics;
+  private config = this.fieldState.config;
 
   constructor(
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) {
     super();
   }
 
   ngOnInit() {
-    super.ngOnInit();
-
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
       .pipe(distinctUntilChanged())
       .subscribe(isOpen => {

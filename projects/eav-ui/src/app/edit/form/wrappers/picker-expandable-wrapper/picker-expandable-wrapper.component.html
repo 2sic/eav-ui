@@ -1,3 +1,8 @@
+<!--
+  Dialog part for large picker
+  Should only show when dialogIsOpen() is true.
+  It must be part of the DOM already (so no @if) as it is used in the code.
+-->
 <div [ngClass]="dialogIsOpen() ? 'c-ew__container' : 'u-display-none'">
   <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
@@ -49,5 +54,5 @@
     </div>
   </div>
 </div>
+<!-- Preview = inline search or pills -->
 <ng-container #previewComponent></ng-container>
-

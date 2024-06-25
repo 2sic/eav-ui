@@ -2,7 +2,6 @@ import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inje
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
@@ -11,7 +10,6 @@ import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { HyperlinkDefaultExpandableViewModel } from './hyperlink-default-expandable-wrapper.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
 import { FieldHelperTextComponent } from '../../shared/field-helper-text/field-helper-text.component';
@@ -31,6 +29,7 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -66,16 +65,16 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   protected fieldState = inject(FieldState);
 
-  protected configTemp = this.fieldState.config;
-  protected controlStatusTemp = this.fieldState.controlStatus;
-  protected basicsTemp = this.fieldState.basics;
+  public config = this.fieldState.config;
 
-  protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
-  protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
-  protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
+  protected basics = this.fieldState.basics;
 
-  open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
-  viewModel = signal<HyperlinkDefaultExpandableViewModel>(null);
+  protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
+  protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
+  protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
+
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+  viewModel = toSignal(this.preview$);
 
   adamConfig = signal([]);
 
@@ -83,10 +82,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     const controlStatus = this.controlStatus();
     const adamItems = this.adamConfig() as AdamItem[];
 
-    if (!controlStatus.value || !adamItems.length) { return; }
+    if (!controlStatus.value || !adamItems.length) return;
 
     const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-    if (!match) { return; }
+    if (!match) return;
 
     const adamItemId = parseInt(match[1], 10);
     const adamItem = adamItems.find(i => i.Id === adamItemId);
@@ -94,7 +93,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   });
 
 
-  private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
@@ -121,27 +119,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-
-    const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
-      map(isEnabled => !isEnabled),
-      distinctUntilChanged(),
-    );
-
-    combineLatest([
-      combineLatest([this.preview$, showAdamSponsor$]),
-    ]).pipe(
-      map(([
-        [preview, showAdamSponsor],
-      ]) => {
-        return {
-          preview,
-          showAdamSponsor,
-        };
-      }),
-    ).subscribe(viewModel => this.viewModel.set(viewModel));
-  }
+  protected hideAdamSponsor = toSignal(this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic), { initialValue: true })
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
@@ -169,12 +147,12 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   setValue(event: Event) {
     const newValue = (event.target as HTMLInputElement).value;
-    if (this.control.value === newValue) { return; }
+    if (this.control.value === newValue) return;
     ControlHelpers.patchControlValue(this.control, newValue);
   }
 
   expandDialog() {
-    if (this.control.disabled) { return; }
+    if (this.control.disabled) return;
     this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 

@@ -7,6 +7,6 @@ export class DynamicControlInfo {
     public wrapperRef: ComponentRef<FieldWrapper>,
     public contentsRef: ViewContainerRef,
     // will only need to be set the first time
-    public injectors: InjectorBundle = null
+    public injectors: InjectorBundle,
   ) { }
 }

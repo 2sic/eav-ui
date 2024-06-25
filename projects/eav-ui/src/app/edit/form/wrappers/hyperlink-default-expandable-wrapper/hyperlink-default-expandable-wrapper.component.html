@@ -8,7 +8,7 @@
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basicsTemp().label }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>
@@ -49,23 +49,23 @@
 @if (viewModel(); as vm) {
 <div class="c-hyperlink-default-field-preview">
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
-        'c-ew__preview--disabled': controlStatusTemp().disabled,
-        'c-ew__preview--last-in-group': configTemp.isLastInGroup
+        'c-ew__preview--disabled': controlStatus().disabled,
+        'c-ew__preview--last-in-group': config.isLastInGroup
         }">
     <!-- image / icon -->
     <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
-      [tippyDisabled]="controlStatusTemp().disabled" [ngClass]="{
-          'icon-before-input': controlStatusTemp().value && !vm.preview.isImage,
-          'thumbnail-before-input--disabled': controlStatusTemp().disabled
+      [tippyDisabled]="controlStatus().disabled" [ngClass]="{
+          'icon-before-input': controlStatus().value && !vm.isImage,
+          'thumbnail-before-input--disabled': controlStatus().disabled
           }"
-      [ngStyle]="{ 'background-image': controlStatusTemp().value && vm.preview.isImage ? vm.preview.thumbnailUrl : '' }"
+      [ngStyle]="{ 'background-image': controlStatus().value && vm.isImage ? vm.thumbnailUrl : '' }"
       (click)="expandDialog()">
-      @if (controlStatusTemp().value && !vm.preview.isImage && vm.preview.isKnownType) {
-      <mat-icon [tippy]="vm.preview.url" tippyPlacement="right" [svgIcon]="vm.preview.icon">
+      @if (controlStatus().value && !vm.isImage && vm.isKnownType) {
+      <mat-icon [tippy]="vm.url" tippyPlacement="right" [svgIcon]="vm.icon">
       </mat-icon>
       }
-      @if (controlStatusTemp().value && !vm.preview.isImage && !vm.preview.isKnownType) {
-      <mat-icon [tippy]="vm.preview.url" tippyPlacement="right" [svgIcon]="vm.preview.icon">
+      @if (controlStatus().value && !vm.isImage && !vm.isKnownType) {
+      <mat-icon [tippy]="vm.url" tippyPlacement="right" [svgIcon]="vm.icon">
       </mat-icon>
       }
     </div>
@@ -74,23 +74,23 @@
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
         <mat-form-field color="accent" class="eav-mat-form-field" [ngClass]="{
-              'mat-form-field-invalid': controlStatusTemp().touchedAndInvalid
+              'mat-form-field-invalid': controlStatus().touchedAndInvalid
               }">
           <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
-            tippyPlacement="top" [placeholder]="basicsTemp().placeholder" (change)="setValue($event)"
-            [disabled]="controlStatusTemp().disabled" (blur)="markAsTouched()" [value]="controlStatusTemp().value"
-            (keyup)="setValue($event)" appPasteClipboardImage [config]="configTemp" [elementType]="'input'">
+            tippyPlacement="top" [placeholder]="basics().placeholder" (change)="setValue($event)"
+            [disabled]="controlStatus().disabled" (blur)="markAsTouched()" [value]="controlStatus().value"
+            (keyup)="setValue($event)" appPasteClipboardImage [config]="config" [elementType]="'input'">
           @if (buttonAdam() || buttonPage()) {
           <div matTextSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
-                        'c-ew__preview-suffix-text--disabled': controlStatusTemp().disabled
+                        'c-ew__preview-suffix-text--disabled': controlStatus().disabled
                         }">
               {{ buttonAdam() ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
             </div>
             @if (buttonAdam()) {
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
-              [disabled]="controlStatusTemp().disabled" (click)="expandDialog()">
+              [disabled]="controlStatus().disabled" (click)="expandDialog()">
               <mat-icon svgIcon="apple-outlined"></mat-icon>
             </button>
             }
@@ -106,24 +106,24 @@
             @if (buttonPage()) {
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
-              [disabled]="controlStatusTemp().disabled" (click)="openPagePicker()">
+              [disabled]="controlStatus().disabled" (click)="openPagePicker()">
               <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
             }
           </div>
           }
-          <mat-label [ngClass]="{ 'mat-error' : controlStatusTemp().touchedAndInvalid }">
-            {{basicsTemp().labelWithRequired}}
+          <mat-label [ngClass]="{ 'mat-error' : controlStatus().touchedAndInvalid }">
+            {{basics().labelWithRequired}}
           </mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->
-        @if (vm.preview.floatingText) {
+        @if (vm.floatingText) {
         <div class="hyperlink-floating" fxHide fxShow.gt-xs>
-          <div class="hyperlink-floating__value">{{ controlStatusTemp().value }}</div>
+          <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
           <div class="hyperlink-floating__url-box">
-            <a [href]="vm.preview.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
-              [tippy]="vm.preview.url">
-              <span>{{ vm.preview.floatingText }}</span>
+            <a [href]="vm.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
+              [tippy]="vm.url">
+              <span>{{ vm.floatingText }}</span>
             </a>
           </div>
         </div>
@@ -137,9 +137,9 @@
         <div align="end" style="display: flex;" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
           fxShow.gt-xs>
           <span>{{
-            vm.showAdamSponsor
-            ? ('Fields.Hyperlink.Default.Sponsor' | translate)
-            : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
+            hideAdamSponsor()
+            ? ('Fields.Hyperlink.AdamFileManager.Name' | translate)
+            : ('Fields.Hyperlink.Default.Sponsor' | translate)
             }} </span>
           <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
         </div>

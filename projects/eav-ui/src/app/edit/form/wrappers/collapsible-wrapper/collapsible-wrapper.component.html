@@ -1,12 +1,12 @@
 <mat-card appearance="raised" class="eav-card-group-child shadow-bottom-z-1"
-  [ngClass]="{ 'force-hide': visible() === false }">
+  [ngClass]="{ 'force-hide': basics().visible === false }">
   <div fxLayout="row" fxLayoutAlign="start center" class="eav-card-header-group-child">
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="eav-card-title-group mat-body-2">
         <mat-icon class="title-arrow">{{ collapsed() ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
-          {{ label() || config.fieldName }}
+          {{ basics().label || config.fieldName }}
         </span>
       </div>
     </div>
@@ -15,7 +15,7 @@
   <mat-card-content class="eav-card-content-group-child" [style.display]="collapsed() ? 'none' : 'block'">
     <div class="eav-layout-grid">
       <div class="eav-layout-grid__inner">
-        @if (notes(); as note) {
+        @if (basics().notes; as note) {
           <div class="eav-layout-grid__cell--span-12 mat-body-2" align="start">
             <div class="description" appChangeAnchorTarget [innerHtml]="note | safeHtml"></div>
           </div>

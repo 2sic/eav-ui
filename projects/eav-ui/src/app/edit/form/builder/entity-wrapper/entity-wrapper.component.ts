@@ -1,5 +1,4 @@
 import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -55,7 +54,6 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
   @Input() entityGuid: string;
-  @Input() group: UntypedFormGroup;
 
   collapse = false;
   noteTouched: boolean = false;

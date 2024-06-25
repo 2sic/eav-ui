@@ -69,36 +69,36 @@
               <mat-label>{{ basics().label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
-            @if (vm.preview?.floatingText) {
+            @if (vm?.floatingText) {
               <div class="hyperlink-floating">
                 <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
                 <div class="hyperlink-floating__url-box">
-                  <a [href]="vm.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.preview.url">
-                    <span>{{ vm.preview.floatingText }}</span>
+                  <a [href]="vm.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.url">
+                    <span>{{ vm.floatingText }}</span>
                   </a>
                 </div>
               </div>
             }
           </div>
-          @if (controlStatus().value && vm.preview) {
+          @if (controlStatus().value && vm) {
             <div class="preview-wrapper">
               <!-- image -->
-              @if (vm.preview.isImage) {
-                <a [href]="vm.preview.url" target="_blank">
+              @if (vm.isImage) {
+                <a [href]="vm.url" target="_blank">
                   <div class="preview-image-box">
-                    <img [src]="vm.preview.previewUrl" class="preview-image" />
+                    <img [src]="vm.previewUrl" class="preview-image" />
                   </div>
                 </a>
               }
               <!-- icon -->
-              @if (!vm.preview.isImage) {
-              <a [href]="vm.preview.url" target="_blank" [tippy]="vm.preview.url" tippyPlacement="right">
+              @if (!vm.isImage) {
+              <a [href]="vm.url" target="_blank" [tippy]="vm.url" tippyPlacement="right">
                 <div class="preview-icon-box">
-                  @if (vm.preview.isKnownType) {
-                    <mat-icon [svgIcon]="vm.preview.icon"></mat-icon>
+                  @if (vm.isKnownType) {
+                    <mat-icon [svgIcon]="vm.icon"></mat-icon>
                   }
-                  @if (!vm.preview.isKnownType) {
-                    <mat-icon [svgIcon]="vm.preview.icon"></mat-icon>
+                  @if (!vm.isKnownType) {
+                    <mat-icon [svgIcon]="vm.icon"></mat-icon>
                   }
                 </div>
               </a>

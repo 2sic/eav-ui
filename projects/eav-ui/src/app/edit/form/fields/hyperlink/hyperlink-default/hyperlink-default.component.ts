@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -9,7 +9,7 @@ import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
-import { HyperlinkDefaultViewModel } from './hyperlink-default.models';
+import { Preview } from './hyperlink-default.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { PasteClipboardImageDirective } from '../../../../shared/directives/paste-clipboard-image.directive';
 import { MatInputModule } from '@angular/material/input';
@@ -24,7 +24,6 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { MatButtonModule } from '@angular/material/button';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { FieldState } from '../../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
@@ -58,25 +57,18 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
   ],
 })
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
-  viewModel: Observable<HyperlinkDefaultViewModel>;
+  viewModel: Observable<Preview>;
 
-  protected fieldState = inject(FieldState);
+  protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
+  protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
+  protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalHelpers.boolEquals);
+  protected showAdam = computed(() => this.settings().ShowAdam, SignalHelpers.boolEquals);
+  protected showPagePicker = computed(() => this.settings().ShowPagePicker, SignalHelpers.boolEquals);
+  protected showImageManager = computed(() => this.settings().ShowImageManager, SignalHelpers.boolEquals);
+  protected showFileManager = computed(() => this.settings().ShowFileManager, SignalHelpers.boolEquals);
+  protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
 
-  protected settingsTemp = this.fieldState.settings;
-  protected configTemp = this.fieldState.config;
-  protected controlStatusTemp = this.fieldState.controlStatus;
-
-
-  protected buttonAdam = computed(() => this.settingsTemp().Buttons.includes('adam'), SignalHelpers.boolEquals);
-  protected buttonPage = computed(() => this.settingsTemp().Buttons.includes('page'), SignalHelpers.boolEquals);
-  protected buttonMore = computed(() => this.settingsTemp().Buttons.includes('more'), SignalHelpers.boolEquals);
-  protected showAdam = computed(() => this.settingsTemp().ShowAdam, SignalHelpers.boolEquals);
-  protected showPagePicker = computed(() => this.settingsTemp().ShowPagePicker, SignalHelpers.boolEquals);
-  protected showImageManager = computed(() => this.settingsTemp().ShowImageManager, SignalHelpers.boolEquals);
-  protected showFileManager = computed(() => this.settingsTemp().ShowFileManager, SignalHelpers.boolEquals);
-  protected enableImageConfiguration = computed(() => this.settingsTemp().EnableImageConfiguration, SignalHelpers.boolEquals);
-
-  open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   adamConfig = signal([]);
 
@@ -84,10 +76,10 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     const controlStatus = this.controlStatus();
     const adamItems = this.adamConfig() as AdamItem[];
 
-    if (!controlStatus.value || !adamItems.length) { return; }
+    if (!controlStatus.value || !adamItems.length) return;
 
     const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-    if (!match) { return; }
+    if (!match) return;
 
     const adamItemId = parseInt(match[1], 10);
     const adamItem = adamItems.find(i => i.Id === adamItemId);
@@ -125,18 +117,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       this.adamConfig.set(items);
     });
 
-    this.viewModel = combineLatest([
-      combineLatest([this.preview$]),
-    ]).pipe(
-      map(([
-        [preview],
-      ]) => {
-        const viewModel: HyperlinkDefaultViewModel = {
-          preview,
-        };
-        return viewModel;
-      }),
-    );
+    this.viewModel = this.preview$;
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
@@ -145,7 +126,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   private attachAdam() {
     this.subscriptions.add(
-      this.settings$.pipe(
+      this.fieldState.settings$.pipe(
         map(settings => ({
           Paths: settings.Paths,
           FileFilter: settings.FileFilter,
@@ -164,7 +145,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   }
 
   private setValue(item: AdamItem) {
-    const usePath = this.settings$.value.ServerResourceMapping === 'url';
+    const usePath = this.settings().ServerResourceMapping === 'url';
     const newValue = !usePath ? item.ReferenceId : item.Url;
     ControlHelpers.patchControlValue(this.control, newValue);
   }
