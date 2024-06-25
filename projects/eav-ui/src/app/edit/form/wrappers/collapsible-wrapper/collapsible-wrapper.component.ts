@@ -1,6 +1,5 @@
 import { Component, OnDestroy, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
@@ -33,7 +32,7 @@ const nameOfThis = 'CollapsibleWrapperComponent'
     AsyncPipe,
   ],
 })
-export class CollapsibleWrapperComponent extends BaseComponent implements FieldWrapper, OnDestroy {
+export class CollapsibleWrapperComponent extends BaseComponent implements OnDestroy {
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 

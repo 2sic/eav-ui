@@ -7,7 +7,6 @@ import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
@@ -58,7 +57,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefaultBaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;

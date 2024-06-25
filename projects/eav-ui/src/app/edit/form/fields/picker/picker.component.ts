@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Signal, ViewChild, signal, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject, computed } from '@angular/core';
 import { EditRoutingService } from '../../../shared/services';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerImports, PickerProviders } from './picker-providers.constant';
 import { FieldState } from '../../builder/fields-builder/field-state';
-import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
 const logThis = false;
@@ -27,13 +26,23 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   public editRoutingService = inject(EditRoutingService);
 
   pickerData = inject(PickerData);
-  protected showPreview: Signal<boolean>;
 
   /**
-   * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
-   * since the same control can be used in the dialog but also in the form directly
+   * cache previous state, as it will often be null on follow-up computations
+   * This is hacky / not nice!
+   * Reason is that the _isDialog doesn't get fully pushed back to the state, and 
+   * when formulas run, it will be undefined on follow up settings-updates.
+   * To make it nicer, we would have to extend how these states are pushed to the system...
    */
-  controlConfig: FieldControlConfig = {};
+  // prevIsDialog: boolean = null;
+  showPreview = computed(() => { 
+    const settings = this.fieldState.settings();
+    const allowMultiValue = settings.AllowMultiValue;
+    const isDialog = /* this.prevIsDialog = */ settings._isDialog;// ?? this.prevIsDialog;
+    const showPreview = !allowMultiValue || (allowMultiValue && !isDialog);
+    // console.log(this.log.svcId + '; computed - settings: ' + showPreview, settings._isDialog, allowMultiValue, isDialog, showPreview, settings);
+    return showPreview;
+  });
 
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger(nameOfThis, logThis));
@@ -44,11 +53,11 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.refreshOnChildClosed();
     this.initAdaptersAndViewModel();
 
-    const allowMultiValue = this.fieldState.settings().AllowMultiValue;
+    // const allowMultiValue = this.fieldState.settings().AllowMultiValue;
     // TODO: 2DM CONTINUE HERE - problem with this.controlConfig always being {} and not having isPreview
     // which seems to work, and the fieldSettings.controlConfig fails!
-    const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview);
-    this.showPreview = signal(showPreview);
+    // const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview);
+    // this.showPreview = signal(showPreview);
   }
 
   /**

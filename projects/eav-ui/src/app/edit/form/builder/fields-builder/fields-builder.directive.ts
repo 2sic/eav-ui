@@ -6,8 +6,7 @@ import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { CustomDefaultComponent } from '../../fields/custom/custom-default/custom-default.component';
 import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
-import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
-import { Field } from './field.model';
+import { FieldConfigSet } from './field-config-set.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -115,25 +114,19 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
 
     // generate the real input field component
     this.log.a('createComponent - add component', [componentType]);
-    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors, false);
+    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
 
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
       this.log.a('createComponent - add preview', [previewType]);
-      this.generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors, true);
+      this.generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
   }
 
-  private generateAndAttachField(componentType: Type<any>, container: ViewContainerRef, injectors: InjectorBundle, isPreview: boolean) {
-
-    const realFieldRef = container.createComponent(componentType, injectors);
-    // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
-    const controlConfig: FieldControlConfig = { isPreview };
-    Object.assign<Field, Field>(realFieldRef.instance, {
-      controlConfig,
-    } as any);
+  private generateAndAttachField(componentType: Type<any>, container: ViewContainerRef, injectors: InjectorBundle) {
+    container.createComponent(componentType, injectors);
   }
 
   private createWrappers(outerWrapper: DynamicControlInfo, wrappers: string[]): DynamicControlInfo {

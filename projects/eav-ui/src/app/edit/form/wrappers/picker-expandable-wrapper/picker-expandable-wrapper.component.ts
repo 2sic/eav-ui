@@ -2,7 +2,6 @@ import { Component, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerR
 import { distinctUntilChanged } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
 import { EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRippleModule } from '@angular/material/core';
@@ -15,7 +14,6 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
-import { FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
@@ -39,17 +37,11 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
     TranslateModule,
   ],
 })
-export class PickerExpandableWrapperComponent extends BaseComponent implements FieldWrapper,  OnInit, OnDestroy {
+export class PickerExpandableWrapperComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
   dialogIsOpen = signal(false);
-
-  /**
-   * WIP - this is set by the field builder to determine if the view mode should be open/closed on this specific control
-   * since the same control can be used in the dialog but also in the form directly
-   */
-  controlConfig: FieldControlConfig = { isPreview: true };
 
   private fieldState = inject(FieldState);
   protected basics = this.fieldState.basics;
@@ -67,8 +59,9 @@ export class PickerExpandableWrapperComponent extends BaseComponent implements F
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
       .pipe(distinctUntilChanged())
       .subscribe(isOpen => {
+        console.log('2dm - subscribe isExpanded$', isOpen);
         this.dialogIsOpen.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
+        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen }, /* persist */ true);
       });
   }
 
