@@ -1,10 +1,8 @@
-<pre>TODO:: not Teste 2dg, Template String Picker</pre>
-@if (viewModel | async; as vm) {
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
       <mat-select [formControlName]="config.fieldName" [required]="basics().required" class="eav-translate-on-dblclick">
         <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
-        @for (file of vm.templateOptions; track file) {
+        @for (file of templateOptions(); track file) {
           <mat-option [value]="file">
             {{ file }}
           </mat-option>
@@ -18,4 +16,3 @@
     </button>
   </div>
   <app-field-helper-text></app-field-helper-text>
-}
