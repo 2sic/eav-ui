@@ -29,7 +29,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
@@ -76,8 +75,24 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
 
   open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
-
   viewModel = signal<HyperlinkDefaultExpandableViewModel>(null);
+
+  adamConfig = signal([]);
+
+  adamItem = computed(() => {
+    const controlStatus = this.controlStatus();
+    const adamItems = this.adamConfig() as AdamItem[];
+
+    if (!controlStatus.value || !adamItems.length) { return; }
+
+    const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
+    if (!match) { return; }
+
+    const adamItemId = parseInt(match[1], 10);
+    const adamItem = adamItems.find(i => i.Id === adamItemId);
+    return adamItem;
+  });
+
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -108,21 +123,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   ngOnInit() {
     super.ngOnInit();
-    this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
-
-    const adamItem$ = combineLatest([this.controlStatus$, this.adamItems$]).pipe(
-      map(([controlStatus, adamItems]) => {
-        if (!controlStatus.value || !adamItems.length) { return; }
-
-        const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-        if (!match) { return; }
-
-        const adamItemId = parseInt(match[1], 10);
-        const adamItem = adamItems.find(i => i.Id === adamItemId);
-        return adamItem;
-      }),
-      distinctUntilChanged(),
-    );
 
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
@@ -130,14 +130,13 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
 
     combineLatest([
-      combineLatest([this.preview$, adamItem$, showAdamSponsor$]),
+      combineLatest([this.preview$, showAdamSponsor$]),
     ]).pipe(
       map(([
-        [preview, adamItem, showAdamSponsor],
+        [preview, showAdamSponsor],
       ]) => {
         return {
           preview,
-          adamItem,
           showAdamSponsor,
         };
       }),
@@ -150,13 +149,12 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
     this.subscriptions.add(
       this.config.adam.items$.subscribe(items => {
-        this.adamItems$.next(items);
+        this.adamConfig.set(items);
       })
     );
   }
 
   ngOnDestroy() {
-    this.adamItems$.complete();
     this.dropzoneDraggingHelper.detach();
     super.ngOnDestroy();
   }

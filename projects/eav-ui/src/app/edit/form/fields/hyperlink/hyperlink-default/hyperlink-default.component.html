@@ -1,27 +1,27 @@
 @if (viewModel | async; as vm) {
-  @if (vm.open) {
+  @if (open()) {
     <div class="fabs-box">
-      @if (vm.buttonAdam) {
+      @if (buttonAdam()) {
         <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
           [disabled]="controlStatus().disabled" (click)="toggleAdam(false, false)">
           <mat-icon svgIcon="apple-outlined"></mat-icon>
         </button>
       }
-      <button mat-mini-fab color="primary" [disabled]="!vm.adamItem?._imageConfigurationContentType"
-        [ngClass]="{ 'metadata-exists': vm.adamItem?._imageConfigurationId > 0 }"
+      <button mat-mini-fab color="primary" [disabled]="!adamItem()?._imageConfigurationContentType"
+        [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
-        (click)="openImageConfiguration(vm.adamItem)">
+        (click)="openImageConfiguration(adamItem())">
         <mat-icon
-          [tippy]="(vm.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-          [tippyDisabled]="vm.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
+          [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
+          [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
       </button>
-      @if (vm.buttonPage) {
+      @if (buttonPage()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
           [disabled]="controlStatus().disabled" (click)="openPagePicker()">
           <mat-icon svgIcon="sitemap"></mat-icon>
         </button>
       }
-      @if (vm.buttonMore) {
+      @if (buttonMore()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
           [disabled]="controlStatus().disabled" [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
@@ -30,25 +30,25 @@
     </div>
     <mat-menu #menu="matMenu" class="menu-box">
       <ng-template matMenuContent>
-        @if (vm.showAdam) {
+        @if (showAdam()) {
           <button mat-menu-item (click)="toggleAdam(false, false)">
             <mat-icon svgIcon="apple-outlined"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
           </button>
         }
-        @if (vm.showPagePicker) {
+        @if (showPagePicker()) {
           <button mat-menu-item (click)="openPagePicker()">
             <mat-icon svgIcon="sitemap"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
           </button>
         }
-        @if (vm.showImageManager) {
+        @if (showImageManager()) {
           <button mat-menu-item (click)="toggleAdam(true, true)">
             <mat-icon svgIcon="file-image"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
           </button>
         }
-        @if (vm.showFileManager) {
+        @if (showFileManager()) {
           <button mat-menu-item (click)="toggleAdam(true, false)">
             <mat-icon svgIcon="file"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>

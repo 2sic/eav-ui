@@ -1,7 +1,3 @@
-export interface StringTemplatePickerViewModel {
-  templateOptions: string[];
-}
-
 export interface TemplateSpec {
   /** File extension like '.cshtml' */
   ext: '.html' | '.cshtml' | '.cs';

@@ -95,13 +95,13 @@
             </button>
             }
             <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
-              [disabled]="!vm.adamItem?._imageConfigurationContentType"
-              [ngClass]="{ 'metadata-exists': vm.adamItem?._imageConfigurationId > 0 }"
+              [disabled]="!adamItem()?._imageConfigurationContentType"
+              [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
               [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
-              (click)="openImageConfiguration(vm.adamItem)">
+              (click)="openImageConfiguration(adamItem())">
               <mat-icon
                 [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-                [tippyDisabled]="vm.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
+                [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
             </button>
             @if (buttonPage()) {
             <button mat-icon-button class="c-ew__preview-suffix-icon"

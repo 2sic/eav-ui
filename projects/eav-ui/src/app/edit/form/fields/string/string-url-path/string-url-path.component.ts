@@ -63,7 +63,7 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
         map(settings => settings.AutoGenerateMask),
         distinctUntilChanged(),
       ).subscribe(autoGenerateMask => {
-  
+
         this.fieldMask
           .initPreClean((key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
           .initCallback((newValue) => { this.onSourcesChanged(newValue); })

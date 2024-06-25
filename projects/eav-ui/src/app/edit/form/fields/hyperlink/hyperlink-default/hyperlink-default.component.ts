@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
@@ -24,6 +24,8 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { MatButtonModule } from '@angular/material/button';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,
@@ -58,7 +60,39 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
   viewModel: Observable<HyperlinkDefaultViewModel>;
 
-  // open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+  protected fieldState = inject(FieldState);
+
+  protected settingsTemp = this.fieldState.settings;
+  protected configTemp = this.fieldState.config;
+  protected controlStatusTemp = this.fieldState.controlStatus;
+
+
+  protected buttonAdam = computed(() => this.settingsTemp().Buttons.includes('adam'), SignalHelpers.boolEquals);
+  protected buttonPage = computed(() => this.settingsTemp().Buttons.includes('page'), SignalHelpers.boolEquals);
+  protected buttonMore = computed(() => this.settingsTemp().Buttons.includes('more'), SignalHelpers.boolEquals);
+  protected showAdam = computed(() => this.settingsTemp().ShowAdam, SignalHelpers.boolEquals);
+  protected showPagePicker = computed(() => this.settingsTemp().ShowPagePicker, SignalHelpers.boolEquals);
+  protected showImageManager = computed(() => this.settingsTemp().ShowImageManager, SignalHelpers.boolEquals);
+  protected showFileManager = computed(() => this.settingsTemp().ShowFileManager, SignalHelpers.boolEquals);
+  protected enableImageConfiguration = computed(() => this.settingsTemp().EnableImageConfiguration, SignalHelpers.boolEquals);
+
+  open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
+
+  adamConfig = signal([]);
+
+  adamItem = computed(() => {
+    const controlStatus = this.controlStatus();
+    const adamItems = this.adamConfig() as AdamItem[];
+
+    if (!controlStatus.value || !adamItems.length) { return; }
+
+    const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
+    if (!match) { return; }
+
+    const adamItemId = parseInt(match[1], 10);
+    const adamItem = adamItems.find(i => i.Id === adamItemId);
+    return adamItem;
+  });
 
   constructor(
     eavService: FormConfigService,
@@ -85,56 +119,20 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   ngOnInit() {
     super.ngOnInit();
-
     this.attachAdam();
 
-    const open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    const settings$ = this.settings$.pipe(
-      map(settings => ({
-        _buttonAdam: settings.Buttons.includes('adam'),
-        _buttonPage: settings.Buttons.includes('page'),
-        _buttonMore: settings.Buttons.includes('more'),
-        ShowAdam: settings.ShowAdam,
-        ShowPagePicker: settings.ShowPagePicker,
-        ShowImageManager: settings.ShowImageManager,
-        ShowFileManager: settings.ShowFileManager,
-        EnableImageConfiguration: settings.EnableImageConfiguration,
-      })),
-      distinctUntilChanged(RxHelpers.objectsEqual)
-    );
-
-    const adamItem$ = combineLatest([this.controlStatus$, this.config.adam.items$]).pipe(
-      map(([controlStatus, adamItems]) => {
-        if (!controlStatus.value || !adamItems.length) { return; }
-
-        const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-        if (!match) { return; }
-
-        const adamItemId = parseInt(match[1], 10);
-        const adamItem = adamItems.find(i => i.Id === adamItemId);
-        return adamItem;
-      }),
-      distinctUntilChanged(),
-    );
+    this.config.adam.items$.subscribe(items => {
+      this.adamConfig.set(items);
+    });
 
     this.viewModel = combineLatest([
-      combineLatest([open$, this.preview$, settings$, adamItem$]),
+      combineLatest([this.preview$]),
     ]).pipe(
       map(([
-        [open, preview, settings, adamItem],
+        [preview],
       ]) => {
         const viewModel: HyperlinkDefaultViewModel = {
-          open,
-          buttonAdam: settings._buttonAdam,
-          buttonPage: settings._buttonPage,
-          buttonMore: settings._buttonMore,
-          showAdam: settings.ShowAdam,
-          showPagePicker: settings.ShowPagePicker,
-          showImageManager: settings.ShowImageManager,
-          showFileManager: settings.ShowFileManager,
           preview,
-          adamItem,
-          enableImageConfiguration: settings.EnableImageConfiguration,
         };
         return viewModel;
       }),
