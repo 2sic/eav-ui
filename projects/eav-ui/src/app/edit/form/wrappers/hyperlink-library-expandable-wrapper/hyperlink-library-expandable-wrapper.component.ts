@@ -1,7 +1,7 @@
-import { Component, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import { Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, share } from 'rxjs';
+import {  combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
@@ -22,6 +22,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
@@ -59,9 +60,12 @@ export class HyperlinkLibraryExpandableWrapperComponent {
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
+  adamConfig = signal([]);
+  protected items = computed(() => this.adamConfig().slice(0, 9));
+  protected itemsNumber = computed(() => this.adamConfig().length, SignalHelpers.numberEquals);
+
   viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
 
-  private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
@@ -72,22 +76,18 @@ export class HyperlinkLibraryExpandableWrapperComponent {
   ) { }
 
   ngOnInit() {
-
-    this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
     const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );
 
     combineLatest([
-      combineLatest([this.adamItems$, showAdamSponsor$]),
+      combineLatest([showAdamSponsor$]),
     ]).pipe(
       map(([
-        [adamItems, showAdamSponsor],
+        [showAdamSponsor],
       ]) => {
         return {
-          items: adamItems.slice(0, 9),
-          itemsNumber: adamItems.length,
           showAdamSponsor,
         };
       }),
@@ -98,15 +98,13 @@ export class HyperlinkLibraryExpandableWrapperComponent {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-
     this.config.adam.items$.subscribe(items => {
-      this.adamItems$.next(items);
-    })
+      this.adamConfig.set(items);
+    });
   }
 
   ngOnDestroy() {
     this.dropzoneDraggingHelper.detach();
-    this.adamItems$.complete();
   }
 
   calculateBottomPixels() {

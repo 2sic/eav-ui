@@ -1,4 +1,3 @@
-import { AdamItem } from '../../../../../../../../edit-types';
 export interface Preview {
   url: string;
   thumbnailUrl: string;
@@ -11,5 +10,4 @@ export interface Preview {
 
 export interface HyperlinkDefaultViewModel {
   preview: Preview;
-  adamItem: AdamItem;
 }

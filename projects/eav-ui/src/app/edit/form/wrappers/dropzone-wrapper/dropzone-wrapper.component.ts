@@ -1,17 +1,16 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
   selector: WrappersConstants.DropzoneWrapper,
@@ -26,12 +25,17 @@ import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tre
   ],
   providers: [PickerTreeDataHelper],
 })
-export class DropzoneWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
   dropzoneDisabled = signal(false);
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
+
+  protected fieldState = inject(FieldState);
+  protected config = this.fieldState.config;
+  protected controlStatus = this.fieldState.controlStatus;
+
 
   imageTypes: string[] = ["image/jpeg", "image/png"];
   isStringWysiwyg = false;
@@ -41,12 +45,9 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super();
   }
 
   ngOnInit() {
-    super.ngOnInit();
-
     combineLatest([
       this.dropzoneConfig$,
     ]).pipe(
@@ -88,7 +89,6 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   ngOnDestroy() {
     this.dropzoneConfig$.complete();
-    super.ngOnDestroy();
   }
 
   // on onDrop we check if drop is on wysiwyg or not

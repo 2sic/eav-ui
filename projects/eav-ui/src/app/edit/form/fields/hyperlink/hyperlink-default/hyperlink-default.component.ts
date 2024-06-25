@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
@@ -26,7 +26,6 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,
@@ -79,22 +78,21 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   open = this.editRoutingService.isExpandedSignal(this.configTemp.index, this.configTemp.entityGuid);
 
-  // // TODO:: adam Temp
-  // adamTemp = toSignal(this.config.adam.items$);
+  adamConfig = signal([]);
 
-  // adamItemTemp = computed(() => {
-  //   const controlStatus = this.controlStatus();
-  //   const adamItems = this.adamTemp();
+  adamItem = computed(() => {
+    const controlStatus = this.controlStatus();
+    const adamItems = this.adamConfig() as AdamItem[];
 
-  //   if (!controlStatus.value || !adamItems.length) { return; }
+    if (!controlStatus.value || !adamItems.length) { return; }
 
-  //   const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-  //   if (!match) { return; }
+    const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
+    if (!match) { return; }
 
-  //   const adamItemId = parseInt(match[1], 10);
-  //   const adamItem = adamItems.find(i => i.Id === adamItemId);
-  //   return adamItem;
-  // });
+    const adamItemId = parseInt(match[1], 10);
+    const adamItem = adamItems.find(i => i.Id === adamItemId);
+    return adamItem;
+  });
 
   constructor(
     eavService: FormConfigService,
@@ -121,33 +119,20 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   ngOnInit() {
     super.ngOnInit();
-
     this.attachAdam();
 
-    const adamItem$ = combineLatest([this.controlStatus$, this.config.adam.items$]).pipe(
-      map(([controlStatus, adamItems]) => {
-
-        if (!controlStatus.value || !adamItems.length) { return; }
-
-        const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-        if (!match) { return; }
-
-        const adamItemId = parseInt(match[1], 10);
-        const adamItem = adamItems.find(i => i.Id === adamItemId);
-        return adamItem;
-      }),
-      distinctUntilChanged(),
-    );
+    this.config.adam.items$.subscribe(items => {
+      this.adamConfig.set(items);
+    });
 
     this.viewModel = combineLatest([
-      combineLatest([ this.preview$, adamItem$]),
+      combineLatest([this.preview$]),
     ]).pipe(
       map(([
-        [ preview,adamItem],
+        [preview],
       ]) => {
         const viewModel: HyperlinkDefaultViewModel = {
           preview,
-          adamItem,
         };
         return viewModel;
       }),

@@ -32,11 +32,9 @@ export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   subscriptions = new Subscription();
 
   constructor() {
-    // super();
   }
 
   ngOnInit() {
-    // super.ngOnInit();
     this.fullscreenAdam = this.config.inputType === InputTypeConstants.HyperlinkLibrary;
   }
 

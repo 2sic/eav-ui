@@ -50,8 +50,8 @@
 @if (viewModel(); as vm) {
   <div class="c-ew__preview-holder">
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
-      'mat-caption' : vm.itemsNumber > 0,
-      'mat-empty' : vm.itemsNumber === 0,
+      'mat-caption' : itemsNumber() > 0,
+      'mat-empty' : itemsNumber() === 0,
       'mat-error' : controlStatus().invalid && !config.initialDisabled,
       'color__primary' : !controlStatus().invalid && !config.initialDisabled,
       'color__label-disabled' : config.initialDisabled
@@ -65,7 +65,7 @@
       }">
       <div [ngClass]="controlStatus().value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
-          @for (item of vm.items; track trackByFn($index, item)) {
+          @for (item of items(); track trackByFn($index, item)) {
             <!-- folders -->
             @if (item.IsFolder) {
               <div fxLayout="row" fxLayoutAlign="start start">

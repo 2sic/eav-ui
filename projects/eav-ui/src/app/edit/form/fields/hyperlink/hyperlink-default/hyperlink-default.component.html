@@ -1,9 +1,4 @@
 @if (viewModel | async; as vm) {
-  <!-- <div>
-    <p>Old: {{vm.adamItem?._imageConfigurationContentType}} </p>
-    <p>New: {{adamItemTemp()?._imageConfigurationContentType}}</p>
-  </div> -->
-  <!--  -->
   @if (open()) {
     <div class="fabs-box">
       @if (buttonAdam()) {
@@ -12,13 +7,13 @@
           <mat-icon svgIcon="apple-outlined"></mat-icon>
         </button>
       }
-      <button mat-mini-fab color="primary" [disabled]="!vm.adamItem?._imageConfigurationContentType"
-        [ngClass]="{ 'metadata-exists': vm.adamItem?._imageConfigurationId > 0 }"
+      <button mat-mini-fab color="primary" [disabled]="!adamItem()?._imageConfigurationContentType"
+        [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
-        (click)="openImageConfiguration(vm.adamItem)">
+        (click)="openImageConfiguration(adamItem())">
         <mat-icon
           [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-          [tippyDisabled]="vm.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
+          [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
       </button>
       @if (buttonPage()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
