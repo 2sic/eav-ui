@@ -1,9 +1,9 @@
-<mat-form-field [formGroup]="groupTemp" color="accent" class="eav-mat-form-field">
+<mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
   <input matInput class="eav-translate-on-dblclick"
-    [formControlName]="configTemp.fieldName"
+    [formControlName]="fieldState.name"
     (blur)="clean(true)"
-    [placeholder]="basicsTemp().placeholder"
-    [required]="basicsTemp().required">
-  <mat-label>{{ basicsTemp().label }}</mat-label>
+    [placeholder]="basics().placeholder"
+    [required]="basics().required">
+  <mat-label>{{ basics().label }}</mat-label>
 </mat-form-field>
 <app-field-helper-text></app-field-helper-text>
