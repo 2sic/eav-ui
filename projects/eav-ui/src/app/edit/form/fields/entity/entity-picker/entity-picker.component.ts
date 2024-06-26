@@ -35,7 +35,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.log.a(nameOfMethod);
     let source: DataAdapterQuery | DataAdapterEntity;
 
-    const state = this.stateRaw.attachToComponent(this);
+    const state = this.stateRaw.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
     const dataSourceType = this.fieldState.settings().DataSourceType;
     this.log.a(`${nameOfMethod}: dataSourceType: '${dataSourceType}'`);

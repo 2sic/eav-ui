@@ -39,7 +39,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
 
     let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;
 
-    const state = this.stateString.attachToComponent(this);
+    const state = this.stateString.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
     const dataSourceType = this.fieldState.settings().DataSourceType;
     const isEmpty = !dataSourceType;

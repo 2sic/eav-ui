@@ -31,7 +31,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.stateString.attachToComponent(this);
+    const state = this.stateString.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
     const source = this.sourceAdapterString.setupString(
       (props: DeleteEntityProps) => state.doAfterDelete(props),

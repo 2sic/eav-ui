@@ -30,7 +30,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
 
-    const state = this.stateRaw.attachToComponent(this);
+    const state = this.stateRaw.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
     const source = this.pickerEntitySourceAdapter.linkLog(this.log).connectState(state, false);
 

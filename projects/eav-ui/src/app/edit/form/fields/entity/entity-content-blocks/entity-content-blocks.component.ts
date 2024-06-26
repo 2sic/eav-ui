@@ -30,7 +30,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.stateRaw.attachToComponent(this);
+    const state = this.stateRaw.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
     const source = this.entitySourceAdapter.linkLog(this.log).connectState(state, false);
 

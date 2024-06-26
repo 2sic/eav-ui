@@ -7,14 +7,13 @@ import { FormConfigService } from '../../../../shared/services';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, Optional, Signal, computed, inject, signal } from '@angular/core';
-import { PickerComponent } from '../picker.component';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { PickerFeatures } from '../picker-features.model';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'StateAdapter';
 
 @Injectable()
@@ -67,14 +66,20 @@ export class StateAdapter extends ServiceBase {
   
   private focusOnSearchComponent: () => void;
 
-  public attachToComponent(component: PickerComponent): this  {
-    this.log.a('attachToComponent');
-    this.log.inherit(component.log);
-    this.focusOnSearchComponent = component.focusOnSearchComponent;
+  public linkLog(log: EavLogger): this {
+    if (!this.log.enabled)
+      this.log.inherit(log);
+    return this;
+  };
+
+  public attachCallback(focusCallback: () => void): this  {
+    this.log.a('attachCallback');
+    this.focusOnSearchComponent = focusCallback;
     return this;
   }
 
-  updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
+  private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
+    const l = this.log.fn('updateValue', null, { action, value });
     let valueArray: string[] = this.createValueArray();
 
     switch (action) {
@@ -101,6 +106,7 @@ export class StateAdapter extends ServiceBase {
     if (action === 'delete' && !valueArray.length) {
       // move back to component
       setTimeout(() => {
+        console.log('trying to call focus');
         this.focusOnSearchComponent();
       });
     }

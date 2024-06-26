@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, Signal, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';

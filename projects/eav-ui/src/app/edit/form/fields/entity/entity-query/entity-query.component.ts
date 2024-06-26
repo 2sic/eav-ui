@@ -31,7 +31,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
-    const state = this.stateEntity.attachToComponent(this);
+    const state = this.stateEntity.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
     this.log.a('createPickerAdapters: PickerConfigModels.UiPickerSourceQuery');
     const source = this.querySourceAdapterRaw.linkLog(this.log).connectState(state, false);
