@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -28,7 +28,7 @@ import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 @Injectable()
 export class FormulaEngine implements OnDestroy {
   private subscription: Subscription = new Subscription();
-  private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
+  private features = inject(FeaturesService).getAll();
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsSettingsService: FieldsSettingsService = null;
   private formulaPromiseHandler: FormulaPromiseHandler = null;
@@ -43,7 +43,6 @@ export class FormulaEngine implements OnDestroy {
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
-    private featuresService: FeaturesService,
   ) { }
 
   ngOnDestroy(): void {
@@ -57,7 +56,6 @@ export class FormulaEngine implements OnDestroy {
     this.fieldsSettingsService = fieldsSettingsService;
     this.formulaPromiseHandler = formulaPromiseHandler;
     this.contentTypeSettings$ = contentTypeSettings$;
-    this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
   }
 
   // TODO: 2dm -> Here we call all list item formulas on some picker for each item
@@ -265,7 +263,7 @@ export class FormulaEngine implements OnDestroy {
       this.itemService,
       this.formConfig,
       this.fieldsSettingsService,
-      this.featuresCache$.value,
+      this.features(),
     );
     const isOpenInDesigner = this.isDesignerOpen(formula);
     const ctSettings = this.contentTypeSettings$.value;
