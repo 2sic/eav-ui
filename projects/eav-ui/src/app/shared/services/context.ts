@@ -62,7 +62,7 @@ export class Context extends ServiceBase {
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
     super(new EavLogger('Context', logThis));
-    this.log.a('constructor', ['parentContext', parentContext, 'parentId', parentContext?.id]);
+    this.log.a('constructor', {parentContext, 'parentId': parentContext?.id});
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
@@ -76,11 +76,11 @@ export class Context extends ServiceBase {
    * It ensures that within that module, the context has the values given by the route
    */
   init(route: ActivatedRoute) {
-    this.log.a('init', ['route', route]);
+    this.log.a('init', {route});
     this.routeSnapshot = route?.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
-    this.log.a('init done', [this, 'appId', this.appId, 'zoneId', this.zoneId, 'contentBlockId', this.contentBlockId, 'moduleId', this.moduleId]);
+    this.log.a('init done', {this: this, 'appId': this.appId, 'zoneId': this.zoneId, 'contentBlockId': this.contentBlockId, 'moduleId': this.moduleId});
     consoleLogDev('Context.init', this, route);
   }
 

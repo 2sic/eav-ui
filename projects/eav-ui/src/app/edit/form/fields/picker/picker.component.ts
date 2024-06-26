@@ -76,7 +76,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     } else {
       // this method is overridden in each variant as of now
       this.createPickerAdapters();
-      this.log.a('createPickerAdapters: config', [config]);
+      this.log.a('createPickerAdapters: config', {config});
       config.pickerData = this.pickerData;
     }
   }

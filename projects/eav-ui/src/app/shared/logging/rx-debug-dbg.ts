@@ -36,7 +36,7 @@ export class RxTapDebug {
           const showData = data == null
             ? data  // if null or undefined, just show it
             : this.jsonify ? JSON.parse(JSON.stringify(data)) : data;
-          return this.logger.a(label + ` #${counter++}`, [showData]);
+          return this.logger.a(label + ` #${counter++}`, {showData});
         })
       );
   };

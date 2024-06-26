@@ -122,7 +122,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         });
       },
       setConfig: (config) => {
-        this.log.a('setConfig', [config]);
+        this.log.a('setConfig', config);
         this.zone.run(() => this.setConfig(config));
       },
       getConfig: () => this.adamConfig$.value,

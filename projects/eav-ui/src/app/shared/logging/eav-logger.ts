@@ -1,4 +1,4 @@
-import { consoleLogAlways, logAlways } from '../helpers/console-log-angular.helper';
+import { consoleLogAlways, logAlways, logNew } from '../helpers/console-log-angular.helper';
 import { EavLoggerFn } from './eav-logger-fn';
 import { RxTapDebug } from './rx-debug-dbg';
 
@@ -18,7 +18,7 @@ export class EavLogger {
     this.nameWithSvcId = `${name}-${this.svcId}`;
   }
 
-  private nameWithSvcId: string;
+  public nameWithSvcId: string;
 
   inherit(parent: EavLogger) {
     this.enabled = this.enabled || parent.enabled;
@@ -30,26 +30,11 @@ export class EavLogger {
   }
 
   /**
-   * Quick log, without the call stack
-   * @param message message to show
-   * @param args data to show
-   * @returns 
-   */
-  a(message: string, data?: unknown[]): void {
-    if (!this.enabled) return;
-    logAlways(`[${this.nameWithSvcId}] ${message}`, data);
-  }
-
-  /**
    * Special 'a' = add log helper to better diagnose what is happening
    */
-  add(message: string, ...args: any[]): void {
+  a(message: string, data?: Record<string, unknown>): void {
     if (!this.enabled) return;
-    consoleLogAlways(`[${this.nameWithSvcId}] ${message}`, ...args);
-  }
-
-  qAdd(): (message: string, ...args: any[]) => void {
-    return this.add.bind(this);
+    logNew(`[${this.nameWithSvcId}] ${message}`, data);
   }
 
   /** Create a special logger for rx logging */
@@ -60,6 +45,11 @@ export class EavLogger {
   val(name: string, value: unknown) {
     if (!this.enabled) return;
     logAlways(`[${this.nameWithSvcId}] value of ${name}:`, [value]);
+  }
+
+  values(data: Record<string, unknown>) {
+    if (!this.enabled) return;
+    logNew(`[${this.nameWithSvcId}] values:`, data);
   }
 
   fn(name: string, message?: string, data?: Record<string, unknown>): EavLoggerFn {

@@ -39,7 +39,7 @@ export class PickerTreeDataHelper extends ServiceBase {
   }
 
   public preConvertAllItems(treeConfig: UiPickerModeTree, items: PickerItem[]) {
-    this.log.a('preConvertAllItemsToTreeItems', [treeConfig, items]);
+    this.log.a('preConvertAllItemsToTreeItems', {treeConfig, items});
     const convertedItems = items.map(x => this.preConvertItemToTreeItem(treeConfig, x, items));
 
     // todo: establish relationships
@@ -59,7 +59,7 @@ export class PickerTreeDataHelper extends ServiceBase {
   
   private preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
     // Log and do some initial checks
-    this.log.a(`preConvertItemToTreeItem for item ${item?.id}`, [treeConfig, item, allItems]);
+    this.log.a(`preConvertItemToTreeItem for item ${item?.id}`, {treeConfig, item, allItems});
     if (!treeConfig) throw new Error('No tree configuration found');
     if (!item) throw new Error("Can't transform null-item");
 
@@ -92,7 +92,7 @@ export class PickerTreeDataHelper extends ServiceBase {
       parent: item.data[cpRef],
       children: item.data[pcRef],
     };
-    this.log.a('result', [result]);
+    this.log.a('result', {result});
     return result;
   }
 
@@ -167,7 +167,7 @@ export class PickerTreeDataHelper extends ServiceBase {
     // test code to verify functionality
     // if (item.label?.indexOf('Kawasaki') > -1) {
     //   this.log.enabled = true;
-    //   this.log.a('disableOption', item, selected, enableReselect, selectedButNoReselect);
+    //   this.log.add('disableOption', item, selected, enableReselect, selectedButNoReselect);
     //   this.log.enabled = false;
     // }
 

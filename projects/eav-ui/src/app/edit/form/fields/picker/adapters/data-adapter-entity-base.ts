@@ -125,7 +125,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
 
   // private updateAddNew(): void {
-  //   this.log.a('updateAddNew');
+  //   this.log.add('updateAddNew');
   //   // const contentTypeName = this.contentTypeMask.resolve();
   //   const disableCreate = !this.contentType() && !this.createEntityTypes();
   //   this.features.update(p => ({ ...p, create: !disableCreate } satisfies Partial<PickerFeatures>));
@@ -136,7 +136,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
-    this.log.a('editItem', [editParams]);
+    this.log.a('editItem', {editParams});
     if (editParams)
       this.editEntityGuid.set(editParams.entityGuid);
     let form: EditForm;
@@ -166,7 +166,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   }
 
   deleteItem(props: DeleteEntityProps): void {
-    this.log.a('deleteItem', [props]);
+    this.log.a('deleteItem', {props});
     const entity = this.optionsOrHints().find(item => item.value === props.entityGuid);
     const id = entity.id;
     const title = entity.label;

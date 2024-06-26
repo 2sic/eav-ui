@@ -78,7 +78,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         };
       }),
     }
-    this.log.a('fetchFormData', [form]);
+    this.log.a('fetchFormData', form);
 
     const editItems = JSON.stringify(form.items);
     this.formDataService.fetchFormData(editItems).subscribe(dataFromBackend => {
@@ -89,7 +89,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         Items: dataFromBackend.Items.map(item => {
           // try to find original item
           const originalItem = form.items.find(i => i.clientId === item.Header.clientId);
-          this.log.a('fetchFormData - remix', [item, originalItem]);
+          this.log.a('fetchFormData - remix', {item, originalItem});
 
           return originalItem == null
             ? item
@@ -103,7 +103,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
               };
         }),
       };
-      this.log.a('fetchFormData - after remix', [formData]);
+      this.log.a('fetchFormData - after remix', {formData});
 
 
       // SDV: document what's happening here

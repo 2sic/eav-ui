@@ -96,7 +96,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');
     this.metadataSet$.subscribe((set) => {
-      this.log.a('test 2dm', [set]);
+      this.log.a('test 2dm', {set});
     });
 
     const filteredRecs$ = this.metadataSet$.pipe(

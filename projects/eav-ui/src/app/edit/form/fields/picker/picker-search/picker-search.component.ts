@@ -25,7 +25,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = false;
+const logThis = true;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
 const nameOfThis = 'PickerSearchComponent';
@@ -154,7 +154,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   // 2024-04-30 2dm: seems this is always a string, will simplify the code
   displayFn(value: string /* | string[] | PickerItem */): string {
     const selectedItem = this.selectedItem();
-    this.logItemChecks.add(`displayFn: value: '${value}'; selectedItem: `, selectedItem);
+    this.logItemChecks.a(`displayFn: value: '${value}'`, { selectedItem });
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
     let returnValue = this.pickerData().source.optionsOrHints().find(ae => ae.value == value)?.label;
@@ -166,7 +166,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
       return selectedItem?.value == value
         ? selectedItem?.label
         : value + " *";
-    this.log.a('displayFn result', [value, returnValue]);
+    this.log.a('displayFn result', { value, returnValue });
     return returnValue;
   }
 
@@ -200,7 +200,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     const selectedItems = this.selectedItems();
     const selectedItem = this.selectedItem();
     const nativeElement = this.autocomplete().nativeElement;
-    this.log.a('onClosed', [selectedItems, selectedItem]);
+    this.log.a('onClosed', {selectedItems, selectedItem});
     if (this.showSelectedItem()) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.value) {
@@ -215,7 +215,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
-    this.logItemChecks.add('optionSelected', event.option.value);
+    this.logItemChecks.a('optionSelected', event.option.value);
     this.newValue = event.option.value;
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
@@ -231,7 +231,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, allOptions);
+    this.logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, {allOptions});
     return placeholder;
   }
 
@@ -249,7 +249,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   isOptionDisabled(value: string): boolean {
     const selected = this.selectedItems();
     const isSelected = selected.some(entity => entity.value === value);
-    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selected);
+    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, {selected});
     return isSelected;
   }
 

@@ -54,7 +54,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
     private media: MediaMatcher
   ) {
     super(router, route, new EavLogger('AppAdminMainComponent', logThis));
-    this.log.a('constructor', ['appDialogConfigService', appDialogConfigService]);
+    this.log.a('constructor', {appDialogConfigService});
   }
 
   AppScopes = AppScopes;

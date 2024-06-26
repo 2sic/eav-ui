@@ -39,7 +39,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
     const initiallySelected = state.selectedItems();
-    this.log.a('setup', ['initiallySelected', initiallySelected])
+    this.log.a('setup', {initiallySelected})
     source.initPrefetch(initiallySelected.map(item => item.value));
     return this;
   }

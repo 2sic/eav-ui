@@ -29,13 +29,13 @@ export function correctStringEmptyValue(
     } satisfies PickerItem);
   });
 
-  log.a('equalizeSelectedItems', [
-    'fieldValue', `'${fieldValue}'`,
-    'separator', `'${separator}'`,
-    'dropdownOptions', dropdownOptions,
-    'valueAsArray', valueAsArray,
-    'result', result,
-  ]);
+  log.a('equalizeSelectedItems', {
+    fieldValue,
+    separator,
+    dropdownOptions,
+    valueAsArray,
+    result,
+  });
   return result;
 }
 

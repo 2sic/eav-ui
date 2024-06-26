@@ -64,7 +64,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   //  * Probably when configuring a new query where the stream is from a mask...
   //  */
   // setupFlushOnSettingsChange(): void {
-  //   this.log.a(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
+  //   this.log.add(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
 
   //   const isStringQuery = this.isStringQuery;
   //   function getPartsToCompareFromSettings(settings: FieldSettings) {
@@ -85,7 +85,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   //       const current = getPartsToCompareFromSettings(settings);
   //       if (RxHelpers.objectsEqual(previous, current))
   //         return;
-  //       this.log.a('flushing optionsOrHints$');
+  //       this.log.add('flushing optionsOrHints$');
   //       this.optionsOrHints$.next(null);
   //       previous = current;
   //     }, { allowSignalWrites: true /* necessary because we're changing something */ });
@@ -102,7 +102,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 //  * ...but I'm not quite sure how they would ever change at runtime.
 //  */
 // flushAvailableEntities(): void {
-//   this.log.a(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
+//   this.log.add(`flushAvailableEntities, isStringQuery: ${this.isStringQuery}`);
 //   if (!this.isStringQuery) {
 //     this.subscriptions.add(
 //       this.settings$.pipe(

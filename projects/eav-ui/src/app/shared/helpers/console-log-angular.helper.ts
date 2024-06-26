@@ -40,7 +40,10 @@ export function logAlways(message?: any, data?: unknown[]): void {
   consoleLogInternal({ segment: 'always', message, callStack: false, data: data })
 }
 
-
+/** Log to Dev lightweight (no stack) - always active */
+export function logNew(message?: any, data?: Record<string, unknown>): void {
+  consoleLogObject({ segment: 'always', message, callStack: false, data: data })
+}
 
 function consoleLogInternal(
   { segment, message, callStack, data = [] }
@@ -86,15 +89,50 @@ function consoleLogInternal(
   console.groupEnd();
 }
 
+function consoleLogObject(
+  { segment, message, callStack, data = null }
+  : { segment: keyof typeof enableLogging; message?: any; callStack?: boolean, data?: Record<string, unknown>; }
+): void {
+  // Skip on production
+  if (environment.production) return;
 
-// old call, should be replaced by more specific calls to enable/disable as needed
+  // Check if we've already logged a lot to then stop logging
+  const segmentUpper = `[${segment?.toUpperCase()}]`;
+  if (!enableLogging[segment])  {
+    if (warningNoLogShown[segment]) return;
+    console.log(`${segmentUpper}-logging disabled, no further messages will show for this segment.`)
+    warningNoLogShown[segment] = true;
+    return;
+  }
 
-/** Console log that doesn't show in Angular production mode */
-// export function consoleLogAngular(message?: any, ...optionalParams: any[]) {
-//   if (environment.production) { return; }
+  // Make prefix uppercase if not always
+  const prefix = segment === 'always' ? '' : segmentUpper;
+  
+  // New lightweight log, without the entire trace / call stack
+  if (callStack == false) {
+    if (!data)
+      return console.log(`${prefix} ${message}`)
 
-//   console.groupCollapsed(message, ...optionalParams);
-//   // tslint:disable-next-line:no-console
-//   console.trace();
-//   console.groupEnd();
-// }
+    const keys = Object.keys(data);
+    if (keys.length === 0)
+      return console.log(`${prefix} ${message}`);
+
+    if (keys.length === 1) {
+      const key = keys[0];
+      const show = data[key];
+      if (typeof(show) === 'string')
+        return console.log(`${prefix} ${message} [string:${show.length}] '${key}'='${show}'`);
+      return console.log(`${prefix} ${message} [${typeof(show)}}] '${key}'=`, show);
+    }
+    
+    console.log(`${prefix} ${message} [${keys.length} keys]`, data);
+    return;
+  }
+
+  console.groupCollapsed(`${prefix} ${message}`, data);
+  
+  // tslint:disable-next-line:no-console
+  console.trace();
+  console.groupEnd();
+}
+

@@ -165,7 +165,7 @@ export class StateAdapter extends ServiceBase {
     //   })
     // );
     // if (dumpProperties) {
-    //   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.a(`shouldPickerListBeShown ${shouldShow}`));
+    //   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.add(`shouldPickerListBeShown ${shouldShow}`));
     // }
 
 

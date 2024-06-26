@@ -92,7 +92,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
-    this.log.a('createComponent', [fieldProps.calculatedInputType]);
+    this.log.a('createComponent', { calculatedInputType: fieldProps.calculatedInputType});
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
     const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.calculatedInputType);
@@ -113,14 +113,14 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       wrapperInfo = this.createWrappers(wrapperInfo, fieldMetadata.wrappers);
 
     // generate the real input field component
-    this.log.a('createComponent - add component', [componentType]);
+    this.log.a('createComponent - add component', {componentType});
     this.generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
 
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
-      this.log.a('createComponent - add preview', [previewType]);
+      this.log.a('createComponent - add preview', {previewType});
       this.generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
   }

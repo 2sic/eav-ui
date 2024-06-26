@@ -59,7 +59,7 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
   }
 
   getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
-    this.log.a('getDialogSettings', ['appId', appId, 'reqBy', reqBy]);
+    this.log.a('getDialogSettings', {appId, reqBy});
     return this.http.get<DialogSettings>(webApiSettings, {
       params: { appId: appId ?? this.context.appId.toString() },
     }).pipe(
