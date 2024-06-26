@@ -176,7 +176,7 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
       columnDefs: [
         {
           headerName: 'ID',
-          field: 'NameId',
+          field: 'nameId',
           ...cellDefaultsTextFilter,
           width: 200,
           headerClass: 'dense',
@@ -193,7 +193,7 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
-              tooltipGetter: (feature: Feature) => feature.NameId,
+              tooltipGetter: (feature: Feature) => feature.nameId,
             };
             return params;
           })(),
@@ -207,10 +207,9 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           onCellClicked: (params) => {
             this.showFeatureDetails(params.data as Feature);
           },
-          // valueGetter: (params) => (params.data as Feature).Name,
         },
         {
-          field: 'IsEnabled',
+          field: 'isEnabled',
           headerName: 'Enabled',
           ...cellDefaults,
           width: 80,

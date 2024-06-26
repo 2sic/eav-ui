@@ -4,7 +4,7 @@
   </mat-card-header>
   <mat-card-content>
     <p [innerHtml]="dialogData.feature.description | safeHtml"></p>
-    @if (dialogData.feature.NameId; as id) {
+    @if (dialogData.feature.nameId; as id) {
       <div class="eav-info-row">
         <div class="eav-info-row__label">ID:</div>
         <div class="eav-info-row__value">
@@ -30,13 +30,11 @@
     }
   </mat-card-content>
   <mat-card-actions align="end">
-    @if (dialogData.feature.link; as link) {
-      <button mat-raised-button class="eav-card-action-button" color="accent"
-        (click)="findOutMore(link)">
-        <mat-icon>open_in_new</mat-icon>
-        Find out more
-      </button>
-    }
+    <button mat-raised-button class="eav-card-action-button" color="accent"
+      (click)="findOutMore(dialogData.feature.link)">
+      <mat-icon>open_in_new</mat-icon>
+      Find out more
+    </button>
     <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
       Close
     </button>

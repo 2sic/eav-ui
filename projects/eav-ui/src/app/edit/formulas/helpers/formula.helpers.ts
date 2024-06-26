@@ -209,7 +209,7 @@ export class FormulaHelpers {
             debug: debugEnabled,
             features: {
               isEnabled(name: string): boolean {
-                return features.find(f => f.NameId === name)?.IsEnabled ?? false;
+                return features.find(f => f.nameId === name)?.isEnabled ?? false;
               },
             },
             form: {
@@ -330,7 +330,7 @@ export class FormulaHelpers {
           'culture.code',
           'culture.name',
           'debug',
-          'features.isEnabled(\'NameId\')',
+          'features.isEnabled(\'nameId\')',
           'form.runFormulas()',
           'sxc.ChangeThis',
           'target.entity.id',

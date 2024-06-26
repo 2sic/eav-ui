@@ -50,25 +50,25 @@ export class FeaturesService extends ServiceBase {
   get$(featureNameId: string): Observable<FeatureSummary> {
     return this.dialogContext$.pipe(
       // tap(f => console.log('2dm', f, featureNameId)),
-      map(dc => dc?.Features.find(f => f.NameId === featureNameId))
+      map(dc => dc?.Features.find(f => f.nameId === featureNameId))
     );
   }
 
   getSignal(featureNameId: string): Signal<FeatureSummary> {
     return computed(
-      () => this.dialogContextSignal()?.Features.find(f => f.NameId === featureNameId),
+      () => this.dialogContextSignal()?.Features.find(f => f.nameId === featureNameId),
       { equal: RxHelpers.objectsEqual }
     );
   }
 
   // TODO: @2dg please try to change all to use the new signal variant below
   isEnabled$(nameId: string): Observable<boolean> {
-    return this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false));
+    return this.get$(nameId).pipe(map(f => f?.isEnabled ?? false));
   }
 
   isEnabled(nameId: string): Signal<boolean> {
     return computed(
-      () => this.dialogContextSignal()?.Features.find(f => f.NameId === nameId)?.IsEnabled ?? false,
+      () => this.dialogContextSignal()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false,
       SignalHelpers.boolEquals
     );
   }
