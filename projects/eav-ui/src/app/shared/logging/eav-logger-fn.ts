@@ -1,4 +1,4 @@
-import { logNew } from '../helpers/console-log-angular.helper';
+import { logMain } from '../helpers/console-log-angular.helper';
 import { EavLogger } from './eav-logger';
 
 export class EavLoggerFn {
@@ -10,7 +10,7 @@ export class EavLoggerFn {
     if (!data) return;
     if (!this.parent.enabled) return;
     intro = intro ? ` ${intro} ` : '';
-    logNew(`[${this.parent.nameWithSvcId}.${this.fnName}()] ${intro} values:`, data);
+    logMain(`[${this.parent.nameWithSvcId}.${this.fnName}()] ${intro} values:`, data);
   }
 
   a(message: string, data?: Record<string, unknown>): void {

@@ -30,18 +30,13 @@ export function consoleLogDev(message?: any, ...optionalParams: any[]): void {
   consoleLogInternal({ segment: 'dev', message, data: optionalParams })
 }
 
-/** Log to Dev - always active */
-export function consoleLogAlways(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal({ segment: 'always', message, data: optionalParams })
-}
+// /** Log to Dev - always active */
+// export function consoleLogAlways(message?: any, ...optionalParams: any[]): void {
+//   consoleLogInternal({ segment: 'always', message, data: optionalParams })
+// }
 
 /** Log to Dev lightweight (no stack) - always active */
-export function logAlways(message?: any, data?: unknown[]): void {
-  consoleLogInternal({ segment: 'always', message, callStack: false, data: data })
-}
-
-/** Log to Dev lightweight (no stack) - always active */
-export function logNew(message?: any, data?: Record<string, unknown>): void {
+export function logMain(message?: any, data?: Record<string, unknown>): void {
   consoleLogObject({ segment: 'always', message, callStack: false, data: data })
 }
 

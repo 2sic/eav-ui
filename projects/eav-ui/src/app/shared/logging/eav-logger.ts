@@ -1,4 +1,4 @@
-import { consoleLogAlways, logAlways, logNew } from '../helpers/console-log-angular.helper';
+import { logMain } from '../helpers/console-log-angular.helper';
 import { EavLoggerFn } from './eav-logger-fn';
 import { RxTapDebug } from './rx-debug-dbg';
 
@@ -34,7 +34,7 @@ export class EavLogger {
    */
   a(message: string, data?: Record<string, unknown>): void {
     if (!this.enabled) return;
-    logNew(`[${this.nameWithSvcId}] ${message}`, data);
+    logMain(`[${this.nameWithSvcId}] ${message}`, data);
   }
 
   /** Create a special logger for rx logging */
@@ -44,12 +44,12 @@ export class EavLogger {
 
   val(name: string, value: unknown) {
     if (!this.enabled) return;
-    logAlways(`[${this.nameWithSvcId}] value of ${name}:`, [value]);
+    logMain(`[${this.nameWithSvcId}] value of ${name}:`, { value });
   }
 
   values(data: Record<string, unknown>) {
     if (!this.enabled) return;
-    logNew(`[${this.nameWithSvcId}] values:`, data);
+    logMain(`[${this.nameWithSvcId}] values:`, data);
   }
 
   fn(name: string, message?: string, data?: Record<string, unknown>): EavLoggerFn {
