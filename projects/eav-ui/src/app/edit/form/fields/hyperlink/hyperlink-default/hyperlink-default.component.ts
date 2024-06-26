@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, computed, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -9,7 +9,6 @@ import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
-import { Preview } from './hyperlink-default.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { PasteClipboardImageDirective } from '../../../../shared/directives/paste-clipboard-image.directive';
 import { MatInputModule } from '@angular/material/input';

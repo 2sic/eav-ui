@@ -63,7 +63,11 @@ export class HyperlinkLibraryExpandableWrapperComponent {
   protected items = computed(() => this.adamConfig().slice(0, 9));
   protected itemsNumber = computed(() => this.adamConfig().length, SignalHelpers.numberEquals);
 
-  protected hideAdamSponsor = toSignal(this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic), { initialValue: true });
+  protected hideAdamSponsor = this.featuresService.isEnabled(FeatureNames.NoSponsoredByToSic);
+  adamSponsorI18nKey = computed(() => this.hideAdamSponsor()
+    ? 'Fields.Hyperlink.AdamFileManager.Name'
+    : 'Fields.Hyperlink.Default.Sponsor'
+  );
 
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 

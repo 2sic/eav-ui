@@ -131,7 +131,7 @@
         @if (buttonAdam()) {
           <div align="end" style="display: flex;" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
             fxShow.gt-xs>
-            <span>{{ (hideAdamSponsor() ? 'Fields.Hyperlink.AdamFileManager.Name' : ('Fields.Hyperlink.Default.Sponsor') | translate) }}</span>
+            <span>{{ adamSponsorI18nKey() | translate }}</span>
             <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
           </div>
         }

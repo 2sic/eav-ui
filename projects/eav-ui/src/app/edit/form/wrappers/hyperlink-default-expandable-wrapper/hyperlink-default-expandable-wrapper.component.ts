@@ -73,7 +73,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
-  // viewModel = toSignal(this.preview$);
 
   adamConfig = signal([]);
 
@@ -118,7 +117,11 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
   }
 
-  protected hideAdamSponsor = toSignal(this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic), { initialValue: true })
+  protected hideAdamSponsor = this.featuresService.isEnabled(FeatureNames.NoSponsoredByToSic);
+  adamSponsorI18nKey = computed(() => this.hideAdamSponsor()
+    ? 'Fields.Hyperlink.AdamFileManager.Name'
+    : 'Fields.Hyperlink.Default.Sponsor'
+  );
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
