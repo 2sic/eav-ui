@@ -7,13 +7,17 @@ import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 
 const debug = true;
 
+const logThis = true;
+const nameOfThis = 'WysiwygConfigurationManager';
 
 
 export class WysiwygConfigurationManager {
+
+  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private connector: Connector<string>,
@@ -72,7 +76,7 @@ export class WysiwygConfigurationManager {
     };
 
     this.current = wysiwygConfiguration;
-    consoleLogWebpack('wysiwyg: getSettings result: ', wysiwygConfiguration);
+    this.log.a('wysiwyg: getSettings result: ', wysiwygConfiguration);
     return wysiwygConfiguration;
   }
 
@@ -96,7 +100,7 @@ export class WysiwygConfigurationManager {
 
 function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
 
-  consoleLogWebpack('wysiwyg: getPresetConfiguration', editMode, 'displayMode', displayMode, ConfigurationPresets);
+  this.log.a('wysiwyg: getPresetConfiguration', editMode, 'displayMode', displayMode, ConfigurationPresets);
   // Find best match for modeConfig, if not found, rename and use default
   const defConfig = ConfigurationPresets[DefaultMode];
   let currConfig = ConfigurationPresets[editMode];
@@ -133,7 +137,7 @@ function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode
     toolbar: variation.toolbar || currConfig.toolbar || defConfig.toolbar,
   } : { ...currConfig };
 
-  consoleLogWebpack('wysiwyg: getPresetConfiguration merged', merged);
+  this.log.a('wysiwyg: getPresetConfiguration merged', merged);
 
   return merged;
 }

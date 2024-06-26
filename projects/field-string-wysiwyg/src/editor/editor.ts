@@ -25,7 +25,6 @@ import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import type { Editor } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import * as WysiwygDialogModes from '../constants/display-modes';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
@@ -38,6 +37,10 @@ import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FieldStringWysiwygEditor';
 
 declare const window: EavWindow;
 
@@ -62,9 +65,11 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private dialogIsOpen: boolean;
   private menuObserver: MutationObserver;
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor() {
     super();
-    consoleLogWebpack(`${wysiwygEditorHtmlTag} constructor called`);
+    this.log.a(`constructor`);
     this.subscriptions = [];
     this.fieldInitialized = false;
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
@@ -75,7 +80,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
-    consoleLogWebpack(`${wysiwygEditorHtmlTag} connectedCallback called`);
+    this.log.a(`connectedCallback`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
@@ -103,7 +108,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private tinyMceScriptLoaded(): void {
-    consoleLogWebpack(`${wysiwygEditorHtmlTag} tinyMceScriptLoaded called`);
+    this.log.a(`tinyMceScriptLoaded`);
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
       this.containerClass,
@@ -121,7 +126,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
     this.editor = editor;
     editor.on('init', _event => {
-      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE initialized`, editor);
+      this.log.a(`TinyMCE initialized`, {editor});
       this.reconfigure?.editorOnInit?.(editor);
       new AddEverythingToRegistry({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
       if (!this.reconfigure?.disableAdam) {
@@ -159,7 +164,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // called after TinyMCE editor is removed
     editor.on('remove', _event => {
-      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE removed`, _event);
+      this.log.a(`TinyMCE removed`, _event);
       this.clearData();
     });
 
@@ -186,7 +191,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     editor.on('focus', _event => {
       this.classList.add('focused');
-      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE focused`, _event);
+      this.log.a(`TinyMCE focused`, _event);
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
@@ -197,7 +202,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     editor.on('blur', _event => {
       this.classList.remove('focused');
-      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE blurred`, _event);
+      this.log.a(`TinyMCE blurred`, _event);
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
@@ -245,7 +250,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${wysiwygEditorHtmlTag} disconnectedCallback called`);
+    this.log.a(`disconnectedCallback`);
     this.clearData();
     this.subscription.unsubscribe();
   }

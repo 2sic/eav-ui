@@ -1,9 +1,12 @@
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { wysiwygEditorHtmlTag } from '../../internal-constants';
 import { FieldStringWysiwygEditor } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.scss';
+
+const logThis = false;
+const nameOfThis = 'FieldStringWysiwyg';
 
 const wysiwygTag = 'field-string-wysiwyg';
 
@@ -14,16 +17,18 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   mode?: 'edit' | 'preview';
   reconfigure?: WysiwygReconfigure;
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor() {
     super();
-    consoleLogWebpack(`${wysiwygTag} constructor called`);
+    this.log.a(`constructor`);
     this.fieldInitialized = false;
   }
 
   connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
-    consoleLogWebpack(`${wysiwygTag} connectedCallback called`);
+    this.log.a(`connectedCallback`);
 
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
@@ -62,7 +67,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${wysiwygTag} disconnectedCallback called`);
+    this.log.a(`disconnectedCallback called`);
   }
 }
 

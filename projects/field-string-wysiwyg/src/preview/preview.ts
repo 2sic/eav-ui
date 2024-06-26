@@ -1,10 +1,13 @@
 import type { Subscription } from 'rxjs';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FieldStringWysiwygPreview';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 
@@ -15,16 +18,18 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   private subscriptions: Subscription[];
   private eventListeners: ElementEventListener[];
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor() {
     super();
-    consoleLogWebpack(`${wysiwygPreviewTag} constructor called`);
+    this.log.a(`constructor`);
     this.fieldInitialized = false;
   }
 
   connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
-    consoleLogWebpack(`${wysiwygPreviewTag} connectedCallback called`);
+    this.log.a(`connectedCallback`);
 
     this.subscriptions = [];
     this.eventListeners = [];
@@ -53,7 +58,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${wysiwygPreviewTag} disconnectedCallback called`);
+    this.log.a(`disconnectedCallback called`);
     this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
