@@ -57,8 +57,6 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
   ],
 })
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
-  viewModel: Observable<Preview>;
-
   protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
   protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
   protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalHelpers.boolEquals);
@@ -116,8 +114,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     this.config.adam.items$.subscribe(items => {
       this.adamConfig.set(items);
     });
-
-    this.viewModel = this.preview$;
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {

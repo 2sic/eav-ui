@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
+import { openFeatureDialog } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -207,9 +207,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
   private openFeatureDisabledWarning(featureNameId: string) { 
     if (featureNameId === FeatureNames.PasteImageFromClipboard) {
-      this.snackBar.open(this.translateService.instant('Message.PastingFilesIsNotEnabled'), this.translateService.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
-      });
+      this.snackBar.open(this.translateService.instant('Message.PastingFilesIsNotEnabled'), this.translateService.instant('Message.FindOutMore'), { duration: 3000 })
+        .onAction()
+        .subscribe(() => openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef));
     }
   }
 }

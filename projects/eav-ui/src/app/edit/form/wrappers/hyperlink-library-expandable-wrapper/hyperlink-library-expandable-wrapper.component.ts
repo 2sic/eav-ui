@@ -1,13 +1,11 @@
-import { Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef, WritableSignal } from '@angular/core';
+import { Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import {  combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EditRoutingService, FormsStateService } from '../../../shared/services';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { HyperlinkLibraryExpandableViewModel } from './hyperlink-library-expandable-wrapper.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
 import { FieldHelperTextComponent } from '../../shared/field-helper-text/field-helper-text.component';
@@ -23,6 +21,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
@@ -64,7 +63,7 @@ export class HyperlinkLibraryExpandableWrapperComponent {
   protected items = computed(() => this.adamConfig().slice(0, 9));
   protected itemsNumber = computed(() => this.adamConfig().length, SignalHelpers.numberEquals);
 
-  viewModel: WritableSignal<HyperlinkLibraryExpandableViewModel> = signal(null);
+  protected hideAdamSponsor = toSignal(this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic), { initialValue: true });
 
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
@@ -75,32 +74,11 @@ export class HyperlinkLibraryExpandableWrapperComponent {
     private featuresService: FeaturesService,
   ) { }
 
-  ngOnInit() {
-    const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
-      map(isEnabled => !isEnabled),
-      distinctUntilChanged(),
-    );
-
-    combineLatest([
-      combineLatest([showAdamSponsor$]),
-    ]).pipe(
-      map(([
-        [showAdamSponsor],
-      ]) => {
-        return {
-          showAdamSponsor,
-        };
-      }),
-    ).subscribe(viewModel => this.viewModel.set(viewModel));
-  }
-
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.config.adam.items$.subscribe(items => {
-      this.adamConfig.set(items);
-    });
+    this.config.adam.items$.subscribe(items => this.adamConfig.set(items));
   }
 
   ngOnDestroy() {

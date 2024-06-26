@@ -4,7 +4,7 @@ import { ChangeDetectorRef, Component, EventEmitter, inject, NgZone, OnDestroy, 
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
+import { openFeatureDialog } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
@@ -25,6 +25,10 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { FeatureDetailService } from 'projects/eav-ui/src/app/features/services/feature-detail.service';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'AdamBrowserComponent';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -96,7 +100,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
@@ -118,9 +122,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         });
       },
       setConfig: (config) => {
-        this.zone.run(() => {
-          this.setConfig(config);
-        });
+        this.log.a('setConfig', [config]);
+        this.zone.run(() => this.setConfig(config));
       },
       getConfig: () => this.adamConfig$.value,
       getConfig$: () => this.adamConfig$.asObservable(),
@@ -309,7 +312,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   openFeatureInfoDialog() {
     if (!this.isPasteImageFromClipboardEnabled$.value)
-      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {

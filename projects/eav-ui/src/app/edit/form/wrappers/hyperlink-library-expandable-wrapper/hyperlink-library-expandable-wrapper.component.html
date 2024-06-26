@@ -47,7 +47,6 @@
 </div>
 
 <!-- preview -->
-@if (viewModel(); as vm) {
   <div class="c-ew__preview-holder">
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
       'mat-caption' : itemsNumber() > 0,
@@ -107,12 +106,11 @@
       </div>
       <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
         <span>{{
-          vm.showAdamSponsor
-          ? ('Fields.Hyperlink.Default.Sponsor' | translate)
-          : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
+          hideAdamSponsor()
+          ? ('Fields.Hyperlink.AdamFileManager.Name' | translate)
+          : ('Fields.Hyperlink.Default.Sponsor' | translate)
         }} </span>
         <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
       </div>
     </div>
   </div>
-}

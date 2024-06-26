@@ -73,7 +73,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
-  viewModel = toSignal(this.preview$);
+  // viewModel = toSignal(this.preview$);
 
   adamConfig = signal([]);
 
@@ -125,9 +125,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
     this.subscriptions.add(
-      this.config.adam.items$.subscribe(items => {
-        this.adamConfig.set(items);
-      })
+      this.config.adam.items$.subscribe(items => this.adamConfig.set(items))
     );
   }
 

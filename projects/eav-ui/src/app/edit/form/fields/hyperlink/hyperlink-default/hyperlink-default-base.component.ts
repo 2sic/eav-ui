@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, Signal, ViewContainerRef, effect, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, Signal, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
@@ -23,7 +23,8 @@ const nameOfThis = 'HyperlinkDefaultBaseComponent';
 })
 // tslint:disable-next-line:directive-class-suffix
 export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnInit, OnDestroy {
-  preview$ = new BehaviorSubject<Preview>({
+
+  preview = signal<Preview>({
     url: '',
     thumbnailUrl: '',
     previewUrl: '',
@@ -65,11 +66,6 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     }, { injector: this.injector, allowSignalWrites: true });
   }
 
-  ngOnDestroy() {
-    this.preview$.complete();
-    super.ngOnDestroy();
-  }
-
   openPagePicker() {
     PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
@@ -79,7 +75,8 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
   }
 
   openImageConfiguration(adamItem?: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) return;
+    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType)
+      return;
 
     const form: EditForm = {
       items: [
@@ -134,27 +131,15 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
   }
 
   private setPreview(value: string, isResolved: boolean, adam?: AdamItem) {
-    // for preview resolve [App:Path]
-    // value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config));
-
-    // const preview: Preview = {
-    //   url: value,
-    //   floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1)}` : '',
-    //   thumbnailUrl: `url("${adam?.ThumbnailUrl ?? this.buildUrl(value, 1)}")`,
-    //   previewUrl: adam?.PreviewUrl ?? this.buildUrl(value, 2),
-    //   isImage: FileTypeHelpers.isImage(value),
-    //   isKnownType: FileTypeHelpers.isKnownType(value),
-    //   icon: FileTypeHelpers.getIconClass(value),
-    // };
     const preview = this.getPreview(value, isResolved, adam);
-    this.preview$.next(preview);
+    this.preview.set(preview);
   }
 
   private getPreview(value: string, isResolved: boolean, adam?: AdamItem): Preview {
     // for preview resolve [App:Path]
     value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config));
 
-    const preview: Preview = {
+    return {
       url: value,
       floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1)}` : '',
       thumbnailUrl: `url("${adam?.ThumbnailUrl ?? this.buildUrl(value, 1)}")`,
@@ -162,8 +147,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
       isImage: FileTypeHelpers.isImage(value),
       isKnownType: FileTypeHelpers.isKnownType(value),
       icon: FileTypeHelpers.getIconClass(value),
-    };
-    return preview;
+    } satisfies Preview;
   }
 
   private buildUrl(url: string, size?: 1 | 2): string {

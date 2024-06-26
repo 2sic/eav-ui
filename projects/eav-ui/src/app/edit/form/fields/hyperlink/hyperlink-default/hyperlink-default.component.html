@@ -1,4 +1,4 @@
-@if (viewModel | async; as vm) {
+@if (preview(); as preV) {
   @if (open()) {
     <div class="fabs-box">
       @if (buttonAdam()) {
@@ -69,41 +69,36 @@
               <mat-label>{{ basics().label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
-            @if (vm?.floatingText) {
+            @if (preV?.floatingText) {
               <div class="hyperlink-floating">
                 <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
                 <div class="hyperlink-floating__url-box">
-                  <a [href]="vm.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.url">
-                    <span>{{ vm.floatingText }}</span>
+                  <a [href]="preV.url" target="_blank" class="hyperlink-floating__url" [tippy]="preV.url">
+                    <span>{{ preV.floatingText }}</span>
                   </a>
                 </div>
               </div>
             }
           </div>
-          @if (controlStatus().value && vm) {
+          @if (controlStatus().value) {
             <div class="preview-wrapper">
-              <!-- image -->
-              @if (vm.isImage) {
-                <a [href]="vm.url" target="_blank">
+              @if (preV.isImage) {
+                <!-- image -->
+                <a [href]="preV.url" target="_blank">
                   <div class="preview-image-box">
-                    <img [src]="vm.previewUrl" class="preview-image" />
+                    <img [src]="preV.previewUrl" class="preview-image" />
                   </div>
                 </a>
               }
-              <!-- icon -->
-              @if (!vm.isImage) {
-              <a [href]="vm.url" target="_blank" [tippy]="vm.url" tippyPlacement="right">
-                <div class="preview-icon-box">
-                  @if (vm.isKnownType) {
-                    <mat-icon [svgIcon]="vm.icon"></mat-icon>
-                  }
-                  @if (!vm.isKnownType) {
-                    <mat-icon [svgIcon]="vm.icon"></mat-icon>
-                  }
-                </div>
-              </a>
-            }
-          </div>
+              @else {
+                <!-- icon -->
+                <a [href]="preV.url" target="_blank" [tippy]="preV.url" tippyPlacement="right">
+                  <div class="preview-icon-box">
+                    <mat-icon [svgIcon]="preV.icon"></mat-icon>
+                  </div>
+                </a>
+              }
+            </div>
           }
         </mat-card>
       </div>
