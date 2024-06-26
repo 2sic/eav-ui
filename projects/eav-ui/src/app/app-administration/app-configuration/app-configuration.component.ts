@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
@@ -22,7 +22,7 @@ import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analy
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
@@ -220,7 +220,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
     if (enabled)
       this.router.navigate(['language-permissions'], { relativeTo: this.route.parent.firstChild });
     else
-      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   analyze(part: AnalyzePart) {

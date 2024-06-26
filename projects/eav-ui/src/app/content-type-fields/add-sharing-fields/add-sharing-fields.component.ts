@@ -5,14 +5,14 @@ import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray, pipe } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
 import { NgForm, FormsModule } from '@angular/forms';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { FeaturesModule } from '../../features/features.module';
@@ -129,7 +129,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
       take(1),
     ).subscribe(isEnabled => {
       if (!isEnabled) {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
         this.saving$.next(true);
         this.snackBar.open('Saving...');

@@ -2,7 +2,7 @@ import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, shareReplay, startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -17,7 +17,7 @@ import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
@@ -191,7 +191,7 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
   }
 
   openLightSpeedFeatInfo() {
-    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private buildGridOptions(): GridOptions {

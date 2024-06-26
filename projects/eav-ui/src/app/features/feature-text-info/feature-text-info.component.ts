@@ -1,8 +1,6 @@
-import { ChangeDetectorRef, Component, Input, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { FeaturesService } from '../../shared/services/features.service';
+import { Component, Input } from '@angular/core';
 import { FeatureSummary } from '../models';
-import { FeatureComponentBase } from '../shared/base-feature.component';
+import { FeatureComponentBase, FeatureComponentProviders } from '../shared/base-feature.component';
 import { BehaviorSubject, map, Observable, combineLatest } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -11,12 +9,15 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { FeatureDetailService } from '../services/feature-detail.service';
 
 @Component({
-    selector: 'app-feature-text-info',
-    templateUrl: './feature-text-info.component.html',
-    styleUrls: ['./feature-text-info.component.scss'],
-    standalone: true,
-    imports: [SharedComponentsModule, MatIconModule, AsyncPipe, TranslateModule],
-    providers: [FeatureDetailService]
+  selector: 'app-feature-text-info',
+  templateUrl: './feature-text-info.component.html',
+  styleUrls: ['./feature-text-info.component.scss'],
+  standalone: true,
+  imports: [SharedComponentsModule, MatIconModule, AsyncPipe, TranslateModule],
+  providers: [
+    ...FeatureComponentProviders,
+    FeatureDetailService,
+  ]
 })
 export class FeatureTextInfoComponent extends FeatureComponentBase {
   @Input()
@@ -25,19 +26,16 @@ export class FeatureTextInfoComponent extends FeatureComponentBase {
 
   viewModel$: Observable<FeatureTextInfoViewModel>;
 
-  constructor(
-    dialog: MatDialog,
-    viewContainerRef: ViewContainerRef,
-    featuresService: FeaturesService,
-    changeDetectorRef: ChangeDetectorRef
-  ) {
-    super(dialog, viewContainerRef, changeDetectorRef , featuresService);
-    this.viewModel$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(map(([feature, asInfo, show]) =>
+  constructor() {
+    super();
+    this.viewModel$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(
+      map(([feature, asInfo, show]) =>
       ({
         feature,
         icon: asInfo ? 'info' : 'warning',
         show
-      })));
+      }))
+    );
   }
 
 }

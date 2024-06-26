@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, startWith, take, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { EavFor } from '../edit/shared/models/eav';
@@ -22,7 +22,7 @@ import { MetadataActionsParams } from './metadata-actions/metadata-actions.model
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataDto, MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
-import { FeatureComponentBase } from '../features/shared/base-feature.component';
+import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
@@ -141,7 +141,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
     if (recommendation) {
       // If the feature is not enabled, open the info dialog instead of metadata
       if (!recommendation.Enabled) {
-        FeatureComponentBase.openDialog(this.dialog, recommendation.MissingFeature, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.dialog, recommendation.MissingFeature, this.viewContainerRef, this.changeDetectorRef);
         return;
       }
       // Feature is enabled, check if it's an empty metadata

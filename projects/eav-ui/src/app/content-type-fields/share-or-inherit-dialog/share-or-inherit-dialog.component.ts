@@ -5,7 +5,7 @@ import { Field } from '../models/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
 import { TranslateModule } from '@ngx-translate/core';
@@ -110,7 +110,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
       take(1),
     ).subscribe(isEnabled => {
       if (!isEnabled) {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
         if (this.state == SharingOrInheriting.Sharing) {
           this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)

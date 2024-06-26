@@ -7,7 +7,6 @@ import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
-import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -26,12 +25,9 @@ import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { App } from '../../apps-management/models/app.model';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeatureNames } from '../../features/feature-names';
 import { MatDialog } from '@angular/material/dialog';
-import { FeaturesService } from '../../shared/services/features.service';
-import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -264,7 +260,7 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
 
     // Helper function for actions in the table below
     const openLightSpeedFeatInfo = () =>
-      FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
 
     const gridOptions: GridOptions = {
       ...defaultGridOptions,

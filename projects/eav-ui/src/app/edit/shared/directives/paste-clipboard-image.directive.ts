@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
@@ -72,7 +72,7 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
       this.config.dropzone.uploadFile(image);
     } else {
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
       });
     }
   }
