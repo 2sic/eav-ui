@@ -2,6 +2,7 @@ import { ColDef } from '@ag-grid-community/core';
 import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter.component';
 import { App } from '../../apps-management/models/app.model';
 import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
+
 export class ColumnDefinitions
 {
   static ActionsPinnedRight1: ColDef = {

@@ -29,6 +29,13 @@ export interface Field {
 
   /** new #ConfigTypesFromBackend v16.08 */
   ConfigTypes: Record<string, boolean>;
+
+  /** WIP v18 with imageconfiguration on links and wysiwyg */
+  imageConfiguration: {
+    isRecommended: boolean;
+    typeName: string;
+    entityId: number;
+  };
 }
 
 /** #SharedFieldDefinition */

@@ -4,7 +4,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { Field } from '../models/field.model';
-import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
+import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 import { BaseComponent } from '../../shared/components/base.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -13,17 +13,17 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-    selector: 'app-content-type-fields-actions',
-    templateUrl: './content-type-fields-actions.component.html',
-    styleUrls: ['./content-type-fields-actions.component.scss'],
-    standalone: true,
-    imports: [
-        MatRippleModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatBadgeModule,
-        MatMenuModule,
-    ],
+  selector: 'app-content-type-fields-actions',
+  templateUrl: './content-type-fields-actions.component.html',
+  styleUrls: ['./content-type-fields-actions.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    SharedComponentsModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+  ],
 })
 export class ContentTypeFieldsActionsComponent extends BaseComponent implements ICellRendererAngularComp, OnDestroy {
   field: Field;
@@ -33,10 +33,6 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
 
   constructor() {
     super();
-  }
-  
-  ngOnDestroy(): void { 
-    super.ngOnDestroy();
   }
 
   agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
@@ -75,25 +71,29 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
     return true;
   }
 
-  openMetadata(): void {
-    this.params.onOpenMetadata(this.field);
+  do(verb: ContentTypeFieldsActions): void {
+    this.params.do(verb, this.field);
   }
 
-  rename(): void {
-    this.params.onRename(this.field);
-  }
+  // openMetadata(): void {
+  //   this.params.onOpenMetadata(this.field);
+  // }
 
-  openPermissions(): void {
-    this.params.onOpenPermissions(this.field);
-  }
+  // rename(): void {
+  //   this.params.onRename(this.field);
+  // }
 
-  deleteField(): void {
-    this.params.onDelete(this.field);
-  }
+  // openPermissions(): void {
+  //   this.params.onOpenPermissions(this.field);
+  // }
 
-  shareOrInherit(): void {
-    this.params.onShareOrInherit(this.field);
-  }
+  // deleteField(): void {
+  //   this.params.onDelete(this.field);
+  // }
+
+  // shareOrInherit(): void {
+  //   this.params.onShareOrInherit(this.field);
+  // }
 
   // #endregion
 }
