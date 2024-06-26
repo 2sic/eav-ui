@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { ControlStatus } from '../../../../shared/models';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.BooleanDefault,
@@ -38,12 +39,12 @@ export class BooleanDefaultComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  changedLabel = computed(() => this.settings()._label)
+  changedLabel = computed(() => this.settings()._label, SignalHelpers.stringEquals);
   checkedState = computed(() => {
     const value = this.controlStatus().value;
     const reverseToggle = this.settings().ReverseToggle;
     return reverseToggle ? !value : value;
-  })
+  }, SignalHelpers.boolEquals);
 
   constructor() {
     BooleanDefaultLogic.importMe();
