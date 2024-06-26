@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { Feature } from '../models';
 import { FeatureDetailService } from '../services/feature-detail.service';
@@ -24,12 +24,10 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     AsyncPipe,
     TranslateModule,
-
-    // JsonPipe,
   ]
 })
 export class FeatureInfoDialogComponent implements OnInit {
-  viewModel$: Observable<FeatureInfoViewModel>;
+  viewModel$: Observable<Feature>;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: string,
@@ -39,10 +37,7 @@ export class FeatureInfoDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.viewModel$ = this.featureDetailService.getFeatureDetails(this.dialogData).pipe(
-      // tap(feature => console.log(feature)),
-      map(feature => ({ feature }))
-    );
+    this.viewModel$ = this.featureDetailService.getFeatureDetails(this.dialogData);
   }
 
   copyToClipboard(text: string): void {
@@ -57,8 +52,4 @@ export class FeatureInfoDialogComponent implements OnInit {
   closeDialog(): void {
     this.dialogRef.close();
   }
-}
-
-interface FeatureInfoViewModel {
-  feature: Feature;
 }

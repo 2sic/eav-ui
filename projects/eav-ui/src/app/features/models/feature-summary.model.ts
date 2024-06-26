@@ -7,6 +7,7 @@ export interface FeatureSummary {
   NameId: string;
   /** State if it is enabled or not */
   IsEnabled: boolean;
+  
   /** Nice name to show in any message or something */
-  Name: string;
+  name: string;
 }

@@ -66,7 +66,7 @@ function itemSelectId(item: EavItem): string {
 }
 
 function featureSelectId(feature: Feature): string {
-  return feature?.Guid;
+  return feature?.guid;
 }
 
 function languageSelectId(language: Language): string {

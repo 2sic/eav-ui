@@ -142,7 +142,7 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
   private toggleFeature(feature: Feature, enabled: boolean): void {
     this.disabled$.next(true);
     const state: FeatureState = {
-      FeatureGuid: feature.Guid,
+      FeatureGuid: feature.guid,
       Enabled: enabled,
     };
     forkJoin([this.featuresConfigService.saveFeatures([state]), timer(100)]).subscribe({
@@ -217,38 +217,34 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           headerClass: 'dense',
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
-          // valueGetter: (params) => (params.data as Feature).Enabled,
         },
         {
           headerName: 'Reason',
-          field: 'EnabledReason',
+          field: 'enabledReason',
           ...cellDefaultsTextFilter,
           flex: 1,
           minWidth: 150,
           cellRenderer: FeaturesListEnabledReasonComponent,
-          // valueGetter: (params) => (params.data as Feature).EnabledReason,
         },
         {
           headerName: 'Expiration',
           field: 'ExpMessage',
           ...cellDefaultsTextFilter,
           width: 120,
-          // valueGetter: (params) => (params.data as FeatureWithUi)?.ExpirationText,
-          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.Expiration,
+          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.expiration,
         },
         {
           headerName: '',
-          field: 'EnabledInConfiguration',
+          field: 'enabledInConfiguration',
           width: 62,
           cellClass: 'secondary-action no-outline no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: FeaturesStatusComponent,
-          // valueGetter: (params) => (params.data as Feature).EnabledInConfiguration,
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {
-              isDisabled: (feature) => !feature.IsConfigurable || this.disabled$.value,
+              isDisabled: (feature) => !feature.isConfigurable || this.disabled$.value,
               onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
-              tooltipGetter: (feature: Feature) => feature.IsConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
+              tooltipGetter: (feature: Feature) => feature.isConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
             return params;
           }),

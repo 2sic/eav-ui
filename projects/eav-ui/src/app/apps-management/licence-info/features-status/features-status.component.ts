@@ -9,16 +9,15 @@ import { SharedComponentsModule } from '../../../shared/shared-components.module
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
-    selector: 'app-features-status',
-    templateUrl: './features-status.component.html',
-    styleUrls: ['./features-status.component.scss'],
-    standalone: true,
-    imports: [
-        MatSlideToggleModule,
-        SharedComponentsModule,
-        NgClass,
-    ],
-
+  selector: 'app-features-status',
+  templateUrl: './features-status.component.html',
+  styleUrls: ['./features-status.component.scss'],
+  standalone: true,
+  imports: [
+      MatSlideToggleModule,
+      SharedComponentsModule,
+      NgClass,
+  ],
 })
 export class FeaturesStatusComponent implements ICellRendererAngularComp {
   value: boolean | null;
