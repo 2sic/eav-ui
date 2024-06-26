@@ -15,11 +15,13 @@ const routes: Routes = [
       ...GoToMetadata.getRoutes(),
       {
         path: 'export/:contentTypeStaticName',
-        loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
+        // loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
+        loadChildren: () => import('../content-export/content-export-routing.module').then(m => m.ContentExportRoutes)
       },
       {
         path: 'export/:contentTypeStaticName/:selectedIds',
-        loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
+        // loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
+        loadChildren: () => import('../content-export/content-export-routing.module').then(m => m.ContentExportRoutes)
       },
       {
         path: 'import',

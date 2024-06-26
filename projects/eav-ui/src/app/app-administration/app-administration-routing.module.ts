@@ -73,12 +73,16 @@ const appAdministrationRoutes: Routes = [
           GoToDevRest.route,
           {
             path: 'fields/:contentTypeStaticName',
+            // TODO: @2dg - try to use loadChildren for routes instead of modules
+            // May change how things are injected, so be careful when evaluating
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
+            // loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.ContentTypeFieldsRoutes),
             data: { title: 'Content Type Fields' },
           },
           {
             path: 'export/:contentTypeStaticName',
-            loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule),
+            // loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule),
+            loadChildren: () => import('../content-export/content-export-routing.module').then(m => m.ContentExportRoutes),
             data: { title: 'Export Items' },
           },
           {
