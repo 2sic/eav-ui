@@ -3,8 +3,7 @@ import { BooleanFilterComponent } from '../components/boolean-filter/boolean-fil
 import { App } from '../../apps-management/models/app.model';
 import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
 
-export class ColumnDefinitions
-{
+export class ColumnDefinitions {
   static ActionsPinnedRight1: ColDef = {
     width: 42,
     cellClass: 'secondary-action no-padding'.split(' '),
@@ -43,6 +42,22 @@ export class ColumnDefinitions
     cellRenderer: AgBoolIconRenderer,
   };
 
+  static Items: ColDef = {
+    width: 102,
+    headerClass: 'dense',
+    cellClass: 'secondary-action no-padding'.split(' '),
+    sortable: true,
+    filter: 'agNumberColumnFilter',
+  };
+
+  static Fields: ColDef = {
+    width: 94,
+    headerClass: 'dense',
+    cellClass: 'secondary-action no-padding'.split(' '),
+    sortable: true,
+    filter: 'agNumberColumnFilter',
+  };
+
   /**
    * Very narrow columns, typically just showing 1 character
    */
@@ -78,9 +93,31 @@ export class ColumnDefinitions
     filter: 'agNumberColumnFilter',
   };
 
+  static TextWideType: ColDef = {
+    flex: 3,
+    minWidth: 250,
+    cellClass: 'primary-action highlight'.split(' '),
+    sortable: true,
+    filter: 'agTextColumnFilter',
+  };
 
   static TextWide: ColDef = {
     flex: 2,
+    minWidth: 250,
+    cellClass: 'no-outline',
+    sortable: true,
+    filter: 'agTextColumnFilter',
+  };
+
+  static TextWideMin100: ColDef = {
+    flex: 1,
+    minWidth: 100,
+    sortable: true,
+    filter: 'agTextColumnFilter',
+  }
+
+  static TextWideFlex3: ColDef = {
+    flex: 3,
     minWidth: 250,
     cellClass: 'no-outline',
     sortable: true,

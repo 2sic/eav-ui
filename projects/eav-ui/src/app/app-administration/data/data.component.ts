@@ -40,6 +40,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
     selector: 'app-data',
@@ -314,20 +315,7 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          cellClass: (params) => {
-            const contentType: ContentType = params.data;
-            return `id-action no-padding no-outline ${contentType.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<ContentType> = {
@@ -337,21 +325,13 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
           })(),
         },
         {
-          headerName: 'Content Type',
-          field: 'ContentType',
-          flex: 3,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.TextWideType,
+          headerName: 'ContentType',
+          field: 'Label',
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const contentType: ContentType = params.data;
             this.showContentItems(contentType);
-          },
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Label;
           },
           comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
             const contentTypeA: ContentType = nodeA.data;
@@ -360,16 +340,8 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
           },
         },
         {
+          ...ColumnDefinitions.Items,
           field: 'Items',
-          width: 102,
-          headerClass: 'dense',
-          cellClass: 'secondary-action no-padding'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Items;
-          },
           cellRenderer: DataItemsComponent,
           cellRendererParams: (() => {
             const params: DataItemsParams = {
@@ -380,16 +352,8 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
           })(),
         },
         {
+          ...ColumnDefinitions.Fields,
           field: 'Fields',
-          width: 94,
-          headerClass: 'dense',
-          cellClass: 'secondary-action no-padding'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Fields;
-          },
           cellRenderer: DataFieldsComponent,
           cellRendererParams: (() => {
             const params: DataFieldsParams = {
@@ -399,11 +363,8 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
           })(),
         },
         {
+          ...ColumnDefinitions.TextWideMin100,
           field: 'Name',
-          flex: 1,
-          minWidth: 100,
-          sortable: true,
-          filter: 'agTextColumnFilter',
           cellClass: (params) => {
             const contentType: ContentType = params.data;
             return `${contentType.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
@@ -418,34 +379,32 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
           },
         },
         {
+          ...ColumnDefinitions.TextWideFlex3,
           field: 'Description',
-          flex: 3,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: (params) => {
             const contentType: ContentType = params.data;
             return contentType.Properties?.Description;
           },
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: DataActionsComponent,
           cellRendererParams: (() => {
             const params: DataActionsParams = {
               enablePermissionsGetter: () => this.enablePermissionsGetter(),
-              onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
-              onOpenPermissions: (contentType) => this.openPermissions(contentType),
-              onEdit: (contentType) => this.editContentType(contentType),
-              onOpenRestApi: (contentType) => this.openRestApi(contentType),
-              onOpenMetadata: (contentType) => this.openMetadata(contentType),
-              onTypeExport: (contentType) => this.exportType(contentType),
-              onOpenDataExport: (contentType) => this.openDataExport(contentType),
-              onOpenDataImport: (contentType) => this.openDataImport(contentType),
-              onDelete: (contentType) => this.deleteContentType(contentType),
+              do: (verb, contentType) => {
+                switch (verb) {
+                  case 'createUpdateMetaData': this.createOrEditMetadata(contentType); break;
+                  case 'openPermissions': this.openPermissions(contentType); break;
+                  case 'editContentType': this.editContentType(contentType); break;
+                  case 'openMetadata': this.openMetadata(contentType); break;
+                  case 'openRestApi': this.openRestApi(contentType); break;
+                  case 'typeExport': this.exportType(contentType); break;
+                  case 'dataExport': this.openDataExport(contentType); break;
+                  case 'dataImport': this.openDataImport(contentType); break;
+                  case 'deleteContentType': this.deleteContentType(contentType); break;
+                }
+              }
             };
             return params;
           })(),

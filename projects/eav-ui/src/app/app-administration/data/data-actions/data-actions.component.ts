@@ -3,7 +3,7 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { ContentType } from '../../models/content-type.model';
-import { DataActionsParams } from './data-actions.models';
+import { DataActionsParams, DataActionType } from './data-actions.models';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,39 +39,43 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  createOrEditMetadata(): void {
-    this.params.onCreateOrEditMetadata(this.contentType);
+  do(verb: DataActionType): void {
+    this.params.do(verb, this.contentType);
   }
 
-  openPermissions(): void {
-    this.params.onOpenPermissions(this.contentType);
-  }
+  // createOrEditMetadata(): void {
+  //   this.params.onCreateOrEditMetadata(this.contentType);
+  // }
 
-  editContentType(): void {
-    this.params.onEdit(this.contentType);
-  }
+  // openPermissions(): void {
+  //   this.params.onOpenPermissions(this.contentType);
+  // }
 
-  openMetadata(): void {
-    this.params.onOpenMetadata(this.contentType);
-  }
+  // editContentType(): void {
+  //   this.params.onEdit(this.contentType);
+  // }
 
-  openRestApi(): void {
-    this.params.onOpenRestApi(this.contentType);
-  }
+  // openMetadata(): void {
+  //   this.params.onOpenMetadata(this.contentType);
+  // }
 
-  exportType(): void {
-    this.params.onTypeExport(this.contentType);
-  }
+  // openRestApi(): void {
+  //   this.params.onOpenRestApi(this.contentType);
+  // }
 
-  openDataExport(): void {
-    this.params.onOpenDataExport(this.contentType);
-  }
+  // exportType(): void {
+  //   this.params.onTypeExport(this.contentType);
+  // }
 
-  openDataImport(): void {
-    this.params.onOpenDataImport(this.contentType);
-  }
+  // openDataExport(): void {
+  //   this.params.onOpenDataExport(this.contentType);
+  // }
 
-  deleteContentType(): void {
-    this.params.onDelete(this.contentType);
-  }
+  // openDataImport(): void {
+  //   this.params.onOpenDataImport(this.contentType);
+  // }
+
+  // deleteContentType(): void {
+  //   this.params.onDelete(this.contentType);
+  // }
 }
