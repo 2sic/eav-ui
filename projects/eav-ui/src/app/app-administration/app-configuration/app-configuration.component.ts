@@ -73,6 +73,12 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   public features: FeaturesService = new FeaturesService();
 
+  protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
+  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
+  protected langPermsEnabled = this.features.isEnabled(FeatureNames.PermissionsByLanguage);
+
+
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -95,14 +101,8 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
     // New with proper ViewModel
     this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
-      this.features.isEnabled$(FeatureNames.LightSpeed),
-      this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
-      this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
-    ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
+    ]).pipe(map(([settings]) => {
       const result: AppConfigurationViewModel = {
-        lightSpeedEnabled,
-        cspEnabled,
-        langPermsEnabled,
         appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
         systemSettingsCount: this.isPrimary
           ? settings.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
@@ -269,14 +269,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
 class AppConfigurationViewModel {
   // Lightspeed
-  lightSpeedEnabled: boolean;
   appLightSpeedCount: number;
-
-  // CSP
-  cspEnabled: boolean;
-
-  // Language Permissions
-  langPermsEnabled: boolean;
 
   systemSettingsCount: number;
   customSettingsCount: number;

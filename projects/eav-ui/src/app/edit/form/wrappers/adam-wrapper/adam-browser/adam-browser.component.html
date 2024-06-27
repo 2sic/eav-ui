@@ -31,23 +31,23 @@
             appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
             [tippy]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate" (click)="openFeatureInfoDialog()">
             <div class="dz-image adam-browse-background-icon adam-browse-background">
-              <mat-icon class="adam-filter-mat-icon-with-grey-mat-badge" [matBadgeHidden]="vm.allowPasteImageFromClipboard"
+              <mat-icon class="adam-filter-mat-icon-with-grey-mat-badge" [matBadgeHidden]="isPasteImageFromClipboardEnabled()"
                 matBadgeSize="large" matBadge="💎" matBadgePosition="below after" matBadgeOverlap="true" aria-hidden="false">
                 filter
               </mat-icon>
-              @if (!pasteDiv.classList.contains('pastable-focus') && vm.allowPasteImageFromClipboard) {
+              @if (!pasteDiv.classList.contains('pastable-focus') && isPasteImageFromClipboardEnabled()) {
                 <div
                   class="adam-upload-label">
                   {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}
                 </div>
               }
-              @if (pasteDiv.classList.contains('pastable-focus') && vm.allowPasteImageFromClipboard) {
+              @if (pasteDiv.classList.contains('pastable-focus') && isPasteImageFromClipboardEnabled()) {
                 <div
                   class="adam-upload-label">
                   {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteFocusedLabel' | translate }}
                 </div>
               }
-              @if (!vm.allowPasteImageFromClipboard) {
+              @if (!isPasteImageFromClipboardEnabled()) {
                 <div class="adam-upload-label">
                   {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}
                 </div>

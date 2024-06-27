@@ -74,9 +74,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   protected config = this.fieldState.config;
   protected group = this.fieldState.group;
 
-
-  // expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
-
   viewModel$: Observable<AdamBrowserViewModel>;
 
   private adamConfig$: BehaviorSubject<AdamConfig>;
@@ -84,11 +81,12 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   private control: AbstractControl;
   private url: string;
   private firstFetch = true;
-  private isPasteImageFromClipboardEnabled$ = new BehaviorSubject<boolean>(false);
+
+  public features: FeaturesService = new FeaturesService();
+  public isPasteImageFromClipboardEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
 
   constructor(
     private adamService: AdamService,
-    private featuresService: FeaturesService,
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
@@ -140,11 +138,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         this.fetchItems();
       })
     );
-    const allowPasteImageFromClipboard$ = this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard).pipe(
-      distinctUntilChanged(),
-    );
-    this.subscriptions.add(allowPasteImageFromClipboard$.pipe(distinctUntilChanged())
-      .subscribe(this.isPasteImageFromClipboardEnabled$));
+
     const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
@@ -156,15 +150,14 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       distinctUntilChanged(),
     );
 
-    this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
-      map(([adamConfig, expanded, items, value, disabled, allowPasteImageFromClipboard]) => {
+    this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$]).pipe(
+      map(([adamConfig, expanded, items, value, disabled]) => {
         const viewModel: AdamBrowserViewModel = {
           adamConfig,
           expanded,
           items,
           value,
           disabled,
-          allowPasteImageFromClipboard
         };
         return viewModel;
       }),
@@ -311,7 +304,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   openFeatureInfoDialog() {
-    if (!this.isPasteImageFromClipboardEnabled$.value)
+    if (!this.isPasteImageFromClipboardEnabled)
       openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 

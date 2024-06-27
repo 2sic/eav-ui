@@ -94,7 +94,7 @@
       </mat-card-header>
       <mat-card-content>
         <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
-        @if (vm.lsEnabled) {
+        @if (lsEnabled()) {
           <div>
             LightSpeed is enabled.
             Configure it in each site/app as you need.
@@ -117,7 +117,7 @@
       </mat-card-header>
       <mat-card-content>
         <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
-        @if (vm.cspEnabled) {
+        @if (cspEnabled()) {
           <div>
             ContentSecurityPolicy is enabled.
             Configure it in each site/app as you need.

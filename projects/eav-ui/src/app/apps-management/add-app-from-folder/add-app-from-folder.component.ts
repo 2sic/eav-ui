@@ -45,24 +45,21 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
   installing: boolean = false;
 
   private refreshApps$ = new Subject<void>();
-  private isAddFromFolderEnabled$ = new BehaviorSubject<boolean>(false);
 
   viewModel$: Observable<AddAppFromFolderViewModel>;
+
+  public features: FeaturesService = new FeaturesService();
+  private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
-    private featuresService: FeaturesService,
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
-      .pipe(distinctUntilChanged())
-      .subscribe(this.isAddFromFolderEnabled$)
-    );
     this.viewModel$ = combineLatest([
       this.refreshApps$.pipe(
         startWith(undefined),
@@ -118,7 +115,7 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
           cellRenderer: CheckboxCellComponent,
           cellRendererParams: (() => {
             const params: CheckboxCellParams = {
-              isDisabled: !this.isAddFromFolderEnabled$.value,
+              isDisabled: !this.isAddFromFolderEnabled,
               onChange: (app, enabled) => this.onChange(app, enabled),
             };
             return params;

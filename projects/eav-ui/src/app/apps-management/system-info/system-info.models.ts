@@ -4,8 +4,6 @@ export interface SystemInfoViewModel {
   loading: boolean;
   warningIcon: string;
   warningInfos: InfoTemplate[];
-  lsEnabled: boolean;
-  cspEnabled: boolean;
 }
 
 export interface InfoTemplate {

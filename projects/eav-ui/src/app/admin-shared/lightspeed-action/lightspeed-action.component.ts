@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { App } from '../../apps-management/models/app.model';
 import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { LightSpeedActionsParams } from './lightspeed-actions.models';
@@ -13,7 +13,7 @@ import { take } from 'rxjs';
 
 /**
  * LightSpeedActionsComponent
- * 
+ *
  * Specially meant to be used inside an AGGrid action, and receive the parameters from it.
  *
  */
@@ -36,13 +36,10 @@ export class LightSpeedActionsComponent {
 
   @Input({ required: true }) lightSpeed: LightSpeedInfo | null;
 
-  public lightSpeedEnabled: boolean;
+  public features: FeaturesService = new FeaturesService();
+  protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed)
 
-  constructor(private featuresService: FeaturesService) {
-    this.featuresService.isEnabled$(FeatureNames.LightSpeed)
-      .pipe(take(1))
-      .subscribe((enabled) => { this.lightSpeedEnabled = enabled; });
-  }
+  constructor() {}
 
   public get appHasLightSpeed(): boolean {
     return this.lightSpeed?.Id != null;

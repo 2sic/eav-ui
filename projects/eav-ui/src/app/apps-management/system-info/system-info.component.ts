@@ -67,6 +67,10 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   private loading$: BehaviorSubject<boolean>;
 
+  public features: FeaturesService = new FeaturesService();
+  protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
+  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -74,7 +78,6 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
     private zoneService: ZoneService,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
-    private featuresService: FeaturesService,
     private dialogSettings: AppDialogConfigService,
   ) {
     super(router, route);
@@ -263,18 +266,14 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
         return info;
       }),
     );
-    const lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
-    const cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
-    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
-      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
+    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
+      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
         const viewModel: SystemInfoViewModel = {
           systemInfos,
           siteInfos,
           loading,
           warningIcon,
           warningInfos,
-          lsEnabled,
-          cspEnabled
         };
         return viewModel;
       }),

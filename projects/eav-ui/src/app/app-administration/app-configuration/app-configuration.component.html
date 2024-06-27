@@ -272,7 +272,7 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
-        <button mat-button  class="eav-button__with-icon" (click)="openLightSpeed()" disabled="{{!vm.lightSpeedEnabled}}">
+        <button mat-button  class="eav-button__with-icon" (click)="openLightSpeed()" disabled="{{!lightSpeedEnabled()}}">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appLightSpeedCount || null"
           matBadgePosition="below after" aria-hidden="false" class="eav-icon">bolt</mat-icon>
           <span>Edit LightSpeed</span>
@@ -326,8 +326,8 @@
           </span>
         </button>
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
-        <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(vm.langPermsEnabled)">
-          <mat-icon [matBadgeHidden]="vm.langPermsEnabled" matBadgeSize="small" matBadge="💎"
+        <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(langPermsEnabled())">
+          <mat-icon [matBadgeHidden]="langPermsEnabled()" matBadgeSize="small" matBadge="💎"
             matBadgePosition="below after" aria-hidden="false" class="eav-icon">
             person
           </mat-icon>
