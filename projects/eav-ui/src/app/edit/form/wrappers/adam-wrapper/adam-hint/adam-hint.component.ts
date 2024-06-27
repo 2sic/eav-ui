@@ -6,7 +6,6 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatDividerModule } from '@angular/material/divider';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -23,9 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
 })
 export class AdamHintComponent {
-
-  protected hideAdamSponsor = toSignal(this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic), { initialValue: true });
-  
-  constructor(private featuresService: FeaturesService) { }
+  public features: FeaturesService = new FeaturesService();
+  protected hideAdamSponsor = this.features.isEnabled(FeatureNames.NoSponsoredByToSic);
 
 }

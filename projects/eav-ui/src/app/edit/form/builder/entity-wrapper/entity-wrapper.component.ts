@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, computed, ElementRef, Input, OnDestroy, OnInit, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -59,6 +59,10 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   noteTouched: boolean = false;
   viewModel$: Observable<ContentTypeViewModel>;
 
+  public features: FeaturesService = new FeaturesService();
+  private editUiShowNotes = this.features.isEnabled(FeatureNames.EditUiShowNotes);
+  private editUiShowMetadataFor = this.features.isEnabled(FeatureNames.EditUiShowMetadataFor);
+
   private noteRef?: MatDialogRef<undefined, any>;
 
   constructor(
@@ -75,7 +79,6 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     private entityService: EntityService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private featuresService: FeaturesService,
   ) {
     super();
   }
@@ -112,20 +115,27 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     const noteProps$ = combineLatest([note$, language$, itemNotSaved$]).pipe(
       map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
     );
-    const showNotes$ = combineLatest([
-      this.featuresService.isEnabled$(FeatureNames.EditUiShowNotes),
-      settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
-    ]).pipe(
-      map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? featureEnabled),
-      distinctUntilChanged(),
+
+    // TODO:: Test, if this.editUiShowNotes signal update, if showNotes$ is updated ?? old code below
+    const showNotes$ = settings$.pipe(
+      map(settings => buildContentTypeFeatures(settings.Features)),
+      map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes()),
+      distinctUntilChanged()
     );
-    const showMetadataFor$ = combineLatest([
-      this.featuresService.isEnabled$(FeatureNames.EditUiShowMetadataFor),
-      settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
-    ]).pipe(
-      map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? featureEnabled),
-      distinctUntilChanged(),
+
+    const showMetadataFor$ = settings$.pipe(
+      map(settings => buildContentTypeFeatures(settings.Features)),
+      map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor()),
+      distinctUntilChanged()
     );
+
+    // const showMetadataFor$ = combineLatest([
+    //   this.featuresService.isEnabled$(FeatureNames.EditUiShowMetadataFor),
+    //   settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
+    // ]).pipe(
+    //   map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? featureEnabled),
+    //   distinctUntilChanged(),
+    // );
 
     this.viewModel$ = combineLatest([
       combineLatest([readOnly$, language$, showNotes$, showMetadataFor$]),

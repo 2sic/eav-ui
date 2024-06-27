@@ -70,11 +70,12 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
-  isAddFromFolderEnabled$: Observable<boolean>;
 
   private refreshApps$ = new Subject<void>();
 
   viewModel$: Observable<AppsListViewModel>;
+  public features: FeaturesService = new FeaturesService();
+  public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
   constructor(
     protected router: Router,
@@ -83,7 +84,6 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
-    private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -104,15 +104,9 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     );
 
     this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
-
-    const isAddFromFolderEnabledLog = this.log.rxTap('isAddFromFolderEnabled$');
-    this.isAddFromFolderEnabled$ = this.featuresService
-      .isEnabled$(FeatureNames.AppSyncWithSiteFiles)
-      .pipe(isAddFromFolderEnabledLog.pipe(), isAddFromFolderEnabledLog.shareReplay());
-    
-    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
-      map(([apps, fabOpen, isAddFromFolderEnabled]) => {
-        return { apps, fabOpen, isAddFromFolderEnabled};
+    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
+      map(([apps, fabOpen]) => {
+        return { apps, fabOpen};
       }),
     );
   }
@@ -283,5 +277,4 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
 interface AppsListViewModel {
   apps: App[];
   fabOpen: any;
-  isAddFromFolderEnabled: boolean;
 }

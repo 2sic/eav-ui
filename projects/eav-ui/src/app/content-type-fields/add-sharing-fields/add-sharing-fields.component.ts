@@ -5,7 +5,7 @@ import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
@@ -62,13 +62,15 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   saving$ = new BehaviorSubject(false);
 
+  public features: FeaturesService = new FeaturesService();
+  private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
     private dialogRef: MatDialogRef<AddSharingFieldsComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
     // All this is just for the feature dialog
-    private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -125,10 +127,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   // When API gets created we will need to send the selected fields to the API
   save() {
-    this.featuresService.isEnabled$(FeatureNames.FieldShareConfigManagement).pipe(
-      take(1),
-    ).subscribe(isEnabled => {
-      if (!isEnabled) {
+      if (!this.fieldShareConfigManagement()) {
         openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
         this.saving$.next(true);
@@ -150,7 +149,6 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
           this.closeDialog();
         });
       }
-    });
   }
 
   closeDialog() {

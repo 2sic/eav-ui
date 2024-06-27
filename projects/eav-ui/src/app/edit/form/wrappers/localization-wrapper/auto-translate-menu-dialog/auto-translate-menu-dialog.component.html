@@ -12,9 +12,9 @@
       <mat-action-list>
         @for (language of vm.languages; track language) {
           <mat-list-item (click)="setLanguage(language.key)"
-            [disabled]="language.disabled || !vm.isTranslateWithGoogleFeatureEnabled" [ngClass]="{
+            [disabled]="language.disabled || !isTranslateWithGoogleFeatureEnabled()" [ngClass]="{
             'eav-list-item__focus': vm.translationState.language === language.key,
-            'list-item__disabled': language.disabled || !vm.isTranslateWithGoogleFeatureEnabled
+            'list-item__disabled': language.disabled || !isTranslateWithGoogleFeatureEnabled()
             }">
             <mat-icon matListItemIcon [ngClass]="{ 'list-item-icon__disabled': language.disabled }">language</mat-icon>
             <span matListItemTitle>{{ language.key }}

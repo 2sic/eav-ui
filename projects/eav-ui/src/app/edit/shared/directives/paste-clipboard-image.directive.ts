@@ -19,7 +19,10 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
-  private pasteImageEnabled$ = new BehaviorSubject<boolean>(false);
+
+  public features: FeaturesService = new FeaturesService();
+  private pasteImageEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
+
 
   constructor(
     private elementRef: ElementRef,
@@ -34,10 +37,6 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
   }
 
   ngOnInit() {
-    this.subscriptions.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
-      .pipe(distinctUntilChanged())
-      .subscribe(this.pasteImageEnabled$));
-
     switch (this.elementType) {
       case 'input':
         this.elementRef.nativeElement.pastableTextarea();
@@ -65,7 +64,7 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
   }
 
   private handleImage(event: CustomEvent) {
-    if (this.pasteImageEnabled$.value) {
+    if (this.pasteImageEnabled) {
       consoleLogEditForm('PASTE IMAGE', 'event:', event);
       // todo: convert png to jpg to reduce file size
       const image = this.getFile(event.detail as PasteClipboardImageEventDetail);

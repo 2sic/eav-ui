@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { FormConfigService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
@@ -47,8 +47,9 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
-  private isTranslateWithGoogleFeatureEnabled$ = new BehaviorSubject<boolean>(false);
-  private subscription: Subscription = new Subscription();
+
+  public features: FeaturesService = new FeaturesService();
+  public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
 
   constructor(
     private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
@@ -59,7 +60,6 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
     private snackBar: MatSnackBar,
-    private featuresService: FeaturesService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
@@ -69,16 +69,9 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const isTranslateWithGoogleFeatureEnabled$ = this.featuresService.isEnabled$(FeatureNames.EditUiTranslateWithGoogle);
-
-    this.subscription.add(isTranslateWithGoogleFeatureEnabled$
-      .pipe(distinctUntilChanged())
-      .subscribe(this.isTranslateWithGoogleFeatureEnabled$)
-    );
-
 
     // If not enabled, ensure that after closed ...??? @STV
-    if (this.isTranslateWithGoogleFeatureEnabled$.value) {
+    if (this.isTranslateWithGoogleFeatureEnabled) {
       this.dialogRef.afterClosed().subscribe(() => {
         this.snackBar.dismiss();
       });
@@ -108,8 +101,8 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.viewModel$ = combineLatest([language$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
-      map(([lang, languages, translationState, isTranslateWithGoogleFeatureEnabled]) => {
+    this.viewModel$ = combineLatest([language$, languages$, this.translationState$]).pipe(
+      map(([lang, languages, translationState]) => {
         const viewModel: TranslateMenuDialogViewModel = {
           primary: lang.primary,
           languages,
@@ -117,7 +110,6 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
           showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
           i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
-          isTranslateWithGoogleFeatureEnabled
         };
         return viewModel;
       }),

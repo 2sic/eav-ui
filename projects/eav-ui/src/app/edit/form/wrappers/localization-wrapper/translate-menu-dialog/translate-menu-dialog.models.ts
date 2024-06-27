@@ -22,5 +22,4 @@ export interface TranslateMenuDialogViewModel {
   showLanguageSelection: boolean;
   i18nRoot: string;
   submitDisabled: boolean;
-  isTranslateWithGoogleFeatureEnabled?: boolean;
 }

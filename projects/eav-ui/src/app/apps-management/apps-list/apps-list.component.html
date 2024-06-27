@@ -18,7 +18,7 @@
             <mat-icon>holiday_village</mat-icon>
           </button>
           <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Add from folder" (click)="addFromFolder()">
-            <mat-icon [matBadgeHidden]="vm.isAddFromFolderEnabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎"
+            <mat-icon [matBadgeHidden]="isAddFromFolderEnabled()" matBadgeColor="accent" matBadgeSize="small" matBadge="💎"
               matBadgePosition="below after" aria-hidden="false">
               add
             </mat-icon>

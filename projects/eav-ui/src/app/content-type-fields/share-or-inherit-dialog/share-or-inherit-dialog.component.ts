@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
-import { BehaviorSubject, Observable, combineLatest, map, take } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { Field } from '../models/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
@@ -49,12 +49,14 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   shareableFields$ = new BehaviorSubject<Field[]>(undefined);
   viewModel$: Observable<ShareOrInheritDialogViewModel>;
 
+  public features: FeaturesService = new FeaturesService();
+  private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
     private dialogRef: MatDialogRef<ShareOrInheritDialogComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
     // All this is just for the feature dialog
-    private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -106,10 +108,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   }
 
   save() {
-    this.featuresService.isEnabled$(FeatureNames.FieldShareConfigManagement).pipe(
-      take(1),
-    ).subscribe(isEnabled => {
-      if (!isEnabled) {
+      if (!this.fieldShareConfigManagement()) {
         openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
         if (this.state == SharingOrInheriting.Sharing) {
@@ -120,7 +119,6 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
             .subscribe(() => this.dialogRef.close()));
         }
       }
-    });
   }
 
   closeDialog() {
