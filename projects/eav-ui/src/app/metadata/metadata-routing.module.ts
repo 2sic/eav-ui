@@ -4,7 +4,7 @@ import { edit, refreshEdit } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { metadataDialog } from './metadata-dialog.config';
 
-const routes: Routes = [
+export const metadataRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -23,7 +23,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(metadataRoutes)],
   exports: [RouterModule]
 })
 export class MetadataRoutingModule { }

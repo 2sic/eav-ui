@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
     selector: 'app-share-or-inherit-dialog',
@@ -34,7 +35,8 @@ import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indic
       AsyncPipe,
       TranslateModule,
       FeatureIconIndicatorComponent
-    ]
+    ],
+    providers: [FeatureDetailService]
 })
 export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];

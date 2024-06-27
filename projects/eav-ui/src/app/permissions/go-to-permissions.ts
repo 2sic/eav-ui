@@ -5,7 +5,8 @@ export class GoToPermissions {
 
   static route: Route = {
     path: 'permissions/:targetType/:keyType/:key',
-    loadChildren: () => import('./permissions.module').then(m => m.PermissionsModule),
+    loadChildren: () => import('./permissions-routing.module').then(m => m.permissionRoutes),
+    // loadChildren: () => import('./permissions.module').then(m => m.PermissionsModule),
     data: { title: 'Permissions' },
   };
 

@@ -4,7 +4,7 @@ import { edit, refreshEdit } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { permissionsDialog } from './permissions-dialog.config';
 
-const routes: Routes = [
+export const permissionRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -23,7 +23,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(permissionRoutes)],
   exports: [RouterModule]
 })
 export class PermissionsRoutingModule { }
