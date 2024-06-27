@@ -9,12 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { QueryDefinitionService } from './services/query-definition.service';
+import { MetadataService } from '../permissions';
+import { ContentTypesService } from '../app-administration/services';
 
 @Component({
     selector: 'app-visual-query',
     templateUrl: './visual-query.component.html',
     styleUrls: ['./visual-query.component.scss'],
-    providers: [VisualQueryService, QueryDefinitionService],
     standalone: true,
     imports: [
         RouterOutlet,
@@ -24,6 +25,13 @@ import { QueryDefinitionService } from './services/query-definition.service';
         RunExplorerComponent,
         AddExplorerComponent,
         PlumbEditorComponent,
+    ],
+    providers: [
+      VisualQueryService,
+      QueryDefinitionService,
+
+      MetadataService,
+      ContentTypesService,
     ],
 })
 export class VisualQueryComponent implements OnInit {

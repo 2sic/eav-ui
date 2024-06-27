@@ -5,7 +5,10 @@ import { editRoot, refreshEditRoot } from './edit/edit.matcher';
 const appRoutes: Routes = [
   {
     path: ':zoneId/apps',
+    // TODO:: remove module
+    // loadChildren: () => import('./apps-management/apps-management-routing.module').then(m => m.appsManagementRoutes),
     loadChildren: () => import('./apps-management/apps-management.module').then(m => m.AppsManagementModule),
+
     data: { title: 'Apps' },
   },
   {
@@ -20,13 +23,13 @@ const appRoutes: Routes = [
   },
   {
     path: ':zoneId/:appId/code',
-    loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule),
+    loadChildren: () => import('./code-editor/code-editor-routing.module').then(m => m.codeEditorRoutes),
+
     data: { title: 'Code Editor' },
   },
   {
     path: ':zoneId/:appId/query/:pipelineId',
-    // loadChildren: () => import('./visual-query/visual-query-routing.module').then(m => m.visualQueryRoutes),
-    loadChildren: () => import('./visual-query/visual-query.module').then(m => m.VisualQueryModule),
+    loadChildren: () => import('./visual-query/visual-query-routing.module').then(m => m.visualQueryRoutes),
     data: { title: 'Visual Query' },
   },
   {
@@ -37,17 +40,17 @@ const appRoutes: Routes = [
   },
   {
     path: ':zoneId/:appId/:guid/:part/:index/reorder',
-    loadChildren: () => import('./manage-content-list/manage-content-list.module').then(m => m.ManageContentListModule),
+    loadChildren: () => import('./manage-content-list/manage-content-list-routing.module').then(m => m.manageContentRoutes),
     data: { title: 'Reorder Items' },
   },
   {
     path: ':zoneId/:appId/items/:contentTypeStaticName',
-    loadChildren: () => import('./content-items/content-items.module').then(m => m.ContentItemsModule),
+    loadChildren: () => import('./content-items/content-items-routing.module').then(m => m.contentItemsRoutes),
     data: { title: 'Items' },
   },
   {
     path: ':zoneId/:appId/fields/:contentTypeStaticName',
-    loadChildren: () => import('./content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
+    loadChildren: () => import('./content-type-fields/content-type-fields-routing.module').then(m => m.contentTypeFieldsRoutes),
     data: { title: 'Fields' },
   },
   {

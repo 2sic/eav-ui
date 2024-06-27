@@ -32,22 +32,26 @@ import { ClickStopPropagationDirective } from '../shared/directives/click-stop-p
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 
 @Component({
-    selector: 'app-code-editor',
-    templateUrl: './code-editor.component.html',
-    styleUrls: ['./code-editor.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        NgClass,
-        MatIconModule,
-        CodeTemplatesComponent,
-        CodeSnippetsComponent,
-        MatProgressSpinnerModule,
-        MonacoEditorComponent_1,
-        MatButtonModule,
-        AsyncPipe,
-        ClickStopPropagationDirective
-    ],
+  selector: 'app-code-editor',
+  templateUrl: './code-editor.component.html',
+  styleUrls: ['./code-editor.component.scss'],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    NgClass,
+    MatIconModule,
+    CodeTemplatesComponent,
+    CodeSnippetsComponent,
+    MatProgressSpinnerModule,
+    MonacoEditorComponent_1,
+    MatButtonModule,
+    AsyncPipe,
+    ClickStopPropagationDirective
+  ],
+  providers: [
+    SourceService,
+    SnippetsService,
+  ],
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;

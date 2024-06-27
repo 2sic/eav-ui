@@ -6,7 +6,7 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
 import { contentItemsDialog } from './content-items-dialog.config';
 
-const routes: Routes = [
+export const contentItemsRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -46,7 +46,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(contentItemsRoutes)],
   exports: [RouterModule]
 })
 export class ContentItemsRoutingModule { }

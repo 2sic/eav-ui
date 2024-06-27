@@ -1,19 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CodeEditorComponent } from './code-editor.component';
 
-const routes: Routes = [
+export const codeEditorRoutes: Routes = [
   {
     path: '',
-    // component: CodeEditorComponent,
     loadComponent: () => import('./code-editor.component').then(m => m.CodeEditorComponent),
-    // loadComponent: () => import('./code-editor.module').then(m => m.CodeEditorModule),
 
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(codeEditorRoutes)],
   exports: [RouterModule]
 })
 export class CodeEditorRoutingModule { }

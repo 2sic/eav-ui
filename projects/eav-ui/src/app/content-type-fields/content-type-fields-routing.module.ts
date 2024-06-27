@@ -7,7 +7,7 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { contentTypeFieldsDialog } from './content-type-fields-dialog.config';
 import { editContentTypeFieldsDialog } from './edit-content-type-fields/edit-content-type-fields-dialog.config';
 
-export const ContentTypeFieldsRoutes: Routes = [
+export const contentTypeFieldsRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -38,7 +38,7 @@ export const ContentTypeFieldsRoutes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(ContentTypeFieldsRoutes)],
+  imports: [RouterModule.forChild(contentTypeFieldsRoutes)],
   exports: [RouterModule]
 })
 export class ContentTypeFieldsRoutingModule { }

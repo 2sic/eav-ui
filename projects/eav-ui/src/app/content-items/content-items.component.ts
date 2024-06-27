@@ -61,6 +61,12 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
         MatDialogActions,
         AsyncPipe,
     ],
+    providers: [
+        ContentItemsService,
+        EntitiesService,
+        ContentExportService,
+        ContentTypesService,
+    ],
 })
 export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();

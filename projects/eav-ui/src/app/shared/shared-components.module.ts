@@ -10,13 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
-import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
-import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
-import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
-import { EntityFilterComponent } from './components/entity-filter/entity-filter.component';
-import { FieldHintComponent } from './components/field-hint/field-hint.component';
 import { FileUploadDialogComponent } from './components/file-upload-dialog/file-upload-dialog.component';
-import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MatFormFieldTextareaDirective } from './directives/mat-form-field-textarea.directive';
 import { MatInputAutofocusDirective } from './directives/mat-input-autofocus.directive';
@@ -28,19 +22,10 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
 import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 
-
-
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
   declarations: [
-    // AG Grid Components - started creation by 2dm to be more generic / less code 2023-06-19
-    // TODO:: @2dg Remove after Test
-    // DialogEntryComponent,
-    // BooleanFilterComponent,
-    // EntityFilterComponent,
-    // ClickStopPropagationDirective,
-
-    FileUploadDialogComponent, // TODO:: Open
+    FileUploadDialogComponent,
     AgBoolIconRenderer,
     DragAndDropDirective,
     MousedownStopPropagationDirective,
@@ -71,10 +56,6 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
   ],
   exports: [
     BreadcrumbModule,
-    // DialogEntryComponent,
-    // BooleanFilterComponent,
-    // EntityFilterComponent,
-    // ClickStopPropagationDirective,
     FileUploadDialogComponent,
     DragAndDropDirective,
     MousedownStopPropagationDirective,

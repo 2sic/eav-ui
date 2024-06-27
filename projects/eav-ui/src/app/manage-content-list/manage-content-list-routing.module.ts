@@ -4,7 +4,7 @@ import { edit, refreshEdit } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { manageContentListDialog } from './manage-content-list-dialog.config';
 
-const routes: Routes = [
+export const manageContentRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -27,7 +27,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(manageContentRoutes)],
   exports: [RouterModule]
 })
 export class ManageContentListRoutingModule { }

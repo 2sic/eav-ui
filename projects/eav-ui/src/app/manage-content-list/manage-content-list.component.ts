@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkScrollable } from '@angular/cdk/scrolling';
+import { FormConfigService } from '../edit/shared/services';
 
 @Component({
     selector: 'app-manage-content-list',
@@ -36,7 +37,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
         TranslateModule,
         MatDialogModule,
     ],
-    providers: [ContentGroupService, AppDialogConfigService]
+    providers: [ContentGroupService, AppDialogConfigService, FormConfigService]
 })
 export class ManageContentListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

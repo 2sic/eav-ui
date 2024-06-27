@@ -7,7 +7,7 @@ import { appsManagementDialog } from './apps-management-nav/apps-management-dial
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
 
-const appsManagementRoutes: Routes = [
+export const appsManagementRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,

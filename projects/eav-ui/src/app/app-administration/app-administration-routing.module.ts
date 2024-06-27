@@ -49,7 +49,7 @@ const appAdministrationRoutes: Routes = [
           },
           {
             path: 'items/:contentTypeStaticName',
-            loadChildren: () => import('../content-items/content-items.module').then(m => m.ContentItemsModule)
+            loadChildren: () => import('../content-items/content-items-routing.module').then(m => m.contentItemsRoutes)
           },
           {
             matcher: edit,
@@ -73,9 +73,8 @@ const appAdministrationRoutes: Routes = [
           GoToDevRest.route,
           {
             path: 'fields/:contentTypeStaticName',
-            // TODO: @2dg - try to use loadChildren for routes instead of modules
             // May change how things are injected, so be careful when evaluating
-            loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
+            loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.contentTypeFieldsRoutes),
             // loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.ContentTypeFieldsRoutes),
             data: { title: 'Content Type Fields' },
           },
@@ -241,7 +240,7 @@ const appAdministrationRoutes: Routes = [
           },
           {
             path: 'fields/:contentTypeStaticName',
-            loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
+            loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.contentTypeFieldsRoutes),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
           {
