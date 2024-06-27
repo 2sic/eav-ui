@@ -10,11 +10,11 @@ Root router module, that is lazy loading other modules like:
 - [EditModule](edit-ui.md)
 - RefreshEditModule
 - AppsManagementModule
-- ImportAppModule
+<!-- - ImportAppModule -->
 - AppAdministrationModule
 - CodeEditorModule
 - VisualQueryModule
-- ReplaceContentModule
+<!-- - ReplaceContentModule -->
 - ManageContentListModule
 - ContentItemsModule
 - ContentTypeFieldsModule

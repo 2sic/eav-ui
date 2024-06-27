@@ -87,7 +87,7 @@ const appAdministrationRoutes: Routes = [
           },
           {
             path: ':contentTypeStaticName/import',
-            loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
+            loadChildren: () => import('../content-import/content-import-routing.module').then(m => m.contentImportRoutes),
             data: { title: 'Import Items' },
           },
           GoToPermissions.route,

@@ -5,7 +5,7 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { devRestDialog } from './dev-rest-dialog.config';
 import { GoToDevRest } from './go-to-dev-rest';
 
-const routes: Routes = [
+export const devRestRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -27,7 +27,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(devRestRoutes)],
   exports: [RouterModule]
 })
 export class DevRestRoutingModule { }

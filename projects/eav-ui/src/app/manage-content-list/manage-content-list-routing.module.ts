@@ -20,7 +20,7 @@ const routes: Routes = [
       },
       {
         path: ':guid/:part/:index/replace',
-        loadChildren: () => import('../replace-content/replace-content.module').then(m => m.ReplaceContentModule)
+        loadChildren: () => import('../replace-content/replace-content-routing.module').then(m => m.replaceContentRoutes)
       },
     ]
   },

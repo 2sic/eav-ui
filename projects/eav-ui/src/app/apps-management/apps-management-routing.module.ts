@@ -35,7 +35,7 @@ const appsManagementRoutes: Routes = [
         children: [
           {
             path: 'import',
-            loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
+            loadChildren: () => import('../import-app/import-app-routing.module').then(m => m.importRoutes)
           },
           {
             path: 'create',

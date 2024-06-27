@@ -10,7 +10,7 @@ const appRoutes: Routes = [
   },
   {
     path: ':zoneId/import',
-    loadChildren: () => import('./import-app/import-app.module').then(m => m.ImportAppModule),
+    loadChildren: () => import('./import-app/import-app-routing.module').then(m => m.importRoutes),
     data: { title: 'Import App' },
   },
   {
@@ -30,7 +30,8 @@ const appRoutes: Routes = [
   },
   {
     path: ':zoneId/:appId/:guid/:part/:index/replace',
-    loadChildren: () => import('./replace-content/replace-content.module').then(m => m.ReplaceContentModule),
+    loadChildren: () => import('./replace-content/replace-content-routing.module').then(m => m.replaceContentRoutes),
+
     data: { title: 'Apps' },
   },
   {

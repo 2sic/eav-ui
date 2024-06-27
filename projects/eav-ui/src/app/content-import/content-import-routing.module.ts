@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { contentImportDialog } from './content-import-dialog.config';
 
-const routes: Routes = [
+export const contentImportRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -12,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(contentImportRoutes)],
   exports: [RouterModule]
 })
 export class ContentImportRoutingModule { }

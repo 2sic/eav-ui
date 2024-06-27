@@ -4,7 +4,7 @@ import { edit } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { replaceContentDialog } from './replace-content-dialog.config';
 
-const routes: Routes = [
+export const replaceContentRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -20,7 +20,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(replaceContentRoutes)],
   exports: [RouterModule]
 })
 export class ReplaceContentRoutingModule { }
