@@ -2,6 +2,8 @@ import { ColDef } from '@ag-grid-community/core';
 import { BooleanFilterComponent } from '../components/boolean-filter/boolean-filter.component';
 import { App } from '../../apps-management/models/app.model';
 import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
+import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
+import { TrueFalseParams } from '../../dev-rest/api/true-false/true-false.models';
 
 export class ColumnDefinitions {
   static ActionsPinnedRight1: ColDef = {
@@ -31,6 +33,12 @@ export class ColumnDefinitions {
   static ActionsPinnedRight6: ColDef = {
     width: 82,
     cellClass: 'secondary-action no-padding'.split(' '),
+    pinned: 'right',
+  };
+
+  static ActionsPinnedRight7: ColDef = {
+    width: 62,
+    cellClass: 'secondary-action no-outline no-padding'.split(' '),
     pinned: 'right',
   };
 
@@ -102,6 +110,19 @@ export class ColumnDefinitions {
     filter: BooleanFilterComponent,
   };
 
+  static Boolean3: ColDef = {
+    headerClass: 'dense',
+    width: 80,
+    cellClass: 'no-outline',
+    cellRenderer: TrueFalseComponent,
+    cellRendererParams: (() => {
+      const params: TrueFalseParams = {
+        reverse: false,
+      };
+      return params;
+    })(),
+  }
+
   /**
    * Very narrow ID column, with typical header name and label etc.
    */
@@ -159,5 +180,7 @@ export class ColumnDefinitions {
     sortable: true,
     filter: 'agTextColumnFilter',
   };
+
+
 
 }

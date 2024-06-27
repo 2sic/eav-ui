@@ -48,7 +48,7 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
     const clickToConfigure = 'click to configure sharing';
     const ss = this.field.SysSettings;
     if (!ss) return clickToConfigure;
-    return ss.Share 
+    return ss.Share
       ? 'shared enabled as ' + this.field.Guid
       : ss.InheritMetadataOf
         ? 'inherits ' + ss.InheritMetadataOf
@@ -58,14 +58,10 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
   shareOrInheritIcon(): string {
     const ss = this.field.SysSettings;
     if (!ss) return '';
-    return ss.Share 
+    return ss.Share
       ? 'share'
       : ss.InheritMetadataOf ? 'adjust' : '';
   }
-
-  // #endregion
-
-  // #region Callback Actions
 
   refresh(params?: any): boolean {
     return true;
@@ -75,25 +71,4 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
     this.params.do(verb, this.field);
   }
 
-  // openMetadata(): void {
-  //   this.params.onOpenMetadata(this.field);
-  // }
-
-  // rename(): void {
-  //   this.params.onRename(this.field);
-  // }
-
-  // openPermissions(): void {
-  //   this.params.onOpenPermissions(this.field);
-  // }
-
-  // deleteField(): void {
-  //   this.params.onDelete(this.field);
-  // }
-
-  // shareOrInherit(): void {
-  //   this.params.onShareOrInherit(this.field);
-  // }
-
-  // #endregion
 }

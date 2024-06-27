@@ -163,26 +163,17 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
   // ...not sure why it's even in here, my guess is copy-paste of code which wasn't understood properly
   // 3. I think the header-name should always be the first line, then the field
   private buildGridOptions(): GridOptions {
-    const cellDefaults = {
-      cellClass: 'no-outline',
-      sortable: true,
-    };
-    const cellDefaultsTextFilter = {
-      ...cellDefaults,
-      filter: 'agTextColumnFilter',
-    };
-
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
           headerName: 'ID',
           field: 'nameId',
-          ...cellDefaultsTextFilter,
+          filter: 'agTextColumnFilter',
           width: 200,
           headerClass: 'dense',
+          sortable: true,
           cellClass: 'id-action no-padding no-outline'.split(' '),
-
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
@@ -200,11 +191,13 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           },
         },
         {
-          field: 'isEnabled',
+
           headerName: 'Enabled',
-          ...cellDefaults,
+          field: 'isEnabled',
           width: 80,
+          cellClass: 'no-outline',
           headerClass: 'dense',
+          sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
         },
@@ -217,16 +210,14 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
         {
           headerName: 'Expiration',
           field: 'ExpMessage',
-          ...cellDefaultsTextFilter,
+          filter: 'agTextColumnFilter',
           width: 120,
           tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.expiration,
         },
         {
+          ...ColumnDefinitions.ActionsPinnedRight7,
           headerName: '',
           field: 'enabledInConfiguration',
-          width: 62,
-          cellClass: 'secondary-action no-outline no-padding'.split(' '),
-          pinned: 'right',
           cellRenderer: FeaturesStatusComponent,
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {

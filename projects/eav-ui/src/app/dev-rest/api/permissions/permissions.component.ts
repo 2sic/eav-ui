@@ -5,12 +5,13 @@ import { DevRestApiViewModel } from '../api-template-vars';
 import { TrueFalseComponent } from '../true-false/true-false.component';
 import { TrueFalseParams } from '../true-false/true-false.models';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 
 @Component({
-    selector: 'app-dev-api-permissions',
-    templateUrl: './permissions.component.html',
-    standalone: true,
-    imports: [AgGridModule],
+  selector: 'app-dev-api-permissions',
+  templateUrl: './permissions.component.html',
+  standalone: true,
+  imports: [AgGridModule],
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   @Input() data: DevRestApiViewModel;
@@ -94,64 +95,35 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   }
 
   private buildGridOptions(): GridOptions {
-    const booleanColumnDef: ColDef = {
-      headerClass: 'dense',
-      width: 80,
-      cellClass: 'no-outline',
-      cellRenderer: TrueFalseComponent,
-      cellRendererParams: (() => {
-        const params: TrueFalseParams = {
-          reverse: false,
-        };
-        return params;
-      })(),
-    };
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: 'Requirement',
+          headerName: 'Requirement',
+          field: 'requirement',
           flex: 2,
           minWidth: 200,
           cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const item: ApiPermissionsGridItem = params.data;
-            return item.requirement;
-          },
         },
         {
-          ...booleanColumnDef,
-          field: 'Class',
-          valueGetter: (params) => {
-            const item: ApiPermissionsGridItem = params.data;
-            return item.class;
-          },
+          ...ColumnDefinitions.Boolean3,
+          headerName: 'Class',
+          field: 'class',
         },
         {
-          ...booleanColumnDef,
-          field: 'Method',
-          valueGetter: (params) => {
-            const item: ApiPermissionsGridItem = params.data;
-            return item.method;
-          },
+          ...ColumnDefinitions.Boolean3,
+          headerName: 'Method',
+          field: 'method',
         },
         {
-          ...booleanColumnDef,
-          field: 'Effective',
-          valueGetter: (params) => {
-            const item: ApiPermissionsGridItem = params.data;
-            return item.effective;
-          },
+          ...ColumnDefinitions.Boolean3,
+          headerName: 'Effective',
+          field: 'effective',
         },
         {
-          field: 'Comments',
-          flex: 3,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const item: ApiPermissionsGridItem = params.data;
-            return item.comments;
-          },
+          ...ColumnDefinitions.TextWideFlex3,
+          headerName: 'Comments',
+          field: 'comments',
         },
       ],
     };
