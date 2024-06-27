@@ -45,6 +45,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 
 @Component({
     selector: 'app-content-items',
@@ -86,7 +87,7 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -249,19 +250,10 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID',
-        field: 'Id',
-        width: 70,
-        headerClass: 'dense',
-        sortable: true,
-        filter: 'agNumberColumnFilter',
+        ...ColumnDefinitions.Id,
         cellClass: (params) => {
           const contentItem: ContentItem = params.data;
           return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-        },
-        valueGetter: (params) => {
-          const contentItem: ContentItem = params.data;
-          return contentItem.Id;
         },
         cellRenderer: IdFieldComponent,
         cellRendererParams: (() => {
@@ -306,10 +298,6 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
           const contentItem: ContentItem = params.data;
           this.editItem(contentItem);
         },
-        valueGetter: (params) => {
-          const contentItem: ContentItem = params.data;
-          return contentItem._Title;
-        },
       },
       {
         headerName: 'Stats',
@@ -326,16 +314,18 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
         },
       },
       {
-        cellClass: 'secondary-action no-padding'.split(' '),
-        width: 122,
-        pinned: 'right',
+        ...ColumnDefinitions.ActionsPinnedRight3,
         cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: (() => {
           const params: ContentItemsActionsParams = {
-            onClone: (item) => this.clone(item),
-            onExport: (item) => this.export(item),
-            onDelete: (item) => this.delete(item),
-          };
+            do: (verb, item) => {
+              switch (verb) {
+                case 'clone': this.clone(item); break;
+                case 'export': this.export(item); break;
+                case 'delete': this.delete(item); break;
+              }
+            }
+          } satisfies ContentItemsActionsParams;
           return params;
         })(),
       },

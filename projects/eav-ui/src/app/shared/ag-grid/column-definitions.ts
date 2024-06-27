@@ -28,6 +28,12 @@ export class ColumnDefinitions {
     pinned: 'right',
   };
 
+  static ActionsPinnedRight6: ColDef = {
+    width: 82,
+    cellClass: 'secondary-action no-padding'.split(' '),
+    pinned: 'right',
+  };
+
   static IconShow: ColDef = {
     headerName: 'Show',
     width: 70,
@@ -82,6 +88,20 @@ export class ColumnDefinitions {
     filter: 'agNumberColumnFilter',
   };
 
+  static Boolean: ColDef = {
+    width: 70,
+    headerClass: 'dense',
+    cellClass: 'number-cell no-outline'.split(' '),
+    sortable: true,
+  };
+
+  static Boolean2: ColDef = {
+    width: 100,
+    sortable: true,
+    cellClass: 'no-outline',
+    filter: BooleanFilterComponent,
+  };
+
   /**
    * Very narrow ID column, with typical header name and label etc.
    */
@@ -128,6 +148,14 @@ export class ColumnDefinitions {
     flex: 1,
     minWidth: 150,
     cellClass: 'no-outline',
+    sortable: true,
+    filter: 'agTextColumnFilter',
+  };
+
+  static TextWideActionClass: ColDef = {
+    flex: 2,
+    minWidth: 250,
+    cellClass: 'primary-action no-padding no-outline'.split(' '),
     sortable: true,
     filter: 'agTextColumnFilter',
   };

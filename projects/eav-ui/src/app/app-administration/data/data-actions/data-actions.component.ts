@@ -43,39 +43,4 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.do(verb, this.contentType);
   }
 
-  // createOrEditMetadata(): void {
-  //   this.params.onCreateOrEditMetadata(this.contentType);
-  // }
-
-  // openPermissions(): void {
-  //   this.params.onOpenPermissions(this.contentType);
-  // }
-
-  // editContentType(): void {
-  //   this.params.onEdit(this.contentType);
-  // }
-
-  // openMetadata(): void {
-  //   this.params.onOpenMetadata(this.contentType);
-  // }
-
-  // openRestApi(): void {
-  //   this.params.onOpenRestApi(this.contentType);
-  // }
-
-  // exportType(): void {
-  //   this.params.onTypeExport(this.contentType);
-  // }
-
-  // openDataExport(): void {
-  //   this.params.onOpenDataExport(this.contentType);
-  // }
-
-  // openDataImport(): void {
-  //   this.params.onOpenDataImport(this.contentType);
-  // }
-
-  // deleteContentType(): void {
-  //   this.params.onDelete(this.contentType);
-  // }
 }

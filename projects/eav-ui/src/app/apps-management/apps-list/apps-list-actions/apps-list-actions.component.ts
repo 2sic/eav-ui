@@ -2,7 +2,7 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { App } from '../../models/app.model';
-import { AppsListActionsParams } from './apps-list-actions.models';
+import { AppsListActionsParams, AppsListActionsType } from './apps-list-actions.models';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -36,11 +36,7 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  flushCache(): void {
-    this.params.onFlush(this.app);
-  }
-
-  deleteApp(): void {
-    this.params.onDelete(this.app);
+  do(verb: AppsListActionsType): void {
+    this.params.do(verb, this.app);
   }
 }

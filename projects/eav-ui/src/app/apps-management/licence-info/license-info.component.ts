@@ -31,6 +31,7 @@ import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalo
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
   selector: 'app-license-info',
@@ -181,15 +182,7 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           width: 200,
           headerClass: 'dense',
           cellClass: 'id-action no-padding no-outline'.split(' '),
-          // TODO: @SDV - most of these columns had a valueGetter that was 3 lines long
-          // it was easy to reduce to 1 - but actually it is not needed!
-          // Original - too long
-          // valueGetter: (params) => {
-          //   const feature: Feature = params.data;
-          //   return feature.NameId;
-          // },
-          // Optimized - 1 line - but actually not needed
-          // valueGetter: (params) => (params.data as Feature).NameId,
+
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
@@ -199,10 +192,8 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           })(),
         },
         {
+          ...ColumnDefinitions.TextWideFlex3,
           field: 'Name',
-          ...cellDefaultsTextFilter,
-          flex: 3,
-          minWidth: 250,
           cellClass: 'primary-action highlight'.split(' '),
           onCellClicked: (params) => {
             this.showFeatureDetails(params.data as Feature);
@@ -218,11 +209,9 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
           cellRenderer: FeaturesListEnabledComponent,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Reason',
           field: 'enabledReason',
-          ...cellDefaultsTextFilter,
-          flex: 1,
-          minWidth: 150,
           cellRenderer: FeaturesListEnabledReasonComponent,
         },
         {

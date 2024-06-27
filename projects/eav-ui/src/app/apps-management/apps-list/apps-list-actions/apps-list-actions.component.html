@@ -23,11 +23,11 @@
 <!-- The menu which appears on more -->
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="flushCache()">
+    <button mat-menu-item (click)="do('flushCache')">
       <mat-icon>cached</mat-icon>
       <span>Flush cache</span>
     </button>
-    <button mat-menu-item [disabled]="!app.IsApp" (click)="deleteApp()">
+    <button mat-menu-item [disabled]="!app.IsApp" (click)="do('deleteApp')">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

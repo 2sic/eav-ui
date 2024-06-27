@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
 
 @Component({
     selector: 'app-settings-item-details',
@@ -71,29 +72,14 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: 'Value',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item._value;
-          },
+          ...ColumnDefinitions.TextWideActionClass,
+          headerName: 'Value',
+          field: '_value',
           cellRenderer: AnalyzeSettingsValueComponent,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           field: 'Source',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item.Source;
-          },
         },
       ],
     };

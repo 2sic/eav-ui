@@ -294,7 +294,7 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     const imgConfig = field.imageConfiguration;
     if (imgConfig?.isRecommended != true)
       throw new Error('This field does not expect to have an image configuration');
-    
+
     const itemIdentifier: ItemIdentifier = imgConfig.entityId
       ? EditPrep.editId(imgConfig.entityId)
       : EditPrep.newMetadata(field.Id, imgConfig.typeName, eavConstants.metadata.attribute);
@@ -356,20 +356,11 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
           ...ColumnDefinitions.TextWide,
           headerName: 'Name',
           field: 'StaticName',
-          // flex: 2,
-          // minWidth: 250,
-          // cellClass: 'primary-action highlight'.split(' '),
-          // sortable: true,
-          // filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const field: Field = params.data;
             this.editFieldMetadata(field);
           },
           cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
-          // valueGetter: (params) => {
-          //   const field: Field = params.data;
-          //   return field.StaticName;
-          // },
         },
         {
           field: 'Type',
@@ -440,17 +431,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight5,
-          // width: 162,
-          // cellClass: 'secondary-action no-padding'.split(' '),
-          // pinned: 'right',
           cellRenderer: ContentTypeFieldsActionsComponent,
           cellRendererParams: (() => ({
-            // TODO: @2dg - try to do something similar, to reduce the number of methods
-            // onRename: (field) => this.rename(field),
-            // onDelete: (field) => this.delete(field),
-            // onOpenPermissions: (field) => this.openPermissions(field),
-            // onOpenMetadata: (field) => this.openMetadata(field),
-            // onShareOrInherit: (field) => this.shareOrInherit(field),
             do: (verb, field) => {
               switch (verb) {
                 case 'rename': this.rename(field); break;

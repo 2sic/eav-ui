@@ -1,7 +1,6 @@
 import { ContentItem } from '../models/content-item.model';
 
+export type ContentItemType = 'clone' | 'export' | 'delete';
 export interface ContentItemsActionsParams {
-  onClone(item: ContentItem): void;
-  onExport(item: ContentItem): void;
-  onDelete(item: ContentItem): void;
+  do(verb: ContentItemType, item: ContentItem): void;
 }

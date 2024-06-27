@@ -90,7 +90,7 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route, new EavLogger('AppsListComponent', logThis));
-    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
@@ -106,7 +106,7 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
       map(([apps, fabOpen]) => {
-        return { apps, fabOpen};
+        return { apps, fabOpen };
       }),
     );
   }
@@ -247,13 +247,9 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
           field: 'Items',
         },
         {
-          // todo: boolean
+          ...ColumnDefinitions.Boolean,
           field: 'HasCodeWarnings',
           headerName: 'Code',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'icons no-outline'.split(' '),
-          sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
@@ -262,10 +258,14 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
           ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
           cellRendererParams: {
-            onDelete: (app) => this.deleteApp(app),
-            onFlush: (app) => this.flushApp(app),
-            onOpenLightspeed: (app) => this.openLightSpeed(<App> app),
+            onOpenLightspeed: (app) => this.openLightSpeed(<App>app),
             openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
+            do: (verb, app) => {
+              switch (verb) {
+                case 'deleteApp': this.deleteApp(app); break;
+                case 'flushCache': this.flushApp(app); break;
+              }
+            }
           } satisfies AppsListActionsParams,
         },
       ],

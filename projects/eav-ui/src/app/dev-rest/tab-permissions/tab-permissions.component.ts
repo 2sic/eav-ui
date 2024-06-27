@@ -10,6 +10,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
     selector: 'app-dev-rest-tab-permissions',
@@ -39,55 +40,26 @@ export class DevRestTabPermissionsComponent {
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'no-padding no-outline'.split(' '),
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Id;
-          },
+          ...ColumnDefinitions.Id
         },
         {
-          field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Title;
-          },
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Name',
+          field: 'Title',
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Identity',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Identity;
-          },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Condition',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Condition;
-          },
         },
         {
           field: 'Grant',
           width: 70,
           headerClass: 'dense',
           cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Grant;
-          },
         },
       ],
     };

@@ -2,12 +2,10 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
-import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
-import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DialogService } from '../../shared/services/dialog.service';
 import { WebApi } from '../models/web-api.model';
@@ -22,6 +20,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
     selector: 'app-web-api',
@@ -52,8 +51,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
     private sourceService: SourceService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-    private router: Router,
-    private route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private dialogConfigSvc: AppDialogConfigService,
@@ -154,33 +151,21 @@ export class WebApiComponent implements OnInit, OnDestroy {
           filter: 'agTextColumnFilter',
         },
         {
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'Edition',
           field: 'edition',
-          flex: 1,
-          minWidth: 100,
-          cellClass: 'no-outline',
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
         },
         {
+          ...ColumnDefinitions.TextWideMin100,
           headerName: 'Forder2',
           field: 'folder',
-          flex: 1,
-          minWidth: 100,
-          cellClass: 'no-outline',
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
         },
         {
+          ...ColumnDefinitions.TextWide,
           headerName: 'Name',
           field: 'name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
         },
         // {
         //   field: 'Type',
@@ -198,16 +183,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
         {
           headerName: 'Compiled',
           field: 'isCompiled',
-          width: 100,
+          ...ColumnDefinitions.Boolean2,
           cellRenderer: TrueFalseComponent,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: BooleanFilterComponent,
         },
         {
-          width: 82,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight6,
           cellRenderer: WebApiActionsComponent,
           cellRendererParams: (() => {
             const params: WebApiActionsParams = {
