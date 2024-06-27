@@ -38,7 +38,7 @@ export class GoToDevRest {
   static paramApiPath: 'webApiPath';
   static route: Route = {
     path: base,
-    loadChildren: () => import('./dev-rest-routing.module').then(m => m.devRestRoutes),
+    loadChildren: () => import('./dev-rest.routing').then(m => m.devRestRoutes),
   };
 
   // todo: setup not quite elegant, using relative route. Should be refactored to use absolute route

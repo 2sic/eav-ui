@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { edit } from '../edit/edit.matcher';
 
@@ -18,8 +17,3 @@ export const visualQueryRoutes: Routes = [
   },
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(visualQueryRoutes)],
-  exports: [RouterModule]
-})
-export class VisualQueryRoutingModule { }

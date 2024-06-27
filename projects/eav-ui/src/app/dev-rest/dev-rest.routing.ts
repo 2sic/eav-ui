@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { devRestDialog } from './dev-rest-dialog.config';
@@ -26,8 +25,3 @@ export const devRestRoutes: Routes = [
   },
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(devRestRoutes)],
-  exports: [RouterModule]
-})
-export class DevRestRoutingModule { }

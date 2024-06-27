@@ -1,14 +1,13 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { edit, refreshEdit } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { permissionsDialog } from './permissions-dialog.config';
+import { metadataDialog } from './metadata-dialog.config';
 
-export const permissionRoutes: Routes = [
+export const metadataRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
-    data: { dialog: permissionsDialog },
+    data: { dialog: metadataDialog },
     children: [
       {
         matcher: edit,
@@ -22,8 +21,3 @@ export const permissionRoutes: Routes = [
   },
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(permissionRoutes)],
-  exports: [RouterModule]
-})
-export class PermissionsRoutingModule { }

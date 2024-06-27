@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
@@ -37,8 +36,3 @@ export const contentTypeFieldsRoutes: Routes = [
   }
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(contentTypeFieldsRoutes)],
-  exports: [RouterModule]
-})
-export class ContentTypeFieldsRoutingModule { }

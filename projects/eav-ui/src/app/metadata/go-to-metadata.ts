@@ -6,9 +6,7 @@ export class GoToMetadata {
   static getRoutes(): Route[] {
     const defaultRoute: Route = {
       path: 'metadata/:targetType/:keyType/:key',
-      // TODO:: @2dg error apps manage Dialog
-      loadChildren: () => import('./metadata-routing.module').then(m => m.metadataRoutes),
-      // loadChildren: () => import('./metadata.module').then(m => m.MetadataModule),
+      loadChildren: () => import('./metadata.routing').then(m => m.metadataRoutes),
       data: { title: 'Metadata' },
     };
     const routes: Route[] = [

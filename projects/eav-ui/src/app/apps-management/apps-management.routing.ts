@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { editRoot, refreshEditRoot } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
+import { Context } from '../shared/services/context';
 
 export const appsManagementRoutes: Routes = [
   {
@@ -35,7 +35,7 @@ export const appsManagementRoutes: Routes = [
         children: [
           {
             path: 'import',
-            loadChildren: () => import('../import-app/import-app-routing.module').then(m => m.importRoutes)
+            loadChildren: () => import('../import-app/import-app.routing').then(m => m.importRoutes)
           },
           {
             path: 'create',
@@ -81,12 +81,10 @@ export const appsManagementRoutes: Routes = [
         //   GoToRegistration.getRoute()
         // ]
       },
+    ],
+    providers: [
+      Context
     ]
   },
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(appsManagementRoutes)],
-  exports: [RouterModule]
-})
-export class AppsManagementRoutingModule { }

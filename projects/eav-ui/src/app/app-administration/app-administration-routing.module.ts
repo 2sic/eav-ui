@@ -49,7 +49,7 @@ const appAdministrationRoutes: Routes = [
           },
           {
             path: 'items/:contentTypeStaticName',
-            loadChildren: () => import('../content-items/content-items-routing.module').then(m => m.contentItemsRoutes)
+            loadChildren: () => import('../content-items/content-items.routing').then(m => m.contentItemsRoutes)
           },
           {
             matcher: edit,
@@ -74,19 +74,17 @@ const appAdministrationRoutes: Routes = [
           {
             path: 'fields/:contentTypeStaticName',
             // May change how things are injected, so be careful when evaluating
-            loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.contentTypeFieldsRoutes),
-            // loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.ContentTypeFieldsRoutes),
+            loadChildren: () => import('../content-type-fields/content-type-fields.routing').then(m => m.contentTypeFieldsRoutes),
             data: { title: 'Content Type Fields' },
           },
           {
             path: 'export/:contentTypeStaticName',
-            // loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule),
-            loadChildren: () => import('../content-export/content-export-routing.module').then(m => m.ContentExportRoutes),
+            loadChildren: () => import('../content-export/content-export.routing').then(m => m.ContentExportRoutes),
             data: { title: 'Export Items' },
           },
           {
             path: ':contentTypeStaticName/import',
-            loadChildren: () => import('../content-import/content-import-routing.module').then(m => m.contentImportRoutes),
+            loadChildren: () => import('../content-import/content-import.routing').then(m => m.contentImportRoutes),
             data: { title: 'Import Items' },
           },
           GoToPermissions.route,
@@ -240,7 +238,7 @@ const appAdministrationRoutes: Routes = [
           },
           {
             path: 'fields/:contentTypeStaticName',
-            loadChildren: () => import('../content-type-fields/content-type-fields-routing.module').then(m => m.contentTypeFieldsRoutes),
+            loadChildren: () => import('../content-type-fields/content-type-fields.routing').then(m => m.contentTypeFieldsRoutes),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
           {
