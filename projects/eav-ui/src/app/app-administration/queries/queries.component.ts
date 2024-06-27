@@ -28,6 +28,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
     selector: 'app-queries',
@@ -178,19 +179,10 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agNumberColumnFilter',
+          ...ColumnDefinitions.Id,
           cellClass: (params) => {
             const query: Query = params.data;
             return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
-          valueGetter: (params) => {
-            const query: Query = params.data;
-            return query.Id;
           },
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
@@ -201,12 +193,9 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
           })(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           cellClass: (params) => {
             const query: Query = params.data;
             return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
@@ -215,27 +204,13 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
             const query: Query = params.data;
             this.openVisualQueryDesigner(query);
           },
-          valueGetter: (params) => {
-            const query: Query = params.data;
-            return query.Name;
-          },
         },
         {
+          ...ColumnDefinitions.TextWideFlex3,
           field: 'Description',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const query: Query = params.data;
-            return query.Description;
-          },
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: QueriesActionsComponent,
           cellRendererParams: (() => {
             const params: QueriesActionsParams = {

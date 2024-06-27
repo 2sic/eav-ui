@@ -370,14 +370,18 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
           cellRendererParams: {
             enableCodeGetter: () => this.enableCodeGetter(),
             enablePermissionsGetter: () => this.enablePermissionsGetter(),
-            onOpenCode: (view) => this.openCode(view),
-            onOpenPermissions: (view) => this.openPermissions(view),
-            onOpenMetadata: (view) => this.openMetadata(view),
-            onClone: (view) => this.cloneView(view),
-            onExport: (view) => this.exportView(view),
-            onDelete: (view) => this.deleteView(view),
-            onOpenLightspeed: (view: unknown) => this.openLightSpeed(view as View),
             openLightspeedFeatureInfo: () => openLightSpeedFeatInfo(),
+            onOpenLightspeed: (view: unknown) => this.openLightSpeed(view as View),
+            do: (verb, view) => {
+              switch (verb) {
+                case 'openCode': this.openCode(view); break;
+                case 'openPermissions': this.openPermissions(view); break;
+                case 'openMetadata': this.openMetadata(view); break;
+                case 'cloneView': this.cloneView(view); break;
+                case 'exportView': this.exportView(view); break;
+                case 'deleteView': this.deleteView(view); break;
+              }
+            },
           } satisfies ViewActionsParams,
         },
       ],

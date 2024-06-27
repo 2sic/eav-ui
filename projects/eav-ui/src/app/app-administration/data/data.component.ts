@@ -405,7 +405,7 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
                   case 'deleteContentType': this.deleteContentType(contentType); break;
                 }
               }
-            };
+            } satisfies DataActionsParams;
             return params;
           })(),
         },

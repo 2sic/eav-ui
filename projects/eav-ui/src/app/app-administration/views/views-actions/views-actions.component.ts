@@ -2,7 +2,7 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { View } from '../../models/view.model';
-import { ViewActionsParams } from './views-actions.models';
+import { ViewActionsParams, ViewActionsType } from './views-actions.models';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,27 +41,7 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  openCode(): void {
-    this.params.onOpenCode(this.view);
-  }
-
-  openPermissions(): void {
-    this.params.onOpenPermissions(this.view);
-  }
-
-  openMetadata(): void {
-    this.params.onOpenMetadata(this.view);
-  }
-
-  cloneView(): void {
-    this.params.onClone(this.view);
-  }
-
-  exportView(): void {
-    this.params.onExport(this.view);
-  }
-
-  deleteView(): void {
-    this.params.onDelete(this.view);
+  do(verb: ViewActionsType): void {
+    this.params.do(verb, this.view);
   }
 }
