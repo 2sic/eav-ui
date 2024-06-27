@@ -35,7 +35,7 @@ import { AppDialogConfigService } from '../../app-administration/services';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { FeaturesModule } from '../../features/features.module';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 const logThis = false;
 
@@ -58,11 +58,11 @@ const logThis = false;
     RouterOutlet,
     AsyncPipe,
     // WIP 2dm - needed for the lightspeed buttons to work
-    FeaturesModule,
   ],
   providers: [
     AppsListService,
     FeaturesService,
+    FeatureDetailService,
     AppDialogConfigService,
   ],
 })

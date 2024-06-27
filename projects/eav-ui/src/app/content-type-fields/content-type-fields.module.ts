@@ -5,20 +5,20 @@ import { Context } from '../shared/services/context';
 import { ContentTypeFieldsRoutingModule } from './content-type-fields-routing.module';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { FeaturesModule } from '../features/features.module';
 import { ContentItemsService } from '../content-items/services/content-items.service';
+import { FeatureDetailService } from '../features/services/feature-detail.service';
 @NgModule({
   imports: [
     ContentTypeFieldsRoutingModule,
     SxcGridModule,
     TranslateModule,
-    FeaturesModule,
   ],
   providers: [
     Context,
     ContentTypesService,
     ContentTypesFieldsService,
     ContentItemsService,
+    FeatureDetailService,
     // @2dg, no impact of style since angular 16+
     // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
   ]

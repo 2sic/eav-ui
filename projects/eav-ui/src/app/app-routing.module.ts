@@ -25,6 +25,7 @@ const appRoutes: Routes = [
   },
   {
     path: ':zoneId/:appId/query/:pipelineId',
+    // loadChildren: () => import('./visual-query/visual-query-routing.module').then(m => m.visualQueryRoutes),
     loadChildren: () => import('./visual-query/visual-query.module').then(m => m.VisualQueryModule),
     data: { title: 'Visual Query' },
   },
@@ -51,7 +52,7 @@ const appRoutes: Routes = [
   },
   {
     path: ':zoneId/:appId/versions/:itemId',
-    loadChildren: () => import('./item-history/item-history.module').then(m => m.ItemHistoryModule),
+    loadChildren: () => import('./item-history/item-history-routing.module').then(m => m.historyRoutes),
   },
   {
     matcher: editRoot,

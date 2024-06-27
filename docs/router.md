@@ -13,7 +13,7 @@ Root router module, that is lazy loading other modules like:
 <!-- - ImportAppModule -->
 - AppAdministrationModule
 - CodeEditorModule
-- VisualQueryModule
+<!-- - VisualQueryModule -->
 <!-- - ReplaceContentModule -->
 - ManageContentListModule
 - ContentItemsModule

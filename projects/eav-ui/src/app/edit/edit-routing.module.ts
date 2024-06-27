@@ -20,7 +20,7 @@ const editRoutes: Routes = [
       },
       {
         path: 'versions/:itemId',
-        loadChildren: () => import('../item-history/item-history.module').then(m => m.ItemHistoryModule),
+        loadChildren: () => import('../item-history/item-history-routing.module').then(m => m.historyRoutes),
       }
     ]
   },

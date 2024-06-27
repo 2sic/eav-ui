@@ -9,7 +9,6 @@ import { openFeatureDialog } from '../../features/shared/base-feature.component'
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
 import { TranslateModule } from '@ngx-translate/core';
-import { FeaturesModule } from '../../features/features.module';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -31,7 +30,6 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
       MatCardModule,
       MatTableModule,
       NgClass,
-      FeaturesModule,
       AsyncPipe,
       TranslateModule,
       FeatureIconIndicatorComponent

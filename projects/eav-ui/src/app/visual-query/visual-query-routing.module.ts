@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { edit } from '../edit/edit.matcher';
 
-const routes: Routes = [
+export const visualQueryRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('./visual-query.component').then(m => m.VisualQueryComponent),
@@ -19,7 +19,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(visualQueryRoutes)],
   exports: [RouterModule]
 })
 export class VisualQueryRoutingModule { }

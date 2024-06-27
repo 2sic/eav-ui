@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { itemHistoryDialog } from './item-history-dialog.config';
 
-const routes: Routes = [
+export const historyRoutes: Routes = [
   {
     path: '',
     component: DialogEntryComponent,
@@ -12,7 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(historyRoutes)],
   exports: [RouterModule]
 })
 export class ItemHistoryRoutingModule { }

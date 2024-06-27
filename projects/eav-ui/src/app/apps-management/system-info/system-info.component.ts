@@ -16,7 +16,6 @@ import { ZoneService } from '../services/zone.service';
 import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FeaturesModule } from '../../features/features.module';
 import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
@@ -25,6 +24,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 declare const window: EavWindow;
 
@@ -40,7 +40,6 @@ declare const window: EavWindow;
     RouterLink,
     NgTemplateOutlet,
     MatButtonModule,
-    FeaturesModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -54,6 +53,7 @@ declare const window: EavWindow;
     DialogService,
     SxcInsightsService,
     FeaturesService,
+    FeatureDetailService,
     AppDialogConfigService,
   ],
 })

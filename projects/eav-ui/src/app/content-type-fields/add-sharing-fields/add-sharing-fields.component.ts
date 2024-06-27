@@ -15,7 +15,6 @@ import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
-import { FeaturesModule } from '../../features/features.module';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 import { MatInputModule } from '@angular/material/input';
@@ -24,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -40,12 +40,12 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
     ReservedNamesValidatorDirective,
     SharedComponentsModule,
     MatDialogActions,
-    FeaturesModule,
     AsyncPipe,
     TranslateModule,
     FeatureIconIndicatorComponent,
     FieldHintComponent,
-  ]
+  ],
+  providers: [FeatureDetailService]
 })
 export class AddSharingFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

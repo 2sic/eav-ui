@@ -8,12 +8,13 @@ import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { QueryDefinitionService } from './services/query-definition.service';
 
 @Component({
     selector: 'app-visual-query',
     templateUrl: './visual-query.component.html',
     styleUrls: ['./visual-query.component.scss'],
-    providers: [VisualQueryService],
+    providers: [VisualQueryService, QueryDefinitionService],
     standalone: true,
     imports: [
         RouterOutlet,

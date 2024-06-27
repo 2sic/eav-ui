@@ -16,8 +16,8 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from '@ag-grid-community/angular';
-import { FeaturesModule } from '../../features/features.module';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
     selector: 'app-add-app-from-folder',
@@ -25,7 +25,6 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
     styleUrls: ['./add-app-from-folder.component.scss'],
     standalone: true,
     imports: [
-        FeaturesModule,
         AgGridModule,
         MatDialogActions,
         MatButtonModule,
@@ -35,6 +34,7 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
     providers: [
         AppsListService,
         FeaturesService,
+        FeatureDetailService,
     ]
 })
 export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
