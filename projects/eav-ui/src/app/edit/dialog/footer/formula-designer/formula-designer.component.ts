@@ -12,7 +12,7 @@ import { FormBuilderComponent } from '../../../form/builder/form-builder/form-bu
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
-import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, SettingsFormulaPrefix, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
+import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
@@ -35,27 +35,30 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-    selector: 'app-formula-designer',
-    templateUrl: './formula-designer.component.html',
-    styleUrls: ['./formula-designer.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        NgClass,
-        ExtendedModule,
-        MatInputModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MonacoEditorComponent,
-        MatMenuModule,
-        AsyncPipe,
-        JsonPipe,
-        SnippetLabelSizePipe,
-    ],
+  selector: 'app-formula-designer',
+  templateUrl: './formula-designer.component.html',
+  styleUrls: ['./formula-designer.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    NgClass,
+    ExtendedModule,
+    MatInputModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    MonacoEditorComponent,
+    MatMenuModule,
+    AsyncPipe,
+    JsonPipe,
+    SnippetLabelSizePipe,
+  ],
+  providers: [
+    EntitiesService,
+  ]
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
