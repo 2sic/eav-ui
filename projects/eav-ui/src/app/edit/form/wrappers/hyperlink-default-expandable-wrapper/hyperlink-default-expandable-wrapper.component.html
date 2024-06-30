@@ -60,7 +60,7 @@
           }"
       [ngStyle]="{ 'background-image': controlStatus().value && preV.isImage ? preV.thumbnailUrl : '' }"
       (click)="expandDialog()">
-      @if (controlStatus().value) {
+      @if (controlStatus().value && !preV.isImage) {
         <mat-icon [tippy]="preV.url" tippyPlacement="right" [svgIcon]="preV.icon"></mat-icon>
       }
     </div>
