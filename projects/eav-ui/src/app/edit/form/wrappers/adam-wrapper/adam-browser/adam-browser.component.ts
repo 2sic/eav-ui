@@ -27,7 +27,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
 import { FeatureDetailService } from 'projects/eav-ui/src/app/features/services/feature-detail.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
 
 @Component({

@@ -13,7 +13,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'StateAdapter';
 
 @Injectable()

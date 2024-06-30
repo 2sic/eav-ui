@@ -13,7 +13,7 @@ import { ControlStatus } from '../../../../shared/models';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'HyperlinkDefaultBaseComponent';
 
 @Component({

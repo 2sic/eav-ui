@@ -9,7 +9,7 @@ import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'WysiwygConfigurationManager';
 
 
