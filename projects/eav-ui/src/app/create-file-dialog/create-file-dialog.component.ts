@@ -38,7 +38,9 @@ import { FieldHintComponent } from '../shared/components/field-hint/field-hint.c
     AsyncPipe,
     FieldHintComponent,
   ],
-  providers: [SourceService],
+  providers: [
+    SourceService
+  ],
 })
 export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

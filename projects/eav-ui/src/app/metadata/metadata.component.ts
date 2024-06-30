@@ -57,7 +57,12 @@ const logThis = false;
     MatBadgeModule,
     AsyncPipe,
   ],
-  providers: [EntitiesService, MetadataService, FeatureDetailService, ContentItemsService]
+  providers: [
+    EntitiesService,
+    MetadataService,
+    FeatureDetailService,
+    ContentItemsService
+  ]
 })
 export class MetadataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();

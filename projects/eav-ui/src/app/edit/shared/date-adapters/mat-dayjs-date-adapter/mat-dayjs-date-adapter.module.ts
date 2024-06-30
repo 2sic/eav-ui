@@ -27,7 +27,8 @@ const OWL_DAYJS_FORMATS = {
 })
 export class MatDayjsDateModule { }
 
-
+// TODO: @2dg - this module isn't used anywhere, but I think it probably should?
+// My guess is it ensures that the date adapter is configured correctly for each culture
 @NgModule({
   imports: [MatDayjsDateModule],
   providers: [{ provide: MAT_DATE_FORMATS, useValue: MAT_DAYJS_DATE_FORMATS },

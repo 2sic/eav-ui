@@ -28,6 +28,9 @@ import { FormDataService } from '../../../shared/services/form-data.service';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
+/**
+ * This wraps a single entity in the multi-entities-form.
+ */
 @Component({
   selector: 'app-entity-wrapper',
   templateUrl: './entity-wrapper.component.html',

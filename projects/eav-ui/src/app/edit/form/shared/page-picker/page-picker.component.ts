@@ -16,23 +16,26 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ArrayHelpers } from '../../../../shared/helpers/array.helpers';
 
 @Component({
-    selector: 'app-page-picker',
-    templateUrl: './page-picker.component.html',
-    styleUrls: ['./page-picker.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        NgTemplateOutlet,
-        NgClass,
-        ExtendedModule,
-        MatIconModule,
-        SharedComponentsModule,
-        MatDialogActions,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-page-picker',
+  templateUrl: './page-picker.component.html',
+  styleUrls: ['./page-picker.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    NgTemplateOutlet,
+    NgClass,
+    ExtendedModule,
+    MatIconModule,
+    SharedComponentsModule,
+    MatDialogActions,
+    AsyncPipe,
+    TranslateModule,
+  ],
+  providers: [
+    QueryService,
+  ],
 })
 export class PagePickerComponent implements OnInit, OnDestroy {
   selected: number;

@@ -10,7 +10,7 @@ export interface MatDayjsDateAdapterOptions {
   /**
    * Turns the use of utc dates on or off.
    * Changing this will change how Angular Material components like DatePicker output dates.
-   * {@default false}
+   * @default false
    */
   useUtc?: boolean;
 }

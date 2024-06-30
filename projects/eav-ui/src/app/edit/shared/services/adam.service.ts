@@ -7,6 +7,10 @@ import { AdamConfig, AdamItem } from '../../../../../../edit-types';
 import { SanitizeHelper } from '../helpers';
 import { LinkInfo } from '../models';
 
+/**
+ * Form wide ADAM helper to get files, add folders etc.
+ * Must be created once per edit-form, as it needs the exact app etc.
+ */
 @Injectable()
 export class AdamService {
   constructor(
@@ -16,23 +20,26 @@ export class AdamService {
   ) {}
 
   getAll(url: string, config: AdamConfig) {
-    return this.http.get<AdamItem[]>(url + '/items', {
-      params: {
-        subfolder: config.subfolder,
-        usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.formConfig.config.appId,
-      },
-    });
+    return this.http.get<AdamItem[]>(
+      url + '/items',
+      {
+        params: {
+          subfolder: config.subfolder,
+          usePortalRoot: config.usePortalRoot.toString(),
+          appId: this.formConfig.config.appId,
+        },
+      }
+    );
   }
 
-  addFolder(newfolder: string, url: string, config: AdamConfig) {
+  addFolder(newFolderName: string, url: string, config: AdamConfig) {
     return this.http.post<AdamItem[]>(
       url + '/folder',
       {},
       {
         params: {
           subfolder: config.subfolder,
-          newFolder: SanitizeHelper.sanitizeName(newfolder),
+          newFolder: SanitizeHelper.sanitizeName(newFolderName),
           usePortalRoot: config.usePortalRoot.toString(),
           appId: this.formConfig.config.appId,
         },
@@ -41,28 +48,34 @@ export class AdamService {
   }
 
   rename(item: AdamItem, newName: string, url: string, config: AdamConfig) {
-    return this.http.get<boolean>(url + '/rename', {
-      params: {
-        subfolder: config.subfolder,
-        isFolder: item.IsFolder.toString(),
-        id: item.Id.toString(),
-        usePortalRoot: config.usePortalRoot.toString(),
-        newName: SanitizeHelper.sanitizeName(newName),
-        appId: this.formConfig.config.appId,
-      },
-    });
+    return this.http.get<boolean>(
+      url + '/rename',
+      {
+        params: {
+          subfolder: config.subfolder,
+          isFolder: item.IsFolder.toString(),
+          id: item.Id.toString(),
+          usePortalRoot: config.usePortalRoot.toString(),
+          newName: SanitizeHelper.sanitizeName(newName),
+          appId: this.formConfig.config.appId,
+        },
+      }
+    );
   }
 
   deleteItem(item: AdamItem, url: string, config: AdamConfig) {
-    return this.http.get<boolean>(url + '/delete', {
-      params: {
-        subfolder: config.subfolder,
-        isFolder: item.IsFolder.toString(),
-        id: item.Id.toString(),
-        usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.formConfig.config.appId,
-      },
-    });
+    return this.http.get<boolean>(
+      url + '/delete',
+      {
+        params: {
+          subfolder: config.subfolder,
+          isFolder: item.IsFolder.toString(),
+          id: item.Id.toString(),
+          usePortalRoot: config.usePortalRoot.toString(),
+          appId: this.formConfig.config.appId,
+        },
+      }
+    );
   }
 
   getLinkInfo(
