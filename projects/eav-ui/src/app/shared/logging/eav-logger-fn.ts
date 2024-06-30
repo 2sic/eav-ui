@@ -24,7 +24,7 @@ export class EavLoggerFn {
   }
 
   rNull(message?: string): null {
-    this.parent.a(`${this.fnName}/return NULL ${message}`, null);
+    this.parent.a(`${this.fnName}/return NULL ${message}`);
     return null;
   }
 }

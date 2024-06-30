@@ -12,6 +12,7 @@ import { EavLogger } from '../../logging/eav-logger';
 declare const window: EavWindow;
 
 const logThis = false;
+const nameOfThis = 'DialogEntryComponent';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -33,7 +34,7 @@ export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestr
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(new EavLogger('DialogEntryComponent', logThis));
+    super(new EavLogger(nameOfThis, logThis));
     const navigation = this.router.getCurrentNavigation();
     this.dialogData = navigation?.extras?.state || {};
   }

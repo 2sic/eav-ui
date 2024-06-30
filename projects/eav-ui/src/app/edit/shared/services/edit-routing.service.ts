@@ -1,7 +1,7 @@
-import { CreateEffectOptions, effect, Injectable, Injector, OnDestroy, signal, Signal, WritableSignal } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, pairwise, startWith, Subject } from 'rxjs';
 import { FormConfigService } from '.';
 import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
 import { BaseComponent } from '../../../shared/components/base.component';
@@ -14,6 +14,12 @@ import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
 import { toSignal } from '@angular/core/rxjs-interop';
 
+/**
+ * Special helper to handle opening / closing field-specific popups.
+ * E.g. the larger dialog on hyperlinks/files or entity-pickers.
+ * 
+ * Note: also seems to be involved in the version-dialog closing as well.
+ */
 @Injectable()
 export class EditRoutingService extends BaseComponent implements OnDestroy {
   private childFormResult$: Subject<ChildFormResult>;
@@ -23,8 +29,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private languageInstanceService: LanguageInstanceService,
-    private formConfig: FormConfigService,
-    private injector: Injector
+    private formConfig: FormConfigService
   ) {
     super();
   }
