@@ -35,7 +35,7 @@ import { MatDayjsDateAdapter } from './shared/date-adapters/date-adapter-api';
     ScriptsLoaderService,
     EntitiesService,
 
-    MatDayjsDateAdapter,
+    // MatDayjsDateAdapter,
 
     // @2dg, move in to dateTime component
     // { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },

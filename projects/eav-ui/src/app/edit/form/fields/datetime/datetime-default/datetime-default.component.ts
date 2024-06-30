@@ -36,7 +36,9 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     TranslateModule,
     OwlDayJsDateTimeModule,
   ],
-
+  providers: [
+    MatDayjsDateAdapter,
+  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {
