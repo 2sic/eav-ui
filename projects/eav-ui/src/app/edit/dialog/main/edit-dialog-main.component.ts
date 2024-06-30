@@ -63,11 +63,14 @@ import { FormDataService } from '../../shared/services/form-data.service';
     EditRoutingService,
     FormsStateService,
     FormulaDesignerService,
-    SourceService,
+    // 2dm: don't think it's used for real - except for in the create template, where it's referenced directly
+    // SourceService,
 
     // TODO: probably move to each picker component
     PickerTreeDataService,
     PickerTreeDataHelper,
+
+    LoadIconsService,
   ],
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {

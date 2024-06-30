@@ -1,39 +1,40 @@
 
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { SourceService } from '../code-editor/services/source.service';
-import { EntitiesService } from '../content-items/services/entities.service';
-import { Context } from '../shared/services/context';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { EditRoutingModule } from './edit-routing.module';
-import { AdamService, FormConfigService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
-import { MatDayjsDateAdapter } from './shared/date-adapters/date-adapter-api';
-
-
 
 @NgModule({
   imports: [
     // TODO:: Fix later, AppId from Context ist not correct, if remove the following component EditEntryComponent,
     // Managed Apps > Light Speed open the false App
-
     EditEntryComponent,
     EditRoutingModule,
-    RouterModule,
+    // 2dm- I think this doesn't have an effect, since it's already referenced in EditRoutingModule
+    // RouterModule,
     // @2dg New in app.Module, remove after Test
     // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
-
   ],
   providers: [
-    Context,
+    // Context,
+    // FormConfigService,
 
-    FormConfigService,
-    AdamService,
-    EntityService,
-    QueryService,
-    LoadIconsService,
-    SourceService,
-    ScriptsLoaderService,
-    EntitiesService,
+    // AdamService,
+
+    // 2dm - moved to entry component
+    // EntityService,
+    // QueryService,
+
+    // 2dm - moved to edit-dialog-main-component which is the only place it's used in...
+    // LoadIconsService,
+
+    // 2dm - I don't think this is ever used in the edit-module
+    // SourceService,
+
+    // @2dg note from 2dm - this must be unique per edit form - moved to edit-entry
+    // ScriptsLoaderService,
+
+    // this seems to be needed by the formula designer and metadata services - moved to formula only
+    // EntitiesService,
 
     // MatDayjsDateAdapter,
 
