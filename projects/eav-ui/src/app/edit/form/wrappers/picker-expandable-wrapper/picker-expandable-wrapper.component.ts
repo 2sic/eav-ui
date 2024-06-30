@@ -61,7 +61,7 @@ export class PickerExpandableWrapperComponent extends BaseComponent implements O
       .subscribe(isOpen => {
         console.log('2dm - subscribe isExpanded$', isOpen);
         this.dialogIsOpen.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen }, /* persist */ true);
+        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
       });
   }
 

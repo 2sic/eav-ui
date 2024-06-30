@@ -422,7 +422,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.forceRefreshSettings$.next();
   }
 
-  updateSetting(fieldName: string, update: Partial<FieldSettings>, persist?: boolean): void {
+  updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
     const props = this.latestFieldProps[fieldName];
     const newSettings = { ...props.settings, ...update };
     const newProps = {
@@ -431,9 +431,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     };
     this.fieldsProps$.next(newProps);
 
-    // Experimental: had trouble with the _isDialog property not being persisted
+    // Experimental: had trouble with the _isDialog / Collapsed properties not being persisted
     // since the latestFieldProps never had the value originally
-    if (persist)
-      this.latestFieldProps = newProps;
+    this.latestFieldProps = newProps;
   }
 }
