@@ -55,4 +55,13 @@ export class EavLogger {
   fn(name: string, message?: string, data?: Record<string, unknown>): EavLoggerFn {
     return new EavLoggerFn(this, name, message, data);
   }
+
+  /**
+   * Create a logger function that will only log if the condition is true
+   */
+  fnCond(condition: boolean, name: string, data?: Record<string, unknown>, message?: string): EavLoggerFn {
+    return condition
+      ? this.fn(name, message, data)
+      : new EavLogger('noop', false).fn('noop', 'noop', { condition });
+  }
 }
