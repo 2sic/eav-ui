@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
-import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
@@ -19,6 +18,7 @@ import { languagePermissionsDialog } from './sub-dialogs/language-permissions/la
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { CopilotSpecs } from './copilot/copilot-specs';
+import { EditRoutesSubItems, EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -51,14 +51,7 @@ const appAdministrationRoutes: Routes = [
             path: 'items/:contentTypeStaticName',
             loadChildren: () => import('../content-items/content-items.routing').then(m => m.contentItemsRoutes)
           },
-          {
-            matcher: editRouteMatcherSubEdit,
-            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
-          },
-          {
-            matcher: editRouteMatcherSubEditRefresh,
-            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
-          },
+          ...EditRoutesSubItems,
           {
             path: 'add',
             component: DialogEntryComponent,
@@ -125,11 +118,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: importQueryDialog, title: 'Import Query' }
           },
-          {
-            matcher: editRouteMatcherSubEdit,
-            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
-            data: { title: 'Edit Query Name and Description', history: false },
-          },
+          ...EditRoutesSubItemsNoHistory,
           ...GoToMetadata.getRoutes(),
           {
             ...GoToPermissions.route,
@@ -168,15 +157,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: viewsUsageDialog }
           },
-          {
-            matcher: editRouteMatcherSubEdit,
-            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
-            data: { title: 'Edit View' },
-          },
-          {
-            matcher: editRouteMatcherSubEditRefresh,
-            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
-          },
+          ...EditRoutesSubItems,
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
           ...GoToMetadata.getRoutes(),
         ],
@@ -227,15 +208,8 @@ const appAdministrationRoutes: Routes = [
         data: { title: 'Manage App', breadcrumb: "Manage App" },
         children: [
           ...GoToMetadata.getRoutes(),
-          {
-            matcher: editRouteMatcherSubEdit,
-            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
-            data: { title: 'Edit App Properties' },
-          },
-          {
-            matcher: editRouteMatcherSubEditRefresh,
-            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
-          },
+          // Edit App Properties / Settings / Resources
+          ...EditRoutesSubItems,
           {
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.routing').then(m => m.contentTypeFieldsRoutes),

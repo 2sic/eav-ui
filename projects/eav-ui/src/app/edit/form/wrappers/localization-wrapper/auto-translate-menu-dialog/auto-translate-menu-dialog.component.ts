@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
@@ -24,21 +24,21 @@ import { FeatureTextInfoComponent } from '../../../../../features/feature-text-i
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-    selector: 'app-auto-translate-menu-dialog',
-    templateUrl: './auto-translate-menu-dialog.component.html',
-    styleUrls: ['./auto-translate-menu-dialog.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        FeatureTextInfoComponent,
-        MatListModule,
-        NgClass,
-        ExtendedModule,
-        MatIconModule,
-        SharedComponentsModule,
-        AsyncPipe,
-        TranslateModule,
-    ],
+  selector: 'app-auto-translate-menu-dialog',
+  templateUrl: './auto-translate-menu-dialog.component.html',
+  styleUrls: ['./auto-translate-menu-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FeatureTextInfoComponent,
+    MatListModule,
+    NgClass,
+    ExtendedModule,
+    MatIconModule,
+    SharedComponentsModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
@@ -48,7 +48,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
   public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
 
   constructor(

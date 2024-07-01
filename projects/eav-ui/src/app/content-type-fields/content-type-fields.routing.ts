@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { contentTypeFieldsDialog } from './content-type-fields-dialog.config';
 import { editContentTypeFieldsDialog } from './edit-content-type-fields/edit-content-type-fields-dialog.config';
+import { EditRoutesSubItems } from '../edit/edit.routing';
 
 export const contentTypeFieldsRoutes: Routes = [
   {
@@ -24,14 +24,7 @@ export const contentTypeFieldsRoutes: Routes = [
       },
       ...GoToMetadata.getRoutes(),
       GoToPermissions.route,
-      {
-        matcher: editRouteMatcherSubEdit,
-        loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
-      },
-      {
-        matcher: editRouteMatcherSubEditRefresh,
-        loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
-      },
+      ...EditRoutesSubItems,
     ]
   }
 ];

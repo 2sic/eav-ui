@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
@@ -20,13 +19,12 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
 
-  public features: FeaturesService = new FeaturesService();
   private pasteImageEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
 
 
   constructor(
     private elementRef: ElementRef,
-    private featuresService: FeaturesService,
+    private features: FeaturesService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private dialog: MatDialog,

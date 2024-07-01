@@ -25,7 +25,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
 const nameOfThis = 'PickerSearchComponent';

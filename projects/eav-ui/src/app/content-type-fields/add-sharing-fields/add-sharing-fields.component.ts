@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { Field } from '../models/field.model';
@@ -62,7 +62,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   saving$ = new BehaviorSubject(false);
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService  = inject(FeaturesService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
 
   constructor(

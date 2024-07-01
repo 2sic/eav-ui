@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { editRouteMatcherRoot, editRouteMatcherRootRefresh } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
 import { Context } from '../shared/services/context';
+import { EditRoutesRoot } from '../edit/edit.routing';
 
 export const appsManagementRoutes: Routes = [
   {
@@ -56,14 +56,7 @@ export const appsManagementRoutes: Routes = [
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
           },
-          {
-            matcher: editRouteMatcherRoot,
-            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
-          },
-          {
-            matcher: editRouteMatcherRootRefresh,
-            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
-          },
+          ...EditRoutesRoot,
         ],
         data: { title: 'Apps in this Zone' , breadcrumb: 'Apps' },
       },

@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, computed, ElementRef, Input, OnDestroy, OnInit, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, computed, ElementRef, inject, Input, OnDestroy, OnInit, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -62,7 +62,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   noteTouched: boolean = false;
   viewModel$: Observable<ContentTypeViewModel>;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
   private editUiShowNotes = this.features.isEnabled(FeatureNames.EditUiShowNotes);
   private editUiShowMetadataFor = this.features.isEnabled(FeatureNames.EditUiShowMetadataFor);
 

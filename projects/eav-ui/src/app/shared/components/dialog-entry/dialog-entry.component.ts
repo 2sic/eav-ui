@@ -20,7 +20,9 @@ const nameOfThis = 'DialogEntryComponent';
   styleUrls: ['./dialog-entry.component.scss'],
   standalone: true,
   imports: [],
-  providers: [],
+  providers: [
+    Context,
+  ],
 })
 export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {
   private dialogData: Record<string, any>;

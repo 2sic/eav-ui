@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,7 +22,7 @@ import { MatDividerModule } from '@angular/material/divider';
   ],
 })
 export class AdamHintComponent {
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
   protected hideAdamSponsor = this.features.isEnabled(FeatureNames.NoSponsoredByToSic);
 
 }

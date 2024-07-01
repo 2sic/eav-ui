@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { Field } from '../models/field.model';
@@ -49,7 +49,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   shareableFields$ = new BehaviorSubject<Field[]>(undefined);
   viewModel$: Observable<ShareOrInheritDialogViewModel>;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService  = inject(FeaturesService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
 
   constructor(
