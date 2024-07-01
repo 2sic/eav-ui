@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { edit, refreshEdit } from '../edit/edit.matcher';
+import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
@@ -25,11 +25,11 @@ export const contentTypeFieldsRoutes: Routes = [
       ...GoToMetadata.getRoutes(),
       GoToPermissions.route,
       {
-        matcher: edit,
+        matcher: editRouteMatcherSubEdit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
       },
       {
-        matcher: refreshEdit,
+        matcher: editRouteMatcherSubEditRefresh,
         loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
       },
     ]

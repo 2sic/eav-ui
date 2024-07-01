@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { editRoot, refreshEditRoot } from '../edit/edit.matcher';
+import { editRouteMatcherRoot, editRouteMatcherRootRefresh } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
@@ -57,11 +57,11 @@ export const appsManagementRoutes: Routes = [
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
           },
           {
-            matcher: editRoot,
+            matcher: editRouteMatcherRoot,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
           },
           {
-            matcher: refreshEditRoot,
+            matcher: editRouteMatcherRootRefresh,
             loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
         ],

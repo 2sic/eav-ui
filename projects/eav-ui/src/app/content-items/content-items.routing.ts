@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { edit, refreshEdit } from '../edit/edit.matcher';
+import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
@@ -31,11 +31,11 @@ export const contentItemsRoutes: Routes = [
         data: { title: 'Import Items' },
       },
       {
-        matcher: edit,
+        matcher: editRouteMatcherSubEdit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
       },
       {
-        matcher: refreshEdit,
+        matcher: editRouteMatcherSubEditRefresh,
         loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
       },
     ]

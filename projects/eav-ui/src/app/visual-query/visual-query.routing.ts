@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
-import { edit } from '../edit/edit.matcher';
+import { editRouteMatcherSubEdit } from '../edit/edit.matcher';
 
 export const visualQueryRoutes: Routes = [
   {
@@ -9,7 +9,7 @@ export const visualQueryRoutes: Routes = [
     children: [
       GoToDevRest.route,
       {
-        matcher: edit,
+        matcher: editRouteMatcherSubEdit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
         data: { history: false },
       },

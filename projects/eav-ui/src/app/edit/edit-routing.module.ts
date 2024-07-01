@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { editDialog } from './edit-dialog.config';
-import { edit, refreshEdit } from './edit.matcher';
+import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from './edit.matcher';
 import { EavLogger } from '../shared/logging/eav-logger';
 
 const logThis = true;
@@ -14,7 +14,7 @@ export const EditRoutes: Routes = [
     data: { dialog: editDialog },
     children: [
       {
-        matcher: edit,
+        matcher: editRouteMatcherSubEdit,
         loadChildren: () => {
           // Recursively use these routes again.
           logger.a('loadChildren - matcher: edit');
@@ -22,7 +22,7 @@ export const EditRoutes: Routes = [
         },
       },
       {
-        matcher: refreshEdit,
+        matcher: editRouteMatcherSubEditRefresh,
         loadChildren: () => import('./refresh-edit.module').then(m => m.RefreshEditModule)
       },
       {

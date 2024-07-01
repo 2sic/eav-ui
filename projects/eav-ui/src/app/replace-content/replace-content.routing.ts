@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { edit } from '../edit/edit.matcher';
+import { editRouteMatcherSubEdit } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { replaceContentDialog } from './replace-content-dialog.config';
 
@@ -10,7 +10,7 @@ export const replaceContentRoutes: Routes = [
     data: { dialog: replaceContentDialog },
     children: [
       {
-        matcher: edit,
+        matcher: editRouteMatcherSubEdit,
         loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
         data: { history: false },
       },

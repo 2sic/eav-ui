@@ -10,7 +10,7 @@ const logger = new EavLogger('EditRouteMatchers', logThis);
  * ':zoneId/:appId/edit/:items/details/:detailsEntityGuid/:detailsFieldId'
  * ':zoneId/:appId/edit/:items/update/:updateEntityGuid/:updateFieldId'
  */
-export function editRoot(url: UrlSegment[]): UrlMatchResult {
+export function editRouteMatcherRoot(url: UrlSegment[]): UrlMatchResult {
   const l = logger.fn('editRoot', 'check', { url });
   if (url.length < 4) return l.rNull();
   if (url[2].path !== 'edit') return l.rNull();
@@ -31,7 +31,7 @@ export function editRoot(url: UrlSegment[]): UrlMatchResult {
 }
 
 /** ':zoneId/:appId/edit/refresh/:items' */
-export function refreshEditRoot(url: UrlSegment[]): UrlMatchResult {
+export function editRouteMatcherRootRefresh(url: UrlSegment[]): UrlMatchResult {
   const l = logger.fn('refreshEditRoot', 'check', { url });
   if (url.length < 5) return l.rNull();
   if (url[2].path !== 'edit' || url[3].path !== 'refresh') { return null; }
@@ -52,7 +52,7 @@ export function refreshEditRoot(url: UrlSegment[]): UrlMatchResult {
  * 'edit/:items/details/:detailsEntityGuid/:detailsFieldId'
  * 'edit/:items/update/:updateEntityGuid/:updateFieldId'
  */
-export function edit(url: UrlSegment[]): UrlMatchResult {
+export function editRouteMatcherSubEdit(url: UrlSegment[]): UrlMatchResult {
   const l = logger.fn('edit', 'check', { url });
   if (url.length < 2) return l.rNull();
   if (url[0].path !== 'edit') return l.rNull();
@@ -71,7 +71,7 @@ export function edit(url: UrlSegment[]): UrlMatchResult {
 }
 
 /** 'edit/refresh/:items' */
-export function refreshEdit(url: UrlSegment[]): UrlMatchResult {
+export function editRouteMatcherSubEditRefresh(url: UrlSegment[]): UrlMatchResult {
   const l = logger.fn('refreshEdit', 'check', { url });
   if (url.length < 3) return l.rNull();
   if (url[0].path !== 'edit' || url[1].path !== 'refresh') return l.rNull();

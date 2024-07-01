@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
-import { edit, refreshEdit } from '../edit/edit.matcher';
+import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
@@ -52,11 +52,11 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-items/content-items.routing').then(m => m.contentItemsRoutes)
           },
           {
-            matcher: edit,
+            matcher: editRouteMatcherSubEdit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
           },
           {
-            matcher: refreshEdit,
+            matcher: editRouteMatcherSubEditRefresh,
             loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           {
@@ -126,7 +126,7 @@ const appAdministrationRoutes: Routes = [
             data: { dialog: importQueryDialog, title: 'Import Query' }
           },
           {
-            matcher: edit,
+            matcher: editRouteMatcherSubEdit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
@@ -169,12 +169,12 @@ const appAdministrationRoutes: Routes = [
             data: { dialog: viewsUsageDialog }
           },
           {
-            matcher: edit,
+            matcher: editRouteMatcherSubEdit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit View' },
           },
           {
-            matcher: refreshEdit,
+            matcher: editRouteMatcherSubEditRefresh,
             loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
@@ -228,12 +228,12 @@ const appAdministrationRoutes: Routes = [
         children: [
           ...GoToMetadata.getRoutes(),
           {
-            matcher: edit,
+            matcher: editRouteMatcherSubEdit,
             loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit App Properties' },
           },
           {
-            matcher: refreshEdit,
+            matcher: editRouteMatcherSubEditRefresh,
             loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           {
