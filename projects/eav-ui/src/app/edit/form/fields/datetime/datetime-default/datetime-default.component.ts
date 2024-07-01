@@ -22,7 +22,7 @@ import { DatePipe } from '@angular/common';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'DateTimeDefaultComponent';
 
 @Component({
@@ -64,6 +64,9 @@ export class DatetimeDefaultComponent {
 
   log = new EavLogger(nameOfThis, logThis);
 
+  /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
+  valueForTimePicker = computed(() => this.controlStatus().value?.replace('Z', ''), SignalHelpers.stringEquals);
+
   constructor(
     private translate: TranslateService,
     private matDayjsDateAdapter: MatDayjsDateAdapter,
@@ -75,7 +78,6 @@ export class DatetimeDefaultComponent {
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
-    // this.owlDayjsDateAdapter.
     DateTimeDefaultLogic.importMe();
   }
 
