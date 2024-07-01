@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
@@ -67,7 +67,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   private loading$: BehaviorSubject<boolean>;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService  = inject(FeaturesService);
   protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
 

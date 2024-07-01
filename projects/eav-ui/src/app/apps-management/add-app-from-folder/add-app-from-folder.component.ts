@@ -1,8 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostBinding, OnDestroy, OnInit, inject } from "@angular/core";
 import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -48,7 +48,7 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
 
   viewModel$: Observable<AddAppFromFolderViewModel>;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
   private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
   constructor(

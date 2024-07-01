@@ -1,15 +1,12 @@
-import { Component, Input, signal } from '@angular/core';
-import { App } from '../../apps-management/models/app.model';
+import { Component, Input, inject } from '@angular/core';
 import { LightSpeedInfo } from '../../apps-management/models/LightSpeedInfo';
 import { LightSpeedActionsParams } from './lightspeed-actions.models';
 import { MatRippleModule } from '@angular/material/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
-import { View } from '../../app-administration/models';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
-import { take } from 'rxjs';
 
 /**
  * LightSpeedActionsComponent
@@ -36,7 +33,7 @@ export class LightSpeedActionsComponent {
 
   @Input({ required: true }) lightSpeed: LightSpeedInfo | null;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
   protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed)
 
   constructor() {}

@@ -82,7 +82,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   private url: string;
   private firstFetch = true;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
   public isPasteImageFromClipboardEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
 
   constructor(

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
@@ -51,7 +51,9 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     RouterOutlet,
     AsyncPipe,
   ],
-  providers: [FeatureDetailService ],
+  providers: [
+    FeatureDetailService
+  ],
 })
 export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
@@ -71,7 +73,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   public appStateAdvanced = false;
 
-  public features: FeaturesService = new FeaturesService();
+  public features: FeaturesService = inject(FeaturesService);
 
   protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
