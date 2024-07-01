@@ -42,7 +42,6 @@ import { translateLoaderFactory } from './shared/translation/translate-loader-fa
 
     // Remove after Test
     // MatSnackBarModule,
-    // MatDayjsDateModule,
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
