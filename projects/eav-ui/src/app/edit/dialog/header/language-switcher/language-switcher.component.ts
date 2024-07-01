@@ -1,17 +1,18 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, computed } from '@angular/core';
 import { Language } from '../../../shared/models';
 import { FormConfigService } from '../../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../../shared/store/ngrx-data';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageButtons } from './language-switcher.helpers';
-import { LanguageSwitcherViewModel } from './language-switcher.models';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 import { TranslateModule } from '@ngx-translate/core';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'LanguageSwitcherComponent';
 
 @Component({
   selector: 'app-language-switcher',
@@ -21,21 +22,25 @@ import { SharedComponentsModule } from '../../../../shared/shared-components.mod
   imports: [
     SharedComponentsModule,
     MatButtonModule,
-    AsyncPipe,
     TranslateModule,
   ],
 })
-export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
   @Input() disabled: boolean;
 
-  viewModel$: Observable<LanguageSwitcherViewModel>;
-
   private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
   private showShadowsHelper: ShowShadowsHelper;
+
+  private log = new EavLogger(nameOfThis, logThis);
+
+  private _languages = this.languageInstanceService.getLanguageSignal(this.formConfig.config.formId);
+  current = computed(() => this._languages().current);
+
+  buttons = getLanguageButtons(this.languageService.getLanguages());
 
   constructor(
     private languageService: LanguageService,
@@ -43,21 +48,6 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
     private ngZone: NgZone,
     private formConfig: FormConfigService,
   ) { }
-
-  ngOnInit() {
-    const language$ = this.languageInstanceService.getLanguage$(this.formConfig.config.formId);
-    const languageButtons$ = this.languageService.getLanguages$().pipe(map(langs => getLanguageButtons(langs)));
-
-    this.viewModel$ = combineLatest([language$, languageButtons$]).pipe(
-      map(([currentLanguage, languageButtons]) => {
-        const viewModel: LanguageSwitcherViewModel = {
-          current: currentLanguage.current,
-          languageButtons,
-        };
-        return viewModel;
-      }),
-    );
-  }
 
   ngAfterViewInit() {
     this.showShadowsHelper = new ShowShadowsHelper(
@@ -81,12 +71,11 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   lngButtonClick(event: MouseEvent, language: Language) {
-    if (this.disabled) { return; }
+    if (this.disabled) return;
     this.centerSelectedHelper.lngButtonClick(event);
 
-    if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
+    if (!this.centerSelectedHelper.stopClickIfMouseMoved())
       this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
-    }
   }
 
   private areButtonsDisabled() {
