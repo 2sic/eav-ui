@@ -3,7 +3,7 @@ import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, tap } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { consoleLogDev } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
@@ -33,7 +33,6 @@ import { EditDialogHeaderComponent } from '../header/edit-dialog-header.componen
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
-import { SourceService } from '../../../code-editor/services/source.service';
 import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';

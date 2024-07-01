@@ -1,14 +1,24 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { delay, distinct, distinctUntilChanged, filter, fromEvent, map, merge, pairwise } from 'rxjs';
+import { delay, distinctUntilChanged, filter, fromEvent, map, merge, pairwise, tap } from 'rxjs';
 import { FormConfigService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 import { BaseDirective } from '../../../shared/directives/base.directive';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FormSlideDirective';
+
+const classNext = 'next';
+const classPrevious = 'previous';
+const animationNames = ['move-next', 'move-previous'];
 
 @Directive({
-    selector: '[appFormSlide]',
-    standalone: true
+  selector: '[appFormSlide]',
+  standalone: true
 })
 export class FormSlideDirective extends BaseDirective implements OnInit, OnDestroy {
+
+  log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
@@ -17,34 +27,43 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
     private formConfig: FormConfigService,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
+    const l = this.log.fn('ngOnInit');
+    const languages = this.languageService.getLanguages();
+    const nativeElement = this.elementRef.nativeElement;
     this.subscriptions.add(
       merge(
+        // emit 'next' and 'previous' slide direction based on language change
         this.languageInstanceService.getLanguage$(this.formConfig.config.formId).pipe(
           map(language => language.current),
           distinctUntilChanged(),
           pairwise(),
           map(([previousLang, currentLang]) => {
-            const languages = this.languageService.getLanguages();
-            const previousLangIndex = languages.findIndex(lang => lang.NameId === previousLang);
-            const currentLangIndex = languages.findIndex(lang => lang.NameId === currentLang);
-            const slide = (previousLangIndex > currentLangIndex) ? 'previous' : 'next';
+            l.a('toggle', { previousLang, currentLang });
+            const prevIndex = languages.findIndex(lang => lang.NameId === previousLang);
+            const currentIndex = languages.findIndex(lang => lang.NameId === currentLang);
+            const slide = (prevIndex > currentIndex) ? classPrevious : classNext;
+            l.a('slide', { prevIndex, currentIndex, slide });
             return slide;
           }),
         ),
-        fromEvent<AnimationEvent>(this.elementRef.nativeElement, 'animationend').pipe(
-          filter(event => event.animationName === 'move-next' || event.animationName === 'move-previous'),
+        // emit '' to stop the slide animation
+        fromEvent<AnimationEvent>(nativeElement, 'animationend').pipe(
+          filter(event => animationNames.find(an => event.animationName.endsWith(an)) !== undefined),
           map(() => ''),
           delay(0), // small delay because animationend fires a bit too early
         ),
       ).subscribe(slide => {
+        const classList = nativeElement.classList;
         if (slide === '') {
-          this.elementRef.nativeElement.classList.remove('previous');
-          this.elementRef.nativeElement.classList.remove('next');
+          l.a('stop-slide');
+          classList.remove(classNext);
+          classList.remove(classPrevious);
         } else {
-          this.elementRef.nativeElement.classList.add(slide);
+          l.a(`start-slide to '${slide}'`);
+          classList.add(slide);
         }
       })
     );
