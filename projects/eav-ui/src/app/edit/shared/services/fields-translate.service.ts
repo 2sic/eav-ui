@@ -40,7 +40,7 @@ export class FieldsTranslateService {
     l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }
 
-  translate(fieldName: string, isTransaction = false /* ATM always false */, transactionItem?: EavItem /* ATM always undefined */): EavItem {
+  translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     const l = this.log.fn('translate', '', { fieldName, isTransaction, transactionItem });
     
     if (this.isTranslationDisabled(fieldName))
@@ -51,7 +51,7 @@ export class FieldsTranslateService {
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
-    const doesFieldHaveExistingDimension = values.Values.find(v => v.Dimensions.find(x => x.Value === language.current)) !== undefined;
+    const doesFieldHaveExistingDimension = LocalizationHelpers.findOfExactDimension(values.Values, language.current) !== undefined;
     const defaultValue = LocalizationHelpers.getValueTranslation(values, FormLanguage.bothPrimary(language));
     if (!doesFieldHaveExistingDimension) 
       return l.r(this.addItemAttributeValueHelper(fieldName, defaultValue.Value, language.current, false));
@@ -82,18 +82,18 @@ export class FieldsTranslateService {
     const language = this.formConfig.language();
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
+    // Filter out fields that have translation disabled
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
-    const textsForTranslation = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
-    const doFieldsHaveExistingDimension = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === language.current)) !== undefined);
+    const textsForTranslation = fieldNames.map(field => LocalizationHelpers.findOfExactDimension(attributes[field].Values, autoTranslateLanguageKey).Value);
+    const doFieldsHaveExistingDimension = fieldNames.map(field => LocalizationHelpers.findOfExactDimension(attributes[field].Values, language.current) !== undefined);
 
-    if (!areAllChecksKnown) {
+    if (!areAllChecksKnown)
       fieldNames.forEach((field, i) => {
+        const currentText = textsForTranslation[i];
         const isAutoTranslationEnabledButWasDisabledByDefault = this.isAutoTranslationEnabledButWasDisabledByDefault(field);
-        if (textsForTranslation[i] == null || textsForTranslation[i] === '' || isAutoTranslationEnabledButWasDisabledByDefault) {
+        if (currentText == null || currentText === '' || isAutoTranslationEnabledButWasDisabledByDefault)
           this.translate(field);
-        }
       });
-    }
 
     const translationData = {
       q: textsForTranslation,
@@ -145,22 +145,20 @@ export class FieldsTranslateService {
   }
 
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
-    if (this.isTranslationDisabled(fieldName)) return;
-
-    const language = this.formConfig.language();
-    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
-    this.itemService.addItemAttributeDimension(
-      this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, true, transactionItem,
-    );
+    this.linkToOtherField(fieldName, linkWithLanguageKey, true);
   }
 
   linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
+    return this.linkToOtherField(fieldName, linkWithLanguageKey, false);
+  }
+
+  private linkToOtherField(fieldName: string, linkWithLanguageKey: string, isReadOnly: boolean): void {
     if (this.isTranslationDisabled(fieldName)) return;
 
     const language = this.formConfig.language();
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
-      this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, false, transactionItem,
+      this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, isReadOnly, transactionItem,
     );
   }
 
@@ -199,7 +197,7 @@ export class FieldsTranslateService {
     const canTranslateWithEmpty = this.findAutoTranslatableFields().filter(x => !cantTranslateAndEmpty.includes(x));
     // separate fields that have auto-translate enabled and are empty
     canTranslateWithEmpty.forEach(fieldName => {
-      const value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey))?.Value;
+      const value = LocalizationHelpers.findOfExactDimension(attributes[fieldName].Values, autoTranslateLanguageKey)?.Value;
       if (value !== '' && value != null && value !== undefined)
         canTranslate.push(fieldName);
       // this is commented out because future edits on fields should automatically be passed to the other languages

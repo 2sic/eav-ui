@@ -19,7 +19,7 @@ export function getTemplateLanguages(
     .map(lang => {
       const values = attributes[config.fieldName];
       const disabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
-        || !LocalizationHelpers.hasEditableTranslation(values, FormLanguage.diffCurrent(language, lang.NameId));
+        || !LocalizationHelpers.hasEditableValue(values, FormLanguage.diffCurrent(language, lang.NameId));
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: lang.NameId,
         disabled,
@@ -39,21 +39,22 @@ export function getTemplateLanguagesWithContent(
   const templateLanguages = languages
     .filter(lang => lang.NameId !== language.current)
     .map(lang => {
-      let noTranslatableFields: number = 0;
-      let noTranslatableFieldsThatHaveContent: number = 0;
+      let countTranslatableFields: number = 0;
+      let countTranslatableFieldsWithContent: number = 0;
       let isDisabled: boolean = false;
+      const langDefToUse = FormLanguage.diffCurrent(language, lang.NameId);
       translatableFields.forEach(field => {
         const values = attributes[field];
-        noTranslatableFields += LocalizationHelpers.noEditableTranslationFields(values, lang.NameId, language.primary);
-        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslatableFieldsWithContent(values, lang.NameId, language.primary);
+        countTranslatableFields += LocalizationHelpers.countEditableValues(values, langDefToUse);
+        countTranslatableFieldsWithContent += LocalizationHelpers.countEditableValuesWithContent(values, langDefToUse);
         isDisabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
-          || noTranslatableFields == 0;
+          || countTranslatableFields == 0;
       });
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: lang.NameId,
         disabled: isDisabled,
-        noTranslatableFields,
-        noTranslatableFieldsThatHaveContent,
+        noTranslatableFields: countTranslatableFields,
+        noTranslatableFieldsThatHaveContent: countTranslatableFieldsWithContent,
       };
       return templateLanguage;
     });
