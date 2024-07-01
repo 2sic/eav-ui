@@ -5,7 +5,6 @@ import { MAT_DAYJS_DATE_FORMATS } from './mat-dayjs-date-formats';
 import { OWL_DATE_TIME_FORMATS } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS } from '@danielmoncada/angular-datetime-picker-dayjs-adapter';
 
-
 const OWL_DAYJS_FORMATS = {
   parseInput: 'l LT',
   fullPickerInput: 'l LT',

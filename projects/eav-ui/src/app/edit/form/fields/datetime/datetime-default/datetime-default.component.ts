@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { MatDayjsDateAdapter } from '../../../../shared/date-adapters/date-adapter-api'
+import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule } from '../../../../shared/date-adapters/date-adapter-api'
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
@@ -35,9 +35,11 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     FieldHelperTextComponent,
     TranslateModule,
     OwlDayJsDateTimeModule,
+    MatDayjsModule,
   ],
   providers: [
     MatDayjsDateAdapter,
+
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
@@ -67,8 +69,11 @@ export class DatetimeDefaultComponent {
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
+    // @2dg old code, remove after test and verify from 2dm
     // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
-    const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
+    // const newValue = event.value != null ? event.value.utc(false).toJSON() : null;
+
+    const newValue = event.value != null ? event.value.toJSON() : null;
     ControlHelpers.patchControlValue(this.control, newValue);
   }
 }
