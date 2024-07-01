@@ -60,7 +60,8 @@ export class EavLogger {
    * Create a logger function that will only log if the condition is true
    */
   fnCond(condition: boolean, name: string, data?: Record<string, unknown>, message?: string): EavLoggerFn {
-    return condition
+    // create real logger if condition is true, or if this logger is disabled anyhow
+    return condition || !this.enabled
       ? this.fn(name, message, data)
       : new EavLogger('noop', false).fn('noop', 'noop', { condition });
   }

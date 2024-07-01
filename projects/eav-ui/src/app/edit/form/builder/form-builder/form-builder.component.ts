@@ -16,6 +16,10 @@ import { EntityWrapperComponent } from '../entity-wrapper/entity-wrapper.compone
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { EntityFormStateService } from '../../entity-form-state.service';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FormBuilderComponent';
 
 @Component({
   selector: 'app-form-builder',
@@ -46,6 +50,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
   /** Inject the form state service, but automatically add the form for later use */
   private formStateService = inject(EntityFormStateService).setup(this.form);
 
+  log = new EavLogger(nameOfThis, logThis);
+
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -66,7 +72,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
     this.subscriptions.add(
       this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
-        // 1. create missing controls
+        // 1. create missing controls - usually just on first cycle
+        this.log.a('create missing controls');
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const inputType = fieldProps.calculatedInputType.inputType;
 
@@ -76,12 +83,11 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           if (form.controls.hasOwnProperty(fieldName))
             continue;
 
-          if (inputType === InputTypeConstants.StringWysiwyg) {
-            if (fieldProps.value != '' && fieldProps.value != null && fieldProps.value != undefined) {
-              const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
-              const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
-              fieldProps.value = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(fieldProps.value, adamItems);
-            }
+          // Special treatment for wysiwyg fields
+          if (inputType === InputTypeConstants.StringWysiwyg && fieldProps.value) {
+            const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
+            const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
+            fieldProps.value = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(fieldProps.value, adamItems);
           }
 
           const value = fieldProps.value;
@@ -93,7 +99,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           ValidationHelpers.ensureWarning(form.controls[fieldName]);
         }
 
-        // 2. sync values
+        // 2. sync values - create list comparing the old raw values and new fieldProps
+        this.log.a('sync values');
         const oldValues: FormValues = form.getRawValue();
         const newValues: FormValues = {};
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
@@ -103,6 +110,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         const changes = ControlHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
+          this.log.a('patching form as it changed', { changes, oldValues, newValues })
           // controls probably don't need to set touched and dirty for this kind of update.
           // This update usually happens for language change, formula or updates on same entity in another Edit Ui.
           // In case controls should be updated, update with control.markAsTouched and control.markAsDirty.
@@ -111,6 +119,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         }
 
         // 3. sync disabled
+        this.log.a('sync disabled');
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           if (!form.controls.hasOwnProperty(fieldName)) continue;
           const control = form.controls[fieldName];
@@ -120,10 +129,10 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         }
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
+        this.log.a('run validators');
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           if (!form.controls.hasOwnProperty(fieldName)) continue;
-          const control = form.controls[fieldName];
-          control.updateValueAndValidity();
+          form.controls[fieldName].updateValueAndValidity();
         }
       })
     );

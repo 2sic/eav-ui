@@ -12,7 +12,7 @@ import { ContentTypeService, ItemService } from '../store/ngrx-data';
 import { FormLanguage } from '../models/form-languages.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsTranslateService';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;

@@ -6,11 +6,16 @@ import { BasicControlSettings } from 'projects/edit-types/src/BasicControlSettin
 import { FieldConfigSet } from './field-config-set.model';
 import { FieldState } from './field-state';
 import { EntityFormStateService } from '../../entity-form-state.service';
-import { CalculatedInputType, ControlStatus, controlToControlStatus } from '../../../shared/models';
+import { CalculatedInputType, ControlStatus, controlToControlStatus, emptyControlStatus } from '../../../shared/models';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { combineLatest, distinctUntilChanged, map, tap } from 'rxjs';
 
+const logThis = false;
+const nameOfThis = 'FieldInjectorService';
+const logDetailsOnFields = ['Boolean'];
 /**
  * This service creates custom injectors for each field.
  * It's used in the fields-builder to initialize dynamic controls.
@@ -25,11 +30,18 @@ export class FieldInjectorService {
   private entityForm = inject(EntityFormStateService);
   private group = this.entityForm.formGroup();
 
+  log = new EavLogger(nameOfThis, logThis);
+
   constructor() { }
 
   public getInjectors(fieldConfig: FieldConfigSet, inputType: CalculatedInputType) {
-    // Create settings() and basics() signal for further use
+    const l = this.log.fn('getInjectors');
     const fieldName = fieldConfig.fieldName;
+
+    // Conditional logger for detailed logging
+    const lDetailed = this.log.fnCond(logDetailsOnFields.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
+
+    // Create settings() and basics() signal for further use
     const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
     let settings: Signal<FieldSettings>;
     runInInjectionContext(this.injector, () => {
@@ -41,18 +53,26 @@ export class FieldInjectorService {
     const control = this.group.controls[fieldName];
     let controlStatusChangeSignal: Signal<ControlStatus<unknown>>;
 
-    // if (fieldName === 'Icon')
-    //   console.log('2dg - FieldInjectorService.getInjectors - control:', control);
-
     // Create a signal to watch for value changes
     // Note: 2dm is not sure if this is a good thing to provide, since it could be misused
     // This signal spreads value changes even if they don't spread to the state/store
     // so we must be careful with what we do with it
     if (control) {
       runInInjectionContext(this.injector, () => {
-        controlStatusChangeSignal = toSignal(control.valueChanges.pipe(
-          mapUntilObjChanged(_ => controlToControlStatus(control)
-        )), { initialValue: controlToControlStatus(control) });
+        // disabled can be caused by settings in addition to the control status
+        // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
+        const disabled$ = settings$.pipe(map(s => s.Disabled || s.ForcedDisabled), distinctUntilChanged(RxHelpers.boolEquals));
+        const controlStatus$ = combineLatest([control.valueChanges, disabled$]).pipe(
+          tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
+          mapUntilObjChanged(([_, disabled]) => controlToControlStatus(control, disabled)),
+          tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
+        );
+
+        // Settings to build the initial controlStatus
+        const s = settings();
+        controlStatusChangeSignal = toSignal(controlStatus$, {
+          initialValue: controlToControlStatus(control, s.Disabled || s.ForcedDisabled)
+        });
       });
     } else {
       // No control found - could be a problem, could be expected
@@ -60,7 +80,7 @@ export class FieldInjectorService {
       if (!EmptyFieldHelpers.isEmptyField(inputType)) {
         console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
         // try to have a temporary result, so that in most cases it won't just fail
-        controlStatusChangeSignal = signal({ value: null, disabled: true, dirty: false, invalid: false, touched: false, touchedAndInvalid: false } satisfies ControlStatus<unknown>);
+        controlStatusChangeSignal = signal(emptyControlStatus);
       }
     }
 
@@ -94,6 +114,6 @@ export class FieldInjectorService {
       'FieldEnvInjector'
     );
 
-    return { injector, environmentInjector, fieldState };
+    return l.r({ injector, environmentInjector, fieldState });
   }
 }
