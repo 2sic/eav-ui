@@ -102,15 +102,13 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$.next(newTranslationState);
   }
 
-  save(): void {
+  run(): void {
     const newState = this.translationState$.value;
     const oldState = this.dialogData.translationState;
 
-    const isEqual = oldState.linkType === newState.linkType && oldState.language === newState.language;
-    if (isEqual) {
-      this.closeDialog();
-      return;
-    }
+    const noChange = oldState.linkType === newState.linkType && oldState.language === newState.language;
+    if (noChange)
+      return this.closeDialog();
 
     switch (newState.linkType) {
       case TranslationLinks.Translate:

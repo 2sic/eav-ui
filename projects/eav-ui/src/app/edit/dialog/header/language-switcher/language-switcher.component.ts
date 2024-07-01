@@ -73,8 +73,9 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     if (this.disabled) return;
     this.centerSelectedHelper.lngButtonClick(event);
 
-    if (!this.centerSelectedHelper.stopClickIfMouseMoved())
+    if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
       this.languageInstanceService.setCurrent(this.formConfig.config.formId, language.NameId);
+    }
   }
 
   private areButtonsDisabled() {

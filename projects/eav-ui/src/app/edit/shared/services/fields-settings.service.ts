@@ -25,6 +25,8 @@ import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
 const logThis = false;
+const nameOfThis = 'FieldsSettingsService';
+// const logOnlyFields = ['Boolean'];
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
@@ -46,7 +48,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private entityGuid: string;
   private entityId: number;
 
-
   constructor(
     private contentTypeService: ContentTypeService,
     private contentTypeItemService: ContentTypeItemService,
@@ -60,7 +61,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     private formItemFormulaService: FormItemFormulaService,
     private formulaPromiseHandler: FormulaPromiseHandler,
   ) {
-    super(new EavLogger('FieldsSettingsService', logThis));
+    super(new EavLogger(nameOfThis, logThis));
     formulaPromiseHandler.init(this);
     formItemFormulaService.init(this.itemService);
     formulaEngine.init(this, this.formulaPromiseHandler, this.contentTypeSettings$);

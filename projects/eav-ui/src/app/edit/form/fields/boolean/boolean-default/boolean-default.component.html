@@ -1,5 +1,9 @@
 <div [formGroup]="group">
   <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
+    <div>
+      debug disabled: {{ controlStatus().disabled }} <br>
+      on form group: {{ fieldState.group.controls["Boolean"].disabled }} <br>
+    </div>
     <mat-slide-toggle
       [checked]="checkedState()"
       [disabled]="controlStatus().disabled"

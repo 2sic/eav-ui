@@ -70,9 +70,11 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const inputType = fieldProps.calculatedInputType.inputType;
 
-          if (EmptyFieldHelpers.isEmptyInputType(inputType)) continue;
+          if (EmptyFieldHelpers.isEmptyInputType(inputType))
+            continue;
 
-          if (form.controls.hasOwnProperty(fieldName)) continue;
+          if (form.controls.hasOwnProperty(fieldName))
+            continue;
 
           if (inputType === InputTypeConstants.StringWysiwyg) {
             if (fieldProps.value != '' && fieldProps.value != null && fieldProps.value != undefined) {

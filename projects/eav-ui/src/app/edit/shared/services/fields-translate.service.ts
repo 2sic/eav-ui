@@ -40,32 +40,32 @@ export class FieldsTranslateService {
     l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }
 
-  translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
+  translate(fieldName: string, isTransaction = false /* ATM always false */, transactionItem?: EavItem /* ATM always undefined */): EavItem {
     const l = this.log.fn('translate', '', { fieldName, isTransaction, transactionItem });
     
     if (this.isTranslationDisabled(fieldName))
       return l.rNull('Translation is disabled for this field.');
 
     const language = this.formConfig.language();
-    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true, transactionItem);
+    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
     const doesFieldHaveExistingDimension = values.Values.find(v => v.Dimensions.find(x => x.Value === language.current)) !== undefined;
     const defaultValue = LocalizationHelpers.getValueTranslation(values, FormLanguage.bothPrimary(language));
     if (!doesFieldHaveExistingDimension) 
-      return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, language.current, false);
+      return l.r(this.addItemAttributeValueHelper(fieldName, defaultValue.Value, language.current, false));
     else
       return l.rNull();
   }
 
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
-    if (this.isTranslationDisabled(fieldName)) return;
+    const l = this.log.fn('dontTranslate', '', { fieldName, isTransaction, transactionItem });
+    if (this.isTranslationDisabled(fieldName))
+      return l.rNull('Translation is disabled for this field.');
 
     const language = this.formConfig.language();
-    transactionItem = this.itemService.removeItemAttributeDimension(
-      this.entityGuid, fieldName, language.current, isTransaction, transactionItem,
-    );
+    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
     return transactionItem;
   }
 

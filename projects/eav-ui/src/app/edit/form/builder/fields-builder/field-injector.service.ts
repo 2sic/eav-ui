@@ -81,19 +81,19 @@ export class FieldInjectorService {
     ];
 
     // Component injector, not actually sure if it's used, because standalone only use environmentInjector AFAIK
-    const componentInjector = Injector.create({
+    const injector = Injector.create({
       providers: providers,
       parent: this.injector,
       name: 'FieldInjector',
     });
 
     // Environment injector
-    const newEnvInjector = createEnvironmentInjector(
+    const environmentInjector = createEnvironmentInjector(
       providers,
       this.envInjector,
       'FieldEnvInjector'
     );
 
-    return { injector: componentInjector, environmentInjector: newEnvInjector };
+    return { injector, environmentInjector, fieldState };
   }
 }
