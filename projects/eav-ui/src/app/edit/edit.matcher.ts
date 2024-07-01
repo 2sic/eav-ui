@@ -2,7 +2,7 @@ import { UrlMatchResult, UrlSegment } from '@angular/router';
 import { EditPosParams } from './edit-matcher.models';
 import { EavLogger } from '../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const logger = new EavLogger('EditRouteMatchers', logThis);
 
 /**
