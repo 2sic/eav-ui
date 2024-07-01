@@ -164,23 +164,23 @@ export class ItemService extends BaseDataService<EavItem> {
 
   removeItemAttributeDimension(
     entityGuid: string,
-    attributeKey: string,
-    currentLanguage: string,
-    isTransaction = false,
+    fieldName: string,
+    current: string,
+    delayUpsert = false,
     transactionItem?: EavItem,
   ): EavItem {
-    const l = this.log.fn('removeItemAttributeDimension', '', { entityGuid, attributeKey, currentLanguage, isTransaction, transactionItem });
+    const l = this.log.fn('removeItemAttributeDimension', '', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
     const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, currentLanguage),
+        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, fieldName, current),
       }
     };
 
-    if (!isTransaction)
+    if (!delayUpsert)
       this.updateOneInCache(newItem);
     return l.r(newItem);
   }

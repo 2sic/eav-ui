@@ -198,7 +198,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
-    const language = this.formConfig.language(); //this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
     const isCreateMode = eavConfig.createMode;
@@ -226,10 +226,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         if (languages.length === 0) {
           l.a(`${currentName} languages none, simple init`);
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
-          if (logic.isValueEmpty(firstValue, isCreateMode)) {
-          // if (InputFieldHelpers.isValueEmpty(firstValue, this.eavService)) {
+          if (logic.isValueEmpty(firstValue, isCreateMode))
             this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
-          }
         } else {
           l.a(`${currentName} languages many, complex init`);
 
