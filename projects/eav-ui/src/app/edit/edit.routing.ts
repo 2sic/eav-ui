@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { editDialog } from './edit-dialog.config';
-import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from './edit.matcher';
+import { editRouteMatcherRoot, editRouteMatcherRootRefresh, editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from './edit.matcher';
 import { EavLogger } from '../shared/logging/eav-logger';
 
 const logThis = false;
@@ -30,9 +30,10 @@ export const EditRoutesSubItems: Routes = [
 export const EditRoutesSubItemsNoHistory: Routes = [
   {
     matcher: editRouteMatcherSubEdit,
-    loadChildren: () => import('../edit/edit.routing').then(m => m.EditRoutes),
+    loadChildren: () => EditRoutes,
     data: { history: false },
   },
+  // 2024-07-01 2dm: not sure why the refresh-part was never on this, but leave until I know better.
   // {
   //   matcher: editRouteMatcherSubEditRefresh,
   //   loadChildren: () => import('./refresh-edit.module').then(m => m.RefreshEditModule)
@@ -51,5 +52,19 @@ export const EditRoutes: Routes = [
         loadChildren: () => import('../item-history/item-history.routing').then(m => m.historyRoutes),
       }
     ],
+  },
+];
+
+/**
+ * Root routes only meant for the entry points of the application, "App" and "Apps"
+ */
+export const EditRoutesRoot: Routes = [
+  {
+    matcher: editRouteMatcherRoot,
+    loadChildren: () => EditRoutes,
+  },
+  {
+    matcher: editRouteMatcherRootRefresh,
+    loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
   },
 ];
