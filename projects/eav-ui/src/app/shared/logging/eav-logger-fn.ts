@@ -3,7 +3,7 @@ import { EavLogger } from './eav-logger';
 
 export class EavLoggerFn {
   constructor(private parent: EavLogger, private fnName: string, message?: string, data?: Record<string, unknown>) {
-    this.parent.a(fnName + '() ' + message, data);
+    this.parent.a(fnName + '() ' + (message ?? ''), data);
   }
 
   values(data: Record<string, unknown>, intro?: string): void {
@@ -26,5 +26,10 @@ export class EavLoggerFn {
   rNull(message?: string): null {
     this.parent.a(`${this.fnName}/return NULL ${message}`);
     return null;
+  }
+
+  /** End without return */
+  end(data: Record<string, unknown>, message?: string) {
+    this.parent.a(`${this.fnName}/end${message ? ' ' + message : ''}`, data);
   }
 }
