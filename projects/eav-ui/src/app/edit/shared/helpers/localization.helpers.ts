@@ -33,27 +33,40 @@ export class LocalizationHelpers {
       ?? this.getValueTranslation(field, FormLanguage.bothPrimary(language));
   }
 
+  /**
+   * Find all values which are of the current language.
+   * 1. either directly assigned
+   * 2. or read-only assigned
+   * 3. or assigned to '*' when the current language is the default language
+   */
+  private static valuesOfLanguage<T>(field: EavField<T>, language: FormLanguage): EavValue<T>[] {
+    if (!field) return [];
+    return field.Values.filter(val => this.valueHasLanguage(val, language));
+  }
+
+  private static valueHasLanguage<T>(val: EavValue<T>, language: FormLanguage): EavDimension | undefined {
+    return val.Dimensions.find(d =>
+      d.Value === language.current
+      || d.Value === `~${language.current}`
+      || (language.current === language.primary && d.Value === '*'));
+  }
+
+
   static getValueTranslation<T>(field: EavField<T>, language: FormLanguage): EavValue<T> {
-    return field.Values.find(val =>
-      val.Dimensions.find(d => d.Value === language.current
-        || d.Value === `~${language.current}`
-        || (language.current === language.primary && d.Value === '*')) !== undefined);
+    // first match if any is the one we're looking for
+    return this.valuesOfLanguage(field, language)[0];
   }
 
   static isEditableOrReadonlyTranslationExist(field: EavField<any>, language: FormLanguage): boolean {
     if (!field) return false;
-    return field.Values.filter(val => val.Dimensions.find(d =>
-          d.Value === language.current
-          || d.Value === `~${language.current}`
-          || (language.current === language.primary && d.Value === '*'))
-        ).length > 0;
+    return this.valuesEditableOfCurrent(field, language).length > 0;
   }
 
   /**
    * Values of a field are for the current language,
    * if they are assigned to the current language or to '*' (but only when the current-language is also the primary-language)
    */
-  private static valuesOfCurrent<T>(field: EavField<T>, langs: FormLanguage): EavValue<T>[] {
+  private static valuesEditableOfCurrent<T>(field: EavField<T>, langs: FormLanguage): EavValue<T>[] {
     if (!field) return [];
     return field.Values
       .filter(val => val.Dimensions.find(d => (d.Value === langs.current) || (d.Value === '*' && langs.current === langs.primary)));
@@ -62,18 +75,18 @@ export class LocalizationHelpers {
 
   /** A value in specified Language is editable, if assigned to current language or to '*' (but only when on default-language) */
   static hasEditableValue(field: EavField<any>, language: FormLanguage): boolean {
-    return this.valuesOfCurrent(field, language).length > 0;
+    return this.valuesEditableOfCurrent(field, language).length > 0;
   }
 
   // Number of editable translatable fields that
   static countEditableValues(field: EavField<any>, language: FormLanguage): number {
-    return this.valuesOfCurrent(field, language).length;
+    return this.valuesEditableOfCurrent(field, language).length;
   }
 
   // Number of editable translatable fields that have some content
   static countEditableValuesWithContent(field: EavField<any>, language: FormLanguage): number {
     if (!field) return 0;
-    return this.valuesOfCurrent(field, language).filter(v => v.Value != "" && v.Value != null)?.length
+    return this.valuesEditableOfCurrent(field, language).filter(v => v.Value != "" && v.Value != null)?.length
   }
 
   static hasReadonlyValue(field: EavField<any>, language: string): boolean {
@@ -118,35 +131,32 @@ export class LocalizationHelpers {
 
   /** Update values for languageKey */
   static updateAttributesValues(
-    allAttributes: EavEntityAttributes,
+    allFields: EavEntityAttributes,
     updateValues: FormValues,
     language: FormLanguage,
   ): EavEntityAttributes {
     // copy attributes from item
     const eavAttributes: EavEntityAttributes = {};
-    Object.keys(allAttributes).forEach(attributeKey => {
+    Object.keys(allFields).forEach(attributeKey => {
       const newItemValue = updateValues[attributeKey];
       // if new value exist update attribute for languageKey
       // if (newItemValue !== null && newItemValue !== undefined) {
       if (newItemValue !== undefined) {
-        const valueWithLanguageExist = this.isEditableOrReadonlyTranslationExist(
-          allAttributes[attributeKey], language);
+        const valueWithLanguageExist = this.isEditableOrReadonlyTranslationExist(allFields[attributeKey], language);
 
         // if valueWithLanguageExist update value for languageKey
         if (valueWithLanguageExist) {
           const newValues: EavField<any> = {
-            ...allAttributes[attributeKey],
-            Values: allAttributes[attributeKey].Values.map(field => {
-
-              const newValue: EavValue<any> = field.Dimensions.find(d => d.Value === language.current
-                || d.Value === `~${language.current}`
-                || (language.current === language.primary && d.Value === '*'))
+            ...allFields[attributeKey],
+            Values: allFields[attributeKey].Values.map(val => {
+              const hasLanguage = !!this.valueHasLanguage(val, language);
+              const newValue: EavValue<any> = hasLanguage
                 // Update value for languageKey
                 ? {
-                    ...field,
+                    ...val,
                     Value: newItemValue,
                   }
-                : field;
+                : val;
               return newValue;
             })
           };
@@ -155,13 +165,13 @@ export class LocalizationHelpers {
           consoleLogEditForm('saveAttributeValues add values ', newItemValue);
           const newEavValue = EavValue.create(newItemValue, [EavDimension.create(language.current)]);
           const newAttribute: EavField<any> = {
-            ...allAttributes[attributeKey],
-            Values: [...allAttributes[attributeKey].Values, newEavValue]
+            ...allFields[attributeKey],
+            Values: [...allFields[attributeKey].Values, newEavValue]
           };
           eavAttributes[attributeKey] = newAttribute;
         }
       } else { // else copy item attributes
-        const attributeCopy: EavField<any> = { ...allAttributes[attributeKey] };
+        const attributeCopy: EavField<any> = { ...allFields[attributeKey] };
         eavAttributes[attributeKey] = attributeCopy;
       }
     });
@@ -184,27 +194,25 @@ export class LocalizationHelpers {
       newLanguageValue = `~${language.current}`;
 
     const attribute: EavField<any> = {
-      ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-        const newValue: EavValue<any> = eavValue.Dimensions.find(d => d.Value === language.current
-          || d.Value === `~${language.current}`
-          || (language.current === language.primary && d.Value === '*')
-        )
+      ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(val => {
+        const hasLanguage = !!this.valueHasLanguage(val, language);
+        const newValue: EavValue<any> = hasLanguage
           // Update value and dimension
           ? {
-            ...eavValue,
-            // update value
-            Value: updateValue,
-            // update languageKey with newLanguageValue
-            Dimensions: eavValue.Dimensions.map(dimension => {
-              const newDimensions: EavDimension = (dimension.Value === language.current
-                || dimension.Value === `~${language.current}`
-                || (language.current === language.primary && dimension.Value === '*'))
-                ? { Value: newLanguageValue }
-                : dimension;
-              return newDimensions;
-            })
-          }
-          : eavValue;
+              ...val,
+              // update value
+              Value: updateValue,
+              // update languageKey with newLanguageValue
+              Dimensions: val.Dimensions.map(d => {
+                const dimensionIsForLanguage = (d.Value === language.current
+                  || d.Value === `~${language.current}`
+                  || (language.current === language.primary && d.Value === '*'));
+                return dimensionIsForLanguage
+                  ? { Value: newLanguageValue } satisfies EavDimension
+                  : d;
+              })
+            }
+          : val;
         return newValue;
       })
     };
