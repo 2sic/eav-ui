@@ -58,7 +58,7 @@ const appRoutes: Routes = [
   {
     matcher: editRouteMatcherRoot,
     // loadChildren: () => import('./edit/edit.module').then(m => m.EditModule),
-    loadChildren: () => import('./edit/edit-routing.module').then(m => m.EditRoutes),
+    loadChildren: () => import('./edit/edit.routing').then(m => m.EditRoutes),
     data: { title: 'Edit Item' },
   },
   {

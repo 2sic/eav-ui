@@ -1,6 +1,6 @@
 
 import { NgModule } from '@angular/core';
-import { EditRoutes } from './edit-routing.module';
+import { EditRoutes } from './edit.routing';
 import { RouterModule } from '@angular/router';
 
 console.log('2dm test');
