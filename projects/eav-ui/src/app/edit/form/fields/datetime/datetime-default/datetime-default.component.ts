@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // 'neutral' time for OwlDateTime picker
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
-import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule } from '../../../../shared/date-adapters/date-adapter-api'
+import { MatDayjsDateAdapter, MatDayjsModule } from '../../../../shared/date-adapters/date-adapter-api'
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
@@ -19,6 +19,11 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
 import { ControlStatus } from '../../../../shared/models';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { DatePipe } from '@angular/common';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { DateTimeDefaultLogic } from './datetime-default-logic';
+
+const logThis = true;
+const nameOfThis = 'DateTimeDefaultComponent';
 
 @Component({
   selector: InputTypeConstants.DateTimeDefault,
@@ -41,7 +46,6 @@ import { DatePipe } from '@angular/common';
   ],
   providers: [
     MatDayjsDateAdapter,
-
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
@@ -58,16 +62,21 @@ export class DatetimeDefaultComponent {
 
   protected useTimePicker = computed(() => this.settings().UseTimePicker, SignalHelpers.boolEquals);
 
+  log = new EavLogger(nameOfThis, logThis);
+
   constructor(
     private translate: TranslateService,
     private matDayjsDateAdapter: MatDayjsDateAdapter,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
+    this.log.a('constructor', { matDayjsDateAdapter, owlDayjsDateAdapter });
     dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.owlDayjsDateAdapter.setLocale(currentLang);
+    // this.owlDayjsDateAdapter.
+    DateTimeDefaultLogic.importMe();
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {

@@ -1,7 +1,7 @@
 <div>
   Date: {{controlStatus().value}}
   <br>
-  Date with DateTime:  {{controlStatus().value | date : 'yyyy-MM-dd HH:mm:ss'}}
+  Date through pipe:  {{controlStatus().value | date : 'yyyy-MM-dd HH:mm:ss'}}
 </div>
 
 @if (!useTimePicker()) {
@@ -19,7 +19,7 @@
 </mat-form-field>
 }
 
-@if (useTimePicker()) {
+@else {
 <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
   <input matInput class="eav-translate-on-dblclick"
     [disabled]="controlStatus().disabled"
