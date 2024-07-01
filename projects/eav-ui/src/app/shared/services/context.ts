@@ -8,7 +8,7 @@ import { EavLogger } from '../logging/eav-logger';
 
 declare const window: EavWindow;
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'RouteContext';
 
 /**

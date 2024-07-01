@@ -4,7 +4,7 @@ import { editDialog } from './edit-dialog.config';
 import { editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh } from './edit.matcher';
 import { EavLogger } from '../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const logger = new EavLogger('EditRoutingModule', logThis);
 
 

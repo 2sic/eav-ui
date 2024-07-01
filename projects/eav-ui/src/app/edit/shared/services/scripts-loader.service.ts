@@ -5,7 +5,7 @@ import { UrlHelpers } from '../helpers';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'ScriptsLoaderService';
 
 declare const window: EavWindow;
