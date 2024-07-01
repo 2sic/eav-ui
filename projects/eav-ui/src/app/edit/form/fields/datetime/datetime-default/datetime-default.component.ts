@@ -69,9 +69,11 @@ export class DatetimeDefaultComponent {
   }
 
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
+    // @2dg old code, remove after test and verify from 2dm
     // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
-    // TODO:: @2dg Check utc must be false or ture
-    const newValue = event.value != null ? event.value.utc(false).toJSON() : null;
+    // const newValue = event.value != null ? event.value.utc(false).toJSON() : null;
+
+    const newValue = event.value != null ? event.value.toJSON() : null;
     ControlHelpers.patchControlValue(this.control, newValue);
   }
 }
