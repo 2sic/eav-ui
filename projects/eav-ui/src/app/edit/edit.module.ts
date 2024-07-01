@@ -1,21 +1,32 @@
 
 import { NgModule } from '@angular/core';
-import { EditEntryComponent } from './dialog/entry/edit-entry.component';
-import { EditRoutingModule } from './edit-routing.module';
+import { EditRoutes } from './edit-routing.module';
+import { RouterModule } from '@angular/router';
+
+console.log('2dm test');
 
 @NgModule({
   imports: [
     // TODO:: Fix later, AppId from Context ist not correct, if remove the following component EditEntryComponent,
     // Managed Apps > Light Speed open the false App
-    EditEntryComponent,
-    EditRoutingModule,
+    // EditEntryComponent,
+    RouterModule.forChild(EditRoutes),
+    // EditRoutingModule,
+
     // 2dm- I think this doesn't have an effect, since it's already referenced in EditRoutingModule
     // RouterModule,
     // @2dg New in app.Module, remove after Test
     // TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
   ],
+  // exports: [
+  //   RouterModule,
+  // ],
   providers: [
-    // Context,
+
+    // Context,              // Form context, such as what app etc. - the same for the entire form
+    // FormConfigService,    // form configuration valid for this entire form; will be initialized by the EditInitializerService
+
+      // Context,
     // FormConfigService,
 
     // AdamService,

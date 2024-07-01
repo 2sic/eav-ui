@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { editRoot, refreshEditRoot } from './edit/edit.matcher';
-import { EditProviders } from './edit/edit-routing.module';
 
 const appRoutes: Routes = [
   {
@@ -58,10 +57,9 @@ const appRoutes: Routes = [
   },
   {
     matcher: editRoot,
-    loadChildren: () => import('./edit/edit.module').then(m => m.EditModule),
-    // loadChildren: () => import('./edit/edit-routing.module').then(m => m.EditRoutingModule),
+    // loadChildren: () => import('./edit/edit.module').then(m => m.EditModule),
+    loadChildren: () => import('./edit/edit-routing.module').then(m => m.EditRoutes),
     data: { title: 'Edit Item' },
-    // providers: EditProviders
   },
   {
     matcher: refreshEditRoot,

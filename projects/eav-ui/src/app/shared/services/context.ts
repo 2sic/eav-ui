@@ -10,7 +10,7 @@ declare const window: EavWindow;
 
 const logThis = false;
 
-/** The context provides information
+/**
  * Context is used to display information about the current app in various depths.
  * In other words, if you open another app in a deeper dialog in the app on Apps Management
  * (the component is deeper), you get the information from this app and not the initial app.
