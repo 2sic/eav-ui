@@ -17,10 +17,11 @@ import { ControlHelpers } from '../../helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = false;
+const nameOfThis = 'ItemService';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseDataService<EavItem> {
-  log = new EavLogger('ItemService', logThis);
+  log = new EavLogger(nameOfThis, logThis);
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
   }
@@ -168,6 +169,7 @@ export class ItemService extends BaseDataService<EavItem> {
     isTransaction = false,
     transactionItem?: EavItem,
   ): EavItem {
+    const l = this.log.fn('removeItemAttributeDimension', '', { entityGuid, attributeKey, currentLanguage, isTransaction, transactionItem });
     const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
@@ -178,8 +180,9 @@ export class ItemService extends BaseDataService<EavItem> {
       }
     };
 
-    if (!isTransaction) { this.updateOneInCache(newItem); }
-    return newItem;
+    if (!isTransaction)
+      this.updateOneInCache(newItem);
+    return l.r(newItem);
   }
 
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
@@ -196,7 +199,9 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   getItemAttributes(entityGuid: string): EavEntityAttributes {
-    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    const l = this.log.fn('getItemAttributes', '', { entityGuid });
+    const result = this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    return l.r(result);
   }
 
   getItemAttributes$(entityGuid: string): Observable<EavEntityAttributes> {

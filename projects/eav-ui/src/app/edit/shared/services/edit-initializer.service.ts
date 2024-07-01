@@ -142,17 +142,17 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     };
     this.formConfig.initFormConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 
-    var langs = this.formConfig.languages;
+    var langs = loadDto.Context.Language; // this.formConfig.languages;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
-    const isoLangCode = langs.initial.split('-')[0];
+    const isoLangCode = langs.Current.split('-')[0];
     this.translate.use(isoLangCode);
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (isParentDialog) {
-      const sortedLanguages = sortLanguages(langs.primary, langs.list);
+      const sortedLanguages = sortLanguages(langs.Primary, langs.List);
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageStore.addToStore(formId, langs.initial, langs.primary, false);
+    this.languageStore.addToStore(formId, langs.Primary, langs.Current, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
     const publishMode = this.publishStatusService.asPublishMode(loadDto.IsPublished, loadDto.DraftShouldBranch);

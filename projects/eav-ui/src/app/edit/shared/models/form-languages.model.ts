@@ -1,9 +1,13 @@
 import { Language } from '.';
-import { of } from 'rxjs';
 
 export class FormLanguage
 {
+  /** The current language of the system / UI. */
   current: string;
+
+  /** The primary language of the system.
+   * Important, because the primary language must be filled in before all other languages.
+   */
   primary: string;
 
   /**
@@ -24,12 +28,18 @@ export class FormLanguage
     };
   }
 
-  static empty(): FormLanguage {
+  static empty(): FormLanguageComplete {
     return {
       current: '',
-      primary: ''
+      primary: '',
+      initial: '',
     };
   }
+}
+
+export class FormLanguageComplete extends FormLanguage {
+  /** initial language of the UI */
+  initial: string;
 }
 
 export interface FormLanguagesConfig

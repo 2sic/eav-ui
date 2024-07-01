@@ -10,6 +10,10 @@ import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { EavItem } from '../models/eav';
 import { ContentTypeService, ItemService } from '../store/ngrx-data';
 import { FormLanguage } from '../models/form-languages.model';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'FieldsTranslateService';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
 
@@ -17,6 +21,8 @@ const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your o
 export class FieldsTranslateService {
   private entityGuid: string;
   private contentTypeId: string;
+
+  log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private http: HttpClient,
@@ -27,15 +33,20 @@ export class FieldsTranslateService {
   ) { }
 
   init(entityGuid: string): void {
+    const l = this.log.fn('init');
     this.entityGuid = entityGuid;
     const item = this.itemService.getItem(entityGuid);
     this.contentTypeId = InputFieldHelpers.getContentTypeId(item);
+    l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }
 
   translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
-    if (this.isTranslationDisabled(fieldName)) { return; }
-    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
+    const l = this.log.fn('translate', '', { fieldName, isTransaction, transactionItem });
+    
+    if (this.isTranslationDisabled(fieldName))
+      return l.rNull('Translation is disabled for this field.');
 
+    const language = this.formConfig.language();
     transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true, transactionItem);
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -45,13 +56,13 @@ export class FieldsTranslateService {
     if (!doesFieldHaveExistingDimension) 
       return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, language.current, false);
     else
-      return null;
+      return l.rNull();
   }
 
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
-    if (this.isTranslationDisabled(fieldName)) { return; }
+    if (this.isTranslationDisabled(fieldName)) return;
 
-    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     transactionItem = this.itemService.removeItemAttributeDimension(
       this.entityGuid, fieldName, language.current, isTransaction, transactionItem,
     );
@@ -68,7 +79,7 @@ export class FieldsTranslateService {
     if (apiKeyInfo.IsDemo)
       alert(apiKeyInDemoModeAlert);
 
-    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
@@ -108,11 +119,11 @@ export class FieldsTranslateService {
   }
 
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {
-    if (this.isTranslationDisabled(fieldName)) { return; }
+    if (this.isTranslationDisabled(fieldName)) return;
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
-    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
     if (attributeValueTranslation) {
       const valueAlreadyExists = values
@@ -134,9 +145,9 @@ export class FieldsTranslateService {
   }
 
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
-    if (this.isTranslationDisabled(fieldName)) { return; }
+    if (this.isTranslationDisabled(fieldName)) return;
 
-    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, true, transactionItem,
@@ -144,9 +155,9 @@ export class FieldsTranslateService {
   }
 
   linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
-    if (this.isTranslationDisabled(fieldName)) { return; }
+    if (this.isTranslationDisabled(fieldName)) return;
 
-    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, false, transactionItem,
@@ -254,10 +265,12 @@ export class FieldsTranslateService {
   }
 
   private addItemAttributeValueHelper(fieldName: string, value: any, currentLanguage: string, isReadOnly: boolean): EavItem {
+    const l = this.log.fn('addItemAttributeValueHelper', '', { fieldName, value, currentLanguage, isReadOnly });
     const contentType = this.contentTypeService.getContentType(this.contentTypeId);
     const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
-    return this.itemService.addItemAttributeValue(
+    const result = this.itemService.addItemAttributeValue(
       this.entityGuid, fieldName, value, currentLanguage, isReadOnly, ctAttribute.Type
     );
+    return l.r(result);
   }
 }

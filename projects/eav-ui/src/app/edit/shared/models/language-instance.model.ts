@@ -1,6 +1,6 @@
-import { FormLanguage } from './form-languages.model';
+import { FormLanguage, FormLanguageComplete } from './form-languages.model';
 
-export interface FormLanguageInStore extends FormLanguage {
+export interface FormLanguageInStore extends FormLanguageComplete {
   formId: number;
   hideHeader: boolean;
 }

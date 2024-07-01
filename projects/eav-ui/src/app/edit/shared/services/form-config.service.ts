@@ -1,13 +1,14 @@
-import { Injectable, Signal, computed, inject, signal } from '@angular/core';
+import { Injectable, Injector, Signal, inject, signal } from '@angular/core';
 import { DialogContext } from '../../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
 import { FormConfiguration, VersioningOptions } from '../models';
-import { FormLanguage, FormLanguagesConfig } from '../models/form-languages.model';
+import { FormLanguage, FormLanguageComplete, FormLanguagesConfig } from '../models/form-languages.model';
 import { Observable } from 'rxjs';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const nameOfThis = 'FormConfigService';
@@ -50,6 +51,7 @@ export class FormConfigService {
   /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
   private context = inject(Context);
   private languageService = inject(LanguageInstanceService);
+  private injector = inject(Injector);
 
   /** Create EavConfiguration from sessionStorage */
   initFormConfig(
@@ -94,7 +96,7 @@ export class FormConfigService {
       settings,
     };
     this.configSignal.set(this.config);
-    this.language = this.languageService.getLanguageSignal(formId);
+    this.language = toSignal(this.language$, { injector: this.injector });
   }
 
   private getVersioningOptions(
@@ -128,10 +130,10 @@ export class FormConfigService {
   /**
    * Get the language observable for the form - it will keep track of the current language as it changes.
    */
-  get language$(): Observable<FormLanguage> {
+  get language$(): Observable<FormLanguageComplete> {
     return this._language$ ??= this.languageService.getLanguage$(this.config.formId);
   }
-  private _language$: Observable<FormLanguage>;
+  private _language$: Observable<FormLanguageComplete>;
 
 
 }
