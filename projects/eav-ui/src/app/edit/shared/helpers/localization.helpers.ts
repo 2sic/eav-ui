@@ -28,9 +28,9 @@ export class LocalizationHelpers {
   }
 
   static getValueOrDefault(allAttributesValues: EavValues<any>, language: FormLanguage): EavValue<any> {
-    let translation = LocalizationHelpers.getValueTranslation(allAttributesValues, language);
+    let translation = this.getValueTranslation(allAttributesValues, language);
     return translation
-      ?? LocalizationHelpers.getValueTranslation(allAttributesValues, FormLanguage.bothPrimary(language));
+      ?? this.getValueTranslation(allAttributesValues, FormLanguage.bothPrimary(language));
   }
 
   static getValueTranslation<T>(allAttributesValues: EavValues<T>, language: FormLanguage): EavValue<T> {

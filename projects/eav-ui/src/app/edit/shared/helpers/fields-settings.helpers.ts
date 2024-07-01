@@ -66,14 +66,14 @@ export class FieldsSettingsHelpers {
   ): boolean {
     // disable translation if LanguagesDecorator in ContentType is false in any language
     const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) { return true; }
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) return true;
 
-    if (inputType?.DisableI18n) { return true; }
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage)) { return true; }
+    if (inputType?.DisableI18n) return true;
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage)) return true;
 
     // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
     for (const metadataItem of attributeMetadata ?? []) {
-      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) { return true; }
+      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) return true;
     }
 
     return false;
@@ -96,12 +96,12 @@ export class FieldsSettingsHelpers {
 
   static findIsLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {
     const index = contentType.Attributes.indexOf(attribute);
-    if (contentType.Attributes[index + 1] == null) { return true; }
+    if (contentType.Attributes[index + 1] == null) return true;
 
     const indexOfFirstEmpty = contentType.Attributes.findIndex(a => EmptyFieldHelpers.isGroupStart(a.InputType));
-    if (index < indexOfFirstEmpty) { return false; }
+    if (index < indexOfFirstEmpty) return false;
 
-    // if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
+    // if (attribute.InputType === InputTypeConstants.EmptyEnd) return true;
     if (EmptyFieldHelpers.isGroupEnd(attribute.InputType)) return true;
 
     if (EmptyFieldHelpers.endsPreviousGroup(contentType.Attributes[index + 1].InputType)) return true;
@@ -177,43 +177,30 @@ export class FieldsSettingsHelpers {
     disableTranslation: boolean,
     language: FormLanguage,
   ): TranslationStateCore {
-    let langResult: string;
-    let linkType: TranslationLink;
-
     // Determine is control disabled or enabled and info message
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary)) {
-      langResult = '';
-      linkType = TranslationLinks.MissingDefaultLangValue;
-    } else if (disableTranslation) {
-      langResult = '';
-      linkType = TranslationLinks.DontTranslate;
-    } else if (LocalizationHelpers.hasEditableValue(attributeValues, language)) {
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
+      return { language: '', linkType: TranslationLinks.MissingDefaultLangValue }
+    
+    if (disableTranslation)
+      return { language: '', linkType: TranslationLinks.DontTranslate }
+    
+    if (LocalizationHelpers.hasEditableValue(attributeValues, language)) {
       const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
         .Dimensions.filter(dimension => dimension.Value !== language.current);
 
-      if (editableElements.length > 0) {
-        langResult = editableElements[0].Value;
-        linkType = TranslationLinks.LinkReadWrite;
-      } else {
-        langResult = '';
-        linkType = TranslationLinks.Translate;
-      }
-    } else if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) {
+      return (editableElements.length > 0)
+        ? { language: editableElements[0].Value, linkType: TranslationLinks.LinkReadWrite }
+        : { language: '', linkType: TranslationLinks.Translate }
+    }
+    
+    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) {
       const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
         .Dimensions.filter(dimension => dimension.Value !== language.current);
 
-      langResult = readOnlyElements[0].Value;
-      linkType = TranslationLinks.LinkReadOnly;
-    } else {
-      langResult = '';
-      linkType = TranslationLinks.DontTranslate;
+      return { language: readOnlyElements[0].Value, linkType: TranslationLinks.LinkReadOnly, }
     }
 
-    const translationState: TranslationStateCore = {
-      language: langResult,
-      linkType,
-    };
-    return translationState;
+    return { language: '', linkType: TranslationLinks.DontTranslate, }
   }
 }
 
