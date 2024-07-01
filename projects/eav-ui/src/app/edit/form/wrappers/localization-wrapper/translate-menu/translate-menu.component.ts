@@ -4,7 +4,6 @@ import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 
 import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
-import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -54,7 +53,6 @@ export class TranslateMenuComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
     private fieldSettings: FieldsSettingsService,
     private fieldsTranslate: FieldsTranslateService,
@@ -63,7 +61,7 @@ export class TranslateMenuComponent implements OnInit {
 
   ngOnInit(): void {
     const readOnly$ = this.formsState.readOnly$;
-    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
+    const language$ = this.formConfig.language$;
     const translationState$ = this.fieldSettings.getTranslationState$(this.config.fieldName);
     const disableTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),

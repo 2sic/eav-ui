@@ -8,7 +8,7 @@ import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { EavItem } from '../models/eav';
-import { ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { ContentTypeService, ItemService } from '../store/ngrx-data';
 import { FormLanguage } from '../models/form-languages.model';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
@@ -21,7 +21,6 @@ export class FieldsTranslateService {
   constructor(
     private http: HttpClient,
     private itemService: ItemService,
-    private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
     private contentTypeService: ContentTypeService,
     private fieldsSettingsService: FieldsSettingsService,
@@ -35,7 +34,7 @@ export class FieldsTranslateService {
 
   translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     if (this.isTranslationDisabled(fieldName)) { return; }
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
 
     transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true, transactionItem);
 
@@ -52,7 +51,7 @@ export class FieldsTranslateService {
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
     transactionItem = this.itemService.removeItemAttributeDimension(
       this.entityGuid, fieldName, language.current, isTransaction, transactionItem,
     );
@@ -69,7 +68,7 @@ export class FieldsTranslateService {
     if (apiKeyInfo.IsDemo)
       alert(apiKeyInDemoModeAlert);
 
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
@@ -113,7 +112,7 @@ export class FieldsTranslateService {
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
     const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
     if (attributeValueTranslation) {
       const valueAlreadyExists = values
@@ -137,7 +136,7 @@ export class FieldsTranslateService {
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, true, transactionItem,
@@ -147,7 +146,7 @@ export class FieldsTranslateService {
   linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// .languageStore.getLanguage(this.formConfig.config.formId);
     const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, false, transactionItem,

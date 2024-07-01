@@ -23,11 +23,18 @@ export class FormLanguage
       primary: original.primary
     };
   }
+
+  static empty(): FormLanguage {
+    return {
+      current: '',
+      primary: ''
+    };
+  }
 }
 
 export interface FormLanguagesConfig
 {
-  current: string;
+  initial: string;
   primary: string;
   list: Language[];
 }

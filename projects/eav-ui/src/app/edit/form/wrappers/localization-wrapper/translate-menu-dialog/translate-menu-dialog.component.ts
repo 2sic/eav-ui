@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { FormConfigService, FieldsTranslateService } from '../../../../shared/services';
-import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
+import { ItemService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from './translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages } from './translate-menu-dialog.helpers';
@@ -44,7 +44,6 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private languageService: LanguageService,
-    private languageStore: LanguageInstanceService,
     private itemService: ItemService,
     private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -60,11 +59,10 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
-    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),
-      language$,
+      this.formConfig.language$,
       attributes$,
       this.translationState$,
     ]).pipe(
@@ -72,7 +70,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
         getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType)),
     );
 
-    this.viewModel$ = combineLatest([language$, languages$, this.translationState$]).pipe(
+    this.viewModel$ = combineLatest([this.formConfig.language$, languages$, this.translationState$]).pipe(
       map(([lang, languages, translationState]) => {
         const viewModel: TranslateMenuDialogViewModel = {
           primary: lang.primary,

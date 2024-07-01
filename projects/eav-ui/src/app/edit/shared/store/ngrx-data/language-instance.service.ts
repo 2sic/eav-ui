@@ -33,16 +33,6 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
     } satisfies Partial<FormLanguageInStore>);
   }
 
-  // TODO: @2dm - get rid of this, use a getLanguage() instead
-
-  getLanguage(formId: number): FormLanguage {
-    const found = this.cache$.value.find(languageInstance => languageInstance.formId === formId);
-    return {
-      current: found?.current,
-      primary: found?.primary,
-    } satisfies FormLanguage;
-  }
-
   /**
    * Get an EntityReader for the current form
    */

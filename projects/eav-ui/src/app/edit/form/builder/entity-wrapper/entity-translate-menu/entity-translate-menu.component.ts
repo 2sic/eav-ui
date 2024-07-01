@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { TranslationState } from '../../../../shared/models/fields-configs.model';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
+import { ItemService } from '../../../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
@@ -43,7 +43,6 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog,
-    private langsInStore: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -57,8 +56,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
       map(header => !header.IsEmptyAllowed ? false : header.IsEmpty),
     );
-    const language$ = this.langsInStore.getLanguage$(this.eavService.config.formId);
-    this.viewModel$ = combineLatest([readOnly$, slotIsEmpty$, language$]).pipe(
+    this.viewModel$ = combineLatest([readOnly$, slotIsEmpty$, this.eavService.language$]).pipe(
       map(([readOnly, slotIsEmpty, lang]) => {
         const viewModel: EntityTranslateMenuViewModel = {
           ...lang,

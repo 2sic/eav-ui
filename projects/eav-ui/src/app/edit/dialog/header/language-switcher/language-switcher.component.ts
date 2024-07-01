@@ -37,8 +37,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   private log = new EavLogger(nameOfThis, logThis);
 
-  private _languages = this.languageInstanceService.getLanguageSignal(this.formConfig.config.formId);
-  current = computed(() => this._languages().current);
+  current = computed(() => this.formConfig.language().current);
 
   buttons = getLanguageButtons(this.languageService.getLanguages());
 

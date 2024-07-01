@@ -1,11 +1,9 @@
-import { Component, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
-import { FormLanguage } from '../../../shared/models/form-languages.model';
 import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
@@ -19,34 +17,28 @@ import { FieldState } from '../../builder/fields-builder/field-state';
     TranslateMenuComponent,
   ],
 })
-export class LocalizationWrapperComponent  implements OnInit {
+export class LocalizationWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 
+  protected formConfig = inject(FormConfigService);
   protected fieldState = inject(FieldState);
 
   protected config = this.fieldState.config;
   protected control = this.fieldState.control;
 
 
-  language = signal<FormLanguage>(null);
+  language = this.formConfig.language;
   hideTranslateButton: boolean = true;
 
   constructor(
-    private formConfig: FormConfigService,
-    private languageStore: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
-  ) {
-  }
-
-  ngOnInit() {
-    this.language.set(this.languageStore.getLanguage(this.formConfig.config.formId));
-  }
+  ) { }
 
   translate() {
     if (this.formsStateService.readOnly().isReadOnly) return;
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     if (language.current === language.primary) return;
     if (!this.control.disabled) return;
     const isExpanded = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);

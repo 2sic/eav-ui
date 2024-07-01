@@ -2,7 +2,7 @@ import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, sample, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { FormReadOnly } from '../models';
-import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { ItemService, LanguageService } from '../store/ngrx-data';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 
 @Injectable()
@@ -26,7 +26,6 @@ export class FormsStateService implements OnDestroy {
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageStore: LanguageInstanceService,
   ) { }
 
   ngOnDestroy() {
@@ -63,7 +62,7 @@ export class FormsStateService implements OnDestroy {
           map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
         ),
         combineLatest([
-          this.languageStore.getLanguage$(this.formConfig.config.formId),
+          this.formConfig.language$,
           this.languageService.getLanguages$(),
         ]).pipe(
           map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),

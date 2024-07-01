@@ -22,7 +22,6 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    private languageInstanceService: LanguageInstanceService,
     private languageService: LanguageService,
     private formConfig: FormConfigService,
   ) {
@@ -36,7 +35,7 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
     this.subscriptions.add(
       merge(
         // emit 'next' and 'previous' slide direction based on language change
-        this.languageInstanceService.getLanguage$(this.formConfig.config.formId).pipe(
+        this.formConfig.language$.pipe(
           map(language => language.current),
           distinctUntilChanged(),
           pairwise(),

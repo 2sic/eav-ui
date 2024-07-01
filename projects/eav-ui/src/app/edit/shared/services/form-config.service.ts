@@ -1,15 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { DialogContext } from '../../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
 import { FormConfiguration, VersioningOptions } from '../models';
-import { FormLanguagesConfig } from '../models/form-languages.model';
+import { FormLanguage, FormLanguagesConfig } from '../models/form-languages.model';
+import { Observable } from 'rxjs';
+import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FormConfigService';
 
 export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
 export class FormConfigService {
+  /** no constructor */
+  constructor() {}
+
+  log = new EavLogger(nameOfThis, logThis);
+
   /**
    * Important! These are constants that form was loaded with.
    * They are initialized in the main edit-form.
@@ -17,18 +28,28 @@ export class FormConfigService {
    */
   config: FormConfiguration;
 
+  // WIP, null at first
+  configSignal = signal<FormConfiguration>(null);
+
+  /**
+   * Current form language information
+   */
+  language: Signal<FormLanguage>;
+
   /**
    * Current edit settings
    * Note: Clean use - only used by classes that inject this themselves
    */
   settings: EditSettings;
 
+  /**
+   * Form language configuration, not meant to change during runtime...
+   */
   languages: FormLanguagesConfig;
 
-  constructor(
-    /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
-    private context: Context
-  ) {}
+  /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
+  private context = inject(Context);
+  private languageService = inject(LanguageInstanceService);
 
   /** Create EavConfiguration from sessionStorage */
   initFormConfig(
@@ -43,7 +64,7 @@ export class FormConfigService {
   ) {
     this.settings = settings;
     this.languages = {
-      current: dialogContext.Language.Current,
+      initial: dialogContext.Language.Current,
       primary: dialogContext.Language.Primary,
       list: dialogContext.Language.List,
     };
@@ -68,11 +89,12 @@ export class FormConfigService {
       isCopy,
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
-      overrideEditRestrictions:
-        dialogContext.Enable.OverrideEditRestrictions ?? false,
+      overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
       dialogContext,
       settings,
     };
+    this.configSignal.set(this.config);
+    this.language = this.languageService.getLanguageSignal(formId);
   }
 
   private getVersioningOptions(
@@ -102,4 +124,14 @@ export class FormConfigService {
       }
     }
   }
+
+  /**
+   * Get the language observable for the form - it will keep track of the current language as it changes.
+   */
+  get language$(): Observable<FormLanguage> {
+    return this._language$ ??= this.languageService.getLanguage$(this.config.formId);
+  }
+  private _language$: Observable<FormLanguage>;
+
+
 }

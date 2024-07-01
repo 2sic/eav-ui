@@ -109,7 +109,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
         // When merging metadata, the primary language must be the real primary, not the current
-        const mdMerger = new EntityReader(this.formConfig.languages.current, entityReader.primary);
+        const mdMerger = new EntityReader(this.formConfig.languages.initial, entityReader.primary);
 
         const allConstFieldParts = contentType.Attributes.map((attribute, index) => {
           const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));

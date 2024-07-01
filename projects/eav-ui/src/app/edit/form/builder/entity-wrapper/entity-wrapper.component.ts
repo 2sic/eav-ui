@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, computed, ElementRef, inject, Input, OnDestroy, OnInit, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../
 import { LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavItem } from '../../../shared/models/eav';
 import { FormConfigService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { ItemService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeViewModel } from './entity-wrapper.models';
 import { AsyncPipe } from '@angular/common';
@@ -69,7 +69,6 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   private noteRef?: MatDialogRef<undefined, any>;
 
   constructor(
-    private languageStore: LanguageInstanceService,
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
@@ -94,7 +93,6 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
 
   ngOnInit() {
     const readOnly$ = this.formsStateService.readOnly$;
-    const language$ = this.languageStore.getLanguage$(this.formConfig.config.formId);
 
     const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
       map(itemFor => getItemForTooltip(itemFor, this.translate)),
@@ -115,7 +113,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
       map(item => item.Entity.Id === 0),
       distinctUntilChanged(),
     );
-    const noteProps$ = combineLatest([note$, language$, itemNotSaved$]).pipe(
+    const noteProps$ = combineLatest([note$, this.formConfig.language$, itemNotSaved$]).pipe(
       map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
     );
 
@@ -141,7 +139,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     // );
 
     this.viewModel$ = combineLatest([
-      combineLatest([readOnly$, language$, showNotes$, showMetadataFor$]),
+      combineLatest([readOnly$, this.formConfig.language$, showNotes$, showMetadataFor$]),
       combineLatest([itemForTooltip$, header$, settings$, noteProps$]),
     ]).pipe(
       map(([
@@ -244,7 +242,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   }
 
   deleteNote(note: EavEntity) {
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
     const title = LocalizationHelpers.translate(language, note.Attributes.Title, null);
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))

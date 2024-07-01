@@ -6,7 +6,7 @@ import { FormulaEngine } from '../../../formulas/formula-engine';
 import { ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
-import { AdamCacheService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { AdamCacheService, ItemService } from '../../../shared/store/ngrx-data';
 import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
 import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
@@ -50,10 +50,9 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     public fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
     private formBuilder: UntypedFormBuilder,
-    private eavService: FormConfigService,
+    private formConfig: FormConfigService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
-    private languageStore: LanguageInstanceService,
     private adamCacheService: AdamCacheService,
   ) {
     super();
@@ -159,7 +158,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         map(() => form.getRawValue() as FormValues),
         distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
-        const language = this.languageStore.getLanguage(this.eavService.config.formId);
+        const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, language);
       })
     );

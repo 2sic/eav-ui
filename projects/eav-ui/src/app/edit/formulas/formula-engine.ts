@@ -3,17 +3,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InputType } from '../../content-type-fields/models/input-type.model';
-import { FeatureSummary } from '../../features/models';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
 import { EavContentTypeAttribute, EavEntity, EavValues } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
-import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
+import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
 import { FormulaSettingsHelper } from './helpers/formula-settings.helper';
 import { FieldLogicBase } from '../form/shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
@@ -34,7 +33,6 @@ export class FormulaEngine implements OnDestroy {
   private formulaPromiseHandler: FormulaPromiseHandler = null;
 
   constructor(
-    private languageStore: LanguageInstanceService,
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
@@ -244,7 +242,7 @@ export class FormulaEngine implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     item?: PickerItem
   ): FormulaResultRaw {
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
     const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, language.current);

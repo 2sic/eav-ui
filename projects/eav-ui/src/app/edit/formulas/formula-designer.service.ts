@@ -7,7 +7,7 @@ import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHel
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { FormConfigService, LoggingService } from '../shared/services';
-import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
+import { ContentTypeItemService, ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
@@ -30,7 +30,6 @@ export class FormulaDesignerService implements OnDestroy {
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
-    private languageStore: LanguageInstanceService,
     private contentTypeItemService: ContentTypeItemService,
     private loggingService: LoggingService,
     private translate: TranslateService,
@@ -137,7 +136,7 @@ export class FormulaDesignerService implements OnDestroy {
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
-        const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+        const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
         const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
@@ -403,7 +402,7 @@ export class FormulaDesignerService implements OnDestroy {
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
     const entityReader = new EntityReader(language.current, language.primary);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {

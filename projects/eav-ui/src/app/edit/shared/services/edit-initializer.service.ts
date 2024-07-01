@@ -144,7 +144,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
     var langs = this.formConfig.languages;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
-    const isoLangCode = langs.current.split('-')[0];
+    const isoLangCode = langs.initial.split('-')[0];
     this.translate.use(isoLangCode);
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
@@ -152,7 +152,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       const sortedLanguages = sortLanguages(langs.primary, langs.list);
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageStore.addToStore(formId, langs.current, langs.primary, false);
+    this.languageStore.addToStore(formId, langs.initial, langs.primary, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
     const publishMode = this.publishStatusService.asPublishMode(loadDto.IsPublished, loadDto.DraftShouldBranch);
@@ -167,7 +167,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   private keepInitialValues(): void {
     const items = this.itemService.getItems(this.formConfig.config.itemGuids);
     const allLangs = this.languageService.getLanguages().map(language => language.NameId);
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
     if (!allLangs.includes(language.current)) allLangs.push(language.current);
     if (!allLangs.includes(language.primary)) allLangs.push(language.primary);
 
@@ -198,7 +198,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
-    const language = this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language(); //this.languageStore.getLanguage(this.formConfig.config.formId);
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
     const isCreateMode = eavConfig.createMode;
