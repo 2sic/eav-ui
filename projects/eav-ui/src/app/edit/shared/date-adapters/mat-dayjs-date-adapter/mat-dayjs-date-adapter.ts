@@ -55,6 +55,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   ) {
     super();
 
+    console.log(this.shouldUseUtc)
     if (this.shouldUseUtc) {
       dayjs.extend(utc);
     }

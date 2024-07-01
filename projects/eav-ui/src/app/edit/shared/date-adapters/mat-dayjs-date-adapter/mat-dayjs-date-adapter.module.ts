@@ -30,10 +30,11 @@ export class MatDayjsDateModule { }
 // My guess is it ensures that the date adapter is configured correctly for each culture
 @NgModule({
   imports: [MatDayjsDateModule],
-  providers: [{ provide: MAT_DATE_FORMATS, useValue: MAT_DAYJS_DATE_FORMATS },
-  { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },
-  { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
-  { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+  providers: [
+    { provide: MAT_DATE_FORMATS, useValue: MAT_DAYJS_DATE_FORMATS },
+    { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } },
+    { provide: OWL_DATE_TIME_FORMATS, useValue: OWL_DAYJS_FORMATS },
+    { provide: OWL_DAYJS_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
   ],
 })
 export class MatDayjsModule { }

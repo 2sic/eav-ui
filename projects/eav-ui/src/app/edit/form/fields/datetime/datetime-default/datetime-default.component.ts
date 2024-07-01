@@ -18,6 +18,7 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { ControlStatus } from '../../../../shared/models';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: InputTypeConstants.DateTimeDefault,
@@ -36,6 +37,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     TranslateModule,
     OwlDayJsDateTimeModule,
     MatDayjsModule,
+    DatePipe,
   ],
   providers: [
     MatDayjsDateAdapter,
@@ -71,9 +73,7 @@ export class DatetimeDefaultComponent {
   updateValue(event: MatDatepickerInputEvent<Dayjs>) {
     // @2dg old code, remove after test and verify from 2dm
     // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
-    // const newValue = event.value != null ? event.value.utc(false).toJSON() : null;
-
-    const newValue = event.value != null ? event.value.toJSON() : null;
+    const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
     ControlHelpers.patchControlValue(this.control, newValue);
   }
 }
