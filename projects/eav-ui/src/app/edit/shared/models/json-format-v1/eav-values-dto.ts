@@ -1,4 +1,4 @@
-import { EavValues } from '../eav';
+import { EavField } from '../eav';
 
 /**
  * A JSON representation of EavValues.
@@ -8,7 +8,7 @@ import { EavValues } from '../eav';
 export class EavValuesDto<T> {
   [languages: string]: T;
 
-  static valuesToDto<T>(eavValues: EavValues<T>): EavValuesDto<T> {
+  static valuesToDto<T>(eavValues: EavField<T>): EavValuesDto<T> {
     const dtoValue: EavValuesDto<T> = {};
     for (const value of eavValues.Values) {
       const dimensions = value.Dimensions.map(dimension => dimension.Value).join();

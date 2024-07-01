@@ -6,9 +6,9 @@ import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
-import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
+import { MetadataDecorators, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
 
 export class FieldsSettingsHelpers {
@@ -60,7 +60,7 @@ export class FieldsSettingsHelpers {
   static findDisableTranslation(
     contentTypeMetadata: EavEntity[],
     inputType: InputType,
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     defaultLanguage: string,
     attributeMetadata: EavEntity[],
   ): boolean {
@@ -110,7 +110,7 @@ export class FieldsSettingsHelpers {
   }
 
   static getDisabledBecauseTranslations(
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     disableTranslation: boolean,
     language: FormLanguage,
   ): boolean {
@@ -123,7 +123,7 @@ export class FieldsSettingsHelpers {
   }
 
   static getTranslationState(
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     disableTranslation: boolean,
     language: FormLanguage,
   ): TranslationState {
@@ -173,7 +173,7 @@ export class FieldsSettingsHelpers {
   }
 
   private static getTranslationStateCore(
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     disableTranslation: boolean,
     language: FormLanguage,
   ): TranslationStateCore {
