@@ -61,6 +61,9 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
     SxcGridModule,
     DragAndDropDirective,
   ],
+  providers: [
+    ContentTypesService,
+  ],
 })
 export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
