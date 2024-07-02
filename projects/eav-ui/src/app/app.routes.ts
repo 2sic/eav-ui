@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { EditRoutesRoot } from './edit/edit.routing';
 
-const appRoutes: Routes = [
+export const routes: Routes = [
   {
     path: ':zoneId/apps',
     loadChildren: () => import('./apps-management/apps-management.routing').then(m => m.appsManagementRoutes),
@@ -58,8 +57,3 @@ const appRoutes: Routes = [
   ...EditRoutesRoot,
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(appRoutes, {})],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
