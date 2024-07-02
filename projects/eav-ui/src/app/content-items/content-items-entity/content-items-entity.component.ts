@@ -3,13 +3,14 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ExtendedColDef } from '../models/extended-col-def.model';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-content-items-entity',
-    templateUrl: './content-items-entity.component.html',
-    styleUrls: ['./content-items-entity.component.scss'],
-    standalone: true,
-    imports: [SharedComponentsModule],
+  selector: 'app-content-items-entity',
+  templateUrl: './content-items-entity.component.html',
+  styleUrls: ['./content-items-entity.component.scss'],
+  standalone: true,
+  imports: [SharedComponentsModule, TippyDirective,],
 })
 export class ContentItemsEntityComponent implements ICellRendererAngularComp {
   encodedValue: string;

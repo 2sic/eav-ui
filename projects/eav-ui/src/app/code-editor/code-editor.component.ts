@@ -30,6 +30,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
+import { TippyDirective } from '../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-code-editor',
@@ -46,7 +47,8 @@ import { RxHelpers } from '../shared/rxJs/rx.helpers';
     MonacoEditorComponent_1,
     MatButtonModule,
     AsyncPipe,
-    ClickStopPropagationDirective
+    ClickStopPropagationDirective,
+    TippyDirective,
   ],
   providers: [
     SourceService,

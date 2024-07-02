@@ -7,6 +7,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-data-fields',
@@ -18,6 +19,7 @@ import { MatRippleModule } from '@angular/material/core';
         SharedComponentsModule,
         MatIconModule,
         MatBadgeModule,
+        TippyDirective,
     ],
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {

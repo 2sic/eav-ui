@@ -19,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: InputTypeConstants.StringTemplatePicker,
@@ -37,6 +38,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
     FieldHelperTextComponent,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })

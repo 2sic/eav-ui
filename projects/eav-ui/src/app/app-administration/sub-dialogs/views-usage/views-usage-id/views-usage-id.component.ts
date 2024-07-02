@@ -6,17 +6,19 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-views-usage-id',
-    templateUrl: './views-usage-id.component.html',
-    styleUrls: ['./views-usage-id.component.scss'],
-    standalone: true,
-    imports: [
-        MatRippleModule,
-        SharedComponentsModule,
-        MatIconModule,
-    ],
+  selector: 'app-views-usage-id',
+  templateUrl: './views-usage-id.component.html',
+  styleUrls: ['./views-usage-id.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    SharedComponentsModule,
+    MatIconModule,
+    TippyDirective,
+  ],
 })
 export class ViewsUsageIdComponent implements ICellRendererAngularComp {
   tooltip: string;

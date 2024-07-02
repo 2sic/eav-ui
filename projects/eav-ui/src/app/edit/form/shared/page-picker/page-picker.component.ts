@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ArrayHelpers } from '../../../../shared/helpers/array.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-page-picker',
@@ -32,6 +33,7 @@ import { ArrayHelpers } from '../../../../shared/helpers/array.helpers';
     MatDialogActions,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
   providers: [
     QueryService,

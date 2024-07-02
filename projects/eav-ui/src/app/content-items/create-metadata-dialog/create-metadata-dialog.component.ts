@@ -25,6 +25,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-create-metadata-dialog',
@@ -48,6 +49,7 @@ import { RxHelpers } from '../../shared/rxJs/rx.helpers';
       AsyncPipe,
       FieldHintComponent,
       ClickStopPropagationDirective,
+      TippyDirective,
     ]
 })
 export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {

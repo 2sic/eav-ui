@@ -33,6 +33,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-app-configuration',
@@ -50,6 +51,7 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     FeatureTextInfoComponent,
     RouterOutlet,
     AsyncPipe,
+    TippyDirective,
   ],
   providers: [
     FeatureDetailService

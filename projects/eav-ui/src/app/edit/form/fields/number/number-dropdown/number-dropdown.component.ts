@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: InputTypeConstants.NumberDropdown,
@@ -38,6 +39,7 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     MatIconModule,
     FieldHelperTextComponent,
     TranslateModule,
+    TippyDirective,
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })

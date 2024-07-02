@@ -12,6 +12,7 @@ import { PickerSearchComponent } from '../picker-search/picker-search.component'
 import { PickerListComponent } from '../picker-list/picker-list.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -30,13 +31,14 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     MatIconModule,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy {
 
   protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode(), SignalHelpers.boolEquals);
 
-  protected showAddNewEntityButtonInDialog = computed(() => { 
+  protected showAddNewEntityButtonInDialog = computed(() => {
     const settings = this.fieldState.settings();
     const showAddNew = !this.isInFreeTextMode()
       && settings.EnableCreate

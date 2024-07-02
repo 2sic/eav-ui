@@ -20,28 +20,30 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-edit-content-type',
-    templateUrl: './edit-content-type.component.html',
-    styleUrls: ['./edit-content-type.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        SharedComponentsModule,
-        MatExpansionModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogActions,
-        AsyncPipe,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-    ],
-    providers: [ContentTypesService],
+  selector: 'app-edit-content-type',
+  templateUrl: './edit-content-type.component.html',
+  styleUrls: ['./edit-content-type.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    SharedComponentsModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
+  providers: [ContentTypesService],
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';

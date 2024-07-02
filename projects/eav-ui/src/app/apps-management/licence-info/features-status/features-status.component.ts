@@ -7,6 +7,7 @@ import { IdFieldParams } from '../../../shared/components/id-field/id-field.mode
 import { NgClass } from '@angular/common';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-features-status',
@@ -14,9 +15,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   styleUrls: ['./features-status.component.scss'],
   standalone: true,
   imports: [
-      MatSlideToggleModule,
-      SharedComponentsModule,
-      NgClass,
+    MatSlideToggleModule,
+    SharedComponentsModule,
+    NgClass,
+    TippyDirective,
   ],
 })
 export class FeaturesStatusComponent implements ICellRendererAngularComp {

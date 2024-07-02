@@ -25,6 +25,7 @@ import { AppDialogConfigService } from '../../app-administration/services';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 declare const window: EavWindow;
 
@@ -47,6 +48,7 @@ declare const window: EavWindow;
     AsyncPipe,
     FeatureTextInfoComponent,
     FieldHintComponent,
+    TippyDirective,
   ],
   providers: [
     ZoneService,
@@ -67,7 +69,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   private loading$: BehaviorSubject<boolean>;
 
-  public features: FeaturesService  = inject(FeaturesService);
+  public features: FeaturesService = inject(FeaturesService);
   protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
 

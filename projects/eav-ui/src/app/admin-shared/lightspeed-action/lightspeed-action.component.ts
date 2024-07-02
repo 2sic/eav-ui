@@ -4,9 +4,9 @@ import { LightSpeedActionsParams } from './lightspeed-actions.models';
 import { MatRippleModule } from '@angular/material/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 /**
  * LightSpeedActionsComponent
@@ -19,7 +19,7 @@ import { FeatureNames } from '../../features/feature-names';
   templateUrl: './lightspeed-action.component.html',
   standalone: true,
   imports: [
-    TippyStandaloneDirective,
+    TippyDirective,
     MatIconModule,
     MatBadgeModule,
     MatRippleModule,

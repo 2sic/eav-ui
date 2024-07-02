@@ -26,6 +26,7 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { FeatureDetailService } from 'projects/eav-ui/src/app/features/services/feature-detail.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -61,6 +62,7 @@ const nameOfThis = 'AdamBrowserComponent';
     AsyncPipe,
     TranslateModule,
     ClickStopPropagationDirective,
+    TippyDirective,
   ],
   providers: [
     FeatureDetailService

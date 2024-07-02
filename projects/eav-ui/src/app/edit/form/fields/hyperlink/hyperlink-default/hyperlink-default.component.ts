@@ -24,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,
@@ -45,6 +46,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     PasteClipboardImageDirective,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 @FieldMetadata({

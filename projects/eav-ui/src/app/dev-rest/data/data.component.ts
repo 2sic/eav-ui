@@ -23,7 +23,7 @@ import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-h
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
 import { EntityBasic } from '../../edit/shared/models/entity-basic';
 
@@ -38,7 +38,7 @@ const pathToContent = 'app/{appname}/data/{typename}';
   standalone: true,
   imports: [
     MatButtonModule,
-    TippyStandaloneDirective,
+    TippyDirective,
     MatIconModule,
     RouterOutlet,
     SelectorWithHelpComponent,

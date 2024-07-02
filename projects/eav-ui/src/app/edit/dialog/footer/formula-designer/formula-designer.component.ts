@@ -33,6 +33,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-formula-designer',
@@ -55,6 +56,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     AsyncPipe,
     JsonPipe,
     SnippetLabelSizePipe,
+    TippyDirective,
   ],
   providers: [
     EntitiesService,
@@ -388,7 +390,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           }
           /*
           TODO: @SDV
-          for all picker types 
+          for all picker types
           add formulas -> Field.ListItem.Label
                           Field.ListItem.Tooltip
                           Field.ListItem.Information

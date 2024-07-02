@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExportAppService } from '../../services';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-export-app-parts',
@@ -36,7 +37,8 @@ import { ClickStopPropagationDirective } from '../../../shared/directives/click-
         MatDialogActions,
         AsyncPipe,
         FieldHintComponent,
-        ClickStopPropagationDirective
+        ClickStopPropagationDirective,
+        TippyDirective,
     ],
     providers:[ExportAppPartsService, ContentTypesService, ExportAppService]
 })

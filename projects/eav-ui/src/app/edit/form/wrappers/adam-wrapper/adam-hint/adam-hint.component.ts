@@ -6,6 +6,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatDividerModule } from '@angular/material/divider';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,6 +20,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class AdamHintComponent {

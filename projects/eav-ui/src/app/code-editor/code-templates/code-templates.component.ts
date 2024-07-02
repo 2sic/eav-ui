@@ -14,6 +14,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { NgTemplateOutlet, NgClass } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-code-templates',
@@ -30,6 +31,7 @@ import { ArrayHelpers } from '../../shared/helpers/array.helpers';
     DepthPaddingPipe,
     SortItemsPipe,
     ClickStopPropagationDirective,
+    TippyDirective,
   ],
 })
 export class CodeTemplatesComponent implements OnChanges {

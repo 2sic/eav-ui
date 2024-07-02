@@ -20,6 +20,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-translate-menu',
@@ -37,6 +38,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
     FeatureIconIndicatorComponent,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class TranslateMenuComponent implements OnInit {

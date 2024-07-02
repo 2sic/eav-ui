@@ -8,14 +8,14 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { LightSpeedActionsComponent } from '../../../admin-shared/lightspeed-action/lightspeed-action.component';
-import { TippyStandaloneDirective } from '../../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-apps-list-actions',
   templateUrl: './apps-list-actions.component.html',
   standalone: true,
   imports: [
-    TippyStandaloneDirective,
+    TippyDirective,
     MatIconModule,
     MatBadgeModule,
     MatRippleModule,

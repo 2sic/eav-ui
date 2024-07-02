@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 const logThis = false;
 const nameOfThis = 'LanguageSwitcherComponent';
@@ -23,6 +24,7 @@ const nameOfThis = 'LanguageSwitcherComponent';
     SharedComponentsModule,
     MatButtonModule,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {

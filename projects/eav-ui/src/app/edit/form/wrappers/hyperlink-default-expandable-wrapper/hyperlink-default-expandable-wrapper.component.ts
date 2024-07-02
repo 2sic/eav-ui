@@ -28,6 +28,7 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -53,6 +54,7 @@ import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/mo
     TranslateModule,
     ClickStopPropagationDirective,
     ExtendedFabSpeedDialComponent,
+    TippyDirective,
   ],
 })
 // tslint:disable-next-line:max-line-length

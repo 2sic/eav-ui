@@ -21,6 +21,7 @@ import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
@@ -42,6 +43,7 @@ import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/mo
     FeatureIconTextComponent,
     TranslateModule,
     ExtendedFabSpeedDialComponent,
+    TippyDirective,
   ],
 })
 // tslint:disable-next-line:max-line-length

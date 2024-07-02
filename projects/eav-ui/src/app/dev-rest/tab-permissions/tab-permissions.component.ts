@@ -9,7 +9,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
@@ -18,7 +18,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
     standalone: true,
     imports: [
         MatButtonModule,
-        TippyStandaloneDirective,
+        TippyDirective,
         MatIconModule,
         MatBadgeModule,
         AgGridModule,

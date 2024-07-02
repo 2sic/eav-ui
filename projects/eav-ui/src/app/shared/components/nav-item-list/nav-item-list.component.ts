@@ -4,7 +4,7 @@ import { NavItem } from '../../models/nav-item.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
 import tippy from 'tippy.js';
-import { TippyStandaloneDirective } from '../../directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../directives/tippy.directive';
 
 @Component({
   selector: 'app-nav-item-list',
@@ -16,7 +16,7 @@ import { TippyStandaloneDirective } from '../../directives/tippy-Standalone.dire
     NgClass,
     RouterLink,
     RouterLinkActive,
-    TippyStandaloneDirective,
+    TippyDirective,
     NgIf,
   ],
 })

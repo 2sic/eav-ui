@@ -8,24 +8,26 @@ import { SharedComponentsModule } from '../../../../../shared/shared-components.
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 // 2024-04-30 2dm Note: not going standalone yet, as the styling is then off
 // must find out how to import the styles correctly to continue
 @Component({
-    selector: 'app-picker-toggle-text',
-    templateUrl: './picker-text-toggle.component.html',
-    styleUrls: ['./picker-text-toggle.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        NgClass,
-        ExtendedModule,
-        MatIconModule,
-        TranslateModule,
-        ClickStopPropagationDirective,
-    ],
+  selector: 'app-picker-toggle-text',
+  templateUrl: './picker-text-toggle.component.html',
+  styleUrls: ['./picker-text-toggle.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatButtonModule,
+    SharedComponentsModule,
+    NgClass,
+    ExtendedModule,
+    MatIconModule,
+    TranslateModule,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
 })
 export class PickerTextToggleComponent implements OnInit {
   @Input() pickerData: PickerData;

@@ -4,13 +4,14 @@ import { Component } from '@angular/core';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-content-type-fields-type',
-    templateUrl: './content-type-fields-type.component.html',
-    styleUrls: ['./content-type-fields-type.component.scss'],
-    standalone: true,
-    imports: [SharedComponentsModule, MatIconModule],
+  selector: 'app-content-type-fields-type',
+  templateUrl: './content-type-fields-type.component.html',
+  styleUrls: ['./content-type-fields-type.component.scss'],
+  standalone: true,
+  imports: [SharedComponentsModule, MatIconModule, TippyDirective,],
 })
 export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp {
   value: string;

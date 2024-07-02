@@ -6,13 +6,14 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 import { JsonHelpers } from 'projects/eav-ui/src/app/shared/helpers/json.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-analyze-settings-value',
-    templateUrl: './analyze-settings-value.component.html',
-    styleUrls: ['./analyze-settings-value.component.scss'],
-    standalone: true,
-    imports: [MatRippleModule, SharedComponentsModule],
+  selector: 'app-analyze-settings-value',
+  templateUrl: './analyze-settings-value.component.html',
+  styleUrls: ['./analyze-settings-value.component.scss'],
+  standalone: true,
+  imports: [MatRippleModule, SharedComponentsModule, TippyDirective,],
 })
 export class AnalyzeSettingsValueComponent implements ICellRendererAngularComp {
   value: string;

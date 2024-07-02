@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../../shared/services/form-data.service';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -50,6 +51,7 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
     FieldsBuilderDirective,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class EntityWrapperComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {

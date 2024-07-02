@@ -19,21 +19,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-views-usage',
-    templateUrl: './views-usage.component.html',
-    styleUrls: ['./views-usage.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        AgGridModule,
-        AsyncPipe,
-        SxcGridModule,
-    ],
+  selector: 'app-views-usage',
+  templateUrl: './views-usage.component.html',
+  styleUrls: ['./views-usage.component.scss'],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    AsyncPipe,
+    SxcGridModule,
+    TippyDirective,
+  ],
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewUsage$ = new BehaviorSubject<ViewUsage>(undefined);

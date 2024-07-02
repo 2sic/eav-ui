@@ -8,21 +8,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-code-snippets',
-    templateUrl: './code-snippets.component.html',
-    styleUrls: ['./code-snippets.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatIconModule,
-        MatRippleModule,
-        KeyValuePipe,
-        TranslateModule,
-        ObjectToArrayPipe,
-        ClickStopPropagationDirective
-    ],
+  selector: 'app-code-snippets',
+  templateUrl: './code-snippets.component.html',
+  styleUrls: ['./code-snippets.component.scss'],
+  standalone: true,
+  imports: [
+    SharedComponentsModule,
+    MatIconModule,
+    MatRippleModule,
+    KeyValuePipe,
+    TranslateModule,
+    ObjectToArrayPipe,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
 })
 export class CodeSnippetsComponent {
   @Input() snippets: SnippetsSets;

@@ -7,14 +7,14 @@ import { InfoBoxComponent } from '../info-box/info-box.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-dev-rest-urls-and-code',
     templateUrl: './dev-rest-urls-and-code.component.html',
     styleUrls: ['./dev-rest-urls-and-code.component.scss'],
     standalone: true,
-    imports: [MatExpansionModule, MatButtonModule, TippyStandaloneDirective, MatIconModule, InfoBoxComponent]
+    imports: [MatExpansionModule, MatButtonModule, TippyDirective, MatIconModule, InfoBoxComponent]
 })
 export class DevRestUrlsAndCodeComponent {
   @Input() data: DevRestBaseViewModel;

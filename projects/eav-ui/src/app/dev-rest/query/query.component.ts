@@ -25,7 +25,7 @@ import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-h
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
@@ -36,7 +36,7 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
     standalone: true,
     imports: [
         MatButtonModule,
-        TippyStandaloneDirective,
+        TippyDirective,
         MatIconModule,
         RouterOutlet,
         SelectorWithHelpComponent,

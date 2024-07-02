@@ -16,13 +16,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
   standalone: true,
-  imports: [SharedComponentsModule, MatCardModule, MatIconModule, MatButtonModule, AsyncPipe],
+  imports: [
+    SharedComponentsModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    AsyncPipe,
+    TippyDirective,
+  ],
   providers: [ZoneService, FeaturesConfigService],
 
 })

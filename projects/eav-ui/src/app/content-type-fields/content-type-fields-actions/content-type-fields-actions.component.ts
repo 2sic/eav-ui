@@ -11,6 +11,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-content-type-fields-actions',
@@ -23,6 +24,7 @@ import { MatRippleModule } from '@angular/material/core';
     MatIconModule,
     MatBadgeModule,
     MatMenuModule,
+    TippyDirective,
   ],
 })
 export class ContentTypeFieldsActionsComponent extends BaseComponent implements ICellRendererAngularComp, OnDestroy {

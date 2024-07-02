@@ -24,6 +24,7 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -53,6 +54,7 @@ const nameOfThis = 'PickerSearchComponent';
     PickerIconHelpComponent,
     PickerIconInfoComponent,
     ClickStopPropagationDirective,
+    TippyDirective,
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit, OnDestroy {
@@ -200,7 +202,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     const selectedItems = this.selectedItems();
     const selectedItem = this.selectedItem();
     const nativeElement = this.autocomplete().nativeElement;
-    this.log.a('onClosed', {selectedItems, selectedItem});
+    this.log.a('onClosed', { selectedItems, selectedItem });
     if (this.showSelectedItem()) {
       // @SDV - improve this
       if (this.newValue && this.newValue != selectedItem?.value) {
@@ -231,7 +233,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, {allOptions});
+    this.logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, { allOptions });
     return placeholder;
   }
 
@@ -249,7 +251,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   isOptionDisabled(value: string): boolean {
     const selected = this.selectedItems();
     const isSelected = selected.some(entity => entity.value === value);
-    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, {selected});
+    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, { selected });
     return isSelected;
   }
 

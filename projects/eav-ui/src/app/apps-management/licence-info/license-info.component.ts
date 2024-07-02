@@ -27,7 +27,7 @@ import { AgGridHeightDirective } from './ag-grid-height.directive';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
@@ -50,7 +50,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
     AsyncPipe,
     LicensesOrderPipe,
     ActiveFeaturesCountPipe,
-    TippyStandaloneDirective,
+    TippyDirective,
   ],
   providers: [
     FeaturesConfigService,

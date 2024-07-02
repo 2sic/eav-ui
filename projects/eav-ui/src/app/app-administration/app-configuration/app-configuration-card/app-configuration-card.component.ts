@@ -19,21 +19,23 @@ import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-app-configuration-card',
-    templateUrl: './app-configuration-card.component.html',
-    styleUrls: ['./app-configuration-card.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        SharedComponentsModule,
-        NgTemplateOutlet,
-        MatButtonModule,
-        MatBadgeModule,
-        AsyncPipe,
-    ],
+  selector: 'app-app-configuration-card',
+  templateUrl: './app-configuration-card.component.html',
+  styleUrls: ['./app-configuration-card.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    SharedComponentsModule,
+    NgTemplateOutlet,
+    MatButtonModule,
+    MatBadgeModule,
+    AsyncPipe,
+    TippyDirective,
+  ],
 })
 export class AppConfigurationCardComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
@@ -115,7 +117,7 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
-      });
+    });
   }
 }
 

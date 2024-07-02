@@ -10,6 +10,7 @@ import { NgClass } from '@angular/common';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-content-items-status',
@@ -22,6 +23,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
         MatRippleModule,
         NgClass,
         MatBadgeModule,
+        TippyDirective,
     ],
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {

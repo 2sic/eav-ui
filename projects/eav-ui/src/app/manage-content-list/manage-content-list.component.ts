@@ -18,26 +18,28 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { FormConfigService } from '../edit/shared/services';
+import { TippyDirective } from '../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-manage-content-list',
-    templateUrl: './manage-content-list.component.html',
-    styleUrls: ['./manage-content-list.component.scss'],
-    standalone: true,
-    imports: [
-        RouterOutlet,
-        CdkScrollable,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        CdkDropList,
-        CdkDrag,
-        MatDialogActions,
-        AsyncPipe,
-        TranslateModule,
-        MatDialogModule,
-    ],
-    providers: [ContentGroupService, AppDialogConfigService, FormConfigService]
+  selector: 'app-manage-content-list',
+  templateUrl: './manage-content-list.component.html',
+  styleUrls: ['./manage-content-list.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    CdkScrollable,
+    MatButtonModule,
+    SharedComponentsModule,
+    MatIconModule,
+    CdkDropList,
+    CdkDrag,
+    MatDialogActions,
+    AsyncPipe,
+    TranslateModule,
+    MatDialogModule,
+    TippyDirective,
+  ],
+  providers: [ContentGroupService, AppDialogConfigService, FormConfigService]
 })
 export class ManageContentListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

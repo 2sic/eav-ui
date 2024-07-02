@@ -21,6 +21,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
 import { DatePipe } from '@angular/common';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 const logThis = false;
 const nameOfThis = 'DateTimeDefaultComponent';
@@ -43,6 +44,7 @@ const nameOfThis = 'DateTimeDefaultComponent';
     OwlDayJsDateTimeModule,
     MatDayjsModule,
     DatePipe,
+    TippyDirective,
   ],
   providers: [
     MatDayjsDateAdapter,

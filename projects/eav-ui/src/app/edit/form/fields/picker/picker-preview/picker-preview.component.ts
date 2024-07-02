@@ -15,6 +15,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 const logThis = false;
 const nameOfThis = 'PickerPreviewComponent';
@@ -37,6 +38,7 @@ const nameOfThis = 'PickerPreviewComponent';
     FieldHelperTextComponent,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy {

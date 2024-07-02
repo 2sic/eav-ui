@@ -21,6 +21,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, JsonPipe } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { ControlStatus } from '../../../shared/models';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -42,6 +43,7 @@ import { ControlStatus } from '../../../shared/models';
     FieldHelperTextComponent,
     TranslateModule,
     JsonPipe,
+    TippyDirective,
   ],
   providers: [
     ConnectorHelper,

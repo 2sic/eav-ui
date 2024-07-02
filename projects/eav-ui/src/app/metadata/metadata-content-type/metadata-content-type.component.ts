@@ -3,13 +3,14 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MetadataItem } from '../models/metadata.model';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-metadata-content-type',
     templateUrl: './metadata-content-type.component.html',
     styleUrls: ['./metadata-content-type.component.scss'],
     standalone: true,
-    imports: [SharedComponentsModule],
+    imports: [SharedComponentsModule, TippyDirective, ],
 })
 export class MetadataContentTypeComponent implements ICellRendererAngularComp {
   value: string;

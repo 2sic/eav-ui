@@ -27,7 +27,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { EavLogger } from '../../shared/logging/eav-logger';
 
 const pathToApi = 'app/{appname}/{endpointPath}/{action}';
@@ -39,7 +39,7 @@ const logThis = false;
     standalone: true,
     imports: [
         MatButtonModule,
-        TippyStandaloneDirective,
+        TippyDirective,
         MatIconModule,
         RouterOutlet,
         SelectorWithHelpComponent,

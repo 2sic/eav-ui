@@ -7,14 +7,13 @@ import { IdFieldParams } from './id-field.models';
 import { NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../directives/tippy.directive';
-import { TippyStandaloneDirective } from '../../directives/tippy-Standalone.directive';
 
 @Component({
   selector: 'app-id-field',
   templateUrl: './id-field.component.html',
   styleUrls: ['./id-field.component.scss'],
   standalone: true,
-  imports: [NgClass, MatIconModule, TippyStandaloneDirective]
+  imports: [NgClass, MatIconModule, TippyDirective]
 })
 export class IdFieldComponent implements ICellRendererAngularComp {
   id: number | string;

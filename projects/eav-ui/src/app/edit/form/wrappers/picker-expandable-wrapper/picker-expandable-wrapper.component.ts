@@ -16,6 +16,7 @@ import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,
@@ -35,6 +36,7 @@ import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/mo
     ExtendedFabSpeedDialComponent,
     MatRippleModule,
     TranslateModule,
+    TippyDirective,
   ],
 })
 export class PickerExpandableWrapperComponent extends BaseComponent implements OnInit, OnDestroy {

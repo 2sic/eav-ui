@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatCardModule } from '@angular/material/card';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-feature-info-dialog',
@@ -24,6 +25,7 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     AsyncPipe,
     TranslateModule,
+    TippyDirective,
   ]
 })
 export class FeatureInfoDialogComponent implements OnInit {
@@ -45,7 +47,7 @@ export class FeatureInfoDialogComponent implements OnInit {
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
-  findOutMore(link: string): void { 
+  findOutMore(link: string): void {
     window.open(link, '_blank');
   }
 

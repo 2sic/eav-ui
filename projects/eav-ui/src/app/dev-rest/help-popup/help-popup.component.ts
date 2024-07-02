@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HelpPopupData } from './help-popup.models';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-help-popup',
@@ -11,7 +11,7 @@ import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalo
     standalone: true,
     imports: [
         MatButtonModule,
-        TippyStandaloneDirective,
+        TippyDirective,
         MatIconModule,
     ],
 })
