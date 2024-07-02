@@ -14,6 +14,7 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'StringUrlPathComponent';
@@ -41,7 +42,7 @@ export class StringUrlPathComponent extends BaseComponent implements OnInit, OnD
   protected basics = this.fieldState.basics;
   public control = this.fieldState.control;
 
-  private fieldMask = FieldMask.createTransient(inject(Injector));
+  private fieldMask = transient(FieldMask);
 
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';

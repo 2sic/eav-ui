@@ -5,6 +5,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, computed, untracked } from '@angular/core';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { placeholderPickerItem } from '../models/picker-item.model';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -25,10 +26,8 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
-      fieldMask = FieldMask.createTransient(this.injector).init(logName, urlParameters, true);
-        // .logChanges();
+      fieldMask = transient(FieldMask, this.injector).init(logName, urlParameters, true);
     });
-    // console.log('2dm queryParamsMask2', fieldMask?.resolve());
     return fieldMask;
   });
 

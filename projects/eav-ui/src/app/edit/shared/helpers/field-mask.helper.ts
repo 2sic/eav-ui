@@ -1,6 +1,6 @@
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { Injectable, inject, signal, Injector, OnDestroy, effect } from '@angular/core';
+import { Injectable, inject, signal, Injector, OnDestroy, effect, ProviderToken, TypeProvider } from '@angular/core';
 import { FieldState } from '../../form/builder/fields-builder/field-state';
 import { FormConfigService } from '../services';
 
@@ -21,23 +21,6 @@ const FieldUnwrap = /[\[\]]/ig;
  */
 @Injectable()
 export class FieldMask extends ServiceBase implements OnDestroy {
-
-  /**
-   * Field masks will usually be needed as standalone copies of each.
-   * This is not what Angular does though, so we should do it like this.
-   * @param injector 
-   */
-  static createTransient(injector: Injector): FieldMask
-  {
-    return Injector.create(
-      {
-        providers: [
-          FieldMask
-        ],
-        parent: injector
-      }).get(FieldMask)
-  }
-
   public signal = signal<string>('');
 
   public watch = false;

@@ -18,6 +18,7 @@ import { EntityFormStateService } from '../../../entity-form-state.service';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { PickerItem, messagePickerItem } from '../models/picker-item.model';
 import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -34,11 +35,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
-      fieldMask = FieldMask.createTransient(this.injector)
-        .init('PickerSource-EntityType', typeMask, true);
-        // .logChanges();
+      fieldMask = transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask, true);
     });
-    // console.log('2dm contentTypeMaskLazy2', fieldMask?.resolve());
     return fieldMask;
   });
   
@@ -215,8 +213,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
       const prefillRaw = this.fieldState.settings().Prefill;
-      const prefillMask = FieldMask.createTransient(this.injector)
-        .init('Prefill', prefillRaw, false);
+      const prefillMask = transient(FieldMask, this.injector).init('Prefill', prefillRaw, false);
       const prefill = prefillMask.resolve();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

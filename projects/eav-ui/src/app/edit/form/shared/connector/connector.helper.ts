@@ -16,6 +16,7 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FieldState } from '../../builder/fields-builder/field-state';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'ConnectorHelper';
@@ -165,7 +166,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       // getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
 
       getFieldMask: (mask: string, name?: string, watch?: boolean) => {
-        return FieldMask.createTransient(this.injector).init(name, mask, watch);
+        return transient(FieldMask, this.injector).init(name, mask, watch);
       },
     };
 

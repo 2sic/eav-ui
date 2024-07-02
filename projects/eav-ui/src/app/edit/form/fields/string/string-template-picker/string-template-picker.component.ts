@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: InputTypeConstants.StringTemplatePicker,
@@ -54,8 +55,8 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
 
   // needed to create more FieldMasks as needed
   private injector = inject(Injector);
-  private typeMask = FieldMask.createTransient(this.injector);
-  private locationMask = FieldMask.createTransient(this.injector);
+  private typeMask = transient(FieldMask);
+  private locationMask = transient(FieldMask);
 
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
@@ -124,12 +125,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   }
 
   createTemplate() {
-    const nameMask = FieldMask.createTransient(this.injector)
-      // new FieldMask(
-      // '[Name]',
-      //  this.group.controls
-      //)
-      .init('String-NameMask', '[Name]', false); //, null, null, null, 'String-NameMask');
+    const nameMask = transient(FieldMask, this.injector).init('String-NameMask', '[Name]', false);
     const data: CreateFileDialogData = {
       global: this.global,
       purpose: this.activeSpec.purpose,
