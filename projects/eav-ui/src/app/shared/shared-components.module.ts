@@ -26,8 +26,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     declarations: [
         // AgBoolIconRenderer, // TODO:: @2dg not in used??
         // MatInputAutofocusDirective, // TODO:: @2dg not in used??
-        FileUploadDialogComponent,
-        DragAndDropDirective,
+
         MousedownStopPropagationDirective,
         ToggleDebugDirective,
         MatFormFieldTextareaDirective,
@@ -38,8 +37,8 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     ],
     exports: [
         BreadcrumbModule,
-        FileUploadDialogComponent,
-        DragAndDropDirective,
+        // FileUploadDialogComponent,
+        // DragAndDropDirective,
         MousedownStopPropagationDirective,
         ToggleDebugDirective,
         MatFormFieldTextareaDirective,
@@ -58,7 +57,6 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
         MatButtonModule,
         MatDialogModule,
         BreadcrumbModule,
-        SafeHtmlPipe
     ]
 })
 export class SharedComponentsModule { }

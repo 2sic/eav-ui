@@ -36,6 +36,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 
 @Component({
   selector: 'app-views',
@@ -51,6 +52,7 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     RouterOutlet,
     AsyncPipe,
     SxcGridModule,
+    DragAndDropDirective,
   ],
   providers: [FeatureDetailService]
 })

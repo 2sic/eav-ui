@@ -29,6 +29,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 
 @Component({
     selector: 'app-queries',
@@ -44,6 +45,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
         RouterOutlet,
         AsyncPipe,
         SxcGridModule,
+        DragAndDropDirective,
     ],
 })
 export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

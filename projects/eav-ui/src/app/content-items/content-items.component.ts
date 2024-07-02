@@ -47,6 +47,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
+import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 
 @Component({
     selector: 'app-content-items',
@@ -62,6 +63,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
         MatDialogActions,
         AsyncPipe,
         SafeHtmlPipe,
+        DragAndDropDirective,
     ],
     providers: [
         ContentItemsService,

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
@@ -9,21 +9,25 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Context } from '../../services/context';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { InstallerService } from '../../services/installer.service';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
 
 
 @Component({
   selector: 'app-file-upload-dialog',
   templateUrl: './file-upload-dialog.component.html',
   styleUrls: ['./file-upload-dialog.component.scss'],
-  // TODO:: Open
-  // standalone: true,
-  // imports:[
-  //   NgClass,
-  //   MatDialogModule,
-  //   MatProgressSpinnerModule,
-  //   SafeHtmlPipeStandAlone,
-  //   AsyncPipe,
-  // ]
+  standalone: true,
+  imports: [
+    NgClass,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    SafeHtmlPipe,
+    AsyncPipe,
+    DragAndDropDirective,
+  ]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

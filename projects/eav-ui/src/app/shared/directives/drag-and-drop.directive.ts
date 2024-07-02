@@ -1,9 +1,9 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { fromEvent, Subscription } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { BaseDirective } from './base.directive';
 
-@Directive({ selector: '[appDragAndDrop]' })
+@Directive({ selector: '[appDragAndDrop]', standalone: true })
 export class DragAndDropDirective extends BaseDirective implements OnInit, OnDestroy {
   @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
   /** Comma separated file types, e.g. 'txt,doc,docx' */

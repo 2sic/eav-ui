@@ -36,6 +36,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 
 const logThis = false;
 
@@ -57,6 +58,7 @@ const logThis = false;
     MatBadgeModule,
     RouterOutlet,
     AsyncPipe,
+    DragAndDropDirective,
     // WIP 2dm - needed for the lightspeed buttons to work
   ],
   providers: [

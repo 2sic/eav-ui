@@ -13,6 +13,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 
 @Component({
     selector: 'app-content-import',
@@ -26,6 +27,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
         MatRadioModule,
         MatDialogActions,
         AsyncPipe,
+        DragAndDropDirective,
     ],
     providers: [
         ContentImportService,
