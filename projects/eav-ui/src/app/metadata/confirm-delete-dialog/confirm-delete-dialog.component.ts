@@ -1,22 +1,20 @@
 import { Component, HostBinding, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 @Component({
-    selector: 'app-confirm-delete-dialog',
-    templateUrl: './confirm-delete-dialog.component.html',
-    styleUrls: ['./confirm-delete-dialog.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        SafeHtmlPipe,
-    ],
+  selector: 'app-confirm-delete-dialog',
+  templateUrl: './confirm-delete-dialog.component.html',
+  styleUrls: ['./confirm-delete-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+    SafeHtmlPipe,
+  ],
 })
 export class ConfirmDeleteDialogComponent {
   @HostBinding('className') hostClass = 'dialog-component';

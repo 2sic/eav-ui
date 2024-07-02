@@ -18,7 +18,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { AppDialogConfigService } from '../../app-administration/services';
@@ -37,7 +36,6 @@ declare const window: EavWindow;
   imports: [
     MatCardModule,
     MatIconModule,
-    SharedComponentsModule,
     RouterLink,
     NgTemplateOutlet,
     MatButtonModule,

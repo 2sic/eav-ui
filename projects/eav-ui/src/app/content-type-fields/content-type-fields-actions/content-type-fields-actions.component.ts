@@ -9,7 +9,6 @@ import { BaseComponent } from '../../shared/components/base.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
@@ -20,7 +19,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   standalone: true,
   imports: [
     MatRippleModule,
-    SharedComponentsModule,
     MatIconModule,
     MatBadgeModule,
     MatMenuModule,

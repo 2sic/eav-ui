@@ -1,7 +1,6 @@
 import { Component, OnDestroy, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -29,7 +28,6 @@ const nameOfThis = 'CollapsibleWrapperComponent'
     FlexModule,
     MatIconModule,
     ChangeAnchorTargetDirective,
-    SharedComponentsModule,
     AsyncPipe,
     SafeHtmlPipe,
   ],

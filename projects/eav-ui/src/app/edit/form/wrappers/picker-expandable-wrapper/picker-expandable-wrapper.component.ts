@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatRippleModule } from '@angular/material/core';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -30,7 +29,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     FlexModule,
     MatCardModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     CdkScrollable,
     ExtendedFabSpeedDialComponent,

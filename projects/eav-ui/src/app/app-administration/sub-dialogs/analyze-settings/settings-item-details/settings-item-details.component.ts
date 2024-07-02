@@ -10,24 +10,22 @@ import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
 import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
 
 @Component({
-    selector: 'app-settings-item-details',
-    templateUrl: './settings-item-details.component.html',
-    styleUrls: ['./settings-item-details.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        AgGridModule,
-        AsyncPipe,
-        SxcGridModule,
-    ],
+  selector: 'app-settings-item-details',
+  templateUrl: './settings-item-details.component.html',
+  styleUrls: ['./settings-item-details.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    AgGridModule,
+    AsyncPipe,
+    SxcGridModule,
+  ],
 })
 export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;

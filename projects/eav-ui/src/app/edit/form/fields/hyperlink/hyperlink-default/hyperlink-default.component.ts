@@ -19,7 +19,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
@@ -33,7 +32,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
   standalone: true,
   imports: [
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     NgClass,
     ExtendedModule,

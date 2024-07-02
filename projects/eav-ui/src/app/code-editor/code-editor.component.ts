@@ -27,7 +27,6 @@ import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../shared/directives/tippy.directive';
@@ -38,7 +37,6 @@ import { TippyDirective } from '../shared/directives/tippy.directive';
   styleUrls: ['./code-editor.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     NgClass,
     MatIconModule,
     CodeTemplatesComponent,

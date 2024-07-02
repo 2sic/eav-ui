@@ -2,7 +2,6 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { Feature } from '../../../features/models/feature.model';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
@@ -10,7 +9,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
   templateUrl: './features-list-enabled-reason.component.html',
   styleUrls: ['./features-list-enabled-reason.component.scss'],
   standalone: true,
-  imports: [SharedComponentsModule, TippyDirective,],
+  imports: [TippyDirective,],
 })
 export class FeaturesListEnabledReasonComponent implements ICellRendererAngularComp {
   value: boolean;

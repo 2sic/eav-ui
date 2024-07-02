@@ -17,7 +17,6 @@ import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
@@ -27,7 +26,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
   styleUrls: ['./views-usage.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatButtonModule,
     MatIconModule,
     RouterOutlet,

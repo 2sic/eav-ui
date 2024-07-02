@@ -6,7 +6,6 @@ import { LogsDumpComponent } from './logs-dump/logs-dump.component';
 import { FormulaDesignerComponent } from './formula-designer/formula-designer.component';
 import { DataDumpComponent } from './data-dump/data-dump.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
@@ -24,7 +23,6 @@ declare const window: EavWindow;
     NgClass,
     ExtendedModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     DataDumpComponent,
     FormulaDesignerComponent,
@@ -39,9 +37,9 @@ export class EditDialogFooterComponent implements OnInit {
   activeDebug: DebugType;
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   toggleDebugType(type: DebugType): void {
     this.activeDebug = type !== this.activeDebug ? type : null;

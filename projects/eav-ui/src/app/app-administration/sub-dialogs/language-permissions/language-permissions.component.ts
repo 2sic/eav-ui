@@ -16,26 +16,24 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-    selector: 'app-language-permissions',
-    templateUrl: './language-permissions.component.html',
-    styleUrls: ['./language-permissions.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        RouterOutlet,
-        AgGridModule,
-        MatDialogActions,
-        AsyncPipe,
-        SxcGridModule,
-    ],
-    providers: [ZoneService]
+  selector: 'app-language-permissions',
+  templateUrl: './language-permissions.component.html',
+  styleUrls: ['./language-permissions.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    MatDialogActions,
+    AsyncPipe,
+    SxcGridModule,
+  ],
+  providers: [ZoneService]
 })
 export class LanguagePermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;

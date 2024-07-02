@@ -26,30 +26,28 @@ import { MatSelectModule } from '@angular/material/select';
 import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
-    selector: 'app-edit-content-type-fields',
-    templateUrl: './edit-content-type-fields.component.html',
-    styleUrls: ['./edit-content-type-fields.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReservedNamesValidatorDirective,
-        MatSelectModule,
-        MatIconModule,
-        MatOptionModule,
-        NgClass,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-        TranslateModule,
-        FieldHintComponent,
-    ],
+  selector: 'app-edit-content-type-fields',
+  templateUrl: './edit-content-type-fields.component.html',
+  styleUrls: ['./edit-content-type-fields.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    MatSelectModule,
+    MatIconModule,
+    MatOptionModule,
+    NgClass,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    TranslateModule,
+    FieldHintComponent,
+  ],
 })
 export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

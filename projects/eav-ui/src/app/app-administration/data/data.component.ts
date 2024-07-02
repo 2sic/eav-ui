@@ -37,32 +37,30 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogActions } from '@angular/material/dialog';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 
 @Component({
-    selector: 'app-data',
-    templateUrl: './data.component.html',
-    styleUrls: ['./data.component.scss'],
-    standalone: true,
-    imports: [
-        AgGridModule,
-        SharedComponentsModule,
-        MatDialogActions,
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        AsyncPipe,
-        SxcGridModule,
-        DragAndDropDirective,
-    ],
+  selector: 'app-data',
+  templateUrl: './data.component.html',
+  styleUrls: ['./data.component.scss'],
+  standalone: true,
+  imports: [
+    AgGridModule,
+    MatDialogActions,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+    DragAndDropDirective,
+  ],
 })
 export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
@@ -223,17 +221,17 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
       items: [
         !contentType.Properties
           ? {
-              ContentTypeName: eavConstants.contentTypes.contentType,
-              For: {
-                Target: eavConstants.metadata.contentType.target,
-                TargetType: eavConstants.metadata.contentType.targetType,
-                String: contentType.StaticName,
-              },
-              Prefill: {
-                Label: contentType.Name,
-                Description: contentType.Description
-              },
-            }
+            ContentTypeName: eavConstants.contentTypes.contentType,
+            For: {
+              Target: eavConstants.metadata.contentType.target,
+              TargetType: eavConstants.metadata.contentType.targetType,
+              String: contentType.StaticName,
+            },
+            Prefill: {
+              Label: contentType.Name,
+              Description: contentType.Description
+            },
+          }
           : { EntityId: contentType.Properties.Id }
       ],
     };

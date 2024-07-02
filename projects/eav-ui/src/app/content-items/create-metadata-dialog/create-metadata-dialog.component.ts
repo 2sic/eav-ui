@@ -16,7 +16,6 @@ import { metadataKeyValidator } from './metadata-key.validator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -28,29 +27,28 @@ import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-create-metadata-dialog',
-    templateUrl: './create-metadata-dialog.component.html',
-    styleUrls: ['./create-metadata-dialog.component.scss'],
-    standalone: true,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormFieldModule,
-      MatSelectModule,
-      MatOptionModule,
-      MatInputModule,
-      SharedComponentsModule,
-      NgTemplateOutlet,
-      MatButtonModule,
-      NgClass,
-      MatIconModule,
-      MatDialogActions,
-      MatSlideToggleModule,
-      AsyncPipe,
-      FieldHintComponent,
-      ClickStopPropagationDirective,
-      TippyDirective,
-    ]
+  selector: 'app-create-metadata-dialog',
+  templateUrl: './create-metadata-dialog.component.html',
+  styleUrls: ['./create-metadata-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    NgTemplateOutlet,
+    MatButtonModule,
+    NgClass,
+    MatIconModule,
+    MatDialogActions,
+    MatSlideToggleModule,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ]
 })
 export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

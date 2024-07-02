@@ -5,20 +5,18 @@ import { SiteLanguagePermissions } from '../../../../apps-management/models/site
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions.models';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-    selector: 'app-languages-permissions-actions',
-    templateUrl: './languages-permissions-actions.component.html',
-    styleUrls: ['./languages-permissions-actions.component.scss'],
-    standalone: true,
-    imports: [
-        MatRippleModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatBadgeModule,
-    ],
+  selector: 'app-languages-permissions-actions',
+  templateUrl: './languages-permissions-actions.component.html',
+  styleUrls: ['./languages-permissions-actions.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+  ],
 })
 export class LanguagesPermissionsActionsComponent implements ICellRendererAngularComp {
   language: SiteLanguagePermissions;

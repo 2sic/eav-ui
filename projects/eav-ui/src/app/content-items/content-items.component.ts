@@ -44,33 +44,31 @@ import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 
 @Component({
-    selector: 'app-content-items',
-    templateUrl: './content-items.component.html',
-    styleUrls: ['./content-items.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        AgGridModule,
-        MatDialogActions,
-        AsyncPipe,
-        SafeHtmlPipe,
-        DragAndDropDirective,
-    ],
-    providers: [
-        ContentItemsService,
-        EntitiesService,
-        ContentExportService,
-        ContentTypesService,
-    ],
+  selector: 'app-content-items',
+  templateUrl: './content-items.component.html',
+  styleUrls: ['./content-items.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AgGridModule,
+    MatDialogActions,
+    AsyncPipe,
+    SafeHtmlPipe,
+    DragAndDropDirective,
+  ],
+  providers: [
+    ContentItemsService,
+    EntitiesService,
+    ContentExportService,
+    ContentTypesService,
+  ],
 })
 export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();

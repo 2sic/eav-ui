@@ -3,7 +3,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
@@ -26,7 +25,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     FieldHelperTextComponent,
     FlexModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatMenuModule,
     MatIconModule,
     AsyncPipe,

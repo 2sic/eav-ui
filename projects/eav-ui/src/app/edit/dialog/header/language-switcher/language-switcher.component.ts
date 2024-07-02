@@ -8,7 +8,6 @@ import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
@@ -21,7 +20,6 @@ const nameOfThis = 'LanguageSwitcherComponent';
   styleUrls: ['./language-switcher.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatButtonModule,
     TranslateModule,
     TippyDirective,

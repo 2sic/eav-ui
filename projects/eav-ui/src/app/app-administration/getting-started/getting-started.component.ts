@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { map } from 'rxjs';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { SafeResourceUrlPipe } from '../../shared/pipes/safe-resource-url';
 
 @Component({
@@ -10,7 +9,7 @@ import { SafeResourceUrlPipe } from '../../shared/pipes/safe-resource-url';
   templateUrl: './getting-started.component.html',
   styleUrls: ['./getting-started.component.scss'],
   standalone: true,
-  imports: [SharedComponentsModule, AsyncPipe, SafeResourceUrlPipe,],
+  imports: [AsyncPipe, SafeResourceUrlPipe,],
 })
 export class GettingStartedComponent {
 

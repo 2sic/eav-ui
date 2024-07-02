@@ -9,34 +9,32 @@ import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterOutlet } from '@angular/router';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 
 @Component({
-    selector: 'app-create-app',
-    templateUrl: './create-app.component.html',
-    styleUrls: ['./create-app.component.scss'],
-    standalone: true,
-    imports: [
-        RouterOutlet,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        SharedComponentsModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-        FieldHintComponent,
-    ],
-    providers: [
-        AppsListService,
-    ]
+  selector: 'app-create-app',
+  templateUrl: './create-app.component.html',
+  styleUrls: ['./create-app.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    FieldHintComponent,
+  ],
+  providers: [
+    AppsListService,
+  ]
 })
 export class CreateAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

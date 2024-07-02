@@ -6,7 +6,6 @@ import { PickerItem, messagePickerItem } from 'projects/edit-types';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -46,7 +45,6 @@ const nameOfThis = 'PickerSearchComponent';
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
-    SharedComponentsModule,
     MatOptionModule,
     MatTreeModule,
     AsyncPipe,

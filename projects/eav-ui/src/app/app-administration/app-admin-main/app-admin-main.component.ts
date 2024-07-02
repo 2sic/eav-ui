@@ -12,7 +12,6 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AppAdminMenu } from './app-admin-menu';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,27 +21,26 @@ import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-
 const logThis = false;
 
 @Component({
-    selector: 'app-app-admin-main',
-    templateUrl: './app-admin-main.component.html',
-    styleUrls: ['./app-admin-main.component.scss'],
-    providers: [
-        // Must have a new config service here, to restart with new settings
-        // which are injected into it from the context
-        // Because of standalone-components, it's not enough to have it in the module-definition
-        AppDialogConfigService,
-    ],
-    standalone: true,
-    imports: [
-        MatToolbarModule,
-        MatIconModule,
-        BreadcrumbModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatSidenavModule,
-        RouterOutlet,
-        AsyncPipe,
-        NavItemListComponent,
-    ],
+  selector: 'app-app-admin-main',
+  templateUrl: './app-admin-main.component.html',
+  styleUrls: ['./app-admin-main.component.scss'],
+  providers: [
+    // Must have a new config service here, to restart with new settings
+    // which are injected into it from the context
+    // Because of standalone-components, it's not enough to have it in the module-definition
+    AppDialogConfigService,
+  ],
+  standalone: true,
+  imports: [
+    MatToolbarModule,
+    MatIconModule,
+    BreadcrumbModule,
+    MatButtonModule,
+    MatSidenavModule,
+    RouterOutlet,
+    AsyncPipe,
+    NavItemListComponent,
+  ],
 })
 export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
@@ -54,7 +52,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
     private media: MediaMatcher
   ) {
     super(router, route, new EavLogger('AppAdminMainComponent', logThis));
-    this.log.a('constructor', {appDialogConfigService});
+    this.log.a('constructor', { appDialogConfigService });
   }
 
   AppScopes = AppScopes;

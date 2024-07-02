@@ -10,7 +10,6 @@ import { DepthPaddingPipe } from './depth-padding.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { NgTemplateOutlet, NgClass } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
@@ -24,7 +23,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   imports: [
     NgTemplateOutlet,
     NgClass,
-    SharedComponentsModule,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,

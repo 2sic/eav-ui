@@ -25,28 +25,26 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 
 @Component({
-    selector: 'app-queries',
-    templateUrl: './queries.component.html',
-    styleUrls: ['./queries.component.scss'],
-    standalone: true,
-    imports: [
-        AgGridModule,
-        SharedComponentsModule,
-        MatDialogActions,
-        MatButtonModule,
-        MatIconModule,
-        RouterOutlet,
-        AsyncPipe,
-        SxcGridModule,
-        DragAndDropDirective,
-    ],
+  selector: 'app-queries',
+  templateUrl: './queries.component.html',
+  styleUrls: ['./queries.component.scss'],
+  standalone: true,
+  imports: [
+    AgGridModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+    DragAndDropDirective,
+  ],
 })
 export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   enablePermissions!: boolean;
@@ -67,7 +65,7 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
     private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
-   }
+  }
 
   ngOnInit() {
     this.fetchQueries();
@@ -122,11 +120,11 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
       items: [
         query == null
           ? {
-              ContentTypeName: eavConstants.contentTypes.query,
-              Prefill: {
-                TestParameters: eavConstants.pipelineDesigner.testParameters
-              }
+            ContentTypeName: eavConstants.contentTypes.query,
+            Prefill: {
+              TestParameters: eavConstants.pipelineDesigner.testParameters
             }
+          }
           : { EntityId: query.Id },
       ],
     };

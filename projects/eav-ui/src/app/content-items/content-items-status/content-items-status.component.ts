@@ -9,22 +9,20 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { NgClass } from '@angular/common';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-content-items-status',
-    templateUrl: './content-items-status.component.html',
-    styleUrls: ['./content-items-status.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        MatIconModule,
-        MatRippleModule,
-        NgClass,
-        MatBadgeModule,
-        TippyDirective,
-    ],
+  selector: 'app-content-items-status',
+  templateUrl: './content-items-status.component.html',
+  styleUrls: ['./content-items-status.component.scss'],
+  standalone: true,
+  imports: [
+    MatIconModule,
+    MatRippleModule,
+    NgClass,
+    MatBadgeModule,
+    TippyDirective,
+  ],
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   value: PubMeta;

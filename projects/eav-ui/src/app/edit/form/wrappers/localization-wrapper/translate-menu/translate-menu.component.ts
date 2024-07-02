@@ -15,7 +15,6 @@ import { FeatureIconIndicatorComponent } from '../../../../../features/feature-i
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -31,7 +30,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     FlexModule,
     NgClass,
     ExtendedModule,
-    SharedComponentsModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,

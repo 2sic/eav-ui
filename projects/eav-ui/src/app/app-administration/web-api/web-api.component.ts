@@ -16,28 +16,26 @@ import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.com
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
-    selector: 'app-web-api',
-    templateUrl: './web-api.component.html',
-    styleUrls: ['./web-api.component.scss'],
-    standalone: true,
-    imports: [
-        AgGridModule,
-        MatDialogActions,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatMenuModule,
-        MatIconModule,
-        RouterOutlet,
-        AsyncPipe,
-        SxcGridModule,
-    ],
+  selector: 'app-web-api',
+  templateUrl: './web-api.component.html',
+  styleUrls: ['./web-api.component.scss'],
+  standalone: true,
+  imports: [
+    AgGridModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+  ],
 })
 export class WebApiComponent implements OnInit, OnDestroy {
   enableCode!: boolean;

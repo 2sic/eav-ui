@@ -14,7 +14,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -31,7 +30,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    SharedComponentsModule,
     MatExpansionModule,
     MatSelectModule,
     MatOptionModule,

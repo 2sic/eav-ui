@@ -9,22 +9,20 @@ import { VisualQueryService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 
 @Component({
-    selector: 'app-run-explorer',
-    templateUrl: './run-explorer.component.html',
-    styleUrls: ['./run-explorer.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatSlideToggleModule,
-        AsyncPipe,
-    ],
+  selector: 'app-run-explorer',
+  templateUrl: './run-explorer.component.html',
+  styleUrls: ['./run-explorer.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    AsyncPipe,
+  ],
 })
 export class RunExplorerComponent implements OnInit {
   pipelineModel$: Observable<PipelineModel>;

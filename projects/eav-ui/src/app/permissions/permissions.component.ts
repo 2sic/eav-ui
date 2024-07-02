@@ -19,7 +19,6 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MetadataService } from './services/metadata.service';
 import { EntitiesService } from '../content-items/services/entities.service';
@@ -31,7 +30,6 @@ import { EntitiesService } from '../content-items/services/entities.service';
   standalone: true,
   imports: [
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     RouterOutlet,
     AgGridModule,

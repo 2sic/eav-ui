@@ -9,7 +9,6 @@ import { MatDayjsDateAdapter, MatDayjsModule } from '../../../../shared/date-ada
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { DateTimeAdapter, OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,7 +36,6 @@ const nameOfThis = 'DateTimeDefaultComponent';
     ReactiveFormsModule,
     MatInputModule,
     MatDatepickerModule,
-    SharedComponentsModule,
     OwlDateTimeModule,
     FieldHelperTextComponent,
     TranslateModule,

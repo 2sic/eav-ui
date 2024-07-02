@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
@@ -15,7 +14,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
   standalone: true,
   imports: [
     MatRippleModule,
-    SharedComponentsModule,
     MatIconModule,
     TippyDirective,
   ],

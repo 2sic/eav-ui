@@ -13,28 +13,26 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
-    selector: 'app-share-or-inherit-dialog',
-    templateUrl: './share-or-inherit-dialog.component.html',
-    styleUrls: ['./share-or-inherit-dialog.component.scss'],
-    standalone: true,
-    imports: [
-      MatButtonModule,
-      SharedComponentsModule,
-      MatIconModule,
-      MatCardModule,
-      MatTableModule,
-      NgClass,
-      AsyncPipe,
-      TranslateModule,
-      FeatureIconIndicatorComponent
-    ],
-    providers: [FeatureDetailService]
+  selector: 'app-share-or-inherit-dialog',
+  templateUrl: './share-or-inherit-dialog.component.html',
+  styleUrls: ['./share-or-inherit-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule,
+    NgClass,
+    AsyncPipe,
+    TranslateModule,
+    FeatureIconIndicatorComponent
+  ],
+  providers: [FeatureDetailService]
 })
 export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];
@@ -49,7 +47,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   shareableFields$ = new BehaviorSubject<Field[]>(undefined);
   viewModel$: Observable<ShareOrInheritDialogViewModel>;
 
-  public features: FeaturesService  = inject(FeaturesService);
+  public features: FeaturesService = inject(FeaturesService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
 
   constructor(
@@ -108,17 +106,17 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   }
 
   save() {
-      if (!this.fieldShareConfigManagement()) {
-        openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
-      } else {
-        if (this.state == SharingOrInheriting.Sharing) {
-          this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
-            .subscribe(() => this.dialogRef.close()));
-        } else if (this.state == SharingOrInheriting.Inheriting) {
-          this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
-            .subscribe(() => this.dialogRef.close()));
-        }
+    if (!this.fieldShareConfigManagement()) {
+      openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+    } else {
+      if (this.state == SharingOrInheriting.Sharing) {
+        this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
+          .subscribe(() => this.dialogRef.close()));
+      } else if (this.state == SharingOrInheriting.Inheriting) {
+        this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
+          .subscribe(() => this.dialogRef.close()));
       }
+    }
   }
 
   closeDialog() {

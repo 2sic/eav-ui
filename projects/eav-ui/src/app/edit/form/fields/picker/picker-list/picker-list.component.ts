@@ -4,14 +4,12 @@ import { ReorderIndexes } from './reorder-index.models';
 import { PickerItem } from 'projects/edit-types';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
@@ -30,7 +28,6 @@ const nameOfThis = 'PickerListComponent';
     CdkDropList,
     CdkDrag,
     MatIconModule,
-    SharedComponentsModule,
     MatButtonModule,
     AsyncPipe,
     TranslateModule,

@@ -15,7 +15,6 @@ import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { ReservedNamesValidatorDirective } from '../edit-content-type-fields/reserved-names.directive';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,7 +37,6 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     MatFormFieldModule,
     MatInputModule,
     ReservedNamesValidatorDirective,
-    SharedComponentsModule,
     MatDialogActions,
     AsyncPipe,
     TranslateModule,
@@ -62,7 +60,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   saving$ = new BehaviorSubject(false);
 
-  public features: FeaturesService  = inject(FeaturesService);
+  public features: FeaturesService = inject(FeaturesService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
 
   constructor(
@@ -127,28 +125,28 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   // When API gets created we will need to send the selected fields to the API
   save() {
-      if (!this.fieldShareConfigManagement()) {
-        openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
-      } else {
-        this.saving$.next(true);
-        this.snackBar.open('Saving...');
-        of(...this.selectedFields.data).pipe(
-          filter(inheritField => !!inheritField.newName),
-          concatMap(inheritField =>
-            this.contentTypesFieldsService.addInheritedField(
-              this.dialogData.contentType.Id,
-              inheritField.field.ContentType.Id,
-              inheritField.field.Guid,
-              inheritField.newName
-            ).pipe(catchError(error => of(null)))
-          ),
-          toArray(),
-        ).subscribe(responses => {
-          this.saving$.next(false);
-          this.snackBar.open('Saved', null, { duration: 2000 });
-          this.closeDialog();
-        });
-      }
+    if (!this.fieldShareConfigManagement()) {
+      openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+    } else {
+      this.saving$.next(true);
+      this.snackBar.open('Saving...');
+      of(...this.selectedFields.data).pipe(
+        filter(inheritField => !!inheritField.newName),
+        concatMap(inheritField =>
+          this.contentTypesFieldsService.addInheritedField(
+            this.dialogData.contentType.Id,
+            inheritField.field.ContentType.Id,
+            inheritField.field.Guid,
+            inheritField.newName
+          ).pipe(catchError(error => of(null)))
+        ),
+        toArray(),
+      ).subscribe(responses => {
+        this.saving$.next(false);
+        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.closeDialog();
+      });
+    }
   }
 
   closeDialog() {

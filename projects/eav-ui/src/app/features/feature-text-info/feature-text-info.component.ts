@@ -5,7 +5,6 @@ import { BehaviorSubject, map, Observable, combineLatest } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { FeatureDetailService } from '../services/feature-detail.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
@@ -15,7 +14,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   styleUrls: ['./feature-text-info.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatIconModule,
     AsyncPipe,
     TranslateModule,

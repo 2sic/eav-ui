@@ -6,20 +6,18 @@ import { QueriesActionsParams, QueryActions } from './queries-actions';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-    selector: 'app-queries-actions',
-    templateUrl: './queries-actions.component.html',
-    standalone: true,
-    imports: [
-        MatRippleModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatBadgeModule,
-        MatMenuModule,
-    ],
+  selector: 'app-queries-actions',
+  templateUrl: './queries-actions.component.html',
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+  ],
 })
 export class QueriesActionsComponent extends AgActionsComponent<ICellRendererParams & QueriesActionsParams, Query> {
   enablePermissions: boolean;

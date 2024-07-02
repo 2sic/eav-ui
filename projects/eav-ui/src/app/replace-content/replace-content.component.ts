@@ -13,7 +13,6 @@ import { ReplaceOption } from './models/replace-option.model';
 import { ReplaceContentViewModel } from './replace-content.models';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
@@ -22,27 +21,26 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-    selector: 'app-replace-content',
-    templateUrl: './replace-content.component.html',
-    styleUrls: ['./replace-content.component.scss'],
-    standalone: true,
-    imports: [
-        RouterOutlet,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        FormsModule,
-        CdkVirtualScrollViewport,
-        CdkFixedSizeVirtualScroll,
-        CdkVirtualForOf,
-        MatOptionModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatDialogActions,
-        AsyncPipe,
-    ],
-    providers: [ContentGroupService]
+  selector: 'app-replace-content',
+  templateUrl: './replace-content.component.html',
+  styleUrls: ['./replace-content.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    FormsModule,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    AsyncPipe,
+  ],
+  providers: [ContentGroupService]
 })
 export class ReplaceContentComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

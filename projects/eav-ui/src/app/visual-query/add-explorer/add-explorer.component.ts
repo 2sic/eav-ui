@@ -8,7 +8,6 @@ import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
@@ -19,7 +18,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   standalone: true,
   imports: [
     MatSlideToggleModule,
-    SharedComponentsModule,
     MatIconModule,
     AsyncPipe,
     KeyValuePipe,

@@ -16,7 +16,6 @@ import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helpe
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
@@ -29,7 +28,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
   imports: [
     MatCardModule,
     MatIconModule,
-    SharedComponentsModule,
     NgTemplateOutlet,
     MatButtonModule,
     MatBadgeModule,

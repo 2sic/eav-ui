@@ -9,7 +9,6 @@ import { ExportAppPartsService } from '../../services/export-app-parts.service';
 import { AsyncPipe } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
@@ -21,26 +20,25 @@ import { ClickStopPropagationDirective } from '../../../shared/directives/click-
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-export-app-parts',
-    templateUrl: './export-app-parts.component.html',
-    styleUrls: ['./export-app-parts.component.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatCheckboxModule,
-        MatDialogActions,
-        AsyncPipe,
-        FieldHintComponent,
-        ClickStopPropagationDirective,
-        TippyDirective,
-    ],
-    providers:[ExportAppPartsService, ContentTypesService, ExportAppService]
+  selector: 'app-export-app-parts',
+  templateUrl: './export-app-parts.component.html',
+  styleUrls: ['./export-app-parts.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatDialogActions,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
+  providers: [ExportAppPartsService, ContentTypesService, ExportAppService]
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

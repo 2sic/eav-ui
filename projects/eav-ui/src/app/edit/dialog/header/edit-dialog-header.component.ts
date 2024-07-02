@@ -9,27 +9,25 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { LanguageSwitcherComponent } from './language-switcher/language-switcher.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-edit-dialog-header',
-    templateUrl: './edit-dialog-header.component.html',
-    styleUrls: ['./edit-dialog-header.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatButtonModule,
-        SharedComponentsModule,
-        MatIconModule,
-        LanguageSwitcherComponent,
-        AsyncPipe,
-        UpperCasePipe,
-        TranslateModule,
-        TippyDirective,
-    ],
+  selector: 'app-edit-dialog-header',
+  templateUrl: './edit-dialog-header.component.html',
+  styleUrls: ['./edit-dialog-header.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    LanguageSwitcherComponent,
+    AsyncPipe,
+    UpperCasePipe,
+    TranslateModule,
+    TippyDirective,
+  ],
 })
 export class EditDialogHeaderComponent implements OnInit {
   @Input() disabled: boolean;

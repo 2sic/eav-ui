@@ -28,7 +28,6 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
 import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 import { MatBadgeModule } from '@angular/material/badge';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -44,7 +43,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatBadgeModule,
     NgTemplateOutlet,
     AppConfigurationCardComponent,

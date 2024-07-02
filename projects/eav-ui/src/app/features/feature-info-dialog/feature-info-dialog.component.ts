@@ -9,7 +9,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
@@ -21,7 +20,6 @@ import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
   standalone: true,
   imports: [
     MatCardModule,
-    SharedComponentsModule,
     MatButtonModule,
     MatIconModule,
     AsyncPipe,

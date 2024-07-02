@@ -14,7 +14,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
@@ -26,7 +25,6 @@ import { ClickStopPropagationDirective } from '../../../shared/directives/click-
   standalone: true,
   imports: [
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,

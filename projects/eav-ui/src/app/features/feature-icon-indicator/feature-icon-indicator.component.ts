@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FeatureComponentBase, FeatureComponentProviders } from '../shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
@@ -13,7 +12,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   standalone: true,
   imports: [
     MatIconModule,
-    SharedComponentsModule,
     AsyncPipe,
     TranslateModule,
     TippyDirective,

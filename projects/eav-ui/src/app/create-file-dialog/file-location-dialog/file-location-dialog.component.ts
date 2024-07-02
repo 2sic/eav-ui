@@ -3,7 +3,6 @@ import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, Reactive
 import { MatDialogRef } from '@angular/material/dialog';
 import { FileLocationFormValues } from '..';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,7 +21,6 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    SharedComponentsModule,
     MatButtonModule,
     FieldHintComponent,
   ]

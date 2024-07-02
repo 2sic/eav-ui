@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -33,7 +32,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     MatSelectModule,
     MatOptionModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     FieldHelperTextComponent,
     AsyncPipe,

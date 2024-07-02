@@ -6,7 +6,6 @@ import { FieldValue, PagePickerResult } from '../../../../../../../edit-types';
 import { QueryService } from '../../../shared/services';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
 import { PageEntity, PagePickerDialogData, PagePickerViewModel, PageSearchItem, PageTreeItem } from './page-picker.models';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
@@ -29,7 +28,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     NgClass,
     ExtendedModule,
     MatIconModule,
-    SharedComponentsModule,
     MatDialogActions,
     AsyncPipe,
     TranslateModule,

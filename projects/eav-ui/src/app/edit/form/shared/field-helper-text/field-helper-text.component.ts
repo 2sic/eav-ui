@@ -4,7 +4,6 @@ import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { FieldHelperTextViewModel } from './field-helper-text.models';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,7 +23,6 @@ import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pip
     MatFormFieldModule,
     FlexModule,
     ChangeAnchorTargetDirective,
-    SharedComponentsModule,
     AsyncPipe,
     TranslateModule,
     SafeHtmlPipe,

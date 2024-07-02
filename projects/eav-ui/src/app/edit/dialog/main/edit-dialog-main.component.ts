@@ -31,7 +31,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';
@@ -43,7 +42,6 @@ import { ExtendedFabSpeedDialComponent } from '../../../shared/modules/extended-
   styleUrls: ['./edit-dialog-main.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatDialogActions,
     NgClass,
     ExtendedModule,

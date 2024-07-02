@@ -12,7 +12,6 @@ import { BaseComponent } from '../shared/components/base.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,7 +30,6 @@ import { FieldHintComponent } from '../shared/components/field-hint/field-hint.c
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
-    SharedComponentsModule,
     MatProgressSpinnerModule,
     MatButtonModule,
     NgClass,

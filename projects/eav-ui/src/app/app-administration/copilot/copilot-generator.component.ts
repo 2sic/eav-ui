@@ -10,23 +10,21 @@ import { CommonModule } from '@angular/common';
 import { RichResult } from '../../shared/models/rich-result';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopilotService } from './copilot-service';
-import { SharedComponentsModule } from "../../shared/shared-components.module";
 
 @Component({
-    selector: 'app-copilot-generator',
-    standalone: true,
-    providers: [
-      CopilotService
-    ],
-    templateUrl: './copilot-generator.component.html',
-    imports: [
-      MatSelectModule,
-      MatButtonModule,
-      MatCardModule,
-      MatIconModule,
-      CommonModule,
-      SharedComponentsModule
-    ]
+  selector: 'app-copilot-generator',
+  standalone: true,
+  providers: [
+    CopilotService
+  ],
+  templateUrl: './copilot-generator.component.html',
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    CommonModule,
+  ]
 })
 export class CopilotGeneratorComponent {
 
@@ -52,7 +50,7 @@ export class CopilotGeneratorComponent {
     private context: Context,
     private snackBar: MatSnackBar,
     private copilotSvc: CopilotService,
-    ) {}
+  ) { }
 
   ngOnInit(): void {
     this.generators$.pipe(take(1)).subscribe(gens => {

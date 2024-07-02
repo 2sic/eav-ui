@@ -7,20 +7,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GoToDevRest } from '../../../dev-rest/go-to-dev-rest';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-    selector: 'app-web-api-actions',
-    templateUrl: './web-api-actions.component.html',
-    styleUrls: ['./web-api-actions.component.scss'],
-    standalone: true,
-    imports: [
-        MatRippleModule,
-        SharedComponentsModule,
-        MatIconModule,
-        MatMenuModule,
-    ],
+  selector: 'app-web-api-actions',
+  templateUrl: './web-api-actions.component.html',
+  styleUrls: ['./web-api-actions.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatMenuModule,
+  ],
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {
   enableCode: boolean;
@@ -46,7 +44,7 @@ export class WebApiActionsComponent implements ICellRendererAngularComp {
   openRestApi(): void {
     const api: WebApi = this.params.data;
     // Get the current URL and split it into segments
-    const urlSegments =  this.router.url.split('/');
+    const urlSegments = this.router.url.split('/');
     // Replace the last segment with the GoToDevRest.routeWebApi (restapiwebapi)
     urlSegments[urlSegments.length - 1] = GoToDevRest.routeWebApi;
     // Add the path of the api to the url segments

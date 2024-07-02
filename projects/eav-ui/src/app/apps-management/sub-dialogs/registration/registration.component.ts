@@ -15,7 +15,6 @@ import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 
@@ -25,7 +24,6 @@ import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
   styleUrls: ['./registration.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,

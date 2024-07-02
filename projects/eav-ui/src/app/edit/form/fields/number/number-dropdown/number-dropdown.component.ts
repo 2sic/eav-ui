@@ -6,7 +6,6 @@ import { NumberDropdownLogic } from './number-dropdown-logic';
 import { TranslateModule } from '@ngx-translate/core';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +34,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     MatButtonModule,
     NgClass,
     ExtendedModule,
-    SharedComponentsModule,
     MatIconModule,
     FieldHelperTextComponent,
     TranslateModule,

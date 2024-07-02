@@ -5,7 +5,6 @@ import { ContentItem } from '../models/content-item.model';
 import { ContentItemsActionsParams, ContentItemType } from './content-items-actions.models';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatRippleModule } from '@angular/material/core';
 
 @Component({
@@ -15,7 +14,6 @@ import { MatRippleModule } from '@angular/material/core';
   standalone: true,
   imports: [
     MatRippleModule,
-    SharedComponentsModule,
     MatIconModule,
     MatMenuModule,
   ],

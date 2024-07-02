@@ -2,14 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { PipelinesService } from '../../services/pipelines.service';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 
 @Component({
   selector: 'app-import-query',
   templateUrl: './import-query.component.html',
   styleUrls: ['./import-query.component.scss'],
   standalone: true,
-  imports: [SharedComponentsModule, FileUploadDialogComponent,],
+  imports: [FileUploadDialogComponent,],
 })
 export class ImportQueryComponent {
 

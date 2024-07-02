@@ -5,7 +5,6 @@ import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { PickerTextComponent } from '../picker-text/picker-text.component';
 import { PickerSearchComponent } from '../picker-search/picker-search.component';
@@ -32,7 +31,6 @@ const nameOfThis = 'PickerPreviewComponent';
     PickerSearchComponent,
     PickerTextComponent,
     MatButtonModule,
-    SharedComponentsModule,
     MatMenuModule,
     MatIconModule,
     FieldHelperTextComponent,

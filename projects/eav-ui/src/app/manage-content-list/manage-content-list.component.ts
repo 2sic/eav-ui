@@ -14,7 +14,6 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { FormConfigService } from '../edit/shared/services';
@@ -29,7 +28,6 @@ import { TippyDirective } from '../shared/directives/tippy.directive';
     RouterOutlet,
     CdkScrollable,
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     CdkDropList,
     CdkDrag,

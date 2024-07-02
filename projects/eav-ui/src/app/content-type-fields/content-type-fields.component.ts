@@ -31,7 +31,6 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 
 @Component({
@@ -40,7 +39,6 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
   styleUrls: ['./content-type-fields.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
@@ -254,9 +252,9 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     return existingMd != null
       ? EditPrep.editId(existingMd.Id) // if defined, return the entity-number to edit
       : {
-          ...EditPrep.newMetadata(field.Id, newItemTypeName, eavConstants.metadata.attribute),
-          Prefill: { Name: field.StaticName },
-        };
+        ...EditPrep.newMetadata(field.Id, newItemTypeName, eavConstants.metadata.attribute),
+        Prefill: { Name: field.StaticName },
+      };
   }
 
 

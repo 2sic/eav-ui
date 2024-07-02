@@ -19,7 +19,6 @@ import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-a
 import { EntityTranslateMenuComponent } from './entity-translate-menu/entity-translate-menu.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -43,7 +42,6 @@ import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pip
     FlexModule,
     MatIconModule,
     MatButtonModule,
-    SharedComponentsModule,
     CdkDrag,
     CdkDragHandle,
     MatSlideToggleModule,

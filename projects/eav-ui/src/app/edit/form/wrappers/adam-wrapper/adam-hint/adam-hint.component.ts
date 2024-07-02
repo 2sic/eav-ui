@@ -4,7 +4,6 @@ import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/feature
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatDividerModule } from '@angular/material/divider';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
@@ -16,7 +15,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
   standalone: true,
   imports: [
     MatDividerModule,
-    SharedComponentsModule,
     MatIconModule,
     AsyncPipe,
     TranslateModule,

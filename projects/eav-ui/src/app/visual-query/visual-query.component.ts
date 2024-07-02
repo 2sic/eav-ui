@@ -7,32 +7,30 @@ import { AddExplorerComponent } from './add-explorer/add-explorer.component';
 import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
-import { SharedComponentsModule } from '../shared/shared-components.module';
 import { QueryDefinitionService } from './services/query-definition.service';
 import { MetadataService } from '../permissions';
 import { ContentTypesService } from '../app-administration/services';
 
 @Component({
-    selector: 'app-visual-query',
-    templateUrl: './visual-query.component.html',
-    styleUrls: ['./visual-query.component.scss'],
-    standalone: true,
-    imports: [
-        RouterOutlet,
-        SharedComponentsModule,
-        NgClass,
-        MatIconModule,
-        RunExplorerComponent,
-        AddExplorerComponent,
-        PlumbEditorComponent,
-    ],
-    providers: [
-      VisualQueryService,
-      QueryDefinitionService,
+  selector: 'app-visual-query',
+  templateUrl: './visual-query.component.html',
+  styleUrls: ['./visual-query.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    NgClass,
+    MatIconModule,
+    RunExplorerComponent,
+    AddExplorerComponent,
+    PlumbEditorComponent,
+  ],
+  providers: [
+    VisualQueryService,
+    QueryDefinitionService,
 
-      MetadataService,
-      ContentTypesService,
-    ],
+    MetadataService,
+    ContentTypesService,
+  ],
 })
 export class VisualQueryComponent implements OnInit {
   @ViewChild(PlumbEditorComponent) plumbEditor: PlumbEditorComponent;

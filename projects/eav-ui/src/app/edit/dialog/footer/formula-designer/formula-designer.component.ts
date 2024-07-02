@@ -24,7 +24,6 @@ import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -49,7 +48,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     ExtendedModule,
     MatInputModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     MonacoEditorComponent,
     MatMenuModule,

@@ -9,7 +9,6 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-items';
 import { AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +25,6 @@ import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-
     MatIconModule,
     BreadcrumbModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatSidenavModule,
     RouterOutlet,
     AsyncPipe,

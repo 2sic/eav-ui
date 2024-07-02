@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { KeyValuePipe } from '@angular/common';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
@@ -17,7 +16,6 @@ import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
   styleUrls: ['./code-snippets.component.scss'],
   standalone: true,
   imports: [
-    SharedComponentsModule,
     MatIconModule,
     MatRippleModule,
     KeyValuePipe,

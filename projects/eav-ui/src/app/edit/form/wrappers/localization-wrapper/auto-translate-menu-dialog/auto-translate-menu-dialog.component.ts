@@ -15,7 +15,6 @@ import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { EditApiKeyPaths } from './../../../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from './../../../../../shared/models/dialog-context.models';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
@@ -36,7 +35,6 @@ import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pip
     NgClass,
     ExtendedModule,
     MatIconModule,
-    SharedComponentsModule,
     AsyncPipe,
     TranslateModule,
     SafeHtmlPipe,

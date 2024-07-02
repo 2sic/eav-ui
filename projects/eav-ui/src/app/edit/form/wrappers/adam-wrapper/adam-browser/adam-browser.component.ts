@@ -18,7 +18,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { PasteClipboardImageDirective } from '../../../../shared/directives/paste-clipboard-image.directive';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
@@ -55,7 +54,6 @@ const nameOfThis = 'AdamBrowserComponent';
   imports: [
     NgClass,
     ExtendedModule,
-    SharedComponentsModule,
     MatIconModule,
     PasteClipboardImageDirective,
     MatBadgeModule,

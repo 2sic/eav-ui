@@ -5,7 +5,6 @@ import { Feature } from '../../../features/models/feature.model';
 import { FeaturesStatusParams } from './features-status.models';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { NgClass } from '@angular/common';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
@@ -16,7 +15,6 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
   standalone: true,
   imports: [
     MatSlideToggleModule,
-    SharedComponentsModule,
     NgClass,
     TippyDirective,
   ],

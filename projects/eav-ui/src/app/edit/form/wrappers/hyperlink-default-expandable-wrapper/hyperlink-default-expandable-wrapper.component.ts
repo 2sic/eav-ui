@@ -17,7 +17,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -42,7 +41,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     FlexModule,
     MatCardModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatIconModule,
     MatRippleModule,
     NgStyle,

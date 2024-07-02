@@ -32,7 +32,6 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
@@ -45,7 +44,6 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
   standalone: true,
   imports: [
     AgGridModule,
-    SharedComponentsModule,
     MatDialogActions,
     MatButtonModule,
     MatIconModule,
