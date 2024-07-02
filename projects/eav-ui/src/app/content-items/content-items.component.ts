@@ -47,6 +47,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-content-items',
@@ -62,6 +63,8 @@ import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directi
     AsyncPipe,
     SafeHtmlPipe,
     DragAndDropDirective,
+
+    SxcGridModule,
   ],
   providers: [
     ContentItemsService,
