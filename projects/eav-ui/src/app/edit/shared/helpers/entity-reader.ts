@@ -1,4 +1,4 @@
-import { EavEntity, EavValues } from '../models/eav';
+import { EavEntity, EavField } from '../models/eav';
 import { LocalizationHelpers } from './localization.helpers';
 import { FormLanguage } from '../models/form-languages.model';
 
@@ -7,8 +7,8 @@ export class EntityReader implements FormLanguage {
 
   // WIP - to make code clearer, this is what should be used from now on
   // But we'll probably end up calling this from the EntityReader only, so it should be straight forward
-  getBestValue<T>(attributeValues: EavValues<unknown>, defaultValue: T): T {
-    return LocalizationHelpers.translate<T>(this, attributeValues as EavValues<T>, defaultValue);
+  getBestValue<T>(attributeValues: EavField<unknown>, defaultValue: T): T {
+    return LocalizationHelpers.translate<T>(this, attributeValues as EavField<T>, defaultValue);
   }
 
   public flatten<T>(metadataItem: EavEntity): T {

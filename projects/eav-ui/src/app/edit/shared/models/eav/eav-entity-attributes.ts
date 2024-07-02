@@ -1,8 +1,8 @@
-import { EavEntity, EavValues } from '.';
+import { EavEntity, EavField } from '.';
 import { EavAttributesDto } from '../json-format-v1';
 
 export class EavEntityAttributes {
-  [attributeName: string]: EavValues<any>;
+  [attributeName: string]: EavField<any>;
 
   static convert(attributesDto: EavAttributesDto): EavEntityAttributes {
     const attributes: EavEntityAttributes = {};
@@ -11,7 +11,7 @@ export class EavEntityAttributes {
     for (const [typeName, attributeDto] of Object.entries(attributesDto)) {
       // loop attribute names - Description, Name, ...
       for (const [attributeName, valueDto] of Object.entries(attributeDto)) {
-        attributes[attributeName] = EavValues.convert(valueDto, typeName);
+        attributes[attributeName] = EavField.convert(valueDto, typeName);
       }
     }
     return attributes;
@@ -26,7 +26,7 @@ export class EavEntityAttributes {
       if (item.Type.Id === '@All') { continue; }
 
       for (const [name, value] of Object.entries(item.Attributes)) {
-        const copy: EavValues<any> = { ...value };
+        const copy: EavField<any> = { ...value };
         merged[name] = copy;
       }
     }
@@ -41,7 +41,7 @@ export class EavEntityAttributes {
         const emptyAll = value.Values[0].Value === '';
         if (exists && emptyAll) { continue; }
 
-        const copy: EavValues<any> = { ...value };
+        const copy: EavField<any> = { ...value };
         merged[name] = copy;
       }
     }

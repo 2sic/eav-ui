@@ -93,8 +93,7 @@ export class ItemService extends BaseDataService<EavItem> {
     entityGuid: string,
     attributeKey: string,
     newValue: FieldValue,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
     isReadOnly: boolean,
   ): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
@@ -105,7 +104,7 @@ export class ItemService extends BaseDataService<EavItem> {
       Entity: {
         ...oldItem.Entity,
         Attributes: LocalizationHelpers.updateAttributeValue(
-          oldItem.Entity.Attributes, attributeKey, newValue, currentLanguage, defaultLanguage, isReadOnly,
+          oldItem.Entity.Attributes, attributeKey, newValue, language, isReadOnly,
         ),
       }
     };
@@ -295,7 +294,7 @@ export class ItemService extends BaseDataService<EavItem> {
       // }
     } else {
       // most likely used only for entity fields because we can never know if they were cleaned out or brand new
-      this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, languageCode, defaultLanguage, false);
+      this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, { current: languageCode, primary: defaultLanguage }, false);
       // if (languages.length === 0 || inputType?.DisableI18n) {
       //   this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
       // } else {

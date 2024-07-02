@@ -3,7 +3,7 @@ import { InputType } from "../../../content-type-fields/models/input-type.model"
 import { FieldLogicBase } from "../../form/shared/field-logic/field-logic-base";
 import { FieldLogicTools } from "../../form/shared/field-logic/field-logic-tools";
 import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
-import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/models/eav";
+import { EavContentTypeAttribute, EavEntity, EavField } from "../../shared/models/eav";
 import { SettingsFormulaPrefix } from "../models/formula.models";
 import { FormLanguage } from '../../shared/models/form-languages.model';
 
@@ -35,7 +35,7 @@ export class FormulaSettingsHelper {
     contentTypeMetadata: EavEntity[],
     fieldInputType: InputType,
     fieldLogic: FieldLogicBase,
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     language: FormLanguage,
     slotIsEmpty: boolean,
     formReadOnly: boolean,

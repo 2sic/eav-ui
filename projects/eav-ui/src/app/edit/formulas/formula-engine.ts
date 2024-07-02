@@ -6,7 +6,7 @@ import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
-import { EavContentTypeAttribute, EavEntity, EavValues } from '../shared/models/eav';
+import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -141,7 +141,7 @@ export class FormulaEngine implements OnDestroy {
     settingsCurrent: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
     contentTypeMetadata: EavEntity[],
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     entityReader: EntityReader,
     slotIsEmpty: boolean,
     formReadOnly: boolean,

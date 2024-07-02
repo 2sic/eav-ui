@@ -108,7 +108,7 @@ export class FieldsTranslateService {
             elem.innerHTML = translation.translatedText;
             if (!isMany && doFieldsHaveExistingDimension[i]) {
               this.itemService.updateItemAttributeValue(
-                this.entityGuid, fieldNames[i], elem.value, language.current, language.primary, false
+                this.entityGuid, fieldNames[i], elem.value, language, false
               );
             } else if (!doFieldsHaveExistingDimension[i]) {
               this.addItemAttributeValueHelper(fieldNames[i], elem.value, language.current, false);
@@ -124,24 +124,22 @@ export class FieldsTranslateService {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
     const language = this.formConfig.language();
-    const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
-    if (attributeValueTranslation) {
+    const valueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
+    if (valueTranslation) {
       const valueAlreadyExists = values
         ? LocalizationHelpers.isEditableOrReadonlyTranslationExist(values, language)
         : false;
 
-      if (valueAlreadyExists) {
+      if (valueAlreadyExists)
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(
-          this.entityGuid, fieldName, attributeValueTranslation.Value, language.current, language.primary, false,
+          this.entityGuid, fieldName, valueTranslation.Value, language, false,
         );
-      } else {
+      else
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.addItemAttributeValueHelper(fieldName, attributeValueTranslation.Value, language.current, false);
-      }
-    } else {
+        this.addItemAttributeValueHelper(fieldName, valueTranslation.Value, language.current, false);
+    } else
       consoleLogEditForm(`${language.current}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
-    }
   }
 
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
