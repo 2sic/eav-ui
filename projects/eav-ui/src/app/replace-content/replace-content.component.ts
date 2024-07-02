@@ -40,7 +40,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatDialogActions,
     AsyncPipe,
   ],
-  providers: [ContentGroupService]
+  providers: [
+    ContentGroupService,
+  ],
 })
 export class ReplaceContentComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

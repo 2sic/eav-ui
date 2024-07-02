@@ -25,7 +25,9 @@ import { SourceService } from '../../code-editor/services/source.service';
     DevRestQueryComponent,
     RouterOutlet
   ],
-  providers: [PipelinesService],
+  providers: [
+    PipelinesService,
+  ],
   templateUrl: './web-api-rest-api.component.html',
   styleUrl: './web-api-rest-api.component.scss'
 })

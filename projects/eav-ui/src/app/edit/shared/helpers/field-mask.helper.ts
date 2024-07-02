@@ -29,7 +29,13 @@ export class FieldMask extends ServiceBase implements OnDestroy {
    */
   static createTransient(injector: Injector): FieldMask
   {
-    return Injector.create({ providers: [FieldMask], parent: injector }).get(FieldMask)
+    return Injector.create(
+      {
+        providers: [
+          FieldMask
+        ],
+        parent: injector
+      }).get(FieldMask)
   }
 
   public signal = signal<string>('');

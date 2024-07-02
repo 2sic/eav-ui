@@ -52,7 +52,9 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
     SxcGridModule,
     DragAndDropDirective,
   ],
-  providers: [FeatureDetailService]
+  providers: [
+    FeatureDetailService,
+  ]
 })
 export class ViewsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   enableCode: boolean;

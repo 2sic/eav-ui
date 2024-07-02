@@ -29,7 +29,9 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
         FeatureTextInfoComponent,
         RouterOutlet,
     ],
-    providers: [FeatureDetailService],
+    providers: [
+      FeatureDetailService,
+    ],
 })
 export class SyncConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;

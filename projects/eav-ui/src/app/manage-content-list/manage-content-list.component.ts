@@ -37,7 +37,11 @@ import { TippyDirective } from '../shared/directives/tippy.directive';
     MatDialogModule,
     TippyDirective,
   ],
-  providers: [ContentGroupService, AppDialogConfigService, FormConfigService]
+  providers: [
+    ContentGroupService,
+    AppDialogConfigService,
+    FormConfigService,
+  ],
 })
 export class ManageContentListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

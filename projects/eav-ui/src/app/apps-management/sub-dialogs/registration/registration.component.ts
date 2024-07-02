@@ -31,7 +31,10 @@ import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
     TippyDirective,
     SafeHtmlPipe,
   ],
-  providers: [ZoneService, FeaturesConfigService],
+  providers: [
+    ZoneService,
+    FeaturesConfigService,
+  ],
 
 })
 export class RegistrationComponent implements OnInit {

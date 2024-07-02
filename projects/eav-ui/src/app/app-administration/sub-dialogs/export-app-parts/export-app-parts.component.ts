@@ -38,7 +38,11 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     ClickStopPropagationDirective,
     TippyDirective,
   ],
-  providers: [ExportAppPartsService, ContentTypesService, ExportAppService]
+  providers: [
+    ExportAppPartsService,
+    ContentTypesService,
+    ExportAppService,
+  ],
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

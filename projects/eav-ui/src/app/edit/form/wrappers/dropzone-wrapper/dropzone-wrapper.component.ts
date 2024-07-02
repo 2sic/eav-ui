@@ -23,7 +23,9 @@ import { FieldState } from '../../builder/fields-builder/field-state';
     DropzoneModule,
     AsyncPipe,
   ],
-  providers: [PickerTreeDataHelper],
+  providers: [
+    PickerTreeDataHelper,
+  ],
 })
 export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

@@ -32,7 +32,9 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     TranslateModule,
     FeatureIconIndicatorComponent
   ],
-  providers: [FeatureDetailService]
+  providers: [
+    FeatureDetailService,
+  ],
 })
 export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];

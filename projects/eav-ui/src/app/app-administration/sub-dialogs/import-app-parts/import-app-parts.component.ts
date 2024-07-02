@@ -9,7 +9,9 @@ import { ImportAppPartsService } from '../../services/import-app-parts.service';
   styleUrls: ['./import-app-parts.component.scss'],
   standalone: true,
   imports: [FileUploadDialogComponent,],
-  providers: [ImportAppPartsService]
+  providers: [
+    ImportAppPartsService,
+  ],
 })
 export class ImportAppPartsComponent {
 

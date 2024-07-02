@@ -4,7 +4,9 @@ import { ReservedNames } from '../models/reserved-names.model';
 
 @Directive({
     selector: '[appReservedNames]',
-    providers: [{ provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true }],
+    providers: [
+      { provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true },
+    ],
     standalone: true,
 })
 export class ReservedNamesValidatorDirective implements Validator {

@@ -15,9 +15,19 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-web-api-rest-api',
   standalone: true,
-  imports: [MatSelectModule, MatButtonModule,
-    MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestQueryComponent, RouterOutlet],
-  providers: [PipelinesService],
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    DevRestQueryComponent,
+    RouterOutlet
+  ],
+  providers: [
+    PipelinesService,
+  ],
   templateUrl: './queries-rest-api.component.html',
   styleUrl: './queries-rest-api.component.scss'
 })

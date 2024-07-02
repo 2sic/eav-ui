@@ -8,8 +8,12 @@ import { ImportAppService } from './services/import-app.service';
   templateUrl: './import-app.component.html',
   styleUrls: ['./import-app.component.scss'],
   standalone: true,
-  imports: [FileUploadDialogComponent,],
-  providers: [ImportAppService],
+  imports: [
+    FileUploadDialogComponent,
+  ],
+  providers: [
+    ImportAppService,
+  ],
 })
 export class ImportAppComponent {
 

@@ -41,7 +41,9 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     ClickStopPropagationDirective,
     TippyDirective,
   ],
-  providers: [ContentTypesService],
+  providers: [
+    ContentTypesService,
+  ],
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';

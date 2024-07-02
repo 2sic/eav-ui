@@ -43,7 +43,9 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     FeatureIconIndicatorComponent,
     FieldHintComponent,
   ],
-  providers: [FeatureDetailService]
+  providers: [
+    FeatureDetailService,
+  ],
 })
 export class AddSharingFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -25,7 +25,9 @@ const nameOfThis = 'FieldsBuilderDirective';
 @Directive({
   selector: '[appFieldsBuilder]',
   standalone: true,
-  providers: [FieldInjectorService],
+  providers: [
+    FieldInjectorService,
+  ],
 })
 export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
   

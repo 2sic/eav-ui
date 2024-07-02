@@ -23,7 +23,9 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
     AsyncPipe,
     DevRestDataComponent,
     RouterOutlet],
-  providers: [ContentTypesService],
+  providers: [
+    ContentTypesService,
+  ],
   templateUrl: './data-rest-api.component.html',
   styleUrl: './data-rest-api.component.scss'
 })
