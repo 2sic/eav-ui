@@ -87,7 +87,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
       this.dialogRef.backdropClick().subscribe(event => {
         if (this.form.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
-          if (!confirmed) { return; }
+          if (!confirmed) return;
         }
         this.closeDialog();
       })
@@ -115,6 +115,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         fields.forEach(field => {
           existingFields[field.StaticName] = 'Field with this name already exists';
         });
+
         this.reservedNames = {
           ...reservedNames,
           ...existingFields,
@@ -123,9 +124,8 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         if (this.editMode != null) {
           const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
           const editField = fields.find(field => field.Id === editFieldId);
-          if (this.editMode === 'name') {
+          if (this.editMode === 'name')
             delete this.reservedNames[editField.StaticName];
-          }
           this.fields.push(editField);
         } else {
           for (let i = 1; i <= 8; i++) {
@@ -144,6 +144,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
           this.filterInputTypeOptions(i);
           this.calculateHints(i);
         }
+
         this.loading$.next(false);
       }
     );
@@ -168,9 +169,8 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   resetInputType(index: number) {
     let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix as InputTypeStrict;
     const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
-    if (!defaultExists) {
+    if (!defaultExists)
       defaultInputType = this.filteredInputTypeOptions[index][0].inputType;
-    }
     this.fields[index].InputType = defaultInputType;
   }
 
@@ -220,7 +220,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
           this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
         ),
         toArray(),
-      ).subscribe(responses => {
+      ).subscribe(_ => {
         this.saving$.next(false);
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.closeDialog();
