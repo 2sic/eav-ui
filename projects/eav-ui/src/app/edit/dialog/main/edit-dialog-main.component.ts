@@ -26,7 +26,6 @@ import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-da
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
-import { ExtendedFabSpeedDialModule } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { FormSlideDirective } from './form-slide.directive';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
@@ -36,6 +35,7 @@ import { SharedComponentsModule } from '../../../shared/shared-components.module
 import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';
+import { ExtendedFabSpeedDialComponent } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -51,12 +51,12 @@ import { FormDataService } from '../../shared/services/form-data.service';
     CdkScrollable,
     FormSlideDirective,
     FormBuilderComponent,
-    ExtendedFabSpeedDialModule,
     MatRippleModule,
     MatIconModule,
     EditDialogFooterComponent,
     AsyncPipe,
     TranslateModule,
+    ExtendedFabSpeedDialComponent,
   ],
   providers: [
     EditRoutingService,

@@ -5,6 +5,8 @@ import { BaseComponent } from '../../components/base.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
+import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,6 +14,14 @@ import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-spee
   templateUrl: './extended-fab-speed-dial.component.html',
   styleUrls: ['./extended-fab-speed-dial.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  imports: [
+    ExtendedFabSpeedDialTriggerContentDirective,
+    ExtendedFabSpeedDialActionsContentDirective,
+    ExtendedFabSpeedDialTriggerDirective,
+    ExtendedFabSpeedDialActionDirective,
+    NgTemplateOutlet
+  ],
+  standalone: true,
 })
 export class ExtendedFabSpeedDialComponent extends BaseComponent implements AfterContentInit, OnDestroy {
   @ContentChild(ExtendedFabSpeedDialTriggerContentDirective) trigger: ExtendedFabSpeedDialTriggerContentDirective;

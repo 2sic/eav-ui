@@ -12,7 +12,6 @@ import { PreviewHeight } from './expandable-wrapper.models';
 import { FieldHelperTextComponent } from '../../shared/field-helper-text/field-helper-text.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRippleModule } from '@angular/material/core';
-import { ExtendedFabSpeedDialModule } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,7 +36,6 @@ import { ControlStatus } from '../../../shared/models';
     MatButtonModule,
     SharedComponentsModule,
     MatIconModule,
-    ExtendedFabSpeedDialModule,
     MatRippleModule,
     MatFormFieldModule,
     NgStyle,

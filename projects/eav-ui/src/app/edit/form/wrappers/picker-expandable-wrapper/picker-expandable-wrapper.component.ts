@@ -5,7 +5,6 @@ import { EditRoutingService, FieldsSettingsService, FormsStateService } from '..
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRippleModule } from '@angular/material/core';
-import { ExtendedFabSpeedDialModule } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
@@ -16,6 +15,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,
@@ -32,7 +32,7 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
     SharedComponentsModule,
     MatIconModule,
     CdkScrollable,
-    ExtendedFabSpeedDialModule,
+    ExtendedFabSpeedDialComponent,
     MatRippleModule,
     TranslateModule,
   ],

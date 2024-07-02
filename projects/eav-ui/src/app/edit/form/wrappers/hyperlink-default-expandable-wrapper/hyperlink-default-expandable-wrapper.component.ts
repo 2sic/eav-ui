@@ -16,7 +16,6 @@ import { PasteClipboardImageDirective } from '../../../shared/directives/paste-c
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRippleModule } from '@angular/material/core';
-import { ExtendedFabSpeedDialModule } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../../../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +27,7 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -44,7 +43,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
     MatButtonModule,
     SharedComponentsModule,
     MatIconModule,
-    ExtendedFabSpeedDialModule,
     MatRippleModule,
     NgStyle,
     MatFormFieldModule,
@@ -54,6 +52,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     FeatureIconTextComponent,
     TranslateModule,
     ClickStopPropagationDirective,
+    ExtendedFabSpeedDialComponent,
   ],
 })
 // tslint:disable-next-line:max-line-length

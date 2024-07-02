@@ -27,7 +27,6 @@ import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-a
     // e.g. AppId 2 = Content App but from the app that is opened in the Managed, e.g. AppId 6 = Blog
     AppAdministrationRoutingModule,
     // ImportAppPartsComponent
-
     ExportAppPartsComponent
   ],
   providers: [
@@ -48,9 +47,6 @@ import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-a
     ContentTypesFieldsService,
     MetadataService,
     ZoneService,
-    // @2dg, no impact of style since angular 16+
-    // { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
-    // { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
   ],
 })
 export class AppAdministrationModule { }
