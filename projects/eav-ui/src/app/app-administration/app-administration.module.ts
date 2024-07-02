@@ -8,7 +8,6 @@ import { MetadataService } from '../permissions';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
-import { AnalyzeSettingsService } from './services/analyze-settings.service';
 import { AppDialogConfigService } from './services/app-dialog-config.service';
 import { AppInternalsService } from './services/app-internals.service';
 import { ContentTypesService } from './services/content-types.service';
@@ -16,7 +15,6 @@ import { ExportAppPartsService } from './services/export-app-parts.service';
 import { ExportAppService } from './services/export-app.service';
 import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
-import { ViewsService } from './services/views.service';
 import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
 
 @NgModule({
@@ -35,7 +33,6 @@ import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-a
     AppInternalsService,
     ContentTypesService,
     PipelinesService,
-    ViewsService,
     ContentExportService,
     SourceService,
     ContentItemsService,
@@ -43,10 +40,13 @@ import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-a
     ExportAppPartsService,
     ImportAppPartsService,
     DialogService,
-    AnalyzeSettingsService,
     ContentTypesFieldsService,
     MetadataService,
     ZoneService,
+    
+    // 2024-07-02 2dm disabled / moved to correct component only
+    // ViewsService,
+    // AnalyzeSettingsService,
   ],
 })
 export class AppAdministrationModule { }

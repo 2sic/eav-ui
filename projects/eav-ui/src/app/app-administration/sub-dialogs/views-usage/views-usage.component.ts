@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-views-usage',
@@ -43,7 +44,12 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<ViewsUsageViewModel>;
 
-  constructor(private dialogRef: MatDialogRef<ViewsUsageComponent>, private route: ActivatedRoute, private viewsService: ViewsService) { }
+  private viewsService = transient(ViewsService);
+
+  constructor(
+    private dialogRef: MatDialogRef<ViewsUsageComponent>,
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
     const viewGuid = this.route.snapshot.paramMap.get('guid');

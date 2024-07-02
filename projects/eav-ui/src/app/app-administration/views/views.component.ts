@@ -36,6 +36,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-views',
@@ -71,10 +72,11 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
 
   viewModel$: Observable<ViewsViewModel>;
 
+  private viewsService = transient(ViewsService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private viewsService: ViewsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private dialogConfigSvc: AppDialogConfigService,

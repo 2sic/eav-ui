@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: 'app-settings-item-details',
@@ -36,10 +37,11 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<SettingsItemDetailsViewModel>;
 
+  private analyzeSettingsService = transient(AnalyzeSettingsService);
+
   constructor(
     private dialogRef: MatDialogRef<SettingsItemDetailsComponent>,
     private route: ActivatedRoute,
-    private analyzeSettingsService: AnalyzeSettingsService,
   ) {
     this.part = this.route.snapshot.parent.paramMap.get('part') as AnalyzePart;
     const routeViewGuid = this.route.snapshot.paramMap.get('view');

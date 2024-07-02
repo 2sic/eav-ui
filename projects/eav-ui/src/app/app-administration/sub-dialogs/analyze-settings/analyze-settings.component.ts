@@ -22,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-analyze-settings',
@@ -40,6 +41,9 @@ import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
     AsyncPipe,
     SxcGridModule,
   ],
+  providers: [
+    AnalyzeSettingsService,
+  ],
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;
@@ -49,13 +53,14 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   private views$: BehaviorSubject<View[]>;
   private selectedView$: BehaviorSubject<string>;
   private stack$: BehaviorSubject<SettingsStackItem[]>;
+  
+  private viewsService = transient(ViewsService);
+  private analyzeSettingsService = transient(AnalyzeSettingsService);
 
   constructor(
     private dialogRef: MatDialogRef<AnalyzeSettingsComponent>,
     private route: ActivatedRoute,
     private router: Router,
-    private viewsService: ViewsService,
-    private analyzeSettingsService: AnalyzeSettingsService,
   ) {
     this.part = this.route.snapshot.paramMap.get('part') as AnalyzePart;
   }
