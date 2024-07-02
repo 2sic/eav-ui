@@ -9,6 +9,7 @@ import { ContentTypesService } from '../../services/content-types.service';
   styleUrls: ['./import-content-type.component.scss'],
   standalone: true,
   imports: [FileUploadDialogComponent,],
+  providers: [ContentTypesService,]
 })
 export class ImportContentTypeComponent {
 

@@ -13,6 +13,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
     SafeHtmlPipe,
     AsyncPipe,
     DragAndDropDirective,
+    MatButtonModule,
   ]
 })
 export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
