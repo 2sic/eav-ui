@@ -9,6 +9,7 @@ import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-code-snippets',
@@ -24,6 +25,7 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     ObjectToArrayPipe,
     ClickStopPropagationDirective,
     TippyDirective,
+    SafeHtmlPipe,
   ],
 })
 export class CodeSnippetsComponent {

@@ -12,6 +12,7 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { FieldsSettingsService } from '../../../shared/services';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 
 const logThis = false;
 const nameOfThis = 'CollapsibleWrapperComponent'
@@ -30,6 +31,7 @@ const nameOfThis = 'CollapsibleWrapperComponent'
     ChangeAnchorTargetDirective,
     SharedComponentsModule,
     AsyncPipe,
+    SafeHtmlPipe,
   ],
 })
 export class CollapsibleWrapperComponent extends BaseComponent implements OnDestroy {

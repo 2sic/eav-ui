@@ -34,6 +34,7 @@ import { FeatureDetailService } from '../features/services/feature-detail.servic
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 
 const logThis = false;
 
@@ -56,6 +57,7 @@ const logThis = false;
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
     AsyncPipe,
+    SafeHtmlPipe,
   ],
   providers: [
     EntitiesService,

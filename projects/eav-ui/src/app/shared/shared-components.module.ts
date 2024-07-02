@@ -23,45 +23,42 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
-  declarations: [
-    // AgBoolIconRenderer, // TODO:: @2dg not in used??
-    FileUploadDialogComponent,
-    DragAndDropDirective,
-    MousedownStopPropagationDirective,
-    ToggleDebugDirective,
-    MatFormFieldTextareaDirective,
-    MatInputAutofocusDirective,
-    SafeResourceUrlPipe,
-    SafeHtmlPipe,
-  ],
-  imports: [
-    RouterModule,
-    CommonModule,
-    MatFormFieldModule,
-    FormsModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
-    MatDialogModule,
-    BreadcrumbModule,
-  ],
-  providers: [
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
-  ],
-  exports: [
-    BreadcrumbModule,
-    FileUploadDialogComponent,
-
-    DragAndDropDirective,
-    MousedownStopPropagationDirective,
-    ToggleDebugDirective,
-    MatFormFieldTextareaDirective,
-    SafeHtmlPipe,
-    SafeResourceUrlPipe,
-    MatInputAutofocusDirective,
-  ],
+    declarations: [
+        // AgBoolIconRenderer, // TODO:: @2dg not in used??
+        // MatInputAutofocusDirective, // TODO:: @2dg not in used??
+        FileUploadDialogComponent,
+        DragAndDropDirective,
+        MousedownStopPropagationDirective,
+        ToggleDebugDirective,
+        MatFormFieldTextareaDirective,
+        SafeResourceUrlPipe,
+    ],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
+    ],
+    exports: [
+        BreadcrumbModule,
+        FileUploadDialogComponent,
+        DragAndDropDirective,
+        MousedownStopPropagationDirective,
+        ToggleDebugDirective,
+        MatFormFieldTextareaDirective,
+        SafeResourceUrlPipe,
+    ],
+    imports: [
+        RouterModule,
+        CommonModule,
+        MatFormFieldModule,
+        FormsModule,
+        MatRadioModule,
+        MatRippleModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatButtonModule,
+        MatDialogModule,
+        BreadcrumbModule,
+        SafeHtmlPipe
+    ]
 })
 export class SharedComponentsModule { }

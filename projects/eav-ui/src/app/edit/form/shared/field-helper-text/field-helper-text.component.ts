@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -26,6 +27,7 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
     SharedComponentsModule,
     AsyncPipe,
     TranslateModule,
+    SafeHtmlPipe,
   ],
 })
 export class FieldHelperTextComponent implements OnInit {

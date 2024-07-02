@@ -8,13 +8,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-feature-details-dialog',
   templateUrl: './feature-details-dialog.component.html',
   styleUrls: ['./feature-details-dialog.component.scss'],
   standalone: true,
-  imports: [MatCardModule, SharedComponentsModule, MatButtonModule, MatIconModule, TippyDirective,]
+  imports: [
+    MatCardModule,
+    SharedComponentsModule,
+    MatButtonModule,
+    MatIconModule,
+    TippyDirective,
+    SafeHtmlPipe,
+  ]
 })
 export class FeatureDetailsDialogComponent {
 

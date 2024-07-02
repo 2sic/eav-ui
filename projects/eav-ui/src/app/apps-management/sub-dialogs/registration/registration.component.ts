@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-registration',
@@ -30,6 +31,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     MatButtonModule,
     AsyncPipe,
     TippyDirective,
+    SafeHtmlPipe,
   ],
   providers: [ZoneService, FeaturesConfigService],
 

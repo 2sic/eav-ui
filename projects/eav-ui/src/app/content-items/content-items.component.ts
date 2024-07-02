@@ -46,6 +46,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 
 @Component({
     selector: 'app-content-items',
@@ -60,6 +61,7 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
         AgGridModule,
         MatDialogActions,
         AsyncPipe,
+        SafeHtmlPipe,
     ],
     providers: [
         ContentItemsService,

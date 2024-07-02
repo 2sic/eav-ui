@@ -3,13 +3,14 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { SharedComponentsModule } from '../../../../../shared/shared-components.module';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { FieldState } from '../../../builder/fields-builder/field-state';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 
 @Component({
   selector: InputTypeConstants.EmptyMessage,
   templateUrl: './empty-message.component.html',
   styleUrls: ['./empty-message.component.scss'],
   standalone: true,
-  imports: [SharedComponentsModule],
+  imports: [SharedComponentsModule, SafeHtmlPipe,],
 })
 // TODO: @2dm - remove empty FieldMetadata as not needed any more
 @FieldMetadata({ /* This is needed for the field to work */ })

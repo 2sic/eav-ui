@@ -22,6 +22,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { FeatureTextInfoComponent } from '../../../../../features/feature-text-info/feature-text-info.component';
 import { MatCardModule } from '@angular/material/card';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-auto-translate-menu-dialog',
@@ -38,6 +39,7 @@ import { MatCardModule } from '@angular/material/card';
     SharedComponentsModule,
     AsyncPipe,
     TranslateModule,
+    SafeHtmlPipe,
   ],
 })
 export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {

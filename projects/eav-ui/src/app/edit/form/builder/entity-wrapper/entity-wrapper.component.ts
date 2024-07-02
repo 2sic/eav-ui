@@ -28,6 +28,7 @@ import { FormDataService } from '../../../shared/services/form-data.service';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -52,6 +53,7 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     AsyncPipe,
     TranslateModule,
     TippyDirective,
+    SafeHtmlPipe,
   ],
 })
 export class EntityWrapperComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {

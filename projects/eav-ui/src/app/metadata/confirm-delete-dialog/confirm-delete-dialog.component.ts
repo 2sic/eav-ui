@@ -4,6 +4,7 @@ import { ConfirmDeleteDialogData } from './confirm-delete-dialog.models';
 import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 @Component({
     selector: 'app-confirm-delete-dialog',
@@ -14,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
         MatCardModule,
         MatButtonModule,
         SharedComponentsModule,
+        SafeHtmlPipe,
     ],
 })
 export class ConfirmDeleteDialogComponent {

@@ -9,9 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Context } from '../../services/context';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { InstallerService } from '../../services/installer.service';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SafeHtmlPipeStandAlone } from '../../pipes/safe-htmlStandAlone.pipe';
+
 
 @Component({
   selector: 'app-file-upload-dialog',
