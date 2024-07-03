@@ -29,13 +29,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 const logThis = false;
 
@@ -59,12 +58,6 @@ const logThis = false;
     DragAndDropDirective,
     // WIP 2dm - needed for the lightspeed buttons to work
   ],
-  providers: [
-    AppsListService,
-    FeaturesService,
-    FeatureDetailService,
-    AppDialogConfigService,
-  ],
 })
 export class AppsListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
@@ -77,17 +70,17 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
   public features: FeaturesService = inject(FeaturesService);
   public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
+  private appsListService = transient(AppsListService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-    appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route, new EavLogger('AppsListComponent', logThis));
     ModuleRegistry.registerModules([ClientSideRowModelModule]);

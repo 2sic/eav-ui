@@ -15,6 +15,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-site-languages',
@@ -26,9 +27,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
     AsyncPipe,
     SxcGridModule,
   ],
-  providers: [
-    ZoneService,
-  ],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
@@ -37,7 +35,9 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<SiteLanguagesViewModel>;
 
-  constructor(private zoneService: ZoneService) {
+  private zoneService = transient(ZoneService);
+
+  constructor() {
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 

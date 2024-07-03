@@ -10,7 +10,9 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
   templateUrl: './app-name-show.component.html',
   styleUrls: ['./app-name-show.component.scss'],
   standalone: true,
-  imports: [MatIconModule, TippyDirective,],
+  imports: [MatIconModule,
+    TippyDirective,
+  ],
 })
 export class AppNameShowComponent implements ICellRendererAngularComp {
   name: string;

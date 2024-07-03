@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { License } from '../models/license.model';
 
 @Pipe({
-    name: 'activeFeaturesCount',
-    standalone: true
+  name: 'activeFeaturesCount',
+  standalone: true
 })
 export class ActiveFeaturesCountPipe implements PipeTransform {
 

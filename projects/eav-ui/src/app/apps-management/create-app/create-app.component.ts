@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterOutlet } from '@angular/router';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-create-app',
@@ -32,9 +33,6 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
     AsyncPipe,
     FieldHintComponent,
   ],
-  providers: [
-    AppsListService,
-  ]
 })
 export class CreateAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -46,9 +44,10 @@ export class CreateAppComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<CreateAppViewModel>;
 
+  private appsListService = transient(AppsListService);
+
   constructor(
     private dialogRef: MatDialogRef<CreateAppComponent>,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();

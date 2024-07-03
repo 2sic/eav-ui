@@ -16,8 +16,8 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-add-app-from-folder',
@@ -31,11 +31,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
     FeatureTextInfoComponent,
     SxcGridModule,
   ],
-  providers: [
-    AppsListService,
-    FeaturesService,
-    FeatureDetailService,
-  ]
 })
 export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -50,10 +45,10 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
 
   public features: FeaturesService = inject(FeaturesService);
   private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+  private appsListService = transient(AppsListService);
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
   ) {
     super();

@@ -6,11 +6,11 @@ import { SiteLanguage } from '../../models/site-language.model';
 import { SiteLanguagesStatusParams } from './site-languages-status.models';
 
 @Component({
-    selector: 'app-site-languages-status',
-    templateUrl: './site-languages-status.component.html',
-    styleUrls: ['./site-languages-status.component.scss'],
-    standalone: true,
-    imports: [MatSlideToggleModule],
+  selector: 'app-site-languages-status',
+  templateUrl: './site-languages-status.component.html',
+  styleUrls: ['./site-languages-status.component.scss'],
+  standalone: true,
+  imports: [MatSlideToggleModule],
 })
 export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {
   value: boolean;

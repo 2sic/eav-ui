@@ -49,15 +49,6 @@ declare const window: EavWindow;
     FieldHintComponent,
     TippyDirective,
   ],
-  providers: [
-    FeaturesService,
-    FeatureDetailService,
-    // TODO:: @2dg Remove after testing
-    // ZoneService,
-    // DialogService,
-    // SxcInsightsService,
-    // AppDialogConfigService,
-  ],
 })
 export class SystemInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
@@ -82,11 +73,6 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    // TODO:: @2dg Remove after testing
-    // private zoneService: ZoneService,
-    // private dialogService: DialogService,
-    // private sxcInsightsService: SxcInsightsService,
-    // private dialogSettings: AppDialogConfigService,
   ) {
     super(router, route);
   }

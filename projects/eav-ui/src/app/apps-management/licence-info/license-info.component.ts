@@ -33,6 +33,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-license-info',
@@ -53,9 +54,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
     ActiveFeaturesCountPipe,
     TippyDirective,
   ],
-  providers: [
-    FeaturesConfigService,
-  ]
 })
 export class LicenseInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
@@ -67,16 +65,17 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
 
   viewModel$: Observable<LicenseInfoViewModel>;
 
+  private featuresConfigService = transient(FeaturesConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
-    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {

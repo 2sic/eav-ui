@@ -4,11 +4,10 @@ import { Component } from '@angular/core';
 import { CheckboxCellParams } from './checkbox-cell.model';
 
 @Component({
-    selector: 'app-checkbox-cell',
-    templateUrl: './checkbox-cell.component.html',
-    styleUrls: ['./checkbox-cell.component.scss'],
-    standalone: true,
-
+  selector: 'app-checkbox-cell',
+  templateUrl: './checkbox-cell.component.html',
+  styleUrls: ['./checkbox-cell.component.scss'],
+  standalone: true,
 })
 export class CheckboxCellComponent implements ICellRendererAngularComp {
   params: ICellRendererParams & CheckboxCellParams;
