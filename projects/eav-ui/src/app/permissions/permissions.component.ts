@@ -39,7 +39,8 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
   providers: [
     PermissionsService,
     MetadataService,
-    EntitiesService,]
+    EntitiesService,
+  ],
 })
 export class PermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);

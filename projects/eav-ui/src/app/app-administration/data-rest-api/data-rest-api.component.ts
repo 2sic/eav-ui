@@ -28,11 +28,6 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
     RouterOutlet,
     SxcGridModule,
   ],
-  providers: [
-    // TODO:: 2dg - provider
-    // Used in Data > RestApi after refresh, error
-    MetadataService,
-  ],
   templateUrl: './data-rest-api.component.html',
   styleUrl: './data-rest-api.component.scss'
 })
