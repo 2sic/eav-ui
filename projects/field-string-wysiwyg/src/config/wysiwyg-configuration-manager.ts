@@ -116,28 +116,28 @@ function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode
   // consoleLogWebpack('2dm variationPartial', variation, 'currConfig', currConfig, 'defConfig', defConfig);
   const merged: WysiwygConfiguration = variation
     ? {
-      editMode: currConfig.editMode || defConfig.editMode,
-      displayMode: variation.displayMode || currConfig.displayMode || defConfig.displayMode,
-      buttons: {
-        ...defConfig.buttons,
-        ...currConfig.buttons,
-        ...variation.buttons,
-      },
-      contextMenu: variation.contextMenu || currConfig.contextMenu || defConfig.contextMenu,
-      features: {
-        ...defConfig.features,
-        ...currConfig.features,
-        ...variation.features,
-      },
-      menubar: variation.menubar || currConfig.menubar || defConfig.menubar,
-      tinyMce: null,
-      tinyMceOptions: variation.tinyMceOptions || currConfig.tinyMceOptions || defConfig.tinyMceOptions,
-      tinyMcePlugins: variation.tinyMcePlugins || currConfig.tinyMcePlugins || defConfig.tinyMcePlugins,
-      toolbar: variation.toolbar || currConfig.toolbar || defConfig.toolbar,
-    }
+        editMode: currConfig.editMode || defConfig.editMode,
+        displayMode: variation.displayMode || currConfig.displayMode || defConfig.displayMode,
+        buttons: {
+          ...defConfig.buttons,
+          ...currConfig.buttons,
+          ...variation.buttons,
+        },
+        contextMenu: variation.contextMenu || currConfig.contextMenu || defConfig.contextMenu,
+        features: {
+          ...defConfig.features,
+          ...currConfig.features,
+          ...variation.features,
+        },
+        menubar: variation.menubar || currConfig.menubar || defConfig.menubar,
+        tinyMce: null,
+        tinyMceOptions: variation.tinyMceOptions || currConfig.tinyMceOptions || defConfig.tinyMceOptions,
+        tinyMcePlugins: variation.tinyMcePlugins || currConfig.tinyMcePlugins || defConfig.tinyMcePlugins,
+        toolbar: variation.toolbar || currConfig.toolbar || defConfig.toolbar,
+      }
     : {
-      ...currConfig
-    };
+        ...currConfig
+      };
 
   log.a('wysiwyg: getPresetConfiguration merged', {merged});
 

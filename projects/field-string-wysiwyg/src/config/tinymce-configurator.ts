@@ -18,22 +18,20 @@ export class TinyMceConfigurator {
 
   private language: string;
   private isWysiwygPasteFormatted$ = new BehaviorSubject<boolean>(false);
-  private subscription: Subscription;
+  private subscription = new Subscription();
 
   constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
     this.language = this.connector._experimental.translateService.currentLang;
-    this.subscription = new Subscription();
 
     // call optional reconfiguration
     if (reconfigure) {
       reconfigure.initManager?.(window.tinymce);
       if (reconfigure.configureAddOns) {
         const changedAddOns = reconfigure.configureAddOns(this.addOnSettings);
-        if (changedAddOns) {
+        if (changedAddOns)
           this.addOnSettings = changedAddOns;
-        } else {
+        else
           console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reconfigErr}`);
-        }
       }
 
       this.addOnSettings = reconfigure.configureAddOns?.(this.addOnSettings) || this.addOnSettings;
@@ -50,9 +48,8 @@ export class TinyMceConfigurator {
 
   private warnAboutCommonSettingsIssues(): void {
     const contentCss = this.connector.field.settings.ContentCss;
-    if (contentCss && contentCss?.toLocaleLowerCase().includes('file:')) {
+    if (contentCss && contentCss?.toLocaleLowerCase().includes('file:'))
       console.error(`Found a setting for wysiwyg ContentCss but it should be a real link, got this instead: '${contentCss}'`);
-    }
   }
 
   /** Construct TinyMCE options */
@@ -68,9 +65,8 @@ export class TinyMceConfigurator {
     const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? DisplayModes.DisplayInline : DisplayModes.DisplayDialog);
 
     // 3. Dropzone / adam checks
-    if (exp.dropzone == null || exp.adam == null) {
+    if (exp.dropzone == null || exp.adam == null)
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
-    }
 
     // 2022-08-12 2dm
     // The setting can be an empty string, in which case tinyMCE assumes it's the file name of a stylesheet
@@ -78,7 +74,8 @@ export class TinyMceConfigurator {
     // This is useless and causes problems in DNN, because it results in logging out the user
     // See https://github.com/2sic/2sxc/issues/2829
     let contentCssFile = fieldSettings.ContentCss;
-    if (!contentCssFile) contentCssFile = null;
+    if (!contentCssFile)
+      contentCssFile = null;
 
     const options: RawEditorOptionsExtended = {
       ...wysiwygConfiguration.tinyMce,
@@ -98,7 +95,8 @@ export class TinyMceConfigurator {
     // If this is inherited by a customized field, then call it's configureOptions (if available)
     if (this.reconfigure?.configureOptions) {
       const newOptions = this.reconfigure.configureOptions(options);
-      if (newOptions) return newOptions;
+      if (newOptions)
+        return newOptions;
       console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
     }
     return options;

@@ -39,7 +39,6 @@ import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
-import { set } from 'lodash-es';
 
 const logThis = false;
 const nameOfThis = 'FieldStringWysiwygEditor';
