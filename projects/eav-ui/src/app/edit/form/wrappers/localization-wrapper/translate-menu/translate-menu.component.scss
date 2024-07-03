@@ -49,7 +49,9 @@
 .eav-translate-icon-button {
   scale: calc(4/5);
   position: relative;
-  top: -20px;
+  // 2024-07-03 2dm changing as it was too high up
+  // top: -20px;
+  top: -8px;
 
   &.hidden {
     visibility: hidden;
