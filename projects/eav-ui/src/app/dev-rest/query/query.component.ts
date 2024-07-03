@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, share } from 'rxjs';
 import { GoToDevRest } from '..';
 import { AppDialogConfigService, PipelinesService } from '../../app-administration/services';
-import { PermissionsService } from '../../permissions';
+import { MetadataService, PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -27,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { DialogService } from '../../shared/services/dialog.service';
+import { transient } from '../../core';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
@@ -56,11 +57,14 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
       PermissionsService,
       EntitiesService,
       AppDialogConfigService,
-      PipelinesService,
+      // PipelinesService,
+      MetadataService,
     ],
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private pipelinesService = transient(PipelinesService);
 
   /** Test values for url params */
   urlParams$ = new BehaviorSubject<string>('');
@@ -78,9 +82,9 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
     dialogRef: MatDialogRef<DevRestQueryComponent>,
     router: Router,
     route: ActivatedRoute,
-    pipelinesService: PipelinesService,
     permissionsService: PermissionsService,
     dnnContext: DnnContext,
+    // pipelinesService: PipelinesService,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
 
@@ -89,7 +93,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
     // build Query Stream
     const query$ = combineLatest([
       route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
-      pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
+     this.pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
     ]).pipe(
       map(([queryGuid, all]) => all.find(q => q.Guid === queryGuid)),
       share()

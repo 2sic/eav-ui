@@ -34,6 +34,7 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
+import { transient } from '../core';
 
 const logThis = false;
 
@@ -58,14 +59,17 @@ const logThis = false;
     SafeHtmlPipe,
   ],
   providers: [
-    EntitiesService,
     MetadataService,
-    FeatureDetailService,
-    ContentItemsService
   ]
 })
 export class MetadataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
+
+  private entitiesService = transient(EntitiesService);
+  private metadataService = transient(MetadataService);
+  private contentItemsService = transient(ContentItemsService);
+
+
 
   private metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
   private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
@@ -81,10 +85,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<MetadataComponent>,
-    private metadataService: MetadataService,
     private snackBar: MatSnackBar,
-    private entitiesService: EntitiesService,
-    private contentItemsService: ContentItemsService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,

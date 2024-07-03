@@ -11,6 +11,7 @@ import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Query } from '../models';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-web-api-rest-api',
@@ -25,23 +26,21 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
     DevRestQueryComponent,
     RouterOutlet
   ],
-  providers: [
-    PipelinesService,
-  ],
   templateUrl: './queries-rest-api.component.html',
   styleUrl: './queries-rest-api.component.scss'
 })
 export class QueriesRestApiComponent {
-
+  private pipelinesService = transient(PipelinesService);
   queryTypes$ = new BehaviorSubject<Query[]>(undefined);
   queryTypeForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private pipelinesService: PipelinesService, private router: Router
-    , private route: ActivatedRoute,
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-
     this.fetchQueries();
     this.queryTypeForm = this.fb.group({
       queryType: ['']
@@ -52,23 +51,18 @@ export class QueriesRestApiComponent {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
       this.queryTypes$.next(queries);
 
-       // When Route are reload and have some Guid in the Route
-       const urlSegments = this.router.url.split('/');
+      // When Route are reload and have some Guid in the Route
+      const urlSegments = this.router.url.split('/');
 
-       console.log(urlSegments)
+      const urlGuidName = urlSegments[urlSegments.length - 1]
 
-       const urlGuidName = urlSegments[urlSegments.length - 1]
-
-       const selectedContentType = queries.find(query => query.Guid === urlGuidName);
-       if (selectedContentType) {
-         this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
-       }
-
+      const selectedContentType = queries.find(query => query.Guid === urlGuidName);
+      if (selectedContentType)
+        this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
     });
   }
 
   openRestApi(event: string): void {
-    console.log('this.route.parent.firstChild', this.route.parent.firstChild);
     if (!event) return;
     this.router.navigate([`${event}`], { relativeTo: this.route.parent.firstChild });
   }

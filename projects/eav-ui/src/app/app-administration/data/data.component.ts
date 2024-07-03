@@ -41,6 +41,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-data',
@@ -61,12 +62,11 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
     SxcGridModule,
     DragAndDropDirective,
   ],
-  providers: [
-    ContentTypesService,
-    ContentExportService,
-  ],
 })
 export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private contentTypesService = transient(ContentTypesService);
+  private contentExportService = transient(ContentExportService);
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
@@ -85,10 +85,8 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
-    private contentExportService: ContentExportService,
     private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
