@@ -34,9 +34,13 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';
-import { ExtendedFabSpeedDialComponent } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { SourceService } from '../../../code-editor/services/source.service';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+
+const logThis = true;
+const nameOfThis = 'EditDialogMainComponent';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -56,7 +60,7 @@ import { SourceService } from '../../../code-editor/services/source.service';
     EditDialogFooterComponent,
     AsyncPipe,
     TranslateModule,
-    ExtendedFabSpeedDialComponent,
+    ...ExtendedFabSpeedDialImports,
     ToggleDebugDirective,
   ],
   providers: [
@@ -78,8 +82,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   viewModel$: Observable<EditDialogMainViewModel>;
 
-  private viewInitiated$: BehaviorSubject<boolean>;
-  private debugInfoIsOpen$: BehaviorSubject<boolean>;
+  private viewInitiated$ = new BehaviorSubject(false);
+  private debugInfoIsOpen$= new BehaviorSubject(false);
   private saveResult: SaveResult;
 
   constructor(
@@ -106,13 +110,13 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit() {
-    this.viewInitiated$ = new BehaviorSubject(false);
-    this.debugInfoIsOpen$ = new BehaviorSubject(false);
+    // this.viewInitiated$ = new BehaviorSubject(false);
+    // this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();

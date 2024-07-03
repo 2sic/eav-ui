@@ -26,8 +26,8 @@ import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/di
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
-import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -51,7 +51,8 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     FeatureIconTextComponent,
     TranslateModule,
     ClickStopPropagationDirective,
-    ExtendedFabSpeedDialComponent,
+    ...ExtendedFabSpeedDialImports,
+    // ExtendedFabSpeedDialComponent,
     TippyDirective,
   ],
 })

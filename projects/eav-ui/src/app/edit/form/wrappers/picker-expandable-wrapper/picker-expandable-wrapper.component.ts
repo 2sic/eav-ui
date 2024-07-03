@@ -14,8 +14,8 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
-import { ExtendedFabSpeedDialComponent } from 'projects/eav-ui/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,
@@ -31,7 +31,7 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     MatButtonModule,
     MatIconModule,
     CdkScrollable,
-    ExtendedFabSpeedDialComponent,
+    ...ExtendedFabSpeedDialImports,
     MatRippleModule,
     TranslateModule,
     TippyDirective,

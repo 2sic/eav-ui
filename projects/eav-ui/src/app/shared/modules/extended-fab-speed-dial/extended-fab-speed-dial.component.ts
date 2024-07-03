@@ -8,6 +8,12 @@ import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-spee
 import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
 import { NgTemplateOutlet } from '@angular/common';
 
+/**
+ * Special Speed-Dial kind of FAB which opens more menu items on hover.
+ * 
+ * IMPORTANT: to work it needs ca. 4 more directives.
+ * So never import this component directly, but instead import the ExtendedFabSpeedDialImports.
+ */
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'extended-fab-speed-dial',
