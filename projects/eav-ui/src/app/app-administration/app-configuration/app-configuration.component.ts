@@ -52,7 +52,12 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TippyDirective,
   ],
   providers: [
-    FeatureDetailService
+    FeatureDetailService,
+    ContentTypesService,
+    AppInternalsService,
+    ContentItemsService,
+    ImportAppPartsService,
+    DialogService,
   ],
 })
 export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

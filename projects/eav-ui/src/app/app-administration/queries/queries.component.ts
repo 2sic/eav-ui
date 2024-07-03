@@ -45,6 +45,11 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
     SxcGridModule,
     DragAndDropDirective,
   ],
+  providers: [
+    PipelinesService,
+    ContentExportService,
+    DialogService
+  ],
 })
 export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   enablePermissions!: boolean;

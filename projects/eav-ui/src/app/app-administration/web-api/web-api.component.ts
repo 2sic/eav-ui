@@ -36,6 +36,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
     AsyncPipe,
     SxcGridModule,
   ],
+  providers: [SourceService, DialogService]
 })
 export class WebApiComponent implements OnInit, OnDestroy {
   enableCode!: boolean;

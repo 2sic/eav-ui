@@ -15,7 +15,7 @@ export const routes: Routes = [
   },
   {
     path: ':zoneId/:appId/app',
-    loadChildren: () => import('./app-administration/app-administration.module').then(m => m.AppAdministrationModule),
+    loadChildren: () => import('./app-administration/app-administration.routing').then(m => m.appAdministrationRoutes),
     data: { title: 'App' },
   },
   {

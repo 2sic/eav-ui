@@ -27,6 +27,7 @@ import { SourceService } from '../../code-editor/services/source.service';
   ],
   providers: [
     PipelinesService,
+    SourceService
   ],
   templateUrl: './web-api-rest-api.component.html',
   styleUrl: './web-api-rest-api.component.scss'

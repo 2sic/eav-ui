@@ -36,6 +36,7 @@ import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picke
 import { FormDataService } from '../../shared/services/form-data.service';
 import { ExtendedFabSpeedDialComponent } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
+import { SourceService } from '../../../code-editor/services/source.service';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -63,7 +64,7 @@ import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.di
     FormsStateService,
     FormulaDesignerService,
     // 2dm: don't think it's used for real - except for in the create template, where it's referenced directly
-    // SourceService,
+    SourceService,
 
     // TODO: probably move to each picker component
     PickerTreeDataService,

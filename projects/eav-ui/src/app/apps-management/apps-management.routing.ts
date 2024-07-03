@@ -54,7 +54,7 @@ export const appsManagementRoutes: Routes = [
           },
           {
             path: ':appId',
-            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+            loadChildren: () => import('../app-administration/app-administration.routing').then(m => m.appAdministrationRoutes)
           },
           ...EditRoutesRoot,
         ],

@@ -63,6 +63,7 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
   ],
   providers: [
     ContentTypesService,
+    ContentExportService,
   ],
 })
 export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

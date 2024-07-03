@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { DialogService } from '../../shared/services/dialog.service';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 

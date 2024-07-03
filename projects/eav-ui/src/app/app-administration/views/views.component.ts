@@ -55,6 +55,7 @@ import { transient } from '../../core';
   ],
   providers: [
     FeatureDetailService,
+    DialogService,
   ]
 })
 export class ViewsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

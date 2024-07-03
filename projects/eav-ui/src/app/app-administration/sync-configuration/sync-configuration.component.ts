@@ -31,6 +31,8 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     ],
     providers: [
       FeatureDetailService,
+      ExportAppService,
+      ImportAppPartsService,
     ],
 })
 export class SyncConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
