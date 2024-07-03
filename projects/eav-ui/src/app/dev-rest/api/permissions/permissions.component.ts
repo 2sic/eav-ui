@@ -1,17 +1,15 @@
-import { ColDef, GridOptions } from '@ag-grid-community/core';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { DevRestApiViewModel } from '../api-template-vars';
-import { TrueFalseComponent } from '../true-false/true-false.component';
-import { TrueFalseParams } from '../true-false/true-false.models';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-dev-api-permissions',
   templateUrl: './permissions.component.html',
   standalone: true,
-  imports: [AgGridModule],
+  imports: [SxcGridModule,],
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   @Input() data: DevRestApiViewModel;

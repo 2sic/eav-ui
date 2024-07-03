@@ -8,7 +8,6 @@ import { AnalyzeSettingsService } from '../../../services/analyze-settings.servi
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
 import { AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
@@ -23,7 +22,6 @@ import { transient } from 'projects/eav-ui/src/app/core';
   imports: [
     MatButtonModule,
     MatIconModule,
-    AgGridModule,
     AsyncPipe,
     SxcGridModule,
   ],

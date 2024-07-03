@@ -41,7 +41,6 @@ import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 import { AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
@@ -59,7 +58,6 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AgGridModule,
     MatDialogActions,
     AsyncPipe,
     SafeHtmlPipe,

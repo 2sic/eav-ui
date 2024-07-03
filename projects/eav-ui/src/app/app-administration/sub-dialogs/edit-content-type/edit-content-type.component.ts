@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-edit-content-type',
@@ -41,12 +42,11 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
     ClickStopPropagationDirective,
     TippyDirective,
   ],
-  providers: [
-    ContentTypesService,
-  ],
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private contentTypesService = transient(ContentTypesService);
 
   contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
@@ -69,7 +69,6 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
     private route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
     private snackBar: MatSnackBar,
   ) { }
 

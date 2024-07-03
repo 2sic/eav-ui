@@ -33,6 +33,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 })
 export class QueriesRestApiComponent {
   private pipelinesService = transient(PipelinesService);
+
   queryTypes$ = new BehaviorSubject<Query[]>(undefined);
   queryTypeForm: FormGroup;
 
@@ -55,7 +56,6 @@ export class QueriesRestApiComponent {
 
       // When Route are reload and have some Guid in the Route
       const urlSegments = this.router.url.split('/');
-
       const urlGuidName = urlSegments[urlSegments.length - 1]
 
       const selectedContentType = queries.find(query => query.Guid === urlGuidName);

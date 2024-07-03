@@ -25,7 +25,6 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
@@ -37,7 +36,6 @@ import { transient } from '../../core';
   styleUrls: ['./queries.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
     MatDialogActions,
     MatButtonModule,
     MatIconModule,

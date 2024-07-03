@@ -26,10 +26,8 @@ import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { FeatureDetailService } from '../features/services/feature-detail.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
@@ -37,7 +35,6 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { transient } from '../core';
 
 const logThis = false;
-
 @Component({
   selector: 'app-metadata',
   templateUrl: './metadata.component.html',
@@ -47,7 +44,6 @@ const logThis = false;
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AgGridModule,
     SxcGridModule,
     MatDialogActions,
     EcoFabSpeedDialComponent,

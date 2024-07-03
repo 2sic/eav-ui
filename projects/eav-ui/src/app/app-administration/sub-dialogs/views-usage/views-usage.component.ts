@@ -14,7 +14,6 @@ import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/vie
 import { buildData } from './views-usage.helpers';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -30,7 +29,6 @@ import { transient } from '../../../core';
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AgGridModule,
     AsyncPipe,
     SxcGridModule,
     TippyDirective,

@@ -11,10 +11,10 @@ import { SiteLanguagesStatusComponent } from './site-languages-status/site-langu
 import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
 import { AsyncPipe } from '@angular/common';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-site-languages',
@@ -24,7 +24,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
   imports: [
     MatDialogActions,
     AsyncPipe,
-    AgGridModule,
+    SxcGridModule,
   ],
   providers: [
     ZoneService,

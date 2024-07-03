@@ -18,22 +18,6 @@ import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.c
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { EditRoutesSubItems, EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
-////
-import { Context } from '../shared/services/context';
-import { ZoneService } from '../apps-management/services/zone.service';
-import { SourceService } from '../code-editor/services/source.service';
-import { ContentExportService } from '../content-export/services/content-export.service';
-import { ContentItemsService } from '../content-items/services/content-items.service';
-import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
-import { MetadataService } from '../permissions';
-import { DialogService } from '../shared/services/dialog.service';
-import { AppDialogConfigService } from './services/app-dialog-config.service';
-import { AppInternalsService } from './services/app-internals.service';
-import { ContentTypesService } from './services/content-types.service';
-import { ExportAppPartsService } from './services/export-app-parts.service';
-import { ExportAppService } from './services/export-app.service';
-import { ImportAppPartsService } from './services/import-app-parts.service';
-import { PipelinesService } from './services/pipelines.service';
 
 export const appAdministrationRoutes: Routes = [
   {
@@ -216,7 +200,6 @@ export const appAdministrationRoutes: Routes = [
           },
         ]
       },
-      ////
       {
         path: 'app',
         loadComponent: () => import('./app-configuration/app-configuration.component').then(mod => mod.AppConfigurationComponent),
@@ -275,23 +258,5 @@ export const appAdministrationRoutes: Routes = [
         ],
       },
     ]
-    // providers: [
-    //   // Context,
-    //   // AppDialogConfigService,
-    //   // SourceService,
-    //   // ExportAppService,
-
-    //   // ExportAppPartsService,
-    //   // PipelinesService,
-    //   // ContentExportService,
-    //   // ContentTypesFieldsService,
-    //   // MetadataService,
-    //   // ZoneService,
-    //   // ContentTypesService,
-    //   // AppInternalsService,
-    //   // ContentItemsService,
-    //   // ImportAppPartsService,
-    //   // DialogService,
-    // ]
   },
 ];

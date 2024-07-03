@@ -29,13 +29,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 const logThis = false;
 
@@ -45,7 +45,7 @@ const logThis = false;
   styleUrls: ['./apps-list.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
+    SxcGridModule,
     MatDialogActions,
     EcoFabSpeedDialComponent,
     NgClass,

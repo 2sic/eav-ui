@@ -14,10 +14,10 @@ import { LanguagesPermissionsActionsComponent } from './languages-permissions-ac
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-language-permissions',
@@ -28,13 +28,9 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AgGridModule,
     MatDialogActions,
     AsyncPipe,
     SxcGridModule,
-  ],
-  providers: [
-    ZoneService,
   ],
 })
 export class LanguagePermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
@@ -43,11 +39,12 @@ export class LanguagePermissionsComponent extends BaseWithChildDialogComponent i
 
   viewModel$: Observable<LanguagePermissionsViewModel>;
 
+  private zoneService = transient(ZoneService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
-    private zoneService: ZoneService,
   ) {
     super(router, route);
     this.subscriptions = new Subscription();

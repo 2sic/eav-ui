@@ -37,7 +37,6 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
@@ -49,7 +48,6 @@ import { transient } from '../../core';
   styleUrls: ['./data.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
     MatDialogActions,
     MatFormFieldModule,
     MatSelectModule,

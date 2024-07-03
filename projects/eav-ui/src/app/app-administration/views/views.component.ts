@@ -32,9 +32,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
 
@@ -44,7 +42,6 @@ import { transient } from '../../core';
   styleUrls: ['./views.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
     MatDialogActions,
     MatButtonModule,
     MatIconModule,
@@ -53,12 +50,9 @@ import { transient } from '../../core';
     SxcGridModule,
     DragAndDropDirective,
   ],
-  providers: [
-    FeatureDetailService,
-    DialogService,
-  ]
 })
 export class ViewsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+  private dialogService = transient(DialogService);
   enableCode: boolean;
   enablePermissions: boolean;
   appIsGlobal: boolean;
@@ -79,7 +73,6 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private dialogConfigSvc: AppDialogConfigService,
 
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg

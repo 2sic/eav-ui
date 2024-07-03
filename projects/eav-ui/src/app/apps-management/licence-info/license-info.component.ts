@@ -1,4 +1,4 @@
-import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
+import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -32,6 +32,7 @@ import { FeaturesConfigService } from '../services/features-config.service';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-license-info',
@@ -42,7 +43,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
     MatExpansionModule,
     MatIconModule,
     NgClass,
-    AgGridModule,
+    SxcGridModule,
     AgGridHeightDirective,
     MatDialogActions,
     MatButtonModule,

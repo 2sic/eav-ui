@@ -17,11 +17,11 @@ import { PermissionsActionsParams } from './permissions-actions/permissions-acti
 import { PermissionsService } from './services/permissions.service';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MetadataService } from './services/metadata.service';
 import { EntitiesService } from '../content-items/services/entities.service';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-permissions',
@@ -32,9 +32,9 @@ import { EntitiesService } from '../content-items/services/entities.service';
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AgGridModule,
     MatDialogActions,
     AsyncPipe,
+    SxcGridModule,
   ],
   providers: [
     PermissionsService,

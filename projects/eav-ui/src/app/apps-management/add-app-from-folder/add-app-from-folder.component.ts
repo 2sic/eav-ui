@@ -15,27 +15,27 @@ import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-    selector: 'app-add-app-from-folder',
-    templateUrl: './add-app-from-folder.component.html',
-    styleUrls: ['./add-app-from-folder.component.scss'],
-    standalone: true,
-    imports: [
-        AgGridModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-        FeatureTextInfoComponent,
-    ],
-    providers: [
-        AppsListService,
-        FeaturesService,
-        FeatureDetailService,
-    ]
+  selector: 'app-add-app-from-folder',
+  templateUrl: './add-app-from-folder.component.html',
+  styleUrls: ['./add-app-from-folder.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    FeatureTextInfoComponent,
+    SxcGridModule,
+  ],
+  providers: [
+    AppsListService,
+    FeaturesService,
+    FeatureDetailService,
+  ]
 })
 export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

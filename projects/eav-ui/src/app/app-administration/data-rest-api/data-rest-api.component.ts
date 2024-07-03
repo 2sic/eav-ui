@@ -29,6 +29,8 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
     SxcGridModule,
   ],
   providers: [
+    // TODO:: 2dg - provider
+    // Used in Data > RestApi after refresh, error
     MetadataService,
   ],
   templateUrl: './data-rest-api.component.html',

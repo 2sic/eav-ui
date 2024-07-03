@@ -29,42 +29,44 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { EavLogger } from '../../shared/logging/eav-logger';
+import { transient } from '../../core';
 
 const pathToApi = 'app/{appname}/{endpointPath}/{action}';
 const logThis = false;
 @Component({
-    selector: 'app-dev-rest-api',
-    templateUrl: './api.component.html',
-    styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        TippyDirective,
-        MatIconModule,
-        RouterOutlet,
-        SelectorWithHelpComponent,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatTabsModule,
-        DevRestApiIntroductionComponent,
-        DevRestTabIntroductionComponent,
-        DevRestTabExamplesComponent,
-        DevRestApiActionParamsComponent,
-        MatExpansionModule,
-        MatInputModule,
-        DevRestUrlsAndCodeComponent,
-        DevRestApiPermissionsComponent,
-        DevRestHttpHeadersComponent,
-        AsyncPipe,
-    ],
-    providers: [
-      SourceService,
-      AppDialogConfigService,
-    ],
+  selector: 'app-dev-rest-api',
+  templateUrl: './api.component.html',
+  styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    TippyDirective,
+    MatIconModule,
+    RouterOutlet,
+    SelectorWithHelpComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatTabsModule,
+    DevRestApiIntroductionComponent,
+    DevRestTabIntroductionComponent,
+    DevRestTabExamplesComponent,
+    DevRestApiActionParamsComponent,
+    MatExpansionModule,
+    MatInputModule,
+    DevRestUrlsAndCodeComponent,
+    DevRestApiPermissionsComponent,
+    DevRestHttpHeadersComponent,
+    AsyncPipe,
+  ],
+  providers: [
+    AppDialogConfigService,
+  ],
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private sourceService = transient(SourceService);
 
   /** action name to check for */
   selectedActionName$ = new BehaviorSubject<string>(null);
@@ -81,7 +83,6 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     dialogRef: MatDialogRef<DevRestApiComponent>,
     router: Router,
     route: ActivatedRoute,
-    private sourceService: SourceService,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, null);
 
@@ -95,8 +96,8 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
         name = decodeURIComponent(name);
         return webApis.find(w => w.path === name);
       },
-      logWebApi.map(),
-    ));
+        logWebApi.map(),
+      ));
 
     const apiDetails$ = webApi$.pipe(
       switchMap(webApi => this.sourceService.getWebApiDetails(webApi.path)),

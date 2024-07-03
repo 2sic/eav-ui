@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
@@ -13,44 +13,38 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { transient } from '../../core';
 
 @Component({
-    selector: 'app-sync-configuration',
-    templateUrl: './sync-configuration.component.html',
-    styleUrls: ['./sync-configuration.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSlideToggleModule,
-        FormsModule,
-        FeatureTextInfoComponent,
-        RouterOutlet,
-    ],
-    providers: [
-      FeatureDetailService,
-      ExportAppService,
-      ImportAppPartsService,
-    ],
+  selector: 'app-sync-configuration',
+  templateUrl: './sync-configuration.component.html',
+  styleUrls: ['./sync-configuration.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+    FormsModule,
+    FeatureTextInfoComponent,
+    RouterOutlet,
+  ],
 })
 export class SyncConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
 
+  private importAppPartsService = transient(ImportAppPartsService);
+  private exportAppService = transient(ExportAppService);
 
   public appStateAdvanced = false;
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private exportAppService: ExportAppService,
-    private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
     private appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
-
   }
 
   ngOnInit() {
