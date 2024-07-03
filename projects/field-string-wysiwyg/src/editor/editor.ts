@@ -20,7 +20,7 @@ import 'tinymce/plugins/table';
 import 'tinymce/themes/silver';
 // Keep at least one empty line after this, to ensure order of imports!
 
-import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
 import type { Editor } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
@@ -38,29 +38,41 @@ import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
+import { set } from 'lodash-es';
 
 const logThis = false;
 const nameOfThis = 'FieldStringWysiwygEditor';
 
 declare const window: EavWindow;
 
+/**
+ * Class which is an HTML element containing the WYSIWYG editor.
+ * It is registered as a custom-element in the browser (below)
+ */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
-  fieldInitialized: boolean;
+  fieldInitialized = false;
   connector: Connector<string>;
   mode?: 'inline' | 'normal';
   reconfigure?: WysiwygReconfigure;
+
   /** Responsible for configuring TinyMCE */
   configurator: TinyMceConfigurator;
 
-  private instanceId: string;
-  private containerClass: string;
-  private toolbarContainerClass: string;
-  private subscriptions: Subscription[];
+  /** random, unique ID for this instance of the editor to keep them separate */
+  private instanceId = `${Math.floor(Math.random() * 99999)}`;
+
+  /** class to uniquely identify this editor */
+  private containerClass = `tinymce-container-${this.instanceId}`;
+
+  /** class to uniquely identify the toolbar area */
+  private toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
+
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
-  private subscription: Subscription = new Subscription();
+  private subscriptions: Subscription = new Subscription();
   private editor: Editor;
-  private isDrop: boolean = false;
+  private isDrop = false;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
   private menuObserver: MutationObserver;
@@ -70,15 +82,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   constructor() {
     super();
     this.log.a(`constructor`);
-    this.subscriptions = [];
-    this.fieldInitialized = false;
-    this.instanceId = `${Math.floor(Math.random() * 99999)}`;
-    this.containerClass = `tinymce-container-${this.instanceId}`;
-    this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
+  /** This will be called by the system once the data is ready */
   connectedCallback(): void {
-    if (this.fieldInitialized) { return; }
+    if (this.fieldInitialized)
+      return;
+
     this.fieldInitialized = true;
     this.log.a(`connectedCallback`);
 
@@ -86,12 +96,17 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    this.subscription.add(this.connector._experimental.isFeatureEnabled$('PasteImageFromClipboard')
+
+    // ensure it respects activated features for Paste-Image
+    this.subscriptions.add(this.connector._experimental.isFeatureEnabled$('PasteImageFromClipboard')
       .pipe(distinctUntilChanged())
       .subscribe(this.pasteClipboardImage$)
     );
 
+    // Figure out what language tinyMce should use
     const tinyLang = TranslationsLoader.fixTranslationKey(this.connector._experimental.translateService.currentLang);
+
+    // Tell the system to load some scripts / language resources, and then trigger the next step
     this.connector.loadScript(
       [
         {
@@ -99,9 +114,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           src: `${tinyMceBaseUrl}/i18n/${tinyLang}.js`,
         },
       ],
-      () => {
-        this.tinyMceScriptLoaded();
-      }
+      () => this.tinyMceScriptLoaded(),
     );
 
     this.connector._experimental.dropzone.setConfig({ disabled: false });
@@ -109,13 +122,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   private tinyMceScriptLoaded(): void {
     this.log.a(`tinyMceScriptLoaded`);
+
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
       this.containerClass,
       this.toolbarContainerClass,
       this.mode === 'inline',
-      (editor: Editor) => { this.tinyMceSetup(editor, tinyOptions); },
+      // setup callback when the editor is initialized by TinyMCE
+      (editor: Editor) => this.tinyMceSetup(editor, tinyOptions),
     );
+
     this.firstInit = true;
     this.configurator.addTranslations();
     window.tinymce.baseURL = tinyMceBaseUrl;
@@ -128,35 +144,51 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', _event => {
       this.log.a(`TinyMCE initialized`, {editor});
       this.reconfigure?.editorOnInit?.(editor);
-      new AddEverythingToRegistry({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
-      if (!this.reconfigure?.disableAdam) {
+
+      new AddEverythingToRegistry({
+        field: this,
+        editor,
+        adam: this.connector._experimental.adam,
+        options: rawEditorOptions,
+      }).register();
+
+      if (!this.reconfigure?.disableAdam)
         attachAdam(editor, this.connector._experimental.adam);
-      }
+
       this.menuObserver = fixMenuPositions(this);
+
       // Shared subscriptions
-      this.subscriptions.push(
+      this.subscriptions.add(
         this.connector.data.value$.subscribe(newValue => {
-          if (this.editorContent === newValue) { return; }
+          if (this.editorContent === newValue) return;
           this.editorContent = newValue;
           editor.setContent(this.editorContent);
-        }),
-        this.connector.field$.subscribe(fieldConfig => {
-          if (fieldConfig.settings.Disabled || fieldConfig.settings.ForcedDisabled) {
-            this.classList.add('disabled');
-          } else {
-            this.classList.remove('disabled');
-          }
+        })
+      );
+      this.subscriptions.add(
+        connectorToDisabled$(this.connector).subscribe(disabled => {
+          this.log.a(`Field config disabled`, { disabled, mode: editor.mode.get() });
+          this.classList.toggle('disabled', disabled);
+          this.editor.mode.set(disabled ? 'readonly' : 'design');
         }),
       );
-      if (this.mode !== WysiwygDialogModes.DisplayInline) {
-        setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
-      } else {
-        if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
+
+      const delayFocus = () => setTimeout(() => editor.focus(false), 100);
+
+      // If not inline mode always focus on init
+      if (this.mode !== WysiwygDialogModes.DisplayInline)
+        delayFocus();
+      else {
+        // If is inline mode skip focus on first init
+        if (!this.firstInit)
+          delayFocus()
+
         // Inline only subscriptions
-        this.subscriptions.push(this.connector._experimental.isExpanded$.subscribe(isExpanded => {
+        this.subscriptions.add(this.connector._experimental.isExpanded$.subscribe(isExpanded => {
           this.dialogIsOpen = isExpanded;
 
-          if (!this.firstInit && !this.dialogIsOpen) { setTimeout(() => { editor.focus(false); }, 100); }
+          if (!this.firstInit && !this.dialogIsOpen)
+            delayFocus();
         }));
       }
       this.firstInit = false;
@@ -170,15 +202,11 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // called before PastePreProcess
     // this is needed so drag and drop will function even if pasteClipboardImage feature is false
-    editor.on('drop', _event => {
-      this.isDrop = true;
-    });
+    editor.on('drop', _event => this.isDrop = true);
 
     // called before PastePreProcess
     // this is needed so paste will only work depending on pasteClipboardImage feature
-    editor.on('paste', _event => {
-      this.isDrop = false;
-    });
+    editor.on('paste', _event => this.isDrop = false);
 
     // called before actual image upload so _event.preventDefault(); can stop pasting
     // this is needed beacuse only here we can read clipboard content
@@ -192,31 +220,35 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('focus', _event => {
       this.classList.add('focused');
       this.log.a(`TinyMCE focused`, _event);
-      if (!this.reconfigure?.disableAdam) {
+      if (!this.reconfigure?.disableAdam)
         attachAdam(editor, this.connector._experimental.adam);
-      }
-      if (this.mode === 'inline') {
+
+      if (this.mode === 'inline')
         this.connector._experimental.setFocused(true);
-      }
     });
 
     editor.on('blur', _event => {
       this.classList.remove('focused');
       this.log.a(`TinyMCE blurred`, _event);
-      if (this.mode === 'inline') {
+      if (this.mode === 'inline')
         this.connector._experimental.setFocused(false);
-      }
     });
 
-    editor.on('change', () => { this.saveValue(); });
-    editor.on('undo', () => { this.saveValue(); });
-    editor.on('redo', () => { this.saveValue(); });
+    // on change, undo and redo, save/push the value
+    editor.on('change', () => this.saveValue());
+    editor.on('undo', () => this.saveValue());
+    editor.on('redo', () => this.saveValue());
     this.reconfigure?.configureEditor?.(editor);
   }
 
   private saveValue(): void {
+    // Check what's new
     let newContent = this.editor.getContent();
-    if (newContent.includes('<img src="data:image')) { return; }
+
+    // If the new thing is an image in the middle of an upload,
+    // exit and wait for the change to be finalized
+    if (newContent.includes('<img src="data:image'))
+      return;
 
     // this is necessary for adding data-cmsid attribute to image attributes
     if (newContent.includes("?tododata-cmsid=")) {
@@ -232,16 +264,15 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       });
       this.editor.setContent(newContent);
     }
-
+    // remember for change detection
     this.editorContent = newContent;
+
+    // broadcast the change
     this.connector.data.update(this.editorContent);
   }
 
   private clearData(): void {
-    this.subscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-    });
-    this.subscriptions = [];
+    this.subscriptions.unsubscribe();
     this.editor?.destroy();
     this.editor?.remove();
     this.editorContent = null;
@@ -252,10 +283,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   disconnectedCallback(): void {
     this.log.a(`disconnectedCallback`);
     this.clearData();
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 }
 
-if (!customElements.get(wysiwygEditorHtmlTag)) {
-  customElements.define(wysiwygEditorHtmlTag, FieldStringWysiwygEditor);
-}
+// Register the custom element
+registerCustomElement(wysiwygEditorHtmlTag, FieldStringWysiwygEditor);
