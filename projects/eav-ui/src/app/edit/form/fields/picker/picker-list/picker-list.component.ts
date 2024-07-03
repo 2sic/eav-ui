@@ -12,6 +12,7 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
 
 const logThis = false;
 const nameOfThis = 'PickerListComponent';
@@ -32,6 +33,7 @@ const nameOfThis = 'PickerListComponent';
     AsyncPipe,
     TranslateModule,
     TippyDirective,
+    MousedownStopPropagationDirective,
   ],
 })
 export class PickerListComponent extends PickerPartBaseComponent implements OnDestroy {

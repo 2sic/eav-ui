@@ -9,7 +9,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
   templateUrl: './features-list-enabled-reason.component.html',
   styleUrls: ['./features-list-enabled-reason.component.scss'],
   standalone: true,
-  imports: [TippyDirective,],
+  imports: [TippyDirective],
 })
 export class FeaturesListEnabledReasonComponent implements ICellRendererAngularComp {
   value: boolean;

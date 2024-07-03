@@ -16,9 +16,9 @@ import { transient } from '../../../core';
 export class ImportViewComponent {
 
   uploadType = UploadTypes.View;
-  
+
   private viewsService = transient(ViewsService);
-  
+
   constructor(
     @Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData,
   ) {

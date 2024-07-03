@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
@@ -20,7 +19,7 @@ import { GoToCopilot } from './copilot/go-to-copilot';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { EditRoutesSubItems, EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
 
-const appAdministrationRoutes: Routes = [
+export const appAdministrationRoutes: Routes = [
   {
     path: '',
     // experimental 2dm
@@ -201,7 +200,6 @@ const appAdministrationRoutes: Routes = [
           },
         ]
       },
-      ////
       {
         path: 'app',
         loadComponent: () => import('./app-configuration/app-configuration.component').then(mod => mod.AppConfigurationComponent),
@@ -262,9 +260,3 @@ const appAdministrationRoutes: Routes = [
     ]
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(appAdministrationRoutes)],
-  exports: [RouterModule]
-})
-export class AppAdministrationRoutingModule { }

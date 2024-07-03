@@ -24,12 +24,6 @@ const logThis = false;
   selector: 'app-app-admin-main',
   templateUrl: './app-admin-main.component.html',
   styleUrls: ['./app-admin-main.component.scss'],
-  providers: [
-    // Must have a new config service here, to restart with new settings
-    // which are injected into it from the context
-    // Because of standalone-components, it's not enough to have it in the module-definition
-    AppDialogConfigService,
-  ],
   standalone: true,
   imports: [
     MatToolbarModule,
@@ -40,6 +34,12 @@ const logThis = false;
     RouterOutlet,
     AsyncPipe,
     NavItemListComponent,
+  ],
+  providers: [
+    // Must have a new config service here, to restart with new settings
+    // which are injected into it from the context
+    // Because of standalone-components, it's not enough to have it in the module-definition
+    AppDialogConfigService,
   ],
 })
 export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

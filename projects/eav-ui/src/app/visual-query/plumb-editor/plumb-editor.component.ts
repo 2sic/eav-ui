@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -29,6 +30,7 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
     NgClass,
     MatIconModule,
     AsyncPipe,
+    MousedownStopPropagationDirective,
   ],
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {

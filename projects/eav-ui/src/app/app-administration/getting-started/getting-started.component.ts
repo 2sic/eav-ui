@@ -9,7 +9,10 @@ import { SafeResourceUrlPipe } from '../../shared/pipes/safe-resource-url';
   templateUrl: './getting-started.component.html',
   styleUrls: ['./getting-started.component.scss'],
   standalone: true,
-  imports: [AsyncPipe, SafeResourceUrlPipe,],
+  imports: [
+    AsyncPipe,
+    SafeResourceUrlPipe,
+  ],
 })
 export class GettingStartedComponent {
 

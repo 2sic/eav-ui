@@ -10,13 +10,12 @@ import { CommonModule } from '@angular/common';
 import { RichResult } from '../../shared/models/rich-result';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopilotService } from './copilot-service';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-copilot-generator',
   standalone: true,
-  providers: [
-    CopilotService
-  ],
+
   templateUrl: './copilot-generator.component.html',
   imports: [
     MatSelectModule,
@@ -29,8 +28,9 @@ import { CopilotService } from './copilot-service';
 export class CopilotGeneratorComponent {
 
   @Input() outputType: string;
-
   @Input() title?: string = 'Copilot Generator';
+
+  private copilotSvc = transient(CopilotService);
 
   webApiGeneratedCode: string = 'admin/code/generateDataModels';
   editions$ = this.copilotSvc.getEditions();
@@ -49,7 +49,6 @@ export class CopilotGeneratorComponent {
     private http: HttpClient,
     private context: Context,
     private snackBar: MatSnackBar,
-    private copilotSvc: CopilotService,
   ) { }
 
   ngOnInit(): void {

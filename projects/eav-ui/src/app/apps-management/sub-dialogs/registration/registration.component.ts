@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-registration',
@@ -49,11 +50,11 @@ export class RegistrationComponent implements OnInit {
   // patrons logo
   logo = patronsLogo;
 
+  private zoneService = transient(ZoneService);
+  private featuresConfigService = transient(FeaturesConfigService);
+
   constructor(
-    private dialogRef: MatDialogRef<RegistrationComponent>,
     private globalConfigService: GlobalConfigService,
-    private zoneService: ZoneService,
-    private featuresConfigService: FeaturesConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

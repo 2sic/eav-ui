@@ -25,10 +25,10 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-queries',
@@ -36,7 +36,6 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
   styleUrls: ['./queries.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
     MatDialogActions,
     MatButtonModule,
     MatIconModule,
@@ -47,6 +46,11 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
   ],
 })
 export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private pipelinesService = transient(PipelinesService);
+  private contentExportService = transient(ContentExportService);
+  private dialogService = transient(DialogService);
+
   enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -58,10 +62,7 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private pipelinesService: PipelinesService,
-    private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);

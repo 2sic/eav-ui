@@ -13,7 +13,6 @@ import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-resu
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, AnalyzeSettingsViewModel, SettingsStackItem } from './analyze-settings.models';
 import { AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -37,12 +36,8 @@ import { transient } from '../../../core';
     MatSelectModule,
     FormsModule,
     MatOptionModule,
-    AgGridModule,
     AsyncPipe,
     SxcGridModule,
-  ],
-  providers: [
-    AnalyzeSettingsService,
   ],
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
@@ -53,7 +48,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   private views$: BehaviorSubject<View[]>;
   private selectedView$: BehaviorSubject<string>;
   private stack$: BehaviorSubject<SettingsStackItem[]>;
-  
+
   private viewsService = transient(ViewsService);
   private analyzeSettingsService = transient(AnalyzeSettingsService);
 

@@ -17,9 +17,9 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-web-api',
@@ -27,17 +27,20 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
   styleUrls: ['./web-api.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
+    SxcGridModule,
     MatDialogActions,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
     RouterOutlet,
     AsyncPipe,
-    SxcGridModule,
-  ],
+  ]
 })
 export class WebApiComponent implements OnInit, OnDestroy {
+
+  private dialogService = transient(DialogService);
+  private sourceService = transient(SourceService);
+
   enableCode!: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(undefined);
@@ -46,9 +49,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   viewModel$: Observable<WebApiViewModel>;
 
   constructor(
-    private sourceService: SourceService,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private dialogConfigSvc: AppDialogConfigService,

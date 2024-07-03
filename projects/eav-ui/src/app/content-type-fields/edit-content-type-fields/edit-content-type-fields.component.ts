@@ -27,6 +27,7 @@ import { ReservedNamesValidatorDirective } from './reserved-names.directive';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -47,6 +48,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
     AsyncPipe,
     TranslateModule,
     FieldHintComponent,
+    ToggleDebugDirective,
   ],
 })
 export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {

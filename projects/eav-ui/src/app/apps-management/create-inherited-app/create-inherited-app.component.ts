@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterOutlet } from '@angular/router';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-create-inherited-app',
@@ -30,9 +31,6 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
     AsyncPipe,
     FieldHintComponent
   ],
-  providers: [
-    AppsListService,
-  ]
 })
 export class CreateInheritedAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -43,9 +41,10 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<CreateInheritedAppViewModel>;
 
+  private appsListService = transient(AppsListService);
+
   constructor(
     private dialogRef: MatDialogRef<CreateInheritedAppComponent>,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();

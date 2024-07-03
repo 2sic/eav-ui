@@ -9,16 +9,16 @@ import { MatRippleModule } from '@angular/material/core';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-data-fields',
-    templateUrl: './data-fields.component.html',
-    styleUrls: ['./data-fields.component.scss'],
-    standalone: true,
-    imports: [
-        MatRippleModule,
-        MatIconModule,
-        MatBadgeModule,
-        TippyDirective,
-    ],
+  selector: 'app-data-fields',
+  templateUrl: './data-fields.component.html',
+  styleUrls: ['./data-fields.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+    TippyDirective,
+  ],
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
   value: number;

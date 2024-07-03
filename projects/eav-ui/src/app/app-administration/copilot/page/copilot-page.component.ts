@@ -4,15 +4,13 @@ import { CopilotSpec } from '../copilot-specs';
 import { CopilotGeneratorComponent } from '../copilot-generator.component';
 
 @Component({
-    selector: 'app-data-copilot',
-    standalone: true,
-    providers: [
-    ],
-    templateUrl: './copilot-page.component.html',
-    styleUrl: './copilot-page.component.scss',
-    imports: [
-      CopilotGeneratorComponent
-    ]
+  selector: 'app-data-copilot',
+  standalone: true,
+  templateUrl: './copilot-page.component.html',
+  styleUrl: './copilot-page.component.scss',
+  imports: [
+    CopilotGeneratorComponent
+  ]
 })
 export class CopilotPageComponent {
 

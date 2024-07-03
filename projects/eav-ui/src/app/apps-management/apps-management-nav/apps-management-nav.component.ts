@@ -14,6 +14,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -30,14 +31,12 @@ import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-
     AsyncPipe,
     NavItemListComponent
   ],
-  providers: [
-    AppDialogConfigService,
-  ]
 })
 export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
-  zoneId = this.context.zoneId;
+  private appDialogConfigService = transient(AppDialogConfigService);
 
+  zoneId = this.context.zoneId;
 
   private currentPath$ = combineLatest([
     this.router.events.pipe(
@@ -73,7 +72,6 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     private context: Context,
     private media: MediaMatcher,
-    private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
   }

@@ -1,4 +1,4 @@
-import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
+import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -32,6 +32,8 @@ import { FeaturesConfigService } from '../services/features-config.service';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-license-info',
@@ -42,7 +44,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
     MatExpansionModule,
     MatIconModule,
     NgClass,
-    AgGridModule,
+    SxcGridModule,
     AgGridHeightDirective,
     MatDialogActions,
     MatButtonModule,
@@ -52,9 +54,6 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
     ActiveFeaturesCountPipe,
     TippyDirective,
   ],
-  providers: [
-    FeaturesConfigService,
-  ]
 })
 export class LicenseInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
@@ -66,16 +65,17 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
 
   viewModel$: Observable<LicenseInfoViewModel>;
 
+  private featuresConfigService = transient(FeaturesConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
-    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {

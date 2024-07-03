@@ -28,10 +28,10 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
@@ -43,11 +43,11 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AgGridModule,
     NgClass,
     MatDialogActions,
     AsyncPipe,
 
+    ToggleDebugDirective,
     SxcGridModule,
   ],
   providers: [

@@ -17,7 +17,6 @@ import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
 import { AppDialogConfigService, ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
-import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
@@ -33,6 +32,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-app-configuration',
@@ -52,10 +52,17 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TippyDirective,
   ],
   providers: [
-    FeatureDetailService
+  // TODO:: 2dg - provider  // Used app
+    ContentItemsService,
+    AppInternalsService,
+    FeatureDetailService,
   ],
 })
 export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private dialogService = transient(DialogService);
+  private contentTypesService = transient(ContentTypesService);
+
   dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
@@ -72,25 +79,19 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   viewModel$: Observable<AppConfigurationViewModel>;
 
   public appStateAdvanced = false;
-
   public features: FeaturesService = inject(FeaturesService);
 
   protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
   protected langPermsEnabled = this.features.isEnabled(FeatureNames.PermissionsByLanguage);
 
-
-
   constructor(
+    private contentItemsService: ContentItemsService,
     protected router: Router,
     protected route: ActivatedRoute,
-    private contentItemsService: ContentItemsService,
     private context: Context,
-    private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private appInternalsService: AppInternalsService,
-    private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     private appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,

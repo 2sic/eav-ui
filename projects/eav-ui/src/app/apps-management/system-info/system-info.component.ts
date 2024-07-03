@@ -25,6 +25,7 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { transient } from '../../core';
 
 declare const window: EavWindow;
 
@@ -48,16 +49,13 @@ declare const window: EavWindow;
     FieldHintComponent,
     TippyDirective,
   ],
-  providers: [
-    ZoneService,
-    DialogService,
-    SxcInsightsService,
-    FeaturesService,
-    FeatureDetailService,
-    AppDialogConfigService,
-  ],
 })
 export class SystemInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private dialogSettings = transient(AppDialogConfigService);
+  private sxcInsightsService = transient(SxcInsightsService);
+  private zoneService = transient(ZoneService);
+  private dialogService = transient(DialogService);
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
@@ -75,10 +73,6 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private zoneService: ZoneService,
-    private dialogService: DialogService,
-    private sxcInsightsService: SxcInsightsService,
-    private dialogSettings: AppDialogConfigService,
   ) {
     super(router, route);
   }

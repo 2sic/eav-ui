@@ -30,6 +30,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../shared/directives/tippy.directive';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-code-editor',
@@ -47,6 +48,7 @@ import { TippyDirective } from '../shared/directives/tippy.directive';
     AsyncPipe,
     ClickStopPropagationDirective,
     TippyDirective,
+    ToggleDebugDirective,
   ],
   providers: [
     SourceService,

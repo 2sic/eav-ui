@@ -54,7 +54,7 @@ export const appsManagementRoutes: Routes = [
           },
           {
             path: ':appId',
-            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+            loadChildren: () => import('../app-administration/app-administration.routing').then(m => m.appAdministrationRoutes)
           },
           ...EditRoutesRoot,
         ],
@@ -69,15 +69,8 @@ export const appsManagementRoutes: Routes = [
         path: 'license',
         loadComponent: () => import('./licence-info/license-info.component').then(m => m.LicenseInfoComponent),
         data: { title: 'Extensions / Features' , breadcrumb: 'Extensions and Features' },
-         // @2dg is no longer needed as Register is a separate SideNav and no longer a dialog
-        //  children: [
-        //   GoToRegistration.getRoute()
-        // ]
       },
     ],
-    providers: [
-      Context
-    ]
   },
 ];
 
