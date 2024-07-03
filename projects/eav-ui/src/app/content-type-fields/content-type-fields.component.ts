@@ -33,6 +33,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -48,6 +49,7 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
     MatDialogActions,
     AsyncPipe,
     ToggleDebugDirective,
+    SxcGridModule,
   ],
   providers: [
     ContentTypesService,

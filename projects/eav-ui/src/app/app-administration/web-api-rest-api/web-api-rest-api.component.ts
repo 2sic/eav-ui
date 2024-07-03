@@ -11,6 +11,7 @@ import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { WebApi } from '../models';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { SourceService } from '../../code-editor/services/source.service';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-web-api-rest-api',
@@ -23,7 +24,8 @@ import { SourceService } from '../../code-editor/services/source.service';
     ReactiveFormsModule,
     AsyncPipe,
     DevRestQueryComponent,
-    RouterOutlet
+    RouterOutlet,
+    SxcGridModule,
   ],
   providers: [
     PipelinesService,

@@ -12,6 +12,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { Query } from '../models';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { transient } from '../../core';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-web-api-rest-api',
@@ -24,7 +25,8 @@ import { transient } from '../../core';
     ReactiveFormsModule,
     AsyncPipe,
     DevRestQueryComponent,
-    RouterOutlet
+    RouterOutlet,
+    SxcGridModule,
   ],
   templateUrl: './queries-rest-api.component.html',
   styleUrl: './queries-rest-api.component.scss'

@@ -12,6 +12,7 @@ import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { MetadataService } from '../../permissions';
 import { transient } from '../../core';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-data-rest-api',
@@ -24,7 +25,9 @@ import { transient } from '../../core';
     ReactiveFormsModule,
     AsyncPipe,
     DevRestDataComponent,
-    RouterOutlet],
+    RouterOutlet,
+    SxcGridModule,
+  ],
   providers: [
     MetadataService,
   ],
