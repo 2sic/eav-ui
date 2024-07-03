@@ -15,12 +15,6 @@
 // /** Stuff that is shared and only has to be initialized once */
 // @NgModule({
 //   declarations: [
-//     // AgBoolIconRenderer, // TODO:: @2dg not in used??
-//     // MatInputAutofocusDirective, // TODO:: @2dg not in used??
-//     // MousedownStopPropagationDirective, // TODO:: @2dg not in used??
-//     // ToggleDebugDirective, // TODO:: @2dg not in used??
-
-//     // MatFormFieldTextareaDirective, // TODO:: @2dg not in used??
 //   ],
 //   providers: [
 //     // @2dg Check, if this is needed

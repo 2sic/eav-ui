@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { FormConfigService } from '../edit/shared/services';
 import { TippyDirective } from '../shared/directives/tippy.directive';
+import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -36,6 +37,7 @@ import { TippyDirective } from '../shared/directives/tippy.directive';
     TranslateModule,
     MatDialogModule,
     TippyDirective,
+    MousedownStopPropagationDirective,
   ],
   providers: [
     ContentGroupService,

@@ -28,6 +28,7 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
+import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -52,6 +53,7 @@ import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pip
     TranslateModule,
     TippyDirective,
     SafeHtmlPipe,
+    MousedownStopPropagationDirective,
   ],
 })
 export class EntityWrapperComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {

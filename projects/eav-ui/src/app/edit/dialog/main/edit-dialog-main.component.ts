@@ -35,6 +35,7 @@ import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/pick
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';
 import { ExtendedFabSpeedDialComponent } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.component';
+import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -55,6 +56,7 @@ import { ExtendedFabSpeedDialComponent } from '../../../shared/modules/extended-
     AsyncPipe,
     TranslateModule,
     ExtendedFabSpeedDialComponent,
+    ToggleDebugDirective,
   ],
   providers: [
     EditRoutingService,

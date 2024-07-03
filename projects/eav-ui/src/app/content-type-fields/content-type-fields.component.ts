@@ -32,6 +32,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -46,6 +47,7 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
     NgClass,
     MatDialogActions,
     AsyncPipe,
+    ToggleDebugDirective,
   ],
   providers: [
     ContentTypesService,

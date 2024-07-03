@@ -48,6 +48,7 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-content-items',
@@ -63,7 +64,7 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     AsyncPipe,
     SafeHtmlPipe,
     DragAndDropDirective,
-
+    ToggleDebugDirective,
     SxcGridModule,
   ],
   providers: [
