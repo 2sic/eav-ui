@@ -22,6 +22,7 @@ import { entityConfig } from './edit/shared/store/ngrx-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { buildTranslateConfiguration } from './shared/translation';
 import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 export const appConfig: ApplicationConfig = {
 
@@ -48,6 +49,7 @@ export const appConfig: ApplicationConfig = {
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HandleErrorsInterceptor, multi: true },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
   ],
 
 };
