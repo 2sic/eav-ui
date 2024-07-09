@@ -41,7 +41,7 @@ export class FieldsTranslateService {
   }
 
   translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
-    const l = this.log.fn('translate', '', { fieldName, isTransaction, transactionItem });
+    const l = this.log.fn('translate', { fieldName, isTransaction, transactionItem });
     
     if (this.isTranslationDisabled(fieldName))
       return l.rNull('Translation is disabled for this field.');
@@ -60,7 +60,7 @@ export class FieldsTranslateService {
   }
 
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
-    const l = this.log.fn('dontTranslate', '', { fieldName, isTransaction, transactionItem });
+    const l = this.log.fn('dontTranslate', { fieldName, isTransaction, transactionItem });
     if (this.isTranslationDisabled(fieldName))
       return l.rNull('Translation is disabled for this field.');
 
@@ -261,7 +261,7 @@ export class FieldsTranslateService {
   }
 
   private addItemAttributeValueHelper(fieldName: string, value: any, currentLanguage: string, isReadOnly: boolean): EavItem {
-    const l = this.log.fn('addItemAttributeValueHelper', '', { fieldName, value, currentLanguage, isReadOnly });
+    const l = this.log.fn('addItemAttributeValueHelper', { fieldName, value, currentLanguage, isReadOnly });
     const contentType = this.contentTypeService.getContentType(this.contentTypeId);
     const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
     const result = this.itemService.addItemAttributeValue(

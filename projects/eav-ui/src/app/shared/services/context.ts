@@ -83,7 +83,7 @@ export class Context extends ServiceBase {
    * This is still a bit shaky, not sure if this should be the final implementation.
    */
   init(route: ActivatedRoute) {
-    const l = this.log.fn(`init - previously ready: '${this.ready}'`, null, {route});
+    const l = this.log.fn(`init - previously ready: '${this.ready}'`, { route });
     // New prevent-multiple-init checks 2dm 2024-07-01
     if (this.ready)
       return l.r(this, 'Already ready, skipping init');

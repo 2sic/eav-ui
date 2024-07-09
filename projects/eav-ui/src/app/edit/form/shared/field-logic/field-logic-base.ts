@@ -45,7 +45,7 @@ export abstract class FieldLogicBase {
    * Note: 2dm 2023-08-31 moved from InputFieldHelpers; in future, each logic can override this
    */
   isValueEmpty(value: FieldValue, isCreateMode: boolean): boolean {
-    const l = this.log.fn('isValueEmpty', null, { value, isCreateMode });
+    const l = this.log.fn('isValueEmpty', { value, isCreateMode });
     const emptyEntityField = Array.isArray(value) && value.length === 0 && isCreateMode;
     return l.r(value === undefined || emptyEntityField);
   }

@@ -91,8 +91,7 @@ export class InputFieldHelpers {
     onlyPrefill?: boolean,
   ): FieldValue {
     const log = new EavLogger('InputFieldHelpers', logThis);
-    const l = log.fn('parseDefaultValue', null, { name, inputType, settings, itemHeader, onlyPrefill });
-      // 'name: ' + name + ', inputType: ' + inputType + ', settings: ' + settings + ', itemHeader: ' + itemHeader + ', onlyPrefill: ' + onlyPrefill);
+    const l = log.fn('parseDefaultValue', { name, inputType, settings, itemHeader, onlyPrefill });
 
     if (onlyPrefill && itemHeader?.Prefill?.[name] === undefined)
       return l.rNull('only prefill, but no prefill data found');

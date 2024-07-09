@@ -168,7 +168,7 @@ export class ItemService extends BaseDataService<EavItem> {
     delayUpsert = false,
     transactionItem?: EavItem,
   ): EavItem {
-    const l = this.log.fn('removeItemAttributeDimension', '', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
+    const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
     const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
@@ -198,7 +198,7 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   getItemAttributes(entityGuid: string): EavEntityAttributes {
-    const l = this.log.fn('getItemAttributes', '', { entityGuid });
+    const l = this.log.fn('getItemAttributes', { entityGuid });
     const result = this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
     return l.r(result);
   }
@@ -274,7 +274,7 @@ export class ItemService extends BaseDataService<EavItem> {
     languages: Language[],
     defaultLanguage: string,
   ): FieldValue {
-    const l = this.log.fn('setDefaultValue', `Name: ${ctAttribute.Name}`, { item, ctAttribute, inputType, settings, languages, defaultLanguage });
+    const l = this.log.fn('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
     const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(

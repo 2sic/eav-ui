@@ -108,6 +108,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
       this.editRoutingService.childFormResult(config.index, config.entityGuid).subscribe(result => {
         // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
+        this.log.a('childFormResult', {result, newItemGuid});
         if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
           this.pickerData.state.addSelected(newItemGuid);
           this.pickerData.source.forceReloadData([newItemGuid]);
@@ -117,8 +118,10 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     // this is used when new entity is created/changed in child form it automatically fetched again
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
-        if (this.pickerData.source.editEntityGuid())
-          this.pickerData.source.forceReloadData([this.pickerData.source.editEntityGuid()]);
+        const childGuid = this.pickerData.source.editEntityGuid();
+        this.log.a('childFormClosed', {childGuid});
+        if (childGuid)
+          this.pickerData.source.forceReloadData([childGuid]);
       })
     );
   }

@@ -52,7 +52,7 @@ export class EavLogger {
     logMain(`[${this.nameWithSvcId}] values:`, data);
   }
 
-  fn(name: string, message?: string, data?: Record<string, unknown>): EavLoggerFn {
+  fn(name: string, data?: Record<string, unknown>, message?: string): EavLoggerFn {
     return new EavLoggerFn(this, name, message, data);
   }
 
@@ -62,7 +62,7 @@ export class EavLogger {
   fnCond(condition: boolean, name: string, data?: Record<string, unknown>, message?: string): EavLoggerFn {
     // create real logger if condition is true, or if this logger is disabled anyhow
     return condition || !this.enabled
-      ? this.fn(name, message, data)
-      : new EavLogger('noop', false).fn('noop', 'noop', { condition });
+      ? this.fn(name, data, message)
+      : new EavLogger('noop', false).fn('noop', { condition });
   }
 }

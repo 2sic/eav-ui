@@ -11,7 +11,7 @@ const logger = new EavLogger('EditRouteMatchers', logThis);
  * ':zoneId/:appId/edit/:items/update/:updateEntityGuid/:updateFieldId'
  */
 export function editRouteMatcherRoot(url: UrlSegment[]): UrlMatchResult {
-  const l = logger.fn('editRoot', 'check', { url });
+  const l = logger.fn('editRouteMatcherRoot', { url });
   if (url.length < 4) return l.rNull();
   if (url[2].path !== 'edit') return l.rNull();
   const hasDetails = url[4] != null && url[4].path === 'details' && url[5] != null && url[6] != null;
@@ -32,7 +32,7 @@ export function editRouteMatcherRoot(url: UrlSegment[]): UrlMatchResult {
 
 /** ':zoneId/:appId/edit/refresh/:items' */
 export function editRouteMatcherRootRefresh(url: UrlSegment[]): UrlMatchResult {
-  const l = logger.fn('refreshEditRoot', 'check', { url });
+  const l = logger.fn('editRouteMatcherRootRefresh', { url });
   if (url.length < 5) return l.rNull();
   if (url[2].path !== 'edit' || url[3].path !== 'refresh') { return null; }
   const posParams: EditPosParams = {
@@ -53,7 +53,7 @@ export function editRouteMatcherRootRefresh(url: UrlSegment[]): UrlMatchResult {
  * 'edit/:items/update/:updateEntityGuid/:updateFieldId'
  */
 export function editRouteMatcherSubEdit(url: UrlSegment[]): UrlMatchResult {
-  const l = logger.fn('edit', 'check', { url });
+  const l = logger.fn('editRouteMatcherSubEdit', { url });
   if (url.length < 2) return l.rNull();
   if (url[0].path !== 'edit') return l.rNull();
   const hasDetails = url[2] != null && url[2].path === 'details' && url[3] != null && url[4] != null;
@@ -72,7 +72,7 @@ export function editRouteMatcherSubEdit(url: UrlSegment[]): UrlMatchResult {
 
 /** 'edit/refresh/:items' */
 export function editRouteMatcherSubEditRefresh(url: UrlSegment[]): UrlMatchResult {
-  const l = logger.fn('refreshEdit', 'check', { url });
+  const l = logger.fn('editRouteMatcherSubEditRefresh', { url });
   if (url.length < 3) return l.rNull();
   if (url[0].path !== 'edit' || url[1].path !== 'refresh') return l.rNull();
   const posParams: EditPosParams = {

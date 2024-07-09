@@ -39,7 +39,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
   /** Get the data from a query - all or only the ones listed in the guids */
   public override getFromBackend(params: string, guids: string[], purposeForLog: string)
     : Observable<DataWithLoading<PickerItem[]>> {
-    var l = this.log.fn('getFromBackend', purposeForLog, { params, guids });
+    var l = this.log.fn('getFromBackend', { params, guids }, purposeForLog);
     // If the configuration isn't complete, the query can be empty
     const sett = this.settings();
     const streamName = this.streamName();
@@ -87,7 +87,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
   private transformData(data: QueryStreams, streamName: string | null): PickerItem[] {
     const valueMustBeGuid = !this.isForStringField;
-    const l = this.log.fn('transformData', null, { data, streamName, isForStringField: this.isForStringField });
+    const l = this.log.fn('transformData', { data, streamName, isForStringField: this.isForStringField });
     if (!data)
       return [messagePickerItem(this.translate, 'Fields.Picker.QueryErrorNoData')];
 

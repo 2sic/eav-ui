@@ -79,7 +79,7 @@ export class StateAdapter extends ServiceBase {
   }
 
   private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
-    const l = this.log.fn('updateValue', null, { action, value });
+    const l = this.log.fn('updateValue', { action, value });
     let valueArray: string[] = this.createValueArray();
 
     switch (action) {

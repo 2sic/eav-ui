@@ -79,7 +79,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
    */
   override setLocale(locale: string) {
     super.setLocale(locale);
-    const l = this.log.fn('setLocale', null, { locale });
+    const l = this.log.fn('setLocale', { locale });
 
     dayjs.locale(locale);
     const localeData = dayjs().locale(locale).localeData();
@@ -170,7 +170,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
 
   override parse(value: any, parseFormat: string): Dayjs | null {
     const valueIsString = typeof value === 'string';
-    const l = this.log.fn('parse', null, { value, parseFormat, valueIsString });
+    const l = this.log.fn('parse', { value, parseFormat, valueIsString });
     if (value && valueIsString) {
       const longDateFormat = dayjs().localeData().longDateFormat(parseFormat) as string; // MM/DD/YYY or DD-MM-YYYY, etc.
 
@@ -280,7 +280,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   }
 
   override format(date: Dayjs, displayFormat: string): string {
-    const l = this.log.fn('format', null, { date, displayFormat });
+    const l = this.log.fn('format', { date, displayFormat });
     if (!this.isValid(date))
       throw Error('DayjsDateAdapter: Cannot format invalid date.');
     return l.r(date.locale(this.locale).format(displayFormat));

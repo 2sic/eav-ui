@@ -13,7 +13,7 @@ export class DateTimeDefaultLogic extends FieldLogicBase {
 
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
-    const l = this.log.fn('update', '', { settings, value, tools });
+    const l = this.log.fn('update', { settings, value, tools });
     const fixedSettings = settings;
     return l.r(fixedSettings);
   }
