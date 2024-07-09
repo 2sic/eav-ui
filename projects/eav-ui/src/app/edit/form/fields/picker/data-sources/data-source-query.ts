@@ -8,7 +8,7 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { FormConfigService } from '../../../../shared/services';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'DataSourceQuery';
 
 
@@ -37,8 +37,9 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
   private isForStringField = this.fieldState.config.inputType?.toString().startsWith('string');
 
   /** Get the data from a query - all or only the ones listed in the guids */
-  getFromBackend(params: string, guids: string[], purpose: string)
+  public override getFromBackend(params: string, guids: string[], purposeForLog: string)
     : Observable<DataWithLoading<PickerItem[]>> {
+    var l = this.log.fn('getFromBackend', purposeForLog, { params, guids });
     // If the configuration isn't complete, the query can be empty
     const sett = this.settings();
     const streamName = this.streamName();
@@ -46,6 +47,8 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
     const queryUrl = !!queryName
       ? queryName.includes('/') ? sett.Query : `${sett.Query}/${streamName}`
       : null;
+
+    l.a('queryUrl', { queryName, streamName, queryUrl })
 
     // If no query, return a dummy item with a message
     let source: Observable<DataWithLoading<QueryStreams>>;
@@ -72,12 +75,13 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
         );
     }
 
-    return source.pipe(
+    const result = source.pipe(
       map(set => ({
         data: this.transformData(set.data, streamName),
         loading: set.loading,
       } as DataWithLoading<PickerItem[]>)),
     );
+    return l.r(result);
   }
 
 

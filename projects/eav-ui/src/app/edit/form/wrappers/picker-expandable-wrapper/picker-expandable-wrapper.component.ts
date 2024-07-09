@@ -59,7 +59,6 @@ export class PickerExpandableWrapperComponent extends BaseComponent implements O
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
       .pipe(distinctUntilChanged())
       .subscribe(isOpen => {
-        console.log('2dm - subscribe isExpanded$', isOpen);
         this.dialogIsOpen.set(isOpen);
         this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
       });

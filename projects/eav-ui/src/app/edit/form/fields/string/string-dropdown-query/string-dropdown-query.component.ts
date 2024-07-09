@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
-import { PickerImports, PickerProviders } from '../../picker/picker-providers.constant';
+import { PickerImports } from '../../picker/picker-providers.constant';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'StringDropdownQueryComponent';
@@ -12,13 +13,12 @@ const nameOfThis = 'StringDropdownQueryComponent';
   selector: InputTypeConstants.StringDropdownQuery,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
-  providers: PickerProviders,
   standalone: true,
   imports: PickerImports,
 })
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
-  private stateString = inject(StateAdapterString);
+  private stateString = transient(StateAdapterString);
 
   constructor() {
     super();

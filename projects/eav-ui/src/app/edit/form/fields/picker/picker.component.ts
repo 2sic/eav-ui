@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject, computed } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject, computed, Injector } from '@angular/core';
 import { EditRoutingService } from '../../../shared/services';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerImports, PickerProviders } from './picker-providers.constant';
+import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'PickerComponent';
@@ -14,18 +15,20 @@ const nameOfThis = 'PickerComponent';
   // selector: InputTypeConstants.EntityDefault,
   templateUrl: './picker.component.html',
   styleUrls: ['./picker.component.scss'],
-  providers: PickerProviders,
   standalone: true,
   imports: PickerImports,
 })
 export class PickerComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
+  /** The injector is used by most children to get transient one-time objects */
+  protected injector = inject(Injector);
+
   public fieldState = inject(FieldState);
   
   public editRoutingService = inject(EditRoutingService);
 
-  pickerData = inject(PickerData);
+  pickerData = transient(PickerData);
 
   /**
    * cache previous state, as it will often be null on follow-up computations

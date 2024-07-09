@@ -12,9 +12,10 @@ const logName = 'PickerQuerySourceAdapter';
 
 @Injectable()
 export class DataAdapterQuery extends DataAdapterEntityBase {
+  protected dataSourceEntityOrQuery = transient(DataSourceQuery);
 
-  constructor(private dsQuery: DataSourceQuery) {
-    super(dsQuery, new EavLogger(logName, logThis));
+  constructor() {
+    super(new EavLogger(logName, logThis));
   }
 
   /** Url Parameters - often mask - from settings; debounced */
@@ -39,19 +40,19 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dsQuery.setParams(this.queryParamsMask()?.resolve());
+    this.dataSourceEntityOrQuery.setParams(this.queryParamsMask()?.resolve());
   }
 
   fetchItems(): void {
     this.log.a('fetchItems');
-    this.dsQuery.setParams(this.queryParamsMask()?.resolve());
+    this.dataSourceEntityOrQuery.setParams(this.queryParamsMask()?.resolve());
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
       const errors = [placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')];
       this.errorOptions.set(errors);
       return;
     }
-    this.dsQuery.triggerGetAll();
+    this.dataSourceEntityOrQuery.triggerGetAll();
   }
 
   // 2024-06-18 2dm enhanced, but I'm not sure if it's even relevant, so I'll disable for now

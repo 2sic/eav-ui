@@ -63,7 +63,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   private editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
   private snackBar = inject(MatSnackBar);
-  private dataSourceEmpty = inject(DataSourceEmpty);
   protected injector = inject(Injector);
 
   protected fieldState = inject(FieldState);
@@ -85,10 +84,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       : items;
   });
 
-  constructor(
-    private dataSourceEntityOrQuery: DataSourceBase,
-    logSpecs: EavLogger,
-  ) {
+  protected abstract dataSourceEntityOrQuery: DataSourceBase;
+  constructor(logSpecs: EavLogger) {
     super(logSpecs);
     this.log.a('constructor');
   }
@@ -103,7 +100,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     this.log.a('setupFromComponent');
 
     this.dataSource.set(useEmpty
-      ? this.dataSourceEmpty.preSetup("Error: configuration missing")
+      ? transient(DataSourceEmpty, this.injector).preSetup("Error: configuration missing")
       : this.dataSourceEntityOrQuery.setup()
     );
     if (useEmpty) 

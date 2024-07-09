@@ -5,15 +5,17 @@ import { Injectable } from '@angular/core';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { DataWithLoading } from '../models/data-with-loading';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'DataSourceEntity';
 
 @Injectable()
 export class DataSourceEntity extends DataSourceEntityQueryBase {
 
-  constructor() { super(new EavLogger(nameOfThis, logThis)); }
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
+  }
 
-  getFromBackend(typeName: string, guids: string[], purpose: string) {
+  public override getFromBackend(typeName: string, guids: string[], purposeForLog: string) {
     const fieldMask = this.getMaskHelper();
     const logOverrides = this.log.rxTap('overrides$', { enabled: true });
     return this.querySvc.getEntities({

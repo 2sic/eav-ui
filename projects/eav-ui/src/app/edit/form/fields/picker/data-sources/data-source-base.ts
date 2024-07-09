@@ -10,15 +10,15 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { Signal, inject, signal } from '@angular/core';
 import { FieldState } from '../../../builder/fields-builder/field-state';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 export abstract class DataSourceBase extends ServiceBase {
   
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
-  constructor(logSpecs: EavLogger) { super(logSpecs); 
-
+  constructor(logSpecs: EavLogger) {
+    super(logSpecs);
+    this.log.a('constructor', {forField: this.fieldState.name});
   }
 
   /** Signal containing the data */
@@ -39,8 +39,7 @@ export abstract class DataSourceBase extends ServiceBase {
    * for now we'll just keep on retrieving all on each backend access.
    * In future we may enhance this, but we must be sure that previous retrievals are preserved.
    */
-  protected guidsToRefresh$ = new BehaviorSubject<string[]>([]);
-  protected guidsToRefresh = toSignal(this.guidsToRefresh$);
+  protected guidsToRefresh = signal<string[]>([]);
 
   protected settings = this.fieldState.settings;
 
@@ -50,7 +49,6 @@ export abstract class DataSourceBase extends ServiceBase {
   public setup(): this { return this; }
 
   destroy(): void {
-    this.guidsToRefresh$.complete();
     this.getAll$.complete();
     super.destroy();
   }
@@ -65,9 +63,12 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   addToRefresh(additionalGuids: string[]): void {
-    const merged = [...this.guidsToRefresh(), ...additionalGuids].filter(RxHelpers.distinct);
-    this.log.a('forceLoadGuids', {'before': this.guidsToRefresh(), 'after': additionalGuids, merged});
-    this.guidsToRefresh$.next(merged);
+    const l = this.log.fn('addToRefresh', null, {additionalGuids});
+    const before = this.guidsToRefresh();
+    const merged = [...before, ...additionalGuids].filter(RxHelpers.distinct);
+    this.log.values({ before, additionalGuids, merged });
+    this.guidsToRefresh.set(merged);
+    l.end();
   }
 
   protected getMaskHelper(enableLog?: boolean): DataSourceMasksHelper {

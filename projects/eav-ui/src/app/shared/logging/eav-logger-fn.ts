@@ -29,7 +29,7 @@ export class EavLoggerFn {
   }
 
   /** End without return */
-  end(data: Record<string, unknown>, message?: string) {
+  end(data?: Record<string, unknown>, message?: string) {
     this.parent.a(`${this.fnName}/end${message ? ' ' + message : ''}`, data);
   }
 }

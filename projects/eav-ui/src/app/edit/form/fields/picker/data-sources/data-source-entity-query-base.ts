@@ -22,7 +22,9 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   protected querySvc = inject(QueryService);
   protected entityCacheSvc = inject(PickerDataCacheService);
 
-  constructor(logger: EavLogger) { super(logger); }
+  constructor(logger: EavLogger) {
+    super(logger);
+  }
 
   //#endregion
   
@@ -60,8 +62,9 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     const notYetFetched = prefetchGuids.filter(guid => !alreadyFetched.data.find(item => item.value === guid));
     const additionalGuids = this.guidsToRefresh();
     const mergedDistinct = [...notYetFetched, ...additionalGuids].filter(RxHelpers.distinct);
+    this.log.a('guidsToForceLoad', { prefetchGuids, alreadyFetched, notYetFetched, additionalGuids, mergedDistinct });
     return mergedDistinct;
-  });
+  }, { equal: RxHelpers.arraysEqual });
 
   /**
    * Overriding data items which should be added to the "all" list
@@ -97,7 +100,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
       ...this._all().data,
       ...this._overrides().data
     ].map(item => [item.value, item])).values()];
-    // console.log('2dm merge data');
+    this.log.a('data', { data });
     return data;
   }, { equal: RxHelpers.arraysEqual });
 
@@ -134,7 +137,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   }
 
   /** Get the data from a query - all or only the ones listed in the guids */
-  abstract getFromBackend(params: string, guids: string[], purpose: string)
+  abstract getFromBackend(params: string, guids: string[], purposeForLog: string)
     : Observable<DataWithLoading<PickerItem[]>>;
 
   /** Set parameters for retrieval - either contentTypeName or query url parameters */
