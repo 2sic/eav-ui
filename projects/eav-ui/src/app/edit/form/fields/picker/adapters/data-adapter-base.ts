@@ -1,12 +1,11 @@
 import { DeleteEntityProps } from '../models/picker.models';
-import { DataAdapter } from './data-adapter.interface';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Signal, computed, signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
 
-export abstract class DataAdapterBase extends ServiceBase implements DataAdapter {
+export abstract class DataAdapterBase extends ServiceBase {
 
   /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
   public abstract features: Signal<Partial<PickerFeatures>>;

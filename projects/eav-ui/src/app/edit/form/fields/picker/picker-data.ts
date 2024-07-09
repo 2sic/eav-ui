@@ -1,4 +1,3 @@
-import { DataAdapter } from "./adapters/data-adapter.interface";
 import { StateAdapter } from "./adapters/state-adapter";
 import { PickerItem } from 'projects/edit-types';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +6,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Injectable, OnDestroy, computed, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { DataAdapterBase } from './adapters/data-adapter-base';
 
 const logThis = false;
 const nameOfThis = 'PickerData';
@@ -17,7 +17,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
   constructor() { super(new EavLogger(nameOfThis, logThis)); }
 
   public state: StateAdapter;
-  public source: DataAdapter;
+  public source: DataAdapterBase;
 
   selectedAll = computed(() => this.createUIModel(this.state.selectedItems(), this.source.optionsOrHints(), this.translate));
 
@@ -31,7 +31,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
 
   private translate = inject(TranslateService);
   
-  public setup(name: string, state: StateAdapter, source: DataAdapter): this {
+  public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
     source.init(name);
     this.state = state;
     this.source = source;
