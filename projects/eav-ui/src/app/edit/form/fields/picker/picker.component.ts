@@ -19,6 +19,12 @@ const nameOfThis = 'PickerComponent';
   imports: PickerImports,
 })
 export class PickerComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(log?: EavLogger) {
+    super(log ?? new EavLogger(nameOfThis, logThis));
+    this.log.a('constructor');
+  }
+
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   /** The injector is used by most children to get transient one-time objects */
@@ -31,36 +37,32 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   pickerData = transient(PickerData);
 
   /**
-   * cache previous state, as it will often be null on follow-up computations
-   * This is hacky / not nice!
-   * Reason is that the _isDialog doesn't get fully pushed back to the state, and 
-   * when formulas run, it will be undefined on follow up settings-updates.
-   * To make it nicer, we would have to extend how these states are pushed to the system...
+   * This control will always be created 2x
+   * once for preview, and optional for dialog.
+   * This is to indicate if it's the primary,
+   * because the primary should also attach certain inits/events.
    */
-  // prevIsDialog: boolean = null;
+  isPrimary = false;
+
+  /**
+   * Whether to show the preview or not,
+   * since this control is used both for preview and dialog.
+   */
   showPreview = computed(() => { 
     const settings = this.fieldState.settings();
     const allowMultiValue = settings.AllowMultiValue;
-    const isDialog = /* this.prevIsDialog = */ settings._isDialog;// ?? this.prevIsDialog;
+    const isDialog = settings._isDialog;
     const showPreview = !allowMultiValue || (allowMultiValue && !isDialog);
     // console.log(this.log.svcId + '; computed - settings: ' + showPreview, settings._isDialog, allowMultiValue, isDialog, showPreview, settings);
     return showPreview;
   });
 
-  constructor(log?: EavLogger) {
-    super(log ?? new EavLogger(nameOfThis, logThis));
-  }
-
   ngOnInit(): void {
     this.log.a('ngOnInit');
-    this.refreshOnChildClosed();
+    this.isPrimary = this.fieldState.config.pickerData == null;
     this.initAdaptersAndViewModel();
-
-    // const allowMultiValue = this.fieldState.settings().AllowMultiValue;
-    // TODO: 2DM CONTINUE HERE - problem with this.controlConfig always being {} and not having isPreview
-    // which seems to work, and the fieldSettings.controlConfig fails!
-    // const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview);
-    // this.showPreview = signal(showPreview);
+    if (this.isPrimary)
+      this.refreshOnChildClosed();
   }
 
   /**
@@ -73,7 +75,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
-    if (config.pickerData) {
+    if (!this.isPrimary) {
       this.log.a('createPickerAdapters: pickerData already exists, will reuse');
       this.pickerData = config.pickerData;
     } else {
@@ -87,7 +89,8 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
 
   ngAfterViewInit(): void {
     this.log.a('ngAfterViewInit');
-    this.pickerData.source.onAfterViewInit();
+    if (this.isPrimary)
+      this.pickerData.source.onAfterViewInit();
   }
   
   /** Create the Picker Adapter - MUST be overridden in each inheriting class */
@@ -102,11 +105,12 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   }
 
   private refreshOnChildClosed(): void {
+    const l = this.log.fn('refreshOnChildClosed');
+
     // this is used when new entity is created in child form it automatically adds it to the picker as selected item
     const config = this.fieldState.config;
     this.subscriptions.add(
       this.editRoutingService.childFormResult(config.index, config.entityGuid).subscribe(result => {
-        // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
         this.log.a('childFormResult', {result, newItemGuid});
         if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
@@ -124,5 +128,6 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
           this.pickerData.source.forceReloadData([childGuid]);
       })
     );
+    l.end();
   }
 }
