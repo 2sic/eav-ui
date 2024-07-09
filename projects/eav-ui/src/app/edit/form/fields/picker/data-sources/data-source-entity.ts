@@ -16,6 +16,7 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
   }
 
   public override getFromBackend(typeName: string, guids: string[], purposeForLog: string) {
+    var l = this.log.fn('getFromBackend', { typeName, guids }, purposeForLog);
     const fieldMask = this.getMaskHelper();
     const logOverrides = this.log.rxTap('overrides$', { enabled: true });
     return this.querySvc.getEntities({

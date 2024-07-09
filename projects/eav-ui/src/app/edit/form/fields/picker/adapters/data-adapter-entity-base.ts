@@ -117,6 +117,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   forceReloadData(missingData: string[]): void {
     const l = this.log.fn('forceReloadData', { missingData });
     this.dataSource().addToRefresh(missingData);
+
+    
     l.end();
   }
 

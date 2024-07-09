@@ -120,7 +120,7 @@ function consoleLogObject(
       return console.log(`${prefix} ${message} [${typeof(show)}}] '${key}'=`, show);
     }
     
-    console.log(`${prefix} ${message} [${keys.length} keys]`, data);
+    console.log(`${prefix} ${message} [${keys.length} data-items]`, data);
     return;
   }
 
