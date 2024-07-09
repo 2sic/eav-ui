@@ -72,7 +72,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent implements O
 
   expandDialog() {
     const config = this.fieldState.config;
-    if (config.initialDisabled) { return; }
+    if (config.initialDisabled) return;
     this.editRoutingService.expand(true, config.index, config.entityGuid);
   }
 

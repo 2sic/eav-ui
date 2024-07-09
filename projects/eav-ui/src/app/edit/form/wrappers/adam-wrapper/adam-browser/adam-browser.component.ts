@@ -105,7 +105,12 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     this.control = this.group.controls[this.config.fieldName];
     this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
     this.items$ = new BehaviorSubject<AdamItem[]>([]);
-    this.refreshOnChildClosed();
+
+    // Update data if a child-form closes
+    this.subscriptions.add(
+      this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
+    );
+    
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
@@ -171,10 +176,10 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   addFolder() {
-    if (this.control.disabled) { return; }
+    if (this.control.disabled) return;
 
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
-    if (!folderName) { return; }
+    if (!folderName) return;
 
     this.adamService.addFolder(folderName, this.url, this.adamConfig$.value).subscribe(res => {
       this.fetchItems();
@@ -182,10 +187,10 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   del(item: AdamItem) {
-    if (this.control.disabled) { return; }
+    if (this.control.disabled) return;
 
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
-    if (!ok) { return; }
+    if (!ok) return;
 
     this.adamService.deleteItem(item, this.url, this.adamConfig$.value).subscribe(res => {
       this.fetchItems();
@@ -193,7 +198,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !contentTypeName) { return; }
+    if (this.formsStateService.readOnly$.value.isReadOnly || !contentTypeName) return;
 
     const form: EditForm = {
       items: [
@@ -264,10 +269,10 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   rename(item: AdamItem) {
-    if (this.control.disabled) { return; }
+    if (this.control.disabled) return;
 
     const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
-    if (!newName) { return; }
+    if (!newName) return;
 
     this.adamService.rename(item, newName, this.url, this.adamConfig$.value).subscribe(res => {
       this.fetchItems();
@@ -275,14 +280,14 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   select(item: AdamItem) {
-    if (this.control.disabled || !this.adamConfig$.value.enableSelect) { return; }
+    if (this.control.disabled || !this.adamConfig$.value.enableSelect) return;
     this.config.adam.onItemClick(item);
   }
 
   private fetchItems() {
     const adamConfig = this.adamConfig$.value;
-    if (adamConfig == null) { return; }
-    if (!adamConfig.autoLoad) { return; }
+    if (adamConfig == null) return;
+    if (!adamConfig.autoLoad) return;
 
     if (this.firstFetch) {
       this.firstFetch = false;
@@ -317,17 +322,19 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     for (const item of items) {
       if (item.Name === '.') { // is root
         const allowEdit = item.AllowEdit;
-        if (allowEdit !== adamConfig.allowEdit) {
+        if (allowEdit !== adamConfig.allowEdit)
           this.config.adam.setConfig({ allowEdit });
-        }
         continue;
       }
-      if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
-      if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
-      if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
+      if (item.Name === '2sxc' || item.Name === 'adam')
+        continue;
+      if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image')
+        continue;
+      if (item.IsFolder && adamConfig.maxDepthReached)
+        continue;
       if (extensionsFilter.length > 0) {
         const extension = item.Name.substring(item.Name.lastIndexOf('.') + 1).toLocaleLowerCase();
-        if (!extensionsFilter.includes(extension)) { continue; }
+        if (!extensionsFilter.includes(extension)) continue;
       }
 
       item._imageConfigurationContentType = this.getImageConfigurationContentType(item);
@@ -347,11 +354,11 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     const newConfig: AdamConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
-    if (JSON.stringify(newConfig) === JSON.stringify(this.adamConfig$.value)) {
+    if (JSON.stringify(newConfig) === JSON.stringify(this.adamConfig$.value))
       newConfig.autoLoad = !newConfig.autoLoad;
-    } else if (!newConfig.autoLoad) {
+    else if (!newConfig.autoLoad)
       newConfig.autoLoad = true;
-    }
+    
     this.config.adam.setConfig(newConfig);
   }
 
@@ -365,28 +372,24 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance(startDisabled);
     const newConfig = new AdamConfigInstance(startDisabled);
 
-    for (const key of Object.keys(newConfig)) {
+    for (const key of Object.keys(newConfig))
       (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
-    }
 
     // fixes
     const resetSubfolder = oldConfig.usePortalRoot !== newConfig.usePortalRoot;
-    if (resetSubfolder) {
+    if (resetSubfolder)
       newConfig.subfolder = '';
-    }
+
     if (newConfig.usePortalRoot) {
       const fixBackSlashes = newConfig.rootSubfolder.includes('\\');
-      if (fixBackSlashes) {
+      if (fixBackSlashes)
         newConfig.rootSubfolder = newConfig.rootSubfolder.replace(/\\/g, '/');
-      }
       const fixStartingSlash = newConfig.rootSubfolder.startsWith('/');
-      if (fixStartingSlash) {
+      if (fixStartingSlash)
         newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
-      }
       const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
-      if (fixRoot) {
+      if (fixRoot)
         newConfig.subfolder = newConfig.rootSubfolder;
-      }
       newConfig.maxDepthReached = false; // when using portal root depth is infinite
     }
     if (!newConfig.usePortalRoot) {
@@ -397,9 +400,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         folders = folders.slice(0, newConfig.folderDepth);
         newConfig.subfolder = folders.join('/');
         newConfig.maxDepthReached = true;
-      } else {
+      } else
         newConfig.maxDepthReached = false;
-      }
     }
     this.adamConfig$.next(newConfig);
 
@@ -422,16 +424,14 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         && !newConfig.allowAssetsInRoot
       );
     const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
-    if (fixDisabled) {
+    if (fixDisabled)
       newDzConfig.disabled = uploadDisabled;
-    }
-    if (Object.keys(newDzConfig).length > 0) {
+    if (Object.keys(newDzConfig).length > 0)
       this.config.dropzone.setConfig(newDzConfig);
-    }
   }
 
   private getExtensionsFilter(fileFilter: string) {
-    if (!fileFilter) { return []; }
+    if (!fileFilter) return [];
 
     const extensions = fileFilter.split(',').map(extension => {
       extension = extension.trim();
@@ -444,15 +444,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
       return extension.toLocaleLowerCase();
     });
+
     return extensions;
   }
-
-  private refreshOnChildClosed() {
-    this.subscriptions.add(
-      this.editRoutingService.childFormClosed().subscribe(() => {
-        this.fetchItems();
-      })
-    );
-  }
-
 }

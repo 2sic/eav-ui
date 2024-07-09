@@ -168,7 +168,10 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
       }),
     );
 
-    this.refreshOnChildClosed();
+    // Update the notes whenever a child form is closed
+    this.subscriptions.add(
+      this.editRoutingService.childFormClosed().subscribe(() => this.fetchNote())
+    );
   }
 
   ngOnDestroy() {
@@ -246,7 +249,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   }
 
   deleteNote(note: EavEntity) {
-    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     const title = LocalizationHelpers.translate(language, note.Attributes.Title, null);
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
@@ -267,13 +270,5 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
       const items = formData.Items.map(item1 => EavItem.convert(item1));
       this.itemService.updateItemMetadata(this.entityGuid, items[0].Entity.Metadata);
     });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscriptions.add(
-      this.editRoutingService.childFormClosed().subscribe(() => {
-        this.fetchNote();
-      })
-    );
   }
 }

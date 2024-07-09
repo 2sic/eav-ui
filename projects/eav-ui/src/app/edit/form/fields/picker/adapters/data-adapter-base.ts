@@ -39,12 +39,6 @@ export abstract class DataAdapterBase extends ServiceBase {
 
   onAfterViewInit(): void { }
 
-  destroy() {
-    // this.optionsOrHints$.complete();
-    // this.editEntityGuid$.complete();
-    super.destroy();
-  }
-
   abstract initPrefetch(prefetchGuids: string[]): void;
 
   abstract forceReloadData(missingData: string[]): void;

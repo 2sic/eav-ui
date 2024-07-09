@@ -75,7 +75,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
       filter(
         childResult => childResult.updateEntityGuid === entityGuid && childResult.updateFieldId === fieldId && childResult.result != null
       ),
-      map(childResult => childResult.result)
+      map(childResult => childResult.result),
     );
   }
 
@@ -92,7 +92,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
 
     const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-    if (lastIndex <= 0) { return; }
+    if (lastIndex <= 0) return;
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
     this.router.navigate([newUrl], { state: componentTag && { componentTag } });
   }
@@ -114,7 +114,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
 
     const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-    if (lastIndex <= 0) { return; }
+    if (lastIndex <= 0) return;
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
     this.router.navigate([newUrl]);
   }
@@ -162,14 +162,14 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
         // clear update ids from url (leave expanded/details)
         const params = this.route.snapshot.params as EditParams;
         const hasUpdate = params.updateEntityGuid != null && params.updateFieldId != null;
-        if (!hasUpdate) { return; }
+        if (!hasUpdate) return;
 
         const oldEditUrl = `edit/${params.items}/update/${params.updateEntityGuid}/${params.updateFieldId}`;
         const newEditUrl = `edit/${params.items}`;
 
         const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-        if (lastIndex <= 0) { return; }
+        if (lastIndex <= 0) return;
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
         this.router.navigate([newUrl]);
       })
@@ -191,14 +191,14 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
         }),
         filter(versionsResult => versionsResult?.refreshEdit != null),
       ).subscribe(result => {
-        if (!result.refreshEdit) { return; }
+        if (!result.refreshEdit) return;
         const params = this.route.snapshot.params as EditParams;
         const oldEditUrl = `edit/${params.items}`;
         const newEditUrl = `edit/refresh/${params.items}`;
 
         const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-        if (lastIndex <= 0) { return; }
+        if (lastIndex <= 0) return;
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
         const navRes: NavigateFormResult = {
           navigateUrl: newUrl,

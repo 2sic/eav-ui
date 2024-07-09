@@ -14,7 +14,9 @@ const nameOfThis = 'PickerData';
 @Injectable()
 export class PickerData extends ServiceBase implements OnDestroy {
 
-  constructor() { super(new EavLogger(nameOfThis, logThis)); }
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
+  }
 
   public state: StateAdapter;
   public source: DataAdapterBase;
@@ -45,9 +47,6 @@ export class PickerData extends ServiceBase implements OnDestroy {
   }
 
   ngOnDestroy() {
-    // don't destroy source/state, as it will be destroyed by the original maker
-    // this.source.destroy();
-    // this.state.destroy();
     super.destroy();
   }
 
@@ -62,7 +61,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
         return item;
       } else {
         const text = entity.label ?? translate.instant('Fields.Picker.EntityNotFound');
-        return this.createPickerItem(
+        return createPickerItem(
           entity.id,
           entity.value,
           text,
@@ -78,16 +77,17 @@ export class PickerData extends ServiceBase implements OnDestroy {
     return selectedEntities;
   }
 
-  private createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
-    return {
-      id: id,
-      value: value,
-      label: text,
-      tooltip: tooltip,
-      infoBox: information,
-      noEdit: disableEdit,
-      noDelete: disableDelete,
-      notSelectable: disableSelect,
-    } as PickerItem;
-  }
+}
+
+function createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
+  return {
+    id: id,
+    value: value,
+    label: text,
+    tooltip: tooltip,
+    infoBox: information,
+    noEdit: disableEdit,
+    noDelete: disableDelete,
+    notSelectable: disableSelect,
+  } as PickerItem;
 }
