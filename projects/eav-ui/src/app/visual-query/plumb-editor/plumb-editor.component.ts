@@ -16,6 +16,10 @@ import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
+import { EavLogger } from '../../shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'PlumbEditorComponent';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -52,7 +56,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
@@ -98,12 +102,16 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   ngAfterViewInit() {
+    const l = this.log.fn('ngAfterViewInit');
     // https://stackoverflow.com/questions/37087864/execute-a-function-when-ngfor-finished-in-angular-2/37088348#37088348
     const domDataSourcesLoaded$ = this.domDataSourcesRef.changes.pipe(map(() => true));
 
     this.subscriptions.add(
       combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
-        if (!scriptLoaded || !domDataSourcesLoaded) { return; }
+        if (!scriptLoaded || !domDataSourcesLoaded)
+          return;
+
+        this.log.a('scriptLoaded and domDataSourcesLoaded', { scriptLoaded, domDataSourcesLoaded });
 
         this.plumber?.destroy();
         this.plumber = new Plumber(
@@ -119,6 +127,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
         );
       })
     );
+    l.end();
   }
 
   ngOnDestroy() {
