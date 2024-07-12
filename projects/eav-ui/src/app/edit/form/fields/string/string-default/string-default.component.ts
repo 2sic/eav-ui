@@ -1,62 +1,49 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Component, computed, inject } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDefaultLogic } from './string-default-logic';
-import { StringDefaultViewModel } from './string-default.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, NgStyle } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 @Component({
   selector: InputTypeConstants.StringDefault,
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgClass,
+    ExtendedModule,
+    MatInputModule,
+    NgStyle,
+    FieldHelperTextComponent,
+  ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
-export class StringDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  viewModel: Observable<StringDefaultViewModel>;
+@FieldMetadata({ ...WrappersLocalizationOnly })
+export class StringDefaultComponent {
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  protected fieldState = inject(FieldState);
+
+  protected group = this.fieldState.group;
+  protected config = this.fieldState.config;
+
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+
+  protected rowCount = computed(() => this.settings().RowCount, SignalHelpers.numberEquals);
+  protected inputFontFamily = computed(() => this.settings().InputFontFamily, SignalHelpers.stringEquals);
+
+  constructor() {
     StringDefaultLogic.importMe();
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-    const settings$ = this.settings$.pipe(
-      map(settings => ({
-        InputFontFamily: settings.InputFontFamily,
-        RowCount: settings.RowCount,
-      })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
-
-    this.viewModel = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([settings$]),
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required],
-        [settings],
-      ]) => {
-        const viewModel: StringDefaultViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
-          inputFontFamily: settings.InputFontFamily,
-          rowCount: settings.RowCount,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
 }

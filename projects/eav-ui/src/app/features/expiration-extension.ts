@@ -16,7 +16,7 @@ export class ExpirationExtension {
   static expandFeature(feature: Feature): Feature & ExpirationExtension {
     return {
       ...feature,
-      ...ExpirationExtension.getExpiration(feature?.Expiration)
+      ...ExpirationExtension.getExpiration(feature?.expiration)
     };
   }
 
@@ -24,7 +24,7 @@ export class ExpirationExtension {
     // Wrap in Try-Catch to avoid errors in the UI
     try {
       // find the lowest expiration date on the features
-      const lowestExpiration = license?.Features?.map(f => f.Expiration).sort()[0];
+      const lowestExpiration = license?.Features?.map(f => f.expiration).sort()[0];
       // if there is no lowest expiration date, skip the rest
       if (lowestExpiration == null) return license;
 

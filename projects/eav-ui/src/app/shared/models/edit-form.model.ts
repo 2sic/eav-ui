@@ -1,5 +1,38 @@
 import { EavFor } from '../../edit/shared/models/eav';
+import { MetadataKeyDefinition } from '../constants/eav.constants';
 import { EditInfo } from './edit-info';
+
+// 2dm - new helper to reduce code when creating item identifiers
+// TODO: @2dg - try to replace as many direct object creations with this as possible
+export class EditPrep {
+
+  static editId(id: number): ItemEditIdentifier {
+    return { EntityId: id } satisfies ItemEditIdentifier;
+  }
+
+  // TODO: @2dg - TO FIND where this should be used, look for "For:" in the code
+  static newMetadata<T>(key: T, typeName: string, keyDef: MetadataKeyDefinition): ItemAddIdentifier {
+    return {
+      ContentTypeName: typeName,
+      For: EditPrep.createFor(keyDef, key)
+    } satisfies ItemAddIdentifier;
+  }
+
+  static createFor<T>(keyDef: MetadataKeyDefinition, key: T): EavFor {
+    return {
+      Target: keyDef.target,
+      TargetType: keyDef.targetType,
+      ...(
+        typeof(key) == 'number'
+          ? { Number: key as number }
+          : keyDef.keyType == 'guid'
+            ? { Guid: key as string }
+            : { String: key as string }
+      )
+    } satisfies EavFor;
+
+  }
+}
 
 /**
  * Type for edit form.
@@ -44,14 +77,21 @@ export interface ItemIdentifierInbound {
 export interface ItemIdentifierShared {
 
   /** Prefill form with data */
-  Prefill?: Record<string, string>;
+  Prefill?: Record<string, unknown>;
 
-  /** New way to transport a random amount of properties back and forth */
+  /**
+   * New way to transport a random amount of properties back and forth
+   * - IMPORTANT: this is only after conversion to funky url
+   * - before you must use Parameters on the main object?
+   */
   ClientData?: {
     fields?: string;
-    parameters?: Record<string, string>;
+    parameters?: Record<string, unknown>;
     [key: string]: unknown;
   };
+
+  /** Experimental 17.10+ */
+  clientId?: number;
 }
 
 export interface ItemEditIdentifier extends ItemIdentifierShared {

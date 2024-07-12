@@ -1,79 +1,59 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
-import { FieldSettings } from '../../../../../../../edit-types';
+import { Component, OnDestroy, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
-import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
+import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
+import { MatIconModule } from '@angular/material/icon';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { FieldState } from '../../builder/fields-builder/field-state';
+import { FieldsSettingsService } from '../../../shared/services';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
+
+const logThis = false;
+const nameOfThis = 'CollapsibleWrapperComponent'
 
 @Component({
   selector: WrappersConstants.CollapsibleWrapper,
   templateUrl: './collapsible-wrapper.component.html',
   styleUrls: ['./collapsible-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatIconModule,
+    ChangeAnchorTargetDirective,
+    AsyncPipe,
+    SafeHtmlPipe,
+  ],
 })
-export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements FieldWrapper, OnInit, OnDestroy {
+export class CollapsibleWrapperComponent extends BaseComponent implements OnDestroy {
+
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @Input() config: FieldConfigSet;
-  @Input() group: UntypedFormGroup;
-  
-  controlConfig: FieldControlConfig = {};
 
-  visible$: Observable<boolean>;
-  collapsed$: BehaviorSubject<boolean>;
-  label$: Observable<string>;
-  notes$: Observable<string>;
+  private fieldState = inject(FieldState);
+  protected config = this.fieldState.config;
+  protected group = this.fieldState.group;
+  protected basics = this.fieldState.basics;
 
-  private settings$: BehaviorSubject<FieldSettings>;
+  /** Collapsed state - will be updated in various scenarios */
+  collapsed = computed(() => this.fieldState.settings().Collapsed);
 
-  constructor(
-    private fieldsSettingsService: FieldsSettingsService,
-    private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
-  ) {
-    super();
+  private fieldsSettingsService = inject(FieldsSettingsService);
+
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
     EmptyDefaultLogic.importMe();
   }
 
-  ngOnInit(): void {
-    this.collapsed$ = new BehaviorSubject(false);
-    this.settings$ = new BehaviorSubject(null);
-
-    this.subscription.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
-        this.settings$.next(settings);
-      })
-    );
-
-    this.visible$ = this.settings$.pipe(map(settings => ItemFieldVisibility.mergedVisible(settings)), distinctUntilChanged());
-    this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
-    this.notes$ = this.settings$.pipe(map(settings => settings.Notes), distinctUntilChanged());
-
-    this.subscription.add(
-      this.settings$.pipe(map(settings => settings.Collapsed), distinctUntilChanged()).subscribe(collapsed => {
-        this.collapsed$.next(collapsed);
-      })
-    );
-
-    this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId).subscribe(() => {
-        const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
-        this.collapsed$.next(settingsSnapshot.Collapsed);
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.settings$.complete();
-    this.collapsed$.complete();
-    super.ngOnDestroy();
-  }
-
   toggleCollapse(): void {
-    this.collapsed$.next(!this.collapsed$.value);
+    const before = this.collapsed();
+    this.log.a('toggleCollapse', { before })
+    this.fieldsSettingsService.updateSetting(this.fieldState.name, { Collapsed: !before });
   }
 }

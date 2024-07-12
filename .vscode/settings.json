@@ -8,13 +8,16 @@
       "bullist",
       "cbid",
       "charmap",
+      "ecodev",
       "endregion",
       "guids",
       "jsonify",
+      "lightspeed",
       "listpreview",
       "numlist",
       "pastetext",
       "removeformat",
+      "sitewide",
       "tinymce"
     ],
 }

@@ -1,16 +1,13 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subject, Subscription } from 'rxjs';
-import { EavService } from '.';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, shareReplay } from 'rxjs';
+import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-// tslint:disable-next-line:max-line-length
-import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers } from '../helpers';
-// tslint:disable-next-line:max-line-length
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
 import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
-// tslint:disable-next-line:max-line-length
 import { ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
@@ -22,17 +19,23 @@ import { ItemFieldVisibility } from './item-field-visibility';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { EavContentType, EavEntityAttributes } from '../models/eav';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { EavLogger } from '../../../shared/logging/eav-logger';
 
+const logThis = false;
+const nameOfThis = 'FieldsSettingsService';
+// const logOnlyFields = ['Boolean'];
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
  */
 @Injectable()
-export class FieldsSettingsService implements OnDestroy {
+export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
   private fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
-  private subscription: Subscription;
   public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
   private itemFieldVisibility: ItemFieldVisibility;
@@ -45,12 +48,11 @@ export class FieldsSettingsService implements OnDestroy {
   private entityGuid: string;
   private entityId: number;
 
-
   constructor(
     private contentTypeService: ContentTypeService,
     private contentTypeItemService: ContentTypeItemService,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private globalConfigService: GlobalConfigService,
@@ -59,6 +61,7 @@ export class FieldsSettingsService implements OnDestroy {
     private formItemFormulaService: FormItemFormulaService,
     private formulaPromiseHandler: FormulaPromiseHandler,
   ) {
+    super(new EavLogger(nameOfThis, logThis));
     formulaPromiseHandler.init(this);
     formItemFormulaService.init(this.itemService);
     formulaEngine.init(this, this.formulaPromiseHandler, this.contentTypeSettings$);
@@ -68,11 +71,10 @@ export class FieldsSettingsService implements OnDestroy {
     this.contentTypeSettings$?.complete();
     this.fieldsProps$?.complete();
     this.forceRefreshSettings$?.complete();
-    this.subscription?.unsubscribe();
+    super.destroy();
   }
 
   init(entityGuid: string): void {
-    this.subscription = new Subscription();
     this.entityGuid = entityGuid;
 
     const item = this.itemService.getItem(entityGuid);
@@ -82,16 +84,15 @@ export class FieldsSettingsService implements OnDestroy {
     // todo: @STV unsure why we have a stream for the header, isn't it the same as item.Header?
     // pls find out and either clarify or fix
     this.itemHeader$ = this.itemService.getItemHeader$(entityGuid);
-    this.entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
+    this.entityReader$ = this.languageInstanceService.getEntityReader$(this.formConfig.config.formId);
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([this.contentType$, this.itemHeader$, this.entityReader$]).pipe(
         map(([contentType, itemHeader, entityReader]) => {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
             entityReader.flattenAll<ContentTypeSettings>(contentType.Metadata),
             contentType,
-            entityReader.currentLanguage,
-            entityReader.defaultLanguage,
+            entityReader,
             itemHeader,
           );
           return ctSettings;
@@ -105,11 +106,11 @@ export class FieldsSettingsService implements OnDestroy {
     const entityId = item.Entity.Id;
     this.entityId = entityId;
 
-    const eavConfig = this.eavService.eavConfig;
-    this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$]).pipe(
-      map(([inputTypes, contentType, entityReader]) => {
-        // When merging metadata, the primary language must be the real primary, not the current
-        const mdMerger = new EntityReader(eavConfig.lang, entityReader.defaultLanguage);
+    const eavConfig = this.formConfig.config;
+    this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$, this.formConfig.language$]).pipe(
+      map(([inputTypes, contentType, entityReader, language]) => {
+        // When merging metadata, the primary language must be the initial language, not the current
+        const mdMerger = new EntityReader(language.initial, language.primary);
 
         const allConstFieldParts = contentType.Attributes.map((attribute, index) => {
           const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));
@@ -148,7 +149,7 @@ export class FieldsSettingsService implements OnDestroy {
             inputType,
             calculatedInputType,
             constants,
-            currentLanguage: entityReader.currentLanguage,
+            currentLanguage: entityReader.current,
           };
 
           return constantFieldParts;
@@ -186,28 +187,34 @@ export class FieldsSettingsService implements OnDestroy {
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
-    this.subscription.add(
+    const logUpdateFieldProps = this.log.rxTap('updateFieldProps', { enabled: true });
+    this.subscriptions.add(
       combineLatest([
-        this.contentType$, this.itemAttributes$, this.itemHeader$, this.entityReader$,
-        formReadOnly$, this.forceRefreshSettings$, debugEnabled$, this.constantFieldParts$
+        this.contentType$,
+        this.itemAttributes$,
+        this.itemHeader$,
+        this.entityReader$,
+        formReadOnly$,
+        this.forceRefreshSettings$,
+        debugEnabled$,
+        this.constantFieldParts$
       ]).pipe(
+        logUpdateFieldProps.pipe(),
         map(([
           contentType, itemAttributes, itemHeader, entityReader,
           formReadOnly, _, debugEnabled, constantFieldParts
         ]) => {
           const formValues: FormValues = {};
-          for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
+          for (const [fieldName, fieldValues] of Object.entries(itemAttributes))
             formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
-          }
 
           const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
           const logicTools: FieldLogicTools = {
-            eavConfig: this.eavService.eavConfig,
+            eavConfig: this.formConfig.config,
             entityReader,
             debug: debugEnabled,
             contentTypeItemService: this.contentTypeItemService,
           };
-
           if (Object.keys(this.latestFieldProps).length) {
             const status = this.formulaPromiseHandler.updateValuesFromQueue(
               entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
@@ -254,9 +261,7 @@ export class FieldsSettingsService implements OnDestroy {
             if (formulaResult.fields)
               possibleFieldsUpdates.push(...formulaResult.fields);
 
-            const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
-              attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
-            );
+            const fieldTranslation = FieldsSettingsHelpers.getTranslationState(attributeValues, fixed.DisableTranslation, entityReader);
             const wrappers = InputFieldHelpers.getWrappers(fixed, constantFieldPart.calculatedInputType);
 
             fieldsProps[attribute.Name] = {
@@ -282,7 +287,9 @@ export class FieldsSettingsService implements OnDestroy {
           this.formItemFormulaService.valueFormulaCounter = 0;
           return fieldsProps;
         }),
+        logUpdateFieldProps.map(),
         filter(fieldsProps => !!fieldsProps),
+        logUpdateFieldProps.filter(),
       ).subscribe(fieldsProps => {
         consoleLogEditForm('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
         this.fieldsProps$.next(fieldsProps);
@@ -295,7 +302,12 @@ export class FieldsSettingsService implements OnDestroy {
   //           -> Consider multiple streams (one for each picker)
   processPickerItems$(fieldName: string, availableItems$: BehaviorSubject<PickerItem[]>): Observable<PickerItem[]> {
     return combineLatest([
-      availableItems$, this.contentType$, this.itemAttributes$, this.entityReader$, this.constantFieldParts$, this.itemHeader$,
+      availableItems$,
+      this.contentType$,
+      this.itemAttributes$,
+      this.entityReader$,
+      this.constantFieldParts$,
+      this.itemHeader$,
     ]).pipe(map(([
         availableItems, contentType, itemAttributes, entityReader, constantFieldParts, itemHeader
       ]) => {
@@ -370,9 +382,27 @@ export class FieldsSettingsService implements OnDestroy {
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
+
+  // todo: probably switch all uses above to this one
+  getFieldSettingsReplayed$(fieldName: string): Observable<FieldSettings> {
+    return this.fieldsProps$.pipe(
+      map(fieldsSettings => fieldsSettings[fieldName].settings),
+      distinctUntilChanged(RxHelpers.objectsEqual),
+      shareReplay(1),
+    );
+  }
+
+  getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
+    const cached = this.signalsCache[fieldName];
+    if (cached) return cached;
+    
+    var obs = this.getFieldSettingsReplayed$(fieldName);
+    return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsCache: Record<string, Signal<FieldSettings>> = {};
 
   /**
    * Used for translation state stream for a specific field.
@@ -382,7 +412,7 @@ export class FieldsSettingsService implements OnDestroy {
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -396,6 +426,14 @@ export class FieldsSettingsService implements OnDestroy {
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
     const props = this.latestFieldProps[fieldName];
     const newSettings = { ...props.settings, ...update };
-    this.fieldsProps$.next({ ...this.latestFieldProps, [fieldName]: { ...props, settings: newSettings } });
+    const newProps = {
+      ...this.latestFieldProps,
+      [fieldName]: { ...props, settings: newSettings }
+    };
+    this.fieldsProps$.next(newProps);
+
+    // Experimental: had trouble with the _isDialog / Collapsed properties not being persisted
+    // since the latestFieldProps never had the value originally
+    this.latestFieldProps = newProps;
   }
 }

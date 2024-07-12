@@ -1,93 +1,82 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityPickerPreviewViewModel } from './picker-preview.models';
-import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
-import { Field } from '../../../builder/fields-builder/field.model';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { PickerData } from '../picker-data';
+import { Component, OnDestroy, computed } from '@angular/core';
+import { EditRoutingService } from '../../../../shared/services';
+import { TranslateModule } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { PickerTextComponent } from '../picker-text/picker-text.component';
+import { PickerSearchComponent } from '../picker-search/picker-search.component';
+import { PickerTextToggleComponent } from '../picker-text-toggle/picker-text-toggle.component';
+import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+
+const logThis = false;
+const nameOfThis = 'PickerPreviewComponent';
 
 @Component({
   selector: 'app-picker-preview',
   templateUrl: './picker-preview.component.html',
   styleUrls: ['./picker-preview.component.scss'],
+  standalone: true,
+  imports: [
+    FlexModule,
+    PickerPillsComponent,
+    PickerTextToggleComponent,
+    PickerSearchComponent,
+    PickerTextComponent,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    FieldHelperTextComponent,
+    AsyncPipe,
+    TranslateModule,
+    TippyDirective,
+  ],
 })
-export class PickerPreviewComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerData: PickerData;
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-  @Input() controlConfig: FieldControlConfig;
+export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  viewModel$: Observable<EntityPickerPreviewViewModel>;
+  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
+
+  mySettings = computed(() => {
+    const settings = this.fieldState.settings();
+    // const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
+    const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
+    const showGoToListDialogButton = settings.AllowMultiValue;
+    return {
+      allowMultiValue: settings.AllowMultiValue,
+      enableEdit: settings.EnableEdit,
+      enableCreate: settings.EnableCreate,
+      createTypes: settings.CreateTypes,
+      enableTextEntry: settings.EnableTextEntry,
+      showAddNewEntityButton,
+      showGoToListDialogButton,
+    };
+  }, { equal: RxHelpers.objectsEqual });
 
   constructor(
-    private fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
   ) {
-    super();
-  }
-
-  ngOnInit(): void {
-    const state = this.pickerData.state;
-    const selectedItems$ = this.pickerData.selectedItems$;
-    const freeTextMode$ = state.freeTextMode$;
-    const controlStatus$ = state.controlStatus$;
-    const disableAddNew$ = state.disableAddNew$;
-
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => ({
-        AllowMultiValue: settings.AllowMultiValue,
-        EnableTextEntry: settings.EnableTextEntry,
-        EnableCreate: settings.EnableCreate,
-        CreateTypes: settings.CreateTypes,
-      })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
-
-    this.viewModel$ = combineLatest([
-      selectedItems$, freeTextMode$, settings$, controlStatus$, disableAddNew$
-    ]).pipe(
-      map(([
-        selectedItems, freeTextMode, settings, controlStatus, disableAddNew
-      ]) => {
-        const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
-        const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
-        const showGoToListDialogButton = settings.AllowMultiValue;
-        const csDisabled = controlStatus.disabled;
-
-        const viewModel: EntityPickerPreviewViewModel = {
-          selectedItems,
-          freeTextMode,
-          enableTextEntry: settings.EnableTextEntry,
-          disableAddNew,
-
-          leavePlaceForButtons,
-          showAddNewEntityButton,
-          showGoToListDialogButton,
-          csDisabled,
-        };
-
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   openNewEntityDialog(entityType: string): void {
-    this.pickerData.source.editItem(null, entityType);
+    this.log.a(`openNewEntityDialog: '${entityType}'`);
+    this.pickerData().source.editItem(null, entityType);
   }
 
   expandDialog() {
-    if (this.config.initialDisabled) { return; }
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
+    const config = this.fieldState.config;
+    if (config.initialDisabled) return;
+    this.editRoutingService.expand(true, config.index, config.entityGuid);
   }
 
   getEntityTypesData(): void {
-    this.pickerData.state.getEntityTypesData();
+    this.pickerData().state.getEntityTypesData();
   }
 }

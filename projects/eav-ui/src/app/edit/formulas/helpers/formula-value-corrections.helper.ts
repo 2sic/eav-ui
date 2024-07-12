@@ -58,7 +58,7 @@ export class FormulaValueCorrections {
   static valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
     if (value == null) {
       return value;
-    } else if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
+    } else if (inputType?.Type === InputTypeConstants.DateTimeDefault) {
       const date = new Date(value as string | number | Date);
 
       // if value is not ISO string, nor milliseconds, correct timezone

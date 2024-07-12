@@ -2,17 +2,35 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
-import { EavService, FieldsTranslateService } from '../../../../shared/services';
-import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
+import { FormConfigService, FieldsTranslateService } from '../../../../shared/services';
+import { ItemService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from './translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData, TranslateMenuDialogViewModel } from './translate-menu-dialog.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-translate-menu-dialog',
   templateUrl: './translate-menu-dialog.component.html',
   styleUrls: ['./translate-menu-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatListModule,
+    NgClass,
+    ExtendedModule,
+    MatIconModule,
+    MatButtonModule,
+    AsyncPipe,
+    TranslateModule,
+  ],
 })
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
@@ -26,9 +44,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
@@ -42,24 +59,21 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),
-      currentLanguage$,
-      defaultLanguage$,
+      this.formConfig.language$,
       attributes$,
       this.translationState$,
     ]).pipe(
-      map(([languages, currentLanguage, defaultLanguage, attributes, translationState]) =>
-        getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes, translationState.linkType)),
+      map(([languages, language, attributes, translationState]) =>
+        getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType)),
     );
 
-    this.viewModel$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
-      map(([defaultLanguage, languages, translationState]) => {
+    this.viewModel$ = combineLatest([this.formConfig.language$, languages$, this.translationState$]).pipe(
+      map(([lang, languages, translationState]) => {
         const viewModel: TranslateMenuDialogViewModel = {
-          defaultLanguage,
+          primary: lang.primary,
           languages,
           translationState,
           showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
@@ -88,15 +102,13 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$.next(newTranslationState);
   }
 
-  save(): void {
+  run(): void {
     const newState = this.translationState$.value;
     const oldState = this.dialogData.translationState;
 
-    const isEqual = oldState.linkType === newState.linkType && oldState.language === newState.language;
-    if (isEqual) {
-      this.closeDialog();
-      return;
-    }
+    const noChange = oldState.linkType === newState.linkType && oldState.language === newState.language;
+    if (noChange)
+      return this.closeDialog();
 
     switch (newState.linkType) {
       case TranslationLinks.Translate:

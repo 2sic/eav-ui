@@ -1,26 +1,69 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import type * as Monaco from 'monaco-editor';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { JsonSchema } from '../../../../../monaco-editor';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
+import { FormConfigService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
-import { CustomJsonEditorViewModel } from './custom-json-editor.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { MonacoEditorComponent } from '../../../../../monaco-editor/monaco-editor.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, NgStyle } from '@angular/common';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../../shared/models';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.CustomJsonEditor,
   templateUrl: './custom-json-editor.component.html',
   styleUrls: ['./custom-json-editor.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    MatFormFieldModule,
+    MonacoEditorComponent,
+    NgStyle,
+    FieldHelperTextComponent,
+  ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
-export class CustomJsonEditorComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  viewModel$: Observable<CustomJsonEditorViewModel>;
+@FieldMetadata({ ...WrappersLocalizationOnly })
+export class CustomJsonEditorComponent {
+  // TODO:: Open to use fileState
+  protected fieldState = inject(FieldState);
+  protected config = this.fieldState.config;
+  protected control = this.fieldState.control;
+
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected basics = this.fieldState.basics;
+  protected settings = this.fieldState.settings;
+
+  protected rows = computed(() => this.settings().Rows, SignalHelpers.numberEquals);
+  protected focused = computed(() => this.config.focused$);
+
+  editorHeight = computed(() => {
+    return this.rows() * this.monacoOptions.lineHeight + 'px';
+  });
+
+  jsonSchema = computed(() => {
+    const settings = this.settings();
+    if (settings.JsonSchemaMode === 'none') { return; }
+    const jsonSchema: JsonSchema = {
+      type: settings.JsonSchemaSource,
+      value: settings.JsonSchemaSource === 'link' ? settings.JsonSchemaUrl : settings.JsonSchemaRaw,
+    };
+    return jsonSchema;
+  });
+
+  jsonComments = computed(() => {
+    const settings = this.settings();
+    const jsonComments: Monaco.languages.json.SeverityLevel = settings.JsonCommentsAllowed ? 'ignore' : 'error';
+    return jsonComments;
+  });
+
   filename: string;
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
@@ -35,66 +78,17 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
     fixedOverflowWidgets: true,
   };
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  constructor(private formConfig: FormConfigService) {
     CustomJsonEditorLogic.importMe();
     StringJsonLogic.importMe();
   }
 
   ngOnInit() {
-    super.ngOnInit();
-    this.filename = `${this.config.fieldName} ${this.config.entityGuid} ${this.eavService.eavConfig.formId}.json`;
-    const rowCount$ = this.settings$.pipe(map(settings => settings.Rows), distinctUntilChanged());
-    const jsonSchema$ = this.settings$.pipe(
-      map(settings => {
-        if (settings.JsonSchemaMode === 'none') { return; }
-
-        const jsonSchema: JsonSchema = {
-          type: settings.JsonSchemaSource,
-          value: settings.JsonSchemaSource === 'link' ? settings.JsonSchemaUrl : settings.JsonSchemaRaw,
-        };
-        return jsonSchema;
-      }),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
-    const jsonComments$ = this.settings$.pipe(
-      map(settings => {
-        const jsonComments: Monaco.languages.json.SeverityLevel = settings.JsonCommentsAllowed ? 'ignore' : 'error';
-        return jsonComments;
-      }),
-      distinctUntilChanged(),
-    );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.config.focused$]),
-      combineLatest([rowCount$, jsonSchema$, jsonComments$]),
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required, focused],
-        [rowCount, jsonSchema, jsonComments],
-      ]) => {
-        const viewModel: CustomJsonEditorViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
-          focused,
-          rowCount,
-          editorHeight: rowCount * this.monacoOptions.lineHeight + 'px',
-          jsonSchema,
-          jsonComments,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
+    this.filename = `${this.config.fieldName} ${this.config.entityGuid} ${this.formConfig.config.formId}.json`;
   }
 
   codeChanged(code: string): void {
-    GeneralHelpers.patchControlValue(this.control, code);
+    ControlHelpers.patchControlValue(this.control, code);
   }
 
   onFocused(): void {
@@ -103,7 +97,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
 
   onBlurred(): void {
     if (!this.control.touched) {
-      GeneralHelpers.markControlTouched(this.control);
+      ControlHelpers.markControlTouched(this.control);
     }
     this.config.focused$.next(false);
   }

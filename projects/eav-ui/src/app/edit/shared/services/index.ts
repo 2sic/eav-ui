@@ -1,5 +1,5 @@
 export * from './adam.service';
-export * from './eav.service';
+export * from './form-config.service';
 export * from './edit-initializer.service';
 export * from './edit-routing.service';
 export * from './entity.service';

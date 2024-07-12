@@ -1,92 +1,91 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
+import { EditRoutingService, FormsStateService } from '../../../shared/services';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { HyperlinkLibraryExpandableViewModel } from './hyperlink-library-expandable-wrapper.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
+import { FieldHelperTextComponent } from '../../shared/field-helper-text/field-helper-text.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass } from '@angular/common';
+import { FieldState } from '../../builder/fields-builder/field-state';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
   templateUrl: './hyperlink-library-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    FlexModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatRippleModule,
+    MatFormFieldModule,
+    FieldHelperTextComponent,
+    FeatureIconTextComponent,
+    TranslateModule,
+    ...ExtendedFabSpeedDialImports,
+    TippyDirective,
+  ],
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class HyperlinkLibraryExpandableWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
 
-  open$: Observable<boolean>;
-  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  viewModel$: Observable<HyperlinkLibraryExpandableViewModel>;
+  protected fieldState = inject(FieldState);
 
-  private adamItems$: BehaviorSubject<AdamItem[]>;
+  protected config = this.fieldState.config;
+  protected controlStatus = this.fieldState.controlStatus;
+  protected basics = this.fieldState.basics;
+
+  open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
+
+  adamConfig = signal([]);
+  protected items = computed(() => this.adamConfig().slice(0, 9));
+  protected itemsNumber = computed(() => this.adamConfig().length, SignalHelpers.numberEquals);
+
+  protected hideAdamSponsor = this.featuresService.isEnabled(FeatureNames.NoSponsoredByToSic);
+  adamSponsorI18nKey = computed(() => this.hideAdamSponsor()
+    ? 'Fields.Hyperlink.AdamFileManager.Name'
+    : 'Fields.Hyperlink.Default.Sponsor'
+  );
+
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
-    private formsStateService: FormsStateService,
+    public formsStateService: FormsStateService,
     private featuresService: FeaturesService,
-  ) {
-    super(eavService, fieldsSettingsService);
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
-    const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
-      map(isEnabled => !isEnabled),
-      distinctUntilChanged(),
-    );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.adamItems$, showAdamSponsor$]),
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required],
-        [adamItems, showAdamSponsor],
-      ]) => {
-        const viewModel: HyperlinkLibraryExpandableViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
-          items: adamItems.slice(0, 9),
-          itemsNumber: adamItems.length,
-          showAdamSponsor,
-        };
-        return viewModel;
-      }),
-    );
-  }
+  ) { }
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.subscription.add(
-      this.config.adam.items$.subscribe(items => {
-        this.adamItems$.next(items);
-      })
-    );
+    this.config.adam.items$.subscribe(items => this.adamConfig.set(items));
   }
 
   ngOnDestroy() {
     this.dropzoneDraggingHelper.detach();
-    this.adamItems$.complete();
-    super.ngOnDestroy();
   }
 
   calculateBottomPixels() {

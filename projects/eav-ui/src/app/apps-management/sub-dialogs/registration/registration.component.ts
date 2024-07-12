@@ -15,15 +15,27 @@ import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
   standalone: true,
-  imports: [SharedComponentsModule, MatCardModule, MatIconModule, MatButtonModule, AsyncPipe],
-  providers: [ZoneService, FeaturesConfigService],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    AsyncPipe,
+    TippyDirective,
+    SafeHtmlPipe,
+  ],
+  providers: [
+    ZoneService,
+    FeaturesConfigService,
+  ],
 
 })
 export class RegistrationComponent implements OnInit {
@@ -38,11 +50,11 @@ export class RegistrationComponent implements OnInit {
   // patrons logo
   logo = patronsLogo;
 
+  private zoneService = transient(ZoneService);
+  private featuresConfigService = transient(FeaturesConfigService);
+
   constructor(
-    private dialogRef: MatDialogRef<RegistrationComponent>,
     private globalConfigService: GlobalConfigService,
-    private zoneService: ZoneService,
-    private featuresConfigService: FeaturesConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

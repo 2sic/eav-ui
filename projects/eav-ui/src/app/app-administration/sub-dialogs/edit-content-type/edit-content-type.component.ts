@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
@@ -8,14 +8,45 @@ import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constan
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-edit-content-type',
   templateUrl: './edit-content-type.component.html',
   styleUrls: ['./edit-content-type.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private contentTypesService = transient(ContentTypesService);
 
   contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
@@ -38,7 +69,6 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
     private route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
     private snackBar: MatSnackBar,
   ) { }
 

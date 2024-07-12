@@ -16,11 +16,10 @@ export interface TranslateMenuDialogTemplateLanguage {
 }
 
 export interface TranslateMenuDialogViewModel {
-  defaultLanguage: string;
+  primary: string;
   languages: TranslateMenuDialogTemplateLanguage[];
   translationState: TranslationStateCore;
   showLanguageSelection: boolean;
   i18nRoot: string;
   submitDisabled: boolean;
-  isTranslateWithGoogleFeatureEnabled?: boolean;
 }

@@ -1,25 +1,25 @@
-<div [ngClass]="(open$ | async) ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="open() ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
-    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': open() }">
       <mat-card appearance="raised" class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ label$ | async }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="(open$ | async) ? 'closed' : 'open'">
+      <div [@itemShrinkAnimation]="open() ? 'closed' : 'open'">
       </div>
       <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-          value: (open$ | async) ? 'expanded' : 'closed',
+          value: open() ? 'expanded' : 'closed',
           params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
-        <extended-fab-speed-dial [ngClass]="{ 'adam': !(adamDisabled$ | async) }">
+        <extended-fab-speed-dial [ngClass]="{ 'adam': !adamDisabled() }">
           <ng-template extendedFabSpeedDialTriggerContent>
             <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
               <mat-icon>done</mat-icon>
@@ -27,13 +27,11 @@
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
-              (click)="saveAll(false)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
-              (click)="saveAll(true)">
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()" (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
             </button>
@@ -43,34 +41,31 @@
     </div>
   </div>
 </div>
-@if (viewModel$ | async; as vm) {
-  <div class="c-ew__preview-holder">
-    <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : vm.controlStatus.value,
-      'mat-empty' : !vm.controlStatus.value,
-      'mat-error' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty) && !vm.controlStatus.disabled,
-      'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !vm.controlStatus.disabled,
-      'color__label-disabled' : vm.controlStatus.disabled,
-      'c-ew__preview-label--focused': vm.focused
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : controlStatus().value,
+      'mat-empty' : !controlStatus().value,
+      'mat-error' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty) && !controlStatus().disabled,
+      'color__primary' : !(controlStatus().touchedAndInvalid) && !controlStatus().disabled,
+      'color__label-disabled' : controlStatus().disabled,
+      'c-ew__preview-label--focused': focused()
       }">
-      {{ vm.label }}
-      {{ vm.required ? '*': '' }}
-    </mat-label>
-    <div class="c-ew__preview" [ngClass]="{
-      'c-ew__preview--invalid' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty),
-      'c-ew__preview--disabled': vm.controlStatus.disabled,
-      'c-ew__preview--focused': vm.focused
+    {{basics().labelWithRequired}}
+  </mat-label>
+  <div class="c-ew__preview" [ngClass]="{
+      'c-ew__preview--invalid' : controlStatus().invalid && (controlStatus().touched || controlStatus().dirty),
+      'c-ew__preview--disabled': controlStatus().disabled,
+      'c-ew__preview--focused': focused()
       }">
-      <div class="c-ew__preview-container">
-        <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
-          'c-ew__preview-content--disabled': vm.controlStatus.disabled
+    <div class="c-ew__preview-container">
+      <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
+          'c-ew__preview-content--disabled': controlStatus().disabled
           }" [ngStyle]="{
-          'min-height': vm.previewHeight.minHeight,
-          'max-height': vm.previewHeight.maxHeight
+          'min-height': previewHeight().minHeight,
+          'max-height': previewHeight().maxHeight
           }">
-        </div>
       </div>
     </div>
-    <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   </div>
-}
+  <app-field-helper-text></app-field-helper-text>
+</div>

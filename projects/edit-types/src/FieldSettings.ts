@@ -348,29 +348,35 @@ export interface UiPickerModeTree extends ConfigModel {
   TreeAllowSelectLeaf: boolean;
 }
 
-export interface UiPickerSourceQuery extends PickerSource {
+export interface UiPickerSourceQuery extends UiPickerSourceEntityAndQuery {
   Query: string;
   QueryParameters: string;
   StreamName: string;
   Label: string;
   Value: string;
-  MoreFields: string;
-  CreateTypes: string;
 }
 
-export interface UiPickerSourceEntity extends PickerSource {
+export interface UiPickerSourceEntity extends UiPickerSourceEntityAndQuery {
   ContentTypeNames: string;
-  CreateTypes: string;
-  MoreFields: string;
 }
 
-export interface UiPickerSourceCustomList extends PickerSource {
+export interface UiPickerSourceCustomList extends UiPickerSource {
   DropdownValues: string;
 }
 
-interface PickerSource extends ConfigModel { 
+export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
+  CreateTypes: string;
+  MoreFields: string;
+}
+
+interface UiPickerSource extends ConfigModel {
+  /** Label or field-mask for label */
+  Label: string;
+  /** ItemInfo or field-mask for ItemInfo */
   ItemInformation: string;
+  /** ItemTooltip or field-mask for ItemTooltip */
   ItemTooltip: string;
+  /** ItemLink or field-mask for ItemLink */
   ItemLink: string;
 }
 

@@ -1,50 +1,67 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { Component, Input, OnInit, computed, inject } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { ValidationMessagesHelpers } from '../../../shared/helpers';
-import { FieldsSettingsService } from '../../../shared/services';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldState } from '../../builder/fields-builder/field-state';
 import { FieldHelperTextViewModel } from './field-helper-text.models';
+import { TranslateModule } from '@ngx-translate/core';
+import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-field-helper-text',
   templateUrl: './field-helper-text.component.html',
   styleUrls: ['./field-helper-text.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    MatFormFieldModule,
+    FlexModule,
+    ChangeAnchorTargetDirective,
+    AsyncPipe,
+    TranslateModule,
+    SafeHtmlPipe,
+  ],
 })
 export class FieldHelperTextComponent implements OnInit {
-  @Input() config: FieldConfigSet;
-  @Input() group: UntypedFormGroup;
   @Input() disableError = false;
   @Input() hyperlinkDefaultWrapperFix = false;
 
+  protected fieldState = inject(FieldState);
+
+  protected settings = this.fieldState.settings;
+
+  protected notes = computed(() => this.settings().Notes, SignalHelpers.stringEquals);
+
   isFullText = false;
-  control: AbstractControl;
   viewModel$: Observable<FieldHelperTextViewModel>;
 
-  constructor(private fieldsSettingsService: FieldsSettingsService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.fieldName];
+    const control = this.fieldState.control;
 
-    const invalid$ = this.control.valueChanges.pipe(
-      map(() => this.control.invalid),
-      startWith(this.control.invalid),
+    const invalid$ = control.valueChanges.pipe(
+      map(() => control.invalid),
+      startWith(control.invalid),
       distinctUntilChanged(),
     );
-    const disabled$ = this.control.valueChanges.pipe(
-      map(() => this.control.disabled),
-      startWith(this.control.disabled),
+    const disabled$ = control.valueChanges.pipe(
+      map(() => control.disabled),
+      startWith(control.disabled),
       distinctUntilChanged(),
     );
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
 
-    this.viewModel$ = combineLatest([invalid$, disabled$, settings$]).pipe(
-      map(([invalid, disabled, settings]) => {
+    this.viewModel$ = combineLatest([invalid$, disabled$]).pipe(
+      map(([invalid, disabled]) => {
         const viewModel: FieldHelperTextViewModel = {
           invalid,
           disabled,
-          description: settings.Notes,
-          settings,
         };
         return viewModel;
       }),
@@ -55,21 +72,21 @@ export class FieldHelperTextComponent implements OnInit {
   toggleHint(event: MouseEvent) {
     let target = event.target as HTMLElement;
 
-    if (target.nodeName.toLocaleLowerCase() === 'a') { return; }
+    if (target.nodeName.toLocaleLowerCase() === 'a') return;
     while (target && target.classList && !target.classList.contains('notes-container')) {
       target = target.parentNode as HTMLElement;
-      if (!target) { return; }
-      if (target.nodeName.toLocaleLowerCase() === 'a') { return; }
+      if (!target) return;
+      if (target.nodeName.toLocaleLowerCase() === 'a') return;
     }
 
     this.isFullText = !this.isFullText;
   }
 
   getErrorMessage() {
-    return ValidationMessagesHelpers.getErrorMessage(this.control, this.config);
+    return ValidationMessagesHelpers.getErrorMessage(this.fieldState.control, this.fieldState.config);
   }
 
   getWarningMessage() {
-    return ValidationMessagesHelpers.getWarningMessage(this.control);
+    return ValidationMessagesHelpers.getWarningMessage(this.fieldState.control);
   }
 }

@@ -12,26 +12,26 @@ import { AsyncPipe } from '@angular/common';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { SharedComponentsModule } from '../shared/shared-components.module';
+import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 
 @Component({
-    selector: 'app-content-import',
-    templateUrl: './content-import.component.html',
-    styleUrls: ['./content-import.component.scss'],
-    standalone: true,
-    imports: [
-        SharedComponentsModule,
-        FormsModule,
-        MatButtonModule,
-        MatRadioModule,
-        MatDialogActions,
-        AsyncPipe,
-    ],
-    providers: [
-        ContentImportService,
-        ContentTypesService,
-        AppDialogConfigService,
-    ],
+  selector: 'app-content-import',
+  templateUrl: './content-import.component.html',
+  styleUrls: ['./content-import.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatRadioModule,
+    MatDialogActions,
+    AsyncPipe,
+    DragAndDropDirective,
+  ],
+  providers: [
+    ContentImportService,
+    ContentTypesService,
+    AppDialogConfigService,
+  ],
 })
 export class ContentImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

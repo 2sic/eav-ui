@@ -1,5 +1,5 @@
 import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
-import { GeneralHelpers } from '../../../../shared/helpers/general.helpers';
+import { RxHelpers } from '../../../../../shared/rxJs/rx.helpers';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
@@ -14,7 +14,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
   }
 
   fieldListToRetrieveFromServer(settings: FieldSettings): string {
-    this.log.add('fieldListToRetrieveFromServer', settings);
+    this.log.a('fieldListToRetrieveFromServer', {settings});
 
     const treeConfig = settings.PickerTreeConfiguration;
     const moreFields = settings.MoreFields?.split(',') ?? [];
@@ -34,7 +34,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
 
     // in the end, we should deduplicate the fields
     const allFields = [...combinedFields, ...stringFields]
-      .filter(GeneralHelpers.distinct);
+      .filter(RxHelpers.distinct);
 
     // merging into one long string
     return allFields.join(',');
@@ -49,7 +49,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
    * @returns parsed fields
    */
   extractFieldNamesFromTokens(input: string, enableSimpleFields: boolean = true): string[] {
-    this.log.add('extractFieldNamesFromTokens', input, enableSimpleFields);
+    this.log.a('extractFieldNamesFromTokens', {input, enableSimpleFields});
     const fields: string[] = [];
 
     // 1.) skip processing on null or empty

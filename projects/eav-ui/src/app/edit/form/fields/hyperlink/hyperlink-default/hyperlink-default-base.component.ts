@@ -1,23 +1,51 @@
-import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, Signal, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
-import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
+import { FileTypeHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
+import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { Preview } from './hyperlink-default.models';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../../shared/models';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 
-@Directive()
+const logThis = false;
+const nameOfThis = 'HyperlinkDefaultBaseComponent';
+
+@Component({
+  selector: 'app-base-field-hyperlink-component',
+  template: ''
+})
 // tslint:disable-next-line:directive-class-suffix
-export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  preview$: BehaviorSubject<Preview>;
+export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnInit, OnDestroy {
+
+  preview = signal<Preview>({
+    url: '',
+    thumbnailUrl: '',
+    previewUrl: '',
+    floatingText: '',
+    isImage: false,
+    isKnownType: false,
+    icon: '',
+  });
+
+  protected fieldState = inject(FieldState);
+
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+  public config = this.fieldState.config;
+  public group = this.fieldState.group;
+  public control = this.fieldState.control;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+
+  private injector = inject(Injector);
 
   constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
+    private formConfig: FormConfigService,
     public adamService: AdamService,
     public dialog: MatDialog,
     public viewContainerRef: ViewContainerRef,
@@ -26,42 +54,28 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
     public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) {
-    super(eavService, fieldsSettingsService);
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
-    super.ngOnInit();
-    this.preview$ = new BehaviorSubject<Preview>({
-      url: '',
-      thumbnailUrl: '',
-      previewUrl: '',
-      floatingText: '',
-      isImage: false,
-      isKnownType: false,
-      icon: '',
-    });
-    this.subscription.add(
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()).subscribe(value => {
-        this.fetchLink(value);
-      })
-    );
-  }
-
-  ngOnDestroy() {
-    this.preview$.complete();
-    super.ngOnDestroy();
+    effect(() => {
+      this.log.a('controlStatus effect');
+      const status = (this.fieldState.controlStatus as Signal<ControlStatus<string>>)().value;
+      this.fetchLink(status);
+    }, { injector: this.injector, allowSignalWrites: true });
   }
 
   openPagePicker() {
     PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
-      if (!page) { return; }
-      GeneralHelpers.patchControlValue(this.control, `page:${page.id}`);
+      if (!page) return;
+      ControlHelpers.patchControlValue(this.control, `page:${page.id}`);
     });
   }
 
   openImageConfiguration(adamItem?: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
+    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType)
+      return;
 
     const form: EditForm = {
       items: [
@@ -81,6 +95,7 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
   }
 
   private fetchLink(value: string) {
+    this.log.a('fetchLink', {value});
     if (!value) {
       this.setPreview(value, false);
       return;
@@ -115,10 +130,15 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
   }
 
   private setPreview(value: string, isResolved: boolean, adam?: AdamItem) {
-    // for preview resolve [App:Path]
-    value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig));
+    const preview = this.getPreview(value, isResolved, adam);
+    this.preview.set(preview);
+  }
 
-    const preview: Preview = {
+  private getPreview(value: string, isResolved: boolean, adam?: AdamItem): Preview {
+    // for preview resolve [App:Path]
+    value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config));
+
+    return {
       url: value,
       floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1)}` : '',
       thumbnailUrl: `url("${adam?.ThumbnailUrl ?? this.buildUrl(value, 1)}")`,
@@ -126,21 +146,17 @@ export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> im
       isImage: FileTypeHelpers.isImage(value),
       isKnownType: FileTypeHelpers.isKnownType(value),
       icon: FileTypeHelpers.getIconClass(value),
-    };
-    this.preview$.next(preview);
+    } satisfies Preview;
   }
 
   private buildUrl(url: string, size?: 1 | 2): string {
     let query = '';
-    if (size === 1) {
+    if (size === 1)
       query += 'w=80&h=80&mode=crop';
-    }
-    if (size === 2) {
+    if (size === 2)
       query += 'w=800&h=800&mode=max';
-    }
-    if (query && !url.includes('?')) {
+    if (query && !url.includes('?'))
       query = '?' + query;
-    }
     return url + query;
   }
 

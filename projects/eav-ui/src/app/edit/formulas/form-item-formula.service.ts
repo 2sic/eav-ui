@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import { FieldValue } from "projects/edit-types";
-import { EntityReader, GeneralHelpers } from "../shared/helpers";
+import { EntityReader } from "../shared/helpers";
 import { FormValues, FieldsProps } from "../shared/models";
 import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { ItemService } from "../shared/store/ngrx-data";
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 
 /**
  * Contains methods for updating value changes from formulas.
@@ -57,9 +58,7 @@ export class FormItemFormulaService {
     if (Object.keys(valueUpdates).length > 0) {
       if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
         this.valueFormulaCounter++;
-        this.itemService.updateItemAttributesValues(
-          entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
-        );
+        this.itemService.updateItemAttributesValues(entityGuid, valueUpdates, entityReader);
         // return true to make sure fieldProps are not updated yet
         return true;
       } else {
@@ -91,7 +90,7 @@ export class FormItemFormulaService {
     let valuesNotEqual = valueBefore !== valueFromFormula;
     // do a more in depth comparison in case of calculated entity fields
     if (valuesNotEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
-      valuesNotEqual = !GeneralHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
+      valuesNotEqual = !RxHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
     }
     return valuesNotEqual;
   }

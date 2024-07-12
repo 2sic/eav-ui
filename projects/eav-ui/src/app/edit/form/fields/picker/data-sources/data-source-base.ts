@@ -1,6 +1,5 @@
 import { PickerItem } from 'projects/eav-ui/src/app/edit/form/fields/picker/models/picker-item.model';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
+import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from 'projects/edit-types';
 import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -8,17 +7,29 @@ import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
-import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { Signal, inject, signal } from '@angular/core';
+import { FieldState } from '../../../builder/fields-builder/field-state';
 
 export abstract class DataSourceBase extends ServiceBase {
-  /** Stream containing the data */
-  public data$: Observable<PickerItem[]>;
+  
+  /** Field State with settings etc. */
+  protected fieldState = inject(FieldState);
 
-  /** Stream containing loading-status */
-  public loading$: Observable<boolean>;
+  constructor(logSpecs: EavLogger) {
+    super(logSpecs);
+    this.log.a('constructor', {forField: this.fieldState.name});
+  }
+
+  /** Signal containing the data */
+  public data: Signal<PickerItem[]>;
+
+  /** Signal with loading-status */
+  public loading = signal(true);
 
   /** Toggle to trigger a full refresh. */
   protected getAll$ = new BehaviorSubject<boolean>(false);
+  protected getAll = signal(false);
 
   /**
    * Force refresh of the entities with these guids.
@@ -28,26 +39,16 @@ export abstract class DataSourceBase extends ServiceBase {
    * for now we'll just keep on retrieving all on each backend access.
    * In future we may enhance this, but we must be sure that previous retrievals are preserved.
    */
-  protected guidsToRefresh$ = new BehaviorSubject<string[]>([]);
+  protected guidsToRefresh = signal<string[]>([]);
 
-  protected prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
-
-  protected settings$: BehaviorSubject<FieldSettings>;
-
-  constructor(logSpecs: EavLogger) {
-    super(logSpecs);
-  }
+  protected settings = this.fieldState.settings;
 
   protected noItemsLoadingFalse: DataWithLoading<PickerItem[]> = { data: [], loading: false };
   protected noItemsLoadingTrue: DataWithLoading<PickerItem[]> = { data: [], loading: true };
 
-  protected setup(settings$: BehaviorSubject<FieldSettings>) {
-    this.settings$ = settings$;
-  }
+  public setup(): this { return this; }
 
   destroy(): void {
-    this.prefetchEntityGuids$.complete();
-    this.guidsToRefresh$.complete();
     this.getAll$.complete();
     super.destroy();
   }
@@ -56,35 +57,23 @@ export abstract class DataSourceBase extends ServiceBase {
 
   protected helpers = new DataSourceHelpers();
 
-  getAll(): void {
+  triggerGetAll(): void {
     this.getAll$.next(true);
+    this.getAll.set(true);
   }
 
   addToRefresh(additionalGuids: string[]): void {
-    const merged = [...this.guidsToRefresh$.value, ...additionalGuids].filter(GeneralHelpers.distinct);
-    this.log.add('forceLoadGuids', 'before', this.guidsToRefresh$.value, 'after', additionalGuids, 'merged', merged);
-    this.guidsToRefresh$.next(merged);
+    const l = this.log.fn('addToRefresh', {additionalGuids});
+    const before = this.guidsToRefresh();
+    const merged = [...before, ...additionalGuids].filter(RxHelpers.distinct);
+    this.log.values({ before, additionalGuids, merged });
+    this.guidsToRefresh.set(merged);
+    l.end();
   }
 
-  initPrefetch(entityGuids: string[]): void {
-    const guids = entityGuids.filter(GeneralHelpers.distinct);
-    this.prefetchEntityGuids$.next(guids);
+  protected getMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
+    return new DataSourceMasksHelper(this.settings(), this.log, enableLog);
   }
-
-  /** fill additional properties */
-  protected entity2PickerItem(entity: EntityBasicWithFields, streamName: string | null, mustUseGuid: boolean): PickerItem {
-    return this.getMaskHelper().entity2PickerItem(entity, streamName, mustUseGuid);
-  }
-
-  protected getMaskHelper(): DataSourceMasksHelper {
-    return this.masks ??= new DataSourceMasksHelper(this.settings$.value, this.log);
-  }
-
-  /**
-   * The masks to determine which fields are used for what, and how to combine them.
-   * They are generated once per source, and then reused.
-   */
-  private masks: DataSourceMasksHelper;
 
   protected fieldsToRetrieve(settings: FieldSettings): string {
     return this.fieldsHelper.fieldListToRetrieveFromServer(settings);

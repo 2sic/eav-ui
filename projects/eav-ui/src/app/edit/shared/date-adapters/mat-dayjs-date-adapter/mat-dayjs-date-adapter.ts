@@ -5,12 +5,16 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'MatDayjsDateAdapter';
 
 export interface MatDayjsDateAdapterOptions {
   /**
    * Turns the use of utc dates on or off.
    * Changing this will change how Angular Material components like DatePicker output dates.
-   * {@default false}
+   * @default false
    */
   useUtc?: boolean;
 }
@@ -21,15 +25,17 @@ export const MAT_DAYJS_DATE_ADAPTER_OPTIONS =
     'MAT_DAYJS_DATE_ADAPTER_OPTIONS',
     {
       providedIn: 'root',
-      factory: MAT_DAYJS_DATE_ADAPTER_OPTIONS_FACTORY,
+      factory: () => ({
+        useUtc: true,
+      } satisfies MatDayjsDateAdapterOptions),
     }
   );
 
-export function MAT_DAYJS_DATE_ADAPTER_OPTIONS_FACTORY(): MatDayjsDateAdapterOptions {
-  return {
-    useUtc: false,
-  };
-}
+// function MAT_DAYJS_DATE_ADAPTER_OPTIONS_FACTORY(): MatDayjsDateAdapterOptions {
+//   return {
+//     useUtc: false,
+//   } satisfies MatDayjsDateAdapterOptions;
+// }
 
 /**
  * This Date Adapter was inspired by @vanrossumict/material-dayjs-adapter
@@ -49,15 +55,17 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     narrowDaysOfWeek: string[];
   };
 
+  log = new EavLogger(nameOfThis, logThis);
+
   constructor(
     @Optional() @Inject(MAT_DATE_LOCALE) public dateLocale: string,
     @Optional() @Inject(MAT_DAYJS_DATE_ADAPTER_OPTIONS) private _options?: MatDayjsDateAdapterOptions
   ) {
     super();
 
-    if (this.shouldUseUtc) {
+    this.log.a('constructor', { this: this, shouldUseUtc: this.shouldUseUtc, dateLocale, _options });
+    if (this.shouldUseUtc)
       dayjs.extend(utc);
-    }
 
     dayjs.extend(localizedFormat);
     dayjs.extend(customParseFormat);
@@ -69,8 +77,9 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   /**
    * @vanrossumict/material-dayjs-adapter didn't set dayjs locale in adapter but in the component in witch it was used
    */
-  setLocale(locale: string) {
+  override setLocale(locale: string) {
     super.setLocale(locale);
+    const l = this.log.fn('setLocale', { locale });
 
     dayjs.locale(locale);
     const localeData = dayjs().locale(locale).localeData();
@@ -80,41 +89,40 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
       longMonths: dayjs.months(),
       shortMonths: dayjs.monthsShort(),
       dates: this.range(31, (i) => this.createDate(2017, 0, i + 1).format('D')),
-      longDaysOfWeek: this.range(7, (i) =>
-        this.dayJs().set('day', i).format('dddd')
-      ),
+      longDaysOfWeek: this.range(7, (i) => this.dayJs().set('day', i).format('dddd')),
       shortDaysOfWeek: dayjs.weekdaysShort(),
       narrowDaysOfWeek: dayjs.weekdaysMin(),
     };
+    l.r(this.localeData);
   }
 
-  getYear(date: Dayjs): number {
+  override getYear(date: Dayjs): number {
     return this.clone(date).year();
   }
 
-  getMonth(date: Dayjs): number {
+  override getMonth(date: Dayjs): number {
     return this.clone(date).month();
   }
 
-  getDate(date: Dayjs): number {
+  override getDate(date: Dayjs): number {
     return this.clone(date).date();
   }
 
-  getDayOfWeek(date: Dayjs): number {
+  override getDayOfWeek(date: Dayjs): number {
     return this.clone(date).day();
   }
 
-  getMonthNames(style: 'long' | 'short' | 'narrow'): string[] {
+  override getMonthNames(style: 'long' | 'short' | 'narrow'): string[] {
     return style === 'long'
       ? this.localeData.longMonths
       : this.localeData.shortMonths;
   }
 
-  getDateNames(): string[] {
+  override getDateNames(): string[] {
     return this.localeData.dates;
   }
 
-  getDayOfWeekNames(style: 'long' | 'short' | 'narrow'): string[] {
+  override getDayOfWeekNames(style: 'long' | 'short' | 'narrow'): string[] {
     if (style === 'long') {
       return this.localeData.longDaysOfWeek;
     }
@@ -124,27 +132,27 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     return this.localeData.narrowDaysOfWeek;
   }
 
-  getYearName(date: Dayjs): string {
+  override getYearName(date: Dayjs): string {
     return this.clone(date).format('YYYY');
   }
 
-  getFirstDayOfWeek(): number {
+  override getFirstDayOfWeek(): number {
     return this.localeData.firstDayOfWeek;
   }
 
-  getNumDaysInMonth(date: Dayjs): number {
+  override getNumDaysInMonth(date: Dayjs): number {
     return this.clone(date).daysInMonth();
   }
 
-  clone(date: Dayjs): Dayjs {
-    return this.dayJs(date).clone().locale(this.locale);
+  override clone(date: Dayjs): Dayjs {
+    return this.dayJs(date).clone(); //.locale(this.locale);
   }
 
   /**
    * @vanrossumict/material-dayjs-adapter didn't set hours, minutes, seconds and milliseconds to zero but we expect
    * dates to have time set as midnight
    */
-  createDate(year: number, month: number, date: number): Dayjs {
+  override createDate(year: number, month: number, date: number): Dayjs {
     const returnDayjs = this.dayJs()
       .set('year', year)
       .set('month', month)
@@ -156,12 +164,14 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     return returnDayjs;
   }
 
-  today(): Dayjs {
+  override today(): Dayjs {
     return this.dayJs();
   }
 
-  parse(value: any, parseFormat: string): Dayjs | null {
-    if (value && typeof value === 'string') {
+  override parse(value: any, parseFormat: string): Dayjs | null {
+    const valueIsString = typeof value === 'string';
+    const l = this.log.fn('parse', { value, parseFormat, valueIsString });
+    if (value && valueIsString) {
       const longDateFormat = dayjs().localeData().longDateFormat(parseFormat) as string; // MM/DD/YYY or DD-MM-YYYY, etc.
 
       let parsed = this.dayJs(value, longDateFormat, this.locale, true);
@@ -266,29 +276,29 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
       return this.dayJs(null);
     }
 
-    return value ? this.dayJs(value).locale(this.locale) : null;
+    return l.r(value ? this.dayJs(value).locale(this.locale) : null);
   }
 
-  format(date: Dayjs, displayFormat: string): string {
-    if (!this.isValid(date)) {
+  override format(date: Dayjs, displayFormat: string): string {
+    const l = this.log.fn('format', { date, displayFormat });
+    if (!this.isValid(date))
       throw Error('DayjsDateAdapter: Cannot format invalid date.');
-    }
-    return date.locale(this.locale).format(displayFormat);
+    return l.r(date.locale(this.locale).format(displayFormat));
   }
 
-  addCalendarYears(date: Dayjs, years: number): Dayjs {
+  override addCalendarYears(date: Dayjs, years: number): Dayjs {
     return date.add(years, 'year');
   }
 
-  addCalendarMonths(date: Dayjs, months: number): Dayjs {
+  override addCalendarMonths(date: Dayjs, months: number): Dayjs {
     return date.add(months, 'month');
   }
 
-  addCalendarDays(date: Dayjs, days: number): Dayjs {
+  override addCalendarDays(date: Dayjs, days: number): Dayjs {
     return date.add(days, 'day');
   }
 
-  toIso8601(date: Dayjs): string {
+  override toIso8601(date: Dayjs): string {
     return date.toISOString();
   }
 
@@ -304,7 +314,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
    * @returns The deserialized date object, either a valid date, null if the value can be
    *     deserialized into a null date (e.g. the empty string), or an invalid date.
    */
-  deserialize(value: any): Dayjs | null {
+  override deserialize(value: any): Dayjs | null {
     let date;
     if (value instanceof Date) {
       date = this.dayJs(value);
@@ -324,15 +334,15 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     return super.deserialize(value);
   }
 
-  isDateInstance(obj: any): boolean {
+  override isDateInstance(obj: any): boolean {
     return dayjs.isDayjs(obj);
   }
 
-  isValid(date: Dayjs): boolean {
+  override isValid(date: Dayjs): boolean {
     return this.clone(date).isValid();
   }
 
-  invalid(): Dayjs {
+  override invalid(): Dayjs {
     return this.dayJs(null);
   }
 

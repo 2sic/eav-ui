@@ -7,13 +7,15 @@ import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const debug = true;
-
+const logThis = false;
+const nameOfThis = 'WysiwygConfigurationManager';
 
 
 export class WysiwygConfigurationManager {
+
+  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private connector: Connector<string>,
@@ -72,7 +74,7 @@ export class WysiwygConfigurationManager {
     };
 
     this.current = wysiwygConfiguration;
-    consoleLogWebpack('wysiwyg: getSettings result: ', wysiwygConfiguration);
+    this.log.a('wysiwyg: getSettings result: ', wysiwygConfiguration);
     return wysiwygConfiguration;
   }
 
@@ -84,7 +86,7 @@ export class WysiwygConfigurationManager {
 
   private getPreset(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
     try {
-      return getPresetConfiguration(editMode, displayMode);
+      return getPresetConfiguration(editMode, displayMode, this.log);
     } catch (e) {
       // if anything fails, error and return the default configuration
       console.error(e);
@@ -94,9 +96,9 @@ export class WysiwygConfigurationManager {
   }
 }
 
-function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
+function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: EavLogger): WysiwygConfiguration {
 
-  consoleLogWebpack('wysiwyg: getPresetConfiguration', editMode, 'displayMode', displayMode, ConfigurationPresets);
+  log.a('wysiwyg: getPresetConfiguration', { editMode, displayMode, ConfigurationPresets });
   // Find best match for modeConfig, if not found, rename and use default
   const defConfig = ConfigurationPresets[DefaultMode];
   let currConfig = ConfigurationPresets[editMode];
@@ -112,28 +114,32 @@ function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode
   // Find best match for variation. If found, mix with defaults
   const variation = currConfig.variations.find(v => v.displayMode === displayMode);
   // consoleLogWebpack('2dm variationPartial', variation, 'currConfig', currConfig, 'defConfig', defConfig);
-  const merged: WysiwygConfiguration = variation ? {
-    editMode: currConfig.editMode || defConfig.editMode,
-    displayMode: variation.displayMode || currConfig.displayMode || defConfig.displayMode,
-    buttons: {
-      ...defConfig.buttons,
-      ...currConfig.buttons,
-      ...variation.buttons,
-    },
-    contextMenu: variation.contextMenu || currConfig.contextMenu || defConfig.contextMenu,
-    features: {
-      ...defConfig.features,
-      ...currConfig.features,
-      ...variation.features,
-    },
-    menubar: variation.menubar || currConfig.menubar || defConfig.menubar,
-    tinyMce: null,
-    tinyMceOptions: variation.tinyMceOptions || currConfig.tinyMceOptions || defConfig.tinyMceOptions,
-    tinyMcePlugins: variation.tinyMcePlugins || currConfig.tinyMcePlugins || defConfig.tinyMcePlugins,
-    toolbar: variation.toolbar || currConfig.toolbar || defConfig.toolbar,
-  } : { ...currConfig };
+  const merged: WysiwygConfiguration = variation
+    ? {
+        editMode: currConfig.editMode || defConfig.editMode,
+        displayMode: variation.displayMode || currConfig.displayMode || defConfig.displayMode,
+        buttons: {
+          ...defConfig.buttons,
+          ...currConfig.buttons,
+          ...variation.buttons,
+        },
+        contextMenu: variation.contextMenu || currConfig.contextMenu || defConfig.contextMenu,
+        features: {
+          ...defConfig.features,
+          ...currConfig.features,
+          ...variation.features,
+        },
+        menubar: variation.menubar || currConfig.menubar || defConfig.menubar,
+        tinyMce: null,
+        tinyMceOptions: variation.tinyMceOptions || currConfig.tinyMceOptions || defConfig.tinyMceOptions,
+        tinyMcePlugins: variation.tinyMcePlugins || currConfig.tinyMcePlugins || defConfig.tinyMcePlugins,
+        toolbar: variation.toolbar || currConfig.toolbar || defConfig.toolbar,
+      }
+    : {
+        ...currConfig
+      };
 
-  consoleLogWebpack('wysiwyg: getPresetConfiguration merged', merged);
+  log.a('wysiwyg: getPresetConfiguration merged', {merged});
 
   return merged;
 }

@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, tap } from 'rxjs';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { consoleLogDev } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
@@ -13,7 +13,7 @@ import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpe
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
-import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
+import { FormConfigService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
@@ -23,20 +23,67 @@ import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-e
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
+import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
+import { FormSlideDirective } from './form-slide.directive';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
+import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
+import { FormDataService } from '../../shared/services/form-data.service';
+import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
+import { SourceService } from '../../../code-editor/services/source.service';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+
+const logThis = true;
+const nameOfThis = 'EditDialogMainComponent';
 
 @Component({
   selector: 'app-edit-dialog-main',
   templateUrl: './edit-dialog-main.component.html',
   styleUrls: ['./edit-dialog-main.component.scss'],
-  providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
+  standalone: true,
+  imports: [
+    MatDialogActions,
+    NgClass,
+    ExtendedModule,
+    EditDialogHeaderComponent,
+    CdkScrollable,
+    FormSlideDirective,
+    FormBuilderComponent,
+    MatRippleModule,
+    MatIconModule,
+    EditDialogFooterComponent,
+    AsyncPipe,
+    TranslateModule,
+    ...ExtendedFabSpeedDialImports,
+    ToggleDebugDirective,
+  ],
+  providers: [
+    EditRoutingService,
+    FormsStateService,
+    FormulaDesignerService,
+    // 2dm: don't think it's used for real - except for in the create template, where it's referenced directly
+    SourceService,
+
+    // TODO: probably move to each picker component
+    PickerTreeDataService,
+    PickerTreeDataHelper,
+
+    LoadIconsService,
+  ],
 })
-export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
 
   viewModel$: Observable<EditDialogMainViewModel>;
 
-  private viewInitiated$: BehaviorSubject<boolean>;
-  private debugInfoIsOpen$: BehaviorSubject<boolean>;
+  private viewInitiated$ = new BehaviorSubject(false);
+  private debugInfoIsOpen$= new BehaviorSubject(false);
   private saveResult: SaveResult;
 
   constructor(
@@ -44,11 +91,14 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private globalConfigService: GlobalConfigService,
-    private eavService: EavService,
+
+    private formConfig: FormConfigService,
+    private formDataService: FormDataService,
+
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageStore: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private loadIconsService: LoadIconsService,
@@ -58,24 +108,23 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
     private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
-    // private stringQueryCacheService: StringQueryCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit() {
-    this.viewInitiated$ = new BehaviorSubject(false);
-    this.debugInfoIsOpen$ = new BehaviorSubject(false);
+    // this.viewInitiated$ = new BehaviorSubject(false);
+    // this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();
     this.formulaDesignerService.init();
     /** Small delay to make form opening feel smoother. */
     const delayForm$ = of(false).pipe(delay(0), startWith(true));
-    const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
-    const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
+    const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
+    const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
     const formsValid$ = this.formsStateService.formsValid$;
     const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
@@ -118,12 +167,12 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
   ngOnDestroy() {
     this.viewInitiated$.complete();
     this.debugInfoIsOpen$.complete();
-    this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
-    this.publishStatusService.removePublishStatus(this.eavService.eavConfig.formId);
+    this.languageStore.removeFromStore(this.formConfig.config.formId);
+    this.publishStatusService.removePublishStatus(this.formConfig.config.formId);
 
-    if (this.eavService.eavConfig.isParentDialog) {
+    if (this.formConfig.config.isParentDialog) {
       // clear the rest of the store
-      this.languageInstanceService.clearCache();
+      this.languageStore.clearCache();
       this.languageService.clearCache();
       this.itemService.clearCache();
       this.inputTypeService.clearCache();
@@ -140,11 +189,11 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
 
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
-      this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
+      this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
     } else if (!this.formsStateService.readOnly$.value.isReadOnly && this.formsStateService.formsDirty$.value) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
+      this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
     }
   }
 
@@ -173,7 +222,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
           return item;
         })
         .filter(item => item != null);
-      const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
+      const publishStatus = this.publishStatusService.getPublishStatus(this.formConfig.config.formId);
 
       const saveFormData: SaveEavFormData = {
         Items: items,
@@ -183,7 +232,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
       consoleLogDev('SAVE FORM DATA:', saveFormData);
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-      this.eavService.saveFormData(saveFormData, this.eavService.eavConfig.partOfPage).subscribe({
+      this.formDataService.saveFormData(saveFormData, this.formConfig.config.partOfPage).subscribe({
         next: result => {
           consoleLogDev('SAVED!, result:', result, 'close:', close);
           this.itemService.updateItemId(result);
@@ -229,7 +278,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
   }
 
   private startSubscriptions() {
-    this.subscription.add(
+    this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
         if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
@@ -238,7 +287,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.formsStateService.saveForm$.subscribe(close => this.saveAll(close)),
     );
 

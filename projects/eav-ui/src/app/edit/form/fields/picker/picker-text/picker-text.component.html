@@ -1,16 +1,16 @@
-@if (viewModel$ | async; as vm) {
+<!-- @if (viewModel$ | async; as vm) { -->
   <div fxLayout="row" fxLayoutAlign="start end">
-    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
-      @if (vm.isSeparatorNewLine) {
-        <textarea matInput [required]="vm.required" [formControlName]="config.fieldName"
-          [placeholder]="vm.placeholder"></textarea>
+    <mat-form-field [formGroup]="fieldState.group" class="eav-mat-form-field" color="accent">
+      @if (useMultiLine()) {
+        <textarea matInput [required]="basics().required" [formControlName]="fieldState.name"
+          [placeholder]="basics().placeholder"></textarea>
       } @else {
-        <input matInput [required]="vm.required" [formControlName]="config.fieldName" [placeholder]="vm.placeholder">
+        <input matInput [required]="basics().required" [formControlName]="fieldState.name" [placeholder]="basics().placeholder">
       }
       <div matSuffix class="eav-selection-suffix-inline">
         <ng-content select="[freeTextButtons]"></ng-content>
       </div>
-      <mat-label>{{ vm.label }}</mat-label>
+      <mat-label>{{ basics().label }}</mat-label>
     </mat-form-field>
   </div>
-}
+<!-- } -->

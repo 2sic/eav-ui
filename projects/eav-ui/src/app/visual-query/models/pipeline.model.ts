@@ -5,6 +5,7 @@ export interface PipelineModel {
   Pipeline: Pipeline;
 }
 
+/** DataSource definition with it's name, type, etc. */
 export interface PipelineDataSource {
   Description: string;
   EntityGuid: string;

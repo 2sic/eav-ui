@@ -24,7 +24,7 @@ AppModule imports:
 - Item
 - Feature
 - Language
-- LanguageInstance
+- LanguageInstance - changed to FormLanguageInStore
 - ContentType
 - ContentTypeItem
 - InputType

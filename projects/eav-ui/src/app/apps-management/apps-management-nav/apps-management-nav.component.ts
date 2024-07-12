@@ -2,18 +2,19 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { combineLatest, filter, map, startWith } from 'rxjs';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-items';
 import { AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -25,21 +26,17 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatIconModule,
     BreadcrumbModule,
     MatButtonModule,
-    SharedComponentsModule,
     MatSidenavModule,
     RouterOutlet,
     AsyncPipe,
+    NavItemListComponent
   ],
-  providers: [
-    AppDialogConfigService,
-    // Don't inject context here, it should inherit from the root
-    // Context,
-  ]
 })
-export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private appDialogConfigService = transient(AppDialogConfigService);
 
   zoneId = this.context.zoneId;
-
 
   private currentPath$ = combineLatest([
     this.router.events.pipe(
@@ -75,15 +72,14 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     private context: Context,
     private media: MediaMatcher,
-    private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
   }
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscription.add(
-      this.refreshOnChildClosedShallow().subscribe(() => {
+    this.subscriptions.add(
+      this.childDialogClosed$().subscribe(() => {
         this.fetchDialogSettings();
       })
     );
@@ -95,10 +91,6 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
         this.sidenav.mode = c.matches ? 'over' : 'side'
       )
     );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   closeDialog() {

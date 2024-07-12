@@ -7,9 +7,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { QueryDefinitionService } from './query-definition.service';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -19,10 +19,10 @@ import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
-import { QueryDefinitionService } from './query-definition.service';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
 
 @Injectable()
-export class VisualQueryService extends BaseComponent implements OnDestroy {
+export class VisualQueryService extends BaseWithChildDialogComponent implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
@@ -45,7 +45,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -59,7 +59,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       if (this.refreshPipeline || this.refreshDataSourceConfigs) {
         this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
       }
@@ -92,7 +92,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
 
   showDataSourceDetails(showDetails: boolean) {
     const pipelineModel = cloneDeep(this.pipelineModel$.value);
-    const visualDesignerData: Record<string, any> = GeneralHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
+    const visualDesignerData: Record<string, any> = JsonHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
     visualDesignerData.ShowDataSourceDetails = showDetails;
     pipelineModel.Pipeline.VisualDesignerData = JSON.stringify(visualDesignerData);
     this.pipelineModel$.next(pipelineModel);
@@ -352,7 +352,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
 
   private attachKeyboardSave() {
     this.zone.runOutsideAngular(() => {
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown').pipe(
           filter(() => !this.route.snapshot.firstChild),
           filter(event => {

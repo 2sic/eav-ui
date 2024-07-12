@@ -4,29 +4,28 @@ export interface LanguageButton extends Language {
   buttonText: string;
 }
 
-/** Calculates properties of language buttons, e.g. name to be desplayed */
+/** Calculates properties of language buttons, e.g. name to be displayed */
 export function getLanguageButtons(languages: Language[]): LanguageButton[] {
   const languageButtons: LanguageButton[] = [];
-  const regionlessNamesCount: Record<string, number> = {};
+  const shortCodesCount: Record<string, number> = {};
 
   // count the number of repetitions of the same language without region key
   // e.g. English (United States) and English (Australia) are both English
   languages.forEach(language => {
-    const regionlessName = removeRegionName(language.Culture);
-    if (regionlessNamesCount[regionlessName]) {
-      regionlessNamesCount[regionlessName]++;
-    } else {
-      regionlessNamesCount[regionlessName] = 1;
-    }
+    const shortName = removeRegionName(language.Culture);
+    if (shortCodesCount[shortName])
+      shortCodesCount[shortName]++;
+    else
+      shortCodesCount[shortName] = 1;
   });
 
   // if language repeats, append language key to name which will be displayed
   languages.forEach(language => {
-    const regionlessName = removeRegionName(language.Culture);
+    const shortCode = removeRegionName(language.Culture);
 
     languageButtons.push({
       ...language,
-      buttonText: (regionlessNamesCount[regionlessName] > 1) ? `${regionlessName} (${language.NameId})` : regionlessName,
+      buttonText: (shortCodesCount[shortCode] > 1) ? `${shortCode} (${language.NameId})` : shortCode,
     });
   });
 

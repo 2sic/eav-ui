@@ -1,82 +1,61 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
-import { BooleanTristateViewModel } from './boolean-tristate.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass } from '@angular/common';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../../shared/models';
 
 @Component({
   selector: InputTypeConstants.BooleanTristate,
   templateUrl: './boolean-tristate.component.html',
   styleUrls: ['./boolean-tristate.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    NgClass,
+    ExtendedModule,
+    FieldHelperTextComponent,
+  ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
-export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> implements OnInit, OnDestroy {
-  viewModel$: Observable<BooleanTristateViewModel>;
+@FieldMetadata({ ...WrappersLocalizationOnly })
+export class BooleanTristateComponent {
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  protected fieldState = inject(FieldState);
+
+  protected group = this.fieldState.group;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean | ''>>;
+  protected control = this.fieldState.control;
+
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+
+
+  changedLabel = computed(() => this.settings()._label)
+  checkedState = computed(() => {
+    const value = this.controlStatus().value;
+    const reverseToggle = this.settings().ReverseToggle;
+    return reverseToggle
+      ? (value === true ? false : value === false ? true : value)
+      : (value === '' ? null : value);
+  });
+
+  constructor() {
     BooleanTristateLogic.importMe();
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-    this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
-
-    const changeable$: Observable<boolean> = combineLatest([
-      this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.TitleIndeterminate), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
-    ]).pipe(
-      map(([TitleTrue, TitleIndeterminate, TitleFalse]) => !!(TitleTrue && TitleIndeterminate && TitleFalse)),
-      distinctUntilChanged(),
-    );
-
-    const checked$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => (controlStatus.value === '') ? null : controlStatus.value), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged()),
-    ]).pipe(
-      map(([value, reverseToogle]) => value == null ? value : reverseToogle ? !value : value),
-      distinctUntilChanged(),
-    );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([changeable$]),
-      combineLatest([checked$]),
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required],
-        [changeable],
-        [checked],
-      ]) => {
-        const viewModel: BooleanTristateViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
-          changeable,
-          checked,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   updateValue(disabled: boolean) {
     if (!disabled) {
       const currentValue: boolean | '' = this.control.value;
-      const reverseToggle = this.settings$.value.ReverseToggle;
+      const reverseToggle = this.settings().ReverseToggle;
 
       let nextValue: boolean;
       switch (currentValue) {
@@ -91,7 +70,7 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
           nextValue = reverseToggle ? null : false;
           break;
       }
-      GeneralHelpers.patchControlValue(this.control, nextValue);
+      ControlHelpers.patchControlValue(this.control, nextValue);
     }
   }
 }

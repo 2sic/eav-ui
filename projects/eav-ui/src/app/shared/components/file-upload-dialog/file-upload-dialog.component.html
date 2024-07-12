@@ -1,77 +1,77 @@
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog" appDragAndDrop
-    [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
-    </div>
-    <div class="eav-dialog-content">
-      @if (vm.uploading) {
-        <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-      }
-      <p [innerHtml]="dialogData.description | safeHtml"></p>
-      <div>
-        <button mat-raised-button tippy="Open file browser" [disabled]="vm.uploading" (click)="fileInput.click()">
-          @if (!vm.files.length) {
-            <div>Select or drop file</div>
-          }
-          @for (file of vm.files; track file) {
-            <div>{{ file.name }}</div>
-          }
-        </button>
-        <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
-        @if (uploadType == UploadTypes.App) {
-          <button mat-raised-button class="eav-app-catalog-button" [disabled]="vm.uploading"
-            tippy="Open app catalog" (click)="showAppCatalog()">
-            Get recommended Apps from Catalog
-          </button>
+<div class="eav-dialog" appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes"
+  (filesDropped)="filesDropped($event)">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
+  </div>
+  <div class="eav-dialog-content">
+    @if (vm.uploading) {
+    <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+    }
+    <p [innerHtml]="dialogData.description | safeHtml"></p>
+    <div>
+      <button mat-raised-button tippy="Open file browser" [disabled]="vm.uploading" (click)="fileInput.click()">
+        @if (!vm.files.length) {
+        <div>Select or drop file</div>
         }
+        @for (file of vm.files; track file) {
+        <div>{{ file.name }}</div>
+        }
+      </button>
+      <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+      @if (uploadType == UploadTypes.App) {
+      <button mat-raised-button class="eav-app-catalog-button" [disabled]="vm.uploading" tippy="Open app catalog"
+        (click)="showAppCatalog()">
+        Get recommended Apps from Catalog
+      </button>
+      }
+    </div>
+    @if (vm.result) {
+    <div class="eav-result-container">
+      @if (vm.result.Success) {
+      <div class="sxc-message sxc-message-info">
+        Upload succeeded. See the messages below for more information.
       </div>
-      @if (vm.result) {
-        <div class="eav-result-container">
-          @if (vm.result.Success) {
-            <div class="sxc-message sxc-message-info">
-              Upload succeeded. See the messages below for more information.
-            </div>
-          }
-          @if (!vm.result.Success) {
-            <div class="sxc-message sxc-message-error">
-              Upload failed. See the messages below for more information.
-            </div>
-          }
-          @for (message of vm.result.Messages; track message) {
-            <div class="sxc-message" [ngClass]="{
+      }
+      @if (!vm.result.Success) {
+      <div class="sxc-message sxc-message-error">
+        Upload failed. See the messages below for more information.
+      </div>
+      }
+      @for (message of vm.result.Messages; track message) {
+      <div class="sxc-message" [ngClass]="{
               'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
               'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
               'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error
               }">
-              {{ message.Text }}
-            </div>
-          }
-        </div>
-      }
-      @if (uploadType == UploadTypes.App && vm.showAppCatalog) {
-        @if (ready) {
-          <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
-        }
-        @if (showProgress) {
-          <div class="eav-progress">
-            <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
-            <span>Installing {{ currentPackage?.displayName }}..</span>
-          </div>
-        }
+        {{ message.Text }}
+      </div>
       }
     </div>
-    <mat-dialog-actions align="end">
-      @if (!vm.result?.Success) {
-        <button mat-raised-button (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
-          (click)="upload()">
-          Upload
-        </button>
-      }
-      @if (vm.result?.Success) {
-        <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
-      }
-    </mat-dialog-actions>
+    }
+    @if (uploadType == UploadTypes.App && vm.showAppCatalog) {
+    @if (ready) {
+    <iframe #installerWindow class="eav-app-catalog-iframe" [src]="remoteInstallerUrl"></iframe>
+    }
+    @if (showProgress) {
+    <div class="eav-progress">
+      <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+      <span>Installing {{ currentPackage?.displayName }}..</span>
+    </div>
+    }
+    }
   </div>
+  <mat-dialog-actions align="end">
+    @if (!vm.result?.Success) {
+    <button mat-raised-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
+      (click)="upload()">
+      Upload
+    </button>
+    }
+    @if (vm.result?.Success) {
+    <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
+    }
+  </mat-dialog-actions>
+</div>
 }

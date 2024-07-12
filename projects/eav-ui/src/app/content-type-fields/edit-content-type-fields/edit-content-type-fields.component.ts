@@ -1,13 +1,13 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { NgForm, FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, Subscription, switchMap, toArray } from 'rxjs';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeStrict, InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
@@ -17,13 +17,41 @@ import { ContentTypesFieldsService } from '../services/content-types-fields.serv
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { ReservedNamesValidatorDirective } from './reserved-names.directive';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
   styleUrls: ['./edit-content-type-fields.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReservedNamesValidatorDirective,
+    MatSelectModule,
+    MatIconModule,
+    MatOptionModule,
+    NgClass,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    TranslateModule,
+    FieldHintComponent,
+    ToggleDebugDirective,
+  ],
 })
-export class EditContentTypeFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
@@ -57,11 +85,11 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
   ) {
     super();
     this.dialogRef.disableClose = true;
-    this.subscription.add(
+    this.subscriptions.add(
       this.dialogRef.backdropClick().subscribe(event => {
         if (this.form.dirty) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
-          if (!confirmed) { return; }
+          if (!confirmed) return;
         }
         this.closeDialog();
       })
@@ -89,6 +117,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
         fields.forEach(field => {
           existingFields[field.StaticName] = 'Field with this name already exists';
         });
+
         this.reservedNames = {
           ...reservedNames,
           ...existingFields,
@@ -97,9 +126,8 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
         if (this.editMode != null) {
           const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
           const editField = fields.find(field => field.Id === editFieldId);
-          if (this.editMode === 'name') {
+          if (this.editMode === 'name')
             delete this.reservedNames[editField.StaticName];
-          }
           this.fields.push(editField);
         } else {
           for (let i = 1; i <= 8; i++) {
@@ -118,6 +146,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
           this.filterInputTypeOptions(i);
           this.calculateHints(i);
         }
+
         this.loading$.next(false);
       }
     );
@@ -142,9 +171,8 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
   resetInputType(index: number) {
     let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix as InputTypeStrict;
     const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
-    if (!defaultExists) {
+    if (!defaultExists)
       defaultInputType = this.filteredInputTypeOptions[index][0].inputType;
-    }
     this.fields[index].InputType = defaultInputType;
   }
 
@@ -161,7 +189,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
     return this.inputTypeOptions.find(option => option.inputType === inputName);
   }
 
-  addSharedField() { 
+  addSharedField() {
     this.dialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
       width: '1600px',
@@ -194,7 +222,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
           this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
         ),
         toArray(),
-      ).subscribe(responses => {
+      ).subscribe(_ => {
         this.saving$.next(false);
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.closeDialog();

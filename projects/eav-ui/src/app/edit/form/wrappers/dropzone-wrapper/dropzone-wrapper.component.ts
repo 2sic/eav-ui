@@ -1,48 +1,65 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { DropzoneDirective } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
+import { FormConfigService } from '../../../shared/services';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
+import { FieldState } from '../../builder/fields-builder/field-state';
 
 @Component({
   selector: WrappersConstants.DropzoneWrapper,
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    ExtendedModule,
+    DropzoneModule,
+    AsyncPipe,
+  ],
+  providers: [
+    PickerTreeDataHelper,
+  ],
 })
-export class DropzoneWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
+  dropzoneDisabled = signal(false);
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
-  dropzoneDisabled$: Observable<boolean>;
+
+  protected fieldState = inject(FieldState);
+  protected config = this.fieldState.config;
+  protected controlStatus = this.fieldState.controlStatus;
+
+
   imageTypes: string[] = ["image/jpeg", "image/png"];
   isStringWysiwyg = false;
 
   constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
+    private formConfig: FormConfigService,
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {
-    super.ngOnInit();
-    this.dropzoneDisabled$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.disabled), distinctUntilChanged()),
+    combineLatest([
       this.dropzoneConfig$,
     ]).pipe(
-      map(([controlDisabled, dropzoneConfig]) => {
+      map(([dropzoneConfig]) => {
         const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
-        return controlDisabled || dropzoneDisabled;
+        return this.controlStatus().disabled || dropzoneDisabled;
       }),
+    ).subscribe(value => {
+      this.dropzoneDisabled.set(value)
+    }
     );
 
     this.config.dropzone = {
@@ -74,7 +91,6 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   ngOnDestroy() {
     this.dropzoneConfig$.complete();
-    super.ngOnDestroy();
   }
 
   // on onDrop we check if drop is on wysiwyg or not
@@ -119,7 +135,7 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    const appId = this.eavService.eavConfig.appId;
+    const appId = this.formConfig.config.appId;
 
     const startDisabled = this.config.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);

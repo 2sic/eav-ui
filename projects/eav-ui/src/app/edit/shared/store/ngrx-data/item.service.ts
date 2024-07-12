@@ -5,15 +5,23 @@ import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { BestValueModes } from '../../constants';
-import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
+import { InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavItem, EavValue } from '../../models/eav';
 import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 import { ItemEditIdentifier, ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { FormLanguage } from '../../models/form-languages.model';
+import { ControlHelpers } from '../../helpers/control.helpers';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+
+const logThis = false;
+const nameOfThis = 'ItemService';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseDataService<EavItem> {
+  log = new EavLogger(nameOfThis, logThis);
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
   }
@@ -85,8 +93,7 @@ export class ItemService extends BaseDataService<EavItem> {
     entityGuid: string,
     attributeKey: string,
     newValue: FieldValue,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
     isReadOnly: boolean,
   ): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
@@ -97,30 +104,31 @@ export class ItemService extends BaseDataService<EavItem> {
       Entity: {
         ...oldItem.Entity,
         Attributes: LocalizationHelpers.updateAttributeValue(
-          oldItem.Entity.Attributes, attributeKey, newValue, currentLanguage, defaultLanguage, isReadOnly,
+          oldItem.Entity.Attributes, attributeKey, newValue, language, isReadOnly,
         ),
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityGuid: string, newValues: FormValues, currentLanguage: string, defaultLanguage: string): void {
+  updateItemAttributesValues(entityGuid: string, newValues: FormValues, language: FormLanguage): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
     const oldValues: FormValues = {};
     for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
-      if (!newValues.hasOwnProperty(name)) { continue; }
-      oldValues[name] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
+      if (!newValues.hasOwnProperty(name))
+        continue;
+      oldValues[name] = LocalizationHelpers.translate(language, values, null);
     }
-    const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+    const changes = ControlHelpers.getFormChanges(oldValues, newValues);
     if (changes == null) { return; }
 
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, currentLanguage, defaultLanguage),
+        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language),
       }
     };
     this.updateOneInCache(newItem);
@@ -155,23 +163,25 @@ export class ItemService extends BaseDataService<EavItem> {
 
   removeItemAttributeDimension(
     entityGuid: string,
-    attributeKey: string,
-    currentLanguage: string,
-    isTransaction = false,
+    fieldName: string,
+    current: string,
+    delayUpsert = false,
     transactionItem?: EavItem,
   ): EavItem {
+    const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
     const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, currentLanguage),
+        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, fieldName, current),
       }
     };
 
-    if (!isTransaction) { this.updateOneInCache(newItem); }
-    return newItem;
+    if (!delayUpsert)
+      this.updateOneInCache(newItem);
+    return l.r(newItem);
   }
 
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
@@ -188,7 +198,9 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   getItemAttributes(entityGuid: string): EavEntityAttributes {
-    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    const l = this.log.fn('getItemAttributes', { entityGuid });
+    const result = this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    return l.r(result);
   }
 
   getItemAttributes$(entityGuid: string): Observable<EavEntityAttributes> {
@@ -250,7 +262,7 @@ export class ItemService extends BaseDataService<EavItem> {
 
     return this.cache$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      distinctUntilChanged(RxHelpers.arraysEqual),
     );
   }
 
@@ -262,6 +274,7 @@ export class ItemService extends BaseDataService<EavItem> {
     languages: Language[],
     defaultLanguage: string,
   ): FieldValue {
+    const l = this.log.fn('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
     const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(
@@ -281,7 +294,7 @@ export class ItemService extends BaseDataService<EavItem> {
       // }
     } else {
       // most likely used only for entity fields because we can never know if they were cleaned out or brand new
-      this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, languageCode, defaultLanguage, false);
+      this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, { current: languageCode, primary: defaultLanguage }, false);
       // if (languages.length === 0 || inputType?.DisableI18n) {
       //   this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
       // } else {

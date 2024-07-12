@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'snippetLabelSize' })
+@Pipe({
+    name: 'snippetLabelSize',
+    standalone: true
+})
 export class SnippetLabelSizePipe implements PipeTransform {
 
   private maxLength = 24;

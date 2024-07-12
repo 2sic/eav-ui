@@ -2,11 +2,20 @@ import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { EntityFilterModel } from './entity-filter.model';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-entity-filter',
   templateUrl: './entity-filter.component.html',
   styleUrls: ['./entity-filter.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatRadioModule,
+    MatFormFieldModule
+  ]
 })
 export class EntityFilterComponent implements IFilterAngularComp {
   @ViewChild('valueInput') private valueInputRef: ElementRef<HTMLInputElement>;

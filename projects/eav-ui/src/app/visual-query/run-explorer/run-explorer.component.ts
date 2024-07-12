@@ -1,18 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { GoToDevRest } from '../../dev-rest';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { Context } from '../../shared/services/context';
 import { PipelineModel } from '../models';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
 
 @Component({
   selector: 'app-run-explorer',
   templateUrl: './run-explorer.component.html',
   styleUrls: ['./run-explorer.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    AsyncPipe,
+  ],
 })
 export class RunExplorerComponent implements OnInit {
   pipelineModel$: Observable<PipelineModel>;
@@ -32,7 +42,7 @@ export class RunExplorerComponent implements OnInit {
       map(pipelineModel => calculateWarnings(pipelineModel, this.context)),
     );
     this.visualDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
-      map(pipelineModel => GeneralHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {}),
+      map(pipelineModel => JsonHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {}),
     );
   }
 

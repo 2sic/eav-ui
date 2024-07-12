@@ -4,9 +4,10 @@
  */
 export interface FeatureSummary {
   /** Key / Name like EditUiGoogleTranslate */
-  NameId: string;
+  nameId: string;
   /** State if it is enabled or not */
-  IsEnabled: boolean;
+  isEnabled: boolean;
+
   /** Nice name to show in any message or something */
-  Name: string;
+  name: string;
 }

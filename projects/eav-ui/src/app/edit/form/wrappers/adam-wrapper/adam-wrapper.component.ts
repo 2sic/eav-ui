@@ -1,46 +1,55 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseFieldComponent } from '../../fields/base/base-field.component';
+import { AdamHintComponent } from './adam-hint/adam-hint.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass } from '@angular/common';
+import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
+import { FieldState } from '../../builder/fields-builder/field-state';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: WrappersConstants.AdamWrapper,
   templateUrl: './adam-wrapper.component.html',
   styleUrls: ['./adam-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    AdamBrowserComponent,
+    NgClass,
+    ExtendedModule,
+    AdamHintComponent,
+  ],
 })
-export class AdamWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 
-  fullscreenAdam: boolean;
-  adamDisabled$ = new BehaviorSubject(true);
+  protected fieldState = inject(FieldState);
+  protected config = this.fieldState.config;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  fullscreenAdam: boolean;
+  adamDisabled = signal<boolean>(true);
+  subscriptions = new Subscription();
+
+  constructor() {
   }
 
   ngOnInit() {
-    super.ngOnInit();
     this.fullscreenAdam = this.config.inputType === InputTypeConstants.HyperlinkLibrary;
   }
 
   ngAfterViewInit() {
-    this.subscription.add(
+    this.subscriptions =
       this.config.adam.getConfig$().subscribe(adamConfig => {
         const disabled = adamConfig?.disabled ?? true;
-        if (this.adamDisabled$.value !== disabled) {
-          this.adamDisabled$.next(disabled);
+        if (this.adamDisabled() !== disabled) {
+          this.adamDisabled.set(disabled);
         }
       })
-    );
   }
 
   ngOnDestroy() {
-    this.adamDisabled$.complete();
-    super.ngOnDestroy();
+    this.subscriptions.unsubscribe();
   }
 
   openUpload() {

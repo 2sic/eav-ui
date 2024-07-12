@@ -3,11 +3,15 @@ import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { View } from '../../models';
 import { calculateViewType } from '../views.helpers';
+import { MatIconModule } from '@angular/material/icon';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-views-type',
   templateUrl: './views-type.component.html',
   styleUrls: ['./views-type.component.scss'],
+  standalone: true,
+  imports: [MatIconModule, TippyDirective,],
 })
 export class ViewsTypeComponent implements ICellRendererAngularComp {
   value: string;

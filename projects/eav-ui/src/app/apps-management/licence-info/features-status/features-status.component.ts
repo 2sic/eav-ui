@@ -5,20 +5,19 @@ import { Feature } from '../../../features/models/feature.model';
 import { FeaturesStatusParams } from './features-status.models';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { NgClass } from '@angular/common';
-import { SharedComponentsModule } from '../../../shared/shared-components.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-features-status',
-    templateUrl: './features-status.component.html',
-    styleUrls: ['./features-status.component.scss'],
-    standalone: true,
-    imports: [
-        MatSlideToggleModule,
-        SharedComponentsModule,
-        NgClass,
-    ],
-
+  selector: 'app-features-status',
+  templateUrl: './features-status.component.html',
+  styleUrls: ['./features-status.component.scss'],
+  standalone: true,
+  imports: [
+    MatSlideToggleModule,
+    NgClass,
+    TippyDirective,
+  ],
 })
 export class FeaturesStatusComponent implements ICellRendererAngularComp {
   value: boolean | null;

@@ -1,19 +1,18 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { InputType } from '../../content-type-fields/models/input-type.model';
-import { FeatureSummary } from '../../features/models';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
-import { EavContentTypeAttribute, EavEntity, EavValues } from '../shared/models/eav';
-import { EavService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
-import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
+import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
+import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
+import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
 import { FormulaSettingsHelper } from './helpers/formula-settings.helper';
 import { FieldLogicBase } from '../form/shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
@@ -21,7 +20,6 @@ import { FormulaValueCorrections } from './helpers/formula-value-corrections.hel
 import { FormulaPromiseHandler } from './formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { Title } from '@angular/platform-browser';
 
 /**
  * Formula engine is responsible for running formulas and returning the result.
@@ -29,14 +27,13 @@ import { Title } from '@angular/platform-browser';
 @Injectable()
 export class FormulaEngine implements OnDestroy {
   private subscription: Subscription = new Subscription();
-  private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
+  private features = inject(FeaturesService).getAll();
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsSettingsService: FieldsSettingsService = null;
   private formulaPromiseHandler: FormulaPromiseHandler = null;
 
   constructor(
-    private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
     private formulaDesignerService: FormulaDesignerService,
@@ -44,7 +41,6 @@ export class FormulaEngine implements OnDestroy {
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
-    private featuresService: FeaturesService,
   ) { }
 
   ngOnDestroy(): void {
@@ -58,7 +54,6 @@ export class FormulaEngine implements OnDestroy {
     this.fieldsSettingsService = fieldsSettingsService;
     this.formulaPromiseHandler = formulaPromiseHandler;
     this.contentTypeSettings$ = contentTypeSettings$;
-    this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
   }
 
   // TODO: 2dm -> Here we call all list item formulas on some picker for each item
@@ -146,7 +141,7 @@ export class FormulaEngine implements OnDestroy {
     settingsCurrent: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
     contentTypeMetadata: EavEntity[],
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     entityReader: EntityReader,
     slotIsEmpty: boolean,
     formReadOnly: boolean,
@@ -247,28 +242,26 @@ export class FormulaEngine implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     item?: PickerItem
   ): FormulaResultRaw {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
-    const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, currentLanguage);
+    const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, language.current);
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,
-      entityId,
+      // entityId,
       inputType?.Type,
       settingsInitial,
       settingsCurrent,
       formValues,
       initialFormValues,
-      currentLanguage,
-      defaultLanguage,
+      language,
       languages,
       itemIdWithPrefill,
       debugEnabled,
       this.itemService,
-      this.eavService,
+      this.formConfig,
       this.fieldsSettingsService,
-      this.featuresCache$.value,
+      this.features(),
     );
     const isOpenInDesigner = this.isDesignerOpen(formula);
     const ctSettings = this.contentTypeSettings$.value;

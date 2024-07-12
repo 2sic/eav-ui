@@ -1,5 +1,5 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
 import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
@@ -8,14 +8,41 @@ import { PredefinedTemplate } from '../code-editor/models/predefined-template.mo
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 import { SanitizeHelper } from '../edit/shared/helpers';
-import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../shared/components/base.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FieldHintComponent } from '../shared/components/field-hint/field-hint.component';
+import { MatInputAutofocusDirective } from '../shared/directives/mat-input-autofocus.directive';
 
 @Component({
   selector: 'app-create-file-dialog',
   templateUrl: './create-file-dialog.component.html',
-  styleUrls: ['./create-file-dialog.component.scss']
+  styleUrls: ['./create-file-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    NgClass,
+    AsyncPipe,
+    FieldHintComponent,
+    MatInputAutofocusDirective,
+  ],
+  providers: [
+    SourceService
+  ],
 })
-export class CreateFileDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
@@ -84,7 +111,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
 
     this.controls = this.form.controls as any;
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(
@@ -103,7 +130,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
       })
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(

@@ -1,53 +1,90 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { AfterViewChecked, Component, ElementRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
-import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
+import { LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavItem } from '../../../shared/models/eav';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { FormConfigService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { ItemService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeViewModel } from './entity-wrapper.models';
+import { AsyncPipe } from '@angular/common';
+import { FieldsBuilderDirective } from '../fields-builder/fields-builder.directive';
+import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
+import { EntityTranslateMenuComponent } from './entity-translate-menu/entity-translate-menu.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { MatCardModule } from '@angular/material/card';
+import { FormDataService } from '../../../shared/services/form-data.service';
+import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
+import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
 
+/**
+ * This wraps a single entity in the multi-entities-form.
+ */
 @Component({
   selector: 'app-entity-wrapper',
   templateUrl: './entity-wrapper.component.html',
   styleUrls: ['./entity-wrapper.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FlexModule,
+    MatIconModule,
+    MatButtonModule,
+    CdkDrag,
+    CdkDragHandle,
+    MatSlideToggleModule,
+    EntityTranslateMenuComponent,
+    ChangeAnchorTargetDirective,
+    FieldsBuilderDirective,
+    AsyncPipe,
+    TranslateModule,
+    TippyDirective,
+    SafeHtmlPipe,
+    MousedownStopPropagationDirective,
+  ],
 })
-export class EntityWrapperComponent extends BaseSubsinkComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class EntityWrapperComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
   @Input() entityGuid: string;
-  @Input() group: UntypedFormGroup;
 
   collapse = false;
   noteTouched: boolean = false;
   viewModel$: Observable<ContentTypeViewModel>;
 
+  public features: FeaturesService = inject(FeaturesService);
+  private editUiShowNotes = this.features.isEnabled(FeatureNames.EditUiShowNotes);
+  private editUiShowMetadataFor = this.features.isEnabled(FeatureNames.EditUiShowMetadataFor);
+
   private noteRef?: MatDialogRef<undefined, any>;
 
   constructor(
-    private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
     private fieldsSettingsService: FieldsSettingsService,
-    public eavService: EavService,
+    public formConfig: FormConfigService,
+    private formDataService: FormDataService,
     private translate: TranslateService,
     private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private featuresService: FeaturesService,
   ) {
     super();
   }
@@ -60,8 +97,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
 
   ngOnInit() {
     const readOnly$ = this.formsStateService.readOnly$;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+
     const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
       map(itemFor => getItemForTooltip(itemFor, this.translate)),
     );
@@ -74,43 +110,50 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
         EditInstructions: settings.EditInstructions,
         Features: settings.Features,
       })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
     const note$ = this.itemService.getItemNote$(this.entityGuid);
     const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(
       map(item => item.Entity.Id === 0),
       distinctUntilChanged(),
     );
-    const noteProps$ = combineLatest([note$, currentLanguage$, defaultLanguage$, itemNotSaved$]).pipe(
-      map(([note, currentLanguage, defaultLanguage, itemNotSaved]) => getNoteProps(note, currentLanguage, defaultLanguage, itemNotSaved)),
-    );
-    const showNotes$ = combineLatest([
-      this.featuresService.isEnabled$(FeatureNames.EditUiShowNotes),
-      settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
-    ]).pipe(
-      map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? featureEnabled),
-      distinctUntilChanged(),
-    );
-    const showMetadataFor$ = combineLatest([
-      this.featuresService.isEnabled$(FeatureNames.EditUiShowMetadataFor),
-      settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
-    ]).pipe(
-      map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? featureEnabled),
-      distinctUntilChanged(),
+    const noteProps$ = combineLatest([note$, this.formConfig.language$, itemNotSaved$]).pipe(
+      map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
     );
 
+    // TODO:: Test, if this.editUiShowNotes signal update, if showNotes$ is updated ?? old code below
+    const showNotes$ = settings$.pipe(
+      map(settings => buildContentTypeFeatures(settings.Features)),
+      map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes()),
+      distinctUntilChanged()
+    );
+
+    const showMetadataFor$ = settings$.pipe(
+      map(settings => buildContentTypeFeatures(settings.Features)),
+      map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor()),
+      distinctUntilChanged()
+    );
+
+    // const showMetadataFor$ = combineLatest([
+    //   this.featuresService.isEnabled$(FeatureNames.EditUiShowMetadataFor),
+    //   settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
+    // ]).pipe(
+    //   map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? featureEnabled),
+    //   distinctUntilChanged(),
+    // );
+
     this.viewModel$ = combineLatest([
-      combineLatest([readOnly$, currentLanguage$, defaultLanguage$, showNotes$, showMetadataFor$]),
+      combineLatest([readOnly$, this.formConfig.language$, showNotes$, showMetadataFor$]),
       combineLatest([itemForTooltip$, header$, settings$, noteProps$]),
     ]).pipe(
       map(([
-        [readOnly, currentLanguage, defaultLanguage, showNotes, showMetadataFor],
+        [readOnly, lang, showNotes, showMetadataFor],
         [itemForTooltip, header, settings, noteProps],
       ]) => {
         const viewModel: ContentTypeViewModel = {
           readOnly: readOnly.isReadOnly,
-          currentLanguage,
-          defaultLanguage,
+          currentLanguage: lang.current,
+          defaultLanguage: lang.primary,
           header,
           itemTitle: settings._itemTitle,
           slotCanBeEmpty: settings._slotCanBeEmpty,
@@ -125,7 +168,10 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
       }),
     );
 
-    this.refreshOnChildClosed();
+    // Update the notes whenever a child form is closed
+    this.subscriptions.add(
+      this.editRoutingService.childFormClosed().subscribe(() => this.fetchNote())
+    );
   }
 
   ngOnDestroy() {
@@ -203,11 +249,11 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
   }
 
   deleteNote(note: EavEntity) {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    const title = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.Title, null);
+    const language = this.formConfig.language();
+    const title = LocalizationHelpers.translate(language, note.Attributes.Title, null);
     const id = note.Id;
-    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
+    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
+      return;
     this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.noteRef?.close();
       this.fetchNote();
@@ -216,20 +262,13 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
 
   private fetchNote() {
     const item = this.itemService.getItem(this.entityGuid);
-    if (item.Entity.Id === 0) { return; }
+    if (item.Entity.Id === 0)
+      return;
 
     const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
-    this.eavService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
+    this.formDataService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
       this.itemService.updateItemMetadata(this.entityGuid, items[0].Entity.Metadata);
     });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.editRoutingService.childFormClosed().subscribe(() => {
-        this.fetchNote();
-      })
-    );
   }
 }

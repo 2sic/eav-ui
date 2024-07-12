@@ -1,9 +1,8 @@
 // tslint:disable-next-line:max-line-length
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
-import { GeneralHelpers } from '../../edit/shared/helpers';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
@@ -12,6 +11,15 @@ import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
+import { MatIconModule } from '@angular/material/icon';
+import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
+import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
+import { EavLogger } from '../../shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'PlumbEditorComponent';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -20,8 +28,16 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   templateUrl: './plumb-editor.component.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
   styleUrls: ['./plumb-editor.component.scss'],
+  standalone: true,
+  imports: [
+    NgStyle,
+    NgClass,
+    MatIconModule,
+    AsyncPipe,
+    MousedownStopPropagationDirective,
+  ],
 })
-export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
 
@@ -40,7 +56,7 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
@@ -48,15 +64,15 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
       this.scriptLoaded$.next(true);
     });
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.visualQueryService.putEntityCountOnConnections$.subscribe(result => {
         this.plumber.putEntityCountOnConnections(result);
       })
     );
 
     const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
-      map(pipelineModel => GeneralHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      map(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([
@@ -86,12 +102,16 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
   }
 
   ngAfterViewInit() {
+    const l = this.log.fn('ngAfterViewInit');
     // https://stackoverflow.com/questions/37087864/execute-a-function-when-ngfor-finished-in-angular-2/37088348#37088348
     const domDataSourcesLoaded$ = this.domDataSourcesRef.changes.pipe(map(() => true));
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
-        if (!scriptLoaded || !domDataSourcesLoaded) { return; }
+        if (!scriptLoaded || !domDataSourcesLoaded)
+          return;
+
+        this.log.a('scriptLoaded and domDataSourcesLoaded', { scriptLoaded, domDataSourcesLoaded });
 
         this.plumber?.destroy();
         this.plumber = new Plumber(
@@ -107,6 +127,7 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
         );
       })
     );
+    l.end();
   }
 
   ngOnDestroy() {

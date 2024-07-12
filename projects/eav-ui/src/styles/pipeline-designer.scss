@@ -249,6 +249,23 @@ $icon-size: 22px;
     cursor: pointer;
   }
 
+  // new v18.00 - make labels angled if we have many
+  .endpointTargetLabel.angled {
+    // Make rotation work on the end of the label
+    transform-origin: right;
+    // Move text so the end is at the beginning, then rotate
+    transform: translate(-100%, -5px) rotate(-45deg) !important;
+  }
+
+  // new v18.00 - make labels angled if we have many
+  .endpointSourceLabel.angled {
+    // Make rotation work on the end of the label
+    transform-origin: right;
+    // Move text so the end is at the beginning, then rotate
+    transform: translate(-100%, -5px) rotate(45deg) !important;
+  }
+
+
   .sourceEndpoint.jtk-hover,
   .targetEndpoint.jtk-hover {
     z-index: 101;

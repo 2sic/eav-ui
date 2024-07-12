@@ -5,7 +5,8 @@ import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-bas
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
-const logThis = false;
+// const logThis = false;
+
 /**
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.
@@ -13,7 +14,7 @@ const logThis = false;
 export class DataSourceMasksHelper extends ServiceBase {
   constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
     super(new EavLogger('DataSourceMasksHelper', enableLog ?? parentLog.enableChildren));
-    this.log.add('constructor', 'settings', settings);
+    this.log.a('constructor - settings', {settings});
   }
 
   private helpers = new DataSourceHelpers();
@@ -21,7 +22,9 @@ export class DataSourceMasksHelper extends ServiceBase {
   private masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
-  entity2PickerItem(entity: EntityBasicWithFields, streamName: string | undefined, mustUseGuid: boolean): PickerItem {
+  entity2PickerItem({ entity, streamName, mustUseGuid }
+    : { entity: EntityBasicWithFields; streamName: string | undefined; mustUseGuid: boolean; }
+  ): PickerItem {
     // Check if we have masks, if yes
     const masks = this.getMasks();
 
@@ -53,7 +56,7 @@ export class DataSourceMasksHelper extends ServiceBase {
         helpLink: masks.link,
         sourceStreamName: streamName ?? null,
       };
-      this.log.add('entity2PickerItem - no masks', result);
+      this.log.a('entity2PickerItem - no masks', {result});
       return result;
     }
 
@@ -101,18 +104,18 @@ export class DataSourceMasksHelper extends ServiceBase {
   public getMasks() {
     if (!!this.masks) return this.masks;
     this.masks = this.buildMasks(this.settings);
-    this.log.add('getMasks', this.masks);
+    this.log.a('getMasks', {masks: this.masks});
     return this.masks;
   }
 
   /** modify/patch the current objects mask */
   public patchMasks(patch: Partial<DataSourceMasks>) {
     this.masks = { ...this.getMasks(), ...patch };
-    this.log.add('patchMasks', this.masks);
+    this.log.a('patchMasks', {masks: this.masks});
   }
 
   private buildMasks(settings: FieldSettings): DataSourceMasks {
-    this.log.add('buildMasks settings', settings);
+    this.log.a('buildMasks settings', {settings});
     const tooltipMask = !!settings.ItemTooltip ? this.helpers.stripHtml(settings.ItemTooltip) : '';
     const infoMask = !!settings.ItemInformation ? this.helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
@@ -127,7 +130,7 @@ export class DataSourceMasksHelper extends ServiceBase {
       label: labelMask,
       value: valueMask,
     };
-    this.log.add('buildMasks result', result);
+    this.log.a('buildMasks result', {result});
     return result;
   }
 }

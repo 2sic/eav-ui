@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { StreamErrorData } from '../models';
 import { StreamErrorResultDialogData } from './stream-error-result.models';
+import { JsonPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 declare const window: EavWindow;
 
@@ -10,6 +13,13 @@ declare const window: EavWindow;
   selector: 'app-stream-error-result',
   templateUrl: './stream-error-result.component.html',
   styleUrls: ['./stream-error-result.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    JsonPipe,
+  ],
 })
 export class StreamErrorResultComponent implements OnInit {
   errorData: StreamErrorData;

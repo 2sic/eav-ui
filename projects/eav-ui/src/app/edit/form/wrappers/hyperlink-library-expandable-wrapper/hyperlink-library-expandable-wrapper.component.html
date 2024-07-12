@@ -1,23 +1,23 @@
 <!-- dialog -->
-<div [ngClass]="(open$ | async) ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="open() ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
-    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': open() }">
       <mat-card appearance="raised" class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ label$ | async }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ basics().label }}</span>
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="(open$ | async) ? 'closed' : 'open'">
+      <div [@itemShrinkAnimation]="open() ? 'closed' : 'open'">
       </div>
       <div
         class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-        value: (open$ | async) ? 'expanded' : 'closed',
+        value: open() ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
@@ -29,12 +29,12 @@
             </button>
           </ng-template>
           <ng-template extendedFabSpeedDialActionsContent>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()"
               (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
               <mat-icon>save</mat-icon>
             </button>
-            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+            <button extended-fab-speed-dial-action matRipple [disabled]="formsStateService.saveButtonDisabled()"
               (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
               <mat-icon>done_all</mat-icon>
@@ -47,25 +47,24 @@
 </div>
 
 <!-- preview -->
-@if (viewModel$ | async; as vm) {
   <div class="c-ew__preview-holder">
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
-      'mat-caption' : vm.itemsNumber > 0,
-      'mat-empty' : vm.itemsNumber === 0,
-      'mat-error' : vm.controlStatus.invalid && !config.initialDisabled,
-      'color__primary' : !vm.controlStatus.invalid && !config.initialDisabled,
+      'mat-caption' : itemsNumber() > 0,
+      'mat-empty' : itemsNumber() === 0,
+      'mat-error' : controlStatus().invalid && !config.initialDisabled,
+      'color__primary' : !controlStatus().invalid && !config.initialDisabled,
       'color__label-disabled' : config.initialDisabled
       }">
-      {{ vm.label }} {{ vm.required ? '*': '' }}
+      {{basics().labelWithRequired}}
     </mat-label>
     <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
       [ngClass]="{
-      'c-ew__preview--invalid': vm.controlStatus.invalid,
+      'c-ew__preview--invalid': controlStatus().invalid,
       'c-ew__preview--disabled': config.initialDisabled
       }">
-      <div [ngClass]="vm.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <div [ngClass]="controlStatus().value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
-          @for (item of vm.items; track trackByFn($index, item)) {
+          @for (item of items(); track trackByFn($index, item)) {
             <!-- folders -->
             @if (item.IsFolder) {
               <div fxLayout="row" fxLayoutAlign="start start">
@@ -103,16 +102,11 @@
     <!-- hints -->
     <div class="mat-caption c-ew__preview-hint" fxLayout="row" fxLayoutAlign="start start">
       <div class="c__helper-wrapper--left">
-        <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+        <app-field-helper-text></app-field-helper-text>
       </div>
       <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
-        <span>{{
-          vm.showAdamSponsor
-          ? ('Fields.Hyperlink.Default.Sponsor' | translate)
-          : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
-        }} </span>
+        <span>{{ adamSponsorI18nKey() | translate }} </span>
         <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
       </div>
     </div>
   </div>
-}

@@ -1,8 +1,8 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple tippy="Copy" (click)="clone()">
+  <div class="eav-grid-action-button highlight" matRipple tippy="Copy" (click)="do('clone')">
     <mat-icon>file_copy</mat-icon>
   </div>
-  <div class=" eav-grid-action-button highlight" matRipple tippy="Export" (click)="export()">
+  <div class=" eav-grid-action-button highlight" matRipple tippy="Export" (click)="do('export')">
     <mat-icon>cloud_download</mat-icon>
   </div>
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
@@ -12,7 +12,7 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item [disabled]="item._EditInfo.DisableDelete" (click)="deleteItem()">
+    <button mat-menu-item [disabled]="item._EditInfo.DisableDelete" (click)="do('delete')">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

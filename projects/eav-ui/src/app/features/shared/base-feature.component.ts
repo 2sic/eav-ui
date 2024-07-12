@@ -1,9 +1,14 @@
-import { ChangeDetectorRef, Directive, Input, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input, ViewContainerRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
 import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
 import { FeatureSummary } from '../models';
+import { FeatureDetailService } from '../services/feature-detail.service';
+
+export const FeatureComponentProviders = [
+  FeatureDetailService,
+];
 
 @Directive()
 export class FeatureComponentBase {
@@ -22,34 +27,34 @@ export class FeatureComponentBase {
   feature$: Observable<FeatureSummary>;
   show$: Observable<boolean>;
 
-  constructor(
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
-    protected featuresService: FeaturesService
-  ) {
+  private dialog = inject(MatDialog);
+  private viewContainerRef = inject(ViewContainerRef);
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  protected featuresService = inject(FeaturesService);
+
+  constructor() {
     this.feature$ = this.featureNameId$.pipe(
       switchMap(featName => this.featuresService.get$(featName)
     ));
     this.show$ = combineLatest([this.feature$, this.showIf$]).pipe(
       // tap(data => console.log('2dm - show$', data)),
-      map(([feat,showIf]) => showIf == (feat?.IsEnabled ?? false))
+      map(([feat,showIf]) => showIf == (feat?.isEnabled ?? false))
     );
   }
 
   openDialog() {
-    FeatureComponentBase.openDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef, this.changeDetectorRef);
   }
+}
 
-  /** Public/Static so it can be called from elsewhere */
-  public static openDialog(dialog: MatDialog, featureId: string, viewContainerRef: ViewContainerRef, changeDetectorRef: ChangeDetectorRef) {
-    dialog.open(FeatureInfoDialogComponent, {
-      autoFocus: false,
-      data: featureId,
-      viewContainerRef: viewContainerRef,
-      width: '400px',
-    });
 
-    changeDetectorRef.markForCheck();
-  }
+export function openFeatureDialog(dialog: MatDialog, featureId: string, viewContainerRef: ViewContainerRef, changeDetectorRef: ChangeDetectorRef) {
+  dialog.open(FeatureInfoDialogComponent, {
+    autoFocus: false,
+    data: featureId,
+    viewContainerRef: viewContainerRef,
+    width: '400px',
+  });
+
+  changeDetectorRef.markForCheck();
 }

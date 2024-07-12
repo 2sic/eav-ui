@@ -1,10 +1,9 @@
-import { PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, of, shareReplay, tap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 
 const logThis = false;
+const nameOfThis = 'DataSourceEmpty';
 
 /**
  * This is the data-source we plan to attach when a picker is not configured.
@@ -12,30 +11,25 @@ const logThis = false;
  */
 @Injectable()
 export class DataSourceEmpty extends DataSourceBase {
+
+  loading = signal(false);
+
   constructor() {
-    super(new EavLogger('DataSourceEmpty', logThis));
+    super(new EavLogger(nameOfThis, logThis));
   }
 
-  setup(settings$: BehaviorSubject<FieldSettings>): this {
-    this.log.add('setup');
-    super.setup(settings$);
-    this.loading$ = of(false);
+  private label = signal(`something is wrong - using ${nameOfThis}`);
 
-    const dummyItem: PickerItem = {
-      value: '',
-      label: 'No options available',
-      notSelectable: true,
-      isMessage: true,
-    };
-
-    this.data$ = of([dummyItem]).pipe(
-      shareReplay(1),
-      tap(data => this.log.add('data$', data))
-    );
+  public preSetup(label: string): this {
+    this.label.set(label);
     return this;
   }
 
-  destroy(): void {
-    super.destroy();
-  }
+  public override data = computed(() => [{
+    value: '',
+    label: this.label() ?? 'No options available',
+    notSelectable: true,
+    isMessage: true,
+  }]);
+
 }

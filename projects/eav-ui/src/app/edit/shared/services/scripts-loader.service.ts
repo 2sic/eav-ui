@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { EavService } from '.';
+import { FormConfigService } from '.';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'ScriptsLoaderService';
 
 declare const window: EavWindow;
 
@@ -17,14 +22,22 @@ export interface LoadFile {
   domEl: HTMLLinkElement | HTMLScriptElement;
 }
 
+/**
+ * Service for loading scripts and stylesheets dynamically for an edit form.
+ * It must be different for each form, since it uses the form's configuration
+ * to resolve paths pointing to the correct app, zone, etc.
+ */
 @Injectable()
-export class ScriptsLoaderService {
+export class ScriptsLoaderService extends ServiceBase {
   private loadedFiles: LoadFile[] = [];
 
-  constructor(private eavService: EavService) { }
+  constructor(private formConfig: FormConfigService) {
+    super(new EavLogger(nameOfThis, logThis));
+  }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
   load(scripts: string[], callback: () => void) {
+    this.log.a('Loading scripts:', {scripts})
     const sortedFiles = this.sortByType(scripts);
     this.insertToDom(sortedFiles, callback, 0); // async, called again and again after each script is loaded
   }
@@ -99,9 +112,9 @@ export class ScriptsLoaderService {
   }
 
   private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.eavService.eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.eavService.eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig))
-      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.eavService.eavConfig));
+    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.formConfig.config))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.formConfig.config))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config))
+      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.formConfig.config));
   }
 }

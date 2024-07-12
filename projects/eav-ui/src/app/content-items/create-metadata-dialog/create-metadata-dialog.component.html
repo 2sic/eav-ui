@@ -1,212 +1,199 @@
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog">
-    <div class="eav-dialog-header">
-      <div class="eav-dialog-header__title">Create Metadata</div>
-    </div>
-    <div class="eav-dialog-content">
-      <p>
-        This is a special operation to add an item which is metadata for another item,
-        see <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
-      </p>
-      <form [formGroup]="form">
-        <!-- Target Type -->
-        <mat-form-field color="accent" class="eav-form-field">
-          <mat-label>Target</mat-label>
-          @if (vm.guidedMode) {
-            <mat-select formControlName="targetType" required>
-              @for (option of targetTypeOptions; track option) {
-                <mat-option [value]="option.targetType">
-                  {{ option.label }}
-                </mat-option>
-              }
-              @if (vm.unknownTargetType) {
-                <mat-option [value]="vm.formValues.targetType">
-                  {{ vm.formValues.targetType }}
-                </mat-option>
-              }
-            </mat-select>
-          }
-          @if (!vm.guidedMode) {
-            <input matInput type="number" min="0" formControlName="targetType" required>
-          }
-        </mat-form-field>
-        @if (form.controls['targetType'].touched && !form.controls['targetType'].invalid && vm.unknownTargetType) {
-          <app-field-hint
-            [isError]="false">
-            Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're
-            doing
-          </app-field-hint>
-        }
-        @if (vm.targetTypeHint) {
-          <app-field-hint [isError]="false">{{ vm.targetTypeHint }}</app-field-hint>
-        }
-        @if (form.controls['targetType'].touched && form.controls['targetType'].errors?.required) {
-          <app-field-hint
-            [isError]="true">
-            This field is required
-          </app-field-hint>
-        }
-        @if (form.controls['targetType'].touched && form.controls['targetType'].errors?.pattern) {
-          <app-field-hint
-            [isError]="true">
-            Must be a whole number
-          </app-field-hint>
-        }
-        <!-- Key Type -->
-        <mat-form-field color="accent" class="eav-form-field">
-          <mat-label>Key type</mat-label>
-          <mat-select formControlName="keyType" required>
-            @for (option of vm.keyTypeOptions; track option) {
-              <mat-option [value]="option">
-                {{ option }}
-              </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        @if (form.controls['keyType'].touched && form.controls['keyType'].errors?.required) {
-          <app-field-hint
-            [isError]="true">
-            This field is required
-          </app-field-hint>
-        }
-        <!-- Content Type for Content Items -->
-        @if (vm.guidedMode && vm.formValues.targetType === eavConstants.metadata.entity.targetType) {
-          <mat-form-field color="accent" class="eav-form-field"
-            >
-            <mat-label>Content Type</mat-label>
-            <mat-select formControlName="contentTypeForContentItems"
-              [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
-              @for (contentType of vm.contentTypes; track contentType) {
-                <mat-option [value]="contentType.StaticName">
-                  {{ contentType.Label }}
-                </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        }
-        <!-- Scope for Content Types -->
-        @if (vm.guidedMode && (vm.formValues.targetType === eavConstants.metadata.entity.targetType || vm.formValues.targetType === eavConstants.metadata.contentType.targetType)) {
-          <mat-form-field color="accent" class="eav-form-field"
-            >
-            <mat-label>Scope</mat-label>
-            <mat-select formControlName="scopeForContentTypes"
-              [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
-              @for (scopeOption of vm.scopeOptions; track scopeOption) {
-                <mat-option [value]="scopeOption.value">
-                  {{ scopeOption.name }}
-                </mat-option>
-              }
-              <mat-option [value]="dropdownInsertValue">Other...</mat-option>
-            </mat-select>
-          </mat-form-field>
-        }
-        <app-field-hint>
-          The scope should almost never be changed -
-          <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
-        </app-field-hint>
-        <!-- Key -->
-        <mat-form-field color="accent" class="eav-form-field">
-          <mat-label>Key</mat-label>
-          @if (vm.guidedMode) {
-            @switch (vm.formValues.targetType) {
-              @case (eavConstants.metadata.entity.targetType) {
-                @if (vm.guidedKey) {
-                  <mat-select formControlName="key" required
-                    [placeholder]="!vm.contentItems.length ? 'No items found' : ''">
-                    @for (item of vm.contentItems; track item) {
-                      <mat-option [value]="item.Guid">
-                        {{ item.Title }} ({{ item.Id }})
-                      </mat-option>
-                    }
-                  </mat-select>
-                }
-                @if (!vm.guidedKey) {
-                  <input matInput type="text" formControlName="key" required>
-                }
-              }
-              @case (eavConstants.metadata.contentType.targetType) {
-                @if (vm.guidedKey) {
-                  <mat-select formControlName="key" required
-                    [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
-                    @for (contentType of vm.contentTypes; track contentType) {
-                      <mat-option [value]="contentType.StaticName">
-                        {{ contentType.Label }}
-                      </mat-option>
-                    }
-                  </mat-select>
-                }
-                @if (!vm.guidedKey) {
-                  <input matInput type="text" formControlName="key" required>
-                }
-              }
-              @default {
-                <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
-              }
-            }
-          } @else {
-            @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
-              <input matInput type="text"
-                formControlName="key" required>
-            }
-            @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
-              <input matInput type="number"
-                formControlName="key" required>
-            }
-          }
-          <ng-template #defaultKeyInput>
-            @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
-              <input matInput type="text"
-                formControlName="key" required>
-            }
-            @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
-              <input matInput type="number"
-                formControlName="key" required>
-            }
-          </ng-template>
-          @if (vm.guidedMode && vm.guidedKeyExists) {
-            <div matTextSuffix class="eav-selection-suffix">
-              <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value"
-                (click)="toggleGuidedKey(true)">
-                <mat-icon class="eav-icon">search</mat-icon>
-              </button>
-              <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry"
-                (click)="toggleGuidedKey(false)">
-                <mat-icon class="eav-icon">text_fields</mat-icon>
-              </button>
-            </div>
-          }
-        </mat-form-field>
-        @if (form.controls['key'].touched && form.controls['key'].errors?.required) {
-          <app-field-hint [isError]="true">
-            This field is required
-          </app-field-hint>
-        }
-        @if (form.controls['key'].touched && form.controls['key'].errors?.patternWholeNumber) {
-          <app-field-hint
-            [isError]="true">
-            Must be a whole number
-          </app-field-hint>
-        }
-        @if (form.controls['key'].touched && form.controls['key'].errors?.patternGuid) {
-          <app-field-hint
-            [isError]="true">
-            Must be a valid GUID
-          </app-field-hint>
-        }
-      </form>
-    </div>
-    <mat-dialog-actions class="eav-dialog-actions">
-      <mat-slide-toggle color="accent"
-        [tippy]="vm.guidedMode ? 'Guided mode helps you select options that work' : 'Manual mode is for advanced uses and allows you to insert any values'"
-        [checked]="vm.guidedMode" (change)="toggleGuidedMode($event)">
-        {{ vm.guidedMode ? 'Guided' : 'Manual' }}
-      </mat-slide-toggle>
-      <div>
-        <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
-          Confirm
-        </button>
-      </div>
-    </mat-dialog-actions>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Create Metadata</div>
   </div>
+  <div class="eav-dialog-content">
+    <p>
+      This is a special operation to add an item which is metadata for another item,
+      see <a href="https://go.2sxc.org/metadata" target="_blank">docs</a>.
+    </p>
+    <form [formGroup]="form">
+      <!-- Target Type -->
+      <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px;">
+        <mat-label>Target</mat-label>
+        @if (vm.guidedMode) {
+        <mat-select formControlName="targetType" required>
+          @for (option of targetTypeOptions; track option) {
+          <mat-option [value]="option.targetType">
+            {{ option.label }}
+          </mat-option>
+          }
+          @if (vm.unknownTargetType) {
+          <mat-option [value]="vm.formValues.targetType">
+            {{ vm.formValues.targetType }}
+          </mat-option>
+          }
+        </mat-select>
+        }
+        @if (!vm.guidedMode) {
+        <input matInput type="number" min="0" formControlName="targetType" required>
+        }
+      </mat-form-field>
+      @if (form.controls['targetType'].touched && !form.controls['targetType'].invalid && vm.unknownTargetType) {
+      <app-field-hint [isError]="false">
+        Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're
+        doing
+      </app-field-hint>
+      }
+      @if (vm.targetTypeHint) {
+      <app-field-hint [isError]="false">{{ vm.targetTypeHint }}</app-field-hint>
+      }
+      @if (form.controls['targetType'].touched && form.controls['targetType'].errors?.required) {
+      <app-field-hint [isError]="true">
+        This field is required
+      </app-field-hint>
+      }
+      @if (form.controls['targetType'].touched && form.controls['targetType'].errors?.pattern) {
+      <app-field-hint [isError]="true">
+        Must be a whole number
+      </app-field-hint>
+      }
+      <!-- Key Type -->
+      <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px;">
+        <mat-label>Key type</mat-label>
+        <mat-select formControlName="keyType" required>
+          @for (option of vm.keyTypeOptions; track option) {
+          <mat-option [value]="option">
+            {{ option }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (form.controls['keyType'].touched && form.controls['keyType'].errors?.required) {
+      <app-field-hint [isError]="true">
+        This field is required
+      </app-field-hint>
+      }
+      <!-- Content Type for Content Items -->
+      @if (vm.guidedMode && vm.formValues.targetType === eavConstants.metadata.entity.targetType) {
+      <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px;">
+        <mat-label>Content Type</mat-label>
+        <mat-select formControlName="contentTypeForContentItems"
+          [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
+          @for (contentType of vm.contentTypes; track contentType) {
+          <mat-option [value]="contentType.StaticName">
+            {{ contentType.Label }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      }
+      <!-- Scope for Content Types -->
+      @if (vm.guidedMode && (vm.formValues.targetType === eavConstants.metadata.entity.targetType ||
+      vm.formValues.targetType === eavConstants.metadata.contentType.targetType)) {
+      <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px;">
+        <mat-label>Scope</mat-label>
+        <mat-select formControlName="scopeForContentTypes"
+          [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
+          @for (scopeOption of vm.scopeOptions; track scopeOption) {
+          <mat-option [value]="scopeOption.value">
+            {{ scopeOption.name }}
+          </mat-option>
+          }
+          <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+        </mat-select>
+      </mat-form-field>
+      }
+      <app-field-hint>
+        The scope should almost never be changed -
+        <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+      </app-field-hint>
+      <!-- Key -->
+      <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px;">
+        <mat-label>Key</mat-label>
+        @if (vm.guidedMode) {
+        @switch (vm.formValues.targetType) {
+        @case (eavConstants.metadata.entity.targetType) {
+        @if (vm.guidedKey) {
+        <mat-select formControlName="key" required [placeholder]="!vm.contentItems.length ? 'No items found' : ''">
+          @for (item of vm.contentItems; track item) {
+          <mat-option [value]="item.Guid">
+            {{ item.Title }} ({{ item.Id }})
+          </mat-option>
+          }
+        </mat-select>
+        }
+        @if (!vm.guidedKey) {
+        <input matInput type="text" formControlName="key" required>
+        }
+        }
+        @case (eavConstants.metadata.contentType.targetType) {
+        @if (vm.guidedKey) {
+        <mat-select formControlName="key" required [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
+          @for (contentType of vm.contentTypes; track contentType) {
+          <mat-option [value]="contentType.StaticName">
+            {{ contentType.Label }}
+          </mat-option>
+          }
+        </mat-select>
+        }
+        @if (!vm.guidedKey) {
+        <input matInput type="text" formControlName="key" required>
+        }
+        }
+        @default {
+        <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
+        }
+        }
+        } @else {
+        @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
+        <input matInput type="text" formControlName="key" required>
+        }
+        @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
+        <input matInput type="number" formControlName="key" required>
+        }
+        }
+        <ng-template #defaultKeyInput>
+          @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
+          <input matInput type="text" formControlName="key" required>
+          }
+          @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
+          <input matInput type="number" formControlName="key" required>
+          }
+        </ng-template>
+        @if (vm.guidedMode && vm.guidedKeyExists) {
+        <div matTextSuffix class="eav-selection-suffix">
+          <button mat-icon-button class="eav-selection-suffix-button" type="button"
+            [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value" (click)="toggleGuidedKey(true)">
+            <mat-icon class="eav-icon">search</mat-icon>
+          </button>
+          <button mat-icon-button class="eav-selection-suffix-button" type="button"
+            [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry" (click)="toggleGuidedKey(false)">
+            <mat-icon class="eav-icon">text_fields</mat-icon>
+          </button>
+        </div>
+        }
+      </mat-form-field>
+      @if (form.controls['key'].touched && form.controls['key'].errors?.required) {
+      <app-field-hint [isError]="true">
+        This field is required
+      </app-field-hint>
+      }
+      @if (form.controls['key'].touched && form.controls['key'].errors?.patternWholeNumber) {
+      <app-field-hint [isError]="true">
+        Must be a whole number
+      </app-field-hint>
+      }
+      @if (form.controls['key'].touched && form.controls['key'].errors?.patternGuid) {
+      <app-field-hint [isError]="true">
+        Must be a valid GUID
+      </app-field-hint>
+      }
+    </form>
+  </div>
+  <mat-dialog-actions class="eav-dialog-actions">
+    <mat-slide-toggle color="accent"
+      [tippy]="vm.guidedMode ? 'Guided mode helps you select options that work' : 'Manual mode is for advanced uses and allows you to insert any values'"
+      [checked]="vm.guidedMode" (change)="toggleGuidedMode($event)">
+      {{ vm.guidedMode ? 'Guided' : 'Manual' }}
+    </mat-slide-toggle>
+    <div>
+      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+        Confirm
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>
 }

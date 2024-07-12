@@ -12,9 +12,8 @@ export function attachAdam(editor: Editor, adam: Adam): void {
     insertContent(item, editor, imageMode);
   };
 
-  if (adam.getConfig() == null) {
+  if (adam.getConfig() == null)
     adam.setConfig({ disabled: false });
-  }
 }
 
 function insertContent(item: AdamItem, editor: Editor, imageMode: boolean): void {
@@ -22,9 +21,8 @@ function insertContent(item: AdamItem, editor: Editor, imageMode: boolean): void
 
   let fileName = item.Name;
   const extIndex = fileName.lastIndexOf('.');
-  if (extIndex > 0) {
+  if (extIndex > 0)
     fileName = fileName.substring(0, extIndex);
-  }
 
   const imageOrFileUrl = item.Url; // (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
   const content = imageMode

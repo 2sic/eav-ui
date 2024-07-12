@@ -1,17 +1,22 @@
-@if (viewModel$ | async; as vm) {
-  <div class="json-field" [ngClass]="{
-    'disabled': vm.controlStatus.disabled,
-    'focused': vm.focused,
-    'error': vm.controlStatus.touched && vm.controlStatus.invalid
-    }">
-    <mat-label class="label">{{ vm.label }} {{ vm.required ? '*' : '' }}</mat-label>
-    <app-monaco-editor class="editor" [ngStyle]="{ 'height': vm.editorHeight }" [filename]="filename"
-      [value]="vm.controlStatus.value" (valueChanged)="codeChanged($event)" [options]="monacoOptions"
-      [jsonSchema]="vm.jsonSchema" [jsonComments]="vm.jsonComments" (focused)="onFocused()" (blurred)="onBlurred()">
-    </app-monaco-editor>
-    @if (!vm.controlStatus.value && vm.placeholder) {
-      <input class="placeholder eav-translate-on-dblclick" [placeholder]="vm.placeholder">
-    }
-  </div>
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-}
+<div class="json-field" [ngClass]="{
+  'disabled': controlStatus().disabled,
+  'focused': focused().value,
+  'error': controlStatus().touchedAndInvalid
+  }">
+  <mat-label class="label">{{ basics().label }} {{ basics().required ? '*' : '' }}</mat-label>
+  <app-monaco-editor class="editor"
+    [filename]="filename"
+    [ngStyle]="{ 'height': editorHeight() }"
+    [value]="controlStatus().value"
+    [options]="monacoOptions"
+    [jsonSchema]="jsonSchema()"
+    [jsonComments]="jsonComments()"
+    (valueChanged)="codeChanged($event)"
+    (focused)="onFocused()"
+    (blurred)="onBlurred()">
+  </app-monaco-editor>
+  @if (!controlStatus().value && basics().placeholder) {
+    <input class="placeholder eav-translate-on-dblclick" [placeholder]="basics().placeholder">
+  }
+</div>
+<app-field-helper-text></app-field-helper-text>

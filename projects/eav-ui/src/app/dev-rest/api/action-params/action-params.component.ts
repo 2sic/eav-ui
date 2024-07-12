@@ -4,14 +4,15 @@ import { WebApiAction, WebApiActionParameters } from '../../../app-administratio
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { TrueFalseComponent } from '../true-false/true-false.component';
 import { TrueFalseParams } from '../true-false/true-false.models';
-import { AgGridModule } from '@ag-grid-community/angular';
 import { MatIconModule } from '@angular/material/icon';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-    selector: 'app-dev-rest-api-action-params',
-    templateUrl: './action-params.component.html',
-    standalone: true,
-    imports: [MatIconModule, AgGridModule],
+  selector: 'app-dev-rest-api-action-params',
+  templateUrl: './action-params.component.html',
+  standalone: true,
+  imports: [MatIconModule, SxcGridModule,],
 })
 export class DevRestApiActionParamsComponent {
   @Input() data: WebApiAction;
@@ -62,15 +63,9 @@ export class DevRestApiActionParamsComponent {
           },
         },
         {
+          ...ColumnDefinitions.TextWide,
           headerName: 'Default Value',
           field: 'DefaultValue',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const action: WebApiActionParameters = params.data;
-            return action.defaultValue;
-          },
         },
       ],
     };

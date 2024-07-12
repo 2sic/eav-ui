@@ -1,23 +1,50 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ReplaceOption } from './models/replace-option.model';
 import { ReplaceContentViewModel } from './replace-content.models';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-replace-content',
   templateUrl: './replace-content.component.html',
   styleUrls: ['./replace-content.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    FormsModule,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogActions,
+    AsyncPipe,
+  ],
+  providers: [
+    ContentGroupService,
+  ],
 })
-export class ReplaceContentComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ReplaceContentComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   viewModel$: Observable<ReplaceContentViewModel>;
@@ -68,7 +95,7 @@ export class ReplaceContentComponent extends BaseComponent implements OnInit, On
     );
 
     this.fetchConfig(false, null);
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       const navigation = this.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];

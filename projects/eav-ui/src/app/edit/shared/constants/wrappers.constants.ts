@@ -1,3 +1,5 @@
+import { FieldMetadataModel } from '../models/field-metadata.model';
+
 export const WrappersConstants = {
   AdamWrapper: 'app-adam-wrapper', // default
   CollapsibleWrapper: 'app-collapsible-wrapper', // empty specific
@@ -12,3 +14,8 @@ export const WrappersConstants = {
 } as const;
 
 export type WrappersConstant = typeof WrappersConstants[keyof typeof WrappersConstants];
+
+
+export const WrappersLocalizationOnly: FieldMetadataModel = {
+  wrappers: [WrappersConstants.LocalizationWrapper],
+};

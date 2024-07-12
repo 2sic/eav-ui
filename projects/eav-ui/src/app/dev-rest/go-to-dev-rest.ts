@@ -6,6 +6,8 @@ const base = 'restapi';
 export class GoToDevRest {
   static routeQuery = 'restapiquery';
   static routeData = 'restapidata';
+  static routeWebApi = 'restapiwebapi';
+
 
   static navLabel = 'Rest-Api';
   static icon = 'code-curly';
@@ -24,12 +26,19 @@ export class GoToDevRest {
     path: GoToDevRest.routeQuery
   };
 
+  static routeWebApiDefinition = {
+    name: GoToDevRest.navLabel,
+    icon: GoToDevRest.icon,
+    svgIcon: true,
+    path: GoToDevRest.routeWebApi
+  };
+
   static paramTypeName: 'contentTypeStaticName';
   static paramQuery: 'queryGuid';
   static paramApiPath: 'webApiPath';
   static route: Route = {
     path: base,
-    loadChildren: () => import('./dev-rest.module').then(m => m.DevRestModule),
+    loadChildren: () => import('./dev-rest.routing').then(m => m.devRestRoutes),
   };
 
   // todo: setup not quite elegant, using relative route. Should be refactored to use absolute route
@@ -48,9 +57,5 @@ export class GoToDevRest {
   /** Route to Query in Admin UI - for use in Admin-List */
   static getUrlQueryInAdmin(guid: string): string {
     return `../${GoToDevRest.routeQuery}/${guid}`;
-  }
-
-  static getUrlWebApi(api: WebApi): string {
-    return `${base}/custom/${encodeURIComponent(api.path)}`;
   }
 }

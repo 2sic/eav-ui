@@ -1,10 +1,10 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { fromEvent, Subscription } from 'rxjs';
-import { BaseSubsinkComponent } from '../components/base-subsink-component/base-subsink.component';
+import { fromEvent } from 'rxjs';
+import { BaseDirective } from './base.directive';
 
-@Directive({ selector: '[appDragAndDrop]' })
-export class DragAndDropDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
+@Directive({ selector: '[appDragAndDrop]', standalone: true })
+export class DragAndDropDirective extends BaseDirective implements OnInit, OnDestroy {
   @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
   /** Comma separated file types, e.g. 'txt,doc,docx' */
   @Input() allowedFileTypes = '';
@@ -25,7 +25,7 @@ export class DragAndDropDirective extends BaseSubsinkComponent implements OnInit
     this.markStyleClass = `eav-droparea-${this.markStyle}`;
     this.element.classList.add(this.dropAreaClass, this.markStyleClass);
     this.zone.runOutsideAngular(() => {
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<DragEvent>(this.element, 'dragover').subscribe(event => {
           event.preventDefault();
           event.stopPropagation();
@@ -33,7 +33,7 @@ export class DragAndDropDirective extends BaseSubsinkComponent implements OnInit
           this.element.classList.add(this.dragClass);
         })
       );
-      this.subscription.add(
+      this.subscriptions.add(
         fromEvent<DragEvent>(this.element, 'dragleave').subscribe(event => {
           event.preventDefault();
           event.stopPropagation();

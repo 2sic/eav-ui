@@ -6,7 +6,6 @@ export interface AdamBrowserViewModel {
   items: AdamItem[];
   value: string;
   disabled: boolean;
-  allowPasteImageFromClipboard: boolean;
 }
 
 export class AdamConfigInstance implements AdamConfig {

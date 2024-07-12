@@ -1,10 +1,10 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
-import { EavService } from '.';
+import { distinctUntilChanged, filter, map, pairwise, startWith, Subject } from 'rxjs';
+import { FormConfigService } from '.';
 import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../../shared/models/edit-form.model';
 import { EditEntryComponent } from '../../dialog/entry/edit-entry.component';
@@ -12,9 +12,16 @@ import { EditParams } from '../../edit-matcher.models';
 import { UrlHelpers } from '../helpers';
 import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
+import { toSignal } from '@angular/core/rxjs-interop';
 
+/**
+ * Special helper to handle opening / closing field-specific popups.
+ * E.g. the larger dialog on hyperlinks/files or entity-pickers.
+ * 
+ * Note: also seems to be involved in the version-dialog closing as well.
+ */
 @Injectable()
-export class EditRoutingService extends BaseSubsinkComponent implements OnDestroy {
+export class EditRoutingService extends BaseComponent implements OnDestroy {
   private childFormResult$: Subject<ChildFormResult>;
 
   constructor(
@@ -22,8 +29,8 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
     private route: ActivatedRoute,
     private router: Router,
     private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
-  ) { 
+    private formConfig: FormConfigService
+  ) {
     super();
   }
 
@@ -56,13 +63,19 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
     );
   }
 
+  isExpandedSignal(fieldId: number, entityGuid: string): Signal<boolean> {
+    return toSignal(this.isExpanded$(fieldId, entityGuid));
+  }
+
+
+
   /** Fires when child form is closed and has a result, new entity was added */
   childFormResult(fieldId: number, entityGuid: string) {
     return this.childFormResult$.pipe(
       filter(
         childResult => childResult.updateEntityGuid === entityGuid && childResult.updateFieldId === fieldId && childResult.result != null
       ),
-      map(childResult => childResult.result)
+      map(childResult => childResult.result),
     );
   }
 
@@ -79,7 +92,7 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
 
     const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-    if (lastIndex <= 0) { return; }
+    if (lastIndex <= 0) return;
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
     this.router.navigate([newUrl], { state: componentTag && { componentTag } });
   }
@@ -101,27 +114,27 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
 
     const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-    if (lastIndex <= 0) { return; }
+    if (lastIndex <= 0) return;
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
     this.router.navigate([newUrl]);
   }
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
   private initHideHeader() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.route.params
         .pipe(
           map((params: EditParams) => params.detailsEntityGuid != null && params.detailsFieldId != null),
           distinctUntilChanged(),
         )
         .subscribe(hasDetails => {
-          this.languageInstanceService.updateHideHeader(this.eavService.eavConfig.formId, hasDetails);
+          this.languageInstanceService.updateHideHeader(this.formConfig.config.formId, hasDetails);
         })
     );
   }
 
   private initChildFormResult() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         startWith(!!this.route.snapshot.firstChild),
@@ -149,14 +162,14 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
         // clear update ids from url (leave expanded/details)
         const params = this.route.snapshot.params as EditParams;
         const hasUpdate = params.updateEntityGuid != null && params.updateFieldId != null;
-        if (!hasUpdate) { return; }
+        if (!hasUpdate) return;
 
         const oldEditUrl = `edit/${params.items}/update/${params.updateEntityGuid}/${params.updateFieldId}`;
         const newEditUrl = `edit/${params.items}`;
 
         const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-        if (lastIndex <= 0) { return; }
+        if (lastIndex <= 0) return;
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
         this.router.navigate([newUrl]);
       })
@@ -164,7 +177,7 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
   }
 
   private refreshOnChildVersionsClosed() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         startWith(!!this.route.snapshot.firstChild),
@@ -178,14 +191,14 @@ export class EditRoutingService extends BaseSubsinkComponent implements OnDestro
         }),
         filter(versionsResult => versionsResult?.refreshEdit != null),
       ).subscribe(result => {
-        if (!result.refreshEdit) { return; }
+        if (!result.refreshEdit) return;
         const params = this.route.snapshot.params as EditParams;
         const oldEditUrl = `edit/${params.items}`;
         const newEditUrl = `edit/refresh/${params.items}`;
 
         const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-        if (lastIndex <= 0) { return; }
+        if (lastIndex <= 0) return;
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
         const navRes: NavigateFormResult = {
           navigateUrl: newUrl,

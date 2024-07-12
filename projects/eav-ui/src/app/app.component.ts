@@ -1,19 +1,22 @@
 import { Context as DnnContext, SxcAppComponent } from '@2sic.com/sxc-angular';
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import {  ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {  Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map, Subscription } from 'rxjs';
 import { AppIconsService } from './shared/icons/app-icons.service';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { Context } from './shared/services/context';
-
-
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    RouterModule,
+  ],
+  providers: [],
 })
 export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();

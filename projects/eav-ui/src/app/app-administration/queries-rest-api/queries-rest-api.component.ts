@@ -11,27 +11,39 @@ import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Query } from '../models';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { transient } from '../../core';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
-  selector: 'app-queries-rest-api',
+  selector: 'app-web-api-rest-api',
   standalone: true,
-  imports: [MatSelectModule, MatButtonModule,
-    MatCardModule, MatIconModule, ReactiveFormsModule, AsyncPipe, DevRestQueryComponent, RouterOutlet],
-  providers: [PipelinesService],
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    DevRestQueryComponent,
+    RouterOutlet,
+    SxcGridModule,
+  ],
   templateUrl: './queries-rest-api.component.html',
   styleUrl: './queries-rest-api.component.scss'
 })
 export class QueriesRestApiComponent {
+  private pipelinesService = transient(PipelinesService);
 
   queryTypes$ = new BehaviorSubject<Query[]>(undefined);
   queryTypeForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private pipelinesService: PipelinesService, private router: Router
-    , private route: ActivatedRoute,
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-
     this.fetchQueries();
     this.queryTypeForm = this.fb.group({
       queryType: ['']
@@ -42,15 +54,13 @@ export class QueriesRestApiComponent {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
       this.queryTypes$.next(queries);
 
-       // When Route are reloade and have some Guid in the Route
-       const urlSegments = this.router.url.split('/');
-       const urlGuidName = urlSegments[urlSegments.length - 1]
+      // When Route are reload and have some Guid in the Route
+      const urlSegments = this.router.url.split('/');
+      const urlGuidName = urlSegments[urlSegments.length - 1]
 
-       const selectedContentType = queries.find(query => query.Guid === urlGuidName);
-       if (selectedContentType) {
-         this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
-       }
-
+      const selectedContentType = queries.find(query => query.Guid === urlGuidName);
+      if (selectedContentType)
+        this.queryTypeForm.get('queryType').setValue(selectedContentType.Guid);
     });
   }
 

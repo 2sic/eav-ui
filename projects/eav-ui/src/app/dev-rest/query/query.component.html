@@ -35,11 +35,11 @@
         <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
         <!-- Custom Parameters for calling -->
         <div class="params-form">
-          <mat-form-field color="accent">
+          <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
             <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
           </mat-form-field>
-          <mat-form-field color="accent">
+          <mat-form-field color="accent" class="eav-mat-form-field">
             <mat-label>Additional Url Parameters</mat-label>
             <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
           </mat-form-field>

@@ -1,17 +1,15 @@
 import { EavValue } from '.';
 import { EavValuesDto } from '../json-format-v1';
 
-export class EavValues<T> {
+export class EavField<T> {
   Values: EavValue<T>[];
   Type: string;
 
-  static convert<T>(valueDto: EavValuesDto<T>, type: string): EavValues<T> {
+  static convert<T>(valueDto: EavValuesDto<T>, type: string): EavField<T> {
     const values = EavValue.convert(valueDto);
-
-    const eavValues: EavValues<T> = {
+    return {
       Values: values,
       Type: type,
-    };
-    return eavValues;
+    } satisfies EavField<T>;
   }
 }

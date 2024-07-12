@@ -1,12 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FileUploadDialogData, UploadTypes } from '../../shared/components/file-upload-dialog';
+import { FileUploadDialogComponent, FileUploadDialogData, UploadTypes } from '../../shared/components/file-upload-dialog';
 import { ContentItemsService } from '../services/content-items.service';
 
 @Component({
   selector: 'app-import-content-item',
   templateUrl: './import-content-item.component.html',
   styleUrls: ['./import-content-item.component.scss'],
+  standalone: true,
+  imports: [FileUploadDialogComponent,],
 })
 export class ImportContentItemComponent {
 

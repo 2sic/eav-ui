@@ -4,7 +4,7 @@ export const InputTypeConstants = {
   CustomDefault: 'custom-default',
   CustomGps: 'custom-gps',
   CustomJsonEditor: 'custom-json-editor',
-  DatetimeDefault: 'datetime-default',
+  DateTimeDefault: 'datetime-default',
   DefaultSuffix: '-default',
   EmptyDefault: 'empty-default',
   EmptyEnd: 'empty-end',
@@ -26,10 +26,10 @@ export const InputTypeConstants = {
   StringUrlPath: 'string-url-path',
   StringWysiwyg: 'string-wysiwyg',
 
-  /** WIP pickers */
-  WIPEntityPicker: 'entity-picker',
-  WIPStringPicker: 'string-picker',
-  WIPNumberPicker: 'number-picker',
+  /** New Pickers v17.x */
+  EntityPicker: 'entity-picker',
+  StringPicker: 'string-picker',
+  NumberPicker: 'number-picker',
   
   /** for all situations where we need a fallback; new v16.04 */
   Unknown: 'unknown',

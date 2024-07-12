@@ -4,15 +4,28 @@ import { Component, OnDestroy } from '@angular/core';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { Field } from '../models/field.model';
-import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
+import { BaseComponent } from '../../shared/components/base.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-content-type-fields-actions',
   templateUrl: './content-type-fields-actions.component.html',
   styleUrls: ['./content-type-fields-actions.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatMenuModule,
+    TippyDirective,
+  ],
 })
-export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent implements ICellRendererAngularComp, OnDestroy {
+export class ContentTypeFieldsActionsComponent extends BaseComponent implements ICellRendererAngularComp, OnDestroy {
   field: Field;
   metadataCount: number;
   enablePermissions: boolean;
@@ -20,10 +33,6 @@ export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent impl
 
   constructor() {
     super();
-  }
-  
-  ngOnDestroy(): void { 
-    super.ngOnDestroy();
   }
 
   agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
@@ -39,7 +48,7 @@ export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent impl
     const clickToConfigure = 'click to configure sharing';
     const ss = this.field.SysSettings;
     if (!ss) return clickToConfigure;
-    return ss.Share 
+    return ss.Share
       ? 'shared enabled as ' + this.field.Guid
       : ss.InheritMetadataOf
         ? 'inherits ' + ss.InheritMetadataOf
@@ -49,38 +58,17 @@ export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent impl
   shareOrInheritIcon(): string {
     const ss = this.field.SysSettings;
     if (!ss) return '';
-    return ss.Share 
+    return ss.Share
       ? 'share'
       : ss.InheritMetadataOf ? 'adjust' : '';
   }
-
-  // #endregion
-
-  // #region Callback Actions
 
   refresh(params?: any): boolean {
     return true;
   }
 
-  openMetadata(): void {
-    this.params.onOpenMetadata(this.field);
+  do(verb: ContentTypeFieldsActions): void {
+    this.params.do(verb, this.field);
   }
 
-  rename(): void {
-    this.params.onRename(this.field);
-  }
-
-  openPermissions(): void {
-    this.params.onOpenPermissions(this.field);
-  }
-
-  deleteField(): void {
-    this.params.onDelete(this.field);
-  }
-
-  shareOrInherit(): void {
-    this.params.onShareOrInherit(this.field);
-  }
-
-  // #endregion
 }

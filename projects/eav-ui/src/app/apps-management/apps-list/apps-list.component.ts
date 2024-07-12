@@ -1,10 +1,10 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, shareReplay, startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -17,7 +17,7 @@ import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
@@ -29,11 +29,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
-import { AgGridModule } from '@ag-grid-community/angular';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 const logThis = false;
 
@@ -43,8 +44,7 @@ const logThis = false;
   styleUrls: ['./apps-list.component.scss'],
   standalone: true,
   imports: [
-    AgGridModule,
-    SharedComponentsModule,
+    SxcGridModule,
     MatDialogActions,
     EcoFabSpeedDialComponent,
     NgClass,
@@ -55,39 +55,35 @@ const logThis = false;
     MatBadgeModule,
     RouterOutlet,
     AsyncPipe,
-  ],
-  providers: [
-    AppsListService,
-    FeaturesService,
-    AppDialogConfigService,
+    DragAndDropDirective,
+    // WIP 2dm - needed for the lightspeed buttons to work
   ],
 })
-export class AppsListComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppsListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
-  isAddFromFolderEnabled$: Observable<boolean>;
-  lightspeedEnabled$ = new BehaviorSubject<boolean>(false);
 
   private refreshApps$ = new Subject<void>();
 
   viewModel$: Observable<AppsListViewModel>;
+  public features: FeaturesService = inject(FeaturesService);
+  public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+
+  private appsListService = transient(AppsListService);
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
-    private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-    appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route, new EavLogger('AppsListComponent', logThis));
-    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
@@ -100,16 +96,10 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       appsLog.shareReplay(),
     );
 
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshApps$.next(); }));
-
-    const isAddFromFolderEnabledLog = this.log.rxTap('isAddFromFolderEnabled$');
-    this.isAddFromFolderEnabled$ = this.featuresService
-      .isEnabled$(FeatureNames.AppSyncWithSiteFiles)
-      .pipe(isAddFromFolderEnabledLog.pipe(), isAddFromFolderEnabledLog.shareReplay());
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
-    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
-      map(([apps, fabOpen, isAddFromFolderEnabled]) => {
-        return { apps, fabOpen, isAddFromFolderEnabled};
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
+    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
+      map(([apps, fabOpen]) => {
+        return { apps, fabOpen };
       }),
     );
   }
@@ -188,7 +178,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   openLightSpeedFeatInfo() {
-    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private buildGridOptions(): GridOptions {
@@ -196,17 +186,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<App> = {
@@ -216,31 +196,19 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           })(),
         },
         {
-          field: 'Show',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'icons no-outline'.split(' '),
-          sortable: true,
-          filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return !app.IsHidden;
-          },
+          ...ColumnDefinitions.IconShow,
+          // valueGetter: (params) => {
+          //   const app: App = params.data;
+          //   return !app.IsHidden;
+          // },
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
           cellClass: 'apps-list-primary-action highlight'.split(' '),
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Name;
-          },
           onCellClicked: (params) => {
             const app: App = params.data;
             this.openApp(app);
@@ -259,67 +227,39 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Folder',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Folder;
-          },
         },
         {
+          ...ColumnDefinitions.Character,
           field: 'Version',
           width: 78,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Version;
-          },
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Items',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'number-cell no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const app: App = params.data;
-            return app.Items;
-          },
         },
         {
+          ...ColumnDefinitions.Boolean,
           field: 'HasCodeWarnings',
           headerName: 'Code',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'icons no-outline'.split(' '),
-          sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
         },
         {
-          width: 122,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight3,
           cellRenderer: AppsListActionsComponent,
-          cellRendererParams: (() => {
-            const params: AppsListActionsParams = {
-              onDelete: (app) => this.deleteApp(app),
-              onFlush: (app) => this.flushApp(app),
-              onOpenLightspeed: (app) => this.openLightSpeed(app),
-              lightspeedEnabled: () => this.lightspeedEnabled$.value,
-              openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
-            };
-            return params;
-          })(),
+          cellRendererParams: {
+            onOpenLightspeed: (app) => this.openLightSpeed(<App>app),
+            openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
+            do: (verb, app) => {
+              switch (verb) {
+                case 'deleteApp': this.deleteApp(app); break;
+                case 'flushCache': this.flushApp(app); break;
+              }
+            }
+          } satisfies AppsListActionsParams,
         },
       ],
     };
@@ -330,5 +270,4 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
 interface AppsListViewModel {
   apps: App[];
   fabOpen: any;
-  isAddFromFolderEnabled: boolean;
 }

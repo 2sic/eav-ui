@@ -2,11 +2,15 @@ import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { PubMeta, PubMetaFilterModel } from './pub-meta-filter.model';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
-  selector: 'app-pub-meta-filter',
-  templateUrl: './pub-meta-filter.component.html',
-  styleUrls: ['./pub-meta-filter.component.scss'],
+    selector: 'app-pub-meta-filter',
+    templateUrl: './pub-meta-filter.component.html',
+    styleUrls: ['./pub-meta-filter.component.scss'],
+    standalone: true,
+    imports: [MatRadioModule, FormsModule],
 })
 export class PubMetaFilterComponent implements IFilterAngularComp {
   published = '';

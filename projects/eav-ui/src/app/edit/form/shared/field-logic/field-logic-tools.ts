@@ -1,9 +1,9 @@
 import { EntityReader } from '../../../shared/helpers/entity-reader';
-import { EavConfig } from '../../../shared/models/eav-config.model';
+import { FormConfiguration } from '../../../shared/models/form-configuration';
 import { ContentTypeItemService } from '../../../shared/store/ngrx-data';
 
 export interface FieldLogicTools {
-  eavConfig: EavConfig;
+  eavConfig: FormConfiguration;
   entityReader: EntityReader;
   debug: boolean;
   contentTypeItemService: ContentTypeItemService;

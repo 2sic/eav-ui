@@ -1,18 +1,28 @@
-import { KeyValue } from '@angular/common';
+import { KeyValue, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DataSource, SortedDataSources } from '../models';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
+import { MatIconModule } from '@angular/material/icon';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-add-explorer',
   templateUrl: './add-explorer.component.html',
   styleUrls: ['./add-explorer.component.scss'],
+  standalone: true,
+  imports: [
+    MatSlideToggleModule,
+    MatIconModule,
+    AsyncPipe,
+    KeyValuePipe,
+    TippyDirective,
+  ],
 })
 export class AddExplorerComponent implements OnInit, OnDestroy {
   toggledItems: string[] = [];
@@ -47,7 +57,7 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
   }
 
   toggleItem(item: string) {
-    GeneralHelpers.toggleInArray(item, this.toggledItems);
+    ArrayHelpers.toggleInArray(item, this.toggledItems);
   }
 
   trackGroups(index: number, type: KeyValue<string, DataSource[]>) {

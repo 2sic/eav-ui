@@ -9,8 +9,9 @@ import { EavLogger } from '../logging/eav-logger';
 declare const window: EavWindow;
 
 const logThis = false;
+const nameOfThis = 'RouteContext';
 
-/** The context provides information
+/**
  * Context is used to display information about the current app in various depths.
  * In other words, if you open another app in a deeper dialog in the app on Apps Management
  * (the component is deeper), you get the information from this app and not the initial app.
@@ -18,6 +19,18 @@ const logThis = false;
 
 @Injectable()
 export class Context extends ServiceBase {
+
+  constructor(@Optional() @SkipSelf() parentContext: Context) {
+    super(new EavLogger(nameOfThis, logThis));
+    this.log.a(`constructor; hasParent: ${parentContext != null}`, {parentContext, 'parentId': parentContext?.id});
+    this.parent = parentContext;
+
+    // spm NOTE: I've given id to every context to make it easier to follow how things work
+    if (!window.contextId)
+      window.contextId = 0;
+    this.id = window.contextId++;
+    consoleLogDev('Context.constructor', this);
+  }
 
   /** Id of current context */
   public id: number;
@@ -60,52 +73,45 @@ export class Context extends ServiceBase {
   }
   private _moduleId: number;
 
-  constructor(@Optional() @SkipSelf() parentContext: Context) {
-    super(new EavLogger('Context', logThis));
-    this.log.add('constructor', 'parentContext', parentContext, 'parentId', parentContext?.id);
-    this.parent = parentContext;
-
-    // spm NOTE: I've given id to every context to make it easier to follow how things work
-    if (!window.contextId) { window.contextId = 0; }
-    this.id = window.contextId++;
-    consoleLogDev('Context.constructor', this);
-  }
-
   /**
    * This is the initializer at entry-components of modules.
-   * It ensures that within that module, the context has the values given by the route
+   * It ensures that within that module, the context has the values given by the route.
+   * 
+   * Note: 2024-07-01 2dm: a long time ago the context was recreated for every single component, so init was also called for every component.
+   * But after going standalone, thi doesn't happen any more, and the re-init seems to kill the context from previous,
+   * which is why we skip this if already ready.
+   * This is still a bit shaky, not sure if this should be the final implementation.
    */
   init(route: ActivatedRoute) {
-    this.log.add('init', 'route', route);
+    const l = this.log.fn(`init - previously ready: '${this.ready}'`, { route });
+    // New prevent-multiple-init checks 2dm 2024-07-01
+    if (this.ready)
+      return l.r(this, 'Already ready, skipping init');
     this.routeSnapshot = route?.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
-    this.log.add('init done', this, 'appId', this.appId, 'zoneId', this.zoneId, 'contentBlockId', this.contentBlockId, 'moduleId', this.moduleId);
-    consoleLogDev('Context.init', this, route);
+    this.log.a('init done', {this: this, 'appId': this.appId, 'zoneId': this.zoneId, 'contentBlockId': this.contentBlockId, 'moduleId': this.moduleId});
   }
 
-  initRoot() {
-    this.log.add('initRoot');
+  initRoot(): void {
+    const l = this.log.fn('initRoot');
     this._zoneId = this.sessionNumber(keyZoneId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
     this._moduleId = this.sessionNumber(keyModuleId);
     this._appId = this.sessionNumber(keyAppId);
 
-    if (!this._zoneId) {
+    if (!this._zoneId)
       throw new Error('Context is missing some of the required parameters');
-    }
 
     this.ready = true;
-    consoleLogDev('Context.initRoot', this);
+    l.r(this);
   }
 
   private sessionNumber(name: string): number {
     const result = sessionStorage.getItem(name);
-    if (result !== null) {
-      const num = parseInt(result, 10);
-      return isNaN(num) ? null : num;
-    }
-    return null;
+    if (result === null) return null;
+    const num = parseInt(result, 10);
+    return isNaN(num) ? null : num;
   }
 
   /**

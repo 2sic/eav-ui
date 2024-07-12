@@ -1,73 +1,43 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerComponent, pickerProviders } from '../../picker/picker.component';
-import { TranslateService } from '@ngx-translate/core';
+import { PickerComponent } from '../../picker/picker.component';
+import { PickerImports } from '../../picker/picker-providers.constant';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
-import { PickerData } from '../../picker/picker-data';
-import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { DataAdapterString } from '../../picker/adapters/data-adapter-string';
+import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { transient } from 'projects/eav-ui/src/app/core';
+
+const logThis = false;
+const nameOfThis = 'StringDropdownComponent';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
-})
-@FieldMetadata({
-  // wrappers: [WrappersConstants.LocalizationWrapper],
+  standalone: true,
+  imports: PickerImports,
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
-  constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
-    private translate: TranslateService,
-    editRoutingService: EditRoutingService,
-    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
-    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
-  ) {
-    super(
-      eavService,
-      fieldsSettingsService,
-      editRoutingService,
-    );
+
+  private sourceAdapterString = transient(DataAdapterString);
+  private stateString = transient(StateAdapterString);
+
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
     EntityDefaultLogic.importMe();
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
+  protected override createPickerAdapters(): void {
+    this.log.a('createPickerAdapters');
+    const state = this.stateString.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
-
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
-
-  protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
-    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
-
-    const source = this.pickerStringSourceAdapterRaw.setupString(
-      state.settings$,
-      state.disableAddNew$,
-      this.config,
-      this.group,
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
+    const source = this.sourceAdapterString.setupString(
+      (props: DeleteEntityProps) => state.doAfterDelete(props),
+      false,
     );
-;
 
-    state.init();
-    source.init('StringDropdownComponent.createPickerAdapters');
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

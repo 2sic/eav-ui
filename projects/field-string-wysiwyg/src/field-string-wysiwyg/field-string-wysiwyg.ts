@@ -1,48 +1,55 @@
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { wysiwygEditorHtmlTag } from '../../internal-constants';
 import { FieldStringWysiwygEditor } from '../editor/editor';
+import { registerCustomElement } from '../editor/editor-helpers';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.scss';
 
+const logThis = false;
+const nameOfThis = 'FieldStringWysiwyg';
+
 const wysiwygTag = 'field-string-wysiwyg';
 
-/** Acts like a switcher that decides whether to load preview or the editor  */
+/**
+ * Main component for the WYSIWYG field.
+ * Acts like a switcher that decides whether to load preview or the editor
+ */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
-  fieldInitialized: boolean;
+  fieldInitialized = false;
   connector: Connector<string>;
   mode?: 'edit' | 'preview';
   reconfigure?: WysiwygReconfigure;
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor() {
     super();
-    consoleLogWebpack(`${wysiwygTag} constructor called`);
-    this.fieldInitialized = false;
+    this.log.a(`constructor`);
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) { return; }
+    if (this.fieldInitialized) return;
     this.fieldInitialized = true;
-    consoleLogWebpack(`${wysiwygTag} connectedCallback called`);
+    this.log.a(`connectedCallback`);
 
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
 
     const previewMode = this.isPreviewMode();
-    if (previewMode) {
+    if (previewMode)
       this.createPreview();
-    } else {
+    else
       this.createEditor();
-    }
   }
 
   private isPreviewMode(): boolean {
-    let previewMode = this.connector.field.settings?.Dialog === 'dialog';
-    if (this.mode != null || this.getAttribute('mode') != null) {
-      previewMode = this.mode === 'preview' || this.getAttribute('mode') === 'preview';
-    }
+    // first check if mode is explicitly set and what it is
+    const attrMode = this.getAttribute('mode');
+    if ((this.mode ?? attrMode) != null)
+      return this.mode === 'preview' || attrMode === 'preview';
 
-    return previewMode;
+    return this.connector.field.settings?.Dialog === 'dialog';
   }
 
   private createPreview(): void {
@@ -62,10 +69,8 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${wysiwygTag} disconnectedCallback called`);
+    this.log.a(`disconnectedCallback called`);
   }
 }
 
-if (!customElements.get(wysiwygTag)) {
-  customElements.define(wysiwygTag, FieldStringWysiwyg);
-}
+registerCustomElement(wysiwygTag, FieldStringWysiwyg);

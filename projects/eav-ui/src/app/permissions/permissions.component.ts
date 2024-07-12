@@ -1,10 +1,10 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -15,13 +15,34 @@ import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MetadataService } from './services/metadata.service';
+import { EntitiesService } from '../content-items/services/entities.service';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
   styleUrls: ['./permissions.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    AsyncPipe,
+    SxcGridModule,
+  ],
+  providers: [
+    PermissionsService,
+    MetadataService,
+    EntitiesService,
+  ],
 })
-export class PermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class PermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
   gridOptions = this.buildGridOptions();
 
@@ -43,13 +64,13 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
 
     private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
-  ) { 
+  ) {
     super(router, route);
   }
 
   ngOnInit() {
     this.fetchPermissions();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchPermissions(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchPermissions(); }));
     this.viewModel$ = combineLatest([
       this.permissions$
     ]).pipe(map(([permissions]) => ({ permissions })));
@@ -109,17 +130,7 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Permission> = {
@@ -129,62 +140,29 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
           })(),
         },
         {
-          field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Name',
+          field: 'Title',
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const permission: Permission = params.data;
             this.editPermission(permission);
           },
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Title;
-          },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Identity',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Identity;
-          },
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Condition',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Condition;
-          },
         },
         {
+          ...ColumnDefinitions.Character,
           field: 'Grant',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const permission: Permission = params.data;
-            return permission.Grant;
-          },
         },
         {
-          width: 42,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: PermissionsActionsComponent,
           cellRendererParams: (() => {
             const params: PermissionsActionsParams = {

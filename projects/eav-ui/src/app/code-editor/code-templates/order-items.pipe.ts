@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { TreeItem } from '../models/tree-item.model';
 
 /** Sorts folders before files */
-@Pipe({ name: 'sortItems' })
+@Pipe({
+    name: 'sortItems',
+    standalone: true
+})
 export class SortItemsPipe implements PipeTransform {
 
   transform(items: TreeItem[]) {

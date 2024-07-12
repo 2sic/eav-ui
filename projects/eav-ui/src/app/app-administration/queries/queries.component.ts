@@ -1,13 +1,13 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -21,13 +21,36 @@ import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions } from '@angular/material/dialog';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-queries',
   templateUrl: './queries.component.html',
   styleUrls: ['./queries.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+    DragAndDropDirective,
+  ],
 })
-export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {
+export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private pipelinesService = transient(PipelinesService);
+  private contentExportService = transient(ContentExportService);
+  private dialogService = transient(DialogService);
+
   enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -39,18 +62,15 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private pipelinesService: PipelinesService,
-    private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
-   }
+  }
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchQueries(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchQueries(); }));
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
@@ -102,9 +122,11 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
         query == null
           ? {
             ContentTypeName: eavConstants.contentTypes.query,
-            Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters }
+            Prefill: {
+              TestParameters: eavConstants.pipelineDesigner.testParameters
+            }
           }
-          : { EntityId: query.Id }
+          : { EntityId: query.Id },
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -158,19 +180,10 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agNumberColumnFilter',
+          ...ColumnDefinitions.Id,
           cellClass: (params) => {
             const query: Query = params.data;
             return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
-          valueGetter: (params) => {
-            const query: Query = params.data;
-            return query.Id;
           },
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
@@ -181,12 +194,9 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
           })(),
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           cellClass: (params) => {
             const query: Query = params.data;
             return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
@@ -195,27 +205,13 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
             const query: Query = params.data;
             this.openVisualQueryDesigner(query);
           },
-          valueGetter: (params) => {
-            const query: Query = params.data;
-            return query.Name;
-          },
         },
         {
+          ...ColumnDefinitions.TextWideFlex3,
           field: 'Description',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const query: Query = params.data;
-            return query.Description;
-          },
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: QueriesActionsComponent,
           cellRendererParams: (() => {
             const params: QueriesActionsParams = {

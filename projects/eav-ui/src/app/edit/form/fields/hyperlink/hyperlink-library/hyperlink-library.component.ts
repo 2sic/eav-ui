@@ -1,18 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, Injector, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { AdamConfig } from 'projects/edit-types';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
-  selector: InputTypeConstants.HyperlinkLibrary,
-  templateUrl: './hyperlink-library.component.html',
-  styleUrls: ['./hyperlink-library.component.scss'],
+    selector: InputTypeConstants.HyperlinkLibrary,
+    template: '', // note: no template - it will just show the adam component in the popup
+    styleUrls: [],
+    standalone: true,
 })
 @FieldMetadata({
   wrappers: [
@@ -22,61 +23,53 @@ import { AdamControl } from './hyperlink-library.models';
     WrappersConstants.AdamWrapper,
   ],
 })
-export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implements OnInit, OnDestroy {
+export class HyperlinkLibraryComponent implements OnInit {
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  protected fieldState = inject(FieldState);
+
+  private injector = inject(Injector);
+
+  constructor() {
     HyperlinkLibraryLogic.importMe();
   }
 
   ngOnInit() {
-    super.ngOnInit();
-    this.attachAdam();
+    this.attachAdamConfig();
     this.attachAdamValidator();
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
+  private attachAdamConfig() {
+    const adamConfig = computed(() => {
+      const settings = this.fieldState.settings();
+      return {
+        allowAssetsInRoot: settings.AllowAssetsInRoot,
+        autoLoad: true,
+        enableSelect: false,
+        rootSubfolder: settings.Paths,
+        fileFilter: settings.FileFilter,
+        folderDepth: settings.FolderDepth || 0,
+        metadataContentTypes: settings.MetadataContentTypes,
+      } as AdamConfig;
+    }, SignalHelpers.objectEquals);
 
-  private attachAdam() {
-    this.subscription.add(
-      this.settings$.pipe(
-        map(settings => ({
-          AllowAssetsInRoot: settings.AllowAssetsInRoot,
-          Paths: settings.Paths,
-          FileFilter: settings.FileFilter,
-          FolderDepth: settings.FolderDepth,
-          MetadataContentTypes: settings.MetadataContentTypes,
-        })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ).subscribe(settings => {
-        this.config.adam.setConfig({
-          allowAssetsInRoot: settings.AllowAssetsInRoot,
-          autoLoad: true,
-          enableSelect: false,
-          rootSubfolder: settings.Paths,
-          fileFilter: settings.FileFilter,
-          folderDepth: settings.FolderDepth || 0,
-          metadataContentTypes: settings.MetadataContentTypes,
-        });
-      })
-    );
+    effect(() => {
+      const config = adamConfig();
+      this.fieldState.config.adam.setConfig(config);
+    }, { injector: this.injector, allowSignalWrites: true });
   }
 
   private attachAdamValidator() {
     let first = true;
-    this.subscription.add(
-      this.config.adam.items$.pipe(
+    // this.subscriptions.add(
+      this.fieldState.config.adam.items$.pipe(
         map(items => items.length),
         distinctUntilChanged(),
       ).subscribe(itemsCount => {
-        (this.control as AdamControl).adamItems = itemsCount;
-        if (!first) {
-          this.control.updateValueAndValidity();
-        }
+        (this.fieldState.control as AdamControl).adamItems = itemsCount;
+        if (!first)
+          this.fieldState.control.updateValueAndValidity();
         first = false;
       })
-    );
+    // );
   }
 }

@@ -3,7 +3,7 @@ import { FeatureSummary } from '../../../features/models';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
 import { FormValues, Language } from '../../shared/models';
-import { EavService, FieldsSettingsService } from '../../shared/services';
+import { FormConfigService, FieldsSettingsService } from '../../shared/services';
 import { ItemService } from '../../shared/store/ngrx-data';
 
 // Import the type definitions for intellisense
@@ -13,6 +13,7 @@ import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { FormLanguage } from '../../shared/models/form-languages.model';
 
 /**
  * Contains methods for building formulas.
@@ -92,32 +93,29 @@ export class FormulaHelpers {
    * @param settingsCurrent 
    * @param formValues 
    * @param initialFormValues 
-   * @param currentLanguage 
-   * @param defaultLanguage 
    * @param languages 
    * @param itemHeader 
    * @param debugEnabled 
    * @param itemService 
-   * @param eavService 
+   * @param formConfig 
    * @param fieldsSettingsService 
    * @param features 
    * @returns Formula properties
    */
   static buildFormulaProps(
     formula: FormulaCacheItem,
-    entityId: number,
+    // entityId: number,
     inputType: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     formValues: FormValues,
     initialFormValues: FormValues,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
     languages: Language[],
     itemHeader: ItemIdentifierShared,
     debugEnabled: boolean,
     itemService: ItemService,
-    eavService: EavService,
+    formConfig: FormConfigService,
     fieldsSettingsService: FieldsSettingsService,
     features: FeatureSummary[],
   ): FormulaProps {
@@ -196,7 +194,7 @@ export class FormulaHelpers {
                   console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
                   return '⚠️ error - see console';
                 }
-                const result = eavService.eavConfig.settings.Values[settingPath];
+                const result = formConfig.config.settings.Values[settingPath];
                 if (result != null) return result;
                 console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
                   `See https://go.2sxc.org/formulas`);
@@ -205,13 +203,13 @@ export class FormulaHelpers {
             },
             cache: formula.cache,
             culture: {
-              code: currentLanguage,
-              name: languages.find(l => l.NameId === currentLanguage)?.Culture,
+              code: language.current,
+              name: languages.find(l => l.NameId === language.current)?.Culture,
             },
             debug: debugEnabled,
             features: {
               isEnabled(name: string): boolean {
-                return features.find(f => f.NameId === name)?.IsEnabled ?? false;
+                return features.find(f => f.nameId === name)?.isEnabled ?? false;
               },
             },
             form: {
@@ -239,7 +237,7 @@ export class FormulaHelpers {
           },
           experimental: {
             getEntities(): FormulaV1ExperimentalEntity[] {
-              const v1Entities = itemService.getItems(eavService.eavConfig.itemGuids).map(item => {
+              const v1Entities = itemService.getItems(formConfig.config.itemGuids).map(item => {
                 const v1Entity: FormulaV1ExperimentalEntity = {
                   guid: item.Entity.Guid,
                   id: item.Entity.Id,
@@ -260,7 +258,7 @@ export class FormulaHelpers {
               const item = itemService.getItem(entityGuid);
               const values: FormValues = {};
               for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
-                values[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+                values[fieldName] = LocalizationHelpers.translate(language, fieldValues, null);
               }
               return values;
             }
@@ -332,7 +330,7 @@ export class FormulaHelpers {
           'culture.code',
           'culture.name',
           'debug',
-          'features.isEnabled(\'NameId\')',
+          'features.isEnabled(\'nameId\')',
           'form.runFormulas()',
           'sxc.ChangeThis',
           'target.entity.id',

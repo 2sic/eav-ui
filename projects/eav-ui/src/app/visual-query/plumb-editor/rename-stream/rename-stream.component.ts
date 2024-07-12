@@ -1,20 +1,45 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { VisualQueryService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
+import { NgClass } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 
 @Component({
   selector: 'app-rename-stream',
   templateUrl: './rename-stream.component.html',
-  styleUrls: ['./rename-stream.component.scss']
+  styleUrls: ['./rename-stream.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgClass,
+    MatDialogActions,
+    MatSlideToggleModule,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+  ]
 })
-export class RenameStreamComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class RenameStreamComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;
@@ -34,7 +59,7 @@ export class RenameStreamComponent extends BaseSubsinkComponent implements OnIni
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
-   }
+  }
 
   ngOnInit(): void {
     this.buildForm();
@@ -70,7 +95,7 @@ export class RenameStreamComponent extends BaseSubsinkComponent implements OnIni
 
     if (!this.isSource || !this.pipelineResultExists) { return; }
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.controls.scope.valueChanges.pipe(
         startWith<string>(this.controls.scope.value),
         distinctUntilChanged(),

@@ -6,17 +6,17 @@ import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
-import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
+import { MetadataDecorators, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
+import { FormLanguage } from '../models/form-languages.model';
 
 export class FieldsSettingsHelpers {
 
   static setDefaultContentTypeSettings(
     settings: ContentTypeSettings,
     contentType: EavContentType,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
     itemHeader: ItemIdentifierEditConfig,
   ): ContentTypeSettings {
     const defaultSettings = { ...settings };
@@ -28,7 +28,7 @@ export class FieldsSettingsHelpers {
     defaultSettings.Notes ??= '';
     defaultSettings.Icon ??= '';
     defaultSettings.Link ??= '';
-    defaultSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+    defaultSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
     defaultSettings._slotCanBeEmpty = itemHeader.IsEmptyAllowed ?? false;
     defaultSettings._slotIsEmpty = itemHeader.IsEmpty ?? false;
     return defaultSettings;
@@ -60,32 +60,32 @@ export class FieldsSettingsHelpers {
   static findDisableTranslation(
     contentTypeMetadata: EavEntity[],
     inputType: InputType,
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     defaultLanguage: string,
     attributeMetadata: EavEntity[],
   ): boolean {
     // disable translation if LanguagesDecorator in ContentType is false in any language
     const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) { return true; }
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) return true;
 
-    if (inputType?.DisableI18n) { return true; }
-    if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
+    if (inputType?.DisableI18n) return true;
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage)) return true;
 
     // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
     for (const metadataItem of attributeMetadata ?? []) {
-      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) { return true; }
+      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) return true;
     }
 
     return false;
   }
 
-  static getContentTypeTitle(contentType: EavContentType, currentLanguage: string, defaultLanguage: string): string {
+  static getContentTypeTitle(contentType: EavContentType, language: FormLanguage): string {
     let label: string;
     try {
       // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
       const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
       if (type) {
-        label = LocalizationHelpers.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.Value;
+        label = LocalizationHelpers.getValueOrDefault(type.Attributes.Label, language)?.Value;
       }
       label = label || contentType.Name;
     } catch (error) {
@@ -96,40 +96,36 @@ export class FieldsSettingsHelpers {
 
   static findIsLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {
     const index = contentType.Attributes.indexOf(attribute);
-    if (contentType.Attributes[index + 1] == null) { return true; }
+    if (contentType.Attributes[index + 1] == null) return true;
 
     const indexOfFirstEmpty = contentType.Attributes.findIndex(a => EmptyFieldHelpers.isGroupStart(a.InputType));
-    if (index < indexOfFirstEmpty) { return false; }
+    if (index < indexOfFirstEmpty) return false;
 
-    // if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
+    // if (attribute.InputType === InputTypeConstants.EmptyEnd) return true;
     if (EmptyFieldHelpers.isGroupEnd(attribute.InputType)) return true;
 
-    // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-    // if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
     if (EmptyFieldHelpers.endsPreviousGroup(contentType.Attributes[index + 1].InputType)) return true;
 
     return false;
   }
 
   static getDisabledBecauseTranslations(
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     disableTranslation: boolean,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
   ): boolean {
-    if (currentLanguage === defaultLanguage) { return false; }
-    if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
-    if (disableTranslation) { return true; }
-    if (LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) { return false; }
-    if (LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage)) { return true; }
+    if (language.current === language.primary) return false;
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary)) return true;
+    if (disableTranslation) return true;
+    if (LocalizationHelpers.hasEditableValue(attributeValues, language)) return false;
+    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) return true;
     return true;
   }
 
   static getTranslationState(
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     disableTranslation: boolean,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
   ): TranslationState {
     let infoLabel: string;
     let infoMessage: string;
@@ -137,26 +133,26 @@ export class FieldsSettingsHelpers {
     if (disableTranslation) {
       infoLabel = 'LangMenu.InAllLanguages';
       infoMessage = '';
-    } else if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) {
+    } else if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary)) {
       infoLabel = 'LangMenu.MissingDefaultLangValue';
-      infoMessage = defaultLanguage;
+      infoMessage = language.primary;
     } else {
-      const editableTranslationExists = LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage);
-      const readonlyTranslationExists = LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage);
+      const editableTranslationExists = LocalizationHelpers.hasEditableValue(attributeValues, language);
+      const readonlyTranslationExists = LocalizationHelpers.hasReadonlyValue(attributeValues, language.current);
 
       if (editableTranslationExists || readonlyTranslationExists) {
-        const dimensions = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+        const dimensions = LocalizationHelpers.getValueTranslation(attributeValues, language)
           .Dimensions.map(dimension => dimension.Value)
-          .filter(dimension => !dimension.includes(currentLanguage));
+          .filter(dimension => !dimension.includes(language.current));
 
         const isShared = dimensions.length > 0;
         if (isShared) {
-          if (editableTranslationExists) {
+          if (editableTranslationExists)
             infoLabel = 'LangMenu.In';
-          } else if (readonlyTranslationExists) {
+          else if (readonlyTranslationExists)
             infoLabel = 'LangMenu.From';
-          }
-          infoMessage = TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage);
+          
+          infoMessage = TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, language.current);
         } else {
           infoLabel = '';
           infoMessage = '';
@@ -166,7 +162,7 @@ export class FieldsSettingsHelpers {
         infoMessage = '';
       }
     }
-    const state = this.getTranslationStateCore(attributeValues, disableTranslation, currentLanguage, defaultLanguage);
+    const state = this.getTranslationStateCore(attributeValues, disableTranslation, language);
     const translationState: TranslationState = {
       infoLabel,
       infoMessage,
@@ -177,48 +173,34 @@ export class FieldsSettingsHelpers {
   }
 
   private static getTranslationStateCore(
-    attributeValues: EavValues<any>,
+    attributeValues: EavField<any>,
     disableTranslation: boolean,
-    currentLanguage: string,
-    defaultLanguage: string,
+    language: FormLanguage,
   ): TranslationStateCore {
-    let language: string;
-    let linkType: TranslationLink;
-
     // Determine is control disabled or enabled and info message
-    if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) {
-      language = '';
-      linkType = TranslationLinks.MissingDefaultLangValue;
-    } else if (disableTranslation) {
-      language = '';
-      linkType = TranslationLinks.DontTranslate;
-    } else if (LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
-      const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
-        .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
+      return { language: '', linkType: TranslationLinks.MissingDefaultLangValue }
+    
+    if (disableTranslation)
+      return { language: '', linkType: TranslationLinks.DontTranslate }
+    
+    if (LocalizationHelpers.hasEditableValue(attributeValues, language)) {
+      const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
+        .Dimensions.filter(dimension => dimension.Value !== language.current);
 
-      if (editableElements.length > 0) {
-        language = editableElements[0].Value;
-        linkType = TranslationLinks.LinkReadWrite;
-      } else {
-        language = '';
-        linkType = TranslationLinks.Translate;
-      }
-    } else if (LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
-      const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
-        .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
+      return (editableElements.length > 0)
+        ? { language: editableElements[0].Value, linkType: TranslationLinks.LinkReadWrite }
+        : { language: '', linkType: TranslationLinks.Translate }
+    }
+    
+    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) {
+      const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
+        .Dimensions.filter(dimension => dimension.Value !== language.current);
 
-      language = readOnlyElements[0].Value;
-      linkType = TranslationLinks.LinkReadOnly;
-    } else {
-      language = '';
-      linkType = TranslationLinks.DontTranslate;
+      return { language: readOnlyElements[0].Value, linkType: TranslationLinks.LinkReadOnly, }
     }
 
-    const translationState: TranslationStateCore = {
-      language,
-      linkType,
-    };
-    return translationState;
+    return { language: '', linkType: TranslationLinks.DontTranslate, }
   }
 }
 

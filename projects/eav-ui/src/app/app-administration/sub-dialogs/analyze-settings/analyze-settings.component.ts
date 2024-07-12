@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { View } from '../../models';
@@ -12,11 +12,33 @@ import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-r
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, AnalyzeSettingsViewModel, SettingsStackItem } from './analyze-settings.models';
+import { AsyncPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-analyze-settings',
   templateUrl: './analyze-settings.component.html',
   styleUrls: ['./analyze-settings.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    AsyncPipe,
+    SxcGridModule,
+  ],
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;
@@ -27,12 +49,13 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   private selectedView$: BehaviorSubject<string>;
   private stack$: BehaviorSubject<SettingsStackItem[]>;
 
+  private viewsService = transient(ViewsService);
+  private analyzeSettingsService = transient(AnalyzeSettingsService);
+
   constructor(
     private dialogRef: MatDialogRef<AnalyzeSettingsComponent>,
     private route: ActivatedRoute,
     private router: Router,
-    private viewsService: ViewsService,
-    private analyzeSettingsService: AnalyzeSettingsService,
   ) {
     this.part = this.route.snapshot.paramMap.get('part') as AnalyzePart;
   }
@@ -89,54 +112,29 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: 'Key',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item.Path;
-          },
+          ...ColumnDefinitions.TextWideActionClass,
+          headerName: 'Key',
+          field: 'Path',
           cellRenderer: AnalyzeSettingsKeyComponent,
         },
         {
-          field: 'Value',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item._value;
-          },
+          ...ColumnDefinitions.TextWideActionClass,
+          headerName: 'Value',
+          field: '_value',
           cellRenderer: AnalyzeSettingsValueComponent,
         },
         {
           field: 'Source',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item.Source;
-          },
+          ...ColumnDefinitions.TextNarrow,
         },
         {
-          field: 'Total',
+          headerName: 'Total',
+          field: 'TotalResults',
           width: 72,
           headerClass: 'dense',
           cellClass: 'secondary-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item.TotalResults;
-          },
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
           cellRendererParams: (() => {
             const params: AnalyzeSettingsTotalResultsParams = {

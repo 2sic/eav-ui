@@ -1,12 +1,13 @@
 <div class="actions-component">
+  <!-- Metadata Button -->
   @if (!field.EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
-      (click)="openMetadata()">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata" (click)="do('metadata')">
       <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
-      matBadgePosition="below after" aria-hidden="false">local_offer</mat-icon>
+        matBadgePosition="below after" aria-hidden="false"
+      >local_offer</mat-icon>
     </div>
   }
-  @if (field.EditInfo.DisableMetadata) {
+  @else {
     <div class="eav-grid-action-button disabled">
       <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
         [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">
@@ -15,47 +16,37 @@
     </div>
   }
 
-  <!--
-    TODO: @SDV pls enhance as follows
-    ✅ If share is on or InheritMetadata is on, show various icons (already done)
-    ⬛ If neither is on, it should not show an icon, until mouseover, then it should show the share icon to indicate it can be added
-    ⬛ If the click should add sharing, open a dialog to configure share
-        - if there is no share it should Title "Field Metadata Sharing" show with the question "Do you want to enable sharing to this field?"
-          - if yes, it should call an endpoint on field/share(appId, attributeId, share: true, hide: false) (just add a todo in the code which will call the endpoint)
-        - If Share is already enabled, the Title should be "Field Metadata Sharing" (same) and content "Shared as: [field.Guid]"
-        - If it's in inherit mode, different dialog Title "Field Inherits Metadata", content "Inherits from: [field.SysSettings.InheritMetadataOf]"
-          - there is no endpoint to call here, because inherit is configured on create (separate todo)
-  -->
-
-  <!-- *ngIf is necessary as empty mat icon still consumes some space-->
-  @if (shareOrInheritIcon() != '') {
-    <div class="eav-grid-action-button highlight"
-      matRipple [tippy]="shareText()" (click)="shareOrInherit()">
-      <mat-icon aria-hidden="false">
-        {{ shareOrInheritIcon() }}
+  <!-- Image Config Button -->
+  @if (!field.EditInfo.DisableEdit && field.imageConfiguration.isRecommended) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Image Configuration" (click)="do('image')">
+      <mat-icon [matBadge]="field.imageConfiguration.entityId ? 1 : 0" matBadgeSize="small"
+        [matBadgeHidden]="!field.imageConfiguration.entityId" matBadgePosition="below after" aria-hidden="false"
+        matBadgeColor="accent">
+        filter-center-focus
       </mat-icon>
     </div>
   }
-  @if (shareOrInheritIcon() == '') {
-    <div class="eav-grid-action-button disabled eav-hover-icon-div"
-      matRipple [tippy]="shareText()" (click)="shareOrInherit()">
-      <mat-icon aria-hidden="false" class="eav-hover-icon disabled">
-        share
+  @else {
+    <div class="eav-grid-action-button disabled" tippy="no image configuration for this field">
+      <mat-icon [matBadge]="field.imageConfiguration.entityId ? 1 : 0" matBadgeSize="small"
+        [matBadgeHidden]="!field.imageConfiguration.entityId" matBadgePosition="below after" aria-hidden="false"
+        matBadgeDisabled="true">
+        filter-center-focus
       </mat-icon>
     </div>
   }
 
+  <!-- Permissions Button -->
   @if (!field.EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Permissions"
-      (click)="openPermissions()">
+    <div class="eav-grid-action-button highlight" matRipple tippy="Permissions" (click)="do('permissions')">
       <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
         [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
         person
       </mat-icon>
     </div>
   }
-  @if (field.EditInfo.DisableEdit || !enablePermissions) {
-    <div class="eav-grid-action-button disabled">
+  @else {
+    <div class="eav-grid-action-button disabled" tippy="no permissions to configure on this field">
       <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
         [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
         person
@@ -63,18 +54,48 @@
     </div>
   }
 
+
+  <!-- Share Button -->
+  <!--
+    TODO: @SDV pls enhance as follows
+    ✅ If share is on or InheritMetadata is on, show various icons (already done)
+    ✅ If neither is on, it should not show an icon, until mouseover, then it should show the share icon to indicate it can be added
+    ❓ If the click should add sharing, open a dialog to configure share
+        - if there is no share it should Title "Field Metadata Sharing" show with the question "Do you want to enable sharing to this field?"
+          - if yes, it should call an endpoint on field/share(appId, attributeId, share: true, hide: false) (just add a todo in the code which will call the endpoint)
+        - If Share is already enabled, the Title should be "Field Metadata Sharing" (same) and content "Shared as: [field.Guid]"
+        - If it's in inherit mode, different dialog Title "Field Inherits Metadata", content "Inherits from: [field.SysSettings.InheritMetadataOf]"
+          - there is no endpoint to call here, because inherit is configured on create (separate todo)
+  -->
+  @if (shareOrInheritIcon() != '') {
+    <div class="eav-grid-action-button highlight" matRipple [tippy]="shareText()" (click)="do('shareOrInherit')">
+      <mat-icon aria-hidden="false">
+        {{ shareOrInheritIcon() }}
+      </mat-icon>
+    </div>
+  }
+  @else {
+    <div class="eav-grid-action-button disabled eav-hover-icon-div" matRipple [tippy]="shareText()" (click)="do('shareOrInherit')">
+      <mat-icon aria-hidden="false" class="eav-hover-icon disabled">
+        share
+      </mat-icon>
+    </div>
+  }
+
+  <!-- More Button -->
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
+<!-- More Menu -->
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item [disabled]="field.EditInfo.DisableRename" (click)="rename()">
+    <button mat-menu-item [disabled]="field.EditInfo.DisableRename" (click)="do('rename')">
       <mat-icon>text_fields</mat-icon>
       <span>Rename</span>
     </button>
-    <button mat-menu-item [disabled]="field.EditInfo.DisableDelete || field.IsTitle" (click)="deleteField()">
+    <button mat-menu-item [disabled]="field.EditInfo.DisableDelete || field.IsTitle" (click)="do('delete')">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -16,13 +16,16 @@ import { ZoneService } from '../services/zone.service';
 import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FeaturesModule } from '../../features/features.module';
 import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { AppDialogConfigService } from '../../app-administration/services';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { transient } from '../../core';
 
 declare const window: EavWindow;
 
@@ -34,26 +37,25 @@ declare const window: EavWindow;
   imports: [
     MatCardModule,
     MatIconModule,
-    SharedComponentsModule,
     RouterLink,
     NgTemplateOutlet,
     MatButtonModule,
-    FeaturesModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     RouterOutlet,
     AsyncPipe,
-  ],
-  providers: [
-    ZoneService,
-    DialogService,
-    SxcInsightsService,
-    FeaturesService,
-    AppDialogConfigService,
+    FeatureTextInfoComponent,
+    FieldHintComponent,
+    TippyDirective,
   ],
 })
-export class SystemInfoComponent extends BaseComponent implements OnInit, OnDestroy {
+export class SystemInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private dialogSettings = transient(AppDialogConfigService);
+  private sxcInsightsService = transient(SxcInsightsService);
+  private zoneService = transient(ZoneService);
+  private dialogService = transient(DialogService);
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
@@ -63,15 +65,14 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   private loading$: BehaviorSubject<boolean>;
 
+  public features: FeaturesService = inject(FeaturesService);
+  protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
+  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private zoneService: ZoneService,
-    private dialogService: DialogService,
-    private sxcInsightsService: SxcInsightsService,
-    private featuresService: FeaturesService,
-    private dialogSettings: AppDialogConfigService,
   ) {
     super(router, route);
   }
@@ -82,7 +83,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
       this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();
@@ -259,18 +260,14 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
         return info;
       }),
     );
-    const lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
-    const cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
-    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
-      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
+    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
+      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
         const viewModel: SystemInfoViewModel = {
           systemInfos,
           siteInfos,
           loading,
           warningIcon,
           warningInfos,
-          lsEnabled,
-          cspEnabled
         };
         return viewModel;
       }),

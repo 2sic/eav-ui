@@ -1,12 +1,27 @@
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
 
+/** LogThis will apply, if the inheriting class isn't specifying it in the constructor */
+const logThis = false;
+const nameOfThis = 'FieldLogic';
+
 type LogicConstructor = new (...args: any[]) => FieldLogicBase;
 
 export abstract class FieldLogicBase {
+
+  constructor(name?: string, logThis?: boolean) {
+    if (name) {
+      this.name = name;
+      this._log = new EavLogger(`${nameOfThis}[${name}]`, logThis);
+      this.log.a(`constructor for ${name}`);
+    }
+  }
+
+
   /** Input type name */
-  abstract name: string;
+  name: string;
 
   /** If this field supports AutoTranslate (new v15.x) */
   public canAutoTranslate = false;
@@ -20,15 +35,19 @@ export abstract class FieldLogicBase {
   /** Run this dummy method from component to make sure Logic files are not tree shaken */
   static importMe(): void { }
 
+  get log() { return this._log ??= new EavLogger(`${nameOfThis}[${this.name}]`, logThis) };
+  private _log: EavLogger;
+
   /**
    * Entity fields for empty items are prefilled on the backend with []
    * so I can never know if entity field is brand new, or just emptied out by the user
    * 
    * Note: 2dm 2023-08-31 moved from InputFieldHelpers; in future, each logic can override this
    */
-  isValueEmpty(value: FieldValue, isCreateMode: boolean) {
+  isValueEmpty(value: FieldValue, isCreateMode: boolean): boolean {
+    const l = this.log.fn('isValueEmpty', { value, isCreateMode });
     const emptyEntityField = Array.isArray(value) && value.length === 0 && isCreateMode;
-    return value === undefined || emptyEntityField;
+    return l.r(value === undefined || emptyEntityField);
   }
 
   /** 

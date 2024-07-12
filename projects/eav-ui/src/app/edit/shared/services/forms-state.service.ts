@@ -1,9 +1,9 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subject, Subscription } from 'rxjs';
-import { EavService } from '.';
-import { GeneralHelpers } from '../helpers';
+import { computed, Injectable, OnDestroy, signal } from '@angular/core';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, sample, Subject, Subscription } from 'rxjs';
+import { FormConfigService } from '.';
 import { FormReadOnly } from '../models';
-import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { ItemService, LanguageService } from '../store/ngrx-data';
+import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
@@ -13,15 +13,19 @@ export class FormsStateService implements OnDestroy {
   formsDirty$: BehaviorSubject<boolean>;
   saveButtonDisabled$: Observable<boolean>;
 
+  // new with Signal
+  readOnly = signal<FormReadOnly>({ isReadOnly: true, reason: undefined });
+  formsValidTemp = signal<boolean>(false);
+  saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
+
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
   private subscription: Subscription;
 
   constructor(
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnDestroy() {
@@ -36,6 +40,7 @@ export class FormsStateService implements OnDestroy {
     this.subscription = new Subscription();
     this.saveForm$ = new Subject();
     const initialReadOnly: FormReadOnly = { isReadOnly: true, reason: undefined };
+
     this.readOnly$ = new BehaviorSubject(initialReadOnly);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
@@ -43,31 +48,34 @@ export class FormsStateService implements OnDestroy {
       map(([readOnly, formsValid]) => readOnly.isReadOnly || !formsValid),
       distinctUntilChanged(),
     );
+
     this.formsValid = {};
     this.formsDirty = {};
-    for (const entityGuid of this.eavService.eavConfig.itemGuids) {
+    for (const entityGuid of this.formConfig.config.itemGuids) {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }
 
     this.subscription.add(
       combineLatest([
-        combineLatest(this.eavService.eavConfig.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
+        combineLatest(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
           map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
         ),
         combineLatest([
-          this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId),
+          this.formConfig.language$,
           this.languageService.getLanguages$(),
         ]).pipe(
-          map(([currentLanguage, languages]) => languages.find(l => l.NameId === currentLanguage)?.IsAllowed ?? true),
+          map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),
         ),
       ]).subscribe(([itemsReadOnly, languageAllowed]) => {
         const readOnly: FormReadOnly = {
           isReadOnly: itemsReadOnly || !languageAllowed,
           reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
         };
-        if (!GeneralHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
+        if (!RxHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
           this.readOnly$.next(readOnly);
+          this.readOnly.set(readOnly);
+          // this.readOnly.update(v => readOnly);
         }
       })
     );
@@ -81,7 +89,9 @@ export class FormsStateService implements OnDestroy {
     this.formsValid[entityGuid] = isValid;
 
     const allValid = !Object.values(this.formsValid).some(valid => valid === false);
-    if (allValid !== this.formsValid$.value) {
+    if (allValid !== this.formsValidTemp()) {
+      // if (allValid !== this.formsValid$.value) {
+      this.formsValidTemp.set(allValid);
       this.formsValid$.next(allValid);
     }
   }

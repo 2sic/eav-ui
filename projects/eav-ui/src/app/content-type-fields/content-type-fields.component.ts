@@ -1,19 +1,19 @@
 // tslint:disable-next-line:max-line-length
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { ItemAddIdentifier, EditForm, ItemEditIdentifier } from '../shared/models/edit-form.model';
+import { ItemAddIdentifier, EditForm, ItemEditIdentifier, ItemIdentifier, EditPrep } from '../shared/models/edit-form.model';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
@@ -27,13 +27,35 @@ import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 
 @Component({
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
   styleUrls: ['./content-type-fields.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    NgClass,
+    MatDialogActions,
+    AsyncPipe,
+
+    ToggleDebugDirective,
+    SxcGridModule,
+  ],
+  providers: [
+    ContentTypesService,
+    ContentTypesFieldsService
+  ]
 })
-export class ContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -62,7 +84,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
 
   ngOnInit() {
     this.fetchFields();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchFields(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchFields(); }));
     this.viewModel$ = combineLatest([
       this.contentType$, this.fields$
     ]).pipe(
@@ -183,7 +205,8 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
       this.contentType$.next(contentType);
       this.fields$.next(fields);
-      if (callback != null) { callback(); }
+      if (callback != null)
+        callback();
     });
   }
 
@@ -230,17 +253,13 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     // Is an item of this type already loaded? Then just edit it, otherwise request new as Metadata
     const existingMd = field.Metadata[keyForMdLookup];
     return existingMd != null
-      ? { EntityId: existingMd.Id } // if defined, return the entity-number to edit
+      ? EditPrep.editId(existingMd.Id) // if defined, return the entity-number to edit
       : {
-        ContentTypeName: newItemTypeName, // otherwise the content type for new-assignment
-        For: {
-          Target: eavConstants.metadata.attribute.target,
-          TargetType: eavConstants.metadata.attribute.targetType,
-          Number: field.Id,
-        },
+        ...EditPrep.newMetadata(field.Id, newItemTypeName, eavConstants.metadata.attribute),
         Prefill: { Name: field.StaticName },
       };
   }
+
 
   private setTitle(field: Field) {
     this.snackBar.open('Setting title...');
@@ -269,6 +288,19 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
 
   private openPermissions(field: Field) {
     this.router.navigate([GoToPermissions.getUrlAttribute(field.Id)], { relativeTo: this.route });
+  }
+
+  private openImageConfiguration(field: Field) {
+    console.log('2dm - openImageConfiguration', field);
+    const imgConfig = field.imageConfiguration;
+    if (imgConfig?.isRecommended != true)
+      throw new Error('This field does not expect to have an image configuration');
+
+    const itemIdentifier: ItemIdentifier = imgConfig.entityId
+      ? EditPrep.editId(imgConfig.entityId)
+      : EditPrep.newMetadata(field.Id, imgConfig.typeName, eavConstants.metadata.attribute);
+    const formUrl = convertFormToUrl({ items: [itemIdentifier] });
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   private openMetadata(field: Field) {
@@ -322,21 +354,14 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
           })(),
         },
         {
-          field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
+          ...ColumnDefinitions.TextWide,
+          headerName: 'Name',
+          field: 'StaticName',
           onCellClicked: (params) => {
             const field: Field = params.data;
             this.editFieldMetadata(field);
           },
           cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.StaticName;
-          },
         },
         {
           field: 'Type',
@@ -406,20 +431,20 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
           },
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight5,
           cellRenderer: ContentTypeFieldsActionsComponent,
-          cellRendererParams: (() => {
-            const params: ContentTypeFieldsActionsParams = {
-              onRename: (field) => this.rename(field),
-              onDelete: (field) => this.delete(field),
-              onOpenPermissions: (field) => this.openPermissions(field),
-              onOpenMetadata: (field) => this.openMetadata(field),
-              onShareOrInherit: (field) => this.shareOrInherit(field),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            do: (verb, field) => {
+              switch (verb) {
+                case 'rename': this.rename(field); break;
+                case 'delete': this.delete(field); break;
+                case 'permissions': this.openPermissions(field); break;
+                case 'metadata': this.openMetadata(field); break;
+                case 'shareOrInherit': this.shareOrInherit(field); break;
+                case 'image': this.openImageConfiguration(field); break;
+              }
+            }
+          } satisfies ContentTypeFieldsActionsParams))(),
         },
       ],
     };

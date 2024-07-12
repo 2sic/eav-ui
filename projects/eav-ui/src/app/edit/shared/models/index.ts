@@ -3,7 +3,7 @@ export * from './calculated-input-type.model';
 export * from './field-metadata.model';
 export * from './content-type-settings.model';
 export * from './control-status.model';
-export * from './eav-config.model';
+export * from './form-configuration';
 export * from './edit-routing.models';
 export * from './element-event-listener.model';
 export * from './field-error-message.model';

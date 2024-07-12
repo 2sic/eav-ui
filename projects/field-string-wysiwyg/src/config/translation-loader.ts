@@ -36,6 +36,8 @@ export class TranslationsLoader {
         break;
     }
 
-    return this.translatedLanguages.includes(language) ? language : this.defaultLanguage;
+    return this.translatedLanguages.includes(language)
+      ? language
+      : this.defaultLanguage;
   }
 }

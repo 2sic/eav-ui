@@ -14,10 +14,7 @@ export class FieldLogicManager {
   }
 
   static singleton(): FieldLogicManager {
-    if (window.eavFieldLogicManager == null) {
-      window.eavFieldLogicManager = new FieldLogicManager();
-    }
-    return window.eavFieldLogicManager;
+    return window.eavFieldLogicManager ??= new FieldLogicManager();
   }
 
   /** Add settings logic */

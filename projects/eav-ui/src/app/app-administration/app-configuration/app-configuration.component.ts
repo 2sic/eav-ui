@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -17,20 +17,52 @@ import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
 import { AppDialogConfigService, ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
-import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { AppConfigurationCardComponent } from './app-configuration-card/app-configuration-card.component';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-app-configuration',
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatBadgeModule,
+    NgTemplateOutlet,
+    AppConfigurationCardComponent,
+    FeatureTextInfoComponent,
+    RouterOutlet,
+    AsyncPipe,
+    TippyDirective,
+  ],
+  providers: [
+  // TODO:: 2dg - provider  // Used app
+    ContentItemsService,
+    AppInternalsService,
+    FeatureDetailService,
+  ],
 })
-export class AppConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private dialogService = transient(DialogService);
+  private contentTypesService = transient(ContentTypesService);
+
   dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
@@ -47,19 +79,19 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   viewModel$: Observable<AppConfigurationViewModel>;
 
   public appStateAdvanced = false;
+  public features: FeaturesService = inject(FeaturesService);
 
-  public features: FeaturesService = new FeaturesService();
+  protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
+  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
+  protected langPermsEnabled = this.features.isEnabled(FeatureNames.PermissionsByLanguage);
 
   constructor(
+    private contentItemsService: ContentItemsService,
     protected router: Router,
     protected route: ActivatedRoute,
-    private contentItemsService: ContentItemsService,
     private context: Context,
-    private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private appInternalsService: AppInternalsService,
-    private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     private appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,
@@ -72,14 +104,8 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     // New with proper ViewModel
     this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
-      this.features.isEnabled$(FeatureNames.LightSpeed),
-      this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
-      this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
-    ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
+    ]).pipe(map(([settings]) => {
       const result: AppConfigurationViewModel = {
-        lightSpeedEnabled,
-        cspEnabled,
-        langPermsEnabled,
         appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
         systemSettingsCount: this.isPrimary
           ? settings.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
@@ -99,7 +125,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
 
     this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -108,18 +134,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
     });
-
   }
-
-  // @2dg New with a Subscription, onChanges is not needed ?
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (changes.dialogSettings != null) {
-  //     const appScope = this.dialogSettings.Context.App.SettingsScope;
-  //     this.isGlobal = appScope === AppScopes.Global;
-  //     this.isPrimary = appScope === AppScopes.Site;
-  //     this.isApp = appScope === AppScopes.App;
-  //   }
-  // }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
@@ -208,7 +223,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     if (enabled)
       this.router.navigate(['language-permissions'], { relativeTo: this.route.parent.firstChild });
     else
-      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
+      openFeatureDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   analyze(part: AnalyzePart) {
@@ -220,7 +235,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
-      });
+    });
   }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {
@@ -257,14 +272,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
 class AppConfigurationViewModel {
   // Lightspeed
-  lightSpeedEnabled: boolean;
   appLightSpeedCount: number;
-
-  // CSP
-  cspEnabled: boolean;
-
-  // Language Permissions
-  langPermsEnabled: boolean;
 
   systemSettingsCount: number;
   customSettingsCount: number;

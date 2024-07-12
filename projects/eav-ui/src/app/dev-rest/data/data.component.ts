@@ -1,11 +1,11 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, Input, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
-import { EavService, EntityService, QueryService } from '../../edit/shared/services';
+import { FormConfigService, EntityService, QueryService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -23,9 +23,10 @@ import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-h
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
 import { EntityBasic } from '../../edit/shared/models/entity-basic';
+import { transient } from '../../core';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 
@@ -38,7 +39,7 @@ const pathToContent = 'app/{appname}/data/{typename}';
   standalone: true,
   imports: [
     MatButtonModule,
-    TippyStandaloneDirective,
+    TippyDirective,
     MatIconModule,
     RouterOutlet,
     SelectorWithHelpComponent,
@@ -54,12 +55,13 @@ const pathToContent = 'app/{appname}/data/{typename}';
   providers: [
     PermissionsService,
     EntitiesService,
-    EntityService,
-    AppDialogConfigService,
-    ContentTypesService,
-    EavService,
+    FormConfigService,
     // WIP - should be self-declared by the EntitiesService
     QueryService,
+
+    // AppDialogConfigService,
+    // ContentTypesService,
+    // EntityService,
   ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
@@ -67,17 +69,21 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
 
   @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
-  // wip - probably no use case where it's a dialog
-  // isSideNavContent: boolean;
+  private entityService = transient(EntityService);
+  private contentTypesService = transient(ContentTypesService);
+  // TODO:: @2dg Open to use transient
+  // private appDialogConfigService = transient(AppDialogConfigService);
+  // private permissionsService = transient(PermissionsService);
 
   constructor(
+    // entityService: EntityService,
+    // contentTypesService: ContentTypesService,
     dialogRef: MatDialogRef<DevRestDataComponent>,
     router: Router,
     route: ActivatedRoute,
-    contentTypesService: ContentTypesService,
     appDialogConfigService: AppDialogConfigService,
     permissionsService: PermissionsService,
-    entityService: EntityService,
+
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     /** sxc-angular context. Used to resolve urls */
@@ -88,7 +94,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),
-      switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
+      switchMap(ctName => this.contentTypesService.retrieveContentType(ctName)),
       share()
     );
 
@@ -110,7 +116,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
 
     // Get an item of this type for building urls
     const noDataFound: EntityBasic = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
-    const itemOfThisType$ = entityService.getEntities$(
+    const itemOfThisType$ = this.entityService.getEntities$(
       contentType$.pipe(
         filter(ct => !!ct),
         map(ct => ({ contentTypeName: ct.StaticName })),
@@ -138,7 +144,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     ]).pipe(
       map(([[contentType, scenario, permissions], [root, item, diag]]) => {
         var result: DevRestDataViewModel = {
-        // return ({
+          // return ({
           ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
           contentType,
           itemId: item.Id,

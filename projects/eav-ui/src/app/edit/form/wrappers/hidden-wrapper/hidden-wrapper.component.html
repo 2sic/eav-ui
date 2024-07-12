@@ -1,3 +1,5 @@
-<div [hidden]="hidden$ | async">
+<!-- <pre>Wrapper.Hidden Start - VisibleAndEnabled: '{{ basics().visibleAndEnabled }}'</pre> -->
+<div [hidden]="!basics().visibleAndEnabled">
   <ng-container #fieldComponent></ng-container>
 </div>
+<!-- <pre>Wrapper.Hidden End</pre> -->

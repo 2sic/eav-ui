@@ -9,7 +9,7 @@
       <br>
       <!-- Generator select -->
       @if (generators$ | async; as generators) {
-        <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Generator</mat-label>
           <mat-select required [(value)]="selectedGenerator">
             <mat-select-trigger>
@@ -32,7 +32,7 @@
       <br>
       <!-- Edition select -->
       @if (editions$ | async; as editions) {
-        <mat-form-field appearance="fill" color="accent" style="width: 100%;">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Select an Edition to generate code for</mat-label>
           <mat-select required [(value)]="selectedEdition">
               @for (edition of editions.sort() ; track edition) {

@@ -1,54 +1,54 @@
-@if (viewModel | async; as vm) {
-  @if (vm.open) {
+@if (preview(); as preV) {
+  @if (open()) {
     <div class="fabs-box">
-      @if (vm.buttonAdam) {
+      @if (buttonAdam()) {
         <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
-          [disabled]="vm.controlStatus.disabled" (click)="toggleAdam(false, false)">
+          [disabled]="controlStatus().disabled" (click)="toggleAdam(false, false)">
           <mat-icon svgIcon="apple-outlined"></mat-icon>
         </button>
       }
-      <button mat-mini-fab color="primary" [disabled]="!vm.adamItem?._imageConfigurationContentType"
-        [ngClass]="{ 'metadata-exists': vm.adamItem?._imageConfigurationId > 0 }"
+      <button mat-mini-fab color="primary" [disabled]="!adamItem()?._imageConfigurationContentType"
+        [ngClass]="{ 'metadata-exists': adamItem()?._imageConfigurationId > 0 }"
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
-        (click)="openImageConfiguration(vm.adamItem)">
+        (click)="openImageConfiguration(adamItem())">
         <mat-icon
-          [tippy]="(vm.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-          [tippyDisabled]="vm.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
+          [tippy]="(enableImageConfiguration() ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
+          [tippyDisabled]="adamItem()?._imageConfigurationContentType">filter_center_focus</mat-icon>
       </button>
-      @if (vm.buttonPage) {
+      @if (buttonPage()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
-          [disabled]="vm.controlStatus.disabled" (click)="openPagePicker()">
+          [disabled]="controlStatus().disabled" (click)="openPagePicker()">
           <mat-icon svgIcon="sitemap"></mat-icon>
         </button>
       }
-      @if (vm.buttonMore) {
+      @if (buttonMore()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
-          [disabled]="vm.controlStatus.disabled" [matMenuTriggerFor]="menu">
+          [disabled]="controlStatus().disabled" [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
       }
     </div>
     <mat-menu #menu="matMenu" class="menu-box">
       <ng-template matMenuContent>
-        @if (vm.showAdam) {
+        @if (showAdam()) {
           <button mat-menu-item (click)="toggleAdam(false, false)">
             <mat-icon svgIcon="apple-outlined"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
           </button>
         }
-        @if (vm.showPagePicker) {
+        @if (showPagePicker()) {
           <button mat-menu-item (click)="openPagePicker()">
             <mat-icon svgIcon="sitemap"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
           </button>
         }
-        @if (vm.showImageManager) {
+        @if (showImageManager()) {
           <button mat-menu-item (click)="toggleAdam(true, true)">
             <mat-icon svgIcon="file-image"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
           </button>
         }
-        @if (vm.showFileManager) {
+        @if (showFileManager()) {
           <button mat-menu-item (click)="toggleAdam(true, false)">
             <mat-icon svgIcon="file"></mat-icon>
             <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
@@ -62,48 +62,43 @@
         <mat-card class="eav-card eav-layout-grid__cell--span-12 hyperlink-card shadow-bottom-z-1">
           <div class="hyperlink-input-link-wrapper">
             <!-- input -->
-            <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
+            <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
               <input matInput [formControlName]="config.fieldName" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
-                tippyPlacement="top" [placeholder]="vm.placeholder" [required]="vm.required" appPasteClipboardImage
+                tippyPlacement="top" [placeholder]="basics().placeholder" [required]="basics().required" appPasteClipboardImage
                 [config]="config" [elementType]="'input'">
-              <mat-label>{{ vm.label }}</mat-label>
+              <mat-label>{{ basics().label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
-            @if (vm.preview?.floatingText) {
+            @if (preV?.floatingText) {
               <div class="hyperlink-floating">
-                <div class="hyperlink-floating__value">{{ vm.controlStatus.value }}</div>
+                <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
                 <div class="hyperlink-floating__url-box">
-                  <a [href]="vm.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="vm.preview.url">
-                    <span>{{ vm.preview.floatingText }}</span>
+                  <a [href]="preV.url" target="_blank" class="hyperlink-floating__url" [tippy]="preV.url">
+                    <span>{{ preV.floatingText }}</span>
                   </a>
                 </div>
               </div>
             }
           </div>
-          @if (vm.controlStatus.value && vm.preview) {
+          @if (controlStatus().value) {
             <div class="preview-wrapper">
-              <!-- image -->
-              @if (vm.preview.isImage) {
-                <a [href]="vm.preview.url" target="_blank">
+              @if (preV.isImage) {
+                <!-- image -->
+                <a [href]="preV.url" target="_blank">
                   <div class="preview-image-box">
-                    <img [src]="vm.preview.previewUrl" class="preview-image" />
+                    <img [src]="preV.previewUrl" class="preview-image" />
                   </div>
                 </a>
               }
-              <!-- icon -->
-              @if (!vm.preview.isImage) {
-              <a [href]="vm.preview.url" target="_blank" [tippy]="vm.preview.url" tippyPlacement="right">
-                <div class="preview-icon-box">
-                  @if (vm.preview.isKnownType) {
-                    <mat-icon [svgIcon]="vm.preview.icon"></mat-icon>
-                  }
-                  @if (!vm.preview.isKnownType) {
-                    <mat-icon [svgIcon]="vm.preview.icon"></mat-icon>
-                  }
-                </div>
-              </a>
-            }
-          </div>
+              @else {
+                <!-- icon -->
+                <a [href]="preV.url" target="_blank" [tippy]="preV.url" tippyPlacement="right">
+                  <div class="preview-icon-box">
+                    <mat-icon [svgIcon]="preV.icon"></mat-icon>
+                  </div>
+                </a>
+              }
+            </div>
           }
         </mat-card>
       </div>

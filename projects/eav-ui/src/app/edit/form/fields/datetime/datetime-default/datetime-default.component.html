@@ -1,23 +1,31 @@
-@if (viewModel | async; as vm) {  
-  @if (!vm.useTimePicker) {
-    <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-      <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker" 
-        [placeholder]="vm.placeholder" [required]="vm.required" [value]="vm.controlStatus.value" (dateChange)="updateValue($event)">
-      <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
-      </mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-      <mat-label>{{ vm.label }}</mat-label>
-    </mat-form-field>
-  }
-  @if (vm.useTimePicker) {
-    <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
-      <input matInput class="eav-translate-on-dblclick" [disabled]="vm.controlStatus.disabled" [owlDateTime]="owlPicker" 
-        [placeholder]="vm.placeholder" [required]="vm.required" [value]="vm.controlStatus.value" (dateTimeChange)="updateValue($event)">
-      <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" [tippy]="'Fields.DateTime.Open' | translate">
-      </mat-datepicker-toggle>
-      <owl-date-time #owlPicker></owl-date-time>
-      <mat-label>{{ vm.label }}</mat-label>
-    </mat-form-field>
-  }
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+@if (!useTimePicker()) {
+  <!-- Date-Picker only - use the classic Angular-Material date picker -->
+  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
+    <input matInput class="eav-translate-on-dblclick"
+      [disabled]="controlStatus().disabled"
+      [matDatepicker]="picker"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required" [value]="controlStatus().value"
+      (dateChange)="updateValue($event)">
+    <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
+    </mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-label>{{ basics().label }}</mat-label>
+  </mat-form-field>
 }
+@else {
+  <!-- Date & Time Picker - use the OWL picker (not ideal, but looks similar)  -->
+  <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
+    <input matInput class="eav-translate-on-dblclick"
+      [disabled]="controlStatus().disabled"
+      [owlDateTime]="owlPicker"
+      [placeholder]="basics().placeholder"
+      [required]="basics().required" [value]="valueForTimePicker()"
+      (dateTimeChange)="updateValue($event)">
+    <mat-datepicker-toggle matTextSuffix [owlDateTimeTrigger]="owlPicker" [tippy]="'Fields.DateTime.Open' | translate">
+    </mat-datepicker-toggle>
+    <owl-date-time #owlPicker></owl-date-time>
+    <mat-label>{{ basics().label }}</mat-label>
+  </mat-form-field>
+}
+<app-field-helper-text></app-field-helper-text>

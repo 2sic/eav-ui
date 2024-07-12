@@ -2,6 +2,7 @@ import { NavItem } from "../../shared/models/nav-item.model";
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { GoToCopilot } from '../copilot/go-to-copilot';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { CopilotSpecs } from '../copilot/copilot-specs';
 
 export const AppAdminMenu: NavItem[] = [
 
@@ -36,7 +37,19 @@ export const AppAdminMenu: NavItem[] = [
       },
     ]
   },
-  { name: 'Web API', path: 'web-api', icon: 'offline_bolt', svgIcon: false, tippy: 'WebApi' },
+  {
+    name: 'Web API', path: 'web-api', icon: 'offline_bolt', svgIcon: false, tippy: 'WebApi',
+    child: [
+      {
+        ...GoToCopilot.routeDefinition('web-api'),
+        tippy: CopilotSpecs.webApi.teaser,
+      },
+      {
+        ...GoToDevRest.routeWebApiDefinition,
+        tippy: 'Rest-Api Queries'
+      },
+    ]
+  },
   {
     name: 'App',
     path: 'app',

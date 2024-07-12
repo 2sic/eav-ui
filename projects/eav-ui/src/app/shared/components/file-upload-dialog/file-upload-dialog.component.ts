@@ -1,21 +1,37 @@
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, catchError, combineLatest, filter, fromEvent, map, of, switchMap, take, tap } from 'rxjs';
-import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../base.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
 import { AppInstallSettingsService } from '../../services/getting-started.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Context } from '../../services/context';
 import { CrossWindowMessage, InstallPackage, InstallSettings, SpecsForInstaller } from '../../models/installer-models';
 import { InstallerService } from '../../services/installer.service';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
   selector: 'app-file-upload-dialog',
   templateUrl: './file-upload-dialog.component.html',
   styleUrls: ['./file-upload-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    NgClass,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    SafeHtmlPipe,
+    AsyncPipe,
+    DragAndDropDirective,
+    MatButtonModule,
+  ]
 })
-export class FileUploadDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class FileUploadDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   @Input() uploadType: UploadTypes;
@@ -46,11 +62,11 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     private sanitizer: DomSanitizer,
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super();
 
     // copied from 2sxc-ui app/installer
-    this.subscription.add(
+    this.subscriptions.add(
       this.installSettingsService.settings$.subscribe(settings => {
         this.settings = settings;
         this.remoteInstallerUrl = <string>this.sanitizer.bypassSecurityTrustResourceUrl(settings.remoteUrl);
@@ -80,7 +96,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
   );
 
   ngOnInit(): void {
-    this.subscription.add(
+    this.subscriptions.add(
       this.files$.subscribe(() => {
         if (this.result$.value !== undefined) {
           this.result$.next(undefined);
@@ -100,7 +116,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
 
     // copied from 2sxc-ui app/installer
-    this.subscription.add(this.messages$.pipe(
+    this.subscriptions.add(this.messages$.pipe(
       // Verify it's for this action
       filter(data => data.action === 'specs'),
       // Send message to iframe
@@ -123,7 +139,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
 
     // copied from 2sxc-ui app/installer
     // Subscription to listen to 'install' messages
-    this.subscription.add(this.messages$.pipe(
+    this.subscriptions.add(this.messages$.pipe(
       filter(data => data.action === 'install'),
       // Get packages from data.
       map(data => Object.values(data.packages)),
@@ -194,7 +210,7 @@ Please try again later or check how to manually install content-templates: https
 
   upload(): void {
     this.uploading$.next(true);
-    this.subscription.add(
+    this.subscriptions.add(
       this.dialogData.upload$(this.files$.value).pipe(take(1)).subscribe({
         next: (result) => {
           this.uploading$.next(false);
@@ -209,7 +225,7 @@ Please try again later or check how to manually install content-templates: https
     );
   }
 
-  showAppCatalog(): void { 
+  showAppCatalog(): void {
     this.showAppCatalog$.next(!this.showAppCatalog$.value);
   }
 

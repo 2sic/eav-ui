@@ -1,96 +1,58 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerComponent, pickerProviders } from '../../picker/picker.component';
-import { TranslateService } from '@ngx-translate/core';
+import { PickerComponent } from '../../picker/picker.component';
+import { PickerImports } from '../../picker/picker-providers.constant';
 import { DeleteEntityProps } from '../../picker/models/picker.models';
-import { PickerData } from '../../picker/picker-data';
 import { StringPickerLogic } from './string-picker-logic';
-import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
-import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { DataAdapterString } from '../../picker/adapters/data-adapter-string';
+import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
+import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
+const nameOfThis = 'StringPickerComponent';
 
 @Component({
-  selector: InputTypeConstants.WIPStringPicker,
+  selector: InputTypeConstants.StringPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
-})
-@FieldMetadata({
-  // wrappers: [WrappersConstants.LocalizationWrapper],
+  standalone: true,
+  imports: PickerImports,
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
-  constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
-    private translate: TranslateService,
-    editRoutingService: EditRoutingService,
-    private pickerStringSourceAdapterRaw: PickerStringSourceAdapter,
-    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
-    private pickerEntitySourceAdapter: PickerEntitySourceAdapter,
-    private querySourceAdapterRaw: PickerQuerySourceAdapter,
-  ) {
-    super(
-      eavService,
-      fieldsSettingsService,
-      editRoutingService,
-    );
-    this.log = new EavLogger('StringPickerComponent', logThis);
+
+  private stateString = transient(StateAdapterString);
+
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
     StringPickerLogic.importMe();
-    this.isStringQuery = true;
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.initAdaptersAndViewModel();
-  }
+  protected override createPickerAdapters(): void {
+    this.log.a('createPickerAdapters');
 
-  ngAfterViewInit(): void {
-    super.ngAfterViewInit();
-  }
+    let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;
 
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
-  }
+    const state = this.stateString.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
-  protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
-
-    let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
-
-    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
-
-    const dataSourceType = this.settings$.value.DataSourceType;
+    const dataSourceType = this.fieldState.settings().DataSourceType;
     const isEmpty = !dataSourceType;
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
-      source = this.pickerStringSourceAdapterRaw.setupString(
-        state.settings$,
-        state.disableAddNew$,
-        this.config,
-        this.group,
+      source = transient(DataAdapterString, this.injector).setupString(
         (props: DeleteEntityProps) => state.doAfterDelete(props),
         isEmpty,
       );
     }
     else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery)
-      source = this.querySourceAdapterRaw.setupFromComponent(this, state).setupQuery(state.error$);
+      source = transient(DataAdapterQuery, this.injector).linkLog(this.log).connectState(state, false);
     else if (dataSourceType === PickerConfigModels.UiPickerSourceEntity)
-      source = this.pickerEntitySourceAdapter.setupFromComponent(this, state);
+      source = transient(DataAdapterEntity, this.injector).linkLog(this.log).connectState(state, false);
 
-    
-    state.init();
-    source.init('StringPickerComponent.createPickerAdapters');
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

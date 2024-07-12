@@ -7,11 +7,24 @@ import { defaultGridOptions } from '../../../../shared/constants/default-grid-op
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: 'app-settings-item-details',
   templateUrl: './settings-item-details.component.html',
   styleUrls: ['./settings-item-details.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    AsyncPipe,
+    SxcGridModule,
+  ],
 })
 export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;
@@ -22,10 +35,11 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<SettingsItemDetailsViewModel>;
 
+  private analyzeSettingsService = transient(AnalyzeSettingsService);
+
   constructor(
     private dialogRef: MatDialogRef<SettingsItemDetailsComponent>,
     private route: ActivatedRoute,
-    private analyzeSettingsService: AnalyzeSettingsService,
   ) {
     this.part = this.route.snapshot.parent.paramMap.get('part') as AnalyzePart;
     const routeViewGuid = this.route.snapshot.paramMap.get('view');
@@ -56,29 +70,14 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          field: 'Value',
-          flex: 2,
-          minWidth: 250,
-          cellClass: 'primary-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item._value;
-          },
+          ...ColumnDefinitions.TextWideActionClass,
+          headerName: 'Value',
+          field: '_value',
           cellRenderer: AnalyzeSettingsValueComponent,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           field: 'Source',
-          flex: 1,
-          minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const item: SettingsStackItem = params.data;
-            return item.Source;
-          },
         },
       ],
     };
@@ -86,6 +85,6 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   }
 }
 
-interface SettingsItemDetailsViewModel { 
+interface SettingsItemDetailsViewModel {
   stack: SettingsStackItem[];
 }

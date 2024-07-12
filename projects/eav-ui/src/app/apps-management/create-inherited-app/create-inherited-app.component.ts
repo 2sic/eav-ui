@@ -7,32 +7,30 @@ import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedComponentsModule } from '../../shared/shared-components.module';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterOutlet } from '@angular/router';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { transient } from '../../core';
 
 @Component({
-    selector: 'app-create-inherited-app',
-    templateUrl: './create-inherited-app.component.html',
-    styleUrls: ['./create-inherited-app.component.scss'],
-    standalone: true,
-    imports: [
-        RouterOutlet,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        SharedComponentsModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-    ],
-    providers: [
-        AppsListService,
-    ]
+  selector: 'app-create-inherited-app',
+  templateUrl: './create-inherited-app.component.html',
+  styleUrls: ['./create-inherited-app.component.scss'],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    FieldHintComponent
+  ],
 })
 export class CreateInheritedAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -43,9 +41,10 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<CreateInheritedAppViewModel>;
 
+  private appsListService = transient(AppsListService);
+
   constructor(
     private dialogRef: MatDialogRef<CreateInheritedAppComponent>,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();

@@ -21,6 +21,14 @@ export const EditApiKeyPaths = {
   GoogleMaps: 'Settings.GoogleMaps.ApiKey',
 } as const;
 
+export interface MetadataKeyDefinition {
+  targetType: number;
+  target: string;
+  label: string;
+  keyType: MetadataKeyType;
+  hint?: string;
+}
+
 
 export const eavConstants = {
   metadata: {
@@ -39,7 +47,7 @@ export const eavConstants = {
     language: { targetType: 8, target: 'Dimension', label: 'Language (8)', keyType: MetadataKeyTypes.String },
     /** Metadata of CmsObject */
     cmsObject: { targetType: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
-  },
+  } satisfies Record<string, MetadataKeyDefinition>,
 
   appMetadata: {
     LightSpeed: { ContentTypeName: 'LightSpeedOutputDecorator' }

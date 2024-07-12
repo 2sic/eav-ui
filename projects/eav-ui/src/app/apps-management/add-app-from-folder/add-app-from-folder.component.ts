@@ -1,10 +1,10 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
+import { Component, HostBinding, OnDestroy, OnInit, inject } from "@angular/core";
 import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
 import { FeaturesService } from '../../shared/services/features.service';
@@ -15,27 +15,24 @@ import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { AgGridModule } from '@ag-grid-community/angular';
-import { FeaturesModule } from '../../features/features.module';
+import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 @Component({
-    selector: 'app-add-app-from-folder',
-    templateUrl: './add-app-from-folder.component.html',
-    styleUrls: ['./add-app-from-folder.component.scss'],
-    standalone: true,
-    imports: [
-        FeaturesModule,
-        AgGridModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-    ],
-    providers: [
-        AppsListService,
-        FeaturesService,
-    ]
+  selector: 'app-add-app-from-folder',
+  templateUrl: './add-app-from-folder.component.html',
+  styleUrls: ['./add-app-from-folder.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+    FeatureTextInfoComponent,
+    SxcGridModule,
+  ],
 })
-export class AddAppFromFolderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();
@@ -43,24 +40,21 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
   installing: boolean = false;
 
   private refreshApps$ = new Subject<void>();
-  private isAddFromFolderEnabled$ = new BehaviorSubject<boolean>(false);
 
   viewModel$: Observable<AddAppFromFolderViewModel>;
 
+  public features: FeaturesService = inject(FeaturesService);
+  private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+  private appsListService = transient(AppsListService);
+
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
-    private appsListService: AppsListService,
     private snackBar: MatSnackBar,
-    private featuresService: FeaturesService,
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
-      .pipe(distinctUntilChanged())
-      .subscribe(this.isAddFromFolderEnabled$)
-    );
     this.viewModel$ = combineLatest([
       this.refreshApps$.pipe(
         startWith(undefined),
@@ -116,7 +110,7 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
           cellRenderer: CheckboxCellComponent,
           cellRendererParams: (() => {
             const params: CheckboxCellParams = {
-              isDisabled: !this.isAddFromFolderEnabled$.value,
+              isDisabled: !this.isAddFromFolderEnabled,
               onChange: (app, enabled) => this.onChange(app, enabled),
             };
             return params;

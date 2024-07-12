@@ -1,20 +1,42 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
-import { BehaviorSubject, Observable, combineLatest, map, take } from 'rxjs';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { BaseComponent } from '../../shared/components/base.component';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { Field } from '../models/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
-import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureNames } from '../../features/feature-names';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
   selector: 'app-share-or-inherit-dialog',
   templateUrl: './share-or-inherit-dialog.component.html',
-  styleUrls: ['./share-or-inherit-dialog.component.scss']
+  styleUrls: ['./share-or-inherit-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule,
+    NgClass,
+    AsyncPipe,
+    TranslateModule,
+    FeatureIconIndicatorComponent
+  ],
+  providers: [
+    FeatureDetailService,
+  ],
 })
-export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];
   title: string;
   message: string;
@@ -27,12 +49,14 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
   shareableFields$ = new BehaviorSubject<Field[]>(undefined);
   viewModel$: Observable<ShareOrInheritDialogViewModel>;
 
+  public features: FeaturesService = inject(FeaturesService);
+  private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
     private dialogRef: MatDialogRef<ShareOrInheritDialogComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
     // All this is just for the feature dialog
-    private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -66,10 +90,6 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
     }
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   chooseShare() {
     this.guid = null;
     this.state = SharingOrInheriting.Sharing;
@@ -88,21 +108,17 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
   }
 
   save() {
-    this.featuresService.isEnabled$(FeatureNames.FieldShareConfigManagement).pipe(
-      take(1),
-    ).subscribe(isEnabled => {
-      if (!isEnabled) {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
-      } else {
-        if (this.state == SharingOrInheriting.Sharing) {
-          this.subscription.add(this.contentTypesFieldsService.share(this.dialogData.Id)
-            .subscribe(() => this.dialogRef.close()));
-        } else if (this.state == SharingOrInheriting.Inheriting) {
-          this.subscription.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
-            .subscribe(() => this.dialogRef.close()));
-        }
+    if (!this.fieldShareConfigManagement()) {
+      openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+    } else {
+      if (this.state == SharingOrInheriting.Sharing) {
+        this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
+          .subscribe(() => this.dialogRef.close()));
+      } else if (this.state == SharingOrInheriting.Inheriting) {
+        this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
+          .subscribe(() => this.dialogRef.close()));
       }
-    });
+    }
   }
 
   closeDialog() {

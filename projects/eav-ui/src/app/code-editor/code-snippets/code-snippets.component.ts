@@ -1,11 +1,30 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { SnippetsSets } from '../models/snippet.model';
+import { ObjectToArrayPipe } from './object-to-array.pipe';
+import { TranslateModule } from '@ngx-translate/core';
+import { KeyValuePipe } from '@angular/common';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-code-snippets',
   templateUrl: './code-snippets.component.html',
   styleUrls: ['./code-snippets.component.scss'],
+  standalone: true,
+  imports: [
+    MatIconModule,
+    MatRippleModule,
+    KeyValuePipe,
+    TranslateModule,
+    ObjectToArrayPipe,
+    ClickStopPropagationDirective,
+    TippyDirective,
+    SafeHtmlPipe,
+  ],
 })
 export class CodeSnippetsComponent {
   @Input() snippets: SnippetsSets;
@@ -22,18 +41,18 @@ export class CodeSnippetsComponent {
   }
 
   toggleSection(key: string): void {
-    GeneralHelpers.toggleInArray(key, this.toggledSections);
+    ArrayHelpers.toggleInArray(key, this.toggledSections);
   }
 
   toggleFolder(key: string): void {
-    GeneralHelpers.toggleInArray(key, this.toggledFolders);
+    ArrayHelpers.toggleInArray(key, this.toggledFolders);
   }
 
   toggleInfo(key: string): void {
-    GeneralHelpers.toggleInArray(key, this.toggledInfos);
+    ArrayHelpers.toggleInArray(key, this.toggledInfos);
   }
 
   toggleMore(key: string): void {
-    GeneralHelpers.toggleInArray(key, this.toggledMores);
+    ArrayHelpers.toggleInArray(key, this.toggledMores);
   }
 }

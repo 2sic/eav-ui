@@ -1,16 +1,36 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { GeneralHelpers } from '../../edit/shared/helpers';
 import { ViewKey } from '../code-editor.models';
 import { FileAsset } from '../models/file-asset.model';
 import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
 import { calculateTreeAppShared } from './code-templates.helpers';
 import { appSharedRoot, CreateTemplateParams } from './code-templates.models';
+import { SortItemsPipe } from './order-items.pipe';
+import { DepthPaddingPipe } from './depth-padding.pipe';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { ArrayHelpers } from '../../shared/helpers/array.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-code-templates',
   templateUrl: './code-templates.component.html',
   styleUrls: ['./code-templates.component.scss'],
+  standalone: true,
+  imports: [
+    NgTemplateOutlet,
+    NgClass,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    DepthPaddingPipe,
+    SortItemsPipe,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
 })
 export class CodeTemplatesComponent implements OnChanges {
   @Input() view?: SourceView;
@@ -50,7 +70,7 @@ export class CodeTemplatesComponent implements OnChanges {
 
   toggleItem(path: string, isShared: boolean): void {
     const toggledItems = isShared ? this.toggledItemsShared : this.toggledItemsApp;
-    GeneralHelpers.toggleInArray(path, toggledItems);
+    ArrayHelpers.toggleInArray(path, toggledItems);
   }
 
   addFile(folder?: string, isShared?: boolean): void {

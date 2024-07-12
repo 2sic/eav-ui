@@ -1,17 +1,16 @@
-@if (viewModel$ | async; as vm) {
-  <div class="scrollable__overlay">
-    <div #leftShadow class="scrollable__overlay--left-shadow"></div>
-    <div #rightShadow class="scrollable__overlay--right-shadow"></div>
-    <div #scrollable class="scrollable lang-switch" [tippy]="'Message.CantSwitchLanguage' | translate"
-      [tippyDisabled]="!disabled">
-      @for (langButton of vm.languageButtons; track langButton) {
-        <button mat-flat-button class="lang-switch__button"
-          [disabled]="disabled && vm.currentLanguage !== langButton.NameId"
-          [color]="vm.currentLanguage === langButton.NameId ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
-          (click)="lngButtonClick($event, langButton)" [tippy]="langButton.Culture" [tippyDisabled]="disabled">
-          {{ langButton.buttonText }}
-        </button>
-      }
-    </div>
+<!-- Show all language tab-buttons on a edit dialog -->
+<div class="scrollable__overlay">
+  <div #leftShadow class="scrollable__overlay--left-shadow"></div>
+  <div #rightShadow class="scrollable__overlay--right-shadow"></div>
+  <div #scrollable class="scrollable lang-switch" [tippy]="'Message.CantSwitchLanguage' | translate"
+    [tippyDisabled]="!disabled">
+    @for (langButton of buttons; track langButton) {
+      <button mat-flat-button class="lang-switch__button"
+        [disabled]="disabled && current() !== langButton.NameId"
+        [color]="current() === langButton.NameId ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
+        (click)="lngButtonClick($event, langButton)" [tippy]="langButton.Culture" [tippyDisabled]="disabled">
+        {{ langButton.buttonText }}
+      </button>
+    }
   </div>
-}
+</div>

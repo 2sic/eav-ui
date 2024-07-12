@@ -1,4 +1,4 @@
-import { AgGridAngular, AgGridModule } from '@ag-grid-community/angular';
+import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -27,10 +27,13 @@ import { AgGridHeightDirective } from './ag-grid-height.directive';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-license-info',
@@ -41,7 +44,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
     MatExpansionModule,
     MatIconModule,
     NgClass,
-    AgGridModule,
+    SxcGridModule,
     AgGridHeightDirective,
     MatDialogActions,
     MatButtonModule,
@@ -49,13 +52,10 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
     AsyncPipe,
     LicensesOrderPipe,
     ActiveFeaturesCountPipe,
-    TippyStandaloneDirective,
+    TippyDirective,
   ],
-  providers: [
-    FeaturesConfigService,
-  ]
 })
-export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   disabled$ = new BehaviorSubject(false);
@@ -65,20 +65,21 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
 
   viewModel$: Observable<LicenseInfoViewModel>;
 
+  private featuresConfigService = transient(FeaturesConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
-    ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.refreshLicenses$.next(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshLicenses$.next(); }));
     this.viewModel$ = //combineLatest([
       this.refreshLicenses$.pipe(
         startWith(undefined),
@@ -142,7 +143,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   private toggleFeature(feature: Feature, enabled: boolean): void {
     this.disabled$.next(true);
     const state: FeatureState = {
-      FeatureGuid: feature.Guid,
+      FeatureGuid: feature.guid,
       Enabled: enabled,
     };
     forkJoin([this.featuresConfigService.saveFeatures([state]), timer(100)]).subscribe({
@@ -162,93 +163,67 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   // ...not sure why it's even in here, my guess is copy-paste of code which wasn't understood properly
   // 3. I think the header-name should always be the first line, then the field
   private buildGridOptions(): GridOptions {
-    const cellDefaults = {
-      cellClass: 'no-outline',
-      sortable: true,
-    };
-    const cellDefaultsTextFilter = {
-      ...cellDefaults,
-      filter: 'agTextColumnFilter',
-    };
-
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
           headerName: 'ID',
-          field: 'NameId',
-          ...cellDefaultsTextFilter,
+          field: 'nameId',
+          filter: 'agTextColumnFilter',
           width: 200,
           headerClass: 'dense',
+          sortable: true,
           cellClass: 'id-action no-padding no-outline'.split(' '),
-          // TODO: @SDV - most of these columns had a valueGetter that was 3 lines long
-          // it was easy to reduce to 1 - but actually it is not needed!
-          // Original - too long
-          // valueGetter: (params) => {
-          //   const feature: Feature = params.data;
-          //   return feature.NameId;
-          // },
-          // Optimized - 1 line - but actually not needed
-          // valueGetter: (params) => (params.data as Feature).NameId,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
-              tooltipGetter: (feature: Feature) => feature.NameId,
+              tooltipGetter: (feature: Feature) => feature.nameId,
             };
             return params;
           })(),
         },
         {
+          ...ColumnDefinitions.TextWideFlex3,
           field: 'Name',
-          ...cellDefaultsTextFilter,
-          flex: 3,
-          minWidth: 250,
           cellClass: 'primary-action highlight'.split(' '),
           onCellClicked: (params) => {
             this.showFeatureDetails(params.data as Feature);
           },
-          // valueGetter: (params) => (params.data as Feature).Name,
         },
         {
-          field: 'IsEnabled',
+
           headerName: 'Enabled',
-          ...cellDefaults,
+          field: 'isEnabled',
           width: 80,
+          cellClass: 'no-outline',
           headerClass: 'dense',
+          sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
-          // valueGetter: (params) => (params.data as Feature).Enabled,
         },
         {
+          ...ColumnDefinitions.TextNarrow,
           headerName: 'Reason',
-          field: 'EnabledReason',
-          ...cellDefaultsTextFilter,
-          flex: 1,
-          minWidth: 150,
+          field: 'enabledReason',
           cellRenderer: FeaturesListEnabledReasonComponent,
-          // valueGetter: (params) => (params.data as Feature).EnabledReason,
         },
         {
           headerName: 'Expiration',
           field: 'ExpMessage',
-          ...cellDefaultsTextFilter,
+          filter: 'agTextColumnFilter',
           width: 120,
-          // valueGetter: (params) => (params.data as FeatureWithUi)?.ExpirationText,
-          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.Expiration,
+          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.expiration,
         },
         {
+          ...ColumnDefinitions.ActionsPinnedRight7,
           headerName: '',
-          field: 'EnabledInConfiguration',
-          width: 62,
-          cellClass: 'secondary-action no-outline no-padding'.split(' '),
-          pinned: 'right',
+          field: 'enabledInConfiguration',
           cellRenderer: FeaturesStatusComponent,
-          // valueGetter: (params) => (params.data as Feature).EnabledInConfiguration,
           cellRendererParams: (() => {
             const params: FeaturesStatusParams & IdFieldParams<Feature> = {
-              isDisabled: (feature) => !feature.IsConfigurable || this.disabled$.value,
+              isDisabled: (feature) => !feature.isConfigurable || this.disabled$.value,
               onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
-              tooltipGetter: (feature: Feature) => feature.IsConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
+              tooltipGetter: (feature: Feature) => feature.isConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
             return params;
           }),

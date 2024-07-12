@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
@@ -9,7 +9,7 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -29,13 +29,42 @@ import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
 import { AppDialogConfigService } from '../services';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogActions } from '@angular/material/dialog';
+import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
+import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss'],
+  standalone: true,
+  imports: [
+    MatDialogActions,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+    DragAndDropDirective,
+  ],
 })
-export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
+export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private contentTypesService = transient(ContentTypesService);
+  private contentExportService = transient(ContentExportService);
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
@@ -54,10 +83,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
-    private contentExportService: ContentExportService,
     private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
@@ -67,7 +94,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchScopes();
     this.refreshScopeOnRouteChange();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchContentTypes(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchContentTypes(); }));
 
     this.dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
@@ -200,7 +227,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
               TargetType: eavConstants.metadata.contentType.targetType,
               String: contentType.StaticName,
             },
-            Prefill: { Label: contentType.Name, Description: contentType.Description },
+            Prefill: {
+              Label: contentType.Name,
+              Description: contentType.Description
+            },
           }
           : { EntityId: contentType.Properties.Id }
       ],
@@ -254,7 +284,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
    * Note 2024-03-04 2dm - not sure if this auto-add feature is still needed though...
    */
   private refreshScopeOnRouteChange() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
         map(() => this.route.snapshot.paramMap.get('scope')),
@@ -285,20 +315,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          headerName: 'ID',
-          field: 'Id',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          cellClass: (params) => {
-            const contentType: ContentType = params.data;
-            return `id-action no-padding no-outline ${contentType.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-          },
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Id;
-          },
+          ...ColumnDefinitions.Id,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<ContentType> = {
@@ -308,21 +325,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           })(),
         },
         {
-          headerName: 'Content Type',
-          field: 'ContentType',
-          flex: 3,
-          minWidth: 250,
-          cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
+          ...ColumnDefinitions.TextWideType,
+          headerName: 'ContentType',
+          field: 'Label',
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
             const contentType: ContentType = params.data;
             this.showContentItems(contentType);
-          },
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Label;
           },
           comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
             const contentTypeA: ContentType = nodeA.data;
@@ -331,16 +340,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           },
         },
         {
+          ...ColumnDefinitions.Items,
           field: 'Items',
-          width: 102,
-          headerClass: 'dense',
-          cellClass: 'secondary-action no-padding'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Items;
-          },
           cellRenderer: DataItemsComponent,
           cellRendererParams: (() => {
             const params: DataItemsParams = {
@@ -351,16 +352,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           })(),
         },
         {
+          ...ColumnDefinitions.Fields,
           field: 'Fields',
-          width: 94,
-          headerClass: 'dense',
-          cellClass: 'secondary-action no-padding'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Fields;
-          },
           cellRenderer: DataFieldsComponent,
           cellRendererParams: (() => {
             const params: DataFieldsParams = {
@@ -370,11 +363,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           })(),
         },
         {
+          ...ColumnDefinitions.TextWideMin100,
           field: 'Name',
-          flex: 1,
-          minWidth: 100,
-          sortable: true,
-          filter: 'agTextColumnFilter',
           cellClass: (params) => {
             const contentType: ContentType = params.data;
             return `${contentType.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
@@ -389,35 +379,33 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           },
         },
         {
+          ...ColumnDefinitions.TextWideFlex3,
           field: 'Description',
-          flex: 3,
-          minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: (params) => {
             const contentType: ContentType = params.data;
             return contentType.Properties?.Description;
           },
         },
         {
-          width: 162,
-          cellClass: 'secondary-action no-padding'.split(' '),
-          pinned: 'right',
+          ...ColumnDefinitions.ActionsPinnedRight4,
           cellRenderer: DataActionsComponent,
           cellRendererParams: (() => {
             const params: DataActionsParams = {
               enablePermissionsGetter: () => this.enablePermissionsGetter(),
-              onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
-              onOpenPermissions: (contentType) => this.openPermissions(contentType),
-              onEdit: (contentType) => this.editContentType(contentType),
-              onOpenRestApi: (contentType) => this.openRestApi(contentType),
-              onOpenMetadata: (contentType) => this.openMetadata(contentType),
-              onTypeExport: (contentType) => this.exportType(contentType),
-              onOpenDataExport: (contentType) => this.openDataExport(contentType),
-              onOpenDataImport: (contentType) => this.openDataImport(contentType),
-              onDelete: (contentType) => this.deleteContentType(contentType),
-            };
+              do: (verb, contentType) => {
+                switch (verb) {
+                  case 'createUpdateMetaData': this.createOrEditMetadata(contentType); break;
+                  case 'openPermissions': this.openPermissions(contentType); break;
+                  case 'editContentType': this.editContentType(contentType); break;
+                  case 'openMetadata': this.openMetadata(contentType); break;
+                  case 'openRestApi': this.openRestApi(contentType); break;
+                  case 'typeExport': this.exportType(contentType); break;
+                  case 'dataExport': this.openDataExport(contentType); break;
+                  case 'dataImport': this.openDataImport(contentType); break;
+                  case 'deleteContentType': this.deleteContentType(contentType); break;
+                }
+              }
+            } satisfies DataActionsParams;
             return params;
           })(),
         },

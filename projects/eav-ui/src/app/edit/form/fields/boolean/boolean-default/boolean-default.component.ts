@@ -1,81 +1,59 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
-import { BooleanDefaultViewModel } from './boolean-default.models';
+import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass } from '@angular/common';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { FieldState } from '../../../builder/fields-builder/field-state';
+import { ControlStatus } from '../../../../shared/models';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
   selector: InputTypeConstants.BooleanDefault,
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    NgClass,
+    ExtendedModule,
+    FieldHelperTextComponent,
+  ],
 })
-@FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
-})
-export class BooleanDefaultComponent extends BaseFieldComponent<boolean> implements OnInit, OnDestroy {
-  viewModel$: Observable<BooleanDefaultViewModel>;
+@FieldMetadata({ ...WrappersLocalizationOnly })
+export class BooleanDefaultComponent {
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
+  protected fieldState = inject(FieldState);
+
+  protected group = this.fieldState.group;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean>> ;
+  protected control = this.fieldState.control;
+
+  protected settings = this.fieldState.settings;
+  protected basics = this.fieldState.basics;
+
+  changedLabel = computed(() => this.settings()._label, SignalHelpers.stringEquals);
+  checkedState = computed(() => {
+    const value = this.controlStatus().value;
+    const reverseToggle = this.settings().ReverseToggle;
+    return reverseToggle ? !value : value;
+  }, SignalHelpers.boolEquals);
+
+  constructor() {
     BooleanDefaultLogic.importMe();
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-    this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
-
-    const changeable$: Observable<boolean> = combineLatest([
-      this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
-    ]).pipe(
-      map(([TitleTrue, TitleFalse]) => !!(TitleTrue && TitleFalse)),
-      distinctUntilChanged(),
-    );
-
-    const checked$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged())
-    ]).pipe(
-      map(([value, reverseToogle]) => reverseToogle ? !value : value),
-      distinctUntilChanged(),
-    );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([changeable$]),
-      combineLatest([checked$])
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required],
-        [changeable],
-        [checked],
-      ]) => {
-        const viewModel: BooleanDefaultViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
-          changeable,
-          checked,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   updateValue(disabled: boolean) {
     if (!disabled) {
       const newValue = !this.control.value;
-      GeneralHelpers.patchControlValue(this.control, newValue);
+      ControlHelpers.patchControlValue(this.control, newValue);
     }
   }
 }

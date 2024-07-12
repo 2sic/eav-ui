@@ -1,9 +1,8 @@
 import { App } from '../../models/app.model';
+import { LightSpeedActionsParams } from '../../../admin-shared/lightspeed-action/lightspeed-actions.models';
 
-export interface AppsListActionsParams {
-  onDelete(app: App): void;
-  onFlush(app: App): void;
-  onOpenLightspeed(app: App): void;
-  lightspeedEnabled(): boolean;
-  openLightspeedFeatureInfo(): void;
+export type AppsListActionsType = 'deleteApp' | 'flushCache';
+
+export interface AppsListActionsParams extends LightSpeedActionsParams {
+  do(verb: AppsListActionsType, app: App): void;
 }

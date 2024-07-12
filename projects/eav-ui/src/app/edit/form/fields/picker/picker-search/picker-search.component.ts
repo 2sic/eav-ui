@@ -1,68 +1,120 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { TranslateService } from '@ngx-translate/core';
-import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, take } from 'rxjs';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../shared/services';
+import { Component, ElementRef, OnDestroy, OnInit, computed, input, signal, viewChild } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { PickerItem, messagePickerItem } from 'projects/edit-types';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { PickerSearchViewModel } from './picker-search.models';
-import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
-import { Field } from '../../../builder/fields-builder/field.model';
-import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { PickerData } from '../picker-data';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
-import { messagePickerItem } from '../adapters/picker-source-adapter-base';
+import { PickerTreeItem } from '../models/picker-tree.models';
+import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
+import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
+import { ClickStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/click-stop-propagation.directive';
+import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { PickerPartBaseComponent } from '../picker-part-base.component';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
-const logThis = true;
+const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
+const nameOfThis = 'PickerSearchComponent';
 
 @Component({
   selector: 'app-picker-search',
   templateUrl: './picker-search.component.html',
   styleUrls: ['./picker-search.component.scss'],
-  // imports: [
-  //   PickerHelpComponentComponent,
-  // ]
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgClass,
+    ExtendedModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatOptionModule,
+    MatTreeModule,
+    AsyncPipe,
+    TranslateModule,
+    PickerIconHelpComponent,
+    PickerIconInfoComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ]
 })
-export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @ViewChild('autocomplete') autocompleteRef?: ElementRef;
-
-  @Input() pickerData: PickerData;
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-  @Input() controlConfig: FieldControlConfig;
+export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit, OnDestroy {
+  //#region Inputs
 
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
-  @Input() showSelectedItem: boolean;
+  showSelectedItem = input.required<boolean>();
 
   /** Determine if edit buttons are possible, eg. not in preview */
-  @Input() showItemEditButtons: boolean;
+  showItemEditButtons = input.required<boolean>();
 
-  viewModel$: Observable<PickerSearchViewModel>;
+  //#endregion
 
-  private optionItems$ = new BehaviorSubject<PickerItem[]>(null);
+  /** The input field for the search */
+  autocomplete = viewChild.required<ElementRef<HTMLInputElement>>('autocomplete');
 
-  /**
-   * Currently selected item (not sure why just 1), used in displayFn to show the label from the value
-   * note that it seems a bit flaky, I think it's just the last-selected...?
-   */
-  private selectedItem: PickerItem;
   private newValue: string = null;
 
-  /** True/false trigger to trigger filtering */
-  private triggerFilter = new BehaviorSubject(false);
+  /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
+  public selectedItem = computed(() => this.pickerData().selectedOne(), { equal: RxHelpers.objectsEqual });
 
-  /** normal log */
-  private log = new EavLogger('PickerSearchComponent', logThis);
+  /** special trigger to recalculate filtered items; not ideal, should happen automatically */
+  private reFilter = signal(false);
+
+  public filteredItems = computed(() => {
+    const _ = this.reFilter(); // just make a dependency
+    const all = this.pickerData().source.optionsOrHints();
+    const filterInDom = this.autocomplete()?.nativeElement.value;
+    const filter = filterInDom?.toLocaleLowerCase();
+
+    const result = !filter
+      ? all
+      : all.filter(oItem => ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(filter));
+
+    // If the list is empty, show a message about this.
+    return result.length > 0
+      ? result
+      : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterInDom })];
+  });
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
   private logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
+
+  /** Debug status for UI, mainly to show "add-null" button */
+  debugEnabled = toSignal(this.globalConfigService.getDebugEnabled$(), { initialValue: false });
+
+  /** Current applicable settings like "enableEdit" etc. */
+  settings = computed(() => {
+    const selected = this.selectedItem();
+    const show = this.showItemEditButtons() && !!selected;
+    const sts = this.fieldState.settings();
+    return {
+      allowMultiValue: sts.AllowMultiValue,
+      enableAddExisting: sts.EnableAddExisting,
+      enableTextEntry: sts.EnableTextEntry,
+      enableEdit: sts.EnableEdit && show && !selected?.noEdit,
+      enableDelete: sts.EnableDelete && show && !selected?.noDelete,
+      enableRemove: sts.EnableRemove && show,
+      enableReselect: sts.EnableReselect,
+      showAsTree: sts.PickerDisplayMode === 'tree',
+    };
+  }, { equal: RxHelpers.objectsEqual });
 
   /**
    * The tree helper which is used by the tree display.
@@ -73,255 +125,151 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
-    private fieldsSettingsService: FieldsSettingsService,
     private treeDataService: PickerTreeDataService,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit(): void {
-    const state = this.pickerData.state;
-    const source = this.pickerData.source;
-
+    // process formulas on options...?
     // TODO: @2dm - maybe there is even a more elegant way to do this
-    // TODO: @SDV - check if there is a way to transform availableItems$ to a Observable<PickerItem[]>
-    if (false) {
-      this.subscription.add(
-        this.fieldsSettingsService.processPickerItems$(this.config.fieldName, source.optionsOrHints$).subscribe((items) => this.optionItems$.next(items))
-      );
-    } else {
-      this.optionItems$ = source.optionsOrHints$;
+    const enableFormulas = false;
+    if (enableFormulas) {
+      // this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
     }
-    
-    const freeTextMode$ = state.freeTextMode$;
-    const controlStatus$ = state.controlStatus$;
-    const error$ = state.error$;
-    const label$ = state.label$;
-    const required$ = state.required$;
 
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const logFs = this.log.rxTap('fieldSettings$', { enabled: false });
-    const fieldSettings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName)
-      .pipe(
-        logFs.pipe(),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-        logFs.distinctUntilChanged(),
-        shareReplay(1),
-        logFs.shareReplay(),
-      );
-
-    const logSets = this.log.rxTap('settings$', { enabled: false });
-    const settings$ = fieldSettings$.pipe(
-      logSets.pipe(),
-      map(settings => ({
-        allowMultiValue: settings.AllowMultiValue,
-        enableAddExisting: settings.EnableAddExisting,
-        enableTextEntry: settings.EnableTextEntry,
-        enableEdit: settings.EnableEdit,
-        enableDelete: settings.EnableDelete,
-        enableRemove: settings.EnableRemove,
-        enableReselect: settings.EnableReselect,
-        showAsTree: settings.PickerDisplayMode === 'tree',
-      })),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
-      logSets.distinctUntilChanged(),
-    );
-
-    // Setup Tree Helper - but should only happen, if we're really doing trees
-    // ATM we're only doing this the first time, as these settings are not expected to change
-    settings$.pipe(take(1)).subscribe(settings => {
-      if (!settings.showAsTree) return;
-      this.treeDataService.init(fieldSettings$, this.optionItems$);
+    const fieldSettings = this.fieldState.settings;
+    if (fieldSettings().PickerDisplayMode === 'tree') {
+      // Setup Tree Helper - but should only happen, if we're really doing trees
+      // Only doing this the first time, as these settings are not expected to change
+      this.treeDataService.init(fieldSettings, this.pickerData().source.optionsOrHints);
       this.treeHelper = this.treeDataService.treeHelper;
-    });
-    
-
-    // Create the default ViewModel used in the other modes
-    const logVm = this.log.rxTap('viewModel$', { enabled: true });
-    this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, this.pickerData.selectedItems$, this.optionItems$, error$,
-      controlStatus$, freeTextMode$, label$, required$, this.triggerFilter,
-    ]).pipe(
-      logVm.pipe(),
-      map(([
-        debugEnabled, settings, selectedItems, optionItems, error,
-        controlStatus, freeTextMode, label, required, /* filter: only used for refresh */ _,
-      ]) => {
-        optionItems = optionItems ?? [];
-        const selectedItem = this.selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
-
-        const showEditButtons = selectedItem && this.showItemEditButtons;
-
-        const filterValue = this.autocompleteRef?.nativeElement.value;
-        const filterLc = filterValue?.toLocaleLowerCase();
-        let filteredItems = !filterValue
-          ? optionItems
-          : optionItems.filter(oItem => ((oItem.label ? oItem.label : oItem.value) ?? '').toLocaleLowerCase().includes(filterLc));
-          // idea to combine key & value - needs further thinking, otherwise the GUID is in there too
-          // : optionItems.filter(opt => (`${opt.label} ${opt.value}`).toLocaleLowerCase().includes(filterLc));
-
-        // If the list is empty, show a message about this.
-        const filterOrMessage = filteredItems.length > 0
-          ? filteredItems
-          : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterValue })];
-
-        const viewModel: PickerSearchViewModel = {
-          debugEnabled,
-          allowMultiValue: settings.allowMultiValue,
-          enableAddExisting: settings.enableAddExisting,
-          enableTextEntry: settings.enableTextEntry,
-          enableEdit: settings.enableEdit && showEditButtons,
-          enableDelete: settings.enableDelete && showEditButtons,
-          enableRemove: settings.enableRemove && showEditButtons,
-          enableReselect: settings.enableReselect,
-          selectedItems,
-          options: optionItems,
-          error,
-          controlStatus,
-          freeTextMode,
-          label,
-          required,
-          selectedItem,
-          filteredItems: filterOrMessage,
-
-          // figure out if tree, and save it for functions to use
-          isTreeDisplayMode: settings.showAsTree,
-          isDisabled: controlStatus.disabled,
-        };
-        return viewModel;
-      }),
-      logVm.end(),
-    );
-
+    }
   }
 
-  ngOnDestroy(): void {
-    super.ngOnDestroy();
+  displaySelected(item: PickerItem): string {
+    return this.showSelectedItem() ? (item?.label ?? '') : '';
   }
 
   // 2024-04-30 2dm: seems this is always a string, will simplify the code
   displayFn(value: string /* | string[] | PickerItem */): string {
-    this.logItemChecks.add(`displayFn: value: '${value}'; selectedItem: `, this.selectedItem);
+    const selectedItem = this.selectedItem();
+    this.logItemChecks.a(`displayFn: value: '${value}'`, { selectedItem });
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
-    let returnValue = '';
-    // if (typeof value === 'string') {
-      returnValue = this.optionItems$.value?.find(ae => ae.value == value)?.label;
-    // }
-    //  else if (Array.isArray(value)) {
-    //   if (typeof value[0] === 'string') {
-    //     returnValue = this.optionItems$.value?.find(ae => ae.value == value[0])?.label;
-    //   } else {
-    //     returnValue = (value[0] as PickerItem)?.label;
-    //   }
-    // } else
-    //   returnValue = (value as PickerItem)?.label;
-    
+    let returnValue = this.pickerData().source.optionsOrHints().find(ae => ae.value == value)?.label;
+
     // If nothing yet, try to return label of selected or fallback to return the value
     // note: not quite sure, but I believe this is for scenarios where a manual entry was done
     // ...so it would return it, even though it's not in the list of available items
     if (!returnValue)
-      return this.selectedItem?.value == value
-        ? this.selectedItem?.label
+      return selectedItem?.value == value
+        ? selectedItem?.label
         : value + " *";
-    this.log.add('displayFn result', value, returnValue);  
+    this.log.a('displayFn result', { value, returnValue });
     return returnValue;
   }
 
   markAsTouched(): void {
-    const control = this.group.controls[this.config.fieldName];
-    GeneralHelpers.markControlTouched(control);
+    ControlHelpers.markControlTouched(this.fieldState.control);
   }
 
   fetchEntities(): void {
-    this.pickerData.source.fetchItems();
+    this.pickerData().source.fetchItems();
   }
 
   filterSelectionList(): void {
-    this.triggerFilter.next(true);
+    this.reFilter.update(x => !x);
   }
 
   /**
    * Event triggered when opening the auto-complete / search
    */
   onOpened(isTreeDisplayMode: boolean): void {
-    const domElement = this.autocompleteRef.nativeElement;
-    this.log.add(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);
+    const domElement = this.autocomplete().nativeElement;
+    this.log.a(`onOpened: isTreeDisplayMode ${isTreeDisplayMode}; domValue: '${domElement.value}'`);
     // flush the input so the user can use it to search, otherwise the list is filtered
     domElement.value = '';
+    this.reFilter.update(x => !x);
     // If tree, we need to blur so tree reacts to the first click, otherwise the user must click 2x
     if (isTreeDisplayMode)
       domElement.blur();
   }
 
-  onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void {
-    this.log.add('onClosed', selectedItems, selectedItem);
-    if (this.showSelectedItem) {
+  onClosed(): void {
+    const selectedItems = this.selectedItems();
+    const selectedItem = this.selectedItem();
+    const nativeElement = this.autocomplete().nativeElement;
+    this.log.a('onClosed', { selectedItems, selectedItem });
+    if (this.showSelectedItem()) {
       // @SDV - improve this
-      if (this.newValue && this.newValue != selectedItem?.value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
+      if (this.newValue && this.newValue != selectedItem?.value) {
+        //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
+      }
       else if (selectedItem && selectedItems.length < 2)
-        this.autocompleteRef.nativeElement.value = selectedItem.label;
+        nativeElement.value = selectedItem.label;
     } else {
       // @SDV - improve this
-      this.autocompleteRef.nativeElement.value = '';
+      nativeElement.value = '';
     }
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
-    this.logItemChecks.add('optionSelected', event.option.value);
+    this.logItemChecks.a('optionSelected', event.option.value);
     this.newValue = event.option.value;
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
-    this.pickerData.state.addSelected(selected);
+    this.pickerData().state.addSelected(selected);
     // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
-      this.autocompleteRef.nativeElement.blur();
+      this.autocomplete().nativeElement.blur();
     });
   }
 
-  getPlaceholder(availableEntities: PickerItem[], error: string): string {
-    // this.log.add(`getPlaceholder error: '${error}'`, availableEntities);
-    var placeholder = availableEntities?.length > 0
+  getPlaceholder(): string {
+    const allOptions = this.pickerData().source.optionsOrHints();
+    var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
-    this.logItemChecks.add(`getPlaceholder error: '${error}'; result '${placeholder}'`, availableEntities);
+    this.logItemChecks.a(`getPlaceholder error: result '${placeholder}'`, { allOptions });
     return placeholder;
   }
 
   toggleFreeText(disabled: boolean): void {
-    this.log.add('toggleFreeText', disabled);
-    if (disabled) { return; }
-    this.pickerData.state.toggleFreeTextMode();
+    this.log.a(`toggleFreeText ${disabled}`);
+    if (disabled) return;
+    this.pickerData().state.toggleFreeTextMode();
   }
 
   insertNull(): void {
-    this.log.add('insertNull');
-    this.pickerData.state.addSelected(null);
+    this.log.a('insertNull');
+    this.pickerData().state.addSelected(null);
   }
 
-  isOptionDisabled(value: string, selectedEntities: PickerItem[]): boolean {
-    const isSelected = selectedEntities.some(entity => entity.value === value);
-    this.logItemChecks.add(`sOptionDisabled value: '${value}'; result: ${isSelected}`, selectedEntities);
+  isOptionDisabled(value: string): boolean {
+    const selected = this.selectedItems();
+    const isSelected = selected.some(entity => entity.value === value);
+    this.logItemChecks.a(`sOptionDisabled value: '${value}'; result: ${isSelected}`, { selected });
     return isSelected;
   }
 
   edit(entityGuid: string, entityId: number): void {
-    this.log.add(`edit guid: '${entityGuid}'; id: '${entityId}'`);
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
+    this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
+    this.pickerData().source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
-    this.log.add(`removeItem index: '${index}'`);
-    this.pickerData.state.removeSelected(index);
+    this.log.a(`removeItem index: '${index}'`);
+    this.pickerData().state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
-    this.log.add(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
-    this.pickerData.source.deleteItem({ index, entityGuid });
+    this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
+    this.pickerData().source.deleteItem({ index, entityGuid });
   }
 
   goToLink(helpLink: string): void {
-    this.log.add(`goToLink helpLink: '${helpLink}'`);
+    this.log.a(`goToLink helpLink: '${helpLink}'`);
     window.open(helpLink, '_blank');
   }
 

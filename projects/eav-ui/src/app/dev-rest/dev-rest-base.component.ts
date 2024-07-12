@@ -7,7 +7,7 @@ import { AllScenarios, DevRestBaseViewModel, fireOnStartAndWhenSubDialogCloses, 
 import { DialogSettings } from '../app-administration/models';
 import { AppDialogConfigService } from '../app-administration/services';
 import { Permission, PermissionsService } from '../permissions';
-import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../shared/components/base.component';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
 
@@ -16,7 +16,7 @@ import { Context } from '../shared/services/context';
   template: ''
 })
 // tslint:disable-next-line:component-class-suffix
-export class DevRestBase<ViewModelType> extends BaseSubsinkComponent implements OnDestroy {
+export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestroy {
 
   /** Template variables for the HTML template */
   public viewModel$: Observable<ViewModelType>;

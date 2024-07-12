@@ -1,6 +1,11 @@
 import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
-import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import { EavLogger } from '../../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'DefaultPaste';
+
+const log = new EavLogger(nameOfThis, logThis);
 
 export class DefaultPaste {
 
@@ -18,14 +23,15 @@ export class DefaultPaste {
     paste_remove_spans: true,
     paste_remove_styles: true,
     paste_preprocess(plugin: any, args: any) {
+      log.a('TinyMCE paste_preprocess', {plugin, args});
     },
     paste_postprocess(plugin: any, args: any) {
+      log.a('TinyMCE paste_postprocess', {plugin, args});
       try {
         const anchors = (args.node as HTMLElement).getElementsByTagName('a');
         for (const anchor of Array.from(anchors)) {
-          if (!anchor.target) {
+          if (!anchor.target)
             anchor.target = '_blank';
-          }
         }
       } catch (error) {
         console.error('Error in paste postprocess:', error);
@@ -52,7 +58,8 @@ export class DefaultPaste {
     dropzone: Dropzone,
     adam: Adam,
   ): Promise<string> {
-    consoleLogWebpack('TinyMCE upload');
+    const l = new EavLogger(nameOfThis, logThis).fn('imagesUploadHandler');
+    l.a('TinyMCE upload');
 
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -68,7 +75,7 @@ export class DefaultPaste {
       progress(50);
       return response.json();
     }).then((response: AdamItem) => {
-      consoleLogWebpack('TinyMCE upload data', response);
+      l.a('TinyMCE upload data', {response});
       if (response.Error) {
         alert(`Upload failed because: ${response.Error}`);
         return response.Error;
@@ -78,7 +85,7 @@ export class DefaultPaste {
       //tododata... is added so onChange it can be changed to special data-cmsid attribute which containes reference id
       return response.Url + `?tododata-cmsid=${response.Name}`;
     }).catch(error => {
-      consoleLogWebpack('TinyMCE upload error:', error);
+      l.a('TinyMCE upload error:', error);
       return error;
     });
   }

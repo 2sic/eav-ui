@@ -1,19 +1,35 @@
 // tslint:disable-next-line:max-line-length
 import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith, Subscription } from 'rxjs';
-import { BaseSubsinkComponent } from '../../components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../components/base.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
+import { ExtendedFabSpeedDialTriggerDirective } from './extended-fab-speed-dial-trigger.directive';
+import { NgTemplateOutlet } from '@angular/common';
 
+/**
+ * Special Speed-Dial kind of FAB which opens more menu items on hover.
+ * 
+ * IMPORTANT: to work it needs ca. 4 more directives.
+ * So never import this component directly, but instead import the ExtendedFabSpeedDialImports.
+ */
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'extended-fab-speed-dial',
   templateUrl: './extended-fab-speed-dial.component.html',
   styleUrls: ['./extended-fab-speed-dial.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  imports: [
+    ExtendedFabSpeedDialTriggerContentDirective,
+    ExtendedFabSpeedDialActionsContentDirective,
+    ExtendedFabSpeedDialTriggerDirective,
+    ExtendedFabSpeedDialActionDirective,
+    NgTemplateOutlet
+  ],
+  standalone: true,
 })
-export class ExtendedFabSpeedDialComponent extends BaseSubsinkComponent implements AfterContentInit, OnDestroy {
+export class ExtendedFabSpeedDialComponent extends BaseComponent implements AfterContentInit, OnDestroy {
   @ContentChild(ExtendedFabSpeedDialTriggerContentDirective) trigger: ExtendedFabSpeedDialTriggerContentDirective;
   @ContentChild(ExtendedFabSpeedDialActionsContentDirective) actions: ExtendedFabSpeedDialActionsContentDirective;
   @ContentChildren(ExtendedFabSpeedDialActionDirective, { read: ElementRef }) actionButtons: QueryList<ElementRef<HTMLButtonElement>>;
@@ -27,7 +43,7 @@ export class ExtendedFabSpeedDialComponent extends BaseSubsinkComponent implemen
    }
 
   ngAfterContentInit(): void {
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([
         this.open$.pipe(distinctUntilChanged()),
         this.actionButtons.changes.pipe(startWith(undefined)),

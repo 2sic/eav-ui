@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { ViewUsageData } from '../../models/view-usage-data.model';
@@ -12,11 +12,27 @@ import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClass
 import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
 import { buildData } from './views-usage.helpers';
+import { ColumnDefinitions } from '../../../shared/ag-grid/column-definitions';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-views-usage',
   templateUrl: './views-usage.component.html',
   styleUrls: ['./views-usage.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    AsyncPipe,
+    SxcGridModule,
+    TippyDirective,
+  ],
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewUsage$ = new BehaviorSubject<ViewUsage>(undefined);
@@ -26,7 +42,12 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<ViewsUsageViewModel>;
 
-  constructor(private dialogRef: MatDialogRef<ViewsUsageComponent>, private route: ActivatedRoute, private viewsService: ViewsService) { }
+  private viewsService = transient(ViewsService);
+
+  constructor(
+    private dialogRef: MatDialogRef<ViewsUsageComponent>,
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
     const viewGuid = this.route.snapshot.paramMap.get('guid');
@@ -59,46 +80,30 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
+          ...ColumnDefinitions.Id,
           field: 'Block',
-          width: 70,
-          headerClass: 'dense',
-          cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: blockIdValueGetter,
           cellRenderer: ViewsUsageIdComponent,
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Module',
-          width: 76,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agTextColumnFilter',
+          width: 80,
           valueGetter: moduleIdValueGetter,
           cellClass: moduleIdClassGetter,
           cellRenderer: ViewsUsageIdComponent,
         },
         {
+          ...ColumnDefinitions.Number,
           field: 'Page',
-          width: 70,
-          headerClass: 'dense',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           valueGetter: pageIdValueGetter,
           cellClass: pageIdClassGetter,
           cellRenderer: ViewsUsageIdComponent,
         },
         {
+          ...ColumnDefinitions.TextWide,
           field: 'Name',
-          flex: 2,
-          minWidth: 250,
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const data: ViewUsageData = params.data;
-            return data.Name;
-          },
           cellClass: nameClassGetter,
           onCellClicked: onNameClicked,
         },
@@ -108,10 +113,6 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const data: ViewUsageData = params.data;
-            return data.Language;
-          },
         },
         {
           field: 'Status',
@@ -119,10 +120,6 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           cellClass: 'icon no-outline'.split(' '),
           filter: ViewsUsageStatusFilterComponent,
           cellRenderer: statusCellRenderer,
-          valueGetter: (params) => {
-            const data: ViewUsageData = params.data;
-            return data.Status;
-          },
         },
       ],
     };

@@ -2,25 +2,29 @@ import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, Vie
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged, pipe, Subscription } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
+import { BaseDirective } from '../../../shared/directives/base.directive';
 
-@Directive({ selector: '[appPasteClipboardImage]' })
-export class PasteClipboardImageDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
+@Directive({
+  selector: '[appPasteClipboardImage]',
+  standalone: true
+})
+export class PasteClipboardImageDirective extends BaseDirective implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
-  private pasteImageEnabled$ = new BehaviorSubject<boolean>(false);
+
+  private pasteImageEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
+
 
   constructor(
     private elementRef: ElementRef,
-    private featuresService: FeaturesService,
+    private features: FeaturesService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private dialog: MatDialog,
@@ -28,13 +32,9 @@ export class PasteClipboardImageDirective extends BaseSubsinkComponent implement
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
-    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
-      .pipe(distinctUntilChanged())
-      .subscribe(this.pasteImageEnabled$));
-
     switch (this.elementType) {
       case 'input':
         this.elementRef.nativeElement.pastableTextarea();
@@ -62,14 +62,14 @@ export class PasteClipboardImageDirective extends BaseSubsinkComponent implement
   }
 
   private handleImage(event: CustomEvent) {
-    if (this.pasteImageEnabled$.value) {
+    if (this.pasteImageEnabled) {
       consoleLogEditForm('PASTE IMAGE', 'event:', event);
       // todo: convert png to jpg to reduce file size
       const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
       this.config.dropzone.uploadFile(image);
     } else {
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+        openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
       });
     }
   }

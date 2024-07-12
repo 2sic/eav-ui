@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
-import { BaseComponent } from '../../../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
@@ -13,13 +13,29 @@ import { AppInternalsService } from '../../services/app-internals.service';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../../models/app-internals.model';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-app-configuration-card',
   templateUrl: './app-configuration-card.component.html',
   styleUrls: ['./app-configuration-card.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    NgTemplateOutlet,
+    MatButtonModule,
+    MatBadgeModule,
+    AsyncPipe,
+    TippyDirective,
+  ],
 })
-export class AppConfigurationCardComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppConfigurationCardComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   // More proper ViewModel
@@ -57,7 +73,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchSettings(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
   }
 
   ngOnDestroy() {
@@ -99,7 +115,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
-      });
+    });
   }
 }
 

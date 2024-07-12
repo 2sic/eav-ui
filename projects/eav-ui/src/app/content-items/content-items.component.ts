@@ -1,9 +1,9 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subject, Subscription, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -13,7 +13,7 @@ import { DataTypeConstants } from '../content-type-fields/constants/data-type.co
 import { Field } from '../content-type-fields/models/field.model';
 import { GlobalConfigService } from '../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../metadata';
-import { BaseComponent } from '../shared/components/base-component/base.component';
+import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
@@ -40,13 +40,39 @@ import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.compon
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
+import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
   styleUrls: ['./content-items.component.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    RouterOutlet,
+    MatDialogActions,
+    AsyncPipe,
+    SafeHtmlPipe,
+    DragAndDropDirective,
+    ToggleDebugDirective,
+    SxcGridModule,
+  ],
+  providers: [
+    ContentItemsService,
+    EntitiesService,
+    ContentExportService,
+    ContentTypesService,
+  ],
 })
-export class ContentItemsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   gridOptions: GridOptions = {
@@ -71,7 +97,7 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -79,7 +105,7 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchItems(); }));
+    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
 
     this.viewModel$ = combineLatest([
       this.contentType$, this.items$, this.globalConfigService.getDebugEnabled$()
@@ -234,19 +260,10 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID',
-        field: 'Id',
-        width: 70,
-        headerClass: 'dense',
-        sortable: true,
-        filter: 'agNumberColumnFilter',
+        ...ColumnDefinitions.Id,
         cellClass: (params) => {
           const contentItem: ContentItem = params.data;
           return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-        },
-        valueGetter: (params) => {
-          const contentItem: ContentItem = params.data;
-          return contentItem.Id;
         },
         cellRenderer: IdFieldComponent,
         cellRendererParams: (() => {
@@ -291,10 +308,6 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
           const contentItem: ContentItem = params.data;
           this.editItem(contentItem);
         },
-        valueGetter: (params) => {
-          const contentItem: ContentItem = params.data;
-          return contentItem._Title;
-        },
       },
       {
         headerName: 'Stats',
@@ -311,16 +324,18 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
         },
       },
       {
-        cellClass: 'secondary-action no-padding'.split(' '),
-        width: 122,
-        pinned: 'right',
+        ...ColumnDefinitions.ActionsPinnedRight3,
         cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: (() => {
           const params: ContentItemsActionsParams = {
-            onClone: (item) => this.clone(item),
-            onExport: (item) => this.export(item),
-            onDelete: (item) => this.delete(item),
-          };
+            do: (verb, item) => {
+              switch (verb) {
+                case 'clone': this.clone(item); break;
+                case 'export': this.export(item); break;
+                case 'delete': this.delete(item); break;
+              }
+            }
+          } satisfies ContentItemsActionsParams;
           return params;
         })(),
       },

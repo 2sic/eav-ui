@@ -6,7 +6,7 @@ export class GoToMetadata {
   static getRoutes(): Route[] {
     const defaultRoute: Route = {
       path: 'metadata/:targetType/:keyType/:key',
-      loadChildren: () => import('./metadata.module').then(m => m.MetadataModule),
+      loadChildren: () => import('./metadata.routing').then(m => m.metadataRoutes),
       data: { title: 'Metadata' },
     };
     const routes: Route[] = [

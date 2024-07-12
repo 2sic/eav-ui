@@ -1,7 +1,6 @@
-export interface LanguageInstance {
+import { FormLanguage, FormLanguageComplete } from './form-languages.model';
+
+export interface FormLanguageInStore extends FormLanguageComplete {
   formId: number;
-  currentLanguage: string;
-  defaultLanguage: string;
-  uiLanguage: string;
   hideHeader: boolean;
 }

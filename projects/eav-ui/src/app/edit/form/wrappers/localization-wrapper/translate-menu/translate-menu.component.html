@@ -1,5 +1,5 @@
 @if (viewModel$ | async; as vm) {
-  @if (vm.currentLanguage !== vm.defaultLanguage) {
+  @if (vm.current !== vm.primary) {
     <div fxLayoutAlign="end center">
       <div fxLayoutAlign="end center" class="eav-shared-languages-container" [ngClass]="vm.translationStateClass">
         <div class="eav-shared-languages mat-caption" [ngClass]="{ 'eav-shared-languages--disabled': vm.disabled }">

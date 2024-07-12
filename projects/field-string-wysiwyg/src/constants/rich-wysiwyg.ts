@@ -50,8 +50,10 @@ export const ImgRatioDefault: ImageFormatDefinition = {
 export const ImgRatios: ImageFormatDefinition[] = [
   ImgRatioDefault,
   ...buildFormatSizesDefinitions(2),
-  ...buildFormatSizesDefinitions(3),
   ...buildFormatSizesDefinitions(4, [1, 3]),
+  ...buildFormatSizesDefinitions(8, [1]),
+  ...buildFormatSizesDefinitions(3),
+  ...buildFormatSizesDefinitions(6, [1]),
 ];
 
 function buildFormatSizesDefinitions(max: number, keys?: number[]): ImageFormatDefinition[] {

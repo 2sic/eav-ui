@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalone.directive';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
     selector: 'app-selector-with-help',
@@ -20,7 +20,7 @@ import { TippyStandaloneDirective } from '../../shared/directives/tippy-Standalo
         MatSelectModule,
         MatOptionModule,
         MatButtonModule,
-        TippyStandaloneDirective,
+        TippyDirective,
         MatIconModule,
     ],
 })

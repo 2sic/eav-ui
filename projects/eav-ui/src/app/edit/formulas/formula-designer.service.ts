@@ -3,15 +3,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EavWindow } from '../../shared/models/eav-window.model';
-import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
-import { EavService, LoggingService } from '../shared/services';
-import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
+import { FormConfigService, LoggingService } from '../shared/services';
+import { ContentTypeItemService, ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 
 declare const window: EavWindow;
 
@@ -26,10 +27,9 @@ export class FormulaDesignerService implements OnDestroy {
   private subscription = new Subscription();
 
   constructor(
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
-    private languageInstanceService: LanguageInstanceService,
     private contentTypeItemService: ContentTypeItemService,
     private loggingService: LoggingService,
     private translate: TranslateService,
@@ -88,7 +88,7 @@ export class FormulaDesignerService implements OnDestroy {
       map(formulas => formulas.find(
         f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
       ),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -136,9 +136,8 @@ export class FormulaDesignerService implements OnDestroy {
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-        const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+        const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+        const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
         const designerState = this.getDesignerState();
@@ -297,7 +296,7 @@ export class FormulaDesignerService implements OnDestroy {
   getFormulaResult$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaResult> {
     return this.formulaResults$.pipe(
       map(results => results.find(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target)),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -334,7 +333,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns Designer state stream
    */
   getDesignerState$(): Observable<DesignerState> {
-    return this.designerState$.pipe(distinctUntilChanged(GeneralHelpers.objectsEqual));
+    return this.designerState$.pipe(distinctUntilChanged(RxHelpers.objectsEqual));
   }
 
   /**
@@ -363,9 +362,8 @@ export class FormulaDesignerService implements OnDestroy {
         string: mdFor?.String,
       },
     };
-    const eavService = this.eavService;
-    const user = eavService.eavConfig.dialogContext.User;
-    const eavConfig = eavService.eavConfig;
+    const formConfig = this.formConfig.config;
+    const user = formConfig.dialogContext.User;
     return {
       targetEntity,
       user: {
@@ -380,18 +378,18 @@ export class FormulaDesignerService implements OnDestroy {
         username: user?.Username,
       } as FormulaV1CtxUser,
       app: {
-        appId: parseInt(eavConfig.appId, 10),
-        zoneId: parseInt(eavConfig.zoneId, 10),
-        isGlobal: eavConfig.dialogContext.App.IsGlobalApp,
-        isSite: eavConfig.dialogContext.App.IsSiteApp,
-        isContent: eavConfig.dialogContext.App.IsContentApp,
+        appId: parseInt(formConfig.appId, 10),
+        zoneId: parseInt(formConfig.zoneId, 10),
+        isGlobal: formConfig.dialogContext.App.IsGlobalApp,
+        isSite: formConfig.dialogContext.App.IsSiteApp,
+        isContent: formConfig.dialogContext.App.IsContentApp,
         getSetting: (key: string) => undefined,
       },
       sxc: window.$2sxc({
-        zoneId: eavConfig.zoneId,
-        appId: eavConfig.appId,
-        pageId: eavConfig.tabId,
-        moduleId: eavConfig.moduleId,
+        zoneId: formConfig.zoneId,
+        appId: formConfig.appId,
+        pageId: formConfig.tabId,
+        moduleId: formConfig.moduleId,
         _noContextInHttpHeaders: true,  // disable pageid etc. headers in http headers, because it would make debugging very hard
         _autoAppIdsInUrl: true,         // auto-add appid and zoneid to url so formula developer can see what's happening
       } as any),
@@ -404,11 +402,10 @@ export class FormulaDesignerService implements OnDestroy {
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    const entityReader = new EntityReader(currentLanguage, defaultLanguage);
+    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+    const entityReader = new EntityReader(language.current, language.primary);
 
-    for (const entityGuid of this.eavService.eavConfig.itemGuids) {
+    for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.getItem(entityGuid);
 
       const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);
@@ -421,23 +418,21 @@ export class FormulaDesignerService implements OnDestroy {
           // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
         );
         const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas).filter(formulaItem => {
-          const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Enabled, null);
+          const enabled: boolean = LocalizationHelpers.translate<boolean>(language, formulaItem.Attributes.Enabled, null);
           return enabled;
         });
         for (const formulaItem of formulaItems) {
-          const formula: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
+          const formula: string = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Formula, null);
           if (formula == null) { continue; }
 
-          const target: FormulaTarget = LocalizationHelpers.translate(
-            currentLanguage, defaultLanguage, formulaItem.Attributes.Target, null
-          );
+          const target: FormulaTarget = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Target, null);
 
           let formulaFunction: FormulaFunction;
           try {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
             this.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true, false);
-            const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+            const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }

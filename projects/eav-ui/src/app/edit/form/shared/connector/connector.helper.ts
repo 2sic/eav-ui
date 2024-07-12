@@ -1,72 +1,97 @@
-import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { ChangeDetectorRef, ElementRef, Injectable, Injector, NgZone, OnDestroy, ViewContainerRef, inject } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
+import { openFeatureDialog } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
-import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { FieldMask, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
+import { AdamService, FormConfigService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
+import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ServiceBase } from 'projects/eav-ui/src/app/shared/services/service-base';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { FieldState } from '../../builder/fields-builder/field-state';
+import { transient } from 'projects/eav-ui/src/app/core';
 
-export class ConnectorHelper {
+const logThis = false;
+const nameOfThis = 'ConnectorHelper';
+
+@Injectable()
+export class ConnectorHelper extends ServiceBase implements OnDestroy {
+  
+  private injector = inject(Injector);
+  private fieldState = inject(FieldState);
+
   private control: AbstractControl;
   private customEl: EavCustomInputField;
-  private subscription: Subscription;
   private value$: BehaviorSubject<FieldValue>;
-  private settings$: BehaviorSubject<FieldSettings>;
+  private settings$ = this.fieldState.settings$;
 
-  constructor(
-    private config: FieldConfigSet,
-    private group: UntypedFormGroup,
-    private customElContainerRef: ElementRef,
-    private customElName: string,
-    private eavService: EavService,
-    private translateService: TranslateService,
-    private contentTypeService: ContentTypeService,
-    private inputTypeService: InputTypeService,
-    private featuresService: FeaturesService,
-    private editRoutingService: EditRoutingService,
-    private adamService: AdamService,
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
-    private fieldsSettingsService: FieldsSettingsService,
-    // private entityCacheService: PickerDataCacheService,
-    private snackBar: MatSnackBar,
-    private zone: NgZone,
-  ) {
+  private config = this.fieldState.config;
+  private group = this.fieldState.group;
+
+  private customElContainerRef: ElementRef;
+  private customElName: string;
+
+  private formConfig = inject(FormConfigService);
+  private translateService = inject(TranslateService);
+  private contentTypeService = inject(ContentTypeService);
+
+  private inputTypeService = inject(InputTypeService);
+  private featuresService = inject(FeaturesService);
+  private editRoutingService = inject(EditRoutingService);
+  private adamService = inject(AdamService);
+  private dialog = inject(MatDialog);
+
+  private viewContainerRef: ViewContainerRef;
+  private changeDetectorRef: ChangeDetectorRef;
+  private fieldsSettingsService = inject(FieldsSettingsService);
+  private snackBar = inject(MatSnackBar);
+  private zone = inject(NgZone);
+
+  constructor() {
+    super(new EavLogger(nameOfThis, logThis));
+    this.log.a('constructor')
+  }
+
+  public init(
+    customElName: string,
+    customElContainerRef: ElementRef,
+    viewContainerRef: ViewContainerRef,
+    changeDetectorRef: ChangeDetectorRef,
+  ): this {
+    this.log.a('init');
+    this.customElContainerRef = customElContainerRef;
+    this.customElName = customElName;
+
+    this.viewContainerRef = viewContainerRef;
+    this.changeDetectorRef = changeDetectorRef;
+
     this.control = this.group.controls[this.config.fieldName];
-    this.subscription = new Subscription();
     this.value$ = new BehaviorSubject(this.control.value);
-    this.subscription.add(
+    this.subscriptions.add(
       this.control.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
         this.value$.next(value);
-      })
-    );
-    this.settings$ = new BehaviorSubject(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
-    this.subscription.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
-        this.settings$.next(settings);
       })
     );
 
     this.customEl = document.createElement(this.customElName) as EavCustomInputField;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
+    return this;
   }
 
-  destroy() {
+  ngOnDestroy() {
+    this.log.a('ngOnDestroy');
     this.value$.complete();
-    this.settings$.complete();
-    this.subscription.unsubscribe();
     this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
+    super.destroy();
   }
 
   private buildConnector() {
@@ -76,8 +101,8 @@ export class ConnectorHelper {
     const fieldConfig = this.getFieldConfig(settingsSnapshot);
     const fieldConfig$ = this.settings$.pipe(map(settings => this.getFieldConfig(settings)));
     const value$ = this.value$.asObservable();
-    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.eavService.eavConfig);
-    this.subscription.add(
+    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.formConfig.config);
+    this.subscriptions.add(
       this.settings$.subscribe(settings => {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
@@ -135,10 +160,14 @@ export class ConnectorHelper {
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
-      getSettings: (name) => this.eavService.eavConfig.settings?.Values[name],
+      getSettings: (name) => this.formConfig.config.settings?.Values[name],
       // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
       // getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
       // getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
+
+      getFieldMask: (mask: string, name?: string, watch?: boolean) => {
+        return transient(FieldMask, this.injector).init(name, mask, watch);
+      },
     };
 
     return experimentalProps;
@@ -174,14 +203,14 @@ export class ConnectorHelper {
 
   private updateControl(control: AbstractControl, value: FieldValue) {
     if (control.disabled) { return; }
-    GeneralHelpers.patchControlValue(control, value);
+    ControlHelpers.patchControlValue(control, value);
   }
 
   private openFeatureDisabledWarning(featureNameId: string) { 
     if (featureNameId === FeatureNames.PasteImageFromClipboard) {
-      this.snackBar.open(this.translateService.instant('Message.PastingFilesIsNotEnabled'), this.translateService.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
-      });
+      this.snackBar.open(this.translateService.instant('Message.PastingFilesIsNotEnabled'), this.translateService.instant('Message.FindOutMore'), { duration: 3000 })
+        .onAction()
+        .subscribe(() => openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef));
     }
   }
 }

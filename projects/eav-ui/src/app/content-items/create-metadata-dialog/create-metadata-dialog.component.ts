@@ -1,12 +1,11 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith, Subscription } from 'rxjs';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
-import { GeneralHelpers } from '../../edit/shared/helpers';
-import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
@@ -14,13 +13,44 @@ import { ContentItem } from '../models/content-item.model';
 import { ContentItemsService } from '../services/content-items.service';
 import { MetadataDialogViewModel, MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
 import { metadataKeyValidator } from './metadata-key.validator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-create-metadata-dialog',
   templateUrl: './create-metadata-dialog.component.html',
-  styleUrls: ['./create-metadata-dialog.component.scss']
+  styleUrls: ['./create-metadata-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    NgTemplateOutlet,
+    MatButtonModule,
+    NgClass,
+    MatIconModule,
+    MatDialogActions,
+    MatSlideToggleModule,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ]
 })
-export class CreateMetadataDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   eavConstants = eavConstants;
@@ -68,7 +98,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
     this.form.addControl('scopeForContentTypes', new UntypedFormControl(eavConstants.scopes.default.value));
     this.form.addControl('key', new UntypedFormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.form.controls['scopeForContentTypes'].valueChanges.pipe(
         startWith(this.form.controls['scopeForContentTypes'].value),
         distinctUntilChanged(),
@@ -94,7 +124,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
     );
 
     // reset key if target or keyType changed
-    this.subscription.add(
+    this.subscriptions.add(
       merge(
         this.form.controls['targetType'].valueChanges.pipe(distinctUntilChanged()),
         this.form.controls['keyType'].valueChanges.pipe(distinctUntilChanged()),
@@ -112,7 +142,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
     );
 
     // reset key if contentTypeForContentItems changed
-    this.subscription.add(
+    this.subscriptions.add(
       this.form.controls['contentTypeForContentItems'].valueChanges.pipe(
         startWith(this.form.controls['contentTypeForContentItems'].value),
         distinctUntilChanged(),
@@ -134,15 +164,15 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
     const formValues$ = this.form.valueChanges.pipe(
       startWith(this.form.getRawValue() as MetadataFormValues),
       map(() => this.form.getRawValue() as MetadataFormValues),
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
+      distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
-    this.subscription.add(
+    this.subscriptions.add(
       combineLatest([formValues$, this.guidedMode$]).subscribe(([formValues, guidedMode]) => {
         // keyTypeOptions depend on targetType and advanced
         const foundTargetType = this.targetTypeOptions.find(option => option.targetType === formValues.targetType);
         const keyTypeOptions = guidedMode && foundTargetType ? [foundTargetType.keyType] : [...this.keyTypeOptions];
-        if (!GeneralHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
+        if (!RxHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
           this.keyTypeOptions$.next(keyTypeOptions);
         }
 
@@ -163,8 +193,8 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
         }
 
         const keyTypeDisabled = guidedMode && this.keyTypeOptions$.value.length <= 1;
-        GeneralHelpers.disableControl(this.form.controls['keyType'], keyTypeDisabled);
-        GeneralHelpers.disableControl(this.form.controls['key'], isAppMetadata);
+        ControlHelpers.disableControl(this.form.controls['keyType'], keyTypeDisabled);
+        ControlHelpers.disableControl(this.form.controls['key'], isAppMetadata);
       })
     );
 

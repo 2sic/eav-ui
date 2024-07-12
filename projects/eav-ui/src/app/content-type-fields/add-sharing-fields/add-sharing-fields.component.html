@@ -41,7 +41,7 @@
             <ng-container matColumnDef="newName">
               <th mat-header-cell *matHeaderCellDef> <b>New Name</b> </th>
               <td mat-cell *matCellDef="let item; index as i" class="eav-table-cell">
-                <mat-form-field color="accent" class="eav-form-field">
+                <mat-form-field color="accent" class="eav-mat-form-field">
                   <mat-label>New Name</mat-label>
                   <input matInput [pattern]="fieldNamePattern" [(ngModel)]="item.newName" [name]="'StaticName' + i"
                     #newName="ngModel" [appReservedNames]="reservedNames">

@@ -1,60 +1,37 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
-import { PickerData } from '../../picker/picker-data';
-import { pickerProviders } from '../../picker/picker.component';
-import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { PickerImports } from '../../picker/picker-providers.constant';
+import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
+import { transient } from 'projects/eav-ui/src/app/core';
+
+const logThis = false;
+const nameOfThis = 'StringDropdownQueryComponent';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
-  providers: pickerProviders,
+  standalone: true,
+  imports: PickerImports,
 })
-@FieldMetadata({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
-  constructor(
-    eavService: EavService,
-    fieldsSettingsService: FieldsSettingsService,
-    translate: TranslateService,
-    editRoutingService: EditRoutingService,
-    stateRaw: PickerEntityStateAdapter,
-    private pickerStringStateAdapterRaw: PickerStringStateAdapter,
-    querySourceAdapterRaw: PickerQuerySourceAdapter,
-  ) {
-    super(
-      eavService,
-      fieldsSettingsService,
-      translate,
-      editRoutingService,
-      stateRaw,
-      querySourceAdapterRaw,
-    );
+  private stateString = transient(StateAdapterString);
+
+  constructor() {
+    super();
     StringDropdownQueryLogic.importMe();
-    this.isStringQuery = true;
   }
 
 
-  protected /* FYI: override */ createPickerAdapters(): void {
-    this.log.add('createPickerAdapters');
-    const state = this.pickerStringStateAdapterRaw.setupFromComponent(this);
+  protected override createPickerAdapters(): void {
+    this.log.a('createPickerAdapters');
+    const state = this.stateString.linkLog(this.log).attachCallback(this.focusOnSearchComponent);
 
-    const source = this.querySourceAdapterRaw.setupFromComponent(this, state)
-      .setupQuery(state.error$);
+    const source = this.querySourceAdapterRaw.linkLog(this.log).connectState(state, false);
 
-    state.init();
-    source.init('StringDropdownQueryComponent.createPickerAdapters');
-    this.pickerData = new PickerData(
-      state,
-      source,
-      this.translate,
-    );
+    this.pickerData.setup(nameOfThis, state, source);
   }
 }

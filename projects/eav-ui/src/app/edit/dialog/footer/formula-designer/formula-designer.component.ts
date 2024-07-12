@@ -12,19 +12,53 @@ import { FormBuilderComponent } from '../../../form/builder/form-builder/form-bu
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
-import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, SettingsFormulaPrefix, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
+import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
-import { EavService } from '../../../shared/services';
+import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helpers';
+import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
+import { MatMenuModule } from '@angular/material/menu';
+import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-formula-designer',
   templateUrl: './formula-designer.component.html',
   styleUrls: ['./formula-designer.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    NgClass,
+    ExtendedModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MonacoEditorComponent,
+    MatMenuModule,
+    AsyncPipe,
+    JsonPipe,
+    SnippetLabelSizePipe,
+    TippyDirective,
+  ],
+  providers: [
+    EntitiesService,
+  ]
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
@@ -32,7 +66,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
-  allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
+  allowSaveFormula = this.formConfig.config.enableFormulaSave;
   isDeleted$ = new BehaviorSubject(false);
   saving$ = new BehaviorSubject(false);
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -47,14 +81,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     tabSize: 2,
     fixedOverflowWidgets: true,
   };
-  filename = `formula${this.eavService.eavConfig.formId}.js`;
+  filename = `formula${this.formConfig.config.formId}.js`;
   focused = false;
   viewModel$: Observable<FormulaDesignerViewModel>;
 
   constructor(
     private formulaDesignerService: FormulaDesignerService,
     private snackBar: MatSnackBar,
-    private eavService: EavService,
+    private formConfig: FormConfigService,
     private entitiesService: EntitiesService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
@@ -338,9 +372,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               targetOptions.push(targetOption);
             }
           }
-          if (inputType === InputTypeConstants.WIPEntityPicker
-            || inputType === InputTypeConstants.WIPStringPicker
-            || inputType === InputTypeConstants.WIPNumberPicker) {
+          if (inputType === InputTypeConstants.EntityPicker
+            || inputType === InputTypeConstants.StringPicker
+            || inputType === InputTypeConstants.NumberPicker) {
             for (const target of Object.values(FormulaListItemTargets)) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(
@@ -354,7 +388,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           }
           /*
           TODO: @SDV
-          for all picker types 
+          for all picker types
           add formulas -> Field.ListItem.Label
                           Field.ListItem.Tooltip
                           Field.ListItem.Information

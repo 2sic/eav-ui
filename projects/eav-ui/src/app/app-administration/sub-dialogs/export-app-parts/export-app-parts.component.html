@@ -11,7 +11,7 @@
         For further help visit <a href="https://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
       </p>
       <div class="eav-edit-input">
-        <mat-form-field color="accent" class="eav-form-field">
+        <mat-form-field color="accent" class="eav-mat-form-field">
           <mat-label>Scope</mat-label>
           <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
             @for (scopeOption of scopeOptions; track scopeOption) {

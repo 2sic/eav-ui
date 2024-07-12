@@ -1,8 +1,8 @@
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Directive({
-    selector: '[appAgGridHeight]',
-    standalone: true
+  selector: '[appAgGridHeight]',
+  standalone: true
 })
 export class AgGridHeightDirective implements OnChanges {
   @Input() itemsCount = 0;

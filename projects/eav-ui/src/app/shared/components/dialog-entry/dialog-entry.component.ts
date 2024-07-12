@@ -1,24 +1,30 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Data, Route, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavigateFormResult } from '../../../edit/shared/models';
 import { consoleLogDev } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
-import { ServiceBase } from '../../services/service-base';
 import { EavLogger } from '../../logging/eav-logger';
+import { BaseComponent } from '../base.component';
 
 declare const window: EavWindow;
 
 const logThis = false;
+const nameOfThis = 'DialogEntryComponent';
 
 @Component({
   selector: 'app-dialog-entry',
   templateUrl: './dialog-entry.component.html',
   styleUrls: ['./dialog-entry.component.scss'],
+  standalone: true,
+  imports: [],
+  providers: [
+    Context,
+  ],
 })
-export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestroy {
+export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {
   private dialogData: Record<string, any>;
   private dialogRef: MatDialogRef<any>;
 
@@ -30,7 +36,7 @@ export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestr
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(new EavLogger('DialogEntryComponent', logThis));
+    super(new EavLogger(nameOfThis, logThis));
     const navigation = this.router.getCurrentNavigation();
     this.dialogData = navigation?.extras?.state || {};
   }
@@ -42,33 +48,32 @@ export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestr
 
   ngOnInit() {
     const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
-    if (dialogConfig == null) {
+    if (dialogConfig == null)
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
-    }
+
     consoleLogDev('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
 
     dialogConfig.getComponent().then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening
       // https://github.com/angular/components/commit/728cf1c8ebd49e089f4bae945511bb0918972c26
-      if ((this.dialog as any)._dialogAnimatingOpen && (this.dialog as any)._lastDialogRef) {
-        ((this.dialog as any)._lastDialogRef as MatDialogRef<any>).afterOpened().subscribe(() => {
-          this.openDialogComponent(dialogConfig, component);
-        });
-      } else {
+      const dialog = (this.dialog as any);
+      if (dialog._dialogAnimatingOpen && dialog._lastDialogRef)
+        (dialog._lastDialogRef as MatDialogRef<any>).afterOpened()
+          .subscribe(() => this.openDialogComponent(dialogConfig, component));
+      else
         this.openDialogComponent(dialogConfig, component);
-      }
     });
   }
 
   ngOnDestroy() {
     this.dialogRef.close();
+    super.ngOnDestroy();
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
-    this.log.add(`Open dialog(initContext: ${dialogConfig.initContext})`, dialogConfig.name, 'Context id:', this.context.log.svcId, 'Context:', this.context);
-    if (dialogConfig.initContext) {
+    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, {name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context});
+    if (dialogConfig.initContext)
       this.context.init(this.route);
-    }
 
     this.dialogRef = this.dialog.open(component, {
       autoFocus: false,
@@ -103,11 +108,10 @@ export class DialogEntryComponent extends ServiceBase implements OnInit, OnDestr
         return;
       }
 
-      if (this.route.snapshot.url.length > 0) {
+      if (this.route.snapshot.url.length > 0)
         this.router.navigate(['./'], { relativeTo: this.route.parent, state: data });
-      } else {
+      else
         this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
-      }
     });
 
     this.changeDetectorRef.markForCheck();

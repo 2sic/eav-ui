@@ -1,25 +1,56 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
+import { AsyncPipe } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FieldHintComponent } from '../../../shared/components/field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-export-app-parts',
   templateUrl: './export-app-parts.component.html',
   styleUrls: ['./export-app-parts.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatDialogActions,
+    AsyncPipe,
+    FieldHintComponent,
+    ClickStopPropagationDirective,
+    TippyDirective,
+  ],
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private exportAppPartsService = transient(ExportAppPartsService);
+  private contentTypesService = transient(ContentTypesService);
 
   contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
   scopeOptions: ScopeOption[];
   lockScope = true;
   dropdownInsertValue = dropdownInsertValue;
+
   private loading$ = new BehaviorSubject(false);
   private isExporting$ = new BehaviorSubject(false);
   viewModel$ = combineLatest([this.loading$, this.isExporting$]).pipe(
@@ -28,8 +59,6 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<ExportAppPartsComponent>,
-    private exportAppPartsService: ExportAppPartsService,
-    private contentTypesService: ContentTypesService,
   ) { }
 
   ngOnInit() {

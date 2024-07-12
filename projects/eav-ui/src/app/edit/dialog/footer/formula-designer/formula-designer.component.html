@@ -1,7 +1,7 @@
 @if (!loadError) {
   @if (viewModel$ | async; as vm) {
     <div class="formula-context-box">
-      <mat-form-field color="accent" class="eav-form-field">
+      <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Entity</mat-label>
         <mat-select [ngModel]="vm.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
           @for (entityOption of vm.entityOptions; track trackEntityOptions($index, entityOption)) {
@@ -14,7 +14,7 @@
           }
         </mat-select>
       </mat-form-field>
-      <mat-form-field color="accent" class="eav-form-field">
+      <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Attribute</mat-label>
         <mat-select [ngModel]="vm.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
           [disabled]="vm.designer.entityGuid == null">
@@ -28,7 +28,7 @@
           }
         </mat-select>
       </mat-form-field>
-      <mat-form-field color="accent" class="eav-form-field">
+      <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Target</mat-label>
         @if (!freeTextTarget) {
           <mat-select [ngModel]="vm.designer.target"
