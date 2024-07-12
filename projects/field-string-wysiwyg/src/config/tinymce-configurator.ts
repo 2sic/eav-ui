@@ -8,6 +8,10 @@ import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TranslationsLoader } from './translation-loader';
 import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
+import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'TinyMceConfigurator';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
@@ -20,7 +24,11 @@ export class TinyMceConfigurator {
   private isWysiwygPasteFormatted$ = new BehaviorSubject<boolean>(false);
   private subscription = new Subscription();
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
+    this.log.a('TinyMceConfigurator', { connector, reconfigure });
+
     this.language = this.connector._experimental.translateService.currentLang;
 
     // call optional reconfiguration
@@ -40,10 +48,13 @@ export class TinyMceConfigurator {
 
     this.warnAboutCommonSettingsIssues();
 
-    this.subscription.add(this.connector._experimental.isFeatureEnabled$('WysiwygPasteFormatted')
-      .pipe(distinctUntilChanged())
-      .subscribe(this.isWysiwygPasteFormatted$)
-    );
+    const pasteFormatted$ = this.connector._experimental.isFeatureEnabled$('WysiwygPasteFormatted')
+      .pipe(distinctUntilChanged());
+
+    if (this.log.enabled)
+      this.subscription.add(pasteFormatted$.subscribe(v => this.log.a(`isWysiwygPasteFormatted$: ${v}`)));
+
+    this.subscription.add(pasteFormatted$.subscribe(this.isWysiwygPasteFormatted$));
   }
 
   private warnAboutCommonSettingsIssues(): void {

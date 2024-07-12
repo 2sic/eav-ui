@@ -2,8 +2,10 @@ import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { EavLogger } from '../../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'DefaultPaste';
+
+const log = new EavLogger(nameOfThis, logThis);
 
 export class DefaultPaste {
 
@@ -21,14 +23,15 @@ export class DefaultPaste {
     paste_remove_spans: true,
     paste_remove_styles: true,
     paste_preprocess(plugin: any, args: any) {
+      log.a('TinyMCE paste_preprocess', {plugin, args});
     },
     paste_postprocess(plugin: any, args: any) {
+      log.a('TinyMCE paste_postprocess', {plugin, args});
       try {
         const anchors = (args.node as HTMLElement).getElementsByTagName('a');
         for (const anchor of Array.from(anchors)) {
-          if (!anchor.target) {
+          if (!anchor.target)
             anchor.target = '_blank';
-          }
         }
       } catch (error) {
         console.error('Error in paste postprocess:', error);
