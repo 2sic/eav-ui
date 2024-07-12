@@ -2,7 +2,7 @@ import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { EavLogger } from '../../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'DefaultPaste';
 
 const log = new EavLogger(nameOfThis, logThis);

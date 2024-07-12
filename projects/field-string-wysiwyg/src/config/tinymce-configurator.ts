@@ -10,7 +10,7 @@ import { TranslationsLoader } from './translation-loader';
 import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'TinyMceConfigurator';
 
 declare const window: EavWindow;

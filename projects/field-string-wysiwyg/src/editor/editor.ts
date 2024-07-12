@@ -20,7 +20,7 @@ import 'tinymce/plugins/table';
 import 'tinymce/themes/silver';
 // Keep at least one empty line after this, to ensure order of imports!
 
-import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 // tslint:disable-next-line: no-duplicate-imports
 import type { Editor } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
@@ -201,11 +201,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // called before PastePreProcess
     // this is needed so drag and drop will function even if pasteClipboardImage feature is false
-    editor.on('drop', _event => this.isDrop = true);
+    // important: the { ... } brackets are necessary for `this` to be the correct object
+    editor.on('drop', _event => { this.isDrop = true });
 
     // called before PastePreProcess
     // this is needed so paste will only work depending on pasteClipboardImage feature
-    editor.on('paste', _event => this.isDrop = false);
+    // important: the { ... } brackets are necessary for `this` to be the correct object
+    editor.on('paste', _event => { this.isDrop = false });
 
     // called before actual image upload so _event.preventDefault(); can stop pasting
     // this is needed beacuse only here we can read clipboard content
