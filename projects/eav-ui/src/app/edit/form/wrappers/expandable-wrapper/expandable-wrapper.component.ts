@@ -21,6 +21,7 @@ import { NgClass, NgStyle, JsonPipe } from '@angular/common';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { ControlStatus } from '../../../shared/models';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -42,6 +43,7 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     TranslateModule,
     JsonPipe,
     TippyDirective,
+    ...ExtendedFabSpeedDialImports,
   ],
   providers: [
     ConnectorHelper,
