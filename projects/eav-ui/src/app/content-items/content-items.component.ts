@@ -3,8 +3,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subject, Subscription, take } from 'rxjs';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { BehaviorSubject, combineLatest, filter, map, Observable, Subject, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -48,6 +48,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-content-items',
@@ -65,12 +66,6 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
     ToggleDebugDirective,
     SxcGridModule,
   ],
-  providers: [
-    ContentItemsService,
-    EntitiesService,
-    ContentExportService,
-    ContentTypesService,
-  ],
 })
 export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();
@@ -82,16 +77,17 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   private gridApi$ = new BehaviorSubject<GridApi>(null);
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
+  private contentItemsService = transient(ContentItemsService);
+  private entitiesService = transient(EntitiesService);
+  private contentExportService = transient(ContentExportService);
+  private contentTypesService = transient(ContentTypesService);
+
   viewModel$: Observable<ContentItemsViewModel>;
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentItemsComponent>,
-    private contentTypesService: ContentTypesService,
-    private contentItemsService: ContentItemsService,
-    private entitiesService: EntitiesService,
-    private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private globalConfigService: GlobalConfigService,
     private dialog: MatDialog,
