@@ -74,7 +74,6 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialogConfigSvc: AppDialogConfigService,
-
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
