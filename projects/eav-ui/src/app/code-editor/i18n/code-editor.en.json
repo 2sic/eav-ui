@@ -86,25 +86,25 @@
               "[Content:Repeater:Count]": "Count of items in the list"
             },
             {
-              "[Content:Repeater:IsFirst]": "Outputs <b>First<\/b> if current item is the first one"
+              "[Content:Repeater:IsFirst]": "Outputs <b>First</b> if current item is the first one"
             },
             {
-              "[Content:Repeater:IsLast]": "Outputs <b>Last<\/b> if current item is the last one"
+              "[Content:Repeater:IsLast]": "Outputs <b>Last</b> if current item is the last one"
             },
             {
-              "[Content:Repeater:Alternator2]": "Outputs <b>0<\/b> or <b>1<\/b> depending on items index"
+              "[Content:Repeater:Alternator2]": "Outputs <b>0</b> or <b>1</b> depending on items index"
             },
             {
-              "[Content:Repeater:Alternator3]": "Outputs <b>0<\/b>, <b>1<\/b> or <b>2<\/b> depending on items index"
+              "[Content:Repeater:Alternator3]": "Outputs <b>0</b>, <b>1</b> or <b>2</b> depending on items index"
             },
             {
-              "[Content:Repeater:Alternator4]": "Outputs <b>0<\/b>, <b>1<\/b>, <b>2<\/b> or <b>3<\/b> depending on items index"
+              "[Content:Repeater:Alternator4]": "Outputs <b>0</b>, <b>1</b>, <b>2</b> or <b>3</b> depending on items index"
             },
             {
-              "[Content:Repeater:Alternator5]": "Outputs <b>0<\/b>, <b>1<\/b>, <b>2<\/b>, <b>3<\/b> or <b>4<\/b> depending on items index"
+              "[Content:Repeater:Alternator5]": "Outputs <b>0</b>, <b>1</b>, <b>2</b>, <b>3</b> or <b>4</b> depending on items index"
             },
             {
-              "more...": "<a href&#61;\"http:\/\/2sxc.org\/help\">Learn more<\/a>=More help on 2sxc.org\/help"
+              "more...": "<a href&#61;\"http://2sxc.org/help\">Learn more</a>=More help on 2sxc.org/help"
             }
           ]
         },

@@ -31,6 +31,7 @@ import { ClickStopPropagationDirective } from '../shared/directives/click-stop-p
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-code-editor',
@@ -50,10 +51,6 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
     TippyDirective,
     ToggleDebugDirective,
   ],
-  providers: [
-    SourceService,
-    SnippetsService,
-  ],
 })
 export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
@@ -65,6 +62,10 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     tabSize: 2,
     fixedOverflowWidgets: true,
   };
+
+  private sourceService = transient(SourceService);
+  private snippetsService = transient(SnippetsService);
+
   viewModel$: Observable<CodeEditorViewModel>;
 
   private templates$: BehaviorSubject<FileAsset[]>;
@@ -77,8 +78,6 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     private context: Context,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private sourceService: SourceService,
-    private snippetsService: SnippetsService,
     private zone: NgZone,
     private titleService: Title,
     private dialog: MatDialog,
