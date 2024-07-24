@@ -66,6 +66,10 @@ import { transient } from '../core';
     ToggleDebugDirective,
     SxcGridModule,
   ],
+  providers: [
+    ContentItemsService, // used in import Content item and create metadata
+    ContentTypesService, // used create metadata
+  ],
 })
 export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();
@@ -77,10 +81,8 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   private gridApi$ = new BehaviorSubject<GridApi>(null);
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
-  private contentItemsService = transient(ContentItemsService);
   private entitiesService = transient(EntitiesService);
   private contentExportService = transient(ContentExportService);
-  private contentTypesService = transient(ContentTypesService);
 
   viewModel$: Observable<ContentItemsViewModel>;
 
@@ -93,6 +95,9 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
+    private contentItemsService: ContentItemsService,
+    private contentTypesService: ContentTypesService,
+
   ) {
     super(router, route);
   }

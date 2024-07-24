@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-item-history',
@@ -32,9 +33,6 @@ import { MatButtonModule } from '@angular/material/button';
     MatPaginatorModule,
     AsyncPipe,
     DatePipe,
-  ],
-  providers: [
-    VersionsService,
   ],
 })
 export class ItemHistoryComponent implements OnInit, OnDestroy {
@@ -61,10 +59,11 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
     })),
   );
 
+  private versionsService = transient(VersionsService);
+
   constructor(
     private dialogRef: MatDialogRef<ItemHistoryComponent>,
     private route: ActivatedRoute,
-    private versionsService: VersionsService,
     private snackBar: MatSnackBar,
   ) { }
 
