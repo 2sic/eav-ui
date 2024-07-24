@@ -53,27 +53,17 @@ const pathToContent = 'app/{appname}/data/{typename}';
     AsyncPipe,
   ],
   providers: [
-    PermissionsService,
     EntitiesService,
     FormConfigService,
-    // WIP - should be self-declared by the EntitiesService
     QueryService,
-
-    // AppDialogConfigService,
-    // ContentTypesService,
-    // EntityService,
   ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-
   @Input() contentTypeInput$: BehaviorSubject<ContentType>;
 
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);
-  // TODO:: @2dg Open to use transient
-  // private appDialogConfigService = transient(AppDialogConfigService);
-  // private permissionsService = transient(PermissionsService);
 
   constructor(
     // entityService: EntityService,
@@ -81,14 +71,14 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     dialogRef: MatDialogRef<DevRestDataComponent>,
     router: Router,
     route: ActivatedRoute,
-    appDialogConfigService: AppDialogConfigService,
-    permissionsService: PermissionsService,
 
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     /** sxc-angular context. Used to resolve urls */
     dnnContext: DnnContext,
   ) {
+    const permissionsService = transient(PermissionsService);
+    const appDialogConfigService = transient(AppDialogConfigService);
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
     // this.isSideNavContent = this.router.url.includes(GoToDevRest.routeData);
 

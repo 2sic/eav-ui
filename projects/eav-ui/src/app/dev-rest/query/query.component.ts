@@ -26,45 +26,37 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { DialogService } from '../../shared/services/dialog.service';
 import { transient } from '../../core';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
-
 @Component({
-    selector: 'app-dev-rest-query',
-    templateUrl: './query.component.html',
-    styleUrls: [/*'./query.component.scss',*/ '../dev-rest-all.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        TippyDirective,
-        MatIconModule,
-        RouterOutlet,
-        SelectorWithHelpComponent,
-        MatTabsModule,
-        DevRestQueryIntroductionComponent,
-        DevRestTabIntroductionComponent,
-        DevRestTabExamplesComponent,
-        MatFormFieldModule,
-        MatInputModule,
-        DevRestUrlsAndCodeComponent,
-        DevRestTabPermissionsComponent,
-        DevRestHttpHeadersComponent,
-        AsyncPipe,
-    ],
-    providers: [
-      PermissionsService,
-      EntitiesService,
-      AppDialogConfigService,
-      // PipelinesService,
-      MetadataService,
-    ],
+  selector: 'app-dev-rest-query',
+  templateUrl: './query.component.html',
+  styleUrls: ['../dev-rest-all.scss'],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    TippyDirective,
+    MatIconModule,
+    RouterOutlet,
+    SelectorWithHelpComponent,
+    MatTabsModule,
+    DevRestQueryIntroductionComponent,
+    DevRestTabIntroductionComponent,
+    DevRestTabExamplesComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    DevRestUrlsAndCodeComponent,
+    DevRestTabPermissionsComponent,
+    DevRestHttpHeadersComponent,
+    AsyncPipe,
+  ],
+  providers: [
+    EntitiesService,
+  ],
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-
-  private pipelinesService = transient(PipelinesService);
 
   /** Test values for url params */
   urlParams$ = new BehaviorSubject<string>('');
@@ -75,6 +67,8 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   /** This is necessary, because the Query-Rest can still be opened from the Visual-Query as a dialog */
   isSideNavContent: boolean;
 
+  private pipelinesService = transient(PipelinesService);
+
   constructor(
     appDialogConfigService: AppDialogConfigService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
@@ -82,10 +76,10 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
     dialogRef: MatDialogRef<DevRestQueryComponent>,
     router: Router,
     route: ActivatedRoute,
-    permissionsService: PermissionsService,
     dnnContext: DnnContext,
-    // pipelinesService: PipelinesService,
   ) {
+    const permissionsService = transient(PermissionsService);
+
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
 
     this.isSideNavContent = this.router.url.includes(GoToDevRest.routeQuery);
@@ -93,7 +87,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
     // build Query Stream
     const query$ = combineLatest([
       route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
-     this.pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
+      this.pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
     ]).pipe(
       map(([queryGuid, all]) => all.find(q => q.Guid === queryGuid)),
       share()

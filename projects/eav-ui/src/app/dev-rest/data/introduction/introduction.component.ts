@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AllScenarios, DevRestQueryViewModel } from '../..';
+import { AllScenarios } from '../..';
 import { DevRestDataViewModel } from '../data-template-vars';
 
 @Component({
-    selector: 'app-dev-data-introduction',
-    templateUrl: './introduction.component.html',
-    standalone: true,
+  selector: 'app-dev-data-introduction',
+  templateUrl: './introduction.component.html',
+  standalone: true,
 })
 export class DevRestDataIntroductionComponent implements OnInit {
 

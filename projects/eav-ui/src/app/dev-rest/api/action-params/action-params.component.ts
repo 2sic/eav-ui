@@ -12,7 +12,10 @@ import { SxcGridModule } from '../../../shared/modules/sxc-grid-module/sxc-grid.
   selector: 'app-dev-rest-api-action-params',
   templateUrl: './action-params.component.html',
   standalone: true,
-  imports: [MatIconModule, SxcGridModule,],
+  imports: [
+    MatIconModule,
+    SxcGridModule,
+  ],
 })
 export class DevRestApiActionParamsComponent {
   @Input() data: WebApiAction;
