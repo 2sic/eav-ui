@@ -12,7 +12,7 @@ const logThis = false;
 
 /**
  * Singleton Service to provide information about enabled/disabled features.
- * 
+ *
  * It currently has a strange architecture, since it's singleton,
  * but needs context data.
  * So the AppDialogConfigService seems to call the loadFromService.

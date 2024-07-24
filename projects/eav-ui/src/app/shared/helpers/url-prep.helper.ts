@@ -176,7 +176,7 @@ export function convertUrlToForm(formUrl: string) {
           innerItem.Add = parms[4] === 'true';
           if (parms.length > 4 && parms[5] && isNumber(parms[5]))
             innerItem.EntityId = parseInt(parms[5], 10);
-        } else { 
+        } else {
           addParamToItemIdentifier(innerItem, option);
         }
       }

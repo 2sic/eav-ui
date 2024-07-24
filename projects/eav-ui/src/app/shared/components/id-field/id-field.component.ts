@@ -13,7 +13,11 @@ import { TippyDirective } from '../../directives/tippy.directive';
   templateUrl: './id-field.component.html',
   styleUrls: ['./id-field.component.scss'],
   standalone: true,
-  imports: [NgClass, MatIconModule, TippyDirective]
+  imports: [
+    NgClass,
+    MatIconModule,
+    TippyDirective,
+  ]
 })
 export class IdFieldComponent implements ICellRendererAngularComp {
   id: number | string;

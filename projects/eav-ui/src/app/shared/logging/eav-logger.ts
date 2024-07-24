@@ -8,7 +8,7 @@ export class EavLogger {
 
   enableChildren: boolean;
 
-  constructor(public name: string, public enabled: boolean, enableChildren?: boolean) { 
+  constructor(public name: string, public enabled: boolean, enableChildren?: boolean) {
     this.enableChildren = enableChildren ?? false;
     this.nameWithSvcId = `${name}-${this.svcId}`;
   }

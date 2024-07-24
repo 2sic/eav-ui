@@ -22,7 +22,7 @@ export class Context extends ServiceBase {
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
     super(new EavLogger(nameOfThis, logThis));
-    this.log.a(`constructor; hasParent: ${parentContext != null}`, {parentContext, 'parentId': parentContext?.id});
+    this.log.a(`constructor; hasParent: ${parentContext != null}`, { parentContext, 'parentId': parentContext?.id });
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
@@ -76,7 +76,7 @@ export class Context extends ServiceBase {
   /**
    * This is the initializer at entry-components of modules.
    * It ensures that within that module, the context has the values given by the route.
-   * 
+   *
    * Note: 2024-07-01 2dm: a long time ago the context was recreated for every single component, so init was also called for every component.
    * But after going standalone, thi doesn't happen any more, and the re-init seems to kill the context from previous,
    * which is why we skip this if already ready.
@@ -90,7 +90,7 @@ export class Context extends ServiceBase {
     this.routeSnapshot = route?.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
-    this.log.a('init done', {this: this, 'appId': this.appId, 'zoneId': this.zoneId, 'contentBlockId': this.contentBlockId, 'moduleId': this.moduleId});
+    this.log.a('init done', { this: this, 'appId': this.appId, 'zoneId': this.zoneId, 'contentBlockId': this.contentBlockId, 'moduleId': this.moduleId });
   }
 
   initRoot(): void {

@@ -8,5 +8,5 @@ declare const window: EavWindow;
 // AoT requires an exported function for factories
 // at least according to https://github.com/ngx-translate/http-loader
 export function translateLoaderFactory(http: HttpClient): TranslateLoader {
-    return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${window.sxcVersion}`);
+  return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${window.sxcVersion}`);
 }

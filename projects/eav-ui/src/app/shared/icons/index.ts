@@ -238,7 +238,7 @@ export const iconLib = {
  * Icon names object - to use icon-names as constants across code
  * and therefore ensure that we don't mistype the icon names
  */
-export const icons = Object.keys(iconLib).reduce((a, v) => ({ ...a, [v]: v}), {}) as unknown as typeof iconLib;
+export const icons = Object.keys(iconLib).reduce((a, v) => ({ ...a, [v]: v }), {}) as unknown as typeof iconLib;
 
 export const iconsFontAwesome: Record<string, string> = {
   'code-curly': codeCurly,

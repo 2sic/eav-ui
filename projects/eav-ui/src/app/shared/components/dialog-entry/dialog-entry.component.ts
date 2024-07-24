@@ -8,7 +8,6 @@ import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
 import { EavLogger } from '../../logging/eav-logger';
 import { BaseComponent } from '../base.component';
-import { FormulaPromiseHandler } from '../../../edit/formulas/formula-promise-handler';
 
 declare const window: EavWindow;
 
@@ -72,7 +71,7 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
-    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, {name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context});
+    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, { name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context });
     if (dialogConfig.initContext)
       this.context.init(this.route);
 

@@ -23,7 +23,7 @@ export class EditPrep {
       Target: keyDef.target,
       TargetType: keyDef.targetType,
       ...(
-        typeof(key) == 'number'
+        typeof (key) == 'number'
           ? { Number: key as number }
           : keyDef.keyType == 'guid'
             ? { Guid: key as string }
@@ -58,7 +58,7 @@ export type ItemIdentifierHeader = ItemIdentifier & ItemIdentifierEditConfig;
 //   // Guid: string;
 //   // 2023-05-15 seems unused - TODO: probably remove from backend as well
 //   // Index?: number;
-  
+
 //   // 2023-05-15 seems unused
 //   // Metadata?: EavEntity[];
 //   // 2023-05-15 now in base interface

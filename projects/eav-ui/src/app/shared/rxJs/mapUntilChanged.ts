@@ -12,15 +12,15 @@ import { RxHelpers } from './rx.helpers';
 /**
  * Combine map and distinctUntilChanged, as this is a very common pattern.
  * @param fn the mapping function
- * @returns 
+ * @returns
  */
 export function mapUntilChanged<T, R>(
-    fn: (state: T) => R
+  fn: (state: T) => R
 ): UnaryFunction<Observable<T>, Observable<R>> {
-    return pipe(
-      distinctUntilChanged(),
-      map(fn),
-      distinctUntilChanged(),
+  return pipe(
+    distinctUntilChanged(),
+    map(fn),
+    distinctUntilChanged(),
   );
 }
 
@@ -31,5 +31,5 @@ export function mapUntilObjChanged<T, R>(
     distinctUntilChanged(),
     map(fn),
     distinctUntilChanged(RxHelpers.objectsEqual),
-);
+  );
 }

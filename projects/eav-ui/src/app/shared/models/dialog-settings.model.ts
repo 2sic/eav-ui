@@ -1,7 +1,9 @@
 // tslint:disable-next-line:max-line-length
 import { FeatureSummary } from '../../features/models/feature-summary.model';
-import { DialogContextApp, DialogContextEnable, DialogContextLanguage, DialogContextPage,
-  DialogContextSite, DialogContextSystem, DialogContextUser } from './dialog-context.models';
+import {
+  DialogContextApp, DialogContextEnable, DialogContextLanguage, DialogContextPage,
+  DialogContextSite, DialogContextSystem, DialogContextUser
+} from './dialog-context.models';
 
 export interface DialogSettings {
   Context: DialogContext;
