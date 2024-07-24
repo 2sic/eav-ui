@@ -17,6 +17,7 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
 import { EavLogger } from '../../shared/logging/eav-logger';
+import { transient } from '../../core';
 
 const logThis = true;
 const nameOfThis = 'PlumbEditorComponent';

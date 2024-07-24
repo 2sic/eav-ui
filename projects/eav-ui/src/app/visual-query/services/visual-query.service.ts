@@ -65,7 +65,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
       }
       this.refreshPipeline = false;
       this.refreshDataSourceConfigs = false;
-     }));
+    }));
   }
 
   editPipelineEntity() {

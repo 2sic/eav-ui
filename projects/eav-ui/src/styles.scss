@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 // Include the common styles for Angular Material. Be sure that you only ever include this mixin once!
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
@@ -11,30 +11,30 @@
 // @include mat.legacy-typography-hierarchy(mat.define-typography-config());
 // @include mat.all-component-typographies();
 @include mat.core();
-@import '@ag-grid-community/styles/ag-grid.css';
-@import '@ag-grid-community/styles/ag-theme-material.css';
+@import "@ag-grid-community/styles/ag-grid.css";
+@import "@ag-grid-community/styles/ag-theme-material.css";
 @import "@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 
-@import './styles/variables.scss';
-@import './styles/theme.scss';
-@import './app/edit/assets/styles/app.scss';
-@import './styles/helpers.scss';
-@import './styles/mat-card.styles.scss';
-@import './styles/mat-dialog.styles.scss';
-@import './styles/mat-tooltip.styles.scss';
-@import './styles/mat-tabs.styles.scss';
-@import './styles/ag-grid.styles.scss';
-@import './styles/ag-grid-components.styles.scss';
-@import './styles/sxc-messages.styles.scss';
-@import './styles/editor.styles.scss';
-@import './styles/pipeline-designer.scss';
-@import './styles/mat-radio.styles.scss';
-@import './styles/mat-button.styles.scss';
-@import './styles/drag-and-drop.styles.scss';
-@import './styles/item-history.styles.scss';
-@import './styles/tippy.styles.scss';
-@import './styles/mat-snackbar.styles.scss';
-@import './styles/eco-fab-speed-dial.styles.scss';
+@import "./styles/variables.scss";
+@import "./styles/theme.scss";
+@import "./app/edit/assets/styles/app.scss";
+@import "./styles/helpers.scss";
+@import "./styles/mat-card.styles.scss";
+@import "./styles/mat-dialog.styles.scss";
+@import "./styles/mat-tooltip.styles.scss";
+@import "./styles/mat-tabs.styles.scss";
+@import "./styles/ag-grid.styles.scss";
+@import "./styles/ag-grid-components.styles.scss";
+@import "./styles/sxc-messages.styles.scss";
+@import "./styles/editor.styles.scss";
+@import "./styles/pipeline-designer.scss";
+@import "./styles/mat-radio.styles.scss";
+@import "./styles/mat-button.styles.scss";
+@import "./styles/drag-and-drop.styles.scss";
+@import "./styles/item-history.styles.scss";
+@import "./styles/tippy.styles.scss";
+@import "./styles/mat-snackbar.styles.scss";
+@import "./styles/eco-fab-speed-dial.styles.scss";
 
 html,
 body {

@@ -10,6 +10,7 @@ import { NgClass } from '@angular/common';
 import { QueryDefinitionService } from './services/query-definition.service';
 import { MetadataService } from '../permissions';
 import { ContentTypesService } from '../app-administration/services';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-visual-query',
@@ -25,9 +26,8 @@ import { ContentTypesService } from '../app-administration/services';
     PlumbEditorComponent,
   ],
   providers: [
-    VisualQueryService,
-    QueryDefinitionService,
-
+    VisualQueryService, // used in run-explorer
+    QueryDefinitionService, // used in plumb-editor
     MetadataService,
     ContentTypesService,
   ],
@@ -41,7 +41,11 @@ export class VisualQueryComponent implements OnInit {
   };
   activeExplorer = this.explorer.run;
 
-  constructor(private context: Context, private route: ActivatedRoute, private visualQueryService: VisualQueryService) {
+  constructor(
+    private context: Context,
+    private route: ActivatedRoute,
+    private visualQueryService: VisualQueryService
+  ) {
     this.context.init(this.route);
   }
 
