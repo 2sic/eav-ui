@@ -35,10 +35,10 @@ export class FeatureComponentBase {
   constructor() {
     this.feature$ = this.featureNameId$.pipe(
       switchMap(featName => this.featuresService.get$(featName)
-    ));
+      ));
     this.show$ = combineLatest([this.feature$, this.showIf$]).pipe(
       // tap(data => console.log('2dm - show$', data)),
-      map(([feat,showIf]) => showIf == (feat?.isEnabled ?? false))
+      map(([feat, showIf]) => showIf == (feat?.isEnabled ?? false))
     );
   }
 
