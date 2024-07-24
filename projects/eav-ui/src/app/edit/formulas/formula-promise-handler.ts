@@ -30,10 +30,10 @@ export class FormulaPromiseHandler {
 
   /**
    * Used for filling queue and triggering next run.
-   * @param entityGuid 
-   * @param resultWithPromise 
-   * @param formulaCache 
-   * @param inputType 
+   * @param entityGuid
+   * @param resultWithPromise
+   * @param formulaCache
+   * @param inputType
    */
   handleFormulaPromise(
     entityGuid: string,
@@ -51,9 +51,9 @@ export class FormulaPromiseHandler {
 
   /**
    * Used for defining the callback handler for the promise if it doesn't already exist and filling queue for the next run.
-   * @param formulaCache 
-   * @param inputType 
-   * @param entityGuid 
+   * @param formulaCache
+   * @param inputType
+   * @param entityGuid
    */
   private DefineCallbackHandlerIfMissing(
     formulaCache: FormulaCacheItem,
@@ -94,21 +94,21 @@ export class FormulaPromiseHandler {
 
   /**
    * Used for updating values and cleaning settings from queue.
-   * @param entityGuid 
-   * @param queue 
-   * @param contentType 
-   * @param formValues 
-   * @param fieldsProps 
-   * @param slotIsEmpty 
-   * @param entityReader 
-   * @param latestFieldProps 
-   * @param attributes 
-   * @param contentTypeMetadata 
-   * @param constantFieldParts 
-   * @param itemAttributes 
-   * @param formReadOnly 
-   * @param logicTools 
-   * @param formItemFormulaService 
+   * @param entityGuid
+   * @param queue
+   * @param contentType
+   * @param formValues
+   * @param fieldsProps
+   * @param slotIsEmpty
+   * @param entityReader
+   * @param latestFieldProps
+   * @param attributes
+   * @param contentTypeMetadata
+   * @param constantFieldParts
+   * @param itemAttributes
+   * @param formReadOnly
+   * @param logicTools
+   * @param formItemFormulaService
    * @returns true if values were updated, false otherwise and new field props
    */
   updateValuesFromQueue(

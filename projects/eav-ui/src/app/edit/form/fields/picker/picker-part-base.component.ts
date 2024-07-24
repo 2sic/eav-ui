@@ -1,5 +1,4 @@
 import { Component, OnDestroy, computed, inject, input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { PickerData } from './picker-data';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -23,12 +22,12 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy 
 
   /** Picker Data Bundle with Source and state etc. */
   pickerData = input.required<PickerData>();
-  
+
   public controlStatus = computed(() => this.pickerData().state.controlStatus());
-  
+
   /** All Selected Items */
   public selectedItems = computed(() => this.pickerData().selectedAll());
-  
+
   /** Field Configuration - from field state */
   config = this.fieldState.config;
 

@@ -1,9 +1,9 @@
 /**
  * Picker Features allow a source, state or control to determine what features are available for a picker.
- * 
+ *
  * The idea is that by default, these things should be truish, and then the source, state or control can
- * declare that it's not allowed. 
- * 
+ * declare that it's not allowed.
+ *
  * In the end the features should be merged into one object, and the picker should be able to determine
  * what buttons etc. to show.
  */

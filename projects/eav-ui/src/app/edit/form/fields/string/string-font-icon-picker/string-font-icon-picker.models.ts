@@ -6,4 +6,3 @@ export interface IconOption {
   /** Label for showing in the dropdown */
   label: string;
 }
-

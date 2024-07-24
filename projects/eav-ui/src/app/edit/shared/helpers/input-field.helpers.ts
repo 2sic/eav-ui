@@ -60,8 +60,8 @@ export class InputFieldHelpers {
       /** WIP pickers */
       || (inputType === InputTypeConstants.EntityPicker)
       || (inputType === InputTypeConstants.StringPicker);
-      // || (inputType === InputTypeConstants.WIPNumberPicker);
-    
+    // || (inputType === InputTypeConstants.WIPNumberPicker);
+
     const allowMultiValue = settings.AllowMultiValue ?? false;
 
     if (isEntityOrStringDropdownType) {

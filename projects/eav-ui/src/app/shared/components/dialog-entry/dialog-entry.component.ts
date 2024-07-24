@@ -8,6 +8,7 @@ import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
 import { EavLogger } from '../../logging/eav-logger';
 import { BaseComponent } from '../base.component';
+import { FormulaPromiseHandler } from '../../../edit/formulas/formula-promise-handler';
 
 declare const window: EavWindow;
 

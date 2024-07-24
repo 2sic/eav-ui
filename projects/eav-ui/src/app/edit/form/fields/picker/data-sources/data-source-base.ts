@@ -12,13 +12,13 @@ import { Signal, inject, signal } from '@angular/core';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 
 export abstract class DataSourceBase extends ServiceBase {
-  
+
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
   constructor(logSpecs: EavLogger) {
     super(logSpecs);
-    this.log.a('constructor', {forField: this.fieldState.name});
+    this.log.a('constructor', { forField: this.fieldState.name });
   }
 
   /** Signal containing the data */
@@ -63,7 +63,7 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   addToRefresh(additionalGuids: string[]): void {
-    const l = this.log.fn('addToRefresh', {additionalGuids});
+    const l = this.log.fn('addToRefresh', { additionalGuids });
     const before = this.guidsToRefresh();
     const merged = [...before, ...additionalGuids].filter(RxHelpers.distinct);
     this.log.values({ before, additionalGuids, merged });

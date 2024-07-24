@@ -25,7 +25,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     StringDropdownQueryLogic.importMe();
   }
 
-
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
     const state = this.stateString.linkLog(this.log).attachCallback(this.focusOnSearchComponent);

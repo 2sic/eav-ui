@@ -11,7 +11,6 @@ import { FormConfigService } from '../../../../shared/services';
 const logThis = true;
 const nameOfThis = 'DataSourceQuery';
 
-
 // TODO: NEXT STEPS
 // 5. afterwards check all edge cases.
 // - EG. not aggressively loading
@@ -54,17 +53,17 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
     let source: Observable<DataWithLoading<QueryStreams>>;
     if (!queryUrl)
       source = of<DataWithLoading<QueryStreams>>({
-          data: {
-            'Default': [
-              {
-                Id: -1,
-                Guid: null,
-                Title: this.translate.instant('Fields.Picker.QueryNotConfigured'),
-              },
-            ],
-          },
-          loading: false,
-        }
+        data: {
+          'Default': [
+            {
+              Id: -1,
+              Guid: null,
+              Title: this.translate.instant('Fields.Picker.QueryNotConfigured'),
+            },
+          ],
+        },
+        loading: false,
+      }
       );
     else {
       // Default case, get the data
@@ -93,12 +92,12 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
     let items: PickerItem[] = [];
     let errors: PickerItem[] = [];
-    streamName.split(',').forEach(stream => { 
+    streamName.split(',').forEach(stream => {
       if (!data[stream]) {
         errors.push(placeholderPickerItem(this.translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
         return; // TODO: @SDV test if this acts like continue or break
       }
-        
+
       items = items.concat(data[stream].map(entity => this.getMaskHelper().entity2PickerItem({
         entity,
         streamName: stream,

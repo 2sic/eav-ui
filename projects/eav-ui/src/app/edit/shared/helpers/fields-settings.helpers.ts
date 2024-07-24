@@ -151,7 +151,7 @@ export class FieldsSettingsHelpers {
             infoLabel = 'LangMenu.In';
           else if (readonlyTranslationExists)
             infoLabel = 'LangMenu.From';
-          
+
           infoMessage = TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, language.current);
         } else {
           infoLabel = '';
@@ -180,10 +180,10 @@ export class FieldsSettingsHelpers {
     // Determine is control disabled or enabled and info message
     if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
       return { language: '', linkType: TranslationLinks.MissingDefaultLangValue }
-    
+
     if (disableTranslation)
       return { language: '', linkType: TranslationLinks.DontTranslate }
-    
+
     if (LocalizationHelpers.hasEditableValue(attributeValues, language)) {
       const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
         .Dimensions.filter(dimension => dimension.Value !== language.current);
@@ -192,7 +192,7 @@ export class FieldsSettingsHelpers {
         ? { language: editableElements[0].Value, linkType: TranslationLinks.LinkReadWrite }
         : { language: '', linkType: TranslationLinks.Translate }
     }
-    
+
     if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) {
       const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
         .Dimensions.filter(dimension => dimension.Value !== language.current);

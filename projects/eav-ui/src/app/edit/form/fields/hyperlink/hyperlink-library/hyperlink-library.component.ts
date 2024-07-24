@@ -10,10 +10,10 @@ import { AdamConfig } from 'projects/edit-types';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 @Component({
-    selector: InputTypeConstants.HyperlinkLibrary,
-    template: '', // note: no template - it will just show the adam component in the popup
-    styleUrls: [],
-    standalone: true,
+  selector: InputTypeConstants.HyperlinkLibrary,
+  template: '', // note: no template - it will just show the adam component in the popup
+  styleUrls: [],
+  standalone: true,
 })
 @FieldMetadata({
   wrappers: [
@@ -61,15 +61,15 @@ export class HyperlinkLibraryComponent implements OnInit {
   private attachAdamValidator() {
     let first = true;
     // this.subscriptions.add(
-      this.fieldState.config.adam.items$.pipe(
-        map(items => items.length),
-        distinctUntilChanged(),
-      ).subscribe(itemsCount => {
-        (this.fieldState.control as AdamControl).adamItems = itemsCount;
-        if (!first)
-          this.fieldState.control.updateValueAndValidity();
-        first = false;
-      })
+    this.fieldState.config.adam.items$.pipe(
+      map(items => items.length),
+      distinctUntilChanged(),
+    ).subscribe(itemsCount => {
+      (this.fieldState.control as AdamControl).adamItems = itemsCount;
+      if (!first)
+        this.fieldState.control.updateValueAndValidity();
+      first = false;
+    })
     // );
   }
 }

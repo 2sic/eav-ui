@@ -1,8 +1,8 @@
 import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
 
 @Directive({
-    selector: '[appChangeAnchorTarget]',
-    standalone: true
+  selector: '[appChangeAnchorTarget]',
+  standalone: true
 })
 export class ChangeAnchorTargetDirective implements OnInit, OnDestroy {
   private target = '_blank';

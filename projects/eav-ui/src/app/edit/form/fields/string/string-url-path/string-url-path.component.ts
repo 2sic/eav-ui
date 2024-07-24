@@ -1,11 +1,10 @@
-import { Component, inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { StringUrlPathLogic } from './string-url-path-logic';
-import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -65,7 +64,7 @@ export class StringUrlPathComponent extends BaseComponent implements OnInit, OnD
           .initPreClean((key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
           .initCallback((newValue) => { this.onSourcesChanged(newValue); })
           .init('UrlPath', autoGenerateMask);
-          // .logChanges();
+        // .logChanges();
 
         this.onSourcesChanged(this.fieldMask.resolve());
       })

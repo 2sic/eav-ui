@@ -13,7 +13,7 @@ const nameOfThis = 'DataAdapterString';
 @Injectable()
 export class DataAdapterString extends DataAdapterBase {
 
-  public features = signal( { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
+  public features = signal({ edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
   private injector = inject(Injector);
 

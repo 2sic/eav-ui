@@ -39,7 +39,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     });
     return fieldMask;
   });
-  
+
 
   protected contentType = computed(() => this.contentTypeMaskLazy()?.signal() ?? '', SignalHelpers.stringEquals);
 
@@ -96,14 +96,14 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     return this;
   };
 
-  public connectState(state: StateAdapter, useEmpty: boolean): this  {
+  public connectState(state: StateAdapter, useEmpty: boolean): this {
     this.log.a('setupFromComponent');
 
     this.dataSource.set(useEmpty
       ? transient(DataSourceEmpty, this.injector).preSetup("Error: configuration missing")
       : this.dataSourceEntityOrQuery.setup()
     );
-    if (useEmpty) 
+    if (useEmpty)
       this.useDataSourceStream.set(true);
 
     super.setup(state.doAfterDelete);
@@ -118,7 +118,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const l = this.log.fn('forceReloadData', { missingData });
     this.dataSource().addToRefresh(missingData);
 
-    
+
     l.end();
   }
 
@@ -135,7 +135,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
-    this.log.a('editItem', {editParams});
+    this.log.a('editItem', { editParams });
     if (editParams)
       this.editEntityGuid.set(editParams.entityGuid);
     let form: EditForm;
@@ -165,7 +165,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   }
 
   deleteItem(props: DeleteEntityProps): void {
-    this.log.a('deleteItem', {props});
+    this.log.a('deleteItem', { props });
     const entity = this.optionsOrHints().find(item => item.value === props.entityGuid);
     const id = entity.id;
     const title = entity.label;

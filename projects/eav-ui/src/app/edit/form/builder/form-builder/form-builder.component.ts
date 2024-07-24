@@ -25,21 +25,21 @@ const nameOfThis = 'FormBuilderComponent';
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
-  providers: [
-    FieldsSettingsService,
-    FieldsTranslateService,
-    FormItemFormulaService,
-    FormulaEngine,
-    FormulaPromiseHandler,
-
-    // new
-    EntityFormStateService,
-  ],
   standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
     EntityWrapperComponent,
+  ],
+  providers: [
+    FieldsSettingsService,  // used for Edit Dialog Main
+    FieldsTranslateService, // used for Edit Dialog Header
+    FormItemFormulaService, // used in Dialog entry and Dialog Header Dialog Main
+    FormulaEngine, // used in Dialog entry and Dialog Header Dialog Main
+    FormulaPromiseHandler, // used in Dialog entry and Dialog Header Dialog Main
+
+    // new
+    EntityFormStateService,
   ],
 })
 export class FormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {

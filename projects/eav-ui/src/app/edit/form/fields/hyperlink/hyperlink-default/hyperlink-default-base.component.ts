@@ -95,7 +95,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
   }
 
   private fetchLink(value: string) {
-    this.log.a('fetchLink', {value});
+    this.log.a('fetchLink', { value });
     if (!value) {
       this.setPreview(value, false);
       return;

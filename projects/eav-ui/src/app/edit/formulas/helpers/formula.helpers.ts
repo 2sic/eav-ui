@@ -86,20 +86,20 @@ export class FormulaHelpers {
 
   /**
    * Used to build formula props parameters.
-   * @param formula 
-   * @param entityId 
-   * @param inputType 
-   * @param settingsInitial 
-   * @param settingsCurrent 
-   * @param formValues 
-   * @param initialFormValues 
-   * @param languages 
-   * @param itemHeader 
-   * @param debugEnabled 
-   * @param itemService 
-   * @param formConfig 
-   * @param fieldsSettingsService 
-   * @param features 
+   * @param formula
+   * @param entityId
+   * @param inputType
+   * @param settingsInitial
+   * @param settingsCurrent
+   * @param formValues
+   * @param initialFormValues
+   * @param languages
+   * @param itemHeader
+   * @param debugEnabled
+   * @param itemService
+   * @param formConfig
+   * @param fieldsSettingsService
+   * @param features
    * @returns Formula properties
    */
   static buildFormulaProps(
@@ -272,8 +272,8 @@ export class FormulaHelpers {
 
   /**
    * Used to build the formula props parameters as a record of key-value pairs.
-   * @param prefillAsParameters 
-   * @returns 
+   * @param prefillAsParameters
+   * @returns
    */
   static buildFormulaPropsParameters(prefillAsParameters: Record<string, unknown>): Record<string, any> {
     return prefillAsParameters ? JSON.parse(JSON.stringify(prefillAsParameters)) : {};
@@ -281,9 +281,9 @@ export class FormulaHelpers {
 
   /**
    * Used to build the designer snippets for use in formulas.
-   * @param formula 
-   * @param fieldOptions 
-   * @param itemHeader 
+   * @param formula
+   * @param fieldOptions
+   * @param itemHeader
    * @returns Designer snippets for use in formulas
    */
   static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): DesignerSnippet[] {
@@ -314,7 +314,7 @@ export class FormulaHelpers {
 
   /**
    * Used to build the designer snippets context for use in formulas.
-   * @param formula 
+   * @param formula
    * @returns Designer snippets context for use in formulas
    */
   static buildDesignerSnippetsContext(formula: FormulaCacheItem): DesignerSnippet[] {
@@ -357,9 +357,9 @@ export class FormulaHelpers {
 
   /**
    * Used to build the formula typings for use in intellisense.
-   * @param formula 
-   * @param fieldOptions 
-   * @param itemHeader 
+   * @param formula
+   * @param fieldOptions
+   * @param itemHeader
    * @returns Formula typings for use in intellisense
    */
   static buildFormulaTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): string {
