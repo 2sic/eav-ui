@@ -30,7 +30,7 @@ export const InputTypeConstants = {
   EntityPicker: 'entity-picker',
   StringPicker: 'string-picker',
   NumberPicker: 'number-picker',
-  
+
   /** for all situations where we need a fallback; new v16.04 */
   Unknown: 'unknown',
 } as const;
