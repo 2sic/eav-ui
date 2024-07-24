@@ -22,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MetadataService } from './services/metadata.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-permissions',
@@ -37,8 +38,6 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     SxcGridModule,
   ],
   providers: [
-    PermissionsService,
-    MetadataService,
     EntitiesService,
   ],
 })
@@ -57,12 +56,12 @@ export class PermissionsComponent extends BaseWithChildDialogComponent implement
 
   viewModel$: Observable<PermissionsViewModel>;
 
+  private permissionsService = transient(PermissionsService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<PermissionsComponent>,
-
-    private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
   ) {
     super(router, route);

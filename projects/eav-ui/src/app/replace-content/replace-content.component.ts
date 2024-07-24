@@ -19,6 +19,7 @@ import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } 
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-replace-content',
@@ -40,9 +41,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatDialogActions,
     AsyncPipe,
   ],
-  providers: [
-    ContentGroupService,
-  ],
 })
 export class ReplaceContentComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -57,11 +55,12 @@ export class ReplaceContentComponent extends BaseWithChildDialogComponent implem
   private options$: BehaviorSubject<ReplaceOption[]>;
   private contentTypeName: string;
 
+  private contentGroupService = transient(ContentGroupService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
-    private contentGroupService: ContentGroupService,
 
     private snackBar: MatSnackBar,
   ) {
