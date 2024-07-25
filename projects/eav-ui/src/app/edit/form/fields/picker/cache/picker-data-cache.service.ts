@@ -5,6 +5,7 @@ import { PickerItem } from '../../../../../../../../edit-types';
 import { BaseDataService } from '../../../../shared/store/ngrx-data/base-data.service';
 import { PrefetchEntity, prefetchItemToPickerItem } from '../../../../dialog/main/edit-dialog-main.models';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class PickerDataCacheService extends BaseDataService<PickerItem> {
@@ -24,7 +25,8 @@ export class PickerDataCacheService extends BaseDataService<PickerItem> {
 
     return this.cache$.pipe(
       map(entities => entities.filter(entity => guids.includes(entity.value))),
-      distinctUntilChanged(RxHelpers.arraysEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.arraysEqual),
     );
   }
 }

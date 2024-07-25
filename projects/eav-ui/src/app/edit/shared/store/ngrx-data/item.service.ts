@@ -15,6 +15,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'ItemService';
@@ -262,7 +263,8 @@ export class ItemService extends BaseDataService<EavItem> {
 
     return this.cache$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
-      distinctUntilChanged(RxHelpers.arraysEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.arraysEqual),
     );
   }
 

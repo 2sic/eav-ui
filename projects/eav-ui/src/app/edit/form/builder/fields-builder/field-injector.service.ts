@@ -61,7 +61,8 @@ export class FieldInjectorService {
       runInInjectionContext(this.injector, () => {
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
-        const disabled$ = settings$.pipe(map(s => s.Disabled || s.ForcedDisabled), distinctUntilChanged(RxHelpers.boolEquals));
+        const disabled$ = settings$.pipe(map(s => s.Disabled || s.ForcedDisabled),
+                             mapUntilObjChanged(m => m)); // distinctUntilChanged(RxHelpers.boolEquals));
         const controlStatus$ = combineLatest([control.valueChanges, disabled$]).pipe(
           tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
           mapUntilObjChanged(([_, disabled]) => controlToControlStatus(control, disabled)),

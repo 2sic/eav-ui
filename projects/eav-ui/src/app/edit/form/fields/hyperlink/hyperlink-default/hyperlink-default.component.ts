@@ -24,6 +24,7 @@ import { ControlHelpers } from '../../../../shared/helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,
@@ -126,7 +127,8 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
           Paths: settings.Paths,
           FileFilter: settings.FileFilter,
         })),
-        distinctUntilChanged(RxHelpers.objectsEqual),
+        mapUntilObjChanged(m => m),
+        // distinctUntilChanged(RxHelpers.objectsEqual),
       ).subscribe(settings => {
         this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
         this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };

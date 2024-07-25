@@ -29,6 +29,7 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -110,7 +111,8 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
         EditInstructions: settings.EditInstructions,
         Features: settings.Features,
       })),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m)
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
     const note$ = this.itemService.getItemNote$(this.entityGuid);
     const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(

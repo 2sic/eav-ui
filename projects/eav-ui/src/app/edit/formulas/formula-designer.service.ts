@@ -13,6 +13,7 @@ import { FormulaHelpers } from './helpers/formula.helpers';
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 
 declare const window: EavWindow;
 
@@ -88,7 +89,8 @@ export class FormulaDesignerService implements OnDestroy {
       map(formulas => formulas.find(
         f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
       ),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 

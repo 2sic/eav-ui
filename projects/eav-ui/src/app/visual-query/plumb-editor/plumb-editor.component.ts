@@ -18,6 +18,7 @@ import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 
 const logThis = true;
 const nameOfThis = 'PlumbEditorComponent';
@@ -73,7 +74,8 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
 
     const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
       map(pipelineModel => JsonHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.viewModel$ = combineLatest([

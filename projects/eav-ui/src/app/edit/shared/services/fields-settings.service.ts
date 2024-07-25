@@ -23,6 +23,7 @@ import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -367,7 +368,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
   /**
    * Used for getting field settings for a specific field.
-   * @param fieldName 
+   * @param fieldName
    * @returns Field settings
    */
   getFieldSettings(fieldName: string): FieldSettings {
@@ -376,13 +377,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
   /**
    * Used for getting field settings stream for a specific field.
-   * @param fieldName 
+   * @param fieldName
    * @returns Field settings stream
    */
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -390,7 +392,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   getFieldSettingsReplayed$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
       shareReplay(1),
     );
   }
@@ -398,7 +401,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
     const cached = this.signalsCache[fieldName];
     if (cached) return cached;
-    
+
     var obs = this.getFieldSettingsReplayed$(fieldName);
     return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
   }
@@ -406,13 +409,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
   /**
    * Used for translation state stream for a specific field.
-   * @param fieldName 
+   * @param fieldName
    * @returns Translation state stream
    */
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
