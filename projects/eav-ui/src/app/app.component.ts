@@ -16,7 +16,6 @@ import { Context } from './shared/services/context';
   imports: [
     RouterModule,
   ],
-  providers: [],
 })
 export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();

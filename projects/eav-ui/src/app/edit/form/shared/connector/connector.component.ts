@@ -2,15 +2,13 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, ViewCh
 import { consoleLogDev } from '../../../../shared/helpers/console-log-angular.helper';
 import { ConnectorHelper } from './connector.helper';
 import { FieldState } from '../../builder/fields-builder/field-state';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: 'app-connector',
   templateUrl: './connector.component.html',
   styleUrls: ['./connector.component.scss'],
   standalone: true,
-  providers: [
-    ConnectorHelper,
-  ],
 })
 export class ConnectorComponent implements AfterViewInit {
 
@@ -18,7 +16,7 @@ export class ConnectorComponent implements AfterViewInit {
   @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
   protected fieldState = inject(FieldState);
-  private connectorCreator = inject(ConnectorHelper);
+  private connectorCreator = transient(ConnectorHelper);
   private viewContainerRef = inject(ViewContainerRef);
   private changeDetectorRef = inject(ChangeDetectorRef);
 

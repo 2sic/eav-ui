@@ -14,6 +14,7 @@ import { InputComponents } from './input-components.constant';
 import { InjectorBundle } from './injector-bundle.model';
 import { DynamicControlInfo } from './dynamic-control-info.model';
 import { FieldInjectorService } from './field-injector.service';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'FieldsBuilderDirective';
@@ -25,14 +26,13 @@ const nameOfThis = 'FieldsBuilderDirective';
 @Directive({
   selector: '[appFieldsBuilder]',
   standalone: true,
-  providers: [
-    FieldInjectorService,
-  ],
 })
 export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
 
+
+
   /** Service to create custom injectors for each field */
-  private fieldInjector = inject(FieldInjectorService);
+  private fieldInjector = transient(FieldInjectorService);
 
   /** Ref to this HTML DOM, for adding controls */
   private thisContainerRef = inject(ViewContainerRef);

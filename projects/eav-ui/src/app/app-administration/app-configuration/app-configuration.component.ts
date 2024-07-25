@@ -52,10 +52,9 @@ import { transient } from '../../core';
     TippyDirective,
   ],
   providers: [
-  // TODO:: 2dg - provider  // Used app
-    ContentItemsService,
-    AppInternalsService,
-    FeatureDetailService,
+    ContentItemsService, // used
+    AppInternalsService, // used by app config card
+    FeatureDetailService, // For feature info Dialog
   ],
 })
 export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

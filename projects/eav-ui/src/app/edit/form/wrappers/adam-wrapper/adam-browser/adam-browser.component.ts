@@ -62,9 +62,9 @@ const nameOfThis = 'AdamBrowserComponent';
     ClickStopPropagationDirective,
     TippyDirective,
   ],
-  providers: [
-    FeatureDetailService
-  ]
+  // providers: [
+  //   FeatureDetailService TODO:: is this in use???
+  // ]
 })
 export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
   @Output() openUpload = new EventEmitter<null>();
@@ -110,7 +110,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
     );
-    
+
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
@@ -358,7 +358,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       newConfig.autoLoad = !newConfig.autoLoad;
     else if (!newConfig.autoLoad)
       newConfig.autoLoad = true;
-    
+
     this.config.adam.setConfig(newConfig);
   }
 

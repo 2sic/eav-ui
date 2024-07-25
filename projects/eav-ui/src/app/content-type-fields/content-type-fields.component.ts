@@ -50,10 +50,6 @@ import { transient } from '../core';
     ToggleDebugDirective,
     SxcGridModule,
   ],
-  providers: [
-    // ContentTypesService,
-    // ContentTypesFieldsService,
-  ]
 })
 export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);

@@ -21,7 +21,7 @@ const nameOfThis = 'DialogEntryComponent';
   standalone: true,
   imports: [],
   providers: [
-    Context,
+    Context, // this is used in the dialog to get the correct App
   ],
 })
 export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {

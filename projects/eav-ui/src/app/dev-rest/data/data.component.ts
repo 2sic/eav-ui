@@ -52,7 +52,7 @@ const pathToContent = 'app/{appname}/data/{typename}';
     DevRestHttpHeadersComponent,
     AsyncPipe,
   ],
-  providers: [
+  providers: [ // must be by Providers
     EntitiesService,
     FormConfigService,
     QueryService,
@@ -66,8 +66,6 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
   private contentTypesService = transient(ContentTypesService);
 
   constructor(
-    // entityService: EntityService,
-    // contentTypesService: ContentTypesService,
     dialogRef: MatDialogRef<DevRestDataComponent>,
     router: Router,
     route: ActivatedRoute,

@@ -32,11 +32,6 @@ import { transient } from '../../../core';
     TippyDirective,
     SafeHtmlPipe,
   ],
-  providers: [
-    ZoneService,
-    FeaturesConfigService,
-  ],
-
 })
 export class RegistrationComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
