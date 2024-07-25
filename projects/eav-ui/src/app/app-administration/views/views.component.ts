@@ -247,9 +247,6 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
 
 
   private buildGridOptions(): GridOptions {
-    // TODO: we should use this simpler pattern for column definitions everywhere
-    // ColumnDefinitions.TextWide
-    // ColumnDefinitions.TextNarrow
 
     function showItemDetails(viewEntity: ViewEntity) {
       return (viewEntity.DemoId == 0) ? "" : `${viewEntity.DemoId} ${viewEntity.DemoTitle}`

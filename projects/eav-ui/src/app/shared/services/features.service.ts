@@ -61,7 +61,6 @@ export class FeaturesService extends ServiceBase {
     );
   }
 
-  // TODO: @2dg please try to change all to use the new signal variant below
   isEnabled$(nameId: string): Observable<boolean> {
     return this.get$(nameId).pipe(map(f => f?.isEnabled ?? false));
   }
