@@ -8,6 +8,7 @@ import { AdamControl } from './hyperlink-library.models';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { AdamConfig } from 'projects/edit-types';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: InputTypeConstants.HyperlinkLibrary,
@@ -63,7 +64,8 @@ export class HyperlinkLibraryComponent implements OnInit {
     // this.subscriptions.add(
     this.fieldState.config.adam.items$.pipe(
       map(items => items.length),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     ).subscribe(itemsCount => {
       (this.fieldState.control as AdamControl).adamItems = itemsCount;
       if (!first)

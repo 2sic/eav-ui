@@ -4,6 +4,7 @@ import { FormConfigService } from '.';
 import { FormReadOnly } from '../models';
 import { ItemService, LanguageService } from '../store/ngrx-data';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
+import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
@@ -46,7 +47,8 @@ export class FormsStateService implements OnDestroy {
     this.formsDirty$ = new BehaviorSubject(false);
     this.saveButtonDisabled$ = combineLatest([this.readOnly$, this.formsValid$]).pipe(
       map(([readOnly, formsValid]) => readOnly.isReadOnly || !formsValid),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
 
     this.formsValid = {};

@@ -4,6 +4,7 @@ import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { PublishMode, PublishModes, PublishStatus } from '../../models';
 import { FormConfigService } from '../../services';
 import { BaseDataService } from './base-data.service';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends BaseDataService<PublishStatus> {
@@ -26,7 +27,8 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
   private getPublishStatus$(formId: number): Observable<PublishStatus> {
     return this.cache$.pipe(
       map(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 

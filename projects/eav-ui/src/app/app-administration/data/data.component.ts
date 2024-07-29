@@ -41,6 +41,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
+import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: 'app-data',
@@ -290,7 +291,8 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
         map(() => this.route.snapshot.paramMap.get('scope')),
         startWith(this.route.snapshot.paramMap.get('scope')),
         filter(scope => !!scope),
-        distinctUntilChanged(),
+        mapUntilChanged(m => m),
+        // distinctUntilChanged(),
       ).subscribe(scope => {
         this.scope$.next(scope);
 

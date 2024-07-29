@@ -29,7 +29,7 @@ import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
-import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -117,7 +117,8 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     const note$ = this.itemService.getItemNote$(this.entityGuid);
     const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(
       map(item => item.Entity.Id === 0),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
     const noteProps$ = combineLatest([note$, this.formConfig.language$, itemNotSaved$]).pipe(
       map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
@@ -127,13 +128,15 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     const showNotes$ = settings$.pipe(
       map(settings => buildContentTypeFeatures(settings.Features)),
       map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes()),
-      distinctUntilChanged()
+      mapUntilChanged(m => m),
+      // distinctUntilChanged()
     );
 
     const showMetadataFor$ = settings$.pipe(
       map(settings => buildContentTypeFeatures(settings.Features)),
       map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor()),
-      distinctUntilChanged()
+      mapUntilChanged(m => m),
+      // distinctUntilChanged()
     );
 
     // const showMetadataFor$ = combineLatest([

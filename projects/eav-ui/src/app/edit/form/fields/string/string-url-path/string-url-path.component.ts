@@ -14,6 +14,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { transient } from 'projects/eav-ui/src/app/core';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'StringUrlPathComponent';
@@ -57,7 +58,8 @@ export class StringUrlPathComponent extends BaseComponent implements OnInit, OnD
     this.subscriptions.add(
       this.fieldState.settings$.pipe(
         map(settings => settings.AutoGenerateMask),
-        distinctUntilChanged(),
+        mapUntilChanged(m => m),
+        // distinctUntilChanged(),
       ).subscribe(autoGenerateMask => {
 
         this.fieldMask

@@ -13,11 +13,12 @@ import { UrlHelpers } from '../helpers';
 import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 
 /**
  * Special helper to handle opening / closing field-specific popups.
  * E.g. the larger dialog on hyperlinks/files or entity-pickers.
- * 
+ *
  * Note: also seems to be involved in the version-dialog closing as well.
  */
 @Injectable()
@@ -59,7 +60,8 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     const fieldIndex = fieldId.toString();
     return this.route.params.pipe(
       map((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
-      distinctUntilChanged()
+      mapUntilChanged(m => m),
+      // distinctUntilChanged()
     );
   }
 
@@ -125,7 +127,8 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
       this.route.params
         .pipe(
           map((params: EditParams) => params.detailsEntityGuid != null && params.detailsFieldId != null),
-          distinctUntilChanged(),
+          mapUntilChanged(m => m),
+          // distinctUntilChanged(),
         )
         .subscribe(hasDetails => {
           this.languageInstanceService.updateHideHeader(this.formConfig.config.formId, hasDetails);

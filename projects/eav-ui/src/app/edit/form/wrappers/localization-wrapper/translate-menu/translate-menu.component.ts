@@ -20,6 +20,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { FieldState } from '../../../builder/fields-builder/field-state';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: 'app-translate-menu',
@@ -65,18 +66,21 @@ export class TranslateMenuComponent implements OnInit {
     const translationState$ = this.fieldSettings.getTranslationState$(this.config.fieldName);
     const disableTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
     const disableAutoTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableAutoTranslation),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
 
     const control = this.group.controls[this.config.fieldName];
     const disabled$ = control.valueChanges.pipe(
       map(() => control.disabled),
       startWith(control.disabled),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
 
     this.viewModel$ = combineLatest([
