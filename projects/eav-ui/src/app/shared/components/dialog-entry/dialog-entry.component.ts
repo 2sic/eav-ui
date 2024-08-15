@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigateFormResult } from '../../../edit/shared/models';
-import { consoleLogDev } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
@@ -47,11 +46,12 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
   // }
 
   ngOnInit() {
+    const l = this.log.fn('ngOnInit');
     const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
     if (dialogConfig == null)
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
 
-    consoleLogDev('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
+    l.a('Open dialog: '+ dialogConfig.name, { id: this.context.id, context: this.context });
 
     dialogConfig.getComponent().then(component => {
       // spm Workaround for "feature" where you can't open new dialog while last one is still opening
@@ -93,7 +93,7 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
     });
 
     this.dialogRef.afterClosed().subscribe((data: any) => {
-      consoleLogDev('Dialog was closed:', dialogConfig.name, 'Data:', data);
+      this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
       const navRes = data as NavigateFormResult;
       if (navRes?.navigateUrl != null) {

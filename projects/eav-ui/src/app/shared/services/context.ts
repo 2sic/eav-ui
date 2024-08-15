@@ -1,7 +1,6 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
-import { consoleLogDev } from '../helpers/console-log-angular.helper';
 import { EavWindow } from '../models/eav-window.model';
 import { ServiceBase } from './service-base';
 import { EavLogger } from '../logging/eav-logger';
@@ -29,7 +28,7 @@ export class Context extends ServiceBase {
     if (!window.contextId)
       window.contextId = 0;
     this.id = window.contextId++;
-    consoleLogDev('Context.constructor', this);
+    this.log.a('Context.constructor', { this: this });
   }
 
   /** Id of current context */

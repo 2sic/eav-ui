@@ -5,7 +5,6 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, tap } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { consoleLogDev } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { MetadataDecorators } from '../../shared/constants';
@@ -31,7 +30,6 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { PickerTreeDataService } from '../../form/fields/picker/picker-tree/picker-tree-data-service';
 import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
@@ -202,6 +200,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Save all forms */
   saveAll(close: boolean) {
+    const l = this.log.fn('saveAll', { close });
     if (this.formsStateService.formsValid$.value) {
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
@@ -228,12 +227,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         IsPublished: publishStatus.IsPublished,
         DraftShouldBranch: publishStatus.DraftShouldBranch,
       };
-      consoleLogDev('SAVE FORM DATA:', saveFormData);
+      l.a('SAVE FORM DATA:', { saveFormData });
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
       this.formDataService.saveFormData(saveFormData, this.formConfig.config.partOfPage).subscribe({
         next: result => {
-          consoleLogDev('SAVED!, result:', result, 'close:', close);
+          l.a('SAVED!, result:', { result, close });
           this.itemService.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
           this.formsStateService.formsDirty$.next(false);
@@ -243,7 +242,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           }
         },
         error: err => {
-          consoleLogDev('SAVE FAILED:', err);
+          l.a('SAVE FAILED:', err);
           this.snackBar.open('Error', null, { duration: 2000 });
         },
       });

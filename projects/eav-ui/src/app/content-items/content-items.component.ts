@@ -22,7 +22,6 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
-import { consoleLogDev } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
@@ -49,6 +48,10 @@ import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directi
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { transient } from '../core';
+import { EavLogger } from '../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'ContentItemsComponent';
 
 @Component({
   selector: 'app-content-items',
@@ -99,7 +102,7 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     private contentTypesService: ContentTypesService,
 
   ) {
-    super(router, route);
+    super(router, route, new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
@@ -164,7 +167,7 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
     this.gridApi$.value.setColumnDefs(columnDefs);
     if (filterModel) {
-      consoleLogDev('Will try to apply filter:', filterModel);
+      this.log.a('Will try to apply filter:', filterModel);
       this.gridApi$.value.setFilterModel(filterModel);
     }
   }

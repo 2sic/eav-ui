@@ -1,8 +1,11 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { consoleLogDev } from '../../../../shared/helpers/console-log-angular.helper';
 import { ConnectorHelper } from './connector.helper';
 import { FieldState } from '../../builder/fields-builder/field-state';
 import { transient } from 'projects/eav-ui/src/app/core';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'ConnectorComponent';
 
 @Component({
   selector: 'app-connector',
@@ -20,11 +23,14 @@ export class ConnectorComponent implements AfterViewInit {
   private viewContainerRef = inject(ViewContainerRef);
   private changeDetectorRef = inject(ChangeDetectorRef);
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor() { }
 
   ngAfterViewInit() {
+    const l = this.log.fn('ngAfterViewInit');
     const componentTag = history?.state?.componentTag || `field-${this.fieldState.config.inputType}-dialog`;
-    consoleLogDev('Connector created for:', componentTag);
+    l.a('Connector created for:', { componentTag });
     this.connectorCreator.init(
       componentTag,
       this.customElContainerRef,
