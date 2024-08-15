@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { DataWithLoading } from '../models/data-with-loading';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'DataSourceEntity';
 
 @Injectable()
