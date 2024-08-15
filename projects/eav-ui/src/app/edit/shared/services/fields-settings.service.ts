@@ -19,13 +19,12 @@ import { ItemFieldVisibility } from './item-field-visibility';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { EavContentType, EavEntityAttributes } from '../models/eav';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
-import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldsSettingsService';
 // const logOnlyFields = ['Boolean'];
 
@@ -76,6 +75,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   init(entityGuid: string): void {
+    const l = this.log.fn('init', { entityGuid });
+
     this.entityGuid = entityGuid;
 
     const item = this.itemService.getItem(entityGuid);
@@ -110,10 +111,12 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     const eavConfig = this.formConfig.config;
     this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$, this.formConfig.language$]).pipe(
       map(([inputTypes, contentType, entityReader, language]) => {
+        const lConstantFieldParts = this.log.fn('constantFieldParts', { inputTypes, contentType, entityReader, language });
+
         // When merging metadata, the primary language must be the initial language, not the current
         const mdMerger = new EntityReader(language.initial, language.primary);
 
-        const allConstFieldParts = contentType.Attributes.map((attribute, index) => {
+        const constFieldParts = contentType.Attributes.map((attribute, index) => {
           const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));
           const initialDisabled = initialSettings.Disabled ?? false;
           const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
@@ -156,31 +159,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           return constantFieldParts;
         });
 
-        // Make sure that groups, which have a forced-visible-field are also visible
-        try { // ATM in try-catch, to ensure we don't break anything
-          if (this.itemFieldVisibility.hasRules())
-            allConstFieldParts.forEach((groupField, index) => {
-              // Only work on group-starts
-              if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType.inputType)) return;
-              // Ignore if visible-disabled is already ok
-              if (groupField.settingsInitial.VisibleDisabled == false) return;
-              // Check if any of the following fields is forced visible - before another group-start/end
-              for (let i = index + 1; i < allConstFieldParts.length; i++) {
-                const innerField = allConstFieldParts[i];
-                // Stop checking the current group if we found another group start/end
-                if (EmptyFieldHelpers.endsPreviousGroup(innerField.calculatedInputType.inputType)) return;
-                if (innerField.settingsInitial.VisibleDisabled == false) {
-                  consoleLogEditForm('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
-                  groupField.settingsInitial.VisibleDisabled = false;
-                  return;
-                }
-              }
-            });
-        } catch (e) {
-          console.error('Error trying to set item field visibility', e);
-        }
+        const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constFieldParts);
 
-        return allConstFieldParts;
+        return lConstantFieldParts.r(constPartsWithGroupVisibility);
       })
     );
 

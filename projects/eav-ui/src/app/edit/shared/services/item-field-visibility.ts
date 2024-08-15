@@ -1,6 +1,8 @@
 import { FieldSettings } from 'projects/edit-types';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
+import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 
 const logThis = false;
 const nameOfThis = 'ItemFieldVisibility';
@@ -56,5 +58,45 @@ export class ItemFieldVisibility {
 
   static mergedVisible(settings: FieldSettings): boolean {
     return settings.Visible && !settings.VisibleDisabled;
+  }
+
+  /**  Make sure that groups, which have a forced-visible-field are also visible */
+  makeParentGroupsVisible(allConstFieldParts: ConstantFieldParts[]) {
+    const l = this.log.fn('makeParentGroupsVisible', { allConstFieldParts });
+
+    if (!this.hasRules())
+      return l.r(allConstFieldParts, 'no rules, no changes');
+
+    // ATM in try-catch, to ensure we don't break anything
+    try {
+      allConstFieldParts.forEach((groupField, index) => {
+        // Only work on group-starts
+        if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType.inputType))
+          return;
+
+        // Ignore if visible-disabled is already ok
+        if (groupField.settingsInitial.VisibleDisabled == false)
+          return;
+
+        // Check if any of the following fields is forced visible - before another group-start/end
+        for (let i = index + 1; i < allConstFieldParts.length; i++) {
+          const innerField = allConstFieldParts[i];
+
+          // Stop checking the current group if we found another group start/end
+          if (EmptyFieldHelpers.endsPreviousGroup(innerField.calculatedInputType.inputType))
+            return;
+
+          if (innerField.settingsInitial.VisibleDisabled == false) {
+            l.a('Forced visible', { fieldName: groupField.constants.fieldName, reason: innerField.constants.fieldName });
+            groupField.settingsInitial.VisibleDisabled = false;
+            return;
+          }
+        }
+      });
+    } catch (e) {
+      console.error('Error trying to set item field visibility', e);
+    }
+
+    return allConstFieldParts;
   }
 }
