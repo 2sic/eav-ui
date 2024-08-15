@@ -3,7 +3,7 @@ import { eavConstants } from '../constants/eav.constants';
 import { EavLogger } from '../logging/eav-logger';
 import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = "UrlPrepHelper";
 
 const log = new EavLogger(nameOfThis, logThis);
@@ -21,7 +21,7 @@ function toOrderedParams(values: unknown[]): string {
 }
 
 export function convertFormToUrl(form: EditForm) {
-  const l = log.fn("convertFormToUrl", { form});
+  const l = log.fn('convertFormToUrl', { form });
   let formUrl = '';
 
   for (const item of form.items) {
@@ -177,7 +177,7 @@ function isNumber(maybeNumber: string): boolean {
 }
 
 export function convertUrlToForm(formUrl: string) {
-  const l = log.fn("convertUrlToForm", {formUrl});
+  const l = log.fn("convertUrlToForm", { formUrl });
   const form: EditForm = { items: [] };
   const items = formUrl.split(ITEM_SEPARATOR);
 
