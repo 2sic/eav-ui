@@ -1,11 +1,10 @@
-import { Component, inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersLocalizationOnly } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { StringUrlPathLogic } from './string-url-path-logic';
-import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../../shared/field-helper-text/field-helper-text.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +14,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
 import { transient } from 'projects/eav-ui/src/app/core';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'StringUrlPathComponent';
@@ -58,14 +58,15 @@ export class StringUrlPathComponent extends BaseComponent implements OnInit, OnD
     this.subscriptions.add(
       this.fieldState.settings$.pipe(
         map(settings => settings.AutoGenerateMask),
-        distinctUntilChanged(),
+        mapUntilChanged(m => m),
+        // distinctUntilChanged(),
       ).subscribe(autoGenerateMask => {
 
         this.fieldMask
           .initPreClean((key, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
           .initCallback((newValue) => { this.onSourcesChanged(newValue); })
           .init('UrlPath', autoGenerateMask);
-          // .logChanges();
+        // .logChanges();
 
         this.onSourcesChanged(this.fieldMask.resolve());
       })

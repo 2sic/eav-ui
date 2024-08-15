@@ -23,14 +23,14 @@ export class FormItemFormulaService {
 
   /**
    * Used to check if the value of a field should be updated with the value from a formula and if so, updates it.
-   * @param entityGuid 
-   * @param contentType 
-   * @param formValues 
-   * @param fieldsProps 
-   * @param possibleValueUpdates 
-   * @param possibleFieldsUpdates 
-   * @param slotIsEmpty 
-   * @param entityReader 
+   * @param entityGuid
+   * @param contentType
+   * @param formValues
+   * @param fieldsProps
+   * @param possibleValueUpdates
+   * @param possibleFieldsUpdates
+   * @param slotIsEmpty
+   * @param entityReader
    * @returns true if values are updated, false otherwise
    */
   applyValueChangesFromFormulas(
@@ -71,10 +71,10 @@ export class FormItemFormulaService {
 
   /**
    * Used to check if the value of a field should be updated with the value from a formula.
-   * @param valueBefore 
-   * @param valueFromFormula 
-   * @param slotIsEmpty 
-   * @param disabledBecauseTranslations 
+   * @param valueBefore
+   * @param valueFromFormula
+   * @param slotIsEmpty
+   * @param disabledBecauseTranslations
    * @returns true if value should be updated, false otherwise
    */
   private shouldUpdate(

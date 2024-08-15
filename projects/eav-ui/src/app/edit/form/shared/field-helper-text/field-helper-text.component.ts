@@ -11,6 +11,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -49,12 +50,14 @@ export class FieldHelperTextComponent implements OnInit {
     const invalid$ = control.valueChanges.pipe(
       map(() => control.invalid),
       startWith(control.invalid),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
     const disabled$ = control.valueChanges.pipe(
       map(() => control.disabled),
       startWith(control.disabled),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
 
     this.viewModel$ = combineLatest([invalid$, disabled$]).pipe(

@@ -16,16 +16,16 @@ export class FormulaSettingsHelper {
    * Used for calculating new settings.
    * @param settingsInitial Default settings
    * @param settingsCurrent Last settings
-   * @param attribute 
-   * @param contentTypeMetadata 
-   * @param fieldInputType 
-   * @param fieldLogic 
-   * @param attributeValues 
-   * @param language 
+   * @param attribute
+   * @param contentTypeMetadata
+   * @param fieldInputType
+   * @param fieldLogic
+   * @param attributeValues
+   * @param language
    * @param slotIsEmpty If slot is empty
    * @param formReadOnly Is form read only
-   * @param valueBefore 
-   * @param logicTools 
+   * @param valueBefore
+   * @param logicTools
    * @returns Calculated settings
    */
   static ensureNewSettingsMatchRequirements(

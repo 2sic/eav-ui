@@ -32,7 +32,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
   }, { equal: RxHelpers.objectsEqual });
 
   private translate = inject(TranslateService);
-  
+
   public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
     source.init(name);
     this.state = state;
@@ -41,7 +41,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
     const initiallySelected = state.selectedItems();
-    this.log.a('setup', {initiallySelected})
+    this.log.a('setup', { initiallySelected })
     source.initPrefetch(initiallySelected.map(item => item.value));
     return this;
   }
@@ -79,7 +79,7 @@ export class PickerData extends ServiceBase implements OnDestroy {
 
 }
 
-function createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
+function createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem {
   return {
     id: id,
     value: value,

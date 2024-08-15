@@ -3,8 +3,8 @@ import { TreeItem } from '../models/tree-item.model';
 
 /** Sorts folders before files */
 @Pipe({
-    name: 'sortItems',
-    standalone: true
+  name: 'sortItems',
+  standalone: true
 })
 export class SortItemsPipe implements PipeTransform {
 

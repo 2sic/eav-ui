@@ -4,6 +4,7 @@ import { FormConfigService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'FormSlideDirective';
@@ -37,7 +38,8 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
         // emit 'next' and 'previous' slide direction based on language change
         this.formConfig.language$.pipe(
           map(language => language.current),
-          distinctUntilChanged(),
+          mapUntilChanged(m => m),
+          // distinctUntilChanged(),
           pairwise(),
           map(([previousLang, currentLang]) => {
             l.a('toggle', { previousLang, currentLang });

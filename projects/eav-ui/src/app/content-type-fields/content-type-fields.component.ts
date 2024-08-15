@@ -33,6 +33,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -46,14 +47,9 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
     NgClass,
     MatDialogActions,
     AsyncPipe,
-
     ToggleDebugDirective,
     SxcGridModule,
   ],
-  providers: [
-    ContentTypesService,
-    ContentTypesFieldsService
-  ]
 })
 export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
@@ -69,13 +65,13 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
 
   viewModel$: Observable<ContentTypeFieldsViewModel>;
 
+  private contentTypesService = transient(ContentTypesService);
+  private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
-    private contentTypesService: ContentTypesService,
-    private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
   ) {

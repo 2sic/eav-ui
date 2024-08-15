@@ -25,6 +25,7 @@ import { ClickStopPropagationDirective } from '../../shared/directives/click-sto
 import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: 'app-create-metadata-dialog',
@@ -164,7 +165,8 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
     const formValues$ = this.form.valueChanges.pipe(
       startWith(this.form.getRawValue() as MetadataFormValues),
       map(() => this.form.getRawValue() as MetadataFormValues),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m)
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
 
     this.subscriptions.add(

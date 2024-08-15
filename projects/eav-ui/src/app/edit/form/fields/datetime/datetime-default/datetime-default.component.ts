@@ -21,6 +21,7 @@ import { DatePipe } from '@angular/common';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { DateTimeDefaultLogic } from './datetime-default-logic';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'DateTimeDefaultComponent';
@@ -44,9 +45,6 @@ const nameOfThis = 'DateTimeDefaultComponent';
     DatePipe,
     TippyDirective,
   ],
-  providers: [
-    MatDayjsDateAdapter,
-  ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {
@@ -67,12 +65,11 @@ export class DatetimeDefaultComponent {
   /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
   valueForTimePicker = computed(() => this.controlStatus().value?.replace('Z', ''), SignalHelpers.stringEquals);
 
+  private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
   constructor(
     private translate: TranslateService,
-    private matDayjsDateAdapter: MatDayjsDateAdapter,
     private owlDayjsDateAdapter: DateTimeAdapter<Dayjs>,
   ) {
-    this.log.a('constructor', { matDayjsDateAdapter, owlDayjsDateAdapter });
     dayjs.extend(utc); // 'neutral' time for OwlDateTime picker
     const currentLang = this.translate.currentLang;
     dayjs.locale(currentLang);

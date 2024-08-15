@@ -4,7 +4,7 @@ import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 export interface PickerItem {
   /** The title to show in the dropdown */
   label: string;
-  
+
   /** The value to store */
   value: string;
 
@@ -33,7 +33,7 @@ export interface PickerItem {
   notSelectable?: boolean;
 
 
-  /** 
+  /**
    * The tooltip that is seen on hover over item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
    */

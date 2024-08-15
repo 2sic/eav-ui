@@ -54,9 +54,6 @@ const logThis = false;
     AsyncPipe,
     SafeHtmlPipe,
   ],
-  providers: [
-    MetadataService,
-  ]
 })
 export class MetadataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
@@ -64,8 +61,6 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
   private entitiesService = transient(EntitiesService);
   private metadataService = transient(MetadataService);
   private contentItemsService = transient(ContentItemsService);
-
-
 
   private metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
   private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);

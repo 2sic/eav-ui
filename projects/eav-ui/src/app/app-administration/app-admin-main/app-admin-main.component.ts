@@ -17,6 +17,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
+import { transient } from '../../core';
 
 const logThis = false;
 
@@ -39,10 +40,11 @@ const logThis = false;
     // Must have a new config service here, to restart with new settings
     // which are injected into it from the context
     // Because of standalone-components, it's not enough to have it in the module-definition
-    AppDialogConfigService,
+    AppDialogConfigService, // must be by Providers
   ],
 })
 export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
 
   constructor(
     protected router: Router,

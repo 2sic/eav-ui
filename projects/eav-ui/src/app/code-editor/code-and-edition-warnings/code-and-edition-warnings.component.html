@@ -1,27 +1,27 @@
 <div class="messages">
   @if (snackBarData.codeFile) {
-    <div>"{{ snackBarData.fileName }}" also has a code-behind file "{{ snackBarData.codeFile }}".</div>
-    <br>
+  <div>"{{ snackBarData.fileName }}" also has a code-behind file "{{ snackBarData.codeFile }}".</div>
+  <br>
   }
 
   @if (snackBarData.otherEditions) {
-    <div>
-      @if (snackBarData.edition) {
-        You are editing "{{ snackBarData.edition }}" edition.
-      }
-      There are {{ snackBarData.otherEditions }} other editions of "{{ snackBarData.fileName }}".
-      @if (!snackBarData.edition) {
-        You may be editing an edition which is not the one you see.
-      }
-      See <a href="https://go.2sxc.org/polymorphism" target="_blank">docs</a>.
-    </div>
+  <div>
+    @if (snackBarData.edition) {
+    You are editing "{{ snackBarData.edition }}" edition.
+    }
+    There are {{ snackBarData.otherEditions }} other editions of "{{ snackBarData.fileName }}".
+    @if (!snackBarData.edition) {
+    You may be editing an edition which is not the one you see.
+    }
+    See <a href="https://go.2sxc.org/polymorphism" target="_blank">docs</a>.
+  </div>
   }
 </div>
 
 <div class="actions">
   @if (snackBarData.codeFile) {
-    <button mat-button color="primary" (click)="openCodeBehind()">
-      Open code-behind file
-    </button>
+  <button mat-button color="primary" (click)="openCodeBehind()">
+    Open code-behind file
+  </button>
   }
 </div>

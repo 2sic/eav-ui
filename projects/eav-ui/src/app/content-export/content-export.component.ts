@@ -15,30 +15,30 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { transient } from '../core';
 
 @Component({
-    selector: 'app-content-export',
-    templateUrl: './content-export.component.html',
-    styleUrls: ['./content-export.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatRadioModule,
-        MatDialogActions,
-        MatButtonModule,
-        AsyncPipe,
-    ],
-    providers: [
-        ContentExportService,
-        ContentTypesService,
-        AppDialogConfigService,
-    ],
+  selector: 'app-content-export',
+  templateUrl: './content-export.component.html',
+  styleUrls: ['./content-export.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatRadioModule,
+    MatDialogActions,
+    MatButtonModule,
+    AsyncPipe,
+  ],
 })
 export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private contentExportService = transient(ContentExportService);
+  private contentTypesService = transient(ContentTypesService);
+  private appDialogConfigService = transient(AppDialogConfigService);
 
   formValues: ContentExport;
   languages: Language[];
@@ -52,9 +52,6 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<ContentExportComponent>,
     private route: ActivatedRoute,
-    private contentExportService: ContentExportService,
-    private appDialogConfigService: AppDialogConfigService,
-    private contentTypesService: ContentTypesService,
   ) {
     const selectedIds = this.route.snapshot.paramMap.get('selectedIds');
     this.hasIdList = !!selectedIds;

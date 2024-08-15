@@ -22,6 +22,7 @@ import { FieldState } from '../../builder/fields-builder/field-state';
 import { ControlStatus } from '../../../shared/models';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -44,9 +45,6 @@ import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended
     JsonPipe,
     TippyDirective,
     ...ExtendedFabSpeedDialImports,
-  ],
-  providers: [
-    ConnectorHelper,
   ],
 })
 export class ExpandableWrapperComponent {
@@ -97,7 +95,7 @@ export class ExpandableWrapperComponent {
     return previewHeight;
   })
 
-  private connectorCreator = inject(ConnectorHelper);
+  private connectorCreator = transient(ConnectorHelper);
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(

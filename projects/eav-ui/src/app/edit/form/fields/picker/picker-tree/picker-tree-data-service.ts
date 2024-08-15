@@ -36,8 +36,8 @@ export class PickerTreeDataService extends ServiceBase implements OnDestroy {
         // if the objects don't have a data property, we can't convert them to tree items
         // todo: not sure why this happens, possibly early cycles don't have it yet?
         const treeItems = all?.[0]?.data == null
-            ? [] as PickerTreeItem[]
-            : this.treeHelper.preConvertAllItems(treeConfig, all);
+          ? [] as PickerTreeItem[]
+          : this.treeHelper.preConvertAllItems(treeConfig, all);
 
         if (treeItems?.[0]?.data != undefined) {
           this.treeHelper.updateConfig(treeConfig);

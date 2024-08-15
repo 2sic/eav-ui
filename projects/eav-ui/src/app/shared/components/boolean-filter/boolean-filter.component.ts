@@ -1,6 +1,6 @@
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
-import { Component, NgModule } from '@angular/core';
+import { Component } from '@angular/core';
 import { BooleanFilterModel } from './boolean-filter.model';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';

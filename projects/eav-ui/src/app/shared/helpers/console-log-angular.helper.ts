@@ -1,8 +1,8 @@
 import { environment } from '../../../environments/environment';
 
-/** 
+/**
  * Enable logging of different messages.
- * 
+ *
  * When needed, add new keys for new "segments"
  */
 const enableLogging = {
@@ -42,14 +42,14 @@ export function logMain(message?: any, data?: Record<string, unknown>): void {
 
 function consoleLogInternal(
   { segment, message, callStack, data = [] }
-  : { segment: keyof typeof enableLogging; message?: any; callStack?: boolean, data?: any[]; }
+    : { segment: keyof typeof enableLogging; message?: any; callStack?: boolean, data?: any[]; }
 ): void {
   // Skip on production
   if (environment.production) return;
 
   // Check if we've already logged a lot to then stop logging
   const segmentUpper = `[${segment?.toUpperCase()}]`;
-  if (!enableLogging[segment])  {
+  if (!enableLogging[segment]) {
     if (warningNoLogShown[segment]) return;
     console.log(`${segmentUpper}-logging disabled, no further messages will show for this segment.`)
     warningNoLogShown[segment] = true;
@@ -58,7 +58,7 @@ function consoleLogInternal(
 
   // Make prefix uppercase if not always
   const prefix = segment === 'always' ? '' : segmentUpper;
-  
+
   // New lightweight log, without the entire trace / call stack
   if (callStack == false) {
     if (!data || data.length === 0) {
@@ -68,17 +68,17 @@ function consoleLogInternal(
 
     if (data.length === 1) {
       const show = data[0]
-      const len = (typeof(show) === 'string') ? `:${show.length}` : '';
-      console.log(`${prefix} ${message} [${typeof(show)}${len}]`, show);
+      const len = (typeof (show) === 'string') ? `:${show.length}` : '';
+      console.log(`${prefix} ${message} [${typeof (show)}${len}]`, show);
       return;
     }
-    
+
     console.log(`${prefix} ${message}`, ...data);
     return;
   }
 
   console.groupCollapsed(`${prefix} ${message}`, ...data);
-  
+
   // tslint:disable-next-line:no-console
   console.trace();
   console.groupEnd();
@@ -86,14 +86,14 @@ function consoleLogInternal(
 
 function consoleLogObject(
   { segment, message, callStack, data = null }
-  : { segment: keyof typeof enableLogging; message?: any; callStack?: boolean, data?: Record<string, unknown>; }
+    : { segment: keyof typeof enableLogging; message?: any; callStack?: boolean, data?: Record<string, unknown>; }
 ): void {
   // Skip on production
   if (environment.production) return;
 
   // Check if we've already logged a lot to then stop logging
   const segmentUpper = `[${segment?.toUpperCase()}]`;
-  if (!enableLogging[segment])  {
+  if (!enableLogging[segment]) {
     if (warningNoLogShown[segment]) return;
     console.log(`${segmentUpper}-logging disabled, no further messages will show for this segment.`)
     warningNoLogShown[segment] = true;
@@ -102,7 +102,7 @@ function consoleLogObject(
 
   // Make prefix uppercase if not always
   const prefix = segment === 'always' ? '' : segmentUpper;
-  
+
   // New lightweight log, without the entire trace / call stack
   if (callStack == false) {
     if (!data)
@@ -115,17 +115,17 @@ function consoleLogObject(
     if (keys.length === 1) {
       const key = keys[0];
       const show = data[key];
-      if (typeof(show) === 'string')
+      if (typeof (show) === 'string')
         return console.log(`${prefix} ${message} [string:${show.length}] '${key}'='${show}'`);
-      return console.log(`${prefix} ${message} [${typeof(show)}}] '${key}'=`, show);
+      return console.log(`${prefix} ${message} [${typeof (show)}}] '${key}'=`, show);
     }
-    
+
     console.log(`${prefix} ${message} [${keys.length} data-items]`, data);
     return;
   }
 
   console.groupCollapsed(`${prefix} ${message}`, data);
-  
+
   // tslint:disable-next-line:no-console
   console.trace();
   console.groupEnd();

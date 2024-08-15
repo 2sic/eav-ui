@@ -4,6 +4,7 @@ import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { EavContentType } from '../../models/eav';
 import { EavContentTypeDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class ContentTypeService extends BaseDataService<EavContentType> {
@@ -23,7 +24,8 @@ export class ContentTypeService extends BaseDataService<EavContentType> {
   getContentType$(id: string): Observable<EavContentType> {
     return this.cache$.pipe(
       map(contentTypes => contentTypes.find(contentType => contentType.Id === id)),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 }

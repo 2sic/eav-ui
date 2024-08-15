@@ -3,7 +3,7 @@ import { LocalizationHelpers } from './localization.helpers';
 import { FormLanguage } from '../models/form-languages.model';
 
 export class EntityReader implements FormLanguage {
-  constructor(public current: string, public primary: string) {}
+  constructor(public current: string, public primary: string) { }
 
   // WIP - to make code clearer, this is what should be used from now on
   // But we'll probably end up calling this from the EntityReader only, so it should be straight forward

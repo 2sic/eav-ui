@@ -13,6 +13,7 @@ import { FormulaHelpers } from './helpers/formula.helpers';
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 
 declare const window: EavWindow;
 
@@ -61,7 +62,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @param entityGuid Specific entity guid
    * @param fieldName Specific field
    * @param target Specific target
-   * @param allowDraft 
+   * @param allowDraft
    * @returns Formula
    */
   getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
@@ -79,7 +80,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @param entityGuid Specific entity guid
    * @param fieldName Specific field
    * @param target Specific target
-   * @param allowDraft 
+   * @param allowDraft
    * @returns Formula stream
    */
   getFormula$(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): Observable<FormulaCacheItem> {
@@ -88,7 +89,8 @@ export class FormulaDesignerService implements OnDestroy {
       map(formulas => formulas.find(
         f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
       ),
-      distinctUntilChanged(RxHelpers.objectsEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -97,7 +99,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @param entityGuid Optional entity guid
    * @param fieldName Optional field
    * @param target Optional target
-   * @param allowDraft 
+   * @param allowDraft
    * @returns Filtered formula array
    */
   getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
@@ -120,11 +122,11 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for updating formula from editor.
-   * @param entityGuid 
-   * @param fieldName 
-   * @param target 
-   * @param formula 
-   * @param run 
+   * @param entityGuid
+   * @param fieldName
+   * @param target
+   * @param formula
+   * @param run
    */
   updateFormulaFromEditor(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
     let formulaFunction: FormulaFunction;
@@ -192,13 +194,13 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for saving updated formula from editor.
-   * @param entityGuid 
-   * @param fieldName 
-   * @param target 
-   * @param formula 
-   * @param sourceGuid 
-   * @param sourceId 
-   * @returns 
+   * @param entityGuid
+   * @param fieldName
+   * @param target
+   * @param formula
+   * @param sourceGuid
+   * @param sourceId
+   * @returns
    */
   updateSaved(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, sourceGuid: string, sourceId: number): void {
     const oldFormulaCache = this.formulaCache$.value;
@@ -219,9 +221,9 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for deleting formula.
-   * @param entityGuid 
-   * @param fieldName 
-   * @param target 
+   * @param entityGuid
+   * @param fieldName
+   * @param target
    */
   delete(entityGuid: string, fieldName: string, target: FormulaTarget): void {
     const oldFormulaCache = this.formulaCache$.value;
@@ -233,9 +235,9 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for resetting formula.
-   * @param entityGuid 
-   * @param fieldName 
-   * @param target 
+   * @param entityGuid
+   * @param fieldName
+   * @param target
    */
   resetFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
     const oldResults = this.formulaResults$.value;
@@ -259,12 +261,12 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for showing formula result in editor.
-   * @param entityGuid 
-   * @param fieldName 
-   * @param target 
-   * @param value 
-   * @param isError 
-   * @param isOnlyPromise 
+   * @param entityGuid
+   * @param fieldName
+   * @param target
+   * @param value
+   * @param isError
+   * @param isOnlyPromise
    */
   sendFormulaResultToUi(
     entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean, isOnlyPromise: boolean
@@ -288,9 +290,9 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for getting formula result stream.
-   * @param entityGuid 
-   * @param fieldName 
-   * @param target 
+   * @param entityGuid
+   * @param fieldName
+   * @param target
    * @returns Formula result stream
    */
   getFormulaResult$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaResult> {
@@ -302,7 +304,7 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for opening or closing designer
-   * @param isOpen 
+   * @param isOpen
    */
   setDesignerOpen(isOpen: boolean): void {
     const newState: DesignerState = {
@@ -314,7 +316,7 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for setting designer state.
-   * @param activeDesigner 
+   * @param activeDesigner
    */
   setDesignerState(activeDesigner: DesignerState): void {
     this.designerState$.next(activeDesigner);
@@ -338,9 +340,9 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for building shared parts of formula cache item.
-   * @param item 
-   * @param entityGuid 
-   * @returns 
+   * @param item
+   * @param entityGuid
+   * @returns
    */
   private buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemShared {
     item = item ?? this.itemService.getItem(entityGuid);
@@ -398,7 +400,7 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for building formula cache.
-   * @returns 
+   * @returns
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
@@ -470,7 +472,7 @@ export class FormulaDesignerService implements OnDestroy {
 
   /**
    * Used for pacing promises$ and callback$ triggers. Callback$ triggers for the first time when the last promise is resolved.
-   * @returns 
+   * @returns
    */
   private createPromisedParts() {
     const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);

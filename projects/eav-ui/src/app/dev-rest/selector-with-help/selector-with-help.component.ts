@@ -11,18 +11,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 
 @Component({
-    selector: 'app-selector-with-help',
-    templateUrl: './selector-with-help.component.html',
-    styleUrls: ['../header-selector.scss'],
-    standalone: true,
-    imports: [
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        TippyDirective,
-        MatIconModule,
-    ],
+  selector: 'app-selector-with-help',
+  templateUrl: './selector-with-help.component.html',
+  styleUrls: ['../header-selector.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    TippyDirective,
+    MatIconModule,
+  ],
 })
 export class SelectorWithHelpComponent implements OnInit {
   @Input() label: string;

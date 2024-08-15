@@ -14,6 +14,7 @@ import { InputComponents } from './input-components.constant';
 import { InjectorBundle } from './injector-bundle.model';
 import { DynamicControlInfo } from './dynamic-control-info.model';
 import { FieldInjectorService } from './field-injector.service';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 const nameOfThis = 'FieldsBuilderDirective';
@@ -25,15 +26,14 @@ const nameOfThis = 'FieldsBuilderDirective';
 @Directive({
   selector: '[appFieldsBuilder]',
   standalone: true,
-  providers: [
-    FieldInjectorService,
-  ],
 })
 export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
-  
+
+
+
   /** Service to create custom injectors for each field */
-  private fieldInjector = inject(FieldInjectorService);
-  
+  private fieldInjector = transient(FieldInjectorService);
+
   /** Ref to this HTML DOM, for adding controls */
   private thisContainerRef = inject(ViewContainerRef);
 
@@ -43,7 +43,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }
-  
+
   private fieldConfigs: FieldConfigSet[] = [];
 
   ngOnInit() {
@@ -94,7 +94,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
-    this.log.a('createComponent', { calculatedInputType: fieldProps.calculatedInputType});
+    this.log.a('createComponent', { calculatedInputType: fieldProps.calculatedInputType });
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
     const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.calculatedInputType);
@@ -115,14 +115,14 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
       wrapperInfo = this.createWrappers(wrapperInfo, fieldMetadata.wrappers);
 
     // generate the real input field component
-    this.log.a('createComponent - add component', {componentType});
+    this.log.a('createComponent - add component', { componentType });
     this.generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
 
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
-      this.log.a('createComponent - add preview', {previewType});
+      this.log.a('createComponent - add preview', { previewType });
       this.generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }
   }

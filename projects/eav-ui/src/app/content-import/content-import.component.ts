@@ -13,6 +13,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-content-import',
@@ -27,14 +28,13 @@ import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directi
     AsyncPipe,
     DragAndDropDirective,
   ],
-  providers: [
-    ContentImportService,
-    ContentTypesService,
-    AppDialogConfigService,
-  ],
 })
 export class ContentImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  private contentImportService = transient(ContentImportService);
+  private contentTypesService = transient(ContentTypesService);
+  private appDialogConfigService = transient(AppDialogConfigService);
 
   formValues: ContentImport;
   private contentType$ = new BehaviorSubject<ContentType>(null);
@@ -72,9 +72,6 @@ export class ContentImportComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) private dialogData: ContentImportDialogData,
     private dialogRef: MatDialogRef<ContentImportComponent>,
     private route: ActivatedRoute,
-    private contentImportService: ContentImportService,
-    private appDialogConfigService: AppDialogConfigService,
-    private contentTypesService: ContentTypesService,
   ) { }
 
   ngOnInit() {

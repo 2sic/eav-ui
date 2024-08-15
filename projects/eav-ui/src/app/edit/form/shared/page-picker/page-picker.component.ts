@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ArrayHelpers } from '../../../../shared/helpers/array.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: 'app-page-picker',
@@ -33,9 +34,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     TranslateModule,
     TippyDirective,
   ],
-  providers: [
-    QueryService,
-  ],
 })
 export class PagePickerComponent implements OnInit, OnDestroy {
   selected: number;
@@ -46,10 +44,11 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   private searchItems$: BehaviorSubject<PageSearchItem[]>;
   private tree$: BehaviorSubject<PageTreeItem[]>;
 
+  private queryService = transient(QueryService);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: PagePickerDialogData,
     private dialogRef: MatDialogRef<PagePickerComponent>,
-    private queryService: QueryService,
     private translate: TranslateService,
   ) { }
 

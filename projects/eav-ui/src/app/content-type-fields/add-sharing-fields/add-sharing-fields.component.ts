@@ -22,7 +22,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -42,9 +41,6 @@ import { FeatureDetailService } from '../../features/services/feature-detail.ser
     TranslateModule,
     FeatureIconIndicatorComponent,
     FieldHintComponent,
-  ],
-  providers: [
-    FeatureDetailService,
   ],
 })
 export class AddSharingFieldsComponent extends BaseComponent implements OnInit, OnDestroy {

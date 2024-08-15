@@ -153,9 +153,9 @@ export class LocalizationHelpers {
               const newValue: EavValue<any> = hasLanguage
                 // Update value for languageKey
                 ? {
-                    ...val,
-                    Value: newItemValue,
-                  }
+                  ...val,
+                  Value: newItemValue,
+                }
                 : val;
               return newValue;
             })
@@ -199,19 +199,19 @@ export class LocalizationHelpers {
         const newValue: EavValue<any> = hasLanguage
           // Update value and dimension
           ? {
-              ...val,
-              // update value
-              Value: updateValue,
-              // update languageKey with newLanguageValue
-              Dimensions: val.Dimensions.map(d => {
-                const dimensionIsForLanguage = (d.Value === language.current
-                  || d.Value === `~${language.current}`
-                  || (language.current === language.primary && d.Value === '*'));
-                return dimensionIsForLanguage
-                  ? { Value: newLanguageValue } satisfies EavDimension
-                  : d;
-              })
-            }
+            ...val,
+            // update value
+            Value: updateValue,
+            // update languageKey with newLanguageValue
+            Dimensions: val.Dimensions.map(d => {
+              const dimensionIsForLanguage = (d.Value === language.current
+                || d.Value === `~${language.current}`
+                || (language.current === language.primary && d.Value === '*'));
+              return dimensionIsForLanguage
+                ? { Value: newLanguageValue } satisfies EavDimension
+                : d;
+            })
+          }
           : val;
         return newValue;
       })
@@ -230,12 +230,12 @@ export class LocalizationHelpers {
     let eavAttributes: EavEntityAttributes = {};
     const attribute: EavField<any> =
       Object.keys(allAttributes).length === 0 || !allAttributes[attributeKey]
-      ? {
+        ? {
           ...allAttributes[attributeKey],
           Values: [attributeValue],
           Type: attributeType
         }
-      : {
+        : {
           ...allAttributes[attributeKey],
           Values: [...allAttributes[attributeKey].Values, attributeValue],
           Type: attributeType
@@ -267,10 +267,10 @@ export class LocalizationHelpers {
           || (existingDimensionValue === defaultLanguage && d.Value === '*'))
           // Update dimension for current language
           ? {
-              ...eavValue,
-              // if languageKey already exist
-              Dimensions: eavValue.Dimensions.concat({ Value: newLanguageValue })
-            }
+            ...eavValue,
+            // if languageKey already exist
+            Dimensions: eavValue.Dimensions.concat({ Value: newLanguageValue })
+          }
           : eavValue;
         return newValue;
       })

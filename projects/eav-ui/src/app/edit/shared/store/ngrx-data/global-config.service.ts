@@ -5,6 +5,7 @@ import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { keyDebug } from '../../../../shared/constants/session.constants';
 import { GlobalConfig } from '../../models';
 import { BaseDataService } from './base-data.service';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class GlobalConfigService extends BaseDataService<GlobalConfig> {
@@ -37,7 +38,8 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
   getDebugEnabled$(): Observable<boolean> {
     return this.cache$.pipe(
       map(configs => configs[0].allowDebugMode && configs[0].debugEnabled),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 

@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
@@ -37,6 +37,7 @@ import { transient } from '../../../core';
     FieldHintComponent,
     ClickStopPropagationDirective,
     TippyDirective,
+    MatDialogModule,
   ],
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {

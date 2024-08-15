@@ -24,6 +24,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
@@ -120,12 +121,13 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
    * The tree helper which is used by the tree display.
    * Will only be initialized if we're really showing a tree.
    */
-  treeHelper: PickerTreeDataHelper;
+
+  private treeDataService = transient(PickerTreeDataService);
+  public treeHelper = transient(PickerTreeDataHelper);
 
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
-    private treeDataService: PickerTreeDataService,
   ) {
     super(new EavLogger(nameOfThis, logThis));
   }

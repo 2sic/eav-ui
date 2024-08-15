@@ -38,6 +38,7 @@ import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.di
 import { SourceService } from '../../../code-editor/services/source.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { transient } from '../../../core';
 
 const logThis = true;
 const nameOfThis = 'EditDialogMainComponent';
@@ -70,11 +71,8 @@ const nameOfThis = 'EditDialogMainComponent';
     // 2dm: don't think it's used for real - except for in the create template, where it's referenced directly
     SourceService,
 
-    // TODO: probably move to each picker component
-    PickerTreeDataService,
+    // TODO: probably move to each picker component (Errors)
     PickerTreeDataHelper,
-
-    LoadIconsService,
   ],
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -85,6 +83,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private viewInitiated$ = new BehaviorSubject(false);
   private debugInfoIsOpen$= new BehaviorSubject(false);
   private saveResult: SaveResult;
+
+  private loadIconsService = transient(LoadIconsService);
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
@@ -101,7 +101,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private languageStore: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private loadIconsService: LoadIconsService,
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
     private formsStateService: FormsStateService,

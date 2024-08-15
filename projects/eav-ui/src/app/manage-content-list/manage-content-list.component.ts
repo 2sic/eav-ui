@@ -19,6 +19,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { FormConfigService } from '../edit/shared/services';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
+import { transient } from '../core';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -40,8 +41,6 @@ import { MousedownStopPropagationDirective } from '../shared/directives/mousedow
     MousedownStopPropagationDirective,
   ],
   providers: [
-    ContentGroupService,
-    AppDialogConfigService,
     FormConfigService,
   ],
 })
@@ -62,15 +61,15 @@ export class ManageContentListComponent extends BaseWithChildDialogComponent imp
   };
   reordered = false;
 
+  private contentGroupService = transient(ContentGroupService);
+  private appDialogConfigService = transient(AppDialogConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ManageContentListComponent>,
-    private contentGroupService: ContentGroupService,
-
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
   }

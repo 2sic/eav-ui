@@ -59,15 +59,15 @@ export class FormulaEngine implements OnDestroy {
   // TODO: 2dm -> Here we call all list item formulas on some picker for each item
   /**
    * Used for running all list item formulas for a given attribute/field.
-   * @param entityGuid 
-   * @param entityId 
-   * @param attribute 
-   * @param formValues 
-   * @param inputType 
-   * @param settingsInitial 
-   * @param settingsCurrent 
-   * @param itemIdWithPrefill 
-   * @param availableItems 
+   * @param entityGuid
+   * @param entityId
+   * @param attribute
+   * @param formValues
+   * @param inputType
+   * @param settingsInitial
+   * @param settingsCurrent
+   * @param itemIdWithPrefill
+   * @param availableItems
    * @returns List of processed picker items
    */
   runAllListItemsFormulas(
@@ -112,22 +112,22 @@ export class FormulaEngine implements OnDestroy {
 
   /**
    * Used for running all formulas for a given attribute/field.
-   * @param entityGuid 
-   * @param entityId 
-   * @param attribute 
-   * @param formValues 
-   * @param inputType 
-   * @param logic 
-   * @param settingsInitial 
-   * @param settingsCurrent 
-   * @param itemIdWithPrefill 
-   * @param contentTypeMetadata 
-   * @param attributeValues 
-   * @param entityReader 
-   * @param slotIsEmpty 
-   * @param formReadOnly 
-   * @param valueBefore 
-   * @param logicTools 
+   * @param entityGuid
+   * @param entityId
+   * @param attribute
+   * @param formValues
+   * @param inputType
+   * @param logic
+   * @param settingsInitial
+   * @param settingsCurrent
+   * @param itemIdWithPrefill
+   * @param contentTypeMetadata
+   * @param attributeValues
+   * @param entityReader
+   * @param slotIsEmpty
+   * @param formReadOnly
+   * @param valueBefore
+   * @param logicTools
    * @returns Object with all changes that formulas should make
    */
   runAllFormulas(
@@ -212,9 +212,9 @@ export class FormulaEngine implements OnDestroy {
 
   /**
    * Used for getting formula setting key.
-   * @param fieldName 
-   * @param currentLanguage 
-   * @param defaultLanguage 
+   * @param fieldName
+   * @param currentLanguage
+   * @param defaultLanguage
    * @returns formula setting key
    */
   private getFormulaSettingsKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
@@ -223,13 +223,13 @@ export class FormulaEngine implements OnDestroy {
 
   /**
    * Used for running a single formula and returning the result.
-   * @param formula 
-   * @param entityId 
-   * @param formValues 
-   * @param inputType 
-   * @param settingsInitial 
-   * @param settingsCurrent 
-   * @param itemIdWithPrefill 
+   * @param formula
+   * @param entityId
+   * @param formValues
+   * @param inputType
+   * @param settingsInitial
+   * @param settingsCurrent
+   * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
   private runFormula(
@@ -344,7 +344,7 @@ export class FormulaEngine implements OnDestroy {
 
   /**
    * Used for checking if formula is open in designer.
-   * @param formula 
+   * @param formula
    * @returns True if formula is open in designer, otherwise false
    */
   private isDesignerOpen(formula: FormulaCacheItem): boolean {

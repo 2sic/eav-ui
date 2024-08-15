@@ -1,8 +1,9 @@
 @if (viewModel$ | async; as vm) {
-  <div class="eav-dialog eav-no-scrollbar">
-    <div class="eav-dialog-header">
+    <div class="eav-dialog eav-dialog-header">
       <div class="eav-dialog-header__title">Export Content and Templates from this App</div>
     </div>
+
+    <mat-dialog-content >
     <div class="eav-dialog-content">
       <p>
         This is an advanced feature to export parts of the app.
@@ -89,6 +90,8 @@
         </div>
       }
     </div>
+  </mat-dialog-content>
+
     <mat-dialog-actions align="end">
       <button mat-raised-button [disabled]="vm.loading || vm.isExporting" (click)="closeDialog()">
         Cancel
@@ -97,5 +100,5 @@
         Export
       </button>
     </mat-dialog-actions>
-  </div>
+  <!-- </div> -->
 }

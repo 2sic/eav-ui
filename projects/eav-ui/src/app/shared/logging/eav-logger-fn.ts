@@ -19,7 +19,7 @@ export class EavLoggerFn {
 
   /** Return */
   r<TResult>(value: TResult, message?: string): TResult {
-    this.parent.a(`${this.fnName}/return${message ? ' ' + message : ''}`, {result: value});
+    this.parent.a(`${this.fnName}/return${message ? ' ' + message : ''}`, { result: value });
     return value;
   }
 

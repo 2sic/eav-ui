@@ -32,7 +32,6 @@ import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.hel
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomJsonEditorComponent {
-  // TODO:: Open to use fileState
   protected fieldState = inject(FieldState);
   protected config = this.fieldState.config;
   protected control = this.fieldState.control;

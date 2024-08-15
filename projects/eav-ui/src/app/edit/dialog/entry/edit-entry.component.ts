@@ -8,7 +8,7 @@ import { Context } from '../../../shared/services/context';
 /**
  * This component is the entry point for every edit dialog.
  * It initializes the form data and the form itself.
- * 
+ *
  * Each edit-entry can show multiple entities, as the form can contain multiple sections each having an entity.
  * But if a sub-dialog is opened, this will start anew, with it's own provided services etc.
  */
@@ -21,7 +21,7 @@ import { Context } from '../../../shared/services/context';
     RouterOutlet,
     EditDialogMainComponent,
   ],
-  providers: [
+  providers: [ // must be by Providers
     LoggingService,
     EditInitializerService,
     FormDataService,

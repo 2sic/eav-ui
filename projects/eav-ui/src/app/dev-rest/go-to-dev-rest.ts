@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { ContentType, WebApi } from '../app-administration/models';
+import { ContentType } from '../app-administration/models';
 
 const base = 'restapi';
 
@@ -7,7 +7,6 @@ export class GoToDevRest {
   static routeQuery = 'restapiquery';
   static routeData = 'restapidata';
   static routeWebApi = 'restapiwebapi';
-
 
   static navLabel = 'Rest-Api';
   static icon = 'code-curly';

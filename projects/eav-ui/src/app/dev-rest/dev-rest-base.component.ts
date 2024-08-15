@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, share, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, share, switchMap } from 'rxjs';
 import { AllScenarios, DevRestBaseViewModel, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
 import { DialogSettings } from '../app-administration/models';
 import { AppDialogConfigService } from '../app-administration/services';
@@ -47,7 +47,6 @@ export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestr
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
     this.dialogSettings$ = appDialogConfigService.getCurrent$();
-
   }
 
   buildPermissionStream(routeTargetName: string) {

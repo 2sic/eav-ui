@@ -10,7 +10,10 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
   templateUrl: './content-type-fields-type.component.html',
   styleUrls: ['./content-type-fields-type.component.scss'],
   standalone: true,
-  imports: [MatIconModule, TippyDirective,],
+  imports: [
+    MatIconModule,
+    TippyDirective,
+  ],
 })
 export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp {
   value: string;

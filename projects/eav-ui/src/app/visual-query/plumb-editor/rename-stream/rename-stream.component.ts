@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } 
 import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
+import { distinctUntilChanged, startWith } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
@@ -37,7 +37,7 @@ import { ClickStopPropagationDirective } from '../../../shared/directives/click-
     MatSlideToggleModule,
     FieldHintComponent,
     ClickStopPropagationDirective,
-  ]
+  ],
 })
 export class RenameStreamComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-metadata-save-dialog',
@@ -53,9 +54,10 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private scopeOptions$: BehaviorSubject<ScopeOption[]>;
 
+  private contentTypesService = transient(ContentTypesService);
+
   constructor(
     private dialogRef: MatDialogRef<MetadataSaveDialogComponent>,
-    private contentTypesService: ContentTypesService,
   ) { }
 
   ngOnInit(): void {

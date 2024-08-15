@@ -7,11 +7,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 
 @Component({
-    selector: 'app-content-type-fields-input-type',
-    templateUrl: './content-type-fields-input-type.component.html',
-    styleUrls: ['./content-type-fields-input-type.component.scss'],
-    standalone: true,
-    imports: [MatRippleModule, MatIconModule],
+  selector: 'app-content-type-fields-input-type',
+  templateUrl: './content-type-fields-input-type.component.html',
+  styleUrls: ['./content-type-fields-input-type.component.scss'],
+  standalone: true,
+  imports: [
+    MatRippleModule,
+    MatIconModule,
+  ],
 })
 export class ContentTypeFieldsInputTypeComponent implements ICellRendererAngularComp {
   value: string;

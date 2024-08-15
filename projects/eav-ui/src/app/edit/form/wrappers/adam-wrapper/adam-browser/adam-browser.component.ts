@@ -26,6 +26,7 @@ import { FieldState } from '../../../builder/fields-builder/field-state';
 import { FeatureDetailService } from 'projects/eav-ui/src/app/features/services/feature-detail.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -62,9 +63,9 @@ const nameOfThis = 'AdamBrowserComponent';
     ClickStopPropagationDirective,
     TippyDirective,
   ],
-  providers: [
-    FeatureDetailService
-  ]
+  // providers: [
+  //   FeatureDetailService TODO:: is this in use???
+  // ]
 })
 export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
   @Output() openUpload = new EventEmitter<null>();
@@ -110,7 +111,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
     );
-    
+
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
@@ -147,12 +148,14 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
     const disabled$ = this.control.valueChanges.pipe(
       map(() => this.control.disabled),
       startWith(this.control.disabled),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
 
     this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$]).pipe(
@@ -358,7 +361,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       newConfig.autoLoad = !newConfig.autoLoad;
     else if (!newConfig.autoLoad)
       newConfig.autoLoad = true;
-    
+
     this.config.adam.setConfig(newConfig);
   }
 

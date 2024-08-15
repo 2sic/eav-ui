@@ -1,6 +1,6 @@
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { Injectable, inject, signal, Injector, OnDestroy, effect, ProviderToken, TypeProvider } from '@angular/core';
+import { Injectable, inject, signal, Injector, OnDestroy, effect } from '@angular/core';
 import { FieldState } from '../../form/builder/fields-builder/field-state';
 import { FormConfigService } from '../services';
 
@@ -58,8 +58,8 @@ export class FieldMask extends ServiceBase implements OnDestroy {
   /**
    * attach a callback.
    * Someday should simply be replaced to use the signal instead.
-   * @param callback 
-   * @returns 
+   * @param callback
+   * @returns
    */
   public initCallback(callback: (newValue: string) => void): this {
     this.log.a('initCallback');
@@ -76,7 +76,7 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     this.updateMask(mask);
     return this;
   }
-  
+
   public logChanges(): this {
     // use logger, but if not enabled, create new just for this
     const l = this.log.enabled ? this.log : new EavLogger(nameOfThis, true);
@@ -87,7 +87,7 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     return this;
   }
 
-  
+
   public updateMask(mask: string) {
     this.mask = mask ?? '';
     this.fieldsUsedInMask = this.extractFieldNames(this.mask);
@@ -100,7 +100,7 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     this.onChange();
   }
 
-  
+
 
   /** Resolves a mask to the final value */
   resolve(): string {
@@ -133,7 +133,7 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     // exit early if mask very simple or not a mask
     if (!mask || !hasPlaceholders(mask))
       return [];
-    
+
     const result: string[] = [];
     const matches = mask.match(FieldsFind);
     if (matches)

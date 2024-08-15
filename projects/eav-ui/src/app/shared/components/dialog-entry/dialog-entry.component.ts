@@ -21,7 +21,7 @@ const nameOfThis = 'DialogEntryComponent';
   standalone: true,
   imports: [],
   providers: [
-    Context,
+    Context, // this is used in the dialog to get the correct App
   ],
 })
 export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -71,7 +71,7 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {
-    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, {name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context});
+    this.log.a(`Open dialog(initContext: ${dialogConfig.initContext})`, { name: dialogConfig.name, 'Contextid:': this.context.log.svcId, 'Context:': this.context });
     if (dialogConfig.initContext)
       this.context.init(this.route);
 

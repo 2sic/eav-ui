@@ -14,7 +14,7 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
   }
 
   fieldListToRetrieveFromServer(settings: FieldSettings): string {
-    this.log.a('fieldListToRetrieveFromServer', {settings});
+    this.log.a('fieldListToRetrieveFromServer', { settings });
 
     const treeConfig = settings.PickerTreeConfiguration;
     const moreFields = settings.MoreFields?.split(',') ?? [];
@@ -43,18 +43,18 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
 
   /**
    * Parse a string to find out the field names in [Item:FieldName] format
-   * 
+   *
    * @param input input string
    * @param enableSimpleFields enable simple fields
    * @returns parsed fields
    */
   extractFieldNamesFromTokens(input: string, enableSimpleFields: boolean = true): string[] {
-    this.log.a('extractFieldNamesFromTokens', {input, enableSimpleFields});
+    this.log.a('extractFieldNamesFromTokens', { input, enableSimpleFields });
     const fields: string[] = [];
 
     // 1.) skip processing on null or empty
     if (!(input?.trim().length > 0)) return fields;
-  
+
     // 2.) some input parts could have a string such as "[Item:Color] - [Item:Title]"
     // these should be extracted, so then we have "Color" and "Title"
     const regex = /\[Item:(\S.*?)\]/gi;
@@ -66,8 +66,8 @@ export class DataSourceMoreFieldsHelper extends ServiceBase {
 
     // 3.) optionaly, when input parts is simple field name, like "Color" - these should be used 1:1
     // so nothing to do, just return input
-    if (enableSimpleFields && fields.length === 0) fields.push(input);   
-  
+    if (enableSimpleFields && fields.length === 0) fields.push(input);
+
     return fields;
   }
 

@@ -5,7 +5,7 @@ import { EntityReader } from '../../helpers';
 import { FormLanguageInStore } from '../../models';
 import { BaseDataService } from './base-data.service';
 import { FormLanguage, FormLanguageComplete } from '../../models/form-languages.model';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends BaseDataService<FormLanguageInStore> {
@@ -42,7 +42,8 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
       .pipe(
         map((language) => new EntityReader(language.current, language.primary)),
         // Ensure we don't fire too often
-        distinctUntilChanged(),
+        mapUntilChanged(m => m),
+        // distinctUntilChanged(),
         // Ensure the EntityReader is reused and not recreated every time
         shareReplay(1)
       );
@@ -60,7 +61,8 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
           ...found,
         } satisfies FormLanguageComplete;
       }),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
       // Ensure the EntityReader is reused and not recreated every time
       // todo: this probably doesn't have a real effect...
       shareReplay(1)
@@ -77,7 +79,8 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
   getHideHeader$(formId: number): Observable<boolean> {
     return this.cache$.pipe(
       map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.hideHeader),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 

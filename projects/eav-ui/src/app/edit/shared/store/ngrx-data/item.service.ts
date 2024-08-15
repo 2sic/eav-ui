@@ -15,6 +15,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'ItemService';
@@ -206,7 +207,8 @@ export class ItemService extends BaseDataService<EavItem> {
   getItemAttributes$(entityGuid: string): Observable<EavEntityAttributes> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 
@@ -217,14 +219,16 @@ export class ItemService extends BaseDataService<EavItem> {
   getItem$(entityGuid: string): Observable<EavItem> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 
   getItemFor$(entityGuid: string): Observable<EavFor> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.For),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 
@@ -240,14 +244,16 @@ export class ItemService extends BaseDataService<EavItem> {
         items.find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
           ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes)
       ),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 
   getItemHeader$(entityGuid: string): Observable<ItemIdentifierHeader> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
   }
 
@@ -262,7 +268,8 @@ export class ItemService extends BaseDataService<EavItem> {
 
     return this.cache$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
-      distinctUntilChanged(RxHelpers.arraysEqual),
+      mapUntilObjChanged(m => m),
+      // distinctUntilChanged(RxHelpers.arraysEqual),
     );
   }
 

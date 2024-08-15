@@ -154,7 +154,7 @@ $icon-size: 22px;
   .dataSource .add-endpoint:hover,
   .dataSource .many-in:hover {
     &::after {
-      color: #D98D00;
+      color: #d98d00;
     }
   }
 
@@ -177,7 +177,8 @@ $icon-size: 22px;
     margin-left: 2px;
   }
 
-  .dataSource .type-info {}
+  .dataSource .type-info {
+  }
 
   .dataSource .configure {
     display: none;
@@ -238,9 +239,7 @@ $icon-size: 22px;
     &::after {
       @include materialIcon("arrow_drop_up", 32px);
     }
-
   }
-
 
   .jtk-endpoint,
   .endpointTargetLabel,
@@ -264,7 +263,6 @@ $icon-size: 22px;
     // Move text so the end is at the beginning, then rotate
     transform: translate(-100%, -5px) rotate(45deg) !important;
   }
-
 
   .sourceEndpoint.jtk-hover,
   .targetEndpoint.jtk-hover {
@@ -305,7 +303,7 @@ $icon-size: 22px;
 
   .endpointSourceLabel.jtk-hover,
   .endpointTargetLabel.jtk-hover {
-    background-color: #5C96BC;
+    background-color: #5c96bc;
     padding: 0.4em;
     color: white;
     border: 1px solid white;
@@ -343,5 +341,4 @@ $icon-size: 22px;
       }
     }
   }
-
 }

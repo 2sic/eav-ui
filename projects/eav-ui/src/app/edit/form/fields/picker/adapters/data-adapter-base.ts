@@ -17,7 +17,7 @@ export abstract class DataAdapterBase extends ServiceBase {
    * The options to show.
    * Can be different from the underlying data, since it may have error or loading-entries.
    * This is a signal, so it can be used in the template. it will _never_ be null.
-   * 
+   *
    * WIP: Currently based on the observable
    */
   protected useDataSourceStream = signal(false);
@@ -31,7 +31,7 @@ export abstract class DataAdapterBase extends ServiceBase {
     super(logSpecs);
   }
 
-  protected setup(deleteCallback: (props: DeleteEntityProps) => void): void { 
+  protected setup(deleteCallback: (props: DeleteEntityProps) => void): void {
     this.deleteCallback = deleteCallback;
   }
 

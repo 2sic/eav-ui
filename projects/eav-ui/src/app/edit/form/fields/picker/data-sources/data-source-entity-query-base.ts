@@ -1,13 +1,13 @@
 import { PickerItem } from './../models/picker-item.model';
-import { BehaviorSubject, Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, pairwise, shareReplay } from "rxjs";
+import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { QueryService } from "../../../../shared/services";
 import { DataSourceBase } from './data-source-base';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { Injectable, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
+import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
 import { PickerDataCacheService } from '../cache/picker-data-cache.service';
 import { DataWithLoading } from '../models/data-with-loading';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 /**
  * This is the base class for data-sources providing data from
@@ -27,13 +27,13 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   }
 
   //#endregion
-  
+
   /**
    * The params are either query-url params or the type-name.
    * Implemented as observable, since all requests depend on observables.
    * If there is ever an httpSignal service or something, then this should be migrated.
    */
-  private typeOrParams = signal<string>(null); 
+  private typeOrParams = signal<string>(null);
   private typeOrParams$ = new Subject<string>();
   private paramsDebounced$ = this.typeOrParams$.pipe(distinctUntilChanged());
 
@@ -181,7 +181,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
     // get existing value and set loading to true
     const before = cache();
-    cache.set( { data: before.data, loading: true });
+    cache.set({ data: before.data, loading: true });
 
     this.getFromBackend(this.typeOrParams(), additionalGuids, message)
       .subscribe(additions => {

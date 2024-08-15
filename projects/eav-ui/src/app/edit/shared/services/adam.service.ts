@@ -17,7 +17,7 @@ export class AdamService {
     private http: HttpClient,
     private dnnContext: DnnContext,
     private formConfig: FormConfigService
-  ) {}
+  ) { }
 
   getAll(url: string, config: AdamConfig) {
     return this.http.get<AdamItem[]>(

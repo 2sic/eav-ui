@@ -17,6 +17,7 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { EntityFormStateService } from '../../entity-form-state.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
 const nameOfThis = 'FormBuilderComponent';
@@ -25,21 +26,21 @@ const nameOfThis = 'FormBuilderComponent';
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
-  providers: [
-    FieldsSettingsService,
-    FieldsTranslateService,
-    FormItemFormulaService,
-    FormulaEngine,
-    FormulaPromiseHandler,
-
-    // new
-    EntityFormStateService,
-  ],
   standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
     EntityWrapperComponent,
+  ],
+  providers: [
+    FieldsSettingsService,  // used for Edit Dialog Main
+    FieldsTranslateService, // used for Edit Dialog Header
+    FormItemFormulaService, // used in Dialog entry and Dialog Header Dialog Main
+    FormulaEngine, // used in Dialog entry and Dialog Header Dialog Main
+    FormulaPromiseHandler, // used in Dialog entry and Dialog Header Dialog Main
+
+    // new
+    EntityFormStateService,
   ],
 })
 export class FormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -140,7 +141,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     const formValid$ = form.valueChanges.pipe(
       map(() => !form.invalid),
       startWith(!form.invalid),
-      distinctUntilChanged(),
+      mapUntilChanged(m => m),
+      // distinctUntilChanged(),
     );
     const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
     this.subscriptions.add(
@@ -149,7 +151,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           if (itemHeader.IsEmpty) return true;
           return formValid;
         }),
-        distinctUntilChanged(),
+        mapUntilChanged(m => m),
+        // distinctUntilChanged(),
       ).subscribe(isValid => {
         this.formsStateService.setFormValid(this.entityGuid, isValid);
       })

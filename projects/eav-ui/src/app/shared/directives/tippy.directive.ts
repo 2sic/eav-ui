@@ -2,7 +2,7 @@ import { Directive, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges } fro
 import tippy, { Instance, Placement, Props } from 'tippy.js';
 
 // tslint:disable-next-line:directive-selector
-@Directive({ selector: '[tippy]', standalone: true})
+@Directive({ selector: '[tippy]', standalone: true })
 export class TippyDirective implements OnChanges, OnDestroy {
   /** Message to show in Tippy */
   @Input() tippy: string | null | undefined;

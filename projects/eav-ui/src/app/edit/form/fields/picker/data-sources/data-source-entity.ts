@@ -25,15 +25,15 @@ export class DataSourceEntity extends DataSourceEntityQueryBase {
       fields: this.fieldsToRetrieve(this.settings()),
       log: logOverrides.name,
     }).pipe(
-        map(data => {
-          const items = data.Default.map(entity => fieldMask.entity2PickerItem({
-            entity,
-            streamName: null,
-            mustUseGuid: true
-          }));
-          return { data: items, loading: false } as DataWithLoading<PickerItem[]>;
-        }),
-      )
+      map(data => {
+        const items = data.Default.map(entity => fieldMask.entity2PickerItem({
+          entity,
+          streamName: null,
+          mustUseGuid: true
+        }));
+        return { data: items, loading: false } as DataWithLoading<PickerItem[]>;
+      }),
+    )
   }
 
 }

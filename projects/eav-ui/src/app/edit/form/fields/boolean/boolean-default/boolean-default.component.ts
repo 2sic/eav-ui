@@ -33,7 +33,7 @@ export class BooleanDefaultComponent {
   protected fieldState = inject(FieldState);
 
   protected group = this.fieldState.group;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean>> ;
+  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean>>;
   protected control = this.fieldState.control;
 
   protected settings = this.fieldState.settings;

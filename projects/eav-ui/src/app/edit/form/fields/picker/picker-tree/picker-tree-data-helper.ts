@@ -39,7 +39,7 @@ export class PickerTreeDataHelper extends ServiceBase {
   }
 
   public preConvertAllItems(treeConfig: UiPickerModeTree, items: PickerItem[]) {
-    this.log.a('preConvertAllItemsToTreeItems', {treeConfig, items});
+    this.log.a('preConvertAllItemsToTreeItems', { treeConfig, items });
     const convertedItems = items.map(x => this.preConvertItemToTreeItem(treeConfig, x, items));
 
     // todo: establish relationships
@@ -56,10 +56,10 @@ export class PickerTreeDataHelper extends ServiceBase {
 
     return withChildren;
   }
-  
+
   private preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
     // Log and do some initial checks
-    this.log.a(`preConvertItemToTreeItem for item ${item?.id}`, {treeConfig, item, allItems});
+    this.log.a(`preConvertItemToTreeItem for item ${item?.id}`, { treeConfig, item, allItems });
     if (!treeConfig) throw new Error('No tree configuration found');
     if (!item) throw new Error("Can't transform null-item");
 
@@ -83,8 +83,8 @@ export class PickerTreeDataHelper extends ServiceBase {
       : itemInCorrectStream && !!allItems.find(x => {
         return (x.data[cpRef]?.[0]?.[pId] == currentId)
       }
-    );
-  
+      );
+
     const result: PickerTreeItem = {
       ...item,
       level: -1,
@@ -92,7 +92,7 @@ export class PickerTreeDataHelper extends ServiceBase {
       parent: item.data[cpRef],
       children: item.data[pcRef],
     };
-    this.log.a('result', {result});
+    this.log.a('result', { result });
     return result;
   }
 
@@ -117,7 +117,7 @@ export class PickerTreeDataHelper extends ServiceBase {
         // TODO: @2dm - must determine which method is better
         // getting them here is a bit more functional, but the other model doesn't need the catalog to be stored separately
 
-        // return item.children; // 
+        // return item.children; //
         // const getChildren = this.getChildren(this.pickerTreeConfiguration, item, this.treeItems);
         // console.warn('2dm item', item, 'getChildren', getChildren, 'item.children', item.children)
         // return getChildren;

@@ -28,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -74,11 +75,12 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   private contentType: ContentType;
   private inputTypeOptions: FieldInputTypeOption[];
 
+  private contentTypesService = transient(ContentTypesService);
+  private contentTypesFieldsService = transient(ContentTypesFieldsService);
+
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
     private route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
-    private contentTypesFieldsService: ContentTypesFieldsService,
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,

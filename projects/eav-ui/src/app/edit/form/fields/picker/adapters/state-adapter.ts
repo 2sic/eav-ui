@@ -30,10 +30,10 @@ export class StateAdapter extends ServiceBase {
   public createEntityTypes = computed(() => {
     const types = this.fieldState.settings().CreateTypes;
     return types
-        ? types
-            .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
-            .map((guid: string) => ({ label: null, guid }))
-        : []
+      ? types
+        .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
+        .map((guid: string) => ({ label: null, guid }))
+      : []
   }, { equal: RxHelpers.arraysEqual });
 
   protected readonly settings = this.fieldState.settings;
@@ -63,7 +63,7 @@ export class StateAdapter extends ServiceBase {
 
   // todo: make signal, if useful
   // private isExpanded$: Observable<boolean>;
-  
+
   private focusOnSearchComponent: () => void;
 
   public linkLog(log: EavLogger): this {
@@ -72,7 +72,7 @@ export class StateAdapter extends ServiceBase {
     return this;
   };
 
-  public attachCallback(focusCallback: () => void): this  {
+  public attachCallback(focusCallback: () => void): this {
     this.log.a('attachCallback');
     this.focusOnSearchComponent = focusCallback;
     return this;
@@ -85,7 +85,7 @@ export class StateAdapter extends ServiceBase {
     switch (action) {
       case 'add':
         const guid = value as string;
-        if(this.fieldState.settings().AllowMultiValue)
+        if (this.fieldState.settings().AllowMultiValue)
           valueArray.push(guid);
         else
           valueArray = [guid];
@@ -150,26 +150,26 @@ export class StateAdapter extends ServiceBase {
 
 // 2024-06-20 Keep in case we need it later
 
-    // Temp centralize logic if pickerList should show, but not in use yet.
-    // Commented out, till we need it, then refactor to signals
-    // var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
-    // this.shouldPickerListBeShown$ = combineLatest([
-    //   this.isExpanded$,
-    //   allowMultiValue$,
-    //   selectedItems$,
-    // ]).pipe(
-    //   map(([isExpanded, allowMultiValue, selectedItems]) => {
-    //     return !this.isInFreeTextMode()
-    //       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
-    //       && (!allowMultiValue || (allowMultiValue && isExpanded));
-    //   })
-    // );
-    // if (dumpProperties) {
-    //   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.add(`shouldPickerListBeShown ${shouldShow}`));
-    // }
+// Temp centralize logic if pickerList should show, but not in use yet.
+// Commented out, till we need it, then refactor to signals
+// var allowMultiValue$ = this.settings$.pipe(mapUntilChanged(settings => settings.AllowMultiValue));
+// this.shouldPickerListBeShown$ = combineLatest([
+//   this.isExpanded$,
+//   allowMultiValue$,
+//   selectedItems$,
+// ]).pipe(
+//   map(([isExpanded, allowMultiValue, selectedItems]) => {
+//     return !this.isInFreeTextMode()
+//       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
+//       && (!allowMultiValue || (allowMultiValue && isExpanded));
+//   })
+// );
+// if (dumpProperties) {
+//   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.add(`shouldPickerListBeShown ${shouldShow}`));
+// }
 
 
-    // // signal
-    // this.subscriptions.add(
-    //   selectedItems$.subscribe(this.selectedItems.set)
-    // );
+// // signal
+// this.subscriptions.add(
+//   selectedItems$.subscribe(this.selectedItems.set)
+// );

@@ -31,7 +31,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   protected injector = inject(Injector);
 
   public fieldState = inject(FieldState);
-  
+
   public editRoutingService = inject(EditRoutingService);
 
   pickerData = transient(PickerData);
@@ -48,7 +48,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
    * Whether to show the preview or not,
    * since this control is used both for preview and dialog.
    */
-  showPreview = computed(() => { 
+  showPreview = computed(() => {
     const settings = this.fieldState.settings();
     const allowMultiValue = settings.AllowMultiValue;
     const isDialog = settings._isDialog;
@@ -81,7 +81,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     } else {
       // this method is overridden in each variant as of now
       this.createPickerAdapters();
-      this.log.a('createPickerAdapters: config', {config});
+      this.log.a('createPickerAdapters: config', { config });
       config.pickerData = this.pickerData;
     }
   }
@@ -92,7 +92,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     if (this.isPrimary)
       this.pickerData.source.onAfterViewInit();
   }
-  
+
   /** Create the Picker Adapter - MUST be overridden in each inheriting class */
   protected createPickerAdapters(): void {
     throw new Error('Method not implemented. Must be overridden by inheriting class.');
@@ -112,7 +112,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.subscriptions.add(
       this.editRoutingService.childFormResult(config.index, config.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];
-        this.log.a('childFormResult', {result, newItemGuid});
+        this.log.a('childFormResult', { result, newItemGuid });
         if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
           this.pickerData.state.addSelected(newItemGuid);
           this.pickerData.source.forceReloadData([newItemGuid]);
@@ -123,7 +123,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
         const childGuid = this.pickerData.source.editEntityGuid();
-        this.log.a('childFormClosed', {childGuid});
+        this.log.a('childFormClosed', { childGuid });
         if (childGuid)
           this.pickerData.source.forceReloadData([childGuid]);
       })

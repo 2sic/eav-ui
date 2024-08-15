@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 // tslint:disable-next-line:directive-selector
-@Directive({ selector: '[extended-fab-speed-dial-trigger]',
+@Directive({
+  selector: '[extended-fab-speed-dial-trigger]',
   standalone: true
 })
 export class ExtendedFabSpeedDialTriggerDirective implements OnChanges {

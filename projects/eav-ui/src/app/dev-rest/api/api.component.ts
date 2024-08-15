@@ -59,14 +59,10 @@ const logThis = false;
     DevRestHttpHeadersComponent,
     AsyncPipe,
   ],
-  providers: [
-    AppDialogConfigService,
-  ],
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private sourceService = transient(SourceService);
 
   /** action name to check for */
   selectedActionName$ = new BehaviorSubject<string>(null);
@@ -75,8 +71,8 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
   urlParams$ = new BehaviorSubject<string>('');
 
   log = new EavLogger("DevRestApiComponent", logThis);
+  private sourceService = transient(SourceService);
   constructor(
-    appDialogConfigService: AppDialogConfigService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     dnnContext: DnnContext,
@@ -84,6 +80,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     router: Router,
     route: ActivatedRoute,
   ) {
+    const appDialogConfigService = transient(AppDialogConfigService);
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, null);
 
     const logWebApi = this.log.rxTap('webApi$', { enabled: true });

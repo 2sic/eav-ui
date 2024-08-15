@@ -33,6 +33,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 @Component({
   selector: 'app-formula-designer',
@@ -56,9 +57,6 @@ import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.
     SnippetLabelSizePipe,
     TippyDirective,
   ],
-  providers: [
-    EntitiesService,
-  ]
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
@@ -85,11 +83,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   focused = false;
   viewModel$: Observable<FormulaDesignerViewModel>;
 
+  private entitiesService = transient(EntitiesService);
+
   constructor(
     private formulaDesignerService: FormulaDesignerService,
     private snackBar: MatSnackBar,
     private formConfig: FormConfigService,
-    private entitiesService: EntitiesService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private translate: TranslateService,
