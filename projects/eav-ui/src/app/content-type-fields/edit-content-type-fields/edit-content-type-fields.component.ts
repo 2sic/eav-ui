@@ -1,9 +1,9 @@
-import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, Subscription, switchMap, toArray } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, switchMap, toArray } from 'rxjs';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
@@ -70,7 +70,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   findLabel = calculateTypeLabel;
   loading$ = new BehaviorSubject(true);
   saving$ = new BehaviorSubject(false);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+  isDebug = inject(GlobalConfigService).isDebug;
 
   private contentType: ContentType;
   private inputTypeOptions: FieldInputTypeOption[];
@@ -81,7 +81,6 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
     private route: ActivatedRoute,
-    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
   ) {

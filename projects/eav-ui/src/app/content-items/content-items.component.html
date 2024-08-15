@@ -38,7 +38,7 @@
         <mat-icon class="eav-icon">local_offer</mat-icon>
         <span>Create Metadata</span>
       </button>
-      @if (vm.debugEnabled) {
+      @if (isDebug()) {
       <button mat-button class="eav-button__with-icon" color="accent" tippy="Print filter to console"
         (click)="debugFilter()">
         <mat-icon class="eav-icon">filter_list</mat-icon>

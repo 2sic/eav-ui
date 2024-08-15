@@ -1,6 +1,6 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
@@ -89,12 +89,13 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
 
   viewModel$: Observable<ContentItemsViewModel>;
 
+  isDebug = inject(GlobalConfigService).isDebug;
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentItemsComponent>,
     private snackBar: MatSnackBar,
-    private globalConfigService: GlobalConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -112,9 +113,9 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
 
     this.viewModel$ = combineLatest([
-      this.contentType$, this.items$, this.globalConfigService.getDebugEnabled$()
+      this.contentType$, this.items$
     ]).pipe(
-      map(([contentType, items, debugEnabled]) => ({ contentType, items, debugEnabled }))
+      map(([contentType, items]) => ({ contentType, items }))
     );
   }
 
@@ -439,5 +440,4 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
 interface ContentItemsViewModel {
   contentType: ContentType;
   items: ContentItem[];
-  debugEnabled: boolean;
 }

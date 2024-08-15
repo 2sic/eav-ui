@@ -165,7 +165,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     this.itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const formReadOnly$ = this.formsStateService.readOnly$;
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+    const debugEnabled$ = this.globalConfigService.debugEnabled$;
 
     const logUpdateFieldProps = this.log.rxTap('updateFieldProps', { enabled: true });
     this.subscriptions.add(

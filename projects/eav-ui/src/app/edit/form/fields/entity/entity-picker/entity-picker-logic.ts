@@ -9,21 +9,25 @@ import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeConstants.EntityPicker;
 
-  update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
-    let dataSources: EavEntity[] = [];
-    let pickerDisplayConfigurations: EavEntity[] = [];
-    
-    const fs = EntityDefaultLogic.setDefaultSettings({ ...settings });
-
+  static maybeOverrideEditRestrictions(fs: FieldSettings, tools: FieldLogicTools): FieldSettings {
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
-      // tslint:disable-next-line: max-line-length
-      console.log('SystemAdmin + Debug: Overriding edit restrictions for field \'' + settings.Name + '\' (EntityType: \'' + settings.EntityType + '\').');
+      console.log(`SystemAdmin + Debug: Overriding edit restrictions for field \'${fs.Name}\' (EntityType: \'${fs.EntityType}\').`);
       fs.EnableEdit = true;
       fs.EnableCreate = true;
       fs.EnableAddExisting = true;
       fs.EnableRemove = true;
       fs.EnableDelete = true;
     }
+    return fs;
+  }
+
+  update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
+    let dataSources: EavEntity[] = [];
+    let pickerDisplayConfigurations: EavEntity[] = [];
+    
+    let fs = EntityDefaultLogic.setDefaultSettings({ ...settings });
+
+    fs = EntityPickerLogic.maybeOverrideEditRestrictions(fs, tools);
 
     if(fs.DataSources?.length > 0) 
       dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);

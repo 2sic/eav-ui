@@ -55,8 +55,6 @@ export interface EditDialogMainViewModel {
   formsValid: boolean;
   delayForm: boolean;
   viewInitiated: boolean;
-  debugEnabled: boolean;
-  debugInfoIsOpen: boolean;
   hideHeader: boolean;
   saveButtonDisabled: boolean;
 }

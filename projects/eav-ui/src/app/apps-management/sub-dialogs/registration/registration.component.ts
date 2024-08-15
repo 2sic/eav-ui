@@ -2,7 +2,6 @@ import { Component, HostBinding, OnDestroy, OnInit, ViewContainerRef } from '@an
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from 'rxjs';
-import { GlobalConfigService } from '../../../edit/shared/store/ngrx-data/global-config.service';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { SystemInfoSet } from '../../models/system-info.model';
@@ -36,8 +35,6 @@ import { transient } from '../../../core';
 export class RegistrationComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
   private refreshSystemInfoSet$ = new Subject<void>();
 
   viewModel$: Observable<RegistrationViewModel>;
@@ -49,7 +46,6 @@ export class RegistrationComponent implements OnInit {
   private featuresConfigService = transient(FeaturesConfigService);
 
   constructor(
-    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

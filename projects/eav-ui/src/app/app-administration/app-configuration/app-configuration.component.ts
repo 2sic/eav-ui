@@ -71,7 +71,6 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   isGlobal: boolean;
   isPrimary: boolean;
   isApp: boolean;
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -91,7 +90,6 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
     private context: Context,
     private snackBar: MatSnackBar,
     private appInternalsService: AppInternalsService,
-    private globalConfigService: GlobalConfigService,
     private appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

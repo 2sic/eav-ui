@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -79,16 +79,18 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   viewModel$: Observable<EditDialogMainViewModel>;
 
   private viewInitiated$ = new BehaviorSubject(false);
-  private debugInfoIsOpen$= new BehaviorSubject(false);
   private saveResult: SaveResult;
 
   private loadIconsService = transient(LoadIconsService);
+  private globalConfigService = inject(GlobalConfigService);
+
+  isDebug = this.globalConfigService.isDebug;
+  expandDebugFooter = signal(false);
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
-    private globalConfigService: GlobalConfigService,
 
     private formConfig: FormConfigService,
     private formDataService: FormDataService,
@@ -112,8 +114,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   ngOnInit() {
-    // this.viewInitiated$ = new BehaviorSubject(false);
-    // this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();
@@ -124,28 +124,20 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
     const formsValid$ = this.formsStateService.formsValid$;
     const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
-      tap(debugEnabled => {
-        if (this.debugInfoIsOpen$.value && !debugEnabled) {
-          this.debugInfoIsOpen$.next(false);
-        }
-      })
-    );
+    
     this.viewModel$ = combineLatest([
       combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$]),
-      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, saveButtonDisabled$]),
+      combineLatest([hideHeader$, saveButtonDisabled$]),
     ]).pipe(
       map(([
         [items, formsValid, delayForm, viewInitiated],
-        [debugEnabled, debugInfoIsOpen, hideHeader, saveButtonDisabled],
+        [hideHeader, saveButtonDisabled],
       ]) => {
         const viewModel: EditDialogMainViewModel = {
           items,
           formsValid,
           delayForm,
           viewInitiated,
-          debugEnabled,
-          debugInfoIsOpen,
           hideHeader,
           saveButtonDisabled,
         };
@@ -163,7 +155,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   ngOnDestroy() {
     this.viewInitiated$.complete();
-    this.debugInfoIsOpen$.complete();
     this.languageStore.removeFromStore(this.formConfig.config.formId);
     this.publishStatusService.removePublishStatus(this.formConfig.config.formId);
 
@@ -179,7 +170,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       this.entityCacheService.clearCache();
       this.adamCacheService.clearCache();
       this.linkCacheService.clearCache();
-      // this.stringQueryCacheService.clearCache();
     }
     super.ngOnDestroy();
   }
@@ -272,7 +262,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   debugInfoOpened(opened: boolean) {
-    this.debugInfoIsOpen$.next(opened);
+    console.log('debugInfoOpened', opened);
+    this.expandDebugFooter.set(opened);
   }
 
   private startSubscriptions() {

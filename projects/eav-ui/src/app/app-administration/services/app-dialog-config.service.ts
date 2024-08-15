@@ -19,7 +19,6 @@ export class AppDialogConfigService extends ServiceBase implements OnDestroy {
   constructor(
     private http: HttpClient,
     private context: Context,
-    // private dnnContext: DnnContext,
     private globalConfigService: GlobalConfigService,
     featuresService: FeaturesService,
   ) {

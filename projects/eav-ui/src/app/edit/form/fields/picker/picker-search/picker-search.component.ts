@@ -98,7 +98,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   private logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
 
   /** Debug status for UI, mainly to show "add-null" button */
-  debugEnabled = toSignal(this.globalConfigService.getDebugEnabled$(), { initialValue: false });
+  debugEnabled = this.globalConfigService.isDebug;
 
   /** Current applicable settings like "enableEdit" etc. */
   settings = computed(() => {

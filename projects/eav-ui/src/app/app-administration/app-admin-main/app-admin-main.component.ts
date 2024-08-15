@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { transient } from '../../core';
+import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 
 const logThis = false;
 
@@ -35,6 +36,7 @@ const logThis = false;
     RouterOutlet,
     AsyncPipe,
     NavItemListComponent,
+    ToggleDebugDirective,
   ],
   providers: [
     // Must have a new config service here, to restart with new settings
@@ -44,7 +46,6 @@ const logThis = false;
   ],
 })
 export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-
 
   constructor(
     protected router: Router,
@@ -122,12 +123,6 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
   closeDialog() {
     this.dialogRef.close();
   }
-
-  // @2dg not longer in use with new routing SideNav
-  // changeUrl(path: string) {
-  //   // if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
-  //   // this.router.navigate([path], { relativeTo: this.route });
-  // }
 
   private fetchDialogSettings() {
     this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {

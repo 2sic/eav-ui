@@ -244,7 +244,7 @@ export class FormulaEngine implements OnDestroy {
   ): FormulaResultRaw {
     const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
     const languages = this.languageService.getLanguages();
-    const debugEnabled = this.globalConfigService.getDebugEnabled();
+    const debugEnabled = this.globalConfigService.isDebug();// .getDebugEnabled();
     const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, language.current);
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,

@@ -1,5 +1,5 @@
 @if (viewModel$ | async; as vm) {
-<mat-toolbar>
+<mat-toolbar appToggleDebug>
   <div class="toolbar-container">
     <!-- Mat Icon Menu -->
     <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
@@ -23,7 +23,7 @@
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>
-<mat-sidenav-container>
+<mat-sidenav-container appToggleDebug>
   <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
     @for (navItem of navItems; track navItem.path) {
     <app-nav-item-list [navItem]="navItem"></app-nav-item-list>

@@ -1,8 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -76,15 +76,16 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
-  viewModel$ = combineLatest([this.contentTypes$, this.scope$, this.scopeOptions$, this.globalConfigService.getDebugEnabled$()]).pipe(
-    map(([contentTypes, scope, scopeOptions, debugEnabled]) =>
-      ({ contentTypes, scope, scopeOptions, debugEnabled })),
+  viewModel$ = combineLatest([this.contentTypes$, this.scope$, this.scopeOptions$]).pipe(
+    map(([contentTypes, scope, scopeOptions]) =>
+      ({ contentTypes, scope, scopeOptions })),
   );
+
+  isDebug = inject(GlobalConfigService).isDebug;
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private dialogConfigSvc: AppDialogConfigService,
   ) {

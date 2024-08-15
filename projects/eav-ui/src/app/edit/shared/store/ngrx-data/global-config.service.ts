@@ -1,50 +1,42 @@
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { keyDebug } from '../../../../shared/constants/session.constants';
-import { GlobalConfig } from '../../models';
-import { BaseDataService } from './base-data.service';
-import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { GlobalConfig } from '../../models/global-config.model';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
-export class GlobalConfigService extends BaseDataService<GlobalConfig> {
-  constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory, private snackBar: MatSnackBar) {
-    super('GlobalConfig', serviceElementsFactory);
+export class GlobalConfigService {
 
+  private debugState = signal<GlobalConfig>(null);
+  
+  isDebug = computed(() => !!this.debugState()?.allowDebugMode && !!this.debugState()?.debugEnabled);
+
+  /** This observable is a left-over, try to remove once more is refactored */
+  debugEnabled$ = toObservable(this.isDebug);
+
+  constructor(private snackBar: MatSnackBar) {
     const initial: GlobalConfig = {
       id: 0,
       debugEnabled: sessionStorage.getItem(keyDebug) === 'true',
       allowDebugMode: false,
     };
-    this.addOneToCache(initial);
+    this.debugState.set(initial);
   }
 
   allowDebug(allow: boolean): void {
-    const oldConfig = this.cache$.value[0];
-    if (oldConfig.allowDebugMode === allow) { return; }
+    const oldConfig = this.debugState();
+    if (oldConfig.allowDebugMode === allow)
+      return;
 
     const newConfig: GlobalConfig = {
       ...oldConfig,
       allowDebugMode: allow,
     };
-    this.updateOneInCache(newConfig);
-  }
-
-  getDebugEnabled(): boolean {
-    return this.cache$.value[0].allowDebugMode && this.cache$.value[0].debugEnabled;
-  }
-
-  getDebugEnabled$(): Observable<boolean> {
-    return this.cache$.pipe(
-      map(configs => configs[0].allowDebugMode && configs[0].debugEnabled),
-      mapUntilChanged(m => m),
-      // distinctUntilChanged(),
-    );
+    this.debugState.set(newConfig);
   }
 
   toggleDebugEnabled(): void {
-    const oldConfig = this.cache$.value[0];
+    const oldConfig = this.debugState();
     if (!oldConfig.allowDebugMode) {
       this.snackBar.open('You do not have permissions to enter developer mode', null, { duration: 3000 });
       return;
@@ -54,7 +46,7 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
       ...oldConfig,
       debugEnabled: !oldConfig.debugEnabled,
     };
-    this.updateOneInCache(newConfig);
+    this.debugState.set(newConfig);
     this.snackBar.open(newConfig.debugEnabled ? 'developer mode on' : 'developer mode off', null, { duration: 3000 });
   }
 }

@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { transient } from '../../core';
+import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -29,7 +30,8 @@ import { transient } from '../../core';
     MatSidenavModule,
     RouterOutlet,
     AsyncPipe,
-    NavItemListComponent
+    NavItemListComponent,
+    ToggleDebugDirective,
   ],
 })
 export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
