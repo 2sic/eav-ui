@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { FormConfigService, FieldsSettingsService } from '.';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
-import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
@@ -139,7 +138,7 @@ export class FieldsTranslateService {
         // Copy attribute value where language is languageKey to new attribute with current language
         this.addItemAttributeValueHelper(fieldName, valueTranslation.Value, language.current, false);
     } else
-      consoleLogEditForm(`${language.current}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
+      this.log.a(`${language.current}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
   }
 
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {

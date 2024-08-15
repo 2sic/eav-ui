@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy, Signal } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, shareReplay } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
-import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
@@ -16,7 +15,6 @@ import { FieldValuePair } from '../../formulas/models/formula-results.models';
 import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
 import { ItemFieldVisibility } from './item-field-visibility';
-import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { EavContentType, EavEntityAttributes } from '../models/eav';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -24,7 +22,7 @@ import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
 // const logOnlyFields = ['Boolean'];
 
@@ -117,7 +115,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         const mdMerger = new EntityReader(language.initial, language.primary);
 
         const constFieldParts = contentType.Attributes.map((attribute, index) => {
-          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));
+          const metadataInitialLanguage = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
+          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadataInitialLanguage);
           const initialDisabled = initialSettings.Disabled ?? false;
           const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
           const inputType = inputTypes.find(i => i.Type === attribute.InputType);
@@ -145,7 +144,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           mergeRaw.InputType = attribute.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          // consoleLogForm('merged', JSON.parse(JSON.stringify(settingsInitial)));
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
           const constantFieldParts: ConstantFieldParts = {
             logic,
@@ -264,7 +262,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             possibleValueUpdates, possibleFieldsUpdates,
             slotIsEmpty, entityReader);
           // if changes were applied do not trigger field property updates
-          if (changesWereApplied) return null;
+          if (changesWereApplied)
+            return null;
           // if no changes were applied then we trigger field property updates and reset the loop counter
           this.formItemFormulaService.valueFormulaCounter = 0;
           return fieldsProps;
@@ -273,7 +272,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         filter(fieldsProps => !!fieldsProps),
         logUpdateFieldProps.filter(),
       ).subscribe(fieldsProps => {
-        consoleLogEditForm('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
+        this.log.a('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
         this.fieldsProps$.next(fieldsProps);
       })
     );

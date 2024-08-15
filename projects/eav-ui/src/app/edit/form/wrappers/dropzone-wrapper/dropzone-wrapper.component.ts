@@ -3,14 +3,16 @@ import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, signal, Vi
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
-import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
 import { FormConfigService } from '../../../shared/services';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { FieldState } from '../../builder/fields-builder/field-state';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'DropzoneWrapperComponent';
 
 @Component({
   selector: WrappersConstants.DropzoneWrapper,
@@ -23,9 +25,6 @@ import { FieldState } from '../../builder/fields-builder/field-state';
     DropzoneModule,
     AsyncPipe,
   ],
-  // providers: [
-  //   PickerTreeDataHelper,
-  // ],
 })
 export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
@@ -41,6 +40,8 @@ export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestro
 
   imageTypes: string[] = ["image/jpeg", "image/png"];
   isStringWysiwyg = false;
+
+  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private formConfig: FormConfigService,
@@ -110,22 +111,23 @@ export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   onUploadError(event: DropzoneType) {
-    consoleLogEditForm('Dropzone upload error. Event:', event);
+    this.log.fn('onUploadError', { event });
     alert(`Dropzone upload error. Event ${event}`);
     this.dropzoneRef.reset();
   }
 
   onUploadSuccess(event: DropzoneType) {
+    const l = this.log.fn('onUploadSuccess', { event });
     const response: AdamItem = event[1]; // gets the server response as second argument.
     if (!response.Error) {
       if (this.config.adam) {
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();
       } else {
-        consoleLogEditForm(`Upload failed because: ADAM reference doesn't exist`);
+        l.a(`Upload failed because: ADAM reference doesn't exist`);
       }
     } else {
-      consoleLogEditForm(`Upload failed because: ${response.Error}`);
+      l.a(`Upload failed because: ${response.Error}`);
       alert(`Upload failed because: ${response.Error}`);
     }
     this.dropzoneRef.reset();

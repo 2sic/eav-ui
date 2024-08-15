@@ -4,11 +4,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
-import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
 import { BaseDirective } from '../../../shared/directives/base.directive';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'PasteClipboardImageDirective';
 
 @Directive({
   selector: '[appPasteClipboardImage]',
@@ -21,6 +24,7 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
 
   private pasteImageEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
 
+  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private elementRef: ElementRef,
@@ -63,11 +67,12 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
 
   private handleImage(event: CustomEvent) {
     if (this.pasteImageEnabled) {
-      consoleLogEditForm('PASTE IMAGE', 'event:', event);
+      const l = this.log.fn('handleImage', { event }, 'handling paste image - enabled');
       // todo: convert png to jpg to reduce file size
       const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
       this.config.dropzone.uploadFile(image);
     } else {
+      const l = this.log.fn('handleImage', { event }, 'handling paste image - disabled');
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
         openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
       });

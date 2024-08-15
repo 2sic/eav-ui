@@ -1,6 +1,5 @@
 import { FieldValue } from "projects/edit-types";
 import { InputType } from "../../content-type-fields/models/input-type.model";
-import { consoleLogEditForm } from "../../shared/helpers/console-log-angular.helper";
 import { FieldLogicTools } from "../form/shared/field-logic/field-logic-tools";
 import { EntityReader } from "../shared/helpers";
 import { FormValues, FieldsProps } from "../shared/models";
@@ -14,6 +13,10 @@ import { Injectable } from "@angular/core";
 import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 import { FormItemFormulaService } from "./form-item-formula.service";
+import { EavLogger } from '../../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FormulaPromiseHandler';
 
 /**
  * FormulaPromiseHandler is responsible for handling the promise parts of formula results.
@@ -21,6 +24,8 @@ import { FormItemFormulaService } from "./form-item-formula.service";
 @Injectable()
 export class FormulaPromiseHandler {
   private fieldsSettingsService: FieldsSettingsService = null;
+
+  private log = new EavLogger(nameOfThis, logThis);
 
   constructor() { }
 
@@ -41,7 +46,7 @@ export class FormulaPromiseHandler {
     formulaCache: FormulaCacheItem,
     inputType: InputType,
   ) {
-    consoleLogEditForm("formula promise", formulaCache.target, resultWithPromise);
+    this.log.fn('handleFormulaPromise', { entityGuid, resultWithPromise, formulaCache, target: formulaCache.target, inputType });
     if (resultWithPromise.openInDesigner && resultWithPromise.stop === null) {
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
     }
@@ -60,6 +65,7 @@ export class FormulaPromiseHandler {
     inputType: InputType,
     entityGuid: string,
   ) {
+    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formulaCache, inputType, entityGuid });
     if (!formulaCache.updateCallback$.value) {
       const queue = this.fieldsSettingsService.updateValueQueue;
       formulaCache.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
@@ -74,7 +80,7 @@ export class FormulaPromiseHandler {
           valueUpdates[formulaCache.fieldName] = corrected.value;
 
         } else if (formulaCache.target.startsWith(SettingsFormulaPrefix)) {
-          consoleLogEditForm("formula promise settings");
+          l.a("formula promise settings");
           const settingName = formulaCache.target.substring(SettingsFormulaPrefix.length);
           settingUpdate = queueItem.settingUpdates ?? [];
           const newSetting = { name: formulaCache.fieldName, settings: [{ settingName, value: result as FieldValue }] };

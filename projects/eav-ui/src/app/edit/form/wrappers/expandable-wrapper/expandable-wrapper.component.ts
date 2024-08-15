@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
-import { consoleLogEditForm } from '../../../../shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
@@ -23,6 +22,10 @@ import { ControlStatus } from '../../../shared/models';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from 'projects/eav-ui/src/app/core';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'ExpandableWrapperComponent';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -98,6 +101,8 @@ export class ExpandableWrapperComponent {
   private connectorCreator = transient(ConnectorHelper);
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor(
     private editRoutingService: EditRoutingService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -113,6 +118,7 @@ export class ExpandableWrapperComponent {
   }
 
   ngAfterViewInit() {
+    const l = this.log.fn('ngAfterViewInit');
     this.config.adam.getConfig$().subscribe(adamConfig => {
       const disabled = adamConfig?.disabled ?? true;
       if (this.adamDisabled() !== disabled)
@@ -120,7 +126,7 @@ export class ExpandableWrapperComponent {
     })
 
     const componentTagName = `field-${this.config.inputType}`;
-    consoleLogEditForm('ExpandableWrapper created for:', componentTagName);
+    l.a('ExpandableWrapper created for:', { componentTagName });
     this.connectorCreator.init(
       componentTagName,
       this.previewContainerRef,
@@ -134,7 +140,7 @@ export class ExpandableWrapperComponent {
   }
 
   ngOnDestroy() {
-    consoleLogEditForm('ExpandableWrapper destroyed');
+    this.log.fn('ngOnDestroy', null, 'destroying ExpandableWrapper');
     this.dropzoneDraggingHelper.detach();
   }
 

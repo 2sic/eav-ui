@@ -1,9 +1,14 @@
 import { FieldValue } from '../../../../../../edit-types';
-import { consoleLogEditForm } from '../../../shared/helpers/console-log-angular.helper';
+import { EavLogger } from '../../../shared/logging/eav-logger';
 import { BestValueMode, BestValueModes } from '../constants';
 import { FormValues } from '../models';
 import { EavDimension, EavEntityAttributes, EavValue, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
+
+const logThis = false;
+const nameOfThis = 'LocalizationHelpers';
+
+const log = new EavLogger(nameOfThis, logThis);
 
 export class LocalizationHelpers {
   /**
@@ -135,6 +140,7 @@ export class LocalizationHelpers {
     updateValues: FormValues,
     language: FormLanguage,
   ): EavEntityAttributes {
+    const l = log.fn('updateAttributesValues', { allFields, updateValues, language });
     // copy attributes from item
     const eavAttributes: EavEntityAttributes = {};
     Object.keys(allFields).forEach(attributeKey => {
@@ -162,7 +168,7 @@ export class LocalizationHelpers {
           };
           eavAttributes[attributeKey] = newValues;
         } else { // else add new value with dimension languageKey
-          consoleLogEditForm('saveAttributeValues add values ', newItemValue);
+          l.a('saveAttributeValues add values ', { newItemValue });
           const newEavValue = EavValue.create(newItemValue, [EavDimension.create(language.current)]);
           const newAttribute: EavField<any> = {
             ...allFields[attributeKey],

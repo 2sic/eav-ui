@@ -20,11 +20,6 @@ export function consoleLogStore(message?: any, ...optionalParams: any[]): void {
   consoleLogInternal({ segment: 'store', message, data: optionalParams })
 }
 
-/** Log Form / Fields / Formulas */
-export function consoleLogEditForm(message?: any, ...optionalParams: any[]): void {
-  consoleLogInternal({ segment: 'editForm', message, data: optionalParams })
-}
-
 /** Log to Dev */
 export function consoleLogDev(message?: any, ...optionalParams: any[]): void {
   consoleLogInternal({ segment: 'dev', message, data: optionalParams })
