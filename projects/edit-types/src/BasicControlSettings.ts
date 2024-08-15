@@ -22,12 +22,16 @@ export class BasicControlSettings {
   /** If the field is required */
   required: boolean;
 
+  /** Real final visibility. Also respects if it was disabled by the ItemFieldVisibility. */
   visible: boolean;
 
-  visibleDisabled: boolean;
+  // /** Original visibility, more as info. ATM not used any where. */
+  // visibilityRaw: boolean;
 
-  visibleAndEnabled: boolean;
+  // /** Information if this field was forcibly disabled */
+  // visibilityDisabled: boolean;
 
+  /** If the field is collapsed */
   collapsed: boolean;
 
 
@@ -35,9 +39,9 @@ export class BasicControlSettings {
     const label = s?.Name ?? 'loading...';
     const notes = s?.Notes ?? '';
     const required = s?._currentRequired ?? true;
-    const visible = s?.Visible ?? true;
-    const visibleDisabled = s?.VisibleDisabled ?? false;
-    const visibleAndEnabled = visible && !visibleDisabled;
+    const visibilityRaw = s?.Visible ?? true;
+    const visibilityDisabled = s?.VisibleDisabled ?? false;
+    const visible = visibilityRaw && !visibilityDisabled;
     const collapsed = s?.Collapsed ?? false;
     // if (label == 'loading...') {
     //   console.log('s', s);
@@ -49,8 +53,8 @@ export class BasicControlSettings {
       required,
       labelWithRequired: label + (required ? ' *' : ''),
       visible,
-      visibleDisabled,
-      visibleAndEnabled,
+      // visibilityRaw,
+      // visibilityDisabled,
       collapsed,
     };
   }
