@@ -49,9 +49,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
   form = new UntypedFormGroup({});
 
   /** Inject the form state service, but automatically add the form for later use */
-  private formStateService = inject(EntityFormStateService).setup(this.form);
-
-  log = new EavLogger(nameOfThis, logThis);
+  #formStateService = inject(EntityFormStateService).setup(this.form);
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
@@ -62,7 +60,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     private itemService: ItemService,
     private adamCacheService: AdamCacheService,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
