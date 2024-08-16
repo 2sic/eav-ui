@@ -3,18 +3,17 @@ import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
-import { combineLatest, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../content-items/services/entities.service';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
-import { FormulaListItemTargets, FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
+import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
-import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectTarget, SelectTargets } from './formula-designer.models';
+import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 import { MatMenuModule } from '@angular/material/menu';
@@ -79,7 +78,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   };
   filename = `formula${this.formConfig.config.formId}.js`;
   focused = false;
-  viewModel$: Observable<FormulaDesignerViewModel>;
 
   private entitiesService = transient(EntitiesService);
 
@@ -122,8 +120,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     
     this.#designerSvc.setDesignerOpen(true);
     this.#designerSvc.initAfterItemSettingsAreReady();
-
-    this.buildViewModel();
   }
 
   ngOnDestroy(): void {
@@ -294,28 +290,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
       }
     });
-  }
-
-
-  private buildViewModel(): void {
-    // TODO: @2dm #formula-signals
-    const designerState$ = this.#designerSvc.getDesignerState$();
-
-    this.viewModel$ = combineLatest([
-      designerState$,
-    ]).pipe(
-      map(([
-        designer,
-      ]) => {
-        // const template = Object.values(FormulaListItemTargets).includes(designer.target)
-        //   ? listItemFormulaNow
-        //   : defaultFormulaNow;
-        const viewModel: FormulaDesignerViewModel = {
-          // template,
-        };
-        return viewModel;
-      }),
-    );
   }
 
 }

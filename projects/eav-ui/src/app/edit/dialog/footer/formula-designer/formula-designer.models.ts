@@ -1,10 +1,5 @@
 import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
 
-export interface FormulaDesignerViewModel {
-  // template: string;
-}
-
-
 export interface EntityOption {
   entityGuid: string;
   formulas: FormulaCacheItem[];
