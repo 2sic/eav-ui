@@ -15,7 +15,6 @@ import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from '../../core';
 import { FormulaTargetsService } from './formula-targets.service';
 import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
@@ -39,8 +38,6 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   itemSettingsServices: Record<string, FieldsSettingsService> = {};
 
   formulaCache = signal<FormulaCacheItem[]>([]);
-  private formulaCache$ = toObservable(this.formulaCache);
-
 
   /** The current state of the UI, what field is being edited etc. */
   designerState = signal<DesignerState>({
@@ -50,8 +47,6 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     isOpen: false,
     target: undefined,
   } satisfies DesignerState, { equal: RxHelpers.objectsEqual });
-
-  private designerState$ = toObservable(this.designerState);
 
   #formulaResults = signal<FormulaResult[]>([]);
 
@@ -122,7 +117,6 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   init(): void {
     const formulaCache = this.buildFormulaCache();
     this.formulaCache.set(formulaCache);
-
   }
 
   initAfterItemSettingsAreReady(): void {
