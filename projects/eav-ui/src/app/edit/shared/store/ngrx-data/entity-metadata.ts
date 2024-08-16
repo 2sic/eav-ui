@@ -45,10 +45,6 @@ export const entityMetadata: EntityMetadataMap = {
   LinkCache: {
     selectId: linkCacheSelectId,
   },
-  // 2024-04-29 2dm removed this #cleanup-picker
-  // StringQueryCache: {
-  //   selectId: stringQueryCacheSelectId,
-  // },
 };
 
 const pluralNames = {
@@ -97,11 +93,6 @@ function prefetchSelectId(entity: Prefetch): string {
   return entity?._guid;
 }
 
-// Select anything that's identified by an upper-case ID
-function useUpperCaseId(entity: IdentityUpperCaseId /* PickerItem */): number {
-  return entity?.Id;
-}
-
 function useLowerCaseId(entity: { id: number } /* PickerItem */): number {
   return entity?.id;
 }
@@ -113,8 +104,3 @@ function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {
 function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
 }
-
-// 2024-04-29 2dm removed this #cleanup-picker
-// function stringQueryCacheSelectId(cacheItem: PickerStringQueryCacheItem): string {
-//   return cacheItem?.selector;
-// }

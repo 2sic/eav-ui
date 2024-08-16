@@ -33,7 +33,7 @@ AppModule imports:
 - EntityCache
 - AdamCache
 - LinkCache
-- StringQueryCache
+- StringQueryCache - removed 2024-07 2dm
 
 ## More Info
 

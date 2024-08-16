@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { PickerItem } from '../../../../../../../../edit-types';
 import { BaseDataService } from '../../../../shared/store/ngrx-data/base-data.service';
 import { PrefetchEntity, prefetchItemToPickerItem } from '../../../../dialog/main/edit-dialog-main.models';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
