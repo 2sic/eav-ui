@@ -2,7 +2,6 @@ import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
 
 export interface FormulaDesignerViewModel {
-  formula: FormulaCacheItem;
   designer: DesignerState;
   template: string;
 }

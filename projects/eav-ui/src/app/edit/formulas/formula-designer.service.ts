@@ -74,7 +74,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   }, { equal: RxHelpers.objectsEqual });
 
   /** Possible entities incl. state if they have formulas */
-  entityOptions = computed(() => {
+  entityOptions = computed<EntityOption[]>(() => {
     // this is a signal, so this will change when the data is loaded...
     const formulas = this.formulaCache();
     return Object.entries(this.itemSettingsServices).map(([entityGuid, settingsSvc]) => {
@@ -167,7 +167,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     );
   }
 
-  // TODO: optimize to use formulas on current field 
+  /** The currently selected formula or null */
   currentFormula = computed(() => {
     const s = this.designerState();
     const formulas = this.formulaCache();

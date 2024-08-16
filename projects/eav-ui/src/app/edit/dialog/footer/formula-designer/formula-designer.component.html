@@ -64,7 +64,7 @@
         'focused': focused
         }">
         <mat-label class="label">Function</mat-label>
-        <app-monaco-editor class="editor" [filename]="filename" [value]="vm.formula?.source ?? vm.template"
+        <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.source ?? vm.template"
           [jsTypings]="v2JsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
           (focused)="onFocused()" (blurred)="onBlurred()">
         </app-monaco-editor>
@@ -118,7 +118,7 @@
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="deleteFormula()"
-            [disabled]="!vm.formula?.sourceId">
+            [disabled]="!currentFormula()?.sourceId">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>
@@ -129,13 +129,13 @@
         </mat-menu>
         @if (allowSaveFormula) {
           <button mat-icon-button tippy="Save" class="eav-formula-action-button"
-            [tippyDisabled]="!vm.designer.editMode || !vm.formula?.source"
-            [disabled]="!vm.designer.editMode || !vm.formula?.source || saving()" (click)="save()">
+            [tippyDisabled]="!vm.designer.editMode || !currentFormula()?.source"
+            [disabled]="!vm.designer.editMode || !currentFormula()?.source || saving()" (click)="save()">
             <mat-icon>save</mat-icon>
           </button>
         }
         <button mat-icon-button class="eav-formula-action-button" tippy="Run"
-          [disabled]="!vm.designer.editMode || !vm.formula?.source" (click)="run()">
+          [disabled]="!vm.designer.editMode || !currentFormula()?.source" (click)="run()">
           <mat-icon>play_arrow</mat-icon>
         </button>
       </div>

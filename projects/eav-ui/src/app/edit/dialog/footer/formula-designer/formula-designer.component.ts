@@ -89,6 +89,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   
   protected entityOptions = this.designerSvc.entityOptions;
   protected fieldsOptions = this.designerSvc.fieldsOptions;
+  protected currentFormula = this.designerSvc.currentFormula;
 
   protected v2JsTypings = this.designerSvc.v2JsTypings;
 
@@ -305,24 +306,16 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     // TODO: @2dm #formula-signals
     const designerState$ = this.designerSvc.getDesignerState$();
 
-    // WIP
-    const formula$ = designerState$.pipe(
-      switchMap(designer => this.designerSvc.getFormula$(designer.entityGuid, designer.fieldName, designer.target)),
-    );
-
     this.viewModel$ = combineLatest([
-      formula$,
       designerState$,
     ]).pipe(
       map(([
-        formula,
         designer,
       ]) => {
         const template = Object.values(FormulaListItemTargets).includes(designer.target)
           ? listItemFormulaNow
           : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
-          formula,
           designer,
           template,
         };
