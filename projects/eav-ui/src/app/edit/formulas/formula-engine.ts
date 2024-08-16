@@ -233,26 +233,13 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @returns Result of a single formula.
    */
   private runFormula(runParameters: FormulaRunParameters): FormulaResultRaw {
-    const { formula, formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill, item } = runParameters;
+    const { formula, inputType, item } = runParameters;
     const language = this.formConfig.language();
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.isDebug();
     const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, language.current);
     const formulaProps = FormulaHelpers.buildFormulaProps(
-      runParameters,
-      inputType?.Type,
-      settingsInitial,
-      settingsCurrent,
-      formValues,
-      initialFormValues,
-      language,
-      languages,
-      itemIdWithPrefill,
-      debugEnabled,
-      this.itemService,
-      this.formConfig,
-      this.settingsSvc,
-      this.features(),
+      { runParameters, inputType: inputType?.Type, initialFormValues, language, languages, debugEnabled, itemService: this.itemService, formConfig: this.formConfig, fieldsSettingsService: this.settingsSvc, features: this.features() },
     );
     const isOpenInDesigner = this.isDesignerOpen(formula);
     const ctSettings = this.contentTypeSettings$.value;

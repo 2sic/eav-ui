@@ -1,20 +1,14 @@
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { FeatureSummary } from '../../../features/models';
 import { FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
-import { FormValues, Language } from '../../shared/models';
-import { FormConfigService, FieldsSettingsService } from '../../shared/services';
-import { ItemService } from '../../shared/store/ngrx-data';
 
 // Import the type definitions for intellisense
 import editorTypesForIntellisense from '!raw-loader!../editor-intellisense-function-v2.rawts';
 import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
-import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
-import { FormLanguage } from '../../shared/models/form-languages.model';
-import { FormulaRunParameters } from '../formula-engine';
+import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaVersion, FormulaVersions } from '../models/formula.models';
+import { FormulaDataObject } from './formula-data-object';
+import { FormulaObjectsInternalData } from './formula-objects-internal-data';
+import { FormulaContextObject } from './formula-context-object';
+import { FormulaExperimentalObject } from './formula-experimental-object';
 
 /**
  * Contains methods for building formulas.
@@ -91,181 +85,27 @@ export class FormulaHelpers {
 
   /**
    * Used to build formula props parameters.
-   * @param formula
-   * @param entityId
-   * @param inputType
-   * @param settingsInitial
-   * @param settingsCurrent
-   * @param formValues
-   * @param initialFormValues
-   * @param languages
-   * @param itemHeader
-   * @param debugEnabled
-   * @param itemService
-   * @param formConfig
-   * @param fieldsSettingsService
-   * @param features
    * @returns Formula properties
    */
-  static buildFormulaProps(
-    runParameters: FormulaRunParameters,
-    inputType: InputTypeStrict,
-    settingsInitial: FieldSettings,
-    settingsCurrent: FieldSettings,
-    formValues: FormValues,
-    initialFormValues: FormValues,
-    language: FormLanguage,
-    languages: Language[],
-    itemHeader: ItemIdentifierShared,
-    debugEnabled: boolean,
-    itemService: ItemService,
-    formConfig: FormConfigService,
-    fieldsSettingsService: FieldsSettingsService,
-    features: FeatureSummary[],
-  ): FormulaProps {
-    const definition = runParameters.formula;
-    // console.log('2dm - buildFormulaProps()');
-    switch (definition.version) {
+  static buildFormulaProps(propsData: FormulaObjectsInternalData,): FormulaProps {
+    const { formula, formValues } = propsData.runParameters;
+    
+    switch (formula.version) {
       case FormulaVersions.V1:
       case FormulaVersions.V2:
-        const data: FormulaV1Data = {
-          ...formValues,
-          get default() { return undefined as FieldValue; },
-          get initial() { return undefined as FieldValue; },
-          get parameters() { return undefined as Record<string, any>; },
-          get prefill() { return undefined as FieldValue; },
-          get value() { return undefined as FieldValue; },
-          get settings() { return undefined as unknown; },
-        };
-        Object.defineProperties(data, {
-          default: {
-            get(): FieldValue {
-              if (definition.target === FormulaTargets.Value)
-                return InputFieldHelpers.parseDefaultValue(definition.fieldName, inputType, settingsInitial);
-              if (definition.target.startsWith(SettingsFormulaPrefix)) {
-                const settingName = definition.target.substring(SettingsFormulaPrefix.length);
-                return (settingsInitial as Record<string, any>)[settingName];
-              }
-            },
-          },
-          initial: {
-            get(): FieldValue {
-              if (definition.target !== FormulaTargets.Value) { return; }
-              return initialFormValues[definition.fieldName];
-            },
-          },
-          parameters: {
-            get(): Record<string, any> {
-              return FormulaHelpers.buildFormulaPropsParameters(itemHeader.ClientData?.parameters);
-            },
-          },
-          prefill: {
-            get(): FieldValue {
-              if (definition.target !== FormulaTargets.Value) { return; }
-              return InputFieldHelpers.parseDefaultValue(definition.fieldName, inputType, settingsInitial, itemHeader, true);
-            },
-          },
-          value: {
-            get(): FieldValue {
-              if (definition.target === FormulaTargets.Value) {
-                return formValues[definition.fieldName];
-              }
-              if (definition.target === FormulaTargets.Validation) {
-                const formulaValidation: FormulaFieldValidation = {
-                  severity: '',
-                  message: '',
-                };
-                return formulaValidation as unknown as FieldValue;
-              }
-              if (definition.target.startsWith(SettingsFormulaPrefix)) {
-                const settingName = definition.target.substring(SettingsFormulaPrefix.length);
-                return (settingsCurrent as Record<string, any>)[settingName];
-              }
-            },
-          },
-        });
 
-        const propsV1: FormulaPropsV1 = {
+        // Create the data object and add all value properties of the form to it
+        const data = Object.assign(new FormulaDataObject(propsData), formValues);
+
+        const context = new FormulaContextObject(propsData);
+
+        const experimental = new FormulaExperimentalObject(propsData);
+
+        return {
           data,
-          context: {
-            app: {
-              ...definition.app,
-              getSetting: (settingPath: string) => {
-                if (definition.version === FormulaVersions.V1) {
-                  console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
-                  return '⚠️ error - see console';
-                }
-                const result = formConfig.config.settings.Values[settingPath];
-                if (result != null) return result;
-                console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
-                  `See https://go.2sxc.org/formulas`);
-                return '⚠️ error - see console';
-              },
-            },
-            cache: definition.cache,
-            culture: {
-              code: language.current,
-              name: languages.find(l => l.NameId === language.current)?.Culture,
-            },
-            debug: debugEnabled,
-            features: {
-              isEnabled(name: string): boolean {
-                return features.find(f => f.nameId === name)?.isEnabled ?? false;
-              },
-            },
-            form: {
-              runFormulas(): void {
-                if (definition.version === FormulaVersions.V1) {
-                  console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-                  fieldsSettingsService.retriggerFormulas();
-                } else if (definition.version === FormulaVersions.V2) {
-                  console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
-                }
-              },
-            },
-            // WIP v14.11 move sxc to cache like app - must watch a bit till ca. Dec 2022 to ensure caching is ok for this
-            sxc: definition.sxc,
-            target: {
-              entity: definition.targetEntity,
-              name: definition.target === FormulaTargets.Value || definition.target === FormulaTargets.Validation
-                ? definition.fieldName
-                : definition.target.substring(definition.target.lastIndexOf('.') + 1),
-              type: definition.target === FormulaTargets.Value || definition.target === FormulaTargets.Validation
-                ? definition.target
-                : definition.target.substring(0, definition.target.lastIndexOf('.')),
-            },
-            user: definition.user,
-          },
-          experimental: {
-            getEntities(): FormulaV1ExperimentalEntity[] {
-              const v1Entities = itemService.getItems(formConfig.config.itemGuids).map(item => {
-                const v1Entity: FormulaV1ExperimentalEntity = {
-                  guid: item.Entity.Guid,
-                  id: item.Entity.Id,
-                  type: {
-                    id: item.Entity.Type.Id,  // TODO: deprecate again, once we know it's not in use #cleanFormulaType
-                    guid: item.Entity.Type.Id,
-                    name: item.Entity.Type.Name,
-                  }
-                };
-                return v1Entity;
-              });
-              return v1Entities;
-            },
-            getSettings(fieldName: string): FieldSettings {
-              return fieldsSettingsService.getFieldSettings(fieldName);
-            },
-            getValues(entityGuid: string): FormValues {
-              const item = itemService.getItem(entityGuid);
-              const values: FormValues = {};
-              for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
-                values[fieldName] = LocalizationHelpers.translate(language, fieldValues, null);
-              }
-              return values;
-            }
-          }
-        };
-        return propsV1;
+          context,
+          experimental,
+        } satisfies FormulaPropsV1;
       default:
         return;
     }
@@ -319,3 +159,5 @@ export class FormulaHelpers {
     return "any";
   }
 }
+
+
