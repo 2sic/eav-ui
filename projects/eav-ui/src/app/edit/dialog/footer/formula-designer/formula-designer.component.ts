@@ -263,7 +263,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     const title = formula.fieldName + ' - ' + formula.target;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
-    if (!confirmed) { return; }
+    if (!confirmed)
+      return;
 
     this.entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
       next: () => {
@@ -273,14 +274,10 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         if (designer.editMode)
           this.toggleEdit();
       },
-      error: (error: HttpErrorResponse) => {
+      error: (_: HttpErrorResponse) => {
         this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
       }
     });
-  }
-
-  openFormulasHelp(): void {
-    window.open('https://go.2sxc.org/formulas', '_blank');
   }
 
   private buildViewModel(): void {

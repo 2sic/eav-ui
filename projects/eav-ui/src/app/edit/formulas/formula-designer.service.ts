@@ -138,6 +138,15 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     return this.itemService.getItemHeader(guid);
   }, { equal: RxHelpers.objectsEqual });
 
+  // currentJsTypings = computed(() => {
+  //   const formula = this.currentFormula();
+  //   const options = this.currentTargetOptions();
+  //   const itemHeader = this.#currentItemHeader();
+  //   return formula != null && itemHeader != null
+  //   ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader.Prefill)
+  //   : ''
+    
+  // }, { equal: RxHelpers.objectsEqual });
 
 
   /**
