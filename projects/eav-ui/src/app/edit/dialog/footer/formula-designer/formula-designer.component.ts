@@ -1,22 +1,20 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, Input, OnDestroy, OnInit, QueryList, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
-import { combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../content-items/services/entities.service';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
-import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
-import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
 import { FormulaListItemTargets, FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
-import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets } from './formula-designer.models';
+import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectTarget, SelectTargets } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 import { MatMenuModule } from '@angular/material/menu';
@@ -87,12 +85,15 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   private designerSvc = inject(FormulaDesignerService);
   protected result = this.designerSvc.formulaResult;
-  protected contextSnippets = this.designerSvc.currentContextSnippets;
   protected targetOptions = this.designerSvc.currentTargetOptions;
-
+  
   protected entityOptions = this.designerSvc.entityOptions;
   protected fieldsOptions = this.designerSvc.fieldsOptions;
-  protected jsTypings = this.designerSvc.currentJsTypings;
+
+  protected v2JsTypings = this.designerSvc.v2JsTypings;
+
+  protected v1ContextSnippets = this.designerSvc.v1ContextSnippets;
+  protected v1DataSnippets = this.designerSvc.v1DataSnippets;
 
   private log = new EavLogger(nameOfThis, logThis);
   
@@ -303,66 +304,18 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
     // TODO: @2dm #formula-signals
     const designerState$ = this.designerSvc.getDesignerState$();
-    const options$ = combineLatest([
-      designerState$,
-      this.designerSvc.getFormulas$()
-    ]).pipe(
-      map(([designer, formulas]): SelectOptions => {
-
-        // Create array of formula relevant settings of all fields in the selected entity
-        // this is also for the dropdown to list all fields, incl. fields which don't yet have a formula
-        const fieldOptions: FieldOption[] = [];
-        if (designer.entityGuid != null) {
-          // find the current fieldSettingsService to get all properties
-          const selectedSettings = this.designerSvc.itemSettingsServices[designer.entityGuid];
-          const fieldsProps = selectedSettings.getFieldsProps();
-          for (const fieldName of Object.keys(fieldsProps)) {
-            const field: FieldOption = {
-              fieldName,
-              formulas: [], // temp
-              inputType: fieldsProps[fieldName].settings.InputType,
-              hasFormula: formulas.some(f => f.entityGuid === designer.entityGuid && f.fieldName === fieldName),
-              label: fieldName,
-            };
-            fieldOptions.push(field);
-          }
-        }
-
-        this.log.a('fieldOptions', { fieldOptions });
-
-        const selectOptions: SelectOptions = {
-          fieldOptions,
-        };
-        return selectOptions;
-      }),
-    );
 
     // WIP
     const formula$ = designerState$.pipe(
       switchMap(designer => this.designerSvc.getFormula$(designer.entityGuid, designer.fieldName, designer.target)),
     );
 
-    const itemHeader$ = designerState$.pipe(
-      map(designer => designer.entityGuid),
-      distinctUntilChanged(),
-      switchMap(entityGuid => this.itemService.getItemHeader$(entityGuid)),
-    );
-
-    const dataSnippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
-      map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader.Prefill)
-        : []
-      ),
-    );
-
     this.viewModel$ = combineLatest([
       formula$,
-      dataSnippets$,
       designerState$,
     ]).pipe(
       map(([
         formula,
-        dataSnippets, 
         designer,
       ]) => {
         const template = Object.values(FormulaListItemTargets).includes(designer.target)
@@ -371,7 +324,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         const viewModel: FormulaDesignerViewModel = {
           formula,
           designer,
-          dataSnippets,
           template,
         };
         return viewModel;

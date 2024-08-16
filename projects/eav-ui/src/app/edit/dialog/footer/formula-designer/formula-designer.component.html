@@ -65,21 +65,21 @@
         }">
         <mat-label class="label">Function</mat-label>
         <app-monaco-editor class="editor" [filename]="filename" [value]="vm.formula?.source ?? vm.template"
-          [jsTypings]="jsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
+          [jsTypings]="v2JsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
           (focused)="onFocused()" (blurred)="onBlurred()">
         </app-monaco-editor>
       </div>
       <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !vm.designer.editMode }">
-        @for (snippet of vm.dataSnippets; track trackSnippets($index, snippet)) {
+        @for (snippet of v1DataSnippets(); track trackSnippets($index, snippet)) {
           <div class="snippet" [title]="snippet.code"
             (click)="copyToClipboard(snippet.code)">
             {{ snippet.label | snippetLabelSize }}
           </div>
         }
-        @if (vm.dataSnippets?.length && contextSnippets().length) {
+        @if (v1DataSnippets()?.length && v1ContextSnippets().length) {
           <div class="separator"></div>
         }
-        @for (snippet of contextSnippets(); track trackSnippets($index, snippet)) {
+        @for (snippet of v1ContextSnippets(); track trackSnippets($index, snippet)) {
           <div class="snippet" [title]="snippet.code"
             (click)="copyToClipboard(snippet.code)">
             {{ snippet.label | snippetLabelSize }}

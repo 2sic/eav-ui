@@ -22,6 +22,7 @@ import { FormulaTargetsService } from './formula-targets.service';
 import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
 import { FieldProps } from '../shared/models/fields-configs.model';
 import { DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
+import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';
@@ -174,10 +175,10 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   }, { equal: RxHelpers.objectsEqual });
 
   /** Snippets for the current formula based on it's version */
-  currentContextSnippets = computed(() => {
+  v1ContextSnippets = computed(() => {
     const current = this.currentFormula();
     return current != null
-    ? FormulaHelpers.buildDesignerSnippetsContext(current)
+    ? FormulaV1Helpers.buildDesignerSnippetsContext(current)
     : [];
   }, { equal: RxHelpers.objectsEqual });
 
@@ -187,13 +188,23 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     return guid == null ? null : this.itemService.getItemHeader(guid);
   }, { equal: RxHelpers.objectsEqual });
 
-  currentJsTypings = computed(() => {
+  /** JS Typings for V2 formulas - all the properties and type names */
+  v2JsTypings = computed(() => {
     const formula = this.currentFormula();
     const itemHeader = this.#currentItemHeader();
     return formula != null && itemHeader != null
       ? FormulaHelpers.buildFormulaTypings(formula, this.fieldsOptions(), itemHeader.Prefill)
       : ''
   }, { equal: RxHelpers.objectsEqual });
+
+  /** Data snippets for the current formula V1 - all the data that can be used in formulas */
+  v1DataSnippets = computed(() => {
+    const formula = this.currentFormula();
+    const itemHeader = this.#currentItemHeader();
+    return formula != null && itemHeader != null
+    ? FormulaV1Helpers.getSnippets(formula, this.fieldsOptions(), itemHeader.Prefill)
+    : []
+  });
 
   // current
 

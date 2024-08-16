@@ -4,14 +4,9 @@ import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formul
 export interface FormulaDesignerViewModel {
   formula: FormulaCacheItem;
   designer: DesignerState;
-  dataSnippets: DesignerSnippet[];
   template: string;
 }
 
-export interface SelectOptions {
-  fieldOptions: FieldOption[];
-  // targetOptions: TargetOption[];
-}
 
 export interface EntityOption {
   entityGuid: string;
