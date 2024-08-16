@@ -367,7 +367,9 @@ export class FormulaHelpers {
       case FormulaVersions.V2: {
         const formulaPropsParameters = this.buildFormulaPropsParameters(prefillAsParameters);
 
-        const allFields = fieldOptions.map(f => `${f.fieldName}: any;`).join('\n');
+        // debugger;
+
+        const allFields = fieldOptions.map(f => `${f.fieldName}: ${this.inputTypeToDataType(f.inputType)};`).join('\n');
         const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');
         const final = editorTypesForIntellisense
           .replace('/* [inject:AllFields] */', allFields)
@@ -381,5 +383,13 @@ export class FormulaHelpers {
       default:
         return;
     }
+  }
+  private static inputTypeToDataType(inputType: string) {
+    const lower = inputType.toLowerCase();
+    if (lower.startsWith('string')) return 'string';
+    if (lower.startsWith('number')) return 'number';
+    if (lower.startsWith('date')) return 'Date';
+    if (lower.startsWith('boolean')) return 'boolean';
+    return "any";
   }
 }

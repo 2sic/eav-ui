@@ -92,6 +92,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   protected entityOptions = this.designerSvc.entityOptions;
   protected fieldsOptions = this.designerSvc.fieldsOptions;
+  protected jsTypings = this.designerSvc.currentJsTypings;
 
   private log = new EavLogger(nameOfThis, logThis);
   
@@ -319,6 +320,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
             const field: FieldOption = {
               fieldName,
               formulas: [], // temp
+              inputType: fieldsProps[fieldName].settings.InputType,
               hasFormula: formulas.some(f => f.entityGuid === designer.entityGuid && f.fieldName === fieldName),
               label: fieldName,
             };
@@ -345,6 +347,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       switchMap(entityGuid => this.itemService.getItemHeader$(entityGuid)),
     );
+
     const dataSnippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
         ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader.Prefill)
@@ -352,23 +355,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ),
     );
 
-    const typings$ = combineLatest([options$, formula$, itemHeader$]).pipe(
-      map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader.Prefill)
-        : ''
-      ),
-    );
-
     this.viewModel$ = combineLatest([
       formula$,
       dataSnippets$,
-      typings$,
       designerState$,
     ]).pipe(
       map(([
         formula,
         dataSnippets, 
-        typings,
         designer,
       ]) => {
         const template = Object.values(FormulaListItemTargets).includes(designer.target)
@@ -378,7 +372,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           formula,
           designer,
           dataSnippets,
-          typings,
           template,
         };
         return viewModel;

@@ -5,7 +5,6 @@ export interface FormulaDesignerViewModel {
   formula: FormulaCacheItem;
   designer: DesignerState;
   dataSnippets: DesignerSnippet[];
-  typings: string;
   template: string;
 }
 
@@ -25,6 +24,7 @@ export interface FieldOption {
   fieldName: string;
   formulas: FormulaCacheItem[];
   hasFormula: boolean;
+  inputType: string;
   label: string;
 }
 

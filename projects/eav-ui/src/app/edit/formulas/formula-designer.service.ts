@@ -20,6 +20,8 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from '../../core';
 import { FormulaTargetsService } from './formula-targets.service';
 import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
+import { FieldProps } from '../shared/models/fields-configs.model';
+import { DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';
@@ -85,20 +87,23 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     })
   });
 
+  /** possible fields of the current entity incl. state such as if it has formulas */
   fieldsOptions = computed(() => {
-    const entityGuid = this.designerState().entityGuid;
-    if (entityGuid == null)
+    const guid = this.designerState().entityGuid;
+    if (guid == null)
       return [];
-    const entityFormulas = this.entityOptions().find(e => e.entityGuid == entityGuid).formulas;
+    const entityFormulas = this.entityOptions().find(e => e.entityGuid == guid).formulas;
     // find the current fieldSettingsService to get all properties
-    const selectedSettings = this.itemSettingsServices[entityGuid];
+    const selectedSettings = this.itemSettingsServices[guid];
     const fieldsProps = selectedSettings.getFieldsProps();
     const fieldOptions: FieldOption[] = Object.keys(fieldsProps).map(fieldName => {
       const formulas = entityFormulas.filter(f => f.fieldName === fieldName);
+      const inputType = fieldsProps[fieldName].settings.InputType;
       return {
         fieldName,
         formulas,
         hasFormula: formulas.length > 0,
+        inputType,
         label: fieldName,
       } satisfies FieldOption;
     });
@@ -161,6 +166,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     );
   }
 
+  // TODO: optimize to use formulas on current field 
   currentFormula = computed(() => {
     const s = this.designerState();
     const formulas = this.formulaCache();
@@ -177,20 +183,19 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
 
   /** Snippets for the current item header based on the current formulas target guid */
   #currentItemHeader = computed(() => {
-    const guid = this.currentFormula().entityGuid;
-    return this.itemService.getItemHeader(guid);
+    const guid = this.designerState().entityGuid;
+    return guid == null ? null : this.itemService.getItemHeader(guid);
   }, { equal: RxHelpers.objectsEqual });
 
-  // currentJsTypings = computed(() => {
-  //   const formula = this.currentFormula();
-  //   const options = this.currentTargetOptions();
-  //   const itemHeader = this.#currentItemHeader();
-  //   return formula != null && itemHeader != null
-  //   ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader.Prefill)
-  //   : ''
-    
-  // }, { equal: RxHelpers.objectsEqual });
+  currentJsTypings = computed(() => {
+    const formula = this.currentFormula();
+    const itemHeader = this.#currentItemHeader();
+    return formula != null && itemHeader != null
+      ? FormulaHelpers.buildFormulaTypings(formula, this.fieldsOptions(), itemHeader.Prefill)
+      : ''
+  }, { equal: RxHelpers.objectsEqual });
 
+  // current
 
   /**
    * Used for returning formulas filtered by optional entity, field or target.
