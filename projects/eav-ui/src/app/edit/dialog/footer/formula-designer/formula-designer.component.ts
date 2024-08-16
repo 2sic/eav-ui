@@ -3,23 +3,21 @@ import { Component, inject, Input, OnDestroy, OnInit, QueryList, signal } from '
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../content-items/services/entities.service';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
-import { FormulaListItemTargets, FormulaDefaultTargets, FormulaTarget, FormulaTargets, FormulaOptionalTargets } from '../../../formulas/models/formula.models';
+import { FormulaListItemTargets, FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
-import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
+import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
-import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helpers';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
@@ -88,6 +86,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   private formulaDesignerService = inject(FormulaDesignerService);
   protected result = this.formulaDesignerService.formulaResult;
   protected contextSnippets = this.formulaDesignerService.currentContextSnippets;
+  protected targetOptions = this.formulaDesignerService.currentTargetOptions;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -307,6 +306,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       this.formulaDesignerService.getFormulas$()
     ]).pipe(
       map(([designer, formulas]): SelectOptions => {
+
+        // Create array of all entities in the form incl. info if there are formulas in that content type
         const entityOptions = this.formBuilderRefs.map(formBuilderRef => {
           const entity: EntityOption = {
             entityGuid: formBuilderRef.entityGuid,
@@ -316,8 +317,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           return entity;
         });
 
+        // Create array of formula relevant settings of all fields in the selected entity
+        // this is also for the dropdown to list all fields, incl. fields which don't yet have a formula
         const fieldOptions: FieldOption[] = [];
         if (designer.entityGuid != null) {
+          // find the current fieldSettingsService to get all properties
           const selectedItem = this.formBuilderRefs.find(i => i.entityGuid === designer.entityGuid);
           const fieldsProps = selectedItem.fieldsSettingsService.getFieldsProps();
           for (const fieldName of Object.keys(fieldsProps)) {
@@ -330,110 +334,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           }
         }
 
-        const targetOptions: TargetOption[] = [];
-        if (designer.entityGuid != null && designer.fieldName != null) {
-          // default targets
-          for (const target of Object.values(FormulaDefaultTargets)) {
-            const targetOption: TargetOption = {
-              hasFormula: formulas.some(
-                f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-              ),
-              label: target.substring(target.lastIndexOf('.') + 1),
-              target,
-            };
-            targetOptions.push(targetOption);
-          }
-
-          // optional targets
-          const item = this.itemService.getItem(designer.entityGuid);
-          const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-          const contentType = this.contentTypeService.getContentType(contentTypeId);
-          const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
-          const inputType = attribute.InputType;
-          if (EmptyFieldHelpers.isGroupStart(inputType)) {
-            for (const target of [FormulaOptionalTargets.Collapsed]) {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(
-                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-                ),
-                label: target.substring(target.lastIndexOf('.') + 1),
-                target: target as FormulaTarget,
-              };
-              targetOptions.push(targetOption);
-            }
-          }
-          if (inputType === InputTypeConstants.StringDropdown || inputType === InputTypeConstants.NumberDropdown) {
-            for (const target of [FormulaOptionalTargets.DropdownValues]) {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(
-                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-                ),
-                label: target.substring(target.lastIndexOf('.') + 1),
-                target: target as FormulaTarget,
-              };
-              targetOptions.push(targetOption);
-            }
-          }
-          if (inputType === InputTypeConstants.EntityPicker
-            || inputType === InputTypeConstants.StringPicker
-            || inputType === InputTypeConstants.NumberPicker) {
-            for (const target of Object.values(FormulaListItemTargets)) {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(
-                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
-                ),
-                label: "List Item " + target.substring(target.lastIndexOf('.') + 1),
-                target: target as FormulaTarget,
-              };
-              targetOptions.push(targetOption);
-            }
-          }
-          /*
-          TODO: @SDV
-          for all picker types
-          add formulas -> Field.ListItem.Label
-                          Field.ListItem.Tooltip
-                          Field.ListItem.Information
-                          Field.ListItem.HelpLink
-                          Field.ListItem.Disabled
-
-          Template for all new type formulas
-          v2((data, context, item) => {
-            return data.value;
-          });
-
-          old template for all of the rest
-
-          run formulas upon dropdowning the picker, upon each opening
-          */
-
-          // targets for formulas
-          const formulasForThisField = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
-          for (const formula of formulasForThisField) {
-            const formulaExists = targetOptions.some(t => t.target === formula.target);
-            if (formulaExists) { continue; }
-
-            const targetOption: TargetOption = {
-              hasFormula: true,
-              label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
-              target: formula.target,
-            };
-            targetOptions.push(targetOption);
-          }
-
-          // currently selected target
-          const selectedExists = targetOptions.some(t => t.target === designer.target);
-          if (!selectedExists) {
-            const targetOption: TargetOption = {
-              hasFormula: formulas.some(
-                f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === designer.target
-              ),
-              label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
-              target: designer.target,
-            };
-            targetOptions.push(targetOption);
-          }
-        }
+        // Create a list of formula targets for the selected field - eg. Value, Tooltip, ListItem.Label, ListItem.Tooltip etc.
+        const targetOptions = this.formulaDesignerService.currentTargetOptions();
 
         const selectOptions: SelectOptions = {
           entityOptions,
@@ -482,11 +384,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         typings,
         designer,
       ]) => {
-        const template = Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
+        const template = Object.values(FormulaListItemTargets).includes(designer.target)
+          ? listItemFormulaNow
+          : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
-          targetOptions: options.targetOptions,
           formula,
           designer,
           dataSnippets,
@@ -497,4 +400,5 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       }),
     );
   }
+
 }

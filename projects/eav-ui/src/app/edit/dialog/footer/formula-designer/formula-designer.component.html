@@ -34,7 +34,7 @@
           <mat-select [ngModel]="vm.designer.target"
             (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
             [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
-            @for (targetOption of vm.targetOptions; track targetOption) {
+            @for (targetOption of targetOptions(); track targetOption) {
               <mat-option [value]="targetOption.target">
                 <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
                   {{ targetOption.label }}

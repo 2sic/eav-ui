@@ -17,6 +17,8 @@ import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { transient } from '../../core';
+import { FormulaTargetsService } from './formula-targets.service';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';
@@ -50,6 +52,14 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     const results = this.#formulaResults();
     return results.find(r => r.entityGuid === state.entityGuid && r.fieldName === state.fieldName && r.target === state.target)
       {};
+  }, { equal: RxHelpers.objectsEqual });
+
+  private targetsService = transient(FormulaTargetsService);
+
+  currentTargetOptions = computed(() => {
+    const state = this.designerState();
+    const formulas = this.formulaCache();
+    return this.targetsService.getTargetOptions(state, formulas);
   }, { equal: RxHelpers.objectsEqual });
 
   constructor(
@@ -128,7 +138,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     return this.itemService.getItemHeader(guid);
   }, { equal: RxHelpers.objectsEqual });
 
-  
+
 
   /**
    * Used for returning formulas filtered by optional entity, field or target.
