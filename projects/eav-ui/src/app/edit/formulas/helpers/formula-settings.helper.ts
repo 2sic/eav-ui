@@ -76,19 +76,20 @@ export class FormulaSettingsHelper {
     formulaResult: FieldValue,
     settingsNew: Record<string, any>
   ): boolean {
-    if (target.startsWith(SettingsFormulaPrefix)) {
-      const settingName = target.substring(SettingsFormulaPrefix.length);
-      const prevSetting = (settings as Record<string, any>)[settingName];
+    if (!target.startsWith(SettingsFormulaPrefix))
+      return false;
 
-      const keepNewSetting = (prevSetting == null || formulaResult == null) // can't check types, hope for the best
-        || (Array.isArray(prevSetting) && Array.isArray(formulaResult)) // can't check types of items in array, hope for the best
-        || (typeof prevSetting === typeof formulaResult); // maybe typesafe
+    const settingName = target.substring(SettingsFormulaPrefix.length);
+    const prevSetting = (settings as Record<string, any>)[settingName];
 
-      if (keepNewSetting) {
-        settingsNew[settingName] = formulaResult;
-        return true;
-      }
-    }
-    return false;
+    const keepNewSetting = (prevSetting == null || formulaResult == null) // can't check types, hope for the best
+      || (Array.isArray(prevSetting) && Array.isArray(formulaResult)) // can't check types of items in array, hope for the best
+      || (typeof prevSetting === typeof formulaResult); // maybe typesafe
+
+    if (!keepNewSetting)
+      return false;
+
+    settingsNew[settingName] = formulaResult;
+    return true;
   }
 }

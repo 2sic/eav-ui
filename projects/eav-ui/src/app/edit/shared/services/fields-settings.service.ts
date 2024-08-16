@@ -229,7 +229,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulas(
-              entityGuid, entityId, attribute, formValues,
+              entityGuid, attribute, formValues,
               constantFieldPart.inputType, constantFieldPart.logic, constantFieldPart.settingsInitial, latestSettings,
               itemHeader, contentType.Metadata, attributeValues, entityReader, slotIsEmpty,
               formReadOnly.isReadOnly, valueBefore, logicTools
@@ -306,7 +306,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           latestSettings = { ...constantFieldPart.settingsInitial };
         }
         return this.formulaEngine.runAllListItemsFormulas(
-          this.entityGuid, this.entityId, attribute, formValues,
+          this.entityGuid, attribute, formValues,
           constantFieldPart.inputType, constantFieldPart.settingsInitial, latestSettings,
           itemHeader, availableItems
         );

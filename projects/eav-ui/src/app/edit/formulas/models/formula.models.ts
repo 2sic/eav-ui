@@ -2,7 +2,7 @@ import { Sxc } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings, FieldValue, PickerItem } from '../../../../../../edit-types';
 import { FormValues } from '../../shared/models';
-import { FormulaResultRaw } from './formula-results.models';
+import { FormulaIdentifier, FormulaResultRaw } from './formula-results.models';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -17,10 +17,8 @@ export interface FormulaCacheItemShared {
   sxc: Sxc;
 }
 
-export interface FormulaCacheItem extends FormulaCacheItemShared {
+export interface FormulaCacheItem extends FormulaCacheItemShared, FormulaIdentifier {
   cache: Record<string, any>;
-  entityGuid: string;
-  fieldName: string;
   /** Function built when formula is saved */
   fn: FormulaFunction;
   /** Is formula currently being edited (not yet saved) */
@@ -31,7 +29,6 @@ export interface FormulaCacheItem extends FormulaCacheItemShared {
   sourceFromSettings: string;
   sourceGuid: string;
   sourceId: number;
-  target: FormulaTarget;
   version: FormulaVersion;
   stopFormula: boolean;
   promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;

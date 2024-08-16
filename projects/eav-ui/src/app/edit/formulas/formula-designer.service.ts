@@ -47,12 +47,12 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
       {};
   }, { equal: RxHelpers.objectsEqual });
 
-  private targetsService = transient(FormulaTargetsService);
+  #targetsService = transient(FormulaTargetsService);
 
   currentTargetOptions = computed(() => {
     const state = this.designerState();
     const formulas = this.cache.formulas();
-    return this.targetsService.getTargetOptions(state, formulas);
+    return this.#targetsService.getTargetOptions(state, formulas);
   }, { equal: RxHelpers.objectsEqual });
 
   /** Possible entities incl. state if they have formulas */
@@ -165,44 +165,14 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
 
 
   /**
-   * Used for showing formula result in editor.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
-   * @param value
-   * @param isError
-   * @param isOnlyPromise
-   */
-  sendFormulaResultToUi(
-    entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean, isOnlyPromise: boolean
-  ): void {
-    const newResult: FormulaResult = {
-      entityGuid,
-      fieldName,
-      target,
-      value,
-      isError,
-      isOnlyPromise,
-    };
-
-    const oldResults = this.cache.results();
-    const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
-    const newResults = oldResultIndex >= 0
-      ? [...oldResults.slice(0, oldResultIndex), newResult, ...oldResults.slice(oldResultIndex + 1)]
-      : [newResult, ...oldResults];
-    this.cache.results.set(newResults);
-  }
-
-  /**
    * Used for opening or closing designer
    * @param isOpen
    */
   setDesignerOpen(isOpen: boolean): void {
     this.designerState.set({
-        ...this.designerState(),
-        isOpen,
-      } satisfies DesignerState
-    );
+      ...this.designerState(),
+      isOpen,
+    } satisfies DesignerState);
   }
 
 

@@ -8,21 +8,21 @@ export interface RunFormulasResult {
   fields: FieldValuePair[];
 }
 
-export interface FormulaResult {
+export interface FormulaIdentifier {
   entityGuid: string;
   fieldName: string;
   target: FormulaTarget;
+}
+
+export interface FormulaResult extends FormulaIdentifier {
   value: FieldValue;
   isError: boolean;
   isOnlyPromise: boolean;
 }
 
-export interface DesignerState {
+export interface DesignerState extends FormulaIdentifier {
   editMode: boolean;
-  entityGuid: string;
-  fieldName: string;
   isOpen: boolean;
-  target: FormulaTarget;
 }
 
 export interface FormulaResultRaw {

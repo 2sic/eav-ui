@@ -1,6 +1,6 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FeatureSummary } from '../../../features/models';
-import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
+import { FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
 import { FormValues, Language } from '../../shared/models';
 import { FormConfigService, FieldsSettingsService } from '../../shared/services';
@@ -14,6 +14,7 @@ import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { FormLanguage } from '../../shared/models/form-languages.model';
+import { FormulaRunParameters } from '../formula-engine';
 
 /**
  * Contains methods for building formulas.
@@ -26,13 +27,14 @@ export class FormulaHelpers {
    * @returns Cleaned formula text
    */
   private static cleanFormula(formula: string): string {
-    if (!formula) { return formula; }
+    if (!formula)
+      return formula;
 
     // Clean and remove any leading single-line comments
     let cleanFormula = formula.trim();
-    if (cleanFormula.startsWith('//')) {
+    if (cleanFormula.startsWith('//'))
       cleanFormula = cleanFormula.replace(/^\/\/.*\n/gm, '').trim();
-    }
+
     /*
       Valid function string:
       function NAME (...ARGS) { BODY }
@@ -46,15 +48,18 @@ export class FormulaHelpers {
       TODO: do this properly with regex if it's not too slow
     */
 
-    if (cleanFormula.startsWith(formV1Prefix)) {
-      cleanFormula = `${requiredFormulaPrefix}${cleanFormula}`;
-    } else if (cleanFormula.startsWith(`${requiredFormulaPrefix}${formV1Prefix}`)) {
-      cleanFormula = cleanFormula;
-    } else if (cleanFormula.startsWith('v2(')) {
+    if (cleanFormula.startsWith(formV1Prefix))
+      return `${requiredFormulaPrefix}${cleanFormula}`;
+    
+    if (cleanFormula.startsWith(`${requiredFormulaPrefix}${formV1Prefix}`))
+      return cleanFormula;
+    
+    if (cleanFormula.startsWith('v2(')) {
       cleanFormula = cleanFormula.substring(3, cleanFormula.lastIndexOf('}') + 1);
       cleanFormula = cleanFormula.replace('=>', '');
-      cleanFormula = `${requiredFormulaPrefix}v2 ${cleanFormula}`;
+      return `${requiredFormulaPrefix}v2 ${cleanFormula}`;
     }
+
     return cleanFormula;
   }
 
@@ -103,8 +108,7 @@ export class FormulaHelpers {
    * @returns Formula properties
    */
   static buildFormulaProps(
-    formula: FormulaCacheItem,
-    // entityId: number,
+    runParameters: FormulaRunParameters,
     inputType: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
@@ -119,8 +123,9 @@ export class FormulaHelpers {
     fieldsSettingsService: FieldsSettingsService,
     features: FeatureSummary[],
   ): FormulaProps {
+    const definition = runParameters.formula;
     // console.log('2dm - buildFormulaProps()');
-    switch (formula.version) {
+    switch (definition.version) {
       case FormulaVersions.V1:
       case FormulaVersions.V2:
         const data: FormulaV1Data = {
@@ -135,49 +140,45 @@ export class FormulaHelpers {
         Object.defineProperties(data, {
           default: {
             get(): FieldValue {
-              if (formula.target === FormulaTargets.Value)
-                return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial);
-              if (formula.target.startsWith(SettingsFormulaPrefix)) {
-                const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+              if (definition.target === FormulaTargets.Value)
+                return InputFieldHelpers.parseDefaultValue(definition.fieldName, inputType, settingsInitial);
+              if (definition.target.startsWith(SettingsFormulaPrefix)) {
+                const settingName = definition.target.substring(SettingsFormulaPrefix.length);
                 return (settingsInitial as Record<string, any>)[settingName];
               }
             },
           },
           initial: {
             get(): FieldValue {
-              if (formula.target !== FormulaTargets.Value) { return; }
-              return initialFormValues[formula.fieldName];
+              if (definition.target !== FormulaTargets.Value) { return; }
+              return initialFormValues[definition.fieldName];
             },
           },
           parameters: {
             get(): Record<string, any> {
-              // NOTE 2023-06-01 2dm - changed this to only take the new parameters
-              // For a while it took the prefill, but that was a bad choice
-              // I hope/assume that it's not used in the wild yet, so we can change it
-              // But we could end up causing trouble for 1-2 developers
-              return FormulaHelpers.buildFormulaPropsParameters(itemHeader.ClientData?.parameters /* itemHeader.Prefill */);
+              return FormulaHelpers.buildFormulaPropsParameters(itemHeader.ClientData?.parameters);
             },
           },
           prefill: {
             get(): FieldValue {
-              if (formula.target !== FormulaTargets.Value) { return; }
-              return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial, itemHeader, true);
+              if (definition.target !== FormulaTargets.Value) { return; }
+              return InputFieldHelpers.parseDefaultValue(definition.fieldName, inputType, settingsInitial, itemHeader, true);
             },
           },
           value: {
             get(): FieldValue {
-              if (formula.target === FormulaTargets.Value) {
-                return formValues[formula.fieldName];
+              if (definition.target === FormulaTargets.Value) {
+                return formValues[definition.fieldName];
               }
-              if (formula.target === FormulaTargets.Validation) {
+              if (definition.target === FormulaTargets.Validation) {
                 const formulaValidation: FormulaFieldValidation = {
                   severity: '',
                   message: '',
                 };
                 return formulaValidation as unknown as FieldValue;
               }
-              if (formula.target.startsWith(SettingsFormulaPrefix)) {
-                const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+              if (definition.target.startsWith(SettingsFormulaPrefix)) {
+                const settingName = definition.target.substring(SettingsFormulaPrefix.length);
                 return (settingsCurrent as Record<string, any>)[settingName];
               }
             },
@@ -188,9 +189,9 @@ export class FormulaHelpers {
           data,
           context: {
             app: {
-              ...formula.app,
+              ...definition.app,
               getSetting: (settingPath: string) => {
-                if (formula.version === FormulaVersions.V1) {
+                if (definition.version === FormulaVersions.V1) {
                   console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
                   return '⚠️ error - see console';
                 }
@@ -201,7 +202,7 @@ export class FormulaHelpers {
                 return '⚠️ error - see console';
               },
             },
-            cache: formula.cache,
+            cache: definition.cache,
             culture: {
               code: language.current,
               name: languages.find(l => l.NameId === language.current)?.Culture,
@@ -214,26 +215,26 @@ export class FormulaHelpers {
             },
             form: {
               runFormulas(): void {
-                if (formula.version === FormulaVersions.V1) {
+                if (definition.version === FormulaVersions.V1) {
                   console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
                   fieldsSettingsService.retriggerFormulas();
-                } else if (formula.version === FormulaVersions.V2) {
+                } else if (definition.version === FormulaVersions.V2) {
                   console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
                 }
               },
             },
             // WIP v14.11 move sxc to cache like app - must watch a bit till ca. Dec 2022 to ensure caching is ok for this
-            sxc: formula.sxc,
+            sxc: definition.sxc,
             target: {
-              entity: formula.targetEntity,
-              name: formula.target === FormulaTargets.Value || formula.target === FormulaTargets.Validation
-                ? formula.fieldName
-                : formula.target.substring(formula.target.lastIndexOf('.') + 1),
-              type: formula.target === FormulaTargets.Value || formula.target === FormulaTargets.Validation
-                ? formula.target
-                : formula.target.substring(0, formula.target.lastIndexOf('.')),
+              entity: definition.targetEntity,
+              name: definition.target === FormulaTargets.Value || definition.target === FormulaTargets.Validation
+                ? definition.fieldName
+                : definition.target.substring(definition.target.lastIndexOf('.') + 1),
+              type: definition.target === FormulaTargets.Value || definition.target === FormulaTargets.Validation
+                ? definition.target
+                : definition.target.substring(0, definition.target.lastIndexOf('.')),
             },
-            user: formula.user,
+            user: definition.user,
           },
           experimental: {
             getEntities(): FormulaV1ExperimentalEntity[] {

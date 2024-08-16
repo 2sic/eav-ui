@@ -10,7 +10,7 @@ import { ContentTypeItemService, ContentTypeService, ItemService } from '../shar
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
-import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
+import { FormulaResult, DesignerState, FormulaResultRaw, FormulaIdentifier } from './models/formula-results.models';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -80,7 +80,8 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         });
         for (const formulaItem of formulaItems) {
           const formula: string = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Formula, null);
-          if (formula == null) { continue; }
+          if (formula == null) 
+            continue;
 
           const target: FormulaTarget = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Target, null);
 
@@ -88,7 +89,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
           try {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
-            this.designerSvc.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true, false);
+            this.cacheResults({ entityGuid, fieldName: attribute.Name, target } satisfies FormulaIdentifier, undefined, true, false);
             const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
@@ -283,6 +284,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     const fieldName = designer.fieldName;
     const target = designer.target;
 
+    const x = this.resultListIndexAndOriginal(designer);
     const oldResults = this.results();
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
     if (oldResultIndex >= 0) {
@@ -319,7 +321,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
       try {
         formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
       } catch (error) {
-        this.designerSvc.sendFormulaResultToUi(entityGuid, fieldName, target, undefined, true, false);
+        this.cacheResults({entityGuid, fieldName, target} satisfies FormulaIdentifier, undefined, true, false);
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
@@ -381,4 +383,37 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     this.formulas.set(newCache);
   }
 
+  /**
+   * Cache the results of a formula - mainly for showing formula result in editor.
+   * @param entityGuid
+   * @param fieldName
+   * @param target
+   * @param value
+   * @param isError
+   * @param isOnlyPromise
+   */
+  cacheResults(formulaItem: FormulaIdentifier, value: FieldValue, isError: boolean, isOnlyPromise: boolean
+  ): void {
+    const newResult: FormulaResult = {
+      entityGuid: formulaItem.entityGuid,
+      fieldName: formulaItem.fieldName,
+      target: formulaItem.target,
+      value,
+      isError,
+      isOnlyPromise,
+    };
+
+    const {list, index, old} = this.resultListIndexAndOriginal(formulaItem);
+    const newResults = index >= 0
+      ? [...list.slice(0, index), newResult, ...list.slice(index + 1)]
+      : [newResult, ...list];
+    this.results.set(newResults);
+  }
+
+  resultListIndexAndOriginal(r: FormulaIdentifier) {
+    const list = this.results();
+    const index = list.findIndex(result => result.entityGuid === r.entityGuid && result.fieldName === r.fieldName && result.target === r.target);
+    const old = list[index];
+    return { list, index, old };
+  }
 }
