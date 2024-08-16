@@ -38,7 +38,7 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
 
 @Component({

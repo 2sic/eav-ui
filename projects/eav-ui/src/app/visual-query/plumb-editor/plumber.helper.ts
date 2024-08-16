@@ -8,7 +8,7 @@ import { RenameStreamComponent } from './rename-stream/rename-stream.component';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 import { EavLogger } from '../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'Plumber';
 
 declare const window: EavWindow;

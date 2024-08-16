@@ -1,7 +1,7 @@
 // tslint:disable-next-line:max-line-length
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
@@ -14,13 +14,11 @@ import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 import { MatIconModule } from '@angular/material/icon';
 import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
-import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { transient } from '../../core';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'PlumbEditorComponent';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
