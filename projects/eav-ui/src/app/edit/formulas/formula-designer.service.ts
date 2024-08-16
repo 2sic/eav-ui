@@ -1,6 +1,6 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, from, map, Observable, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
@@ -10,7 +10,7 @@ import { FieldsSettingsService, FormConfigService, LoggingService } from '../sha
 import { ContentTypeItemService, ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
+import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaTargets, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
@@ -20,8 +20,6 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from '../../core';
 import { FormulaTargetsService } from './formula-targets.service';
 import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { FieldProps } from '../shared/models/fields-configs.model';
-import { DataType } from '../../content-type-fields/edit-content-type-fields/edit-content-type-fields.helpers';
 import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 
 const logThis = true;
@@ -125,6 +123,24 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   init(): void {
     const formulaCache = this.buildFormulaCache();
     this.formulaCache.set(formulaCache);
+
+  }
+
+  initAfterItemSettingsAreReady(): void {
+    // Initialize the first designer state to contain the first item and field
+    const oldState = this.designerState();
+    const [entityGuid, settingsSvc] = Object.entries(this.itemSettingsServices)[0];
+    const fieldsProps = settingsSvc.getFieldsProps();
+    const fieldName = Object.keys(fieldsProps)[0];
+    const target = fieldName != null ? FormulaTargets.Value : null;
+
+    const newState: DesignerState = {
+      ...oldState,
+      entityGuid,
+      fieldName,
+      target,
+    };
+    this.designerState.set(newState);
   }
 
   ngOnDestroy(): void {
@@ -139,13 +155,12 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
    * @param allowDraft
    * @returns Formula
    */
-  getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
+  getFormula(entityGuid: string, fieldName: string, target: FormulaTarget): FormulaCacheItem {
     return this.formulaCache().find(
       f =>
         f.entityGuid === entityGuid
         && f.fieldName === fieldName
         && f.target === target
-        && (allowDraft ? true : !f.isDraft)
     );
   }
 

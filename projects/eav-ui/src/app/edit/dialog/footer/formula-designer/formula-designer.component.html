@@ -3,7 +3,7 @@
     <div class="formula-context-box">
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Entity</mat-label>
-        <mat-select [ngModel]="vm.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
+        <mat-select [ngModel]="state().entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
           @for (entityOption of entityOptions(); track trackEntityOptions($index, entityOption)) {
             <mat-option
               [value]="entityOption.entityGuid">
@@ -16,8 +16,8 @@
       </mat-form-field>
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Attribute</mat-label>
-        <mat-select [ngModel]="vm.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
-          [disabled]="vm.designer.entityGuid == null">
+        <mat-select [ngModel]="state().fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
+          [disabled]="state().entityGuid == null">
           @for (fieldOption of fieldsOptions(); track trackFieldOptions($index, fieldOption)) {
             <mat-option
               [value]="fieldOption.fieldName">
@@ -31,9 +31,9 @@
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Target</mat-label>
         @if (!freeTextTarget) {
-          <mat-select [ngModel]="vm.designer.target"
+          <mat-select [ngModel]="state().target"
             (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-            [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
+            [disabled]="state().entityGuid == null || state().fieldName == null">
             @for (targetOption of targetOptions(); track targetOption) {
               <mat-option [value]="targetOption.target">
                 <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
@@ -44,13 +44,13 @@
           </mat-select>
         }
         @if (freeTextTarget) {
-          <input matInput [ngModel]="vm.designer.target"
+          <input matInput [ngModel]="state().target"
             (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-            [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
+            [disabled]="state().entityGuid == null || state().fieldName == null">
         }
       </mat-form-field>
       <button mat-icon-button tippy="FreeText Target" class="eav-formula-button"
-        [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null" (click)="toggleFreeText()">
+        [disabled]="state().entityGuid == null || state().fieldName == null" (click)="toggleFreeText()">
         <mat-icon>text_fields</mat-icon>
       </button>
       <div class="spacer"></div>
@@ -60,16 +60,16 @@
     </div>
     <div class="formula-box">
       <div class="formula-field" [ngClass]="{
-        'disabled': !vm.designer.editMode || vm.designer.entityGuid == null || vm.designer.fieldName == null || vm.designer.target == null,
+        'disabled': !state().editMode || state().entityGuid == null || state().fieldName == null || state().target == null,
         'focused': focused
         }">
         <mat-label class="label">Function</mat-label>
-        <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.source ?? vm.template"
+        <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.source ?? template()"
           [jsTypings]="v2JsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
           (focused)="onFocused()" (blurred)="onBlurred()">
         </app-monaco-editor>
       </div>
-      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !vm.designer.editMode }">
+      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !state().editMode }">
         @for (snippet of v1DataSnippets(); track trackSnippets($index, snippet)) {
           <div class="snippet" [title]="snippet.code"
             (click)="copyToClipboard(snippet.code)">
@@ -129,13 +129,13 @@
         </mat-menu>
         @if (allowSaveFormula) {
           <button mat-icon-button tippy="Save" class="eav-formula-action-button"
-            [tippyDisabled]="!vm.designer.editMode || !currentFormula()?.source"
-            [disabled]="!vm.designer.editMode || !currentFormula()?.source || saving()" (click)="save()">
+            [tippyDisabled]="!state().editMode || !currentFormula()?.source"
+            [disabled]="!state().editMode || !currentFormula()?.source || saving()" (click)="save()">
             <mat-icon>save</mat-icon>
           </button>
         }
         <button mat-icon-button class="eav-formula-action-button" tippy="Run"
-          [disabled]="!vm.designer.editMode || !currentFormula()?.source" (click)="run()">
+          [disabled]="!state().editMode || !currentFormula()?.source" (click)="run()">
           <mat-icon>play_arrow</mat-icon>
         </button>
       </div>
