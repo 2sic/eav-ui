@@ -19,6 +19,7 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from '../../core';
 import { FormulaTargetsService } from './formula-targets.service';
+import { EntityOption } from '../dialog/footer/formula-designer/formula-designer.models';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';
@@ -68,6 +69,18 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     const formulas = this.formulaCache();
     return this.targetsService.getTargetOptions(state, formulas);
   }, { equal: RxHelpers.objectsEqual });
+
+  entityOptions = computed(() => {
+    // this is a signal, so this will change when the data is loaded...
+    const formulas = this.formulaCache();
+    return Object.entries(this.itemSettingsServices).map(([entityGuid, settingsSvc]) => {
+      return {
+        entityGuid: entityGuid,
+        hasFormula: formulas.some(f => f.entityGuid === entityGuid),
+        label: settingsSvc.getContentTypeSettings()._itemTitle,
+      } satisfies EntityOption;
+    })
+  });
 
   constructor(
     private formConfig: FormConfigService,

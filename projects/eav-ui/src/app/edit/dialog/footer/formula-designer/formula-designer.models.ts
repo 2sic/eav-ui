@@ -2,7 +2,6 @@ import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
 
 export interface FormulaDesignerViewModel {
-  entityOptions: EntityOption[];
   fieldOptions: FieldOption[];
   formula: FormulaCacheItem;
   designer: DesignerState;
@@ -12,7 +11,7 @@ export interface FormulaDesignerViewModel {
 }
 
 export interface SelectOptions {
-  entityOptions: EntityOption[];
+  // entityOptions: EntityOption[];
   fieldOptions: FieldOption[];
   targetOptions: TargetOption[];
 }

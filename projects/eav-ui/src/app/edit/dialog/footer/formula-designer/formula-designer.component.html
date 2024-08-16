@@ -4,7 +4,7 @@
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Entity</mat-label>
         <mat-select [ngModel]="vm.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
-          @for (entityOption of vm.entityOptions; track trackEntityOptions($index, entityOption)) {
+          @for (entityOption of entityOptions(); track trackEntityOptions($index, entityOption)) {
             <mat-option
               [value]="entityOption.entityGuid">
               <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">

@@ -32,7 +32,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { transient } from 'projects/eav-ui/src/app/core';
-import { EntityFormStateService } from '../../../form/entity-form-state.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
 const logThis = true;
@@ -90,6 +89,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   protected result = this.designerSvc.formulaResult;
   protected contextSnippets = this.designerSvc.currentContextSnippets;
   protected targetOptions = this.designerSvc.currentTargetOptions;
+
+  protected entityOptions = this.designerSvc.entityOptions;
 
   private log = new EavLogger(nameOfThis, logThis);
   
@@ -306,15 +307,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([designer, formulas]): SelectOptions => {
 
-        // Create array of all entities in the form incl. info if there are formulas in that content type
-        const entityOptions = Object.entries(this.designerSvc.itemSettingsServices).map(([entityGuid, settingsSvc]) => {
-          return {
-            entityGuid: entityGuid,
-            hasFormula: formulas.some(f => f.entityGuid === entityGuid),
-            label: settingsSvc.getContentTypeSettings()._itemTitle,
-          } satisfies EntityOption;
-        });
-
         // Create array of formula relevant settings of all fields in the selected entity
         // this is also for the dropdown to list all fields, incl. fields which don't yet have a formula
         const fieldOptions: FieldOption[] = [];
@@ -332,13 +324,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.log.a('fieldOptions', { entityOptions, fieldOptions });
+        this.log.a('fieldOptions', { fieldOptions });
 
         // Create a list of formula targets for the selected field - eg. Value, Tooltip, ListItem.Label, ListItem.Tooltip etc.
         const targetOptions = this.designerSvc.currentTargetOptions();
 
         const selectOptions: SelectOptions = {
-          entityOptions,
           fieldOptions,
           targetOptions,
         };
@@ -388,7 +379,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           ? listItemFormulaNow
           : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
-          entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
           formula,
           designer,
