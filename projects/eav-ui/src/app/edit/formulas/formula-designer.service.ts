@@ -1,6 +1,6 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, filter, from, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
@@ -13,7 +13,6 @@ import { FormulaHelpers } from './helpers/formula.helpers';
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaTargets, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
-import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -144,42 +143,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  /**
-   * Used for returning formula with specific target on specific field of specific entity.
-   * @param entityGuid Specific entity guid
-   * @param fieldName Specific field
-   * @param target Specific target
-   * @param allowDraft
-   * @returns Formula
-   */
-  getFormula(entityGuid: string, fieldName: string, target: FormulaTarget): FormulaCacheItem {
-    return this.formulaCache().find(
-      f =>
-        f.entityGuid === entityGuid
-        && f.fieldName === fieldName
-        && f.target === target
-    );
-  }
-
-  // TODO: REMOVE THIS AS SOON AS WE CAN - WIP 2dm
-  /**
-   * Used for returning formula stream with specific target on specific field of specific entity.
-   * @param entityGuid Specific entity guid
-   * @param fieldName Specific field
-   * @param target Specific target
-   * @param allowDraft
-   * @returns Formula stream
-   */
-  getFormula$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaCacheItem> {
-    return this.formulaCache$.pipe(
-      map(formulas => formulas.find(
-        f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target)
-      ),
-      mapUntilObjChanged(m => m),
-    );
+    super.destroy();
   }
 
   /** The currently selected formula or null */
@@ -232,21 +196,12 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
    * @returns Filtered formula array
    */
   getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
-    return this.formulaCache().filter(
-      f =>
+    return this.formulaCache().filter(f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
         && (target ? target?.find(target => f.target == target) : true)
         && (allowDraft ? true : !f.isDraft)
     );
-  }
-
-  /**
-   * Used for returning all formulas stream from formulaCache$.
-   * @returns Formula cache array stream
-   */
-  getFormulas$(): Observable<FormulaCacheItem[]> {
-    return this.formulaCache$;
   }
 
   /**
@@ -428,14 +383,6 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
         isOpen,
       } satisfies DesignerState
     );
-  }
-
-  /**
-   * Used for getting designer state stream.
-   * @returns Designer state stream
-   */
-  getDesignerState$(): Observable<DesignerState> {
-    return this.designerState$;
   }
 
   /**

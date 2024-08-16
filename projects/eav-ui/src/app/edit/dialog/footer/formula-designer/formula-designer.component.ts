@@ -190,7 +190,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     };
     this.#designerSvc.designerState.set(designer);
     if (designer.editMode) {
-      const formula = this.#designerSvc.getFormula(designer.entityGuid, designer.fieldName, designer.target);
+      const formula = this.#designerSvc.currentFormula();
       if (formula == null) {
         this.#designerSvc.updateFormulaFromEditor(
           designer.entityGuid, designer.fieldName, designer.target, Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false
@@ -211,7 +211,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   run(): void {
     const designer = this.#designerSvc.designerState();
-    const formula = this.#designerSvc.getFormula(designer.entityGuid, designer.fieldName, designer.target);
+    const formula = this.#designerSvc.currentFormula();
     this.#designerSvc.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
     this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas();
     this.isDeleted.set(false);
@@ -219,8 +219,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   save(): void {
     this.saving.set(true);
-    const designer = this.#designerSvc.designerState();
-    const formula = this.#designerSvc.getFormula(designer.entityGuid, designer.fieldName, designer.target);
+    const formula = this.#designerSvc.currentFormula();
 
     if (formula.sourceId == null) {
       const item = this.itemService.getItem(formula.entityGuid);
@@ -269,7 +268,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   deleteFormula(): void {
     const designer = this.#designerSvc.designerState();
-    const formula = this.#designerSvc.getFormula(designer.entityGuid, designer.fieldName, designer.target);
+    const formula = this.#designerSvc.currentFormula();
 
     const id = formula.sourceId;
     const title = formula.fieldName + ' - ' + formula.target;
