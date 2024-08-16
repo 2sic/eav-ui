@@ -1,4 +1,3 @@
-import { FieldValue } from '../../../../../../../edit-types';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
 
@@ -12,12 +11,6 @@ export interface FormulaDesignerViewModel {
   contextSnippets: DesignerSnippet[];
   typings: string;
   template: string;
-  result: FieldValue;
-  resultExists: boolean;
-  resultIsError: boolean;
-  // currently used only for UI to know when to display Result: promise(...)
-  resultIsOnlyPromise: boolean;
-  saving: boolean;
 }
 
 export interface SelectOptions {

@@ -71,8 +71,8 @@ export class FormConfigService {
       list: dialogContext.Language.List,
     };
     this.config = {
-      zoneId: this.context.zoneId.toString(),
-      appId: this.context.appId.toString(),
+      zoneId: this.context.zoneId,
+      appId: this.context.appId,
       appRoot: dialogContext.App.Url,
       appSharedRoot: dialogContext.App.SharedUrl,
       moduleId: this.context.moduleId?.toString(),

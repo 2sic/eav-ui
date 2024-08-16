@@ -112,8 +112,8 @@ export class FieldMask extends ServiceBase implements OnDestroy {
     let value = lowercaseInsideSquareBrackets(this.mask);
     if (this.formConfig != null)
       value = value
-        .replace('[app:appid]', this.formConfig.config.appId)
-        .replace('[app:zoneid]', this.formConfig.config.zoneId);
+        .replace('[app:appid]', this.formConfig.config.appId.toString())
+        .replace('[app:zoneid]', this.formConfig.config.zoneId.toString());
 
     if (this.fieldConfig != null)
       value = value

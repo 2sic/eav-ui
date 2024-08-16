@@ -90,19 +90,19 @@
     <div class="formula-footer-box">
       <div class="formula-result-box hide-scrollbar">
         <span class="label">Result:&nbsp;</span>
-        @if (vm.resultExists) {
-          @if (!vm.resultIsError) {
-            @if (vm.result === undefined && !vm.resultIsOnlyPromise) {
+        @if (result() != null && !isDeleted()) {
+          @if (!result().isError) {
+            @if (result().value !== undefined) {
+              <span>{{ result().value | json }}</span>
+            }
+            @else if (!result().isOnlyPromise) {
               <span class="result-undefined">undefined</span>
             }
-            @if (vm.result === undefined && vm.resultIsOnlyPromise) {
+            @else {
               <span>promise(🤞🏽)</span>
             }
-            @if (vm.result !== undefined) {
-              <span>{{ vm.result | json }}</span>
-            }
           }
-          @if (vm.resultIsError) {
+          @else {
             <span class="result-error">
               Calculation failed. Please check logs for more info
             </span>
@@ -130,7 +130,7 @@
         @if (allowSaveFormula) {
           <button mat-icon-button tippy="Save" class="eav-formula-action-button"
             [tippyDisabled]="!vm.designer.editMode || !vm.formula?.source"
-            [disabled]="!vm.designer.editMode || !vm.formula?.source || vm.saving" (click)="save()">
+            [disabled]="!vm.designer.editMode || !vm.formula?.source || saving()" (click)="save()">
             <mat-icon>save</mat-icon>
           </button>
         }

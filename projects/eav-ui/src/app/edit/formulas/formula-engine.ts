@@ -348,7 +348,7 @@ export class FormulaEngine implements OnDestroy {
    * @returns True if formula is open in designer, otherwise false
    */
   private isDesignerOpen(formula: FormulaCacheItem): boolean {
-    const designerState = this.formulaDesignerService.getDesignerState();
+    const designerState = this.formulaDesignerService.designerState();
     const isOpenInDesigner = designerState.isOpen
       && designerState.entityGuid === formula.entityGuid
       && designerState.fieldName === formula.fieldName

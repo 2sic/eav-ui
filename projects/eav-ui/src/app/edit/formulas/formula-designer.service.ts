@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
@@ -14,6 +14,12 @@ import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarge
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
+import { ServiceBase } from '../../shared/services/service-base';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { toObservable } from '@angular/core/rxjs-interop';
+
+const logThis = true;
+const nameOfThis = 'FormulaDesignerService';
 
 declare const window: EavWindow;
 
@@ -21,11 +27,23 @@ declare const window: EavWindow;
  * Contains methods for extended CRUD operations for formulas.
  */
 @Injectable()
-export class FormulaDesignerService implements OnDestroy {
-  private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;
-  private formulaResults$: BehaviorSubject<FormulaResult[]>;
-  private designerState$: BehaviorSubject<DesignerState>;
-  private subscription = new Subscription();
+export class FormulaDesignerService extends ServiceBase implements OnDestroy {
+  formulaCache = signal<FormulaCacheItem[]>([]);
+  private formulaCache$ = toObservable(this.formulaCache);
+
+  formulaResults = signal<FormulaResult[]>([]);
+  private formulaResults$ = toObservable(this.formulaResults);
+
+  /** The current state of the UI, what field is being edited etc. */
+  designerState = signal<DesignerState>({
+    editMode: false,
+    entityGuid: undefined,
+    fieldName: undefined,
+    isOpen: false,
+    target: undefined,
+  } satisfies DesignerState, { equal: RxHelpers.objectsEqual });
+
+  private designerState$ = toObservable(this.designerState);
 
   constructor(
     private formConfig: FormConfigService,
@@ -34,27 +52,17 @@ export class FormulaDesignerService implements OnDestroy {
     private contentTypeItemService: ContentTypeItemService,
     private loggingService: LoggingService,
     private translate: TranslateService,
-  ) { }
-
-  ngOnDestroy(): void {
-    this.formulaCache$?.complete();
-    this.formulaResults$?.complete();
-    this.designerState$?.complete();
-    this.subscription.unsubscribe();
+  ) {
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   init(): void {
-    this.formulaResults$ = new BehaviorSubject([]);
-    const initialDesignerState: DesignerState = {
-      editMode: false,
-      entityGuid: undefined,
-      fieldName: undefined,
-      isOpen: false,
-      target: undefined,
-    };
-    this.designerState$ = new BehaviorSubject(initialDesignerState);
     const formulaCache = this.buildFormulaCache();
-    this.formulaCache$ = new BehaviorSubject(formulaCache);
+    this.formulaCache.set(formulaCache);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   /**
@@ -66,7 +74,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns Formula
    */
   getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
-    return this.formulaCache$.value.find(
+    return this.formulaCache().find(
       f =>
         f.entityGuid === entityGuid
         && f.fieldName === fieldName
@@ -90,7 +98,6 @@ export class FormulaDesignerService implements OnDestroy {
         f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
       ),
       mapUntilObjChanged(m => m),
-      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -103,7 +110,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns Filtered formula array
    */
   getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
-    return this.formulaCache$.value.filter(
+    return this.formulaCache().filter(
       f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
@@ -117,7 +124,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns Formula cache array stream
    */
   getFormulas$(): Observable<FormulaCacheItem[]> {
-    return this.formulaCache$.asObservable();
+    return this.formulaCache$;
   }
 
   /**
@@ -138,22 +145,23 @@ export class FormulaDesignerService implements OnDestroy {
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
-        const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+        const language = this.formConfig.language();
         const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
-        const designerState = this.getDesignerState();
+        const designerState = this.designerState();
         const isOpenInDesigner = designerState.isOpen
           && designerState.entityGuid === entityGuid
           && designerState.fieldName === fieldName
           && designerState.target === target;
+
         if (isOpenInDesigner) {
           console.error(errorLabel, error);
         }
       }
     }
 
-    const oldFormulaCache = this.formulaCache$.value;
+    const oldFormulaCache = this.formulaCache();
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
@@ -189,7 +197,7 @@ export class FormulaDesignerService implements OnDestroy {
     const newCache = oldFormulaIndex >= 0
       ? [...oldFormulaCache.slice(0, oldFormulaIndex), newFormulaItem, ...oldFormulaCache.slice(oldFormulaIndex + 1)]
       : [newFormulaItem, ...oldFormulaCache];
-    this.formulaCache$.next(newCache);
+    this.formulaCache.set(newCache);
   }
 
   /**
@@ -203,7 +211,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns
    */
   updateSaved(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, sourceGuid: string, sourceId: number): void {
-    const oldFormulaCache = this.formulaCache$.value;
+    const oldFormulaCache = this.formulaCache();
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
     if (oldFormulaItem == null) { return; }
@@ -216,7 +224,7 @@ export class FormulaDesignerService implements OnDestroy {
     };
 
     const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), newFormulaItem, ...oldFormulaCache.slice(oldFormulaIndex + 1)];
-    this.formulaCache$.next(newCache);
+    this.formulaCache.set(newCache);
   }
 
   /**
@@ -226,11 +234,11 @@ export class FormulaDesignerService implements OnDestroy {
    * @param target
    */
   delete(entityGuid: string, fieldName: string, target: FormulaTarget): void {
-    const oldFormulaCache = this.formulaCache$.value;
+    const oldFormulaCache = this.formulaCache();
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
 
     const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), ...oldFormulaCache.slice(oldFormulaIndex + 1)];
-    this.formulaCache$.next(newCache);
+    this.formulaCache.set(newCache);
   }
 
   /**
@@ -240,14 +248,14 @@ export class FormulaDesignerService implements OnDestroy {
    * @param target
    */
   resetFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
-    const oldResults = this.formulaResults$.value;
+    const oldResults = this.formulaResults();
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
     if (oldResultIndex >= 0) {
       const newResults = [...oldResults.slice(0, oldResultIndex), ...oldResults.slice(oldResultIndex + 1)];
-      this.formulaResults$.next(newResults);
+      this.formulaResults.set(newResults);
     }
 
-    const oldFormulaCache = this.formulaCache$.value;
+    const oldFormulaCache = this.formulaCache();
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
@@ -255,7 +263,7 @@ export class FormulaDesignerService implements OnDestroy {
       this.updateFormulaFromEditor(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
     } else if (oldFormulaIndex >= 0) {
       const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), ...oldFormulaCache.slice(oldFormulaIndex + 1)];
-      this.formulaCache$.next(newCache);
+      this.formulaCache.set(newCache);
     }
   }
 
@@ -280,54 +288,31 @@ export class FormulaDesignerService implements OnDestroy {
       isOnlyPromise,
     };
 
-    const oldResults = this.formulaResults$.value;
+    const oldResults = this.formulaResults();
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
     const newResults = oldResultIndex >= 0
       ? [...oldResults.slice(0, oldResultIndex), newResult, ...oldResults.slice(oldResultIndex + 1)]
       : [newResult, ...oldResults];
-    this.formulaResults$.next(newResults);
+    this.formulaResults.set(newResults);
   }
 
-  /**
-   * Used for getting formula result stream.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
-   * @returns Formula result stream
-   */
-  getFormulaResult$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaResult> {
-    return this.formulaResults$.pipe(
-      map(results => results.find(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target)),
-      distinctUntilChanged(RxHelpers.objectsEqual),
-    );
-  }
+  formulaResult = computed(() => {
+    const state = this.designerState();
+    const results = this.formulaResults();
+    return results.find(r => r.entityGuid === state.entityGuid && r.fieldName === state.fieldName && r.target === state.target)
+      {};
+  }, { equal: RxHelpers.objectsEqual });
 
   /**
    * Used for opening or closing designer
    * @param isOpen
    */
   setDesignerOpen(isOpen: boolean): void {
-    const newState: DesignerState = {
-      ...this.getDesignerState(),
-      isOpen,
-    };
-    this.setDesignerState(newState);
-  }
-
-  /**
-   * Used for setting designer state.
-   * @param activeDesigner
-   */
-  setDesignerState(activeDesigner: DesignerState): void {
-    this.designerState$.next(activeDesigner);
-  }
-
-  /**
-   * Used for getting designer state.
-   * @returns Designer state
-   */
-  getDesignerState(): DesignerState {
-    return this.designerState$.value;
+    this.designerState.set({
+        ...this.designerState(),
+        isOpen,
+      } satisfies DesignerState
+    );
   }
 
   /**
@@ -335,7 +320,7 @@ export class FormulaDesignerService implements OnDestroy {
    * @returns Designer state stream
    */
   getDesignerState$(): Observable<DesignerState> {
-    return this.designerState$.pipe(distinctUntilChanged(RxHelpers.objectsEqual));
+    return this.designerState$;
   }
 
   /**
@@ -380,8 +365,8 @@ export class FormulaDesignerService implements OnDestroy {
         username: user?.Username,
       } as FormulaV1CtxUser,
       app: {
-        appId: parseInt(formConfig.appId, 10),
-        zoneId: parseInt(formConfig.zoneId, 10),
+        appId: formConfig.appId,
+        zoneId: formConfig.zoneId,
         isGlobal: formConfig.dialogContext.App.IsGlobalApp,
         isSite: formConfig.dialogContext.App.IsSiteApp,
         isContent: formConfig.dialogContext.App.IsContentApp,
@@ -395,7 +380,7 @@ export class FormulaDesignerService implements OnDestroy {
         _noContextInHttpHeaders: true,  // disable pageid etc. headers in http headers, because it would make debugging very hard
         _autoAppIdsInUrl: true,         // auto-add appid and zoneid to url so formula developer can see what's happening
       } as any),
-    };
+    } satisfies FormulaCacheItemShared;
   }
 
   /**
@@ -404,7 +389,7 @@ export class FormulaDesignerService implements OnDestroy {
    */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
-    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     const entityReader = new EntityReader(language.current, language.primary);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {
@@ -417,7 +402,6 @@ export class FormulaDesignerService implements OnDestroy {
       for (const attribute of contentType.Attributes) {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
           entityReader.flattenAll<FieldSettings>(attribute.Metadata),
-          // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
         );
         const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas).filter(formulaItem => {
           const enabled: boolean = LocalizationHelpers.translate<boolean>(language, formulaItem.Attributes.Enabled, null);
@@ -482,7 +466,7 @@ export class FormulaDesignerService implements OnDestroy {
       switchMap(promise => from(promise)),
     );
     // This combineLatest triggers the callback for the first time when the last promise is resolved
-    this.subscription.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
+    this.subscriptions.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
       ([result, callback]) => {
         callback(result);
       },

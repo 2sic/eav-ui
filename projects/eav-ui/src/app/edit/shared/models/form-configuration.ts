@@ -8,8 +8,8 @@ import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
  * These values apply to the entire form, having multiple entities
  */
 export interface FormConfiguration {
-  zoneId: string;
-  appId: string;
+  zoneId: number;
+  appId: number;
   appRoot: string;
   appSharedRoot: string;
   moduleId: string;
