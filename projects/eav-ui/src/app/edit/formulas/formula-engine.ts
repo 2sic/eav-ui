@@ -81,7 +81,8 @@ export class FormulaEngine implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     availableItems: PickerItem[],
   ): PickerItem[] {
-    const formulas = this.formulaDesignerService.getFormulas(entityGuid, attribute.Name, Object.values(FormulaListItemTargets), false)
+    const formulas = this.formulaDesignerService.cache
+      .getFormulas(entityGuid, attribute.Name, Object.values(FormulaListItemTargets), false)
       .filter(f => !f.stopFormula);
     if (formulas.length === 0) { return availableItems; }
     for (const formula of formulas) {
@@ -149,7 +150,8 @@ export class FormulaEngine implements OnDestroy {
     logicTools: FieldLogicTools,
   ): RunFormulasResult {
     //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
-    const formulas = this.formulaDesignerService.getFormulas(entityGuid, attribute.Name, Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets)), false)
+    const formulas = this.formulaDesignerService.cache
+      .getFormulas(entityGuid, attribute.Name, Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets)), false)
       .filter(f => !f.stopFormula);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;

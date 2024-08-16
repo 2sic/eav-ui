@@ -166,7 +166,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   formulaChanged(formula: string): void {
     const designer = this.#designerSvc.designerState();
-    this.#designerSvc.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula, false);
+    this.#designerSvc.cache.updateFormulaFromEditor(designer, formula, false);
   }
 
   onFocused(): void {
@@ -192,9 +192,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (designer.editMode) {
       const formula = this.#designerSvc.currentFormula();
       if (formula == null) {
-        this.#designerSvc.updateFormulaFromEditor(
-          designer.entityGuid, designer.fieldName, designer.target, Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false
-        );
+        this.#designerSvc.cache.updateFormulaFromEditor(designer, Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false);
       }
     }
   }
@@ -205,14 +203,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       editMode: false,
     };
     this.#designerSvc.designerState.set(designer);
-    this.#designerSvc.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
+    this.#designerSvc.cache.resetFormula(designer);
     this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas();
   }
 
   run(): void {
     const designer = this.#designerSvc.designerState();
     const formula = this.#designerSvc.currentFormula();
-    this.#designerSvc.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
+    this.#designerSvc.cache.updateFormulaFromEditor(designer, formula.source, true);
     this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas();
     this.isDeleted.set(false);
   }
@@ -248,9 +246,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           },
         },
       ).subscribe(savedFormula => {
-        this.#designerSvc.updateSaved(
-          formula.entityGuid, formula.fieldName, formula.target, formula.source, savedFormula.Guid, savedFormula.Id,
-        );
+        this.#designerSvc.cache.updateSaved(formula, savedFormula.Guid, savedFormula.Id);
         this.snackBar.open('Formula saved', null, { duration: 2000 });
         this.saving.set(false);
       });
@@ -258,9 +254,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     }
 
     this.entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceId, { Formula: formula.source }).subscribe(() => {
-      this.#designerSvc.updateSaved(
-        formula.entityGuid, formula.fieldName, formula.target, formula.source, formula.sourceGuid, formula.sourceId,
-      );
+      this.#designerSvc.cache.updateSaved(formula, formula.sourceGuid, formula.sourceId);
       this.snackBar.open('Formula saved', null, { duration: 2000 });
       this.saving.set(false);
     });
@@ -279,7 +273,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
     this.entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
       next: () => {
-        this.#designerSvc.delete(formula.entityGuid, formula.fieldName, formula.target);
+        this.#designerSvc.cache.delete(formula);
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.isDeleted.set(true);
         if (designer.editMode)
@@ -291,4 +285,5 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     });
   }
 
+  
 }
