@@ -2,7 +2,6 @@ import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
 
 export interface FormulaDesignerViewModel {
-  fieldOptions: FieldOption[];
   formula: FormulaCacheItem;
   designer: DesignerState;
   dataSnippets: DesignerSnippet[];
@@ -11,19 +10,20 @@ export interface FormulaDesignerViewModel {
 }
 
 export interface SelectOptions {
-  // entityOptions: EntityOption[];
   fieldOptions: FieldOption[];
-  targetOptions: TargetOption[];
+  // targetOptions: TargetOption[];
 }
 
 export interface EntityOption {
   entityGuid: string;
+  formulas: FormulaCacheItem[];
   hasFormula: boolean;
   label: string;
 }
 
 export interface FieldOption {
   fieldName: string;
+  formulas: FormulaCacheItem[];
   hasFormula: boolean;
   label: string;
 }

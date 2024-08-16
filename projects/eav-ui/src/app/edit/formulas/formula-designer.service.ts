@@ -19,7 +19,7 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { transient } from '../../core';
 import { FormulaTargetsService } from './formula-targets.service';
-import { EntityOption } from '../dialog/footer/formula-designer/formula-designer.models';
+import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';
@@ -70,16 +70,39 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     return this.targetsService.getTargetOptions(state, formulas);
   }, { equal: RxHelpers.objectsEqual });
 
+  /** Possible entities incl. state if they have formulas */
   entityOptions = computed(() => {
     // this is a signal, so this will change when the data is loaded...
     const formulas = this.formulaCache();
     return Object.entries(this.itemSettingsServices).map(([entityGuid, settingsSvc]) => {
+      const entityFormulas = formulas.filter(f => f.entityGuid === entityGuid);
       return {
         entityGuid: entityGuid,
-        hasFormula: formulas.some(f => f.entityGuid === entityGuid),
+        formulas: entityFormulas,
+        hasFormula: entityFormulas.length > 0,
         label: settingsSvc.getContentTypeSettings()._itemTitle,
       } satisfies EntityOption;
     })
+  });
+
+  fieldsOptions = computed(() => {
+    const entityGuid = this.designerState().entityGuid;
+    if (entityGuid == null)
+      return [];
+    const entityFormulas = this.entityOptions().find(e => e.entityGuid == entityGuid).formulas;
+    // find the current fieldSettingsService to get all properties
+    const selectedSettings = this.itemSettingsServices[entityGuid];
+    const fieldsProps = selectedSettings.getFieldsProps();
+    const fieldOptions: FieldOption[] = Object.keys(fieldsProps).map(fieldName => {
+      const formulas = entityFormulas.filter(f => f.fieldName === fieldName);
+      return {
+        fieldName,
+        formulas,
+        hasFormula: formulas.length > 0,
+        label: fieldName,
+      } satisfies FieldOption;
+    });
+    return fieldOptions;
   });
 
   constructor(

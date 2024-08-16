@@ -91,6 +91,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   protected targetOptions = this.designerSvc.currentTargetOptions;
 
   protected entityOptions = this.designerSvc.entityOptions;
+  protected fieldsOptions = this.designerSvc.fieldsOptions;
 
   private log = new EavLogger(nameOfThis, logThis);
   
@@ -317,6 +318,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           for (const fieldName of Object.keys(fieldsProps)) {
             const field: FieldOption = {
               fieldName,
+              formulas: [], // temp
               hasFormula: formulas.some(f => f.entityGuid === designer.entityGuid && f.fieldName === fieldName),
               label: fieldName,
             };
@@ -326,12 +328,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
         this.log.a('fieldOptions', { fieldOptions });
 
-        // Create a list of formula targets for the selected field - eg. Value, Tooltip, ListItem.Label, ListItem.Tooltip etc.
-        const targetOptions = this.designerSvc.currentTargetOptions();
-
         const selectOptions: SelectOptions = {
           fieldOptions,
-          targetOptions,
         };
         return selectOptions;
       }),
@@ -362,14 +360,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
 
     this.viewModel$ = combineLatest([
-      options$,
       formula$,
       dataSnippets$,
       typings$,
       designerState$,
     ]).pipe(
       map(([
-        options,
         formula,
         dataSnippets, 
         typings,
@@ -379,7 +375,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           ? listItemFormulaNow
           : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
-          fieldOptions: options.fieldOptions,
           formula,
           designer,
           dataSnippets,

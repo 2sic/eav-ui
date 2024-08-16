@@ -18,7 +18,7 @@
         <mat-label>Attribute</mat-label>
         <mat-select [ngModel]="vm.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
           [disabled]="vm.designer.entityGuid == null">
-          @for (fieldOption of vm.fieldOptions; track trackFieldOptions($index, fieldOption)) {
+          @for (fieldOption of fieldsOptions(); track trackFieldOptions($index, fieldOption)) {
             <mat-option
               [value]="fieldOption.fieldName">
               <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
