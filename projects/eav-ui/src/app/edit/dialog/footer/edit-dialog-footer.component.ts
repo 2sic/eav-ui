@@ -30,7 +30,6 @@ declare const window: EavWindow;
   ],
 })
 export class EditDialogFooterComponent {
-  @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
   @Output() private debugInfoOpened = new EventEmitter<boolean>();
 
   DebugTypes = DebugTypes;

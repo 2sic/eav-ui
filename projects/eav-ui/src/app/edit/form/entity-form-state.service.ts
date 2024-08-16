@@ -11,6 +11,7 @@ const nameOfThis = 'EntityFormStateService';
  */
 @Injectable()
 export class EntityFormStateService extends ServiceBase {
+
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }
@@ -18,6 +19,7 @@ export class EntityFormStateService extends ServiceBase {
   setup(formGroup: UntypedFormGroup) {
     this.log.a('Setting up form group');
     this._formGroup = formGroup;
+    return this;
   }
 
   public formGroup() {

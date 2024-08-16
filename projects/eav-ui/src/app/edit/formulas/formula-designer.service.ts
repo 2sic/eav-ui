@@ -6,7 +6,7 @@ import { EavWindow } from '../../shared/models/eav-window.model';
 import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
-import { FormConfigService, LoggingService } from '../shared/services';
+import { FieldsSettingsService, FormConfigService, LoggingService } from '../shared/services';
 import { ContentTypeItemService, ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
@@ -30,6 +30,13 @@ declare const window: EavWindow;
  */
 @Injectable()
 export class FormulaDesignerService extends ServiceBase implements OnDestroy {
+
+  /**
+   * WIP should contain all the settings to all items/settings in this form
+   * for rare cases (formulas) which need to access settings of all items
+   */
+  itemSettingsServices: Record<string, FieldsSettingsService> = {};
+
   formulaCache = signal<FormulaCacheItem[]>([]);
   private formulaCache$ = toObservable(this.formulaCache);
 

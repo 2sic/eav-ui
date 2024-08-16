@@ -48,7 +48,6 @@ export class FormsStateService implements OnDestroy {
     this.saveButtonDisabled$ = combineLatest([this.readOnly$, this.formsValid$]).pipe(
       map(([readOnly, formsValid]) => readOnly.isReadOnly || !formsValid),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
 
     this.formsValid = {};

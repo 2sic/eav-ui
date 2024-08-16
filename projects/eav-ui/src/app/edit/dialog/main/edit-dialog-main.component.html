@@ -47,7 +47,7 @@
     </div>
     @if (showFooter()) {
       @defer {
-        <app-edit-dialog-footer mat-dialog-actions [formBuilderRefs]="formBuilderRefs"
+        <app-edit-dialog-footer mat-dialog-actions
           (debugInfoOpened)="debugInfoOpened($event)">
         </app-edit-dialog-footer>
       }

@@ -18,6 +18,7 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { EntityFormStateService } from '../../entity-form-state.service';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 
 const logThis = false;
 const nameOfThis = 'FormBuilderComponent';
@@ -51,6 +52,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
   /** Inject the form state service, but automatically add the form for later use */
   #formStateService = inject(EntityFormStateService).setup(this.form);
 
+  #formulaDesignerService = inject(FormulaDesignerService);
+
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -65,6 +68,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnInit() {
     this.fieldsSettingsService.init(this.entityGuid);
+    this.#formulaDesignerService.itemSettingsServices[this.entityGuid] = this.fieldsSettingsService;
     this.fieldsTranslateService.init(this.entityGuid);
 
     const form = this.form;

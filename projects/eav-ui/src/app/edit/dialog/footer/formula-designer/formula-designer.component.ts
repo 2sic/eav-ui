@@ -32,6 +32,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { transient } from 'projects/eav-ui/src/app/core';
+import { EntityFormStateService } from '../../../form/entity-form-state.service';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'FormulaDesignerComponent';
 
 @Component({
   selector: 'app-formula-designer',
@@ -57,8 +62,6 @@ import { transient } from 'projects/eav-ui/src/app/core';
   ],
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
-  @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
-
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
@@ -88,6 +91,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   protected contextSnippets = this.designerSvc.currentContextSnippets;
   protected targetOptions = this.designerSvc.currentTargetOptions;
 
+  private log = new EavLogger(nameOfThis, logThis);
+  
   constructor(
     private snackBar: MatSnackBar,
     private formConfig: FormConfigService,
@@ -98,7 +103,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadError = false;
-    if (this.formBuilderRefs == null) {
+    if (Object.keys(this.designerSvc.itemSettingsServices).length < 1) {
       this.loadError = true;
       return;
     }
@@ -130,8 +135,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     switch (target) {
       case SelectTargets.Entity:
         newState.entityGuid = value;
-        const selectedFormRef = this.formBuilderRefs.find(formBuilderRef => formBuilderRef.entityGuid === newState.entityGuid);
-        newState.fieldName = Object.keys(selectedFormRef.fieldsSettingsService.getFieldsProps())[0];
+        const selectedSettingsSvc = this.designerSvc.itemSettingsServices[newState.entityGuid];
+        newState.fieldName = Object.keys(selectedSettingsSvc.getFieldsProps())[0];
         break;
       case SelectTargets.Field:
         newState.fieldName = value;
@@ -190,18 +195,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     };
     this.designerSvc.designerState.set(designer);
     this.designerSvc.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
-    this.formBuilderRefs
-      .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
-      .fieldsSettingsService.retriggerFormulas();
+    this.designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas();
   }
 
   run(): void {
     const designer = this.designerSvc.designerState();
     const formula = this.designerSvc.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
     this.designerSvc.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
-    this.formBuilderRefs
-      .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
-      .fieldsSettingsService.retriggerFormulas();
+    this.designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas();
     this.isDeleted.set(false);
   }
 
@@ -283,10 +284,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   private buildViewModel(): void {
     const oldState = this.designerSvc.designerState();
     if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
-      const entityGuid = this.formBuilderRefs.first.entityGuid;
-      const fieldsProps = this.formBuilderRefs.first.fieldsSettingsService.getFieldsProps();
+      const [entityGuid, settingsSvc] = Object.entries(this.designerSvc.itemSettingsServices)[0];
+      const fieldsProps = settingsSvc.getFieldsProps();
       const fieldName = Object.keys(fieldsProps)[0];
       const target = fieldName != null ? FormulaTargets.Value : null;
+
       const newState: DesignerState = {
         ...oldState,
         entityGuid,
@@ -305,13 +307,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       map(([designer, formulas]): SelectOptions => {
 
         // Create array of all entities in the form incl. info if there are formulas in that content type
-        const entityOptions = this.formBuilderRefs.map(formBuilderRef => {
-          const entity: EntityOption = {
-            entityGuid: formBuilderRef.entityGuid,
-            hasFormula: formulas.some(f => f.entityGuid === formBuilderRef.entityGuid),
-            label: formBuilderRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
-          };
-          return entity;
+        const entityOptions = Object.entries(this.designerSvc.itemSettingsServices).map(([entityGuid, settingsSvc]) => {
+          return {
+            entityGuid: entityGuid,
+            hasFormula: formulas.some(f => f.entityGuid === entityGuid),
+            label: settingsSvc.getContentTypeSettings()._itemTitle,
+          } satisfies EntityOption;
         });
 
         // Create array of formula relevant settings of all fields in the selected entity
@@ -319,8 +320,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         const fieldOptions: FieldOption[] = [];
         if (designer.entityGuid != null) {
           // find the current fieldSettingsService to get all properties
-          const selectedItem = this.formBuilderRefs.find(i => i.entityGuid === designer.entityGuid);
-          const fieldsProps = selectedItem.fieldsSettingsService.getFieldsProps();
+          const selectedSettings = this.designerSvc.itemSettingsServices[designer.entityGuid];
+          const fieldsProps = selectedSettings.getFieldsProps();
           for (const fieldName of Object.keys(fieldsProps)) {
             const field: FieldOption = {
               fieldName,
@@ -330,6 +331,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
             fieldOptions.push(field);
           }
         }
+
+        this.log.a('fieldOptions', { entityOptions, fieldOptions });
 
         // Create a list of formula targets for the selected field - eg. Value, Tooltip, ListItem.Label, ListItem.Tooltip etc.
         const targetOptions = this.designerSvc.currentTargetOptions();

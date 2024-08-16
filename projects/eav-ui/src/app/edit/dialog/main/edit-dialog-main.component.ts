@@ -213,7 +213,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         .map(formBuilderRef => {
           const eavItem = this.itemService.getItem(formBuilderRef.entityGuid);
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
-          if (!isValid) { return; }
+          if (!isValid)
+            return;
 
           // do not try to save item which doesn't have any fields, nothing could have changed about it
           // but enable saving if there is a special metadata
@@ -221,7 +222,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           const contentTypeId = InputFieldHelpers.getContentTypeId(eavItem);
           const contentType = this.contentTypeService.getContentType(contentTypeId);
           const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
-          if (!hasAttributes && !saveIfEmpty) { return; }
+          if (!hasAttributes && !saveIfEmpty)
+            return;
 
           const item = EavEntityBundleDto.bundleToDto(eavItem);
           return item;
