@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
@@ -84,7 +84,25 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private loadIconsService = transient(LoadIconsService);
   private globalConfigService = inject(GlobalConfigService);
 
-  isDebug = this.globalConfigService.isDebug;
+
+  private formConfig = inject(FormConfigService);
+
+  /** Signal to determine if we should show the footer */
+  protected showFooter = computed(() => {
+    // if debug is true, then it was set once using the magic shortcut
+    if (this.globalConfigService.isDebug()) {
+      this.#debugWasModified = true;
+      return true;
+    }
+    
+    // If debug is false, and was never modified, show based on system admin status
+    return (!this.#debugWasModified && this.formConfig.config.dialogContext.User?.IsSystemAdmin);
+  });
+
+  /** Special variable to check if debug was ever triggered, to allow super-users to hide the footer */
+  #debugWasModified = false;
+
+  /** Signal to tell the UI that the footer needs more space (changes CSS) */
   expandDebugFooter = signal(false);
 
   constructor(
@@ -92,7 +110,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
 
-    private formConfig: FormConfigService,
     private formDataService: FormDataService,
 
     private inputTypeService: InputTypeService,
@@ -262,7 +279,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   }
 
   debugInfoOpened(opened: boolean) {
-    console.log('debugInfoOpened', opened);
+    this.log.fn('debugInfoOpened', { opened });
     this.expandDebugFooter.set(opened);
   }
 
@@ -277,12 +294,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     );
 
     this.subscriptions.add(
-      this.formsStateService.saveForm$.subscribe(close => this.saveAll(close)),
+      this.formsStateService.saveForm$.subscribe(close => this.saveAll(close))
     );
 
-    this.dialogRef.backdropClick().subscribe(event => {
-      this.closeDialog();
-    });
+    this.subscriptions.add(
+      this.dialogRef.backdropClick().subscribe(_ => this.closeDialog())
+    );
 
     this.dialogRef.keydownEvents().subscribe(event => {
       const ESCAPE = event.keyCode === 27;

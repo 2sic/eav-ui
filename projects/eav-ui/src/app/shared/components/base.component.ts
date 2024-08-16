@@ -11,6 +11,7 @@ import { EavLogger } from '../logging/eav-logger';
 })
 // tslint:disable-next-line:directive-class-suffix
 export abstract class BaseComponent implements OnDestroy {
+  
   /** Holds all subscriptions to be unsubscribed on destroy */
   protected subscriptions = new Subscription();
 
@@ -21,4 +22,5 @@ export abstract class BaseComponent implements OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
+
 }
