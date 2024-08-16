@@ -31,8 +31,6 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   formulaCache = signal<FormulaCacheItem[]>([]);
   private formulaCache$ = toObservable(this.formulaCache);
 
-  formulaResults = signal<FormulaResult[]>([]);
-  private formulaResults$ = toObservable(this.formulaResults);
 
   /** The current state of the UI, what field is being edited etc. */
   designerState = signal<DesignerState>({
@@ -44,6 +42,15 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   } satisfies DesignerState, { equal: RxHelpers.objectsEqual });
 
   private designerState$ = toObservable(this.designerState);
+
+  #formulaResults = signal<FormulaResult[]>([]);
+
+  formulaResult = computed(() => {
+    const state = this.designerState();
+    const results = this.#formulaResults();
+    return results.find(r => r.entityGuid === state.entityGuid && r.fieldName === state.fieldName && r.target === state.target)
+      {};
+  }, { equal: RxHelpers.objectsEqual });
 
   constructor(
     private formConfig: FormConfigService,
@@ -83,6 +90,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     );
   }
 
+  // TODO: REMOVE THIS AS SOON AS WE CAN - WIP 2dm
   /**
    * Used for returning formula stream with specific target on specific field of specific entity.
    * @param entityGuid Specific entity guid
@@ -91,15 +99,36 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
    * @param allowDraft
    * @returns Formula stream
    */
-  getFormula$(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): Observable<FormulaCacheItem> {
-    const isDraft = allowDraft ? [true, false] : [false];
+  getFormula$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaCacheItem> {
     return this.formulaCache$.pipe(
       map(formulas => formulas.find(
-        f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
+        f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target)
       ),
       mapUntilObjChanged(m => m),
     );
   }
+
+  currentFormula = computed(() => {
+    const s = this.designerState();
+    const formulas = this.formulaCache();
+    return formulas.find(f => f.entityGuid === s.entityGuid && f.fieldName === s.fieldName && f.target === s.target);
+  }, { equal: RxHelpers.objectsEqual });
+
+  /** Snippets for the current formula based on it's version */
+  currentContextSnippets = computed(() => {
+    const current = this.currentFormula();
+    return current != null
+    ? FormulaHelpers.buildDesignerSnippetsContext(current)
+    : [];
+  }, { equal: RxHelpers.objectsEqual });
+
+  /** Snippets for the current item header based on the current formulas target guid */
+  #currentItemHeader = computed(() => {
+    const guid = this.currentFormula().entityGuid;
+    return this.itemService.getItemHeader(guid);
+  }, { equal: RxHelpers.objectsEqual });
+
+  
 
   /**
    * Used for returning formulas filtered by optional entity, field or target.
@@ -248,11 +277,11 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
    * @param target
    */
   resetFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
-    const oldResults = this.formulaResults();
+    const oldResults = this.#formulaResults();
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
     if (oldResultIndex >= 0) {
       const newResults = [...oldResults.slice(0, oldResultIndex), ...oldResults.slice(oldResultIndex + 1)];
-      this.formulaResults.set(newResults);
+      this.#formulaResults.set(newResults);
     }
 
     const oldFormulaCache = this.formulaCache();
@@ -288,20 +317,13 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
       isOnlyPromise,
     };
 
-    const oldResults = this.formulaResults();
+    const oldResults = this.#formulaResults();
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
     const newResults = oldResultIndex >= 0
       ? [...oldResults.slice(0, oldResultIndex), newResult, ...oldResults.slice(oldResultIndex + 1)]
       : [newResult, ...oldResults];
-    this.formulaResults.set(newResults);
+    this.#formulaResults.set(newResults);
   }
-
-  formulaResult = computed(() => {
-    const state = this.designerState();
-    const results = this.formulaResults();
-    return results.find(r => r.entityGuid === state.entityGuid && r.fieldName === state.fieldName && r.target === state.target)
-      {};
-  }, { equal: RxHelpers.objectsEqual });
 
   /**
    * Used for opening or closing designer

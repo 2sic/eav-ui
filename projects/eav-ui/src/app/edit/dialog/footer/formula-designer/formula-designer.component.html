@@ -76,10 +76,10 @@
             {{ snippet.label | snippetLabelSize }}
           </div>
         }
-        @if (vm.dataSnippets?.length && vm.contextSnippets?.length) {
+        @if (vm.dataSnippets?.length && contextSnippets().length) {
           <div class="separator"></div>
         }
-        @for (snippet of vm.contextSnippets; track trackSnippets($index, snippet)) {
+        @for (snippet of contextSnippets(); track trackSnippets($index, snippet)) {
           <div class="snippet" [title]="snippet.code"
             (click)="copyToClipboard(snippet.code)">
             {{ snippet.label | snippetLabelSize }}

@@ -8,7 +8,6 @@ export interface FormulaDesignerViewModel {
   formula: FormulaCacheItem;
   designer: DesignerState;
   dataSnippets: DesignerSnippet[];
-  contextSnippets: DesignerSnippet[];
   typings: string;
   template: string;
 }

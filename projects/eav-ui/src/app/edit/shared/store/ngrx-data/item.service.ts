@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
@@ -14,7 +14,6 @@ import { ItemEditIdentifier, ItemIdentifierHeader } from 'projects/eav-ui/src/ap
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 const logThis = false;
@@ -208,7 +207,6 @@ export class ItemService extends BaseDataService<EavItem> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
 
@@ -220,7 +218,6 @@ export class ItemService extends BaseDataService<EavItem> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
 
@@ -228,7 +225,6 @@ export class ItemService extends BaseDataService<EavItem> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.For),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
 
@@ -245,15 +241,17 @@ export class ItemService extends BaseDataService<EavItem> {
           ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes)
       ),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
+
+  getItemHeader(entityGuid: string): ItemIdentifierHeader {
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Header;
+  };
 
   getItemHeader$(entityGuid: string): Observable<ItemIdentifierHeader> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
 

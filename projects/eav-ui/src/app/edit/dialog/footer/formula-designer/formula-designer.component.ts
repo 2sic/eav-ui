@@ -34,7 +34,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { transient } from 'projects/eav-ui/src/app/core';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-formula-designer',
@@ -88,6 +87,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   private formulaDesignerService = inject(FormulaDesignerService);
   protected result = this.formulaDesignerService.formulaResult;
+  protected contextSnippets = this.formulaDesignerService.currentContextSnippets;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -443,9 +443,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         return selectOptions;
       }),
     );
+
+    // WIP
     const formula$ = designerState$.pipe(
-      switchMap(designer => this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)),
+      switchMap(designer => this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target)),
     );
+
     const itemHeader$ = designerState$.pipe(
       map(designer => designer.entityGuid),
       distinctUntilChanged(),
@@ -457,12 +460,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         : []
       ),
     );
-    const contextSnippets$ = combineLatest([formula$]).pipe(
-      map(([formula]) => formula != null
-        ? FormulaHelpers.buildDesignerSnippetsContext(formula)
-        : []
-      ),
-    );
+
     const typings$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
         ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader.Prefill)
@@ -471,10 +469,18 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
 
     this.viewModel$ = combineLatest([
-      combineLatest([options$, formula$, dataSnippets$, contextSnippets$, typings$, designerState$]),
+      options$,
+      formula$,
+      dataSnippets$,
+      typings$,
+      designerState$,
     ]).pipe(
       map(([
-        [options, formula, dataSnippets, contextSnippets, typings, designer],
+        options,
+        formula,
+        dataSnippets, 
+        typings,
+        designer,
       ]) => {
         const template = Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow;
         const viewModel: FormulaDesignerViewModel = {
@@ -484,7 +490,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           formula,
           designer,
           dataSnippets,
-          contextSnippets,
           typings,
           template,
         };
