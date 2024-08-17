@@ -1,7 +1,6 @@
 import { FieldValue } from "projects/edit-types";
 import { DataTypeConstants } from "../../../content-type-fields/constants/data-type.constants";
-import { InputTypeConstants } from "../../../content-type-fields/constants/input-type.constants";
-import { InputType } from "../../../content-type-fields/models/input-type.model";
+import { InputTypeConstants, InputTypeStrict } from "../../../content-type-fields/constants/input-type.constants";
 import { FormulaTarget, FormulaTargets } from "../models/formula.models";
 import { FormulaResultRaw } from "../models/formula-results.models";
 
@@ -17,23 +16,23 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Strongly typed FormulaResultRaw object
    */
-  static correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
+  static correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputTypeName: InputTypeStrict): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
       return { value: result as FieldValue, fields: [], stop };
     if (typeof result === 'object') {
       if (result instanceof Date && target === FormulaTargets.Value)
-        return { value: this.valueCorrection(result as FieldValue, inputType), fields: [], stop };
+        return { value: this.valueCorrection(result as FieldValue, inputTypeName), fields: [], stop };
       if (result instanceof Promise)
         return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop };
       const corrected: FormulaResultRaw = (result as FormulaResultRaw);
       corrected.stop = stop;
       if ((result as FormulaResultRaw).value && target === FormulaTargets.Value) {
-        corrected.value = this.valueCorrection((result as FormulaResultRaw).value, inputType);
+        corrected.value = this.valueCorrection((result as FormulaResultRaw).value, inputTypeName);
       }
       if ((result as FormulaResultRaw).fields) {
         corrected.fields = (result as FormulaResultRaw).fields?.map((fields) => {
-          fields.value = this.valueCorrection(fields.value, inputType);
+          fields.value = this.valueCorrection(fields.value, inputTypeName);
           return fields;
         });
         return corrected;
@@ -44,7 +43,7 @@ export class FormulaValueCorrections {
 
     // atm we are only correcting Value formulas
     if (target === FormulaTargets.Value) {
-      return { value: this.valueCorrection(value.value, inputType), fields: [], stop };
+      return { value: this.valueCorrection(value.value, inputTypeName), fields: [], stop };
     }
     return value;
   }
@@ -55,10 +54,11 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Corrected field value
    */
-  static valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
-    if (value == null) {
+  static valueCorrection(value: FieldValue, inputTypeName: InputTypeStrict): FieldValue {
+    if (value == null)
       return value;
-    } else if (inputType?.Type === InputTypeConstants.DateTimeDefault) {
+    
+    if (inputTypeName === InputTypeConstants.DateTimeDefault) {
       const date = new Date(value as string | number | Date);
 
       // if value is not ISO string, nor milliseconds, correct timezone
@@ -68,8 +68,10 @@ export class FormulaValueCorrections {
 
       date.setMilliseconds(0);
       return date.toJSON();
-    } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
-      || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
+    }
+    
+    if (typeof (value) !== 'string' && (inputTypeName?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
+      || inputTypeName?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
       return value.toString();
     }
     return value;

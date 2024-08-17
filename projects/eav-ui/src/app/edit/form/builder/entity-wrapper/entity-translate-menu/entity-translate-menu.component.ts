@@ -6,7 +6,7 @@ import { FormConfigService, FieldsSettingsService, FieldsTranslateService, Forms
 import { ItemService } from '../../../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
-import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
+import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
 import { FieldConfigSet } from '../../fields-builder/field-config-set.model';
 import { EntityTranslateMenuViewModel } from './entity-translate-menu.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -77,14 +77,14 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
 
   autoTranslateMany(): void {
     if (this.autoTranslatableFields.length > 0) {
-      const config: FieldConfigSet = {
+      const config: TranslateMenuDialogConfig = {
         entityGuid: this.entityGuid,
         fieldName: this.autoTranslatableFields[0],
-        name: '',
-        focused$: undefined
+        // name: '',
+        // focused$: undefined
       }
       const dialogData: TranslateMenuDialogData = {
-        config: config,
+        config,
         translationState: {
           language: this.translationState.language,
           linkType: this.translationState.linkType,

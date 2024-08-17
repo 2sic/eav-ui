@@ -1,8 +1,13 @@
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 
+/** Reduced config set / info about a field */
+export interface TranslateMenuDialogConfig {
+  entityGuid: string;
+  fieldName: string;
+}
+
 export interface TranslateMenuDialogData {
-  config: FieldConfigSet;
+  config: TranslateMenuDialogConfig;
   translationState: TranslationStateCore;
   isTranslateMany?: boolean;
   translatableFields?: string[];

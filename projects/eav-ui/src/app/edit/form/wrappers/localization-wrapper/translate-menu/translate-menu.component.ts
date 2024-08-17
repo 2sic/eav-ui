@@ -1,6 +1,6 @@
 import { Component, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
+import { combineLatest, map, Observable, startWith } from 'rxjs';
 import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
@@ -67,12 +67,10 @@ export class TranslateMenuComponent implements OnInit {
     const disableTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
     const disableAutoTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableAutoTranslation),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
 
     const control = this.group.controls[this.config.fieldName];
@@ -80,7 +78,6 @@ export class TranslateMenuComponent implements OnInit {
       map(() => control.disabled),
       startWith(control.disabled),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
 
     this.viewModel$ = combineLatest([
@@ -103,11 +100,11 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   translate(): void {
-    this.fieldsTranslate.translate(this.config.name);
+    this.fieldsTranslate.translate(this.config.fieldName);
   }
 
   dontTranslate(): void {
-    this.fieldsTranslate.dontTranslate(this.config.name);
+    this.fieldsTranslate.dontTranslate(this.config.fieldName);
   }
 
   openTranslateMenuDialog(translationState: TranslationState): void {

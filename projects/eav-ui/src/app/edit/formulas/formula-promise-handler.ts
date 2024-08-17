@@ -1,9 +1,7 @@
 import { FieldValue } from "projects/edit-types";
-import { InputType } from "../../content-type-fields/models/input-type.model";
 import { EntityReader } from "../shared/helpers";
-import { FormValues, FieldsProps } from "../shared/models";
+import { FormValues, FieldsProps, FieldConstantsOfLanguage } from "../shared/models";
 import { EavContentType, EavContentTypeAttribute, EavEntityAttributes } from "../shared/models/eav";
-import { ConstantFieldParts } from "./models/constant-field-parts.model";
 import { FormulaPromiseResult } from "./models/formula-promise-result.model";
 import { FormulaSettingsHelper } from "./helpers/formula-settings.helper";
 import { FormulaValueCorrections } from "./helpers/formula-value-corrections.helper";
@@ -14,6 +12,7 @@ import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.mod
 import { FormItemFormulaService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldSettingsUpdateHelperFactory } from '../shared/helpers/fields-settings-update.helpers';
+import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';
@@ -38,38 +37,38 @@ export class FormulaPromiseHandler {
    * @param entityGuid
    * @param resultWithPromise
    * @param formulaCache
-   * @param inputType
+   * @param inputTypeName
    */
   handleFormulaPromise(
     entityGuid: string,
     resultWithPromise: FormulaResultRaw,
     formulaCache: FormulaCacheItem,
-    inputType: InputType,
+    inputTypeName: InputTypeStrict,
   ) {
-    this.log.fn('handleFormulaPromise', { entityGuid, resultWithPromise, formulaCache, target: formulaCache.target, inputType });
+    this.log.fn('handleFormulaPromise', { entityGuid, resultWithPromise, formulaCache, target: formulaCache.target, inputType: inputTypeName });
     if (resultWithPromise.openInDesigner && resultWithPromise.stop === null) {
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
     }
     formulaCache.promises$.next(resultWithPromise.promise);
-    this.DefineCallbackHandlerIfMissing(formulaCache, inputType, entityGuid);
+    this.DefineCallbackHandlerIfMissing(formulaCache, inputTypeName, entityGuid);
   }
 
   /**
    * Used for defining the callback handler for the promise if it doesn't already exist and filling queue for the next run.
    * @param formulaCache
-   * @param inputType
+   * @param inputTypeName
    * @param entityGuid
    */
   private DefineCallbackHandlerIfMissing(
     formulaCache: FormulaCacheItem,
-    inputType: InputType,
+    inputTypeName: InputTypeStrict,
     entityGuid: string,
   ) {
-    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formulaCache, inputType, entityGuid });
+    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formulaCache, inputTypeName, entityGuid });
     if (!formulaCache.updateCallback$.value) {
       const queue = this.fieldsSettingsService.updateValueQueue;
       formulaCache.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-        const corrected = FormulaValueCorrections.correctAllValues(formulaCache.target, result, inputType);
+        const corrected = FormulaValueCorrections.correctAllValues(formulaCache.target, result, inputTypeName);
 
         const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
         let valueUpdates: FormValues = {};
@@ -127,7 +126,7 @@ export class FormulaPromiseHandler {
     entityReader: EntityReader,
     latestFieldProps: FieldsProps,
     attributes: EavContentTypeAttribute[],
-    constantFieldParts: ConstantFieldParts[],
+    constantFieldParts: FieldConstantsOfLanguage[],
     itemAttributes: EavEntityAttributes,
     formItemFormulaService: FormItemFormulaService,
     setUpdHelperFactory: FieldSettingsUpdateHelperFactory,
@@ -139,7 +138,7 @@ export class FormulaPromiseHandler {
     if (toProcess == null)
       return { valuesUpdated: false, newFieldProps: null };
 
-    // Flush queue
+    // Flush queue for this item, as we'll process it next and in case of errors we don't want to reprocess it
     queue[entityGuid] = null;
 
     // extract updates and flush queue
@@ -150,7 +149,14 @@ export class FormulaPromiseHandler {
     let valuesUpdated = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
       formItemFormulaService.applyValueChangesFromFormulas(
-        entityGuid, contentType, formValues, fieldsProps, values, fields, slotIsEmpty, entityReader
+        entityGuid,
+        contentType,
+        formValues,
+        fieldsProps,
+        values,
+        fields,
+        slotIsEmpty,
+        entityReader
       );
       valuesUpdated = true;
     }
@@ -170,7 +176,7 @@ export class FormulaPromiseHandler {
             settingsNew));
         });
 
-        const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === valueSet.name);
+        const constantFieldPart = constantFieldParts.find(f => f.fieldName === valueSet.name);
         const attribute = attributes.find(a => a.Name === valueSet.name);
 
         // Prepare helper which the formula will need to verify if the field is visible

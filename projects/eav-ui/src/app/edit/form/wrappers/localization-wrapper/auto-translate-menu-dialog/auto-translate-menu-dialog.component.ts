@@ -124,7 +124,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
 
     this.dialogData.isTranslateMany
       ? this.fieldsTranslateService.autoTranslateMany(newTranslationState.language)
-      : this.fieldsTranslateService.autoTranslate([this.dialogData.config.name], newTranslationState.language);
+      : this.fieldsTranslateService.autoTranslate([this.dialogData.config.fieldName], newTranslationState.language);
 
     this.closeDialog();
   }

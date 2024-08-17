@@ -1,8 +1,8 @@
 import { LocalizationHelpers, ValidationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
-import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { MetadataDecorators } from '../constants';
+import { FieldConstantsOfLanguage } from '../models';
 import { EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
 
@@ -22,7 +22,7 @@ export class FieldSettingsUpdateHelperFactory {
 
   create(
     attribute: EavContentTypeAttribute,
-    constantFieldPart: ConstantFieldParts,
+    constantFieldPart: FieldConstantsOfLanguage,
     attributeValues: EavField<any>,
   ): FieldSettingsUpdateHelper {
     return new FieldSettingsUpdateHelper(
@@ -59,7 +59,7 @@ export class FieldSettingsUpdateHelper {
 
     // Field specific info
     private attribute: EavContentTypeAttribute,
-    private constantFieldPart: ConstantFieldParts,
+    private constantFieldPart: FieldConstantsOfLanguage,
     private attributeValues: EavField<any>,
   ) {
 
@@ -103,7 +103,7 @@ export class FieldSettingsUpdateHelper {
   /** Find if DisableTranslation is true in any setting and in any language */
   private schemaDisablesTranslation(): boolean {
     const contentTypeMetadata = this.contentTypeMetadata;
-    const inputType = this.constantFieldPart.inputType;
+    const inputType = this.constantFieldPart.inputTypeConfiguration;
     const attributeValues = this.attributeValues;
     const defaultLanguage = this.language.primary;
     const attributeMetadata = this.attribute.Metadata;

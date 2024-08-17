@@ -1,8 +1,8 @@
 import { FieldSettings } from 'projects/edit-types';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
+import { FieldConstantsOfLanguage } from '../models/fields-configs.model';
 
 const logThis = false;
 const nameOfThis = 'ItemFieldVisibility';
@@ -61,7 +61,7 @@ export class ItemFieldVisibility {
   }
 
   /**  Make sure that groups, which have a forced-visible-field are also visible */
-  makeParentGroupsVisible(allConstFieldParts: ConstantFieldParts[]) {
+  makeParentGroupsVisible(allConstFieldParts: FieldConstantsOfLanguage[]) {
     const l = this.log.fn('makeParentGroupsVisible', { allConstFieldParts });
 
     if (!this.hasRules())
@@ -71,7 +71,7 @@ export class ItemFieldVisibility {
     try {
       allConstFieldParts.forEach((groupField, index) => {
         // Only work on group-starts
-        if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType.inputType))
+        if (!EmptyFieldHelpers.isGroupStart(groupField.inputTypeStrict))
           return;
 
         // Ignore if visible-disabled is already ok
@@ -83,11 +83,11 @@ export class ItemFieldVisibility {
           const innerField = allConstFieldParts[i];
 
           // Stop checking the current group if we found another group start/end
-          if (EmptyFieldHelpers.endsPreviousGroup(innerField.calculatedInputType.inputType))
+          if (EmptyFieldHelpers.endsPreviousGroup(innerField.inputTypeStrict))
             return;
 
           if (innerField.settingsInitial.VisibleDisabled == false) {
-            l.a('Forced visible', { fieldName: groupField.constants.fieldName, reason: innerField.constants.fieldName });
+            l.a('Forced visible', { fieldName: groupField.fieldName, reason: innerField.fieldName });
             groupField.settingsInitial.VisibleDisabled = false;
             return;
           }

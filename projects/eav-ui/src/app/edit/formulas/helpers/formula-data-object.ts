@@ -14,9 +14,9 @@ export class FormulaDataObject implements FormulaV1Data {
 
   get default(): FieldValue {
     const { runParameters } = this.#propsData;
-    const { formula, settingsInitial, inputType } = runParameters;
+    const { formula, settingsInitial, inputTypeName } = runParameters;
     if (formula.target === FormulaTargets.Value)
-      return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType?.Type, settingsInitial);
+      return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputTypeName, settingsInitial);
 
     if (formula.target.startsWith(SettingsFormulaPrefix)) {
       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
@@ -36,9 +36,9 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get prefill(): FieldValue {
-    const { formula, settingsInitial, itemIdWithPrefill, inputType } = this.#propsData.runParameters;
+    const { formula, settingsInitial, itemIdWithPrefill, inputTypeName } = this.#propsData.runParameters;
     if (formula.target !== FormulaTargets.Value) { return; }
-    return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType?.Type, settingsInitial, itemIdWithPrefill, true);
+    return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputTypeName, settingsInitial, itemIdWithPrefill, true);
   }
 
   get value(): FieldValue {

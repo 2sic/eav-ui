@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { EavContentType } from '../../models/eav';
 import { EavContentTypeDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
@@ -25,7 +25,6 @@ export class ContentTypeService extends BaseDataService<EavContentType> {
     return this.cache$.pipe(
       map(contentTypes => contentTypes.find(contentType => contentType.Id === id)),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
 }

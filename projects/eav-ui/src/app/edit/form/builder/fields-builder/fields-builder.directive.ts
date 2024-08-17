@@ -61,7 +61,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
       const fieldConfig: FieldConfigSet = {
         ...fieldProps.constants,
-        name: fieldName,
+        fieldName: fieldName,
         focused$: new BehaviorSubject(false),
       };
       this.fieldConfigs.push(fieldConfig);

@@ -4,7 +4,7 @@ import { FieldConstants } from '../../../shared/models';
 import { PickerData } from '../../fields/picker/picker-data';
 
 export interface FieldConfigSet extends FieldConstants {
-  name: string;
+  fieldName: string;
   focused$: BehaviorSubject<boolean>;
   adam?: Adam;
   dropzone?: Dropzone;

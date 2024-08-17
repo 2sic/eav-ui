@@ -179,7 +179,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       index: this.config.index,
       label: settings.Name,
       placeholder: settings.Placeholder,
-      inputType: this.config.inputType,
+      inputType: this.config.inputTypeStrict,
       type: this.config.type,
       required: settings._currentRequired,
       disabled: this.config.initialDisabled,

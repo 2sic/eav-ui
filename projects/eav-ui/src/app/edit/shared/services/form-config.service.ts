@@ -35,7 +35,7 @@ export class FormConfigService {
   /**
    * Current form language information
    */
-  language: Signal<FormLanguage>;
+  language: Signal<FormLanguageComplete>;
 
   /**
    * Current edit settings

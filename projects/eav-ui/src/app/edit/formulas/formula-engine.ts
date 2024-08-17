@@ -23,6 +23,7 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself } from './helpers/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../shared/helpers/fields-settings-update.helpers';
+import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
 
 const logThis = true;
 const nameOfThis = 'FormulaEngine';
@@ -68,7 +69,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @param entityId
    * @param attribute
    * @param formValues
-   * @param inputType
+   * @param inputTypeName
    * @param settingsInitial
    * @param settingsCurrent
    * @param itemIdWithPrefill
@@ -79,7 +80,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     entityGuid: string,
     attribute: EavContentTypeAttribute,
     formValues: FormValues,
-    inputType: InputType,
+    inputTypeName: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
@@ -92,7 +93,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     if (formulas.length === 0)
       return availableItems;
 
-    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill };
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, settingsInitial, inputTypeName, settingsCurrent, itemIdWithPrefill };
 
     const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(entityGuid);
 
@@ -131,7 +132,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     entityGuid: string,
     attribute: EavContentTypeAttribute,
     formValues: FormValues,
-    inputType: InputType,
+    inputTypeName: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsBefore: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
@@ -151,7 +152,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     // The new settings - which can be updated multiple times by formulas
     let settingsNew: Record<string, any> = {};
 
-    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputType, settingsInitial, settingsCurrent: settingsBefore, itemIdWithPrefill };
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputTypeName: inputTypeName, settingsInitial, settingsCurrent: settingsBefore, itemIdWithPrefill };
 
     const start = performance.now();
     for (const formula of formulas) {
@@ -160,7 +161,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
       const formulaResult = this.runFormula(allObjectParameters);
       if (formulaResult?.promise instanceof Promise) {
-        this.promiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputType);
+        this.promiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputTypeName);
         formula.stopFormula = formulaResult.stop ?? true;
       } else
         formula.stopFormula = formulaResult.stop ?? formula.stopFormula;
@@ -242,7 +243,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @returns Result of a single formula.
    */
   private runFormula(allObjectsForDataAndContext: FormulaObjectsInternalData): FormulaResultRaw {
-    const { formula, inputType, item } = allObjectsForDataAndContext.runParameters;
+    const { formula, item, inputTypeName } = allObjectsForDataAndContext.runParameters;
 
     const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
 
@@ -260,7 +261,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
           if (resultIsPure) {
             if (formula.target === FormulaTargets.Value) {
               const valueV1: FormulaResultRaw = {
-                value: FormulaValueCorrections.valueCorrection(v1Result as FieldValue, inputType),
+                value: FormulaValueCorrections.valueCorrection(v1Result as FieldValue, inputTypeName),
                 fields: [], stop: null, openInDesigner: isOpenInDesigner
               };
               this.designerSvc.cache.cacheResults(formula, valueV1.value, false, false);
@@ -290,7 +291,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
           //TODO: @2dm -> Added item as last argument so if ew use experimental anywhere nothing breaks
           const v2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);
 
-          const valueV2 = FormulaValueCorrections.correctAllValues(formula.target, v2Result, inputType);
+          const valueV2 = FormulaValueCorrections.correctAllValues(formula.target, v2Result, inputTypeName);
           valueV2.openInDesigner = isOpenInDesigner;
           if (valueV2.value === undefined && valueV2.promise)
             this.designerSvc.cache.cacheResults(formula, undefined, false, true);
@@ -304,7 +305,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
           if (isOpenInDesigner)
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           const resultDef = (formula.fn as FormulaFunctionDefault)();
-          const valueDef = FormulaValueCorrections.correctAllValues(formula.target, resultDef, inputType);
+          const valueDef = FormulaValueCorrections.correctAllValues(formula.target, resultDef, inputTypeName);
           valueDef.openInDesigner = isOpenInDesigner;
           this.designerSvc.cache.cacheResults(formula, valueDef.value, false, false);
           if (isOpenInDesigner)
@@ -344,7 +345,8 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 export interface FormulaRunParameters {
   formula: FormulaCacheItem;
   formValues: FormValues;
-  inputType: InputType;
+  /** The exact name of the input field */
+  inputTypeName: InputTypeStrict;
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
   itemIdWithPrefill: ItemIdentifierShared;

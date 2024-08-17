@@ -79,7 +79,7 @@ export class ExpandableWrapperComponent {
       maxHeight: '50vh',
     };
 
-    if (this.config.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
+    if (this.config.inputTypeStrict !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
       return previewHeight;
 
     let rows = parseInt(settings.InlineInitialHeight, 10);
@@ -125,7 +125,7 @@ export class ExpandableWrapperComponent {
         this.adamDisabled.set(disabled);
     })
 
-    const componentTagName = `field-${this.config.inputType}`;
+    const componentTagName = `field-${this.config.inputTypeStrict}`;
     l.a('ExpandableWrapper created for:', { componentTagName });
     this.connectorCreator.init(
       componentTagName,

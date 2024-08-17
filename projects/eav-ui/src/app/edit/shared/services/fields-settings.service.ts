@@ -6,10 +6,9 @@ import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-man
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
 import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
-import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
+import { ContentTypeSettings, FieldConstants, FieldConstantsOfLanguage, FieldsProps, FormValues, TranslationState } from '../models';
 import { ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
-import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { FormulaPromiseResult } from '../../formulas/models/formula-promise-result.model';
 import { FieldValuePair } from '../../formulas/models/formula-results.models';
 import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
@@ -21,7 +20,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../helpers/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from '../helpers/fields-settings-update.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -44,7 +43,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private contentType$ = new Observable<EavContentType>();
   private itemAttributes$ = new Observable<EavEntityAttributes>();
   private entityReader$ = new Observable<EntityReader>();
-  private constantFieldParts$ = new Observable<ConstantFieldParts[]>();
+  private constFieldPartsOfLanguage$ = new Observable<FieldConstantsOfLanguage[]>();
   private itemHeader$ = new Observable<ItemIdentifierHeader>();
   private entityGuid: string;
 
@@ -108,51 +107,88 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     const entityId = item.Entity.Id;
 
     const eavConfig = this.formConfig.config;
-    this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$, this.formConfig.language$]).pipe(
-      map(([inputTypes, contentType, entityReader, language]) => {
-        const lConstantFieldParts = this.log.fn('constantFieldParts', { inputTypes, contentType, entityReader, language });
 
+    // Constant field parts which don't ever change.
+    // They can only be created once the inputTypes and contentTypes are available
+    const constFieldParts$ = combineLatest([
+      // inputTypes$,
+      this.contentType$,
+    ]).pipe(
+      map(([/* inputTypes, */ contentType]) => {
+        // Get the form languages - but we only need default & initial, so we don't have to observe
+        const language = this.formConfig.language();
+
+        // Get the input types from service, don't observe changes
+        var inputTypes = this.inputTypeService.getInputTypes();
+
+        const lConstants = this.log.fn('constantFieldParts', { inputTypes, contentType, language });
+        
         // When merging the "constant" metadata, the primary language must be the initial language, not the current
         // as that contains all the relevant settings which should not be translated
         const mdMerger = new EntityReader(language.initial, language.primary);
 
         const constFieldParts = contentType.Attributes.map((attribute, index) => {
-          const metadataInitialLanguage = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
-          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadataInitialLanguage);
-          const initialDisabled = initialSettings.Disabled ?? false;
+          // metadata in the initial language with all the core settings
+          const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
+          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
+
           const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
           const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-          // Construct the constants / unchanging aspects of the field
+          const logic = FieldLogicManager.singleton().get(attribute.InputType);
+
+          // Construct the constants / unchanging aspects of the field, no matter what language
           const constants: FieldConstants = {
-            angularAssets: inputType?.AngularAssets,
-            contentTypeId,
-            dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
             entityGuid,
             entityId,
+            contentTypeId,
             fieldName: attribute.Name,
             index,
-            initialDisabled,
-            inputType: calculatedInputType.inputType,
+            angularAssets: inputType?.AngularAssets,
+            dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
+            initialDisabled: initialSettings.Disabled ?? false,
+            inputType: calculatedInputType,
+            inputTypeStrict: calculatedInputType.inputType,
             isExternal: calculatedInputType.isExternal,
             isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
             type: attribute.Type,
+            logic,
           };
 
+          return constants;
+        });
+
+        return lConstants.r(constFieldParts);
+      })
+    );
+
+
+    this.constFieldPartsOfLanguage$ = combineLatest([
+      constFieldParts$,
+      inputTypes$,
+      this.contentType$,
+      this.entityReader$,
+      this.formConfig.language$
+    ]).pipe(
+      map(([constants, inputTypes, contentType, entityReader, language]) => {
+        const lConstantFieldParts = this.log.fn('constantFieldParts', { inputTypes, contentType, entityReader, language });
+
+        const constFieldParts = contentType.Attributes.map((attribute, index) => {
+          // Input Type config in the current language
+          const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+
           // Construct the constants with settings and everything
-          // TODO: unclear why we're doing this again (see `initialSettings`) - with different languages in the flattening
+          // using the EntityReader with the current language
           const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
+
           // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
           mergeRaw.InputType = attribute.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          const logic = FieldLogicManager.singleton().get(attribute.InputType);
-          const constantFieldParts: ConstantFieldParts = {
-            logic,
+          const constantFieldParts: FieldConstantsOfLanguage = {
+            ...constants.find(c => c.fieldName === attribute.Name),
             settingsInitial,
-            inputType,
-            calculatedInputType,
-            constants,
+            inputTypeConfiguration: inputType,
             currentLanguage: entityReader.current,
           };
 
@@ -179,7 +215,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         formReadOnly$,
         this.forceRefreshSettings$,
         debugEnabled$,
-        this.constantFieldParts$
+        this.constFieldPartsOfLanguage$
       ]).pipe(
         logUpdateFieldProps.pipe(),
         map(([
@@ -208,6 +244,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             slotIsEmpty,
           );
 
+          // Process the queue of changes from promises if necessary
+          // If things change, we will exit because then the observable will be retriggered
           if (Object.keys(this.latestFieldProps).length) {
             const { newFieldProps, valuesUpdated } = this.formulaPromiseHandler.updateValuesFromQueue(
               entityGuid,
@@ -246,7 +284,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             // empty-default and empty-message have no value
             const valueBefore = formValues[attribute.Name];
 
-            const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
+            const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
 
             // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
             let latestSettings: FieldSettings;
@@ -264,7 +302,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulasOfField(
               entityGuid, attribute, formValues,
-              constantFieldPart.inputType,
+              constantFieldPart.inputTypeStrict,
               constantFieldPart.settingsInitial,
               latestSettings,
               itemHeader,
@@ -280,11 +318,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
               possibleFieldsUpdates.push(...formulaResult.fields);
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(attributeValues, fixed.DisableTranslation, entityReader);
-            const wrappers = InputFieldHelpers.getWrappers(fixed, constantFieldPart.calculatedInputType);
+            const wrappers = InputFieldHelpers.getWrappers(fixed, constantFieldPart.inputType);
 
             fieldsProps[attribute.Name] = {
-              calculatedInputType: constantFieldPart.calculatedInputType,
-              constants: constantFieldPart.constants,
+              calculatedInputType: constantFieldPart.inputType,
+              constants: constantFieldPart, //.constants,
               settings: fixed,
               translationState: fieldTranslation,
               value: valueBefore,
@@ -326,7 +364,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       this.contentType$,
       this.itemAttributes$,
       this.entityReader$,
-      this.constantFieldParts$,
+      this.constFieldPartsOfLanguage$,
       this.itemHeader$,
     ]).pipe(map(([
         availableItems, contentType, itemAttributes, entityReader, constantFieldParts, itemHeader
@@ -336,7 +374,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
           formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
         }
-        const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
+        const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
         let latestSettings: FieldSettings;
         if (constantFieldPart.currentLanguage == this.latestFieldProps[attribute.Name]?.currentLanguage) {
           latestSettings = this.latestFieldProps[attribute.Name]?.settings
@@ -345,9 +383,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           latestSettings = { ...constantFieldPart.settingsInitial };
         }
         return this.formulaEngine.runAllListItemsFormulas(
-          this.entityGuid, attribute, formValues,
-          constantFieldPart.inputType, constantFieldPart.settingsInitial, latestSettings,
-          itemHeader, availableItems
+          this.entityGuid,
+          attribute,
+          formValues,
+          constantFieldPart.inputTypeStrict,
+          constantFieldPart.settingsInitial,
+          latestSettings,
+          itemHeader,
+          availableItems
         );
       }
     ));

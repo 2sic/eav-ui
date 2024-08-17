@@ -8,7 +8,7 @@ import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 
 export function getTemplateLanguages(
-  config: FieldConfigSet,
+  config: { fieldName: string }, // FieldConfigSet,
   language: FormLanguage,
   languages: Language[],
   attributes: EavEntityAttributes,
