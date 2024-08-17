@@ -16,9 +16,9 @@ export class InputTypeService extends BaseDataService<InputType> {
     this.addManyToCache(inputTypes);
   }
 
-  // getInputType(type: string): InputType {
-  //   return this.cache$.value.find(inputType => inputType.Type === type);
-  // }
+  getInputType(type: string): InputType {
+    return this.cache$.value.find(i => i.Type === type);
+  }
 
   getInputTypes(): InputType[] {
     return this.cache$.value;

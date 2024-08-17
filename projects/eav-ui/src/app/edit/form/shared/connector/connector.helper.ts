@@ -128,7 +128,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   }
 
   private calculateExperimentalProps() {
-    const contentType = this.contentTypeService.getContentType(this.config.contentTypeId);
+    const contentType = this.contentTypeService.getContentType(this.config.contentTypeNameId);
     const inputTypes = this.inputTypeService.getInputTypes();
     const allInputTypeNames = InputFieldHelpers.getInputTypeNames(contentType.Attributes, inputTypes);
 
@@ -192,7 +192,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     if (!value) { return; }
 
     // handle short-ID links like file:17
-    const contentType = this.config.contentTypeId;
+    const contentType = this.config.contentTypeNameId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {

@@ -41,7 +41,7 @@ export class FormulaTargetsService {
 
     // optional targets
     const item = this.itemService.getItem(designer.entityGuid);
-    const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+    const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
     const contentType = this.contentTypeService.getContentType(contentTypeId);
     const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
     const inputType = attribute.InputType;

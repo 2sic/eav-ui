@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { Injectable, OnDestroy, signal, Signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
@@ -34,6 +34,7 @@ const nameOfThis = 'FieldsSettingsService';
 @Injectable()
 export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
+  public contentTypeSettings = signal<ContentTypeSettings>(null);
   private fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
   public updateValueQueue: Record<string, FormulaPromiseResult> = {};
@@ -41,10 +42,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private itemFieldVisibility: ItemFieldVisibility;
 
   private contentType$ = new Observable<EavContentType>();
+  private contentType: EavContentType;
   private itemAttributes$ = new Observable<EavEntityAttributes>();
   private entityReader$ = new Observable<EntityReader>();
   private constFieldPartsOfLanguage$ = new Observable<FieldConstantsOfLanguage[]>();
-  private itemHeader$ = new Observable<ItemIdentifierHeader>();
+  private itemHeader: ItemIdentifierHeader;
   private entityGuid: string;
 
   constructor(
@@ -63,7 +65,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     super(new EavLogger(nameOfThis, logThis));
     formulaPromiseHandler.init(this);
     formItemFormulaService.init(this.itemService);
-    formulaEngine.init(this, this.formulaPromiseHandler, this.contentTypeSettings$);
+    formulaEngine.init(this, this.formulaPromiseHandler, this.contentTypeSettings);
   }
 
   ngOnDestroy(): void {
@@ -80,102 +82,48 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     const item = this.itemService.getItem(entityGuid);
     this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
-    const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-    this.contentType$ = this.contentTypeService.getContentType$(contentTypeId);
-    // todo: @STV unsure why we have a stream for the header, isn't it the same as item.Header?
-    // pls find out and either clarify or fix
-    this.itemHeader$ = this.itemService.getItemHeader$(entityGuid);
+    const contentTypeNameId = InputFieldHelpers.getContentTypeNameId(item);
+    this.contentType$ = this.contentTypeService.getContentType$(contentTypeNameId);
+    this.contentType = this.contentTypeService.getContentType(contentTypeNameId);
+    this.itemHeader = item.Header;
     this.entityReader$ = this.languageInstanceService.getEntityReader$(this.formConfig.config.formId);
 
     this.subscriptions.add(
-      combineLatest([this.contentType$, this.itemHeader$, this.entityReader$]).pipe(
-        map(([contentType, itemHeader, entityReader]) => {
+      combineLatest([this.contentType$, this.entityReader$]).pipe(
+        map(([contentType, entityReader]) => {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
             entityReader.flattenAll<ContentTypeSettings>(contentType.Metadata),
             contentType,
             entityReader,
-            itemHeader,
+            item.Header,
           );
           return ctSettings;
         }),
       ).subscribe(ctSettings => {
         this.contentTypeSettings$.next(ctSettings);
+        this.contentTypeSettings.set(ctSettings);
       })
     );
 
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const entityId = item.Entity.Id;
 
-    const eavConfig = this.formConfig.config;
-
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
-    const constFieldParts$ = combineLatest([
-      // inputTypes$,
-      this.contentType$,
-    ]).pipe(
-      map(([/* inputTypes, */ contentType]) => {
-        // Get the form languages - but we only need default & initial, so we don't have to observe
-        const language = this.formConfig.language();
-
-        // Get the input types from service, don't observe changes
-        var inputTypes = this.inputTypeService.getInputTypes();
-
-        const lConstants = this.log.fn('constantFieldParts', { inputTypes, contentType, language });
-        
-        // When merging the "constant" metadata, the primary language must be the initial language, not the current
-        // as that contains all the relevant settings which should not be translated
-        const mdMerger = new EntityReader(language.initial, language.primary);
-
-        const constFieldParts = contentType.Attributes.map((attribute, index) => {
-          // metadata in the initial language with all the core settings
-          const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
-          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
-
-          const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
-          const inputType = inputTypes.find(i => i.Type === attribute.InputType);
-
-          const logic = FieldLogicManager.singleton().get(attribute.InputType);
-
-          // Construct the constants / unchanging aspects of the field, no matter what language
-          const constants: FieldConstants = {
-            entityGuid,
-            entityId,
-            contentTypeId,
-            fieldName: attribute.Name,
-            index,
-            angularAssets: inputType?.AngularAssets,
-            dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
-            initialDisabled: initialSettings.Disabled ?? false,
-            inputType: calculatedInputType,
-            inputTypeStrict: calculatedInputType.inputType,
-            isExternal: calculatedInputType.isExternal,
-            isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
-            type: attribute.Type,
-            logic,
-          };
-
-          return constants;
-        });
-
-        return lConstants.r(constFieldParts);
-      })
-    );
-
+    let constFieldParts = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
 
     this.constFieldPartsOfLanguage$ = combineLatest([
-      constFieldParts$,
       inputTypes$,
       this.contentType$,
       this.entityReader$,
       this.formConfig.language$
     ]).pipe(
-      map(([constants, inputTypes, contentType, entityReader, language]) => {
-        const lConstantFieldParts = this.log.fn('constantFieldParts', { inputTypes, contentType, entityReader, language });
+      map(([inputTypes, contentType, entityReader, language]) => {
+        const lConstantFieldParts = this.log.fn('constantFieldPartsLanguage', { inputTypes, contentType, entityReader, language });
 
-        const constFieldParts = contentType.Attributes.map((attribute, index) => {
+        const constPartOfLanguage = contentType.Attributes.map((attribute) => {
           // Input Type config in the current language
-          const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+          const inputType = this.inputTypeService.getInputType(attribute.InputType);
 
           // Construct the constants with settings and everything
           // using the EntityReader with the current language
@@ -186,7 +134,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
           const constantFieldParts: FieldConstantsOfLanguage = {
-            ...constants.find(c => c.fieldName === attribute.Name),
+            ...constFieldParts.find(c => c.fieldName === attribute.Name),
             settingsInitial,
             inputTypeConfiguration: inputType,
             currentLanguage: entityReader.current,
@@ -195,7 +143,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           return constantFieldParts;
         });
 
-        const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constFieldParts);
+        const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
 
         return lConstantFieldParts.r(constPartsWithGroupVisibility);
       })
@@ -210,7 +158,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       combineLatest([
         this.contentType$,
         this.itemAttributes$,
-        this.itemHeader$,
         this.entityReader$,
         formReadOnly$,
         this.forceRefreshSettings$,
@@ -219,14 +166,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       ]).pipe(
         logUpdateFieldProps.pipe(),
         map(([
-          contentType, itemAttributes, itemHeader, entityReader,
+          contentType, itemAttributes, entityReader,
           formReadOnly, _, debugEnabled, constantFieldParts
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes))
             formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
 
-          const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
+          const slotIsEmpty = this.itemHeader.IsEmptyAllowed && this.itemHeader.IsEmpty;
 
           const logicTools: FieldLogicTools = {
             eavConfig: this.formConfig.config,
@@ -305,7 +252,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
               constantFieldPart.inputTypeStrict,
               constantFieldPart.settingsInitial,
               latestSettings,
-              itemHeader,
+              this.itemHeader,
               valueBefore,
               reuseObjectsForFormulaDataAndContext,
               settingsUpdateHelper,
@@ -355,6 +302,57 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     );
   }
 
+  getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {
+    const l = this.log.fn('constantFieldParts', { entityGuid, entityId, contentTypeId: contentTypeNameId });
+    // Get the form languages - but we only need default & initial, so we don't have to observe
+    const language = this.formConfig.language();
+
+    // Get the input types from service, don't observe changes
+    const inputTypes = this.inputTypeService.getInputTypes();
+
+    const contentType = this.contentType;
+    
+    // When merging the "constant" metadata, the primary language must be the initial language, not the current
+    // as that contains all the relevant settings which should not be translated
+    const mdMerger = new EntityReader(language.initial, language.primary);
+
+    const constFieldParts = contentType.Attributes.map((attribute, index) => {
+      // metadata in the initial language with all the core settings
+      const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
+      const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
+
+      const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
+      const inputType = this.inputTypeService.getInputType(attribute.InputType);
+
+      this.log.a('details', { inputTypes, contentType, language });
+
+      const logic = FieldLogicManager.singleton().get(attribute.InputType);
+
+      const eavConfig = this.formConfig.config;
+
+      // Construct the constants / unchanging aspects of the field, no matter what language
+      const constants: FieldConstants = {
+        entityGuid,
+        entityId,
+        contentTypeNameId,
+        fieldName: attribute.Name,
+        index,
+        angularAssets: inputType?.AngularAssets,
+        dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
+        initialDisabled: initialSettings.Disabled ?? false,
+        inputType: calculatedInputType,
+        inputTypeStrict: calculatedInputType.inputType,
+        isExternal: calculatedInputType.isExternal,
+        isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
+        type: attribute.Type,
+        logic,
+      };
+
+      return constants;
+    });
+    return l.r(constFieldParts);
+  }
+
   //TODO: @2dm -> Here we call the formula engine to process the picker items
   //TODO: @SDV -> Possible issue here as all pickers use same instance of this service, when we have multiple pickers we could get data crosscontamination
   //           -> Consider multiple streams (one for each picker)
@@ -365,9 +363,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       this.itemAttributes$,
       this.entityReader$,
       this.constFieldPartsOfLanguage$,
-      this.itemHeader$,
     ]).pipe(map(([
-        availableItems, contentType, itemAttributes, entityReader, constantFieldParts, itemHeader
+        availableItems, contentType, itemAttributes, entityReader, constantFieldParts,
       ]) => {
         const attribute = contentType.Attributes.find(a => a.Name === fieldName);
         const formValues: FormValues = {};
@@ -389,7 +386,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           constantFieldPart.inputTypeStrict,
           constantFieldPart.settingsInitial,
           latestSettings,
-          itemHeader,
+          this.itemHeader,
           availableItems
         );
       }
@@ -401,7 +398,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Content type settings
    */
   getContentTypeSettings(): ContentTypeSettings {
-    return this.contentTypeSettings$.value;
+    return this.contentTypeSettings();
   }
 
   /**

@@ -68,7 +68,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
       const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);
 
-      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+      const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
       for (const attribute of contentType.Attributes) {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
@@ -323,7 +323,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
       } catch (error) {
         this.cacheResults({entityGuid, fieldName, target} satisfies FormulaIdentifier, undefined, true, false);
         const item = this.itemService.getItem(entityGuid);
-        const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+        const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
         const language = this.formConfig.language();
         const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);

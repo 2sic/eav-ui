@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 import { LocalizationHelpers } from '../../../shared/helpers';
@@ -25,7 +25,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../../shared/services/form-data.service';
 import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.component';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
@@ -112,13 +111,11 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
         Features: settings.Features,
       })),
       mapUntilObjChanged(m => m)
-      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
     const note$ = this.itemService.getItemNote$(this.entityGuid);
     const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(
       map(item => item.Entity.Id === 0),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
     const noteProps$ = combineLatest([note$, this.formConfig.language$, itemNotSaved$]).pipe(
       map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
@@ -129,14 +126,12 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
       map(settings => buildContentTypeFeatures(settings.Features)),
       map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes()),
       mapUntilChanged(m => m),
-      // distinctUntilChanged()
     );
 
     const showMetadataFor$ = settings$.pipe(
       map(settings => buildContentTypeFeatures(settings.Features)),
       map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor()),
       mapUntilChanged(m => m),
-      // distinctUntilChanged()
     );
 
     // const showMetadataFor$ = combineLatest([

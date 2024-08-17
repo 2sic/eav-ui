@@ -1,11 +1,9 @@
-import { Injectable, OnDestroy, inject } from '@angular/core';
+import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
-import { BehaviorSubject } from 'rxjs';
-import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeaturesService } from '../../shared/services/features.service';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
-import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
+import { EavContentTypeAttribute } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -13,8 +11,6 @@ import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
 import { FormulaSettingsHelper } from './helpers/formula-settings.helper';
-import { FieldLogicBase } from '../form/shared/field-logic/field-logic-base';
-import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
 import { FormulaValueCorrections } from './helpers/formula-value-corrections.helper';
 import { FormulaPromiseHandler } from './formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
@@ -35,7 +31,7 @@ const nameOfThis = 'FormulaEngine';
 @Injectable()
 export class FormulaEngine extends ServiceBase implements OnDestroy {
   private features = inject(FeaturesService).getAll();
-  private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
+  private contentTypeSettings: Signal<ContentTypeSettings>;
   private settingsSvc: FieldsSettingsService = null;
   private promiseHandler: FormulaPromiseHandler = null;
 
@@ -56,10 +52,10 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     super.destroy();
   }
 
-  init(settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentTypeSettings$: BehaviorSubject<ContentTypeSettings>) {
+  init(settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, ctSettings: Signal<ContentTypeSettings>) {
     this.settingsSvc = settingsSvc;
     this.promiseHandler = promiseHandler;
-    this.contentTypeSettings$ = contentTypeSettings$;
+    this.contentTypeSettings = ctSettings;
   }
 
   // TODO: 2dm -> Here we call all list item formulas on some picker for each item
@@ -248,12 +244,12 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
 
     const isOpenInDesigner = this.isDesignerOpen(formula);
-    const ctSettings = this.contentTypeSettings$.value;
+    const ctTitle = this.contentTypeSettings()._itemTitle;
     try {
       switch (formula.version) {
         case FormulaVersions.V1:
           if (isOpenInDesigner)
-            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
+            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
 
           const v1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);
           const isArray = v1Result && Array.isArray(v1Result) && (v1Result as any).every((r: any) => typeof r === 'string');
@@ -286,7 +282,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
         case FormulaVersions.V2:
           if (isOpenInDesigner)
-            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
+            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
 
           //TODO: @2dm -> Added item as last argument so if ew use experimental anywhere nothing breaks
           const v2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);
@@ -303,7 +299,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
         default:
           if (isOpenInDesigner)
-            console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
+            console.log(`Running formula for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           const resultDef = (formula.fn as FormulaFunctionDefault)();
           const valueDef = FormulaValueCorrections.correctAllValues(formula.target, resultDef, inputTypeName);
           valueDef.openInDesigner = isOpenInDesigner;
@@ -313,7 +309,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
           return valueDef;
       }
     } catch (error) {
-      const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
+      const errorLabel = `Error in formula calculation for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
       this.designerSvc.cache.cacheResults(formula, undefined, true, false);
       this.logSvc.addLog(LogSeverities.Error, errorLabel, error);
       if (isOpenInDesigner)

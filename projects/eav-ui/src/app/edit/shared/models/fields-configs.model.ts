@@ -25,7 +25,7 @@ export interface FieldConstants {
   /** The GUID it belongs to - must always be provided */
   entityGuid: string;
   entityId: number;
-  contentTypeId: string;
+  contentTypeNameId: string;
 
   /** The field name - always required */
   fieldName: string;

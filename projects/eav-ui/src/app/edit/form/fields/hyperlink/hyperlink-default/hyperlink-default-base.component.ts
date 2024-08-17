@@ -115,7 +115,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     }
 
     // handle short-ID links like file:17
-    const contentType = this.config.contentTypeId;
+    const contentType = this.config.contentTypeNameId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {

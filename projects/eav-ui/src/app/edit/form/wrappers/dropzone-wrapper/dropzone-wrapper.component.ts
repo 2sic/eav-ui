@@ -134,7 +134,7 @@ export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setConfig(config: Partial<DropzoneConfigExt>) {
-    const contentType = this.config.contentTypeId;
+    const contentType = this.config.contentTypeNameId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     const appId = this.formConfig.config.appId;

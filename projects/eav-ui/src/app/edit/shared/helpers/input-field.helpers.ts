@@ -12,7 +12,7 @@ const logThis = false;
 
 export class InputFieldHelpers {
 
-  static getContentTypeId(item: EavItem): string {
+  static getContentTypeNameId(item: EavItem): string {
     return item.Entity.Type?.Id
       ?? (item.Header as ItemAddIdentifier).ContentTypeName;
   }

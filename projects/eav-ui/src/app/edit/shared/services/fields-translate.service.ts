@@ -35,7 +35,7 @@ export class FieldsTranslateService {
     const l = this.log.fn('init');
     this.entityGuid = entityGuid;
     const item = this.itemService.getItem(entityGuid);
-    this.contentTypeId = InputFieldHelpers.getContentTypeId(item);
+    this.contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
     l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }
 

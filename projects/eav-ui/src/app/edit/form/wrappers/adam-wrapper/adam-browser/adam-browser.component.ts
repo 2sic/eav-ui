@@ -112,7 +112,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
     );
 
-    const contentType = this.config.contentTypeId;
+    const contentType = this.config.contentTypeNameId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
