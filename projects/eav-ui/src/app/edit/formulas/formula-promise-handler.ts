@@ -1,9 +1,8 @@
 import { FieldValue } from "projects/edit-types";
 import { InputType } from "../../content-type-fields/models/input-type.model";
-import { FieldLogicTools } from "../form/shared/field-logic/field-logic-tools";
-import { EntityReader, FieldSettingsDisabledBecauseOfLanguageHelper } from "../shared/helpers";
+import { EntityReader } from "../shared/helpers";
 import { FormValues, FieldsProps } from "../shared/models";
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavEntityAttributes } from "../shared/models/eav";
+import { EavContentType, EavContentTypeAttribute, EavEntityAttributes } from "../shared/models/eav";
 import { ConstantFieldParts } from "./models/constant-field-parts.model";
 import { FormulaPromiseResult } from "./models/formula-promise-result.model";
 import { FormulaSettingsHelper } from "./helpers/formula-settings.helper";
@@ -14,6 +13,7 @@ import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 import { FormItemFormulaService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
+import { FieldSettingsUpdateHelperFactory } from '../shared/helpers/fields-settings-update.helpers';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';
@@ -127,16 +127,21 @@ export class FormulaPromiseHandler {
     entityReader: EntityReader,
     latestFieldProps: FieldsProps,
     attributes: EavContentTypeAttribute[],
-    // contentTypeMetadata: EavEntity[],
     constantFieldParts: ConstantFieldParts[],
     itemAttributes: EavEntityAttributes,
-    formReadOnly: boolean,
-    logicTools: FieldLogicTools,
     formItemFormulaService: FormItemFormulaService,
+    setUpdHelperFactory: FieldSettingsUpdateHelperFactory,
   ): { valuesUpdated: boolean, newFieldProps: FieldsProps } {
-    if (queue[entityGuid] == null) return { valuesUpdated: false, newFieldProps: null };
+    // Get data from change queue
     const toProcess = queue[entityGuid];
-    queue[entityGuid] = { valueUpdates: {}, fieldUpdates: [], settingUpdates: [] };
+
+    // If nothing in the queue for this entity, exit early
+    if (toProcess == null)
+      return { valuesUpdated: false, newFieldProps: null };
+
+    // Flush queue
+    queue[entityGuid] = null;
+
     // extract updates and flush queue
     const values = toProcess.valueUpdates;
     const fields = toProcess.fieldUpdates;
@@ -154,47 +159,33 @@ export class FormulaPromiseHandler {
     if (allSettings.length) {
       newFieldProps = { ...fieldsProps };
       allSettings.forEach(valueSet => {
-        const settingsNew: Record<string, any> = {};
         const settingsCurrent = latestFieldProps[valueSet.name]?.settings;
-        const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === valueSet.name);
+        
+        let settingsNew: Record<string, any> = {};
         valueSet.settings.forEach(setting => {
-          FormulaSettingsHelper.keepSettingsIfTypeMatches(SettingsFormulaPrefix + setting.settingName, settingsCurrent, setting.value, settingsNew);
+          ( { settingsNew } = FormulaSettingsHelper.keepSettingIfTypeMatches(
+            SettingsFormulaPrefix + setting.settingName,
+            settingsCurrent,
+            setting.value,
+            settingsNew));
         });
 
+        const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === valueSet.name);
         const attribute = attributes.find(a => a.Name === valueSet.name);
 
         // Prepare helper which the formula will need to verify if the field is visible
-        const disabledHelper = new FieldSettingsDisabledBecauseOfLanguageHelper(
-          contentType.Metadata,   // contentTypeMetadata, - looks ok
-          entityReader, // for languages
-          logicTools,
-          formReadOnly,
-          slotIsEmpty,
-
+        const setUpdHelper = setUpdHelperFactory.create(
           attribute,
           constantFieldPart,
-          // constantFieldPart.inputType,
           itemAttributes[attribute.Name],
-          // attribute.Metadata,
         );
 
-
-        const updatedSettings = disabledHelper.ensureNewSettingsMatchRequirements(
-          // constantFieldPart.settingsInitial,
+        const updatedSettings = setUpdHelper.ensureNewSettingsMatchRequirements(
           {
             ...settingsCurrent,
             ...settingsNew,
           },
-          // attribute,
-          // contentTypeMetadata,
-          // constantFieldPart.inputType,
-          // constantFieldPart.logic,
-          // itemAttributes[valueSet.name],
-          // entityReader,
-          // slotIsEmpty,
-          // formReadOnly,
           formValues[valueSet.name],
-          // logicTools,
         );
 
         newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };

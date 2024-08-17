@@ -4,7 +4,6 @@ import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { BehaviorSubject } from 'rxjs';
 import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeaturesService } from '../../shared/services/features.service';
-import { EntityReader, FieldSettingsDisabledBecauseOfLanguageHelper } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
 import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
@@ -23,6 +22,7 @@ import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself } from './helpers/formula-objects-internal-data';
+import { FieldSettingsUpdateHelper } from '../shared/helpers/fields-settings-update.helpers';
 
 const logThis = true;
 const nameOfThis = 'FormulaEngine';
@@ -132,19 +132,12 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     attribute: EavContentTypeAttribute,
     formValues: FormValues,
     inputType: InputType,
-    logic: FieldLogicBase,
     settingsInitial: FieldSettings,
-    settingsCurrent: FieldSettings,
+    settingsBefore: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
-    // contentTypeMetadata: EavEntity[],
-    // attributeValues: EavField<any>,
-    // entityReader: EntityReader,
-    slotIsEmpty: boolean,
-    formReadOnly: boolean,
     valueBefore: FieldValue,
-    logicTools: FieldLogicTools,
     reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
-    disabledHelper: FieldSettingsDisabledBecauseOfLanguageHelper,
+    setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
     //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
     const formulas = this.designerSvc.cache
@@ -154,14 +147,17 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
     const formulaFields: FieldValuePair[] = [];
-    const settingsNew: Record<string, any> = {};
 
-    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill };
+    // The new settings - which can be updated multiple times by formulas
+    let settingsNew: Record<string, any> = {};
+
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputType, settingsInitial, settingsCurrent: settingsBefore, itemIdWithPrefill };
 
     const start = performance.now();
     for (const formula of formulas) {
       const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
       const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForFormulaDataAndContext };
+
       const formulaResult = this.runFormula(allObjectParameters);
       if (formulaResult?.promise instanceof Promise) {
         this.promiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputType);
@@ -185,27 +181,21 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
         continue;
       }
 
-      FormulaSettingsHelper.keepSettingsIfTypeMatches(formula.target, settingsCurrent, formulaResult.value, settingsNew);
+      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeMatches(
+        formula.target,
+        settingsBefore,
+        formulaResult.value,
+        settingsNew));
     }
     const afterRun = performance.now();
     this.log.a('runAllFormulas ' + `Time: ${afterRun - start}ms`);
 
-    const updatedSettings = disabledHelper.ensureNewSettingsMatchRequirements(
-      // settingsInitial,
+    const updatedSettings = setUpdHelper.ensureNewSettingsMatchRequirements(
       {
-        ...settingsCurrent,
+        ...settingsBefore,
         ...settingsNew,
       },
-      // attribute,
-      // contentTypeMetadata,
-      // inputType,
-      // logic,
-      // attributeValues,
-      // entityReader,
-      // slotIsEmpty,
-      // formReadOnly,
       valueBefore,
-      // logicTools,
     );
 
     const runFormulaResult: RunFormulasResult = {

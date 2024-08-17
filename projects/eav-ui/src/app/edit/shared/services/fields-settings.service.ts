@@ -5,7 +5,7 @@ import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-import { EntityReader, FieldSettingsDisabledBecauseOfLanguageHelper, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
 import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
 import { ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
@@ -21,6 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../helpers/fields-settings-update.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -190,24 +191,45 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
 
           const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
+
           const logicTools: FieldLogicTools = {
             eavConfig: this.formConfig.config,
             entityReader,
             debug: debugEnabled,
             contentTypeItemService: this.contentTypeItemService,
           };
+
+          // This factory will generate helpers to validate settings updates
+          const setUpdHelperFactory = new FieldSettingsUpdateHelperFactory(
+            contentType.Metadata,
+            entityReader, // for languages
+            logicTools,
+            formReadOnly.isReadOnly,
+            slotIsEmpty,
+          );
+
           if (Object.keys(this.latestFieldProps).length) {
-            const status = this.formulaPromiseHandler.updateValuesFromQueue(
-              entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
-              this.latestFieldProps, contentType.Attributes,
-              // contentType.Metadata,
+            const { newFieldProps, valuesUpdated } = this.formulaPromiseHandler.updateValuesFromQueue(
+              entityGuid,
+              this.updateValueQueue,
+              contentType,
+              formValues,
+              this.latestFieldProps,
+              slotIsEmpty,
+              entityReader,
+              this.latestFieldProps,
+              contentType.Attributes,
               constantFieldParts,
-              itemAttributes, formReadOnly.isReadOnly, logicTools, this.formItemFormulaService);
+              itemAttributes,
+              this.formItemFormulaService,
+              setUpdHelperFactory,
+            );
             // we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
-            if (status.newFieldProps)
-              this.latestFieldProps = status.newFieldProps;
-            if (status.valuesUpdated) return null;
+            if (newFieldProps)
+              this.latestFieldProps = newFieldProps;
+            if (valuesUpdated)
+              return null;
           }
 
           const fieldsProps: FieldsProps = {};
@@ -235,36 +257,20 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
               latestSettings = { ...constantFieldPart.settingsInitial };
             }
 
-            // Prepare helper which the formula will need to verify if the field is visible
-            const disabledHelper = new FieldSettingsDisabledBecauseOfLanguageHelper(
-              contentType.Metadata,
-              entityReader, // for languages
-              logicTools,
-              formReadOnly.isReadOnly,
-              slotIsEmpty,
-
-              attribute,
-              constantFieldPart,
-              // constantFieldPart.inputType,
-              attributeValues,
-              // attribute.Metadata,
+            const settingsUpdateHelper = setUpdHelperFactory.create(
+              attribute, constantFieldPart, attributeValues
             );
 
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulasOfField(
               entityGuid, attribute, formValues,
               constantFieldPart.inputType,
-              constantFieldPart.logic,
               constantFieldPart.settingsInitial,
               latestSettings,
               itemHeader,
-              // contentType.Metadata, attributeValues, entityReader,
-              slotIsEmpty,
-              formReadOnly.isReadOnly,
               valueBefore,
-              logicTools,
               reuseObjectsForFormulaDataAndContext,
-              disabledHelper,
+              settingsUpdateHelper,
             );
 
             const fixed = formulaResult.settings;

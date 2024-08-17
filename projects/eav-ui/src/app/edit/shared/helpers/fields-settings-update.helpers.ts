@@ -1,0 +1,155 @@
+import { LocalizationHelpers, ValidationHelpers } from '.';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
+import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
+import { MetadataDecorators } from '../constants';
+import { EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
+import { FormLanguage } from '../models/form-languages.model';
+
+export class FieldSettingsUpdateHelperFactory {
+  constructor(
+    // General & Content Type Info
+    private contentTypeMetadata: EavEntity[],
+    private language: FormLanguage,
+    /** set of configuration for running field logic - shared */
+    private fieldLogicTools: FieldLogicTools,
+    /** Info that the form is read-only */
+    private formReadOnly: boolean,
+    private formSlotIsEmpty: boolean,
+  ) {
+
+  }
+
+  create(
+    attribute: EavContentTypeAttribute,
+    constantFieldPart: ConstantFieldParts,
+    attributeValues: EavField<any>,
+  ): FieldSettingsUpdateHelper {
+    return new FieldSettingsUpdateHelper(
+      this.contentTypeMetadata,
+      this.language,
+      this.fieldLogicTools,
+      this.formReadOnly,
+      this.formSlotIsEmpty,
+      attribute,
+      constantFieldPart,
+      attributeValues,
+    );
+  }
+}
+
+/**
+ * Special helper to check if a field should remain disabled because of various language settings.
+ * 
+ * Only used in formulas, after running formulas which modify settings.
+ * 
+ * Each one is specific to a certain field, so you must create another object for every field you check.
+ */
+export class FieldSettingsUpdateHelper {
+
+  constructor(
+    // General & Content Type Info
+    private contentTypeMetadata: EavEntity[],
+    private language: FormLanguage,
+    /** set of configuration for running field logic - shared */
+    private fieldLogicTools: FieldLogicTools,
+    /** Info that the form is read-only */
+    private formReadOnly: boolean,
+    private formSlotIsEmpty: boolean,
+
+    // Field specific info
+    private attribute: EavContentTypeAttribute,
+    private constantFieldPart: ConstantFieldParts,
+    private attributeValues: EavField<any>,
+  ) {
+
+  }
+
+  /**
+   * Used for calculating new settings.
+   * @param settingsNew Last settings
+   * @param valueBefore
+   * @returns Corrected settings
+   */
+  ensureNewSettingsMatchRequirements(
+    settingsNew: FieldSettings,
+    valueBefore: FieldValue,
+  ): FieldSettings {
+    const constantFieldPart = this.constantFieldPart;
+    const slotIsEmpty = this.formSlotIsEmpty;
+
+    // Why are we doing this?
+    settingsNew.Name = settingsNew.Name || this.attribute.Name;
+
+
+    settingsNew._currentRequired = ValidationHelpers.isRequired(settingsNew);
+    const disableTranslation = this.schemaDisablesTranslation();
+
+    settingsNew.DisableTranslation = slotIsEmpty || disableTranslation;
+    settingsNew._disabledBecauseOfTranslation = this.getDisabledBecauseTranslations(settingsNew.DisableTranslation);
+
+    settingsNew.ForcedDisabled = slotIsEmpty || settingsNew._disabledBecauseOfTranslation || this.formReadOnly;
+
+    settingsNew.DisableAutoTranslation = constantFieldPart.settingsInitial.DisableAutoTranslation
+      || settingsNew.DisableTranslation;
+
+    // Correct these fresh settings with FieldLogics of this field
+    const fixed = constantFieldPart.logic?.update(settingsNew, valueBefore, this.fieldLogicTools) ?? settingsNew;
+
+    return fixed;
+  }
+
+
+  /** Find if DisableTranslation is true in any setting and in any language */
+  private schemaDisablesTranslation(): boolean {
+    const contentTypeMetadata = this.contentTypeMetadata;
+    const inputType = this.constantFieldPart.inputType;
+    const attributeValues = this.attributeValues;
+    const defaultLanguage = this.language.primary;
+    const attributeMetadata = this.attribute.Metadata;
+
+    // Disable translation if not allowed by the ContentType.
+    // This is configured using a LanguagesDecorator in ContentType.
+    const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
+      return true;
+
+    // Disable translation if the input type says it can't be translated (e.g. Entity).
+    if (inputType?.DisableI18n)
+      return true;
+
+    // TODO: CHECK if this should be here - it's repeated below
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage))
+      return true;
+
+    // Disable translation if the Attribute Configuration says so.
+    // DisableTranslation is true in any language in @All, @String, @string-default, etc...
+    for (const attrMd of attributeMetadata ?? []) {
+      if (attrMd.Attributes.DisableTranslation?.Values.some(v => v.Value === true))
+        return true;
+    }
+
+    return false;
+  }
+
+  private getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
+    const attributeValues = this.attributeValues;
+    const language = this.language;
+    // On primary edit is never disabled by translations
+    // This is the only one we check 
+    if (language.current === language.primary)
+      return false;
+    // If translations are disabled, then it's disabled
+    // Only check this _after_ checking if we're in the primary language
+    if (disableTranslation)
+      return true;
+    // If no value on primary, then it's disabled
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
+      return true;
+    if (LocalizationHelpers.hasEditableValue(attributeValues, language))
+      return false;
+    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current))
+      return true;
+    return true;
+  }
+}
