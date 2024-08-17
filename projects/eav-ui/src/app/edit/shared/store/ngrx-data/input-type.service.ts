@@ -3,6 +3,10 @@ import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { BaseDataService } from './base-data.service';
+import { EavContentTypeAttribute } from '../../models/eav';
+import { InputTypeName } from 'projects/edit-types/src/InputTypeName';
+import { CalculatedInputType } from '../../models/calculated-input-type.model';
+import { InputTypeStrict } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 
 
 // TODO: @2dm - try to get out of store, and make it provide signals
@@ -27,4 +31,30 @@ export class InputTypeService extends BaseDataService<InputType> {
   getInputTypes$(): Observable<InputType[]> {
     return this.cache$.asObservable();
   }
+
+  getInputTypeNames(attributes: EavContentTypeAttribute[]): InputTypeName[] {
+    const inputTypes = this.getInputTypes();
+    return attributes.map(attribute => {
+      const calculatedInputType = this.calculateInputTypeInt(attribute, inputTypes);
+      const inputTypeName: InputTypeName = {
+        name: attribute.Name,
+        inputType: calculatedInputType.inputType,
+      };
+      return inputTypeName;
+    });
+  }
+
+  calculateInputType(attribute: EavContentTypeAttribute): CalculatedInputType {
+    return this.calculateInputTypeInt(attribute, this.getInputTypes());
+  }
+  
+  private calculateInputTypeInt(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
+    const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+    const calculated: CalculatedInputType = {
+      inputType: attribute.InputType as InputTypeStrict,
+      isExternal: inputType ? !!inputType.AngularAssets : false,
+    };
+    return calculated;
+  }
+
 }

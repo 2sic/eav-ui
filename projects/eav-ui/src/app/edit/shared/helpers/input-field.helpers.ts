@@ -1,12 +1,11 @@
-import { FieldSettings, FieldValue, InputTypeName } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { WrappersConstant, WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
-import { EavContentTypeAttribute, EavItem } from '../models/eav';
+import { EavItem } from '../models/eav';
 
 const logThis = false;
 
@@ -15,26 +14,6 @@ export class InputFieldHelpers {
   static getContentTypeNameId(item: EavItem): string {
     return item.Entity.Type?.Id
       ?? (item.Header as ItemAddIdentifier).ContentTypeName;
-  }
-
-  static getInputTypeNames(attributes: EavContentTypeAttribute[], inputTypes: InputType[]): InputTypeName[] {
-    return attributes.map(attribute => {
-      const calculatedInputType = this.calculateInputType(attribute, inputTypes);
-      const inputTypeName: InputTypeName = {
-        name: attribute.Name,
-        inputType: calculatedInputType.inputType,
-      };
-      return inputTypeName;
-    });
-  }
-
-  static calculateInputType(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
-    const inputType = inputTypes.find(i => i.Type === attribute.InputType);
-    const calculated: CalculatedInputType = {
-      inputType: attribute.InputType as InputTypeStrict,
-      isExternal: inputType ? !!inputType.AngularAssets : false,
-    };
-    return calculated;
   }
 
   static getWrappers(settings: FieldSettings, calculatedInputType: CalculatedInputType) {

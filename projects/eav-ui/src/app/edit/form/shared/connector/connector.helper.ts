@@ -130,7 +130,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   private calculateExperimentalProps() {
     const contentType = this.contentTypeService.getContentType(this.config.contentTypeNameId);
     const inputTypes = this.inputTypeService.getInputTypes();
-    const allInputTypeNames = InputFieldHelpers.getInputTypeNames(contentType.Attributes, inputTypes);
+    const allInputTypeNames = this.inputTypeService.getInputTypeNames(contentType.Attributes);
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entityGuid,

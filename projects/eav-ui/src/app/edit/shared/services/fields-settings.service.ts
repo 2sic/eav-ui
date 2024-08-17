@@ -307,9 +307,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     // Get the form languages - but we only need default & initial, so we don't have to observe
     const language = this.formConfig.language();
 
-    // Get the input types from service, don't observe changes
-    const inputTypes = this.inputTypeService.getInputTypes();
-
     const contentType = this.contentType;
     
     // When merging the "constant" metadata, the primary language must be the initial language, not the current
@@ -321,10 +318,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
       const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
 
-      const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
+      const calculatedInputType = this.inputTypeService.calculateInputType(attribute);
       const inputType = this.inputTypeService.getInputType(attribute.InputType);
 
-      this.log.a('details', { inputTypes, contentType, language });
+      this.log.a('details', { contentType, language });
 
       const logic = FieldLogicManager.singleton().get(attribute.InputType);
 
