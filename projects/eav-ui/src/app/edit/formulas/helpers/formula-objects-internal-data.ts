@@ -1,4 +1,4 @@
-import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
 import { FormValues, Language } from '../../shared/models';
 import { FormLanguage } from '../../shared/models/form-languages.model';
@@ -6,10 +6,7 @@ import { FormConfigService, FieldsSettingsService } from '../../shared/services'
 import { ItemService } from '../../shared/store/ngrx-data';
 import { FormulaRunParameters } from '../formula-engine';
 
-
-export interface FormulaObjectsInternalData {
-  runParameters: FormulaRunParameters;
-  inputType: InputTypeStrict;
+export interface FormulaObjectsInternalWithoutFormulaItself {
   initialFormValues: FormValues;
   language: FormLanguage;
   languages: Language[];
@@ -17,5 +14,9 @@ export interface FormulaObjectsInternalData {
   itemService: ItemService;
   formConfig: FormConfigService;
   fieldsSettingsService: FieldsSettingsService;
-  features: FeatureSummary[];
+  features: Signal<FeatureSummary[]>;
+}
+
+export interface FormulaObjectsInternalData extends FormulaObjectsInternalWithoutFormulaItself {
+  runParameters: FormulaRunParameters;
 }

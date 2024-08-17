@@ -1,7 +1,7 @@
 import { FieldValue } from "projects/edit-types";
 import { InputType } from "../../content-type-fields/models/input-type.model";
 import { FieldLogicTools } from "../form/shared/field-logic/field-logic-tools";
-import { EntityReader } from "../shared/helpers";
+import { EntityReader, FieldSettingsDisabledBecauseOfLanguageHelper } from "../shared/helpers";
 import { FormValues, FieldsProps } from "../shared/models";
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavEntityAttributes } from "../shared/models/eav";
 import { ConstantFieldParts } from "./models/constant-field-parts.model";
@@ -127,7 +127,7 @@ export class FormulaPromiseHandler {
     entityReader: EntityReader,
     latestFieldProps: FieldsProps,
     attributes: EavContentTypeAttribute[],
-    contentTypeMetadata: EavEntity[],
+    // contentTypeMetadata: EavEntity[],
     constantFieldParts: ConstantFieldParts[],
     itemAttributes: EavEntityAttributes,
     formReadOnly: boolean,
@@ -161,22 +161,40 @@ export class FormulaPromiseHandler {
           FormulaSettingsHelper.keepSettingsIfTypeMatches(SettingsFormulaPrefix + setting.settingName, settingsCurrent, setting.value, settingsNew);
         });
 
-        const updatedSettings = FormulaSettingsHelper.ensureNewSettingsMatchRequirements(
-          constantFieldPart.settingsInitial,
+        const attribute = attributes.find(a => a.Name === valueSet.name);
+
+        // Prepare helper which the formula will need to verify if the field is visible
+        const disabledHelper = new FieldSettingsDisabledBecauseOfLanguageHelper(
+          contentType.Metadata,   // contentTypeMetadata, - looks ok
+          entityReader, // for languages
+          logicTools,
+          formReadOnly,
+          slotIsEmpty,
+
+          attribute,
+          constantFieldPart,
+          // constantFieldPart.inputType,
+          itemAttributes[attribute.Name],
+          // attribute.Metadata,
+        );
+
+
+        const updatedSettings = disabledHelper.ensureNewSettingsMatchRequirements(
+          // constantFieldPart.settingsInitial,
           {
             ...settingsCurrent,
             ...settingsNew,
           },
-          attributes.find(a => a.Name === valueSet.name),
-          contentTypeMetadata,
-          constantFieldPart.inputType,
-          constantFieldPart.logic,
-          itemAttributes[valueSet.name],
-          entityReader,
-          slotIsEmpty,
-          formReadOnly,
+          // attribute,
+          // contentTypeMetadata,
+          // constantFieldPart.inputType,
+          // constantFieldPart.logic,
+          // itemAttributes[valueSet.name],
+          // entityReader,
+          // slotIsEmpty,
+          // formReadOnly,
           formValues[valueSet.name],
-          logicTools,
+          // logicTools,
         );
 
         newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };

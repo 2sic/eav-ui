@@ -5,7 +5,7 @@ import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
+import { EntityReader, FieldSettingsDisabledBecauseOfLanguageHelper, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
 import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
 import { ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
@@ -28,6 +28,8 @@ const nameOfThis = 'FieldsSettingsService';
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
+ * 
+ * Each instance is responsible for a single entity.
  */
 @Injectable()
 export class FieldsSettingsService extends ServiceBase implements OnDestroy {
@@ -44,7 +46,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private constantFieldParts$ = new Observable<ConstantFieldParts[]>();
   private itemHeader$ = new Observable<ItemIdentifierHeader>();
   private entityGuid: string;
-  private entityId: number;
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -104,14 +105,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const entityId = item.Entity.Id;
-    this.entityId = entityId;
 
     const eavConfig = this.formConfig.config;
     this.constantFieldParts$ = combineLatest([inputTypes$, this.contentType$, this.entityReader$, this.formConfig.language$]).pipe(
       map(([inputTypes, contentType, entityReader, language]) => {
         const lConstantFieldParts = this.log.fn('constantFieldParts', { inputTypes, contentType, entityReader, language });
 
-        // When merging metadata, the primary language must be the initial language, not the current
+        // When merging the "constant" metadata, the primary language must be the initial language, not the current
+        // as that contains all the relevant settings which should not be translated
         const mdMerger = new EntityReader(language.initial, language.primary);
 
         const constFieldParts = contentType.Attributes.map((attribute, index) => {
@@ -198,7 +199,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           if (Object.keys(this.latestFieldProps).length) {
             const status = this.formulaPromiseHandler.updateValuesFromQueue(
               entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
-              this.latestFieldProps, contentType.Attributes, contentType.Metadata, constantFieldParts,
+              this.latestFieldProps, contentType.Attributes,
+              // contentType.Metadata,
+              constantFieldParts,
               itemAttributes, formReadOnly.isReadOnly, logicTools, this.formItemFormulaService);
             // we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
@@ -210,6 +213,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           const fieldsProps: FieldsProps = {};
           const possibleValueUpdates: FormValues = {};
           const possibleFieldsUpdates: FieldValuePair[] = [];
+
+          // Many aspects of a field are re-usable across formulas, so we prepare them here
+          // These are things explicit to the entity and either never change, or only rarely
+          // so never between cycles
+          const reuseObjectsForFormulaDataAndContext = this.formulaEngine.prepareDataForFormulaObjects(entityGuid);
 
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
@@ -227,12 +235,36 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
               latestSettings = { ...constantFieldPart.settingsInitial };
             }
 
+            // Prepare helper which the formula will need to verify if the field is visible
+            const disabledHelper = new FieldSettingsDisabledBecauseOfLanguageHelper(
+              contentType.Metadata,
+              entityReader, // for languages
+              logicTools,
+              formReadOnly.isReadOnly,
+              slotIsEmpty,
+
+              attribute,
+              constantFieldPart,
+              // constantFieldPart.inputType,
+              attributeValues,
+              // attribute.Metadata,
+            );
+
             // run formulas
-            const formulaResult = this.formulaEngine.runAllFormulas(
+            const formulaResult = this.formulaEngine.runAllFormulasOfField(
               entityGuid, attribute, formValues,
-              constantFieldPart.inputType, constantFieldPart.logic, constantFieldPart.settingsInitial, latestSettings,
-              itemHeader, contentType.Metadata, attributeValues, entityReader, slotIsEmpty,
-              formReadOnly.isReadOnly, valueBefore, logicTools
+              constantFieldPart.inputType,
+              constantFieldPart.logic,
+              constantFieldPart.settingsInitial,
+              latestSettings,
+              itemHeader,
+              // contentType.Metadata, attributeValues, entityReader,
+              slotIsEmpty,
+              formReadOnly.isReadOnly,
+              valueBefore,
+              logicTools,
+              reuseObjectsForFormulaDataAndContext,
+              disabledHelper,
             );
 
             const fixed = formulaResult.settings;
@@ -257,13 +289,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           }
           this.latestFieldProps = fieldsProps;
 
+          // if changes were applied do not trigger field property updates yet, but wait for the next cycle
           const changesWereApplied = this.formItemFormulaService.applyValueChangesFromFormulas(
             entityGuid, contentType, formValues, fieldsProps,
             possibleValueUpdates, possibleFieldsUpdates,
             slotIsEmpty, entityReader);
-          // if changes were applied do not trigger field property updates
           if (changesWereApplied)
             return null;
+
           // if no changes were applied then we trigger field property updates and reset the loop counter
           this.formItemFormulaService.valueFormulaCounter = 0;
           return fieldsProps;

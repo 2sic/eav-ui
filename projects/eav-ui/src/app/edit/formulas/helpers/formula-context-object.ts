@@ -35,7 +35,7 @@ export class FormulaContextObject implements FormulaV1Context {
 
     this.features = {
       isEnabled(name: string): boolean {
-        return propsData.features.find(f => f.nameId === name)?.isEnabled ?? false;
+        return propsData.features().find(f => f.nameId === name)?.isEnabled ?? false;
       },
     };
 

@@ -1,15 +1,148 @@
-import { LocalizationHelpers } from '.';
-import { FieldSettings } from '../../../../../../edit-types';
+import { LocalizationHelpers, ValidationHelpers } from '.';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { ItemIdentifierEditConfig } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
+import { FieldLogicBase } from '../../form/shared/field-logic/field-logic-base';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
+import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
+import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { MetadataDecorators, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
+
+/**
+ * Special helper to check if a field should remain disabled because of various language settings.
+ * 
+ * Only used in formulas, after running formulas which modify settings.
+ * 
+ * Each one is specific to a certain field, so you must create another object for every field you check.
+ */
+export class FieldSettingsDisabledBecauseOfLanguageHelper {
+
+  constructor(
+    // General & Content Type Info
+    private contentTypeMetadata: EavEntity[],
+    private language: FormLanguage,
+    /** set of configuration for running field logic - shared */
+    private fieldLogicTools: FieldLogicTools,
+    /** Info that the form is read-only */
+    private formReadOnly: boolean,
+    private formSlotIsEmpty: boolean,
+
+    // Field specific info
+    private attribute: EavContentTypeAttribute,
+    private constantFieldPart: ConstantFieldParts,
+    // private inputType: InputType,
+    private attributeValues: EavField<any>,
+  ) {
+
+  }
+
+  /**
+   * Used for calculating new settings.
+   * @param settingsInitial Default settings
+   * @param settingsNew Last settings
+   * @param attribute
+   * @param contentTypeMetadata
+   * @param fieldInputType
+   * @param fieldLogic
+   * @param attributeValues
+   * @param language
+   * @param slotIsEmpty If slot is empty
+   * @param formReadOnly Is form read only
+   * @param valueBefore
+   * @param logicTools
+   * @returns Calculated settings
+   */
+  ensureNewSettingsMatchRequirements(
+    // settingsInitial: FieldSettings,
+    settingsNew: FieldSettings,
+    // attribute: EavContentTypeAttribute,
+    // contentTypeMetadata: EavEntity[],
+    // fieldInputType: InputType,
+    // fieldLogic: FieldLogicBase,
+    // attributeValues: EavField<any>,
+    // language: FormLanguage,
+    // slotIsEmpty: boolean,
+    // formReadOnly: boolean,
+    valueBefore: FieldValue,
+    // logicTools: FieldLogicTools,
+    // disabledHelper: FieldSettingsDisabledBecauseOfLanguageHelper,
+  ): FieldSettings {
+    const constantFieldPart = this.constantFieldPart;
+    const slotIsEmpty = this.formSlotIsEmpty;
+    settingsNew.Name = settingsNew.Name || this.attribute.Name;
+    settingsNew._currentRequired = ValidationHelpers.isRequired(settingsNew);
+    const disableTranslation = this.findDisableTranslation();
+    //  FieldsSettingsHelpers.findDisableTranslation(
+    //   contentTypeMetadata,
+    //   fieldInputType,
+    //   attributeValues,
+    //   language.primary,
+    //   attribute.Metadata,
+    // );
+    settingsNew.DisableTranslation = slotIsEmpty || disableTranslation;
+    settingsNew._disabledBecauseOfTranslation = this.getDisabledBecauseTranslations(settingsNew.DisableTranslation);
+    //  FieldsSettingsHelpers.getDisabledBecauseTranslations(
+    //   attributeValues,
+    //   settingsNew.DisableTranslation,
+    //   language,
+    // );
+    settingsNew.ForcedDisabled = slotIsEmpty || settingsNew._disabledBecauseOfTranslation || this.formReadOnly;
+
+    settingsNew.DisableAutoTranslation = constantFieldPart.settingsInitial.DisableAutoTranslation
+      || settingsNew.DisableTranslation;
+
+    // update settings with respective FieldLogics
+    const fixed = constantFieldPart.logic?.update(settingsNew, valueBefore, this.fieldLogicTools) ?? settingsNew;
+
+    return fixed;
+  }
+
+
+  /** Find if DisableTranslation is true in any setting and in any language */
+  findDisableTranslation(): boolean {
+    const contentTypeMetadata = this.contentTypeMetadata;
+    const inputType = this.constantFieldPart.inputType;
+    const attributeValues = this.attributeValues;
+    const defaultLanguage = this.language.primary;
+    const attributeMetadata = this.attribute.Metadata;
+
+    // disable translation if LanguagesDecorator in ContentType is false in any language
+    const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
+      return true;
+
+    if (inputType?.DisableI18n)
+      return true;
+
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage))
+      return true;
+
+    // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
+    for (const metadataItem of attributeMetadata ?? []) {
+      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true))
+        return true;
+    }
+
+    return false;
+  }
+
+  getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
+    const attributeValues = this.attributeValues;
+    const language = this.language;
+    if (language.current === language.primary) return false;
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary)) return true;
+    if (disableTranslation) return true;
+    if (LocalizationHelpers.hasEditableValue(attributeValues, language)) return false;
+    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) return true;
+    return true;
+  }
+}
 
 export class FieldsSettingsHelpers {
 
@@ -66,14 +199,19 @@ export class FieldsSettingsHelpers {
   ): boolean {
     // disable translation if LanguagesDecorator in ContentType is false in any language
     const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) return true;
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
+      return true;
 
-    if (inputType?.DisableI18n) return true;
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage)) return true;
+    if (inputType?.DisableI18n)
+      return true;
+
+    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage))
+      return true;
 
     // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
     for (const metadataItem of attributeMetadata ?? []) {
-      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) return true;
+      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true))
+        return true;
     }
 
     return false;
@@ -101,7 +239,6 @@ export class FieldsSettingsHelpers {
     const indexOfFirstEmpty = contentType.Attributes.findIndex(a => EmptyFieldHelpers.isGroupStart(a.InputType));
     if (index < indexOfFirstEmpty) return false;
 
-    // if (attribute.InputType === InputTypeConstants.EmptyEnd) return true;
     if (EmptyFieldHelpers.isGroupEnd(attribute.InputType)) return true;
 
     if (EmptyFieldHelpers.endsPreviousGroup(contentType.Attributes[index + 1].InputType)) return true;

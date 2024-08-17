@@ -13,10 +13,10 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get default(): FieldValue {
-    const { runParameters, inputType } = this.#propsData;
-    const { formula, settingsInitial } = runParameters;
+    const { runParameters } = this.#propsData;
+    const { formula, settingsInitial, inputType } = runParameters;
     if (formula.target === FormulaTargets.Value)
-      return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial);
+      return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType?.Type, settingsInitial);
 
     if (formula.target.startsWith(SettingsFormulaPrefix)) {
       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
@@ -36,10 +36,9 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get prefill(): FieldValue {
-    const { formula, settingsInitial, itemIdWithPrefill } = this.#propsData.runParameters;
-    const { inputType } = this.#propsData;
+    const { formula, settingsInitial, itemIdWithPrefill, inputType } = this.#propsData.runParameters;
     if (formula.target !== FormulaTargets.Value) { return; }
-    return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial, itemIdWithPrefill, true);
+    return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType?.Type, settingsInitial, itemIdWithPrefill, true);
   }
 
   get value(): FieldValue {

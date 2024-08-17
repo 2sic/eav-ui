@@ -2,7 +2,7 @@ import { FieldSettings, FieldValue } from "projects/edit-types";
 import { InputType } from "../../../content-type-fields/models/input-type.model";
 import { FieldLogicBase } from "../../form/shared/field-logic/field-logic-base";
 import { FieldLogicTools } from "../../form/shared/field-logic/field-logic-tools";
-import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
+import { ValidationHelpers, FieldsSettingsHelpers, FieldSettingsDisabledBecauseOfLanguageHelper } from "../../shared/helpers";
 import { EavContentTypeAttribute, EavEntity, EavField } from "../../shared/models/eav";
 import { SettingsFormulaPrefix } from "../models/formula.models";
 import { FormLanguage } from '../../shared/models/form-languages.model';
@@ -12,55 +12,63 @@ import { FormLanguage } from '../../shared/models/form-languages.model';
  */
 export class FormulaSettingsHelper {
 
-  /**
-   * Used for calculating new settings.
-   * @param settingsInitial Default settings
-   * @param settingsCurrent Last settings
-   * @param attribute
-   * @param contentTypeMetadata
-   * @param fieldInputType
-   * @param fieldLogic
-   * @param attributeValues
-   * @param language
-   * @param slotIsEmpty If slot is empty
-   * @param formReadOnly Is form read only
-   * @param valueBefore
-   * @param logicTools
-   * @returns Calculated settings
-   */
-  static ensureNewSettingsMatchRequirements(
-    settingsInitial: FieldSettings,
-    settingsCurrent: FieldSettings,
-    attribute: EavContentTypeAttribute,
-    contentTypeMetadata: EavEntity[],
-    fieldInputType: InputType,
-    fieldLogic: FieldLogicBase,
-    attributeValues: EavField<any>,
-    language: FormLanguage,
-    slotIsEmpty: boolean,
-    formReadOnly: boolean,
-    valueBefore: FieldValue,
-    logicTools: FieldLogicTools,
-  ): FieldSettings {
-    settingsCurrent.Name = settingsCurrent.Name || attribute.Name;
-    settingsCurrent._currentRequired = ValidationHelpers.isRequired(settingsCurrent);
-    const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
-      contentTypeMetadata, fieldInputType, attributeValues, language.primary, attribute.Metadata,
-    );
-    settingsCurrent.DisableTranslation = slotIsEmpty || disableTranslation;
-    settingsCurrent._disabledBecauseOfTranslation = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-      attributeValues, settingsCurrent.DisableTranslation, language,
-    );
-    settingsCurrent.ForcedDisabled = slotIsEmpty || settingsCurrent._disabledBecauseOfTranslation || formReadOnly;
+  // /**
+  //  * Used for calculating new settings.
+  //  * @param settingsInitial Default settings
+  //  * @param settingsNew Last settings
+  //  * @param attribute
+  //  * @param contentTypeMetadata
+  //  * @param fieldInputType
+  //  * @param fieldLogic
+  //  * @param attributeValues
+  //  * @param language
+  //  * @param slotIsEmpty If slot is empty
+  //  * @param formReadOnly Is form read only
+  //  * @param valueBefore
+  //  * @param logicTools
+  //  * @returns Calculated settings
+  //  */
+  // static ensureNewSettingsMatchRequirements(
+  //   settingsInitial: FieldSettings,
+  //   settingsNew: FieldSettings,
+  //   attribute: EavContentTypeAttribute,
+  //   // contentTypeMetadata: EavEntity[],
+  //   // fieldInputType: InputType,
+  //   fieldLogic: FieldLogicBase,
+  //   // attributeValues: EavField<any>,
+  //   // language: FormLanguage,
+  //   slotIsEmpty: boolean,
+  //   formReadOnly: boolean,
+  //   valueBefore: FieldValue,
+  //   logicTools: FieldLogicTools,
+  //   disabledHelper: FieldSettingsDisabledBecauseOfLanguageHelper,
+  // ): FieldSettings {
+  //   settingsNew.Name = settingsNew.Name || attribute.Name;
+  //   settingsNew._currentRequired = ValidationHelpers.isRequired(settingsNew);
+  //   const disableTranslation = disabledHelper.findDisableTranslation();
+  //   //  FieldsSettingsHelpers.findDisableTranslation(
+  //   //   contentTypeMetadata,
+  //   //   fieldInputType,
+  //   //   attributeValues,
+  //   //   language.primary,
+  //   //   attribute.Metadata,
+  //   // );
+  //   settingsNew.DisableTranslation = slotIsEmpty || disableTranslation;
+  //   settingsNew._disabledBecauseOfTranslation = disabledHelper.getDisabledBecauseTranslations(settingsNew.DisableTranslation);
+  //   //  FieldsSettingsHelpers.getDisabledBecauseTranslations(
+  //   //   attributeValues,
+  //   //   settingsNew.DisableTranslation,
+  //   //   language,
+  //   // );
+  //   settingsNew.ForcedDisabled = slotIsEmpty || settingsNew._disabledBecauseOfTranslation || formReadOnly;
 
-    settingsCurrent.DisableAutoTranslation = settingsInitial.DisableAutoTranslation || settingsCurrent.DisableTranslation;
+  //   settingsNew.DisableAutoTranslation = settingsInitial.DisableAutoTranslation || settingsNew.DisableTranslation;
 
-    // update settings with respective FieldLogics
-    const fixed = fieldLogic?.update(settingsCurrent, valueBefore, logicTools) ?? settingsCurrent;
-    // consoleLogForm('fixed', JSON.parse(JSON.stringify(fixed)));
+  //   // update settings with respective FieldLogics
+  //   const fixed = fieldLogic?.update(settingsNew, valueBefore, logicTools) ?? settingsNew;
 
-    return fixed;
-  }
+  //   return fixed;
+  // }
 
   /**
    * Possibly updates setting with formula result if target and type matches.

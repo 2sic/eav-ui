@@ -4,7 +4,7 @@ import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { BehaviorSubject } from 'rxjs';
 import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeaturesService } from '../../shared/services/features.service';
-import { EntityReader } from '../shared/helpers';
+import { EntityReader, FieldSettingsDisabledBecauseOfLanguageHelper } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
 import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
@@ -22,11 +22,14 @@ import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/fo
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
+import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself } from './helpers/formula-objects-internal-data';
 
 const logThis = true;
 const nameOfThis = 'FormulaEngine';
 /**
  * Formula engine is responsible for running formulas and returning the result.
+ * 
+ * Each instance of the engine is responsible for a _single_ entity.
  */
 @Injectable()
 export class FormulaEngine extends ServiceBase implements OnDestroy {
@@ -89,11 +92,15 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     if (formulas.length === 0)
       return availableItems;
 
-    const reuseParameters = { formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill }
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill };
+
+    const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(entityGuid);
 
     for (const formula of formulas)
       for (const item of availableItems) {
-        const result = this.runFormula({ formula, item, ...reuseParameters });
+        const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
+        const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForDataAndContext };
+          const result = this.runFormula(allObjectParameters);
 
         switch (formula.target) {
           case FormulaTargets.ListItemLabel:
@@ -118,25 +125,9 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
   /**
    * Used for running all formulas for a given attribute/field.
-   * @param entityGuid
-   * @param entityId
-   * @param attribute
-   * @param formValues
-   * @param inputType
-   * @param logic
-   * @param settingsInitial
-   * @param settingsCurrent
-   * @param itemIdWithPrefill
-   * @param contentTypeMetadata
-   * @param attributeValues
-   * @param entityReader
-   * @param slotIsEmpty
-   * @param formReadOnly
-   * @param valueBefore
-   * @param logicTools
    * @returns Object with all changes that formulas should make
    */
-  runAllFormulas(
+  runAllFormulasOfField(
     entityGuid: string,
     attribute: EavContentTypeAttribute,
     formValues: FormValues,
@@ -145,28 +136,33 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
-    contentTypeMetadata: EavEntity[],
-    attributeValues: EavField<any>,
-    entityReader: EntityReader,
+    // contentTypeMetadata: EavEntity[],
+    // attributeValues: EavField<any>,
+    // entityReader: EntityReader,
     slotIsEmpty: boolean,
     formReadOnly: boolean,
     valueBefore: FieldValue,
     logicTools: FieldLogicTools,
+    reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
+    disabledHelper: FieldSettingsDisabledBecauseOfLanguageHelper,
   ): RunFormulasResult {
     //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
     const formulas = this.designerSvc.cache
       .getFormulas(entityGuid, attribute.Name, Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets)), false)
       .filter(f => !f.stopFormula);
+
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
     const formulaFields: FieldValuePair[] = [];
     const settingsNew: Record<string, any> = {};
 
-    const reuseParameters = { formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill };
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill };
 
     const start = performance.now();
     for (const formula of formulas) {
-      const formulaResult = this.runFormula({ formula, ...reuseParameters });
+      const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
+      const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForFormulaDataAndContext };
+      const formulaResult = this.runFormula(allObjectParameters);
       if (formulaResult?.promise instanceof Promise) {
         this.promiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputType);
         formula.stopFormula = formulaResult.stop ?? true;
@@ -194,22 +190,22 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     const afterRun = performance.now();
     this.log.a('runAllFormulas ' + `Time: ${afterRun - start}ms`);
 
-    const updatedSettings = FormulaSettingsHelper.ensureNewSettingsMatchRequirements(
-      settingsInitial,
+    const updatedSettings = disabledHelper.ensureNewSettingsMatchRequirements(
+      // settingsInitial,
       {
         ...settingsCurrent,
         ...settingsNew,
       },
-      attribute,
-      contentTypeMetadata,
-      inputType,
-      logic,
-      attributeValues,
-      entityReader,
-      slotIsEmpty,
-      formReadOnly,
+      // attribute,
+      // contentTypeMetadata,
+      // inputType,
+      // logic,
+      // attributeValues,
+      // entityReader,
+      // slotIsEmpty,
+      // formReadOnly,
       valueBefore,
-      logicTools,
+      // logicTools,
     );
 
     const runFormulaResult: RunFormulasResult = {
@@ -219,6 +215,29 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       fields: formulaFields,
     };
     return runFormulaResult;
+  }
+
+  /**
+   * Get all objects which are needed for the data and context and are reused quite a few times.
+   * Can be reused for a short time, as the data doesn't change in a normal cycle,
+   * but it will need to be regenerated after things such as language or feature change.
+   */
+  prepareDataForFormulaObjects(entityGuid: string): FormulaObjectsInternalWithoutFormulaItself {
+    const language = this.formConfig.language();
+    const languages = this.languageService.getLanguages();
+    const debugEnabled = this.globalConfigService.isDebug();
+    const initialFormValues = this.editInitializerService.getInitialValues(entityGuid, language.current);
+    const formulaObjectsInternalData: FormulaObjectsInternalWithoutFormulaItself = {
+      initialFormValues,
+      language,
+      languages,
+      debugEnabled,
+      itemService: this.itemService,
+      formConfig: this.formConfig,
+      fieldsSettingsService: this.settingsSvc,
+      features: this.features,
+    };
+    return formulaObjectsInternalData;    
   }
 
   /**
@@ -232,15 +251,11 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  private runFormula(runParameters: FormulaRunParameters): FormulaResultRaw {
-    const { formula, inputType, item } = runParameters;
-    const language = this.formConfig.language();
-    const languages = this.languageService.getLanguages();
-    const debugEnabled = this.globalConfigService.isDebug();
-    const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, language.current);
-    const formulaProps = FormulaHelpers.buildFormulaProps(
-      { runParameters, inputType: inputType?.Type, initialFormValues, language, languages, debugEnabled, itemService: this.itemService, formConfig: this.formConfig, fieldsSettingsService: this.settingsSvc, features: this.features() },
-    );
+  private runFormula(allObjectsForDataAndContext: FormulaObjectsInternalData): FormulaResultRaw {
+    const { formula, inputType, item } = allObjectsForDataAndContext.runParameters;
+
+    const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
+
     const isOpenInDesigner = this.isDesignerOpen(formula);
     const ctSettings = this.contentTypeSettings$.value;
     try {
