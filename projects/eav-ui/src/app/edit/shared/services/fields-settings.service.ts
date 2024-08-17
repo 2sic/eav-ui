@@ -52,7 +52,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   constructor(
     private contentTypeService: ContentTypeService,
     private contentTypeItemService: ContentTypeItemService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageSvc: LanguageInstanceService,
     private formConfig: FormConfigService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
@@ -84,9 +84,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
     const contentTypeNameId = InputFieldHelpers.getContentTypeNameId(item);
     this.contentType$ = this.contentTypeService.getContentType$(contentTypeNameId);
-    this.contentType = this.contentTypeService.getContentType(contentTypeNameId);
+    const contentType = this.contentType = this.contentTypeService.getContentType(contentTypeNameId);
     this.itemHeader = item.Header;
-    this.entityReader$ = this.languageInstanceService.getEntityReader$(this.formConfig.config.formId);
+    this.entityReader$ = this.languageSvc.getEntityReader$(this.formConfig.config.formId);
 
     this.subscriptions.add(
       combineLatest([this.contentType$, this.entityReader$]).pipe(
@@ -105,49 +105,13 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       })
     );
 
-    const inputTypes$ = this.inputTypeService.getInputTypes$();
     const entityId = item.Entity.Id;
 
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
     let constFieldParts = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
 
-    this.constFieldPartsOfLanguage$ = combineLatest([
-      inputTypes$,
-      this.contentType$,
-      this.entityReader$,
-      this.formConfig.language$
-    ]).pipe(
-      map(([inputTypes, contentType, entityReader, language]) => {
-        const lConstantFieldParts = this.log.fn('constantFieldPartsLanguage', { inputTypes, contentType, entityReader, language });
-
-        const constPartOfLanguage = contentType.Attributes.map((attribute) => {
-          // Input Type config in the current language
-          const inputType = this.inputTypeService.getInputType(attribute.InputType);
-
-          // Construct the constants with settings and everything
-          // using the EntityReader with the current language
-          const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
-
-          // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
-          mergeRaw.InputType = attribute.InputType;
-          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
-          const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          const constantFieldParts: FieldConstantsOfLanguage = {
-            ...constFieldParts.find(c => c.fieldName === attribute.Name),
-            settingsInitial,
-            inputTypeConfiguration: inputType,
-            currentLanguage: entityReader.current,
-          };
-
-          return constantFieldParts;
-        });
-
-        const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
-
-        return lConstantFieldParts.r(constPartsWithGroupVisibility);
-      })
-    );
+    this.constFieldPartsOfLanguage$ = this.getConstantFieldPartsOfLanguage$(constFieldParts, contentType);
 
     this.itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const formReadOnly$ = this.formsStateService.readOnly$;
@@ -300,6 +264,44 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         this.fieldsProps$.next(fieldsProps);
       })
     );
+  }
+
+  getConstantFieldPartsOfLanguage$(fieldConstants: FieldConstants[], contentType: EavContentType): Observable<FieldConstantsOfLanguage[]> {
+    this.constFieldPartsOfLanguage$ = combineLatest([
+      this.entityReader$,
+      this.formConfig.language$
+    ]).pipe(
+      map(([entityReader, language]) => {
+        const lConstantFieldParts = this.log.fn('constantFieldPartsLanguage', { contentType, entityReader, language });
+
+        const constPartOfLanguage = contentType.Attributes.map((attribute) => {
+          // Input Type config in the current language
+          const inputType = this.inputTypeService.getInputType(attribute.InputType);
+
+          // Construct the constants with settings and everything
+          // using the EntityReader with the current language
+          const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
+
+          // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
+          mergeRaw.InputType = attribute.InputType;
+          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
+          const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+          const constantFieldParts: FieldConstantsOfLanguage = {
+            ...fieldConstants.find(c => c.fieldName === attribute.Name),
+            settingsInitial,
+            inputTypeConfiguration: inputType,
+            currentLanguage: entityReader.current,
+          };
+
+          return constantFieldParts;
+        });
+
+        const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
+
+        return lConstantFieldParts.r(constPartsWithGroupVisibility);
+      })
+    );
+    return this.constFieldPartsOfLanguage$;
   }
 
   getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {

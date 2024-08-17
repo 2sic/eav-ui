@@ -38,12 +38,9 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
    * Get an EntityReader for the current form
    */
   getEntityReader$(formId: number) {
-    return this.getLanguage$(formId)
+    return this.getLanguage$(formId)  // This is already distinctUntilChanged
       .pipe(
         map((language) => new EntityReader(language.current, language.primary)),
-        // Ensure we don't fire too often
-        mapUntilChanged(m => m),
-        // distinctUntilChanged(),
         // Ensure the EntityReader is reused and not recreated every time
         shareReplay(1)
       );

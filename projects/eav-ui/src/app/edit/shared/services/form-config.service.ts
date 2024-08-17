@@ -129,6 +129,7 @@ export class FormConfigService {
 
   /**
    * Get the language observable for the form - it will keep track of the current language as it changes.
+   * TODO: try to use the signal as much as possible
    */
   get language$(): Observable<FormLanguageComplete> {
     return this._language$ ??= this.languageService.getLanguage$(this.config.formId);
