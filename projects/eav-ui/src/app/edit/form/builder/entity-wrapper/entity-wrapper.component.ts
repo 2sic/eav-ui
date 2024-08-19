@@ -1,10 +1,9 @@
-import { AfterViewChecked, Component, ElementRef, inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, computed, input, signal } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { combineLatest, map, Observable } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 import { LocalizationHelpers } from '../../../shared/helpers';
@@ -12,8 +11,6 @@ import { EavEntity, EavItem } from '../../../shared/models/eav';
 import { FormConfigService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
-import { ContentTypeViewModel } from './entity-wrapper.models';
-import { AsyncPipe } from '@angular/common';
 import { FieldsBuilderDirective } from '../fields-builder/fields-builder.directive';
 import { ChangeAnchorTargetDirective } from '../../../shared/directives/change-anchor-target.directive';
 import { EntityTranslateMenuComponent } from './entity-translate-menu/entity-translate-menu.component';
@@ -28,7 +25,11 @@ import { BaseComponent } from 'projects/eav-ui/src/app/shared/components/base.co
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { SafeHtmlPipe } from 'projects/eav-ui/src/app/shared/pipes/safe-html.pipe';
 import { MousedownStopPropagationDirective } from 'projects/eav-ui/src/app/shared/directives/mousedown-stop-propagation.directive';
-import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'EntityWrapperComponent';
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -49,7 +50,6 @@ import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/sha
     EntityTranslateMenuComponent,
     ChangeAnchorTargetDirective,
     FieldsBuilderDirective,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
     SafeHtmlPipe,
@@ -60,15 +60,57 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
-  @Input() entityGuid: string;
+  entityGuid = input<string>();
+
+  public formConfig = inject(FormConfigService);
+  private fieldsSettingsService = inject(FieldsSettingsService);
+  private formsStateService = inject(FormsStateService);
+  private translate = inject(TranslateService);
 
   collapse = false;
   noteTouched: boolean = false;
-  viewModel$: Observable<ContentTypeViewModel>;
 
   public features: FeaturesService = inject(FeaturesService);
   private editUiShowNotes = this.features.isEnabled(FeatureNames.EditUiShowNotes);
   private editUiShowMetadataFor = this.features.isEnabled(FeatureNames.EditUiShowMetadataFor);
+
+  /** Languages */
+  languages = this.formConfig.language;
+
+  /** Content-Type Settings */
+  ctSettings = computed(() => {
+    const s = this.fieldsSettingsService.contentTypeSettings();
+    const features = s.Features;
+    const ctFeatures = buildContentTypeFeatures(s.Features);
+
+    return {
+      itemTitle: s._itemTitle,
+      slotCanBeEmpty: s._slotCanBeEmpty,
+      slotIsEmpty: s._slotIsEmpty,
+      editInstructions: s.EditInstructions,
+      features,
+      showNotes: ctFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes(),
+      showMdFor: ctFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor(),
+    };
+  }, { equal: RxHelpers.objectsEqual });
+
+  readOnly = computed(() => this.formsStateService.readOnly().isReadOnly);
+
+  /** Item-For (Target) Tooltip */
+  itemForTooltip = computed(() => {
+    const item = this.itemService.getItemFor(this.entityGuid());
+    return getItemForTooltip(item, this.translate);
+  });
+
+  #retriggerNoteProps = signal<boolean>(false);
+  noteProps = computed(() => {
+    this.#retriggerNoteProps(); // dependency to retrigger when #retriggerNoteProps changes
+    const entityGuid = this.entityGuid();
+    const languages = this.formConfig.language();
+    const note = this.itemService.getItemNote(entityGuid);
+    const notCreatedYet = this.itemService.getItem(entityGuid).Entity.Id === 0;
+    return getNoteProps(note, languages, notCreatedYet);
+  });
 
   private noteRef?: MatDialogRef<undefined, any>;
 
@@ -76,17 +118,14 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
-    private fieldsSettingsService: FieldsSettingsService,
-    public formConfig: FormConfigService,
+    
     private formDataService: FormDataService,
-    private translate: TranslateService,
-    private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super();
+    super(new EavLogger(nameOfThis, logThis));
   }
 
   ngAfterViewChecked() {
@@ -96,78 +135,6 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   }
 
   ngOnInit() {
-    const readOnly$ = this.formsStateService.readOnly$;
-
-    const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
-      map(itemFor => getItemForTooltip(itemFor, this.translate)),
-    );
-    const header$ = this.itemService.getItemHeader$(this.entityGuid);
-    const settings$ = this.fieldsSettingsService.getContentTypeSettings$().pipe(
-      map(settings => ({
-        _itemTitle: settings._itemTitle,
-        _slotCanBeEmpty: settings._slotCanBeEmpty,
-        _slotIsEmpty: settings._slotIsEmpty,
-        EditInstructions: settings.EditInstructions,
-        Features: settings.Features,
-      })),
-      mapUntilObjChanged(m => m)
-    );
-    const note$ = this.itemService.getItemNote$(this.entityGuid);
-    const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(
-      map(item => item.Entity.Id === 0),
-      mapUntilChanged(m => m),
-    );
-    const noteProps$ = combineLatest([note$, this.formConfig.language$, itemNotSaved$]).pipe(
-      map(([note, lang, itemNotSaved]) => getNoteProps(note, lang, itemNotSaved)),
-    );
-
-    // TODO:: Test, if this.editUiShowNotes signal update, if showNotes$ is updated ?? old code below
-    const showNotes$ = settings$.pipe(
-      map(settings => buildContentTypeFeatures(settings.Features)),
-      map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes()),
-      mapUntilChanged(m => m),
-    );
-
-    const showMetadataFor$ = settings$.pipe(
-      map(settings => buildContentTypeFeatures(settings.Features)),
-      map(contentTypeFeatures => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor()),
-      mapUntilChanged(m => m),
-    );
-
-    // const showMetadataFor$ = combineLatest([
-    //   this.featuresService.isEnabled$(FeatureNames.EditUiShowMetadataFor),
-    //   settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
-    // ]).pipe(
-    //   map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeatureNames.EditUiShowMetadataFor] ?? featureEnabled),
-    //   distinctUntilChanged(),
-    // );
-
-    this.viewModel$ = combineLatest([
-      combineLatest([readOnly$, this.formConfig.language$, showNotes$, showMetadataFor$]),
-      combineLatest([itemForTooltip$, header$, settings$, noteProps$]),
-    ]).pipe(
-      map(([
-        [readOnly, lang, showNotes, showMetadataFor],
-        [itemForTooltip, header, settings, noteProps],
-      ]) => {
-        const viewModel: ContentTypeViewModel = {
-          readOnly: readOnly.isReadOnly,
-          currentLanguage: lang.current,
-          defaultLanguage: lang.primary,
-          header,
-          itemTitle: settings._itemTitle,
-          slotCanBeEmpty: settings._slotCanBeEmpty,
-          slotIsEmpty: settings._slotIsEmpty,
-          editInstructions: settings.EditInstructions,
-          itemForTooltip,
-          noteProps,
-          showNotes,
-          showMetadataFor,
-        };
-        return viewModel;
-      }),
-    );
-
     // Update the notes whenever a child form is closed
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => this.fetchNote())
@@ -183,16 +150,20 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
     this.collapse = !this.collapse;
   }
 
-  toggleSlotIsEmpty(oldHeader: ItemIdentifierHeader) {
+  toggleSlotIsEmpty() {
+    const entityGuid = this.entityGuid();
+    const oldHeader = this.itemService.getItemHeader(entityGuid);
     const newHeader: ItemIdentifierHeader = {
       ...oldHeader,
       IsEmpty: !oldHeader.IsEmpty,
     };
-    this.itemService.updateItemHeader(this.entityGuid, newHeader);
+    const l = this.log.fn('toggleSlotIsEmpty', { oldHeader, newHeader });
+    this.itemService.updateItemHeader(entityGuid, newHeader);
+    l.end();
   }
 
   openHistory() {
-    const item = this.itemService.getItem(this.entityGuid);
+    const item = this.itemService.getItem(this.entityGuid());
     this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
   }
 
@@ -227,8 +198,13 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   }
 
   editNote(note?: EavEntity) {
-    const item = this.itemService.getItem(this.entityGuid);
-    if (item.Entity.Id === 0) { return; }
+    const entityGuid = this.entityGuid();
+    const l = this.log.fn('editNote', { note });
+    const item = this.itemService.getItem(entityGuid);
+    if (item.Entity.Id === 0) {
+      l.end(null, 'Item not saved yet, ID = 0');
+      return;
+    }
 
     const form: EditForm = {
       items: [
@@ -238,7 +214,7 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
             For: {
               Target: eavConstants.metadata.entity.target,
               TargetType: eavConstants.metadata.entity.targetType,
-              Guid: this.entityGuid,
+              Guid: entityGuid,
               Singleton: true,
             }
           }
@@ -261,14 +237,16 @@ export class EntityWrapperComponent extends BaseComponent implements OnInit, Aft
   }
 
   private fetchNote() {
-    const item = this.itemService.getItem(this.entityGuid);
+    const entityGuid = this.entityGuid();
+    const item = this.itemService.getItem(entityGuid);
     if (item.Entity.Id === 0)
       return;
 
     const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
     this.formDataService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
-      this.itemService.updateItemMetadata(this.entityGuid, items[0].Entity.Metadata);
+      this.itemService.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
+      this.#retriggerNoteProps.set(true);
     });
   }
 }

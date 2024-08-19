@@ -16,7 +16,7 @@ import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'ItemService';
 
 @Injectable({ providedIn: 'root' })
@@ -185,6 +185,7 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
+    const l = this.log.fn('updateItemHeader', { entityGuid, header });
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
@@ -195,6 +196,7 @@ export class ItemService extends BaseDataService<EavItem> {
       }
     };
     this.updateOneInCache(newItem);
+    l.end();
   }
 
   getItemAttributes(entityGuid: string): EavEntityAttributes {
@@ -214,34 +216,15 @@ export class ItemService extends BaseDataService<EavItem> {
     return this.cache$.value.find(item => item.Entity.Guid === entityGuid);
   }
 
-  getItem$(entityGuid: string): Observable<EavItem> {
-    return this.cache$.pipe(
-      map(items => items.find(item => item.Entity.Guid === entityGuid)),
-      mapUntilChanged(m => m),
-    );
-  }
-
-  getItemFor$(entityGuid: string): Observable<EavFor> {
-    return this.cache$.pipe(
-      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.For),
-      mapUntilChanged(m => m),
-    );
+  /** Sync get-item-for info to show metadata-target info on an entity in the UI */
+  getItemFor(entityGuid: string): EavFor {
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.For;
   }
 
   getItemNote(entityGuid: string): EavEntity {
     return this.cache$.value
       .find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
       ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes);
-  }
-
-  getItemNote$(entityGuid: string): Observable<EavEntity> {
-    return this.cache$.pipe(
-      map(items =>
-        items.find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
-          ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes)
-      ),
-      mapUntilChanged(m => m),
-    );
   }
 
   getItemHeader(entityGuid: string): ItemIdentifierHeader {

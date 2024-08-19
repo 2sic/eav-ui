@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, Injector, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map, Observable, shareReplay } from 'rxjs';
 import { EntityReader } from '../../helpers';
@@ -6,9 +6,12 @@ import { FormLanguageInStore } from '../../models';
 import { BaseDataService } from './base-data.service';
 import { FormLanguage, FormLanguageComplete } from '../../models/form-languages.model';
 import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends BaseDataService<FormLanguageInStore> {
+  private injector = inject(Injector);
+
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('FormLanguageInStore', serviceElementsFactory);
   }
@@ -44,6 +47,10 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
         // Ensure the EntityReader is reused and not recreated every time
         shareReplay(1)
       );
+  }
+
+  getEntityReader(formId: number): Signal<EntityReader> {
+    return toSignal(this.getEntityReader$(formId), { injector: this.injector });
   }
 
   getLanguage$(formId: number): Observable<FormLanguageComplete> {

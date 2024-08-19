@@ -9,6 +9,8 @@ import { FormulaFieldValidation } from '../../formulas/models/formula.models';
 export interface FieldsProps extends Record<string, FieldProps> { };
 
 export interface FieldProps {
+  /** The language which applied to these field props as added to cache */
+  language: string;
   calculatedInputType: CalculatedInputType;
   constants: FieldConstants;
   settings: FieldSettings;
@@ -17,7 +19,6 @@ export interface FieldProps {
   value: FieldValue;
   wrappers: string[];
   formulaValidation: FormulaFieldValidation;
-  currentLanguage: string;
 }
 
 /** Field Config information which never changes through the entire lifetime in the UI */
@@ -45,7 +46,7 @@ export interface FieldConstants {
 /** Extended field config information which is constant as long as the language doesn't change. */
 export interface FieldConstantsOfLanguage extends FieldConstants {
   /** The language used for the current "constants" */
-  currentLanguage: string,
+  language: string,
   /** The initial field settings in this language */
   settingsInitial: FieldSettings,
 

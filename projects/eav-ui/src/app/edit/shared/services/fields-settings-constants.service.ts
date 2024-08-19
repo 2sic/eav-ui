@@ -71,7 +71,7 @@ export class FieldsSettingsConstantsService {
             ...fieldConstants.find(c => c.fieldName === attribute.Name),
             settingsInitial,
             inputTypeConfiguration: inputType,
-            currentLanguage: entityReader.current,
+            language: entityReader.current,
           };
 
           return constantFieldParts;

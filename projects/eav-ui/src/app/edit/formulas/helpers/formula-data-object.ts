@@ -32,11 +32,11 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get parameters(): Record<string, any> {
-    return FormulaHelpers.buildFormulaPropsParameters(this.#propsData.runParameters.itemIdWithPrefill.ClientData?.parameters);
+    return FormulaHelpers.buildFormulaPropsParameters(this.#propsData.runParameters.itemHeader.ClientData?.parameters);
   }
 
   get prefill(): FieldValue {
-    const { formula, settingsInitial, itemIdWithPrefill, inputTypeName } = this.#propsData.runParameters;
+    const { formula, settingsInitial, itemHeader: itemIdWithPrefill, inputTypeName } = this.#propsData.runParameters;
     if (formula.target !== FormulaTargets.Value) { return; }
     return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputTypeName, settingsInitial, itemIdWithPrefill, true);
   }

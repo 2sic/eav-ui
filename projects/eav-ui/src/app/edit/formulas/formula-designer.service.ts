@@ -65,7 +65,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
         entityGuid: entityGuid,
         formulas: entityFormulas,
         hasFormula: entityFormulas.length > 0,
-        label: settingsSvc.getContentTypeSettings()._itemTitle,
+        label: settingsSvc.contentTypeSettings()._itemTitle,
       } satisfies EntityOption;
     })
   });

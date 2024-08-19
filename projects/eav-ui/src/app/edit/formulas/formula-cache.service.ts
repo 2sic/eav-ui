@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
+import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { FormConfigService, LoggingService } from '../shared/services';
@@ -90,7 +90,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
             this.cacheResults({ entityGuid, fieldName: attribute.Name, target } satisfies FormulaIdentifier, undefined, true, false);
-            const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
+            const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }
@@ -326,7 +326,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
         const language = this.formConfig.language();
-        const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
+        const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
 

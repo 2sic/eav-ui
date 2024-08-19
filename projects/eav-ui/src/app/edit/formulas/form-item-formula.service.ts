@@ -6,12 +6,19 @@ import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { ItemService } from "../shared/store/ngrx-data";
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { EavLogger } from '../../shared/logging/eav-logger';
+
+const logThis = false;
+const nameOfThis = 'FormItemFormulaService';
 
 /**
  * Contains methods for updating value changes from formulas.
  */
 @Injectable()
 export class FormItemFormulaService {
+
+  private log = new EavLogger(nameOfThis, logThis);
+
   private itemService: ItemService = null;
 
   valueFormulaCounter = 0;
@@ -41,7 +48,9 @@ export class FormItemFormulaService {
     possibleValueUpdates: FormValues,
     possibleFieldsUpdates: FieldValuePair[],
     slotIsEmpty: boolean,
-    entityReader: EntityReader): boolean {
+    entityReader: EntityReader
+  ): boolean {
+    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
     const valueUpdates: FormValues = {};
     for (const attribute of contentType.Attributes) {
       const possibleFieldsUpdatesForAttribute = possibleFieldsUpdates.filter(f => f.name === attribute.Name);
@@ -50,9 +59,8 @@ export class FormItemFormulaService {
       const fieldsFromFormula =
         possibleFieldsUpdatesForAttribute[possibleFieldsUpdatesForAttribute.length - 1]?.value;
       const newValue = fieldsFromFormula ? fieldsFromFormula : valueFromFormula;
-      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation)) {
+      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation))
         valueUpdates[attribute.Name] = newValue;
-      }
     }
 
     if (Object.keys(valueUpdates).length > 0) {
@@ -60,13 +68,11 @@ export class FormItemFormulaService {
         this.valueFormulaCounter++;
         this.itemService.updateItemAttributesValues(entityGuid, valueUpdates, entityReader);
         // return true to make sure fieldProps are not updated yet
-        return true;
-      } else {
-        // consoleLogEditForm('Max value formula cycles reached');
-        return false;
-      }
+        return l.r(true);
+      } else
+        return l.r(false, 'Max value formula cycles reached');
     }
-    return false;
+    return l.r(false);
   }
 
   /**

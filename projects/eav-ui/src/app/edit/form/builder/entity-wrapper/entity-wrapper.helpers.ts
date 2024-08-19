@@ -45,7 +45,8 @@ export function buildContentTypeFeatures(contentTypeFeatures: string): Record<st
   const features = contentTypeFeatures
     .split('\n')
     .reduce((result, contentTypeFeature) => {
-      if (!contentTypeFeature) { return result; }
+      if (!contentTypeFeature)
+        return result;
       const nameAndValue = contentTypeFeature.split('=');
       const name = nameAndValue[0];
       const value = nameAndValue[1] === 'true';

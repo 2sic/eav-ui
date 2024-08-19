@@ -11,9 +11,13 @@ import { ContentTypeSettings, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
 
-export class FieldsSettingsHelpers {
+export class ContentTypeSettingsHelpers {
 
-  static setDefaultContentTypeSettings(
+  /**
+   * Initialize the default settings of a ContentType to ensure everything is set or empty-string etc.
+   * @returns 
+   */
+  static initDefaultSettings(
     settings: ContentTypeSettings,
     contentType: EavContentType,
     language: FormLanguage,
@@ -28,11 +32,29 @@ export class FieldsSettingsHelpers {
     defaultSettings.Notes ??= '';
     defaultSettings.Icon ??= '';
     defaultSettings.Link ??= '';
-    defaultSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, language);
+    defaultSettings._itemTitle = this.getContentTypeTitle(contentType, language);
     defaultSettings._slotCanBeEmpty = itemHeader.IsEmptyAllowed ?? false;
     defaultSettings._slotIsEmpty = itemHeader.IsEmpty ?? false;
     return defaultSettings;
   }
+
+  static getContentTypeTitle(contentType: EavContentType, language: FormLanguage): string {
+    try {
+      // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
+      const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
+      let label = (type)
+        ? LocalizationHelpers.getValueOrDefault(type.Attributes.Label, language)?.Value
+        : null;
+      label = label || contentType.Name;
+      return label;
+    } catch (error) {
+      return contentType.Name;
+    }
+  }
+
+}
+
+export class FieldsSettingsHelpers {
 
   static setDefaultFieldSettings(settings: FieldSettings): FieldSettings {
     const defaultSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
@@ -82,21 +104,6 @@ export class FieldsSettingsHelpers {
     }
 
     return false;
-  }
-
-  static getContentTypeTitle(contentType: EavContentType, language: FormLanguage): string {
-    let label: string;
-    try {
-      // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
-      const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
-      if (type) {
-        label = LocalizationHelpers.getValueOrDefault(type.Attributes.Label, language)?.Value;
-      }
-      label = label || contentType.Name;
-    } catch (error) {
-      label = contentType.Name;
-    }
-    return label;
   }
 
   static findIsLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { FeaturesService } from '../../shared/services/features.service';
-import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
+import { ContentTypeSettings, FieldConstantsOfLanguage, FormValues, LogSeverities } from '../shared/models';
 import { EavContentTypeAttribute } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
@@ -31,6 +31,9 @@ const nameOfThis = 'FormulaEngine';
 @Injectable()
 export class FormulaEngine extends ServiceBase implements OnDestroy {
   private features = inject(FeaturesService).getAll();
+
+  // properties to set on init
+  private entityGuid: string;
   private contentTypeSettings: Signal<ContentTypeSettings>;
   private settingsSvc: FieldsSettingsService = null;
   private promiseHandler: FormulaPromiseHandler = null;
@@ -52,7 +55,8 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     super.destroy();
   }
 
-  init(settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, ctSettings: Signal<ContentTypeSettings>) {
+  init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, ctSettings: Signal<ContentTypeSettings>) {
+    this.entityGuid = entityGuid;
     this.settingsSvc = settingsSvc;
     this.promiseHandler = promiseHandler;
     this.contentTypeSettings = ctSettings;
@@ -73,7 +77,6 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @returns List of processed picker items
    */
   runAllListItemsFormulas(
-    entityGuid: string,
     attribute: EavContentTypeAttribute,
     formValues: FormValues,
     inputTypeName: InputTypeStrict,
@@ -82,16 +85,14 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     itemIdWithPrefill: ItemIdentifierShared,
     availableItems: PickerItem[],
   ): PickerItem[] {
-    const formulas = this.designerSvc.cache
-      .getFormulas(entityGuid, attribute.Name, Object.values(FormulaListItemTargets), false)
-      .filter(f => !f.stopFormula);
+    const formulas = this.activeFieldFormulas(this.entityGuid, attribute.Name, true);
 
     if (formulas.length === 0)
       return availableItems;
 
-    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, settingsInitial, inputTypeName, settingsCurrent, itemIdWithPrefill };
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, settingsInitial, inputTypeName, settingsCurrent, itemHeader: itemIdWithPrefill };
 
-    const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(entityGuid);
+    const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(this.entityGuid);
 
     for (const formula of formulas)
       for (const item of availableItems) {
@@ -121,15 +122,26 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   }
 
   /**
+   * Find formulas of the current field which are still running.
+   * Uses the designerService as that can modify the behavior while developing a formula.
+   */
+  activeFieldFormulas(entityGuid: string, name: string, forListItems: boolean = false): FormulaCacheItem[] {
+    const targets = forListItems
+      ? Object.values(FormulaListItemTargets)
+      : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
+    return this.designerSvc.cache
+      .getFormulas(entityGuid, name, targets, false)
+      .filter(f => !f.stopFormula);
+  }
+
+  /**
    * Used for running all formulas for a given attribute/field.
    * @returns Object with all changes that formulas should make
    */
   runAllFormulasOfField(
-    entityGuid: string,
     attribute: EavContentTypeAttribute,
     formValues: FormValues,
-    inputTypeName: InputTypeStrict,
-    settingsInitial: FieldSettings,
+    constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemIdWithPrefill: ItemIdentifierShared,
     valueBefore: FieldValue,
@@ -137,9 +149,9 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
     //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
-    const formulas = this.designerSvc.cache
-      .getFormulas(entityGuid, attribute.Name, Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets)), false)
-      .filter(f => !f.stopFormula);
+    const formulas = this.activeFieldFormulas(this.entityGuid, attribute.Name);
+
+    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputTypeName: constFieldPart.inputTypeStrict, settingsInitial: constFieldPart.settingsInitial, settingsCurrent: settingsBefore, itemHeader: itemIdWithPrefill };
 
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
@@ -148,8 +160,6 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     // The new settings - which can be updated multiple times by formulas
     let settingsNew: Record<string, any> = {};
 
-    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { formValues, inputTypeName: inputTypeName, settingsInitial, settingsCurrent: settingsBefore, itemIdWithPrefill };
-
     const start = performance.now();
     for (const formula of formulas) {
       const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
@@ -157,7 +167,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
       const formulaResult = this.runFormula(allObjectParameters);
       if (formulaResult?.promise instanceof Promise) {
-        this.promiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputTypeName);
+        this.promiseHandler.handleFormulaPromise(this.entityGuid, formulaResult, formula, constFieldPart.inputTypeStrict);
         formula.stopFormula = formulaResult.stop ?? true;
       } else
         formula.stopFormula = formulaResult.stop ?? formula.stopFormula;
@@ -345,6 +355,6 @@ export interface FormulaRunParameters {
   inputTypeName: InputTypeStrict;
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
-  itemIdWithPrefill: ItemIdentifierShared;
+  itemHeader: ItemIdentifierShared;
   item?: PickerItem;
 }

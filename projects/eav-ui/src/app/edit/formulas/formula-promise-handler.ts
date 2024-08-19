@@ -24,11 +24,14 @@ const nameOfThis = 'FormulaPromiseHandler';
 export class FormulaPromiseHandler {
   private fieldsSettingsService: FieldsSettingsService = null;
 
+  private entityGuid: string;
+
   private log = new EavLogger(nameOfThis, logThis);
 
   constructor() { }
 
-  init(fieldsSettingsService: FieldsSettingsService) {
+  init(entityGuid: string, fieldsSettingsService: FieldsSettingsService) {
+    this.entityGuid = entityGuid;
     this.fieldsSettingsService = fieldsSettingsService;
   }
 
@@ -117,7 +120,6 @@ export class FormulaPromiseHandler {
    * @returns true if values were updated, false otherwise and new field props
    */
   updateValuesFromQueue(
-    entityGuid: string,
     queue: Record<string, FormulaPromiseResult>,
     contentType: EavContentType,
     formValues: FormValues,
@@ -132,6 +134,7 @@ export class FormulaPromiseHandler {
     setUpdHelperFactory: FieldSettingsUpdateHelperFactory,
   ): { valuesUpdated: boolean, newFieldProps: FieldsProps } {
     // Get data from change queue
+    const entityGuid = this.entityGuid;
     const toProcess = queue[entityGuid];
 
     // If nothing in the queue for this entity, exit early
