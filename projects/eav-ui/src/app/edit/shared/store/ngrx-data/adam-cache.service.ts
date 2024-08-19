@@ -25,6 +25,6 @@ export class AdamCacheService extends BaseDataService<AdamSnapshot> {
   }
 
   getAdamSnapshot(entityGuid: string, fieldName: string): AdamItem[] {
-    return this.cache$.value.find(adamSnapshot => adamSnapshot.Guid === entityGuid)?.Attributes[fieldName];
+    return this.cache().find(adamSnapshot => adamSnapshot.Guid === entityGuid)?.Attributes[fieldName];
   }
 }

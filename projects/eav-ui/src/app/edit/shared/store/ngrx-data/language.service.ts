@@ -15,7 +15,7 @@ export class LanguageService extends BaseDataService<Language> {
   }
 
   getLanguages(): Language[] {
-    return this.cache$.value;
+    return this.cache();
   }
 
   getLanguages$(): Observable<Language[]> {

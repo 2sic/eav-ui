@@ -35,7 +35,7 @@ export class ItemService extends BaseDataService<EavItem> {
   updateItemId(itemData: SaveResult): void {
     const entityGuid = Object.keys(itemData)[0];
     const entityId = itemData[entityGuid];
-    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
     if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0))
       return;
 
@@ -54,7 +54,7 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   updateItemMetadata(entityGuid: string, metadata: EavEntity[]): void {
-    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
@@ -77,7 +77,7 @@ export class ItemService extends BaseDataService<EavItem> {
   ): EavItem {
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
     const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
-    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.cache().find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -98,7 +98,7 @@ export class ItemService extends BaseDataService<EavItem> {
     language: FormLanguage,
     isReadOnly: boolean,
   ): void {
-    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) return;
 
     const newItem: EavItem = {
@@ -114,7 +114,7 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfOneLanguage, language: FormLanguage): void {
-    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) return;
 
     const oldValues: ItemValuesOfOneLanguage = {};
@@ -150,7 +150,7 @@ export class ItemService extends BaseDataService<EavItem> {
     isReadOnly: boolean,
     transactionItem?: EavItem,
   ): void {
-    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.cache().find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -172,7 +172,7 @@ export class ItemService extends BaseDataService<EavItem> {
     transactionItem?: EavItem,
   ): EavItem {
     const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
-    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.cache().find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -189,7 +189,7 @@ export class ItemService extends BaseDataService<EavItem> {
 
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
     const l = this.log.fn('updateItemHeader', { entityGuid, header });
-    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) return;
 
     const newItem: EavItem = {
@@ -203,7 +203,7 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   getItem(entityGuid: string): EavItem {
-    return this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    return this.cache().find(item => item.Entity.Guid === entityGuid);
   }
 
   item(entityGuid: string): Signal<EavItem> {
@@ -244,17 +244,17 @@ export class ItemService extends BaseDataService<EavItem> {
 
   /** Sync get-item-for info to show metadata-target info on an entity in the UI */
   getItemFor(entityGuid: string): EavFor {
-    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.For;
+    return this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.For;
   }
 
   getItemNote(entityGuid: string): EavEntity {
-    return this.cache$.value
+    return this.cache()
       .find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
       ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes);
   }
 
   getItemHeader(entityGuid: string): ItemIdentifierHeader {
-    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Header;
+    return this.cache().find(item => item.Entity.Guid === entityGuid)?.Header;
   };
 
   getItemHeader$(entityGuid: string): Observable<ItemIdentifierHeader> {
@@ -274,9 +274,9 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   getItems(entityGuids?: string[]): EavItem[] {
-    if (entityGuids == null) { return this.cache$.value; }
+    if (entityGuids == null) { return this.cache(); }
 
-    return this.cache$.value.filter(item => entityGuids.includes(item.Entity.Guid));
+    return this.cache().filter(item => entityGuids.includes(item.Entity.Guid));
   }
 
   getItems$(entityGuids?: string[]): Observable<EavItem[]> {

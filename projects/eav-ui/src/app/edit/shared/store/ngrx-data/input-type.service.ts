@@ -21,15 +21,15 @@ export class InputTypeService extends BaseDataService<InputType> {
   }
 
   getInputType(type: string): InputType {
-    return this.cache$.value.find(i => i.Type === type);
+    return this.cache().find(i => i.Type === type);
   }
 
   getInputTypes(): InputType[] {
-    return this.cache$.value;
+    return this.cache();
   }
 
   getInputTypes$(): Observable<InputType[]> {
-    return this.cache$.asObservable();
+    return this.cache$;
   }
 
   getInputTypeNames(attributes: EavContentTypeAttribute[]): InputTypeName[] {

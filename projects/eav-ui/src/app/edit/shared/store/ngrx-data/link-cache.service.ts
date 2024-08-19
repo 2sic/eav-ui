@@ -57,7 +57,7 @@ export class LinkCacheService extends BaseDataService<LinkCache> {
 
   getLinkInfo(key: string): LinkInfo {
     key = key.trim().toLocaleLowerCase();
-    return this.cache$.value.find(linkCache => linkCache.key.trim().toLocaleLowerCase() === key)?.linkInfo;
+    return this.cache().find(linkCache => linkCache.key.trim().toLocaleLowerCase() === key)?.linkInfo;
   }
 
   private adamToLinks(items: AdamItem[]): LinkCache[] {

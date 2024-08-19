@@ -21,7 +21,7 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
   }
 
   getPublishStatus(formId: number): PublishStatus {
-    return this.cache$.value.find(publishStatus => publishStatus.formId === formId);
+    return this.cache().find(publishStatus => publishStatus.formId === formId);
   }
 
   private getPublishStatus$(formId: number): Observable<PublishStatus> {

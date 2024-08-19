@@ -18,7 +18,7 @@ export class ContentTypeService extends BaseDataService<EavContentType> {
   }
 
   getContentType(id: string): EavContentType {
-    return this.cache$.value.find(contentType => contentType.Id === id);
+    return this.cache().find(contentType => contentType.Id === id);
   }
 
   getContentType$(id: string): Observable<EavContentType> {
