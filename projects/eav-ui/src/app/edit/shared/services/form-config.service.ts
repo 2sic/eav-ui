@@ -4,7 +4,7 @@ import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared
 import { Context } from '../../../shared/services/context';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
 import { FormConfiguration, VersioningOptions } from '../models';
-import { FormLanguage, FormLanguageComplete, FormLanguagesConfig } from '../models/form-languages.model';
+import { FormLanguageComplete, FormLanguagesConfig } from '../models/form-languages.model';
 import { Observable } from 'rxjs';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -15,6 +15,11 @@ const nameOfThis = 'FormConfigService';
 
 export const webApiEditRoot = 'cms/edit/';
 
+/**
+ * Service which tell us about a single edit-form configuration.
+ * 
+ * Things such as language, IDs shown on it, edit-settings etc.
+ */
 @Injectable()
 export class FormConfigService {
   /** no constructor */

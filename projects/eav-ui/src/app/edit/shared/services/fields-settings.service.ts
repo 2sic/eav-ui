@@ -52,13 +52,13 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private constantsService = transient(FieldsSettingsConstantsService);
 
   constructor(
+    private languageSvc: LanguageInstanceService,
+    private globalConfigService: GlobalConfigService,
+    private formConfig: FormConfigService,
+    private formsStateService: FormsStateService,
+    private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private contentTypeItemService: ContentTypeItemService,
-    private languageSvc: LanguageInstanceService,
-    private formConfig: FormConfigService,
-    private itemService: ItemService,
-    private globalConfigService: GlobalConfigService,
-    private formsStateService: FormsStateService,
     private formulaEngine: FormulaEngine,
     private formItemFormulaService: FormItemFormulaService,
     private formulaPromiseHandler: FormulaPromiseHandler,
@@ -119,7 +119,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     // WIP trying to drop this observabse, but surprisingly it fails...
     this.itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
-    const itemAttributes = this.itemService.getItemAttributes(entityGuid);
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.debugEnabled$;
 
@@ -135,8 +134,12 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       ]).pipe(
         logUpdateFieldProps.pipe(),
         map(([
-          itemAttributes, entityReader,
-          formReadOnly, _, debugEnabled, constantFieldParts
+          itemAttributes,
+          entityReader,
+          formReadOnly,
+          _,
+          debugEnabled,
+          constantFieldParts
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes))
@@ -361,7 +364,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       mapUntilObjChanged(m => m),
-      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
@@ -370,7 +372,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       mapUntilObjChanged(m => m),
-      // distinctUntilChanged(RxHelpers.objectsEqual),
       shareReplay(1),
     );
   }
@@ -393,7 +394,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
       mapUntilObjChanged(m => m),
-      // distinctUntilChanged(RxHelpers.objectsEqual),
     );
   }
 
