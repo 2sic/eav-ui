@@ -7,7 +7,7 @@ import { EntityReader, FieldsSettingsHelpers } from '../helpers';
 import { FieldConstants, FieldConstantsOfLanguage } from '../models';
 import { InputTypeService } from '../store/ngrx-data';
 import { ItemFieldVisibility } from './item-field-visibility';
-import { EavContentType } from '../models/eav';
+import { EavContentType, EavItem } from '../models/eav';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FormLanguageComplete } from '../models/form-languages.model';
 
@@ -33,12 +33,12 @@ export class FieldsSettingsConstantsService {
   }
 
   init(
-    itemFieldVisibility: ItemFieldVisibility,
+    item: EavItem,
     entityReader$: Observable<EntityReader>,
     language$: Observable<FormLanguageComplete>,
     contentType: EavContentType,
   ): void {
-    this.itemFieldVisibility = itemFieldVisibility;
+    this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
     this.entityReader$ = entityReader$;
     this.language$ = language$;
     this.contentType = contentType;

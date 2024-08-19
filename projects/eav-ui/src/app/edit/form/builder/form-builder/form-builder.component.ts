@@ -2,13 +2,10 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
-import { FormulaEngine } from '../../../formulas/formula-engine';
 import { ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { AdamCacheService, ItemService } from '../../../shared/store/ngrx-data';
-import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
-import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { FieldLogicWithValueInit } from '../../shared/field-logic/field-logic-with-init';
 import { FieldLogicManager } from '../../shared/field-logic/field-logic-manager';
@@ -34,12 +31,8 @@ const nameOfThis = 'FormBuilderComponent';
     EntityWrapperComponent,
   ],
   providers: [
-    FieldsSettingsService,  // used for Edit Dialog Main
-    FieldsTranslateService, // used for Edit Dialog Header
-    FormItemFormulaService, // used in Dialog entry and Dialog Header Dialog Main
-    FormulaEngine, // used in Dialog entry and Dialog Header Dialog Main
-    FormulaPromiseHandler, // used in Dialog entry and Dialog Header Dialog Main
-
+    FieldsSettingsService,  // used for all field settings - must be shared from here
+    FieldsTranslateService, // used for field translations and uses FieldsSettingsService, so also shared here
     // new
     EntityFormStateService,
   ],
@@ -74,10 +67,10 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
     const form = this.form;
 
     this.subscriptions.add(
-      this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
+      this.fieldsSettingsService.getFieldsProps$().subscribe(fields => {
         // 1. create missing controls - usually just on first cycle
         this.log.a('create missing controls');
-        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        for (const [fieldName, fieldProps] of Object.entries(fields)) {
           const inputType = fieldProps.calculatedInputType.inputType;
 
           if (EmptyFieldHelpers.isEmptyInputType(inputType))
@@ -106,10 +99,9 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         this.log.a('sync values');
         const oldValues: FormValues = form.getRawValue();
         const newValues: FormValues = {};
-        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!form.controls.hasOwnProperty(fieldName)) continue;
-          newValues[fieldName] = fieldProps.value;
-        }
+        for (const [fieldName, fieldProps] of Object.entries(fields))
+          if (form.controls.hasOwnProperty(fieldName))
+            newValues[fieldName] = fieldProps.value;
 
         const changes = ControlHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
@@ -123,7 +115,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 3. sync disabled
         this.log.a('sync disabled');
-        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        for (const [fieldName, fieldProps] of Object.entries(fields)) {
           if (!form.controls.hasOwnProperty(fieldName)) continue;
           const control = form.controls[fieldName];
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
@@ -133,10 +125,9 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
         this.log.a('run validators');
-        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (!form.controls.hasOwnProperty(fieldName)) continue;
-          form.controls[fieldName].updateValueAndValidity();
-        }
+        for (const [fieldName, _] of Object.entries(fields))
+          if (form.controls.hasOwnProperty(fieldName))
+            form.controls[fieldName].updateValueAndValidity();
       })
     );
 
@@ -144,7 +135,6 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
       map(() => !form.invalid),
       startWith(!form.invalid),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
     const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
     this.subscriptions.add(
@@ -154,7 +144,6 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           return formValid;
         }),
         mapUntilChanged(m => m),
-        // distinctUntilChanged(),
       ).subscribe(isValid => {
         this.formsStateService.setFormValid(this.entityGuid, isValid);
       })

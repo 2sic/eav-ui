@@ -167,7 +167,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
       const formulaResult = this.runFormula(allObjectParameters);
       if (formulaResult?.promise instanceof Promise) {
-        this.promiseHandler.handleFormulaPromise(this.entityGuid, formulaResult, formula, constFieldPart.inputTypeStrict);
+        this.promiseHandler.handleFormulaPromise(formulaResult, formula, constFieldPart.inputTypeStrict);
         formula.stopFormula = formulaResult.stop ?? true;
       } else
         formula.stopFormula = formulaResult.stop ?? formula.stopFormula;
@@ -224,7 +224,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.isDebug();
     const initialFormValues = this.editInitializerService.getInitialValues(entityGuid, language.current);
-    const formulaObjectsInternalData: FormulaObjectsInternalWithoutFormulaItself = {
+    return {
       initialFormValues,
       language,
       languages,
@@ -233,8 +233,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       formConfig: this.formConfig,
       fieldsSettingsService: this.settingsSvc,
       features: this.features,
-    };
-    return formulaObjectsInternalData;    
+    } satisfies FormulaObjectsInternalWithoutFormulaItself;
   }
 
   /**

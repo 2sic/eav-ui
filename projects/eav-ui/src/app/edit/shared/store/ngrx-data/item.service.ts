@@ -234,7 +234,7 @@ export class ItemService extends BaseDataService<EavItem> {
   getItemHeader$(entityGuid: string): Observable<ItemIdentifierHeader> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
-      mapUntilChanged(m => m),
+      mapUntilObjChanged(m => m),
     );
   }
 

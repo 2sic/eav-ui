@@ -1,4 +1,4 @@
-import { LocalizationHelpers } from '.';
+import { EntityReader, LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { ItemIdentifierEditConfig } from '../../../shared/models/edit-form.model';
@@ -17,13 +17,9 @@ export class ContentTypeSettingsHelpers {
    * Initialize the default settings of a ContentType to ensure everything is set or empty-string etc.
    * @returns 
    */
-  static initDefaultSettings(
-    settings: ContentTypeSettings,
-    contentType: EavContentType,
-    language: FormLanguage,
-    itemHeader: ItemIdentifierEditConfig,
-  ): ContentTypeSettings {
-    const defaultSettings = { ...settings };
+  static initDefaultSettings(reader: EntityReader, contentType: EavContentType, itemHeader: ItemIdentifierEditConfig): ContentTypeSettings {
+    const metadata = reader.flattenAll<ContentTypeSettings>(contentType.Metadata);
+    const defaultSettings = { ...metadata };
     defaultSettings.Description ??= '';
     defaultSettings.EditInstructions ??= '';
     defaultSettings.Features ??= '';
@@ -32,7 +28,7 @@ export class ContentTypeSettingsHelpers {
     defaultSettings.Notes ??= '';
     defaultSettings.Icon ??= '';
     defaultSettings.Link ??= '';
-    defaultSettings._itemTitle = this.getContentTypeTitle(contentType, language);
+    defaultSettings._itemTitle = this.getContentTypeTitle(contentType, reader);
     defaultSettings._slotCanBeEmpty = itemHeader.IsEmptyAllowed ?? false;
     defaultSettings._slotIsEmpty = itemHeader.IsEmpty ?? false;
     return defaultSettings;

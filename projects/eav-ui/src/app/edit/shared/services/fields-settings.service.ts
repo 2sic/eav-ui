@@ -3,18 +3,15 @@ import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } 
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
-import { FormulaEngine, FormulaRunParameters } from '../../formulas/formula-engine';
-import { ContentTypeSettingsHelpers, EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
-import { ContentTypeSettings, FieldConstantsOfLanguage, FieldsProps, FormValues, TranslationState } from '../models';
+import { FormulaEngine } from '../../formulas/formula-engine';
+import { ContentTypeSettingsHelpers, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
+import { FieldConstantsOfLanguage, FieldsProps, FormValues, TranslationState } from '../models';
 import { ContentTypeItemService, ContentTypeService, GlobalConfigService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
-import { FormulaPromiseResult } from '../../formulas/models/formula-promise-result.model';
 import { FieldValuePair } from '../../formulas/models/formula-results.models';
-import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
+import { ItemFormulaBroadcastService } from '../../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
-import { ItemFieldVisibility } from './item-field-visibility';
-import { EavContentType, EavEntityAttributes, EavItem } from '../models/eav';
-import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { EavEntityAttributes, EavItem } from '../models/eav';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -35,39 +32,33 @@ const nameOfThis = 'FieldsSettingsService';
 @Injectable()
 export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
-  // Core services
+  // Shared / inherited services
   private languageSvc = inject(LanguageInstanceService);
   private formConfig = inject(FormConfigService);
+  private globalConfigService = inject(GlobalConfigService);
+  private formsStateService = inject(FormsStateService);
   private contentTypeService = inject(ContentTypeService);
   private contentTypeItemService = inject(ContentTypeItemService);
   private itemService = inject(ItemService);
 
   private fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
-  public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
-  private itemFieldVisibility: ItemFieldVisibility;
 
   private itemAttributes$ = new Observable<EavEntityAttributes>();
-
 
   private entityReader$ = this.languageSvc.getEntityReader$(this.formConfig.config.formId);
   private entityReader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
 
   private constFieldPartsOfLanguage$ = new Observable<FieldConstantsOfLanguage[]>();
-  private itemHeader: ItemIdentifierHeader;
 
   private constantsService = transient(FieldsSettingsConstantsService);
+  private changeBroadcastSvc = transient(ItemFormulaBroadcastService);
+  private formulaEngine = transient(FormulaEngine);
+  private formulaPromises = transient(FormulaPromiseHandler);
 
-  constructor(
-    private globalConfigService: GlobalConfigService,
-    private formsStateService: FormsStateService,
-    private formulaEngine: FormulaEngine,
-    private formItemFormulaService: FormItemFormulaService,
-    private formulaPromiseHandler: FormulaPromiseHandler,
-  ) {
+  constructor() {
     super(new EavLogger(nameOfThis, logThis));
-    formItemFormulaService.init(this.itemService);
   }
 
   ngOnDestroy(): void {
@@ -87,58 +78,41 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     return contentType;
   });
 
-  contentTypeSettings = computed(() => {
-    if (!this.#item())
-      return null;
+  /** The settings of the content-type of this item */
+  contentTypeSettings = computed(() => !this.#item()
+    ? null
+    : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header));
 
-    const reader = this.entityReader();
-    const contentType = this.#contentType();
-
-    const ctSettings = ContentTypeSettingsHelpers.initDefaultSettings(
-      reader.flattenAll<ContentTypeSettings>(contentType.Metadata),
-      contentType,
-      reader, // for languages current, default, initial
-      this.#item().Header,
-    );
-    return ctSettings;
-  });
-
+  /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
     const l = this.log.fn('init', { entityGuid });
 
     const item = this.itemService.getItem(entityGuid);
     this.#item.set(item);
 
-    this.formulaPromiseHandler.init(entityGuid, this);
-    this.formulaEngine.init(entityGuid, this, this.formulaPromiseHandler, this.contentTypeSettings);
+    this.formulaPromises.init(entityGuid, this.#contentType, this, this.changeBroadcastSvc);
+    this.formulaEngine.init(entityGuid, this, this.formulaPromises, this.contentTypeSettings);
+    this.changeBroadcastSvc.init(entityGuid, this.#contentType, this.entityReader);
 
-    this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
-    const contentTypeNameId = InputFieldHelpers.getContentTypeNameId(item);
     const contentType = this.#contentType();
-    this.itemHeader = item.Header;
-
-    const entityId = item.Entity.Id;
-
-    const conSvc = this.constantsService;
-    conSvc.init(this.itemFieldVisibility, this.entityReader$, this.formConfig.language$, contentType);
 
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
-    let constFieldParts = conSvc.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
-
+    const entityReader$ = this.entityReader$;
+    const conSvc = this.constantsService;
+    conSvc.init(item, entityReader$, this.formConfig.language$, contentType);
+    let constFieldParts = conSvc.getConstantFieldParts(entityGuid, item.Entity.Id, contentType.Id);
     this.constFieldPartsOfLanguage$ = conSvc.getConstantFieldPartsOfLanguage$(constFieldParts);
 
     // WIP trying to drop this observable, but surprisingly it fails...
     this.itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
-    const formReadOnly$ = this.formsStateService.readOnly$;
-    const debugEnabled$ = this.globalConfigService.debugEnabled$;
 
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
     const prepared$ = combineLatest([
       this.itemService.getItemHeader$(entityGuid),  // must watch, as the IsEmpty can be toggled
-      this.entityReader$,
-      debugEnabled$,
-      formReadOnly$,
+      this.entityReader$, // also exists as signal
+      this.globalConfigService.debugEnabled$, // also exists as signal
+      this.formsStateService.readOnly$, // also exists as signal
     ]).pipe(
       map(([itemHeader, entityReader, debugEnabled, formReadOnly]) => {
         const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
@@ -169,19 +143,15 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.subscriptions.add(
       combineLatest([
         this.itemAttributes$,
-        this.entityReader$,
+        entityReader$,
         this.forceRefreshSettings$,
         this.constFieldPartsOfLanguage$,
         prepared$,
       ]).pipe(
         logUpdateFieldProps.pipe(),
-        map(([
-          itemAttributes,
-          entityReader,
-          _,
-          constantFieldParts,
-          prepared,
-        ]) => {
+        map(([itemAttributes, entityReader, _, constantFieldParts, prepared]) => {
+
+          // Create list of all current form values for further processing
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes))
             formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
@@ -189,21 +159,15 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           // Process the queue of changes from promises if necessary
           // If things change, we will exit because then the observable will be retriggered
           if (Object.keys(this.latestFieldProps).length) {
-            const { newFieldProps, valuesUpdated } = this.formulaPromiseHandler.updateValuesFromQueue(
-              this.updateValueQueue,
-              contentType,
+            const { newFieldProps, valuesUpdated } = this.formulaPromises.updateValuesFromQueue(
               formValues,
               this.latestFieldProps,
               prepared.slotIsEmpty,
-              entityReader,
-              this.latestFieldProps,
-              contentType.Attributes,
               constantFieldParts,
               itemAttributes,
-              this.formItemFormulaService,
               prepared.updHelperFactory,
             );
-            // we only updated values from promise (queue), don't trigger property regular updates
+            // If we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
             if (newFieldProps)
               this.latestFieldProps = newFieldProps;
@@ -222,26 +186,20 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
           for (const attr of contentType.Attributes) {
             const attrValues = itemAttributes[attr.Name];
-            // empty-default and empty-message have no value
             const valueBefore = formValues[attr.Name];
-
             const constFieldPart = constantFieldParts.find(f => f.fieldName === attr.Name);
 
-            // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
-            const cachedLanguageUnchanged = constFieldPart.language == this.latestFieldProps[attr.Name]?.language;
-            const latestSettings: FieldSettings = cachedLanguageUnchanged
-              ? this.latestFieldProps[attr.Name]?.settings
-                ?? { ...constFieldPart.settingsInitial }
-              : { ...constFieldPart.settingsInitial };
+            const latestSettings: FieldSettings = this.getLatestFieldSettings(constFieldPart);
 
             const settingsUpdateHelper = prepared.updHelperFactory.create(attr, constFieldPart, attrValues);
 
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulasOfField(
-              attr, formValues,
+              attr,
+              formValues,
               constFieldPart,
               latestSettings,
-              this.itemHeader,
+              item.Header,
               valueBefore,
               reuseObjectsForFormulaDataAndContext,
               settingsUpdateHelper,
@@ -258,7 +216,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
             fieldsProps[attr.Name] = {
               calculatedInputType: constFieldPart.inputType,
-              constants: constFieldPart, //.constants,
+              constants: constFieldPart,
               settings: fixed,
               translationState: fieldTranslation,
               value: valueBefore,
@@ -267,18 +225,22 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
               language: constFieldPart.language,
             };
           }
+
           this.latestFieldProps = fieldsProps;
 
           // if changes were applied do not trigger field property updates yet, but wait for the next cycle
-          const changesWereApplied = this.formItemFormulaService.applyValueChangesFromFormulas(
-            entityGuid, contentType, formValues, fieldsProps,
-            possibleValueUpdates, possibleFieldsUpdates,
-            prepared.slotIsEmpty, entityReader);
+          const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(
+            formValues,
+            fieldsProps,
+            possibleValueUpdates,
+            possibleFieldsUpdates,
+            prepared.slotIsEmpty
+          );
           if (changesWereApplied)
             return null;
 
           // if no changes were applied then we trigger field property updates and reset the loop counter
-          this.formItemFormulaService.valueFormulaCounter = 0;
+          this.changeBroadcastSvc.valueFormulaCounter = 0;
           return fieldsProps;
         }),
         logUpdateFieldProps.map(),
@@ -289,6 +251,21 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         this.fieldsProps$.next(fieldsProps);
       })
     );
+  }
+
+  /**
+   * Get latest/current valid field settings - if possible from cache
+   * if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
+   */
+  private getLatestFieldSettings(constFieldPart: FieldConstantsOfLanguage): FieldSettings {
+    const fieldName = constFieldPart.fieldName;
+    // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
+    const cachedLanguageUnchanged = constFieldPart.language == this.latestFieldProps[fieldName]?.language;
+    const latestSettings: FieldSettings = cachedLanguageUnchanged
+      ? this.latestFieldProps[fieldName]?.settings
+        ?? { ...constFieldPart.settingsInitial }
+      : { ...constFieldPart.settingsInitial };
+    return latestSettings;
   }
 
   //TODO: @2dm -> Here we call the formula engine to process the picker items
@@ -310,20 +287,15 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
         }
         const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
-        let latestSettings: FieldSettings;
-        if (constantFieldPart.language == this.latestFieldProps[attribute.Name]?.language) {
-          latestSettings = this.latestFieldProps[attribute.Name]?.settings
-            ?? { ...constantFieldPart.settingsInitial };
-        } else {
-          latestSettings = { ...constantFieldPart.settingsInitial };
-        }
+        const latestSettings = this.getLatestFieldSettings(constantFieldPart);
+
         return this.formulaEngine.runAllListItemsFormulas(
           attribute,
           formValues,
           constantFieldPart.inputTypeStrict,
           constantFieldPart.settingsInitial,
           latestSettings,
-          this.itemHeader,
+          this.#item().Header,
           availableItems
         );
       }
@@ -364,14 +336,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       mapUntilObjChanged(m => m),
-    );
-  }
-
-  // todo: probably switch all uses above to this one
-  getFieldSettingsReplayed$(fieldName: string): Observable<FieldSettings> {
-    return this.fieldsProps$.pipe(
-      map(fieldsSettings => fieldsSettings[fieldName].settings),
-      mapUntilObjChanged(m => m),
+      // 2024-08-19 2dm changed to always replay; monitor in case we run into trouble
       shareReplay(1),
     );
   }
@@ -379,8 +344,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
     const cached = this.signalsCache[fieldName];
     if (cached) return cached;
-
-    var obs = this.getFieldSettingsReplayed$(fieldName);
+    var obs = this.getFieldSettings$(fieldName);
     return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
   }
   private signalsCache: Record<string, Signal<FieldSettings>> = {};

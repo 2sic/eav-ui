@@ -1,15 +1,15 @@
 import { FieldValue } from "projects/edit-types";
 import { EntityReader } from "../shared/helpers";
 import { FormValues, FieldsProps, FieldConstantsOfLanguage } from "../shared/models";
-import { EavContentType, EavContentTypeAttribute, EavEntityAttributes } from "../shared/models/eav";
+import { EavContentType, EavEntityAttributes } from "../shared/models/eav";
 import { FormulaPromiseResult } from "./models/formula-promise-result.model";
 import { FormulaSettingsHelper } from "./helpers/formula-settings.helper";
 import { FormulaValueCorrections } from "./helpers/formula-value-corrections.helper";
 import { FormulaCacheItem, FormulaTargets, SettingsFormulaPrefix } from "./models/formula.models";
-import { Injectable } from "@angular/core";
+import { Injectable, Signal } from "@angular/core";
 import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
-import { FormItemFormulaService } from "./form-item-formula.service";
+import { ItemFormulaBroadcastService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldSettingsUpdateHelperFactory } from '../shared/helpers/fields-settings-update.helpers';
 import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
@@ -22,38 +22,41 @@ const nameOfThis = 'FormulaPromiseHandler';
  */
 @Injectable()
 export class FormulaPromiseHandler {
-  private fieldsSettingsService: FieldsSettingsService = null;
+  #fieldsSettingsService: FieldsSettingsService = null;
 
   private entityGuid: string;
+  private contentType: Signal<EavContentType>;
+  private changeBroadcastSvc: ItemFormulaBroadcastService;
 
   private log = new EavLogger(nameOfThis, logThis);
 
+  private updateValueQueue: Record<string, FormulaPromiseResult> = {};
+
   constructor() { }
 
-  init(entityGuid: string, fieldsSettingsService: FieldsSettingsService) {
+  init(entityGuid: string,
+    contentType: Signal<EavContentType>,
+    fieldsSettingsService: FieldsSettingsService,
+    changeBroadcastSvc: ItemFormulaBroadcastService,
+  ) {
     this.entityGuid = entityGuid;
-    this.fieldsSettingsService = fieldsSettingsService;
+    this.#fieldsSettingsService = fieldsSettingsService;
+    this.contentType = contentType;
+    this.changeBroadcastSvc = changeBroadcastSvc;
   }
 
   /**
    * Used for filling queue and triggering next run.
-   * @param entityGuid
-   * @param resultWithPromise
+   * @param promiseResult
    * @param formulaCache
    * @param inputTypeName
    */
-  handleFormulaPromise(
-    entityGuid: string,
-    resultWithPromise: FormulaResultRaw,
-    formulaCache: FormulaCacheItem,
-    inputTypeName: InputTypeStrict,
-  ) {
-    this.log.fn('handleFormulaPromise', { entityGuid, resultWithPromise, formulaCache, target: formulaCache.target, inputType: inputTypeName });
-    if (resultWithPromise.openInDesigner && resultWithPromise.stop === null) {
+  handleFormulaPromise(promiseResult: FormulaResultRaw, formulaCache: FormulaCacheItem, inputTypeName: InputTypeStrict): void {
+    this.log.fn('handleFormulaPromise', { resultWithPromise: promiseResult, formulaCache, inputType: inputTypeName });
+    if (promiseResult.openInDesigner && promiseResult.stop === null)
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
-    }
-    formulaCache.promises$.next(resultWithPromise.promise);
-    this.DefineCallbackHandlerIfMissing(formulaCache, inputTypeName, entityGuid);
+    formulaCache.promises$.next(promiseResult.promise);
+    this.defineCallbackHandlerIfMissing(formulaCache, inputTypeName, this.entityGuid);
   }
 
   /**
@@ -62,14 +65,14 @@ export class FormulaPromiseHandler {
    * @param inputTypeName
    * @param entityGuid
    */
-  private DefineCallbackHandlerIfMissing(
+  private defineCallbackHandlerIfMissing(
     formulaCache: FormulaCacheItem,
     inputTypeName: InputTypeStrict,
     entityGuid: string,
   ) {
     const l = this.log.fn('DefineCallbackHandlerIfMissing', { formulaCache, inputTypeName, entityGuid });
     if (!formulaCache.updateCallback$.value) {
-      const queue = this.fieldsSettingsService.updateValueQueue;
+      const queue = this.updateValueQueue;
       formulaCache.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
         const corrected = FormulaValueCorrections.correctAllValues(formulaCache.target, result, inputTypeName);
 
@@ -95,23 +98,17 @@ export class FormulaPromiseHandler {
           fieldsUpdates.push(...corrected.fields);
         queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
         formulaCache.stopFormula = corrected.stop ?? formulaCache.stopFormula;
-        this.fieldsSettingsService.retriggerFormulas();
+        this.#fieldsSettingsService.retriggerFormulas();
       });
     }
   }
 
   /**
    * Used for updating values and cleaning settings from queue.
-   * @param entityGuid
-   * @param queue
-   * @param contentType
    * @param formValues
    * @param fieldsProps
    * @param slotIsEmpty
-   * @param entityReader
-   * @param latestFieldProps
    * @param attributes
-   * @param contentTypeMetadata
    * @param constantFieldParts
    * @param itemAttributes
    * @param formReadOnly
@@ -120,29 +117,22 @@ export class FormulaPromiseHandler {
    * @returns true if values were updated, false otherwise and new field props
    */
   updateValuesFromQueue(
-    queue: Record<string, FormulaPromiseResult>,
-    contentType: EavContentType,
     formValues: FormValues,
     fieldsProps: FieldsProps,
     slotIsEmpty: boolean,
-    entityReader: EntityReader,
-    latestFieldProps: FieldsProps,
-    attributes: EavContentTypeAttribute[],
     constantFieldParts: FieldConstantsOfLanguage[],
     itemAttributes: EavEntityAttributes,
-    formItemFormulaService: FormItemFormulaService,
     setUpdHelperFactory: FieldSettingsUpdateHelperFactory,
   ): { valuesUpdated: boolean, newFieldProps: FieldsProps } {
     // Get data from change queue
-    const entityGuid = this.entityGuid;
-    const toProcess = queue[entityGuid];
+    const toProcess = this.updateValueQueue[this.entityGuid];
 
     // If nothing in the queue for this entity, exit early
     if (toProcess == null)
       return { valuesUpdated: false, newFieldProps: null };
 
     // Flush queue for this item, as we'll process it next and in case of errors we don't want to reprocess it
-    queue[entityGuid] = null;
+    this.updateValueQueue[this.entityGuid] = null;
 
     // extract updates and flush queue
     const values = toProcess.valueUpdates;
@@ -151,28 +141,26 @@ export class FormulaPromiseHandler {
 
     let valuesUpdated = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
-      formItemFormulaService.applyValueChangesFromFormulas(
-        entityGuid,
-        contentType,
+      this.changeBroadcastSvc.applyValueChangesFromFormulas(
         formValues,
         fieldsProps,
         values,
         fields,
         slotIsEmpty,
-        entityReader
       );
       valuesUpdated = true;
     }
 
+    const contentType = this.contentType();
     let newFieldProps: FieldsProps = null;
     if (allSettings.length) {
       newFieldProps = { ...fieldsProps };
       allSettings.forEach(valueSet => {
-        const settingsCurrent = latestFieldProps[valueSet.name]?.settings;
+        const settingsCurrent = fieldsProps[valueSet.name]?.settings;
         
         let settingsNew: Record<string, any> = {};
         valueSet.settings.forEach(setting => {
-          ( { settingsNew } = FormulaSettingsHelper.keepSettingIfTypeMatches(
+          ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeMatches(
             SettingsFormulaPrefix + setting.settingName,
             settingsCurrent,
             setting.value,
@@ -180,14 +168,10 @@ export class FormulaPromiseHandler {
         });
 
         const constantFieldPart = constantFieldParts.find(f => f.fieldName === valueSet.name);
-        const attribute = attributes.find(a => a.Name === valueSet.name);
+        const attribute = contentType.Attributes.find(a => a.Name === valueSet.name);
 
         // Prepare helper which the formula will need to verify if the field is visible
-        const setUpdHelper = setUpdHelperFactory.create(
-          attribute,
-          constantFieldPart,
-          itemAttributes[attribute.Name],
-        );
+        const setUpdHelper = setUpdHelperFactory.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
 
         const updatedSettings = setUpdHelper.ensureNewSettingsMatchRequirements(
           {

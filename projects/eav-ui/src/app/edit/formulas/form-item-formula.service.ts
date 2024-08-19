@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable, Signal } from "@angular/core";
 import { FieldValue } from "projects/edit-types";
 import { EntityReader } from "../shared/helpers";
 import { FormValues, FieldsProps } from "../shared/models";
@@ -12,67 +12,71 @@ const logThis = false;
 const nameOfThis = 'FormItemFormulaService';
 
 /**
- * Contains methods for updating value changes from formulas.
+ * Contains methods for updating value changes from formulas to the global state.
+ * 
+ * It's created in the field-settings-service and specific to one item.
  */
 @Injectable()
-export class FormItemFormulaService {
+export class ItemFormulaBroadcastService {
 
   private log = new EavLogger(nameOfThis, logThis);
 
-  private itemService: ItemService = null;
+  private itemService = inject(ItemService);
 
   valueFormulaCounter = 0;
   maxValueFormulaCycles = 5;
 
-  init(itemService: ItemService) {
-    this.itemService = itemService;
+  private entityGuid: string;
+  private contentType: Signal<EavContentType>;
+  private reader: Signal<EntityReader>;
+
+  init(entityGuid: string, contentType: Signal<EavContentType>, reader: Signal<EntityReader>): void {
+    this.entityGuid = entityGuid;
+    this.contentType = contentType;
+    this.reader = reader;
   }
 
   /**
    * Used to check if the value of a field should be updated with the value from a formula and if so, updates it.
-   * @param entityGuid
-   * @param contentType
    * @param formValues
    * @param fieldsProps
    * @param possibleValueUpdates
    * @param possibleFieldsUpdates
    * @param slotIsEmpty
-   * @param entityReader
    * @returns true if values are updated, false otherwise
    */
   applyValueChangesFromFormulas(
-    entityGuid: string,
-    contentType: EavContentType,
     formValues: FormValues,
     fieldsProps: FieldsProps,
     possibleValueUpdates: FormValues,
     possibleFieldsUpdates: FieldValuePair[],
     slotIsEmpty: boolean,
-    entityReader: EntityReader
   ): boolean {
-    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
+    const entityGuid = this.entityGuid;
+    const contentType = this.contentType();
+
+    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
     const valueUpdates: FormValues = {};
     for (const attribute of contentType.Attributes) {
-      const possibleFieldsUpdatesForAttribute = possibleFieldsUpdates.filter(f => f.name === attribute.Name);
+      const possibleFieldsUpdatesAttr = possibleFieldsUpdates.filter(f => f.name === attribute.Name);
       const valueBefore = formValues[attribute.Name];
       const valueFromFormula = possibleValueUpdates[attribute.Name];
-      const fieldsFromFormula =
-        possibleFieldsUpdatesForAttribute[possibleFieldsUpdatesForAttribute.length - 1]?.value;
+      const fieldsFromFormula = possibleFieldsUpdatesAttr[possibleFieldsUpdatesAttr.length - 1]?.value;
       const newValue = fieldsFromFormula ? fieldsFromFormula : valueFromFormula;
       if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation))
         valueUpdates[attribute.Name] = newValue;
     }
 
-    if (Object.keys(valueUpdates).length > 0) {
-      if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
-        this.valueFormulaCounter++;
-        this.itemService.updateItemAttributesValues(entityGuid, valueUpdates, entityReader);
-        // return true to make sure fieldProps are not updated yet
-        return l.r(true);
-      } else
-        return l.r(false, 'Max value formula cycles reached');
+    if (Object.keys(valueUpdates).length == 0)
+      return l.r(false);
+
+    if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
+      this.valueFormulaCounter++;
+      this.itemService.updateItemAttributesValues(entityGuid, valueUpdates, this.reader());
+      // return true to make sure fieldProps are not updated yet
+      return l.r(true);
     }
-    return l.r(false);
+    return l.r(false, 'Max value formula cycles reached');
   }
 
   /**
