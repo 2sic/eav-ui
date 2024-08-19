@@ -194,7 +194,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
       this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
-    } else if (!this.formsStateService.readOnly$.value.isReadOnly && this.formsStateService.formsDirty$.value) {
+    } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsDirty$.value) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
       this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
@@ -288,7 +288,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private startSubscriptions() {
     this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
+        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
@@ -312,9 +312,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
       if (CTRL_S) {
         event.preventDefault();
-        if (!this.formsStateService.readOnly$.value.isReadOnly) {
+        if (!this.formsStateService.readOnly().isReadOnly)
           this.saveAll(false);
-        }
         return;
       }
     });

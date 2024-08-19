@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable } from 'rxjs';
 import { FormConfigService, FormsStateService } from '../../shared/services';
@@ -35,24 +35,24 @@ export class EditDialogHeaderComponent implements OnInit {
 
   viewModel$: Observable<EditDialogHeaderViewModel>;
 
+  private formsStateService = inject(FormsStateService);
+  protected readOnly = this.formsStateService.readOnly;
+
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private languageService: LanguageService,
     private publishStatusService: PublishStatusService,
     public formConfig: FormConfigService,
-    private formsStateService: FormsStateService,
+    
   ) { }
 
   ngOnInit() {
-    const readOnly$ = this.formsStateService.readOnly$;
     const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
     const publishMode$ = this.publishStatusService.getPublishMode$(this.formConfig.config.formId);
-    this.viewModel$ = combineLatest([readOnly$, hasLanguages$, publishMode$]).pipe(
-      map(([readOnly, hasLanguages, publishMode]) => {
+    this.viewModel$ = combineLatest([hasLanguages$, publishMode$]).pipe(
+      map(([hasLanguages, publishMode]) => {
         const viewModel: EditDialogHeaderViewModel = {
-          readOnly: readOnly.isReadOnly,
-          readOnlyReason: readOnly.reason,
           hasLanguages,
           publishMode,
         };

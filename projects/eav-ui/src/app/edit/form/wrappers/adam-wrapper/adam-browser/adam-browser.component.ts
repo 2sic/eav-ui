@@ -201,7 +201,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !contentTypeName) return;
+    if (this.formsStateService.readOnly().isReadOnly || !contentTypeName) return;
 
     const form: EditForm = {
       items: [

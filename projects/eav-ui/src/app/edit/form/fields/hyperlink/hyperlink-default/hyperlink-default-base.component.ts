@@ -74,7 +74,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
   }
 
   openImageConfiguration(adamItem?: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType)
+    if (this.formsStateService.readOnly().isReadOnly || !adamItem?._imageConfigurationContentType)
       return;
 
     const form: EditForm = {

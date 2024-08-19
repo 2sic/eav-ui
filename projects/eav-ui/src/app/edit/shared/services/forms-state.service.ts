@@ -1,23 +1,32 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, sample, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, Subject, Subscription } from 'rxjs';
 import { FormConfigService } from '.';
 import { FormReadOnly } from '../models';
 import { ItemService, LanguageService } from '../store/ngrx-data';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { toObservable } from '@angular/core/rxjs-interop';
 
+/**
+ * Service to manage the state of forms.
+ * Mainly to determine if valid, read-only etc.
+ */
 @Injectable()
 export class FormsStateService implements OnDestroy {
   saveForm$: Subject<boolean>;
-  readOnly$: BehaviorSubject<FormReadOnly>;
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
   saveButtonDisabled$: Observable<boolean>;
 
   // new with Signal
-  readOnly = signal<FormReadOnly>({ isReadOnly: true, reason: undefined });
+  readOnly = signal<FormReadOnly>({ isReadOnly: true, reason: undefined }, { equal: RxHelpers.objectsEqual });
   formsValidTemp = signal<boolean>(false);
   saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
+
+  // Old observables being changed to signals
+  // TODO: @2dg - change all components to use signals
+  // ...similar to EditDialogHeaderComponent line 38/39
+  readOnly$ = toObservable(this.readOnly);
 
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
@@ -31,7 +40,6 @@ export class FormsStateService implements OnDestroy {
 
   ngOnDestroy() {
     this.saveForm$.complete();
-    this.readOnly$?.complete();
     this.formsValid$?.complete();
     this.formsDirty$?.complete();
     this.subscription?.unsubscribe();
@@ -40,9 +48,7 @@ export class FormsStateService implements OnDestroy {
   init() {
     this.subscription = new Subscription();
     this.saveForm$ = new Subject();
-    const initialReadOnly: FormReadOnly = { isReadOnly: true, reason: undefined };
 
-    this.readOnly$ = new BehaviorSubject(initialReadOnly);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
     this.saveButtonDisabled$ = combineLatest([this.readOnly$, this.formsValid$]).pipe(
@@ -73,11 +79,7 @@ export class FormsStateService implements OnDestroy {
           isReadOnly: itemsReadOnly || !languageAllowed,
           reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
         };
-        if (!RxHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
-          this.readOnly$.next(readOnly);
-          this.readOnly.set(readOnly);
-          // this.readOnly.update(v => readOnly);
-        }
+        this.readOnly.set(readOnly);
       })
     );
   }

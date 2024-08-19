@@ -11,9 +11,9 @@
         }
       }
     </div>
-    @if (vm.readOnly) {
+    @if (readOnly().isReadOnly) {
       <mat-icon class="eav-hint-icon"
-        [tippy]="('General.ReadOnlyHint.' + vm.readOnlyReason) | translate" [tippyDisabled]="!vm.readOnlyReason">
+        [tippy]="('General.ReadOnlyHint.' + readOnly().reason) | translate" [tippyDisabled]="!readOnly().reason">
         lock
       </mat-icon>
     }
@@ -22,7 +22,7 @@
         file_copy
       </mat-icon>
     }
-    <button mat-button class="eav-publish-button" [disabled]="vm.readOnly" (click)="openPublishStatusDialog()"
+    <button mat-button class="eav-publish-button" [disabled]="readOnly().isReadOnly" (click)="openPublishStatusDialog()"
       [tippy]="'PublishStatus.' + vm.publishMode + '.Tip' | translate">
       <span class="eav-publish-mode">
         {{ 'PublishStatus.Label' | translate }}
