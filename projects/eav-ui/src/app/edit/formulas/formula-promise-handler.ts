@@ -119,7 +119,6 @@ export class FormulaPromiseHandler {
   updateValuesFromQueue(
     formValues: FormValues,
     fieldsProps: FieldsProps,
-    slotIsEmpty: boolean,
     constantFieldParts: FieldConstantsOfLanguage[],
     itemAttributes: EavEntityAttributes,
     setUpdHelperFactory: FieldSettingsUpdateHelperFactory,
@@ -146,7 +145,6 @@ export class FormulaPromiseHandler {
         fieldsProps,
         values,
         fields,
-        slotIsEmpty,
       );
       valuesUpdated = true;
     }

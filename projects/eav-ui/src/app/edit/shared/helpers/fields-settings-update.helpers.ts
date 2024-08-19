@@ -1,3 +1,4 @@
+import { Signal } from '@angular/core';
 import { LocalizationHelpers, ValidationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
@@ -15,7 +16,7 @@ export class FieldSettingsUpdateHelperFactory {
     private fieldLogicTools: FieldLogicTools,
     /** Info that the form is read-only */
     private formReadOnly: boolean,
-    private formSlotIsEmpty: boolean,
+    private formSlotIsEmpty: Signal<boolean>,
   ) {
 
   }
@@ -30,7 +31,7 @@ export class FieldSettingsUpdateHelperFactory {
       this.language,
       this.fieldLogicTools,
       this.formReadOnly,
-      this.formSlotIsEmpty,
+      this.formSlotIsEmpty, // todo: move away
       attribute,
       constantFieldPart,
       attributeValues,
@@ -55,7 +56,7 @@ export class FieldSettingsUpdateHelper {
     private fieldLogicTools: FieldLogicTools,
     /** Info that the form is read-only */
     private formReadOnly: boolean,
-    private formSlotIsEmpty: boolean,
+    private formSlotIsEmpty: Signal<boolean>,
 
     // Field specific info
     private attribute: EavContentTypeAttribute,
@@ -76,7 +77,7 @@ export class FieldSettingsUpdateHelper {
     valueBefore: FieldValue,
   ): FieldSettings {
     const constantFieldPart = this.constantFieldPart;
-    const slotIsEmpty = this.formSlotIsEmpty;
+    const slotIsEmpty = this.formSlotIsEmpty();
 
     // Why are we doing this?
     settingsNew.Name = settingsNew.Name || this.attribute.Name;

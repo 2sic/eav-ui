@@ -29,11 +29,13 @@ export class ItemFormulaBroadcastService {
   private entityGuid: string;
   private contentType: Signal<EavContentType>;
   private reader: Signal<EntityReader>;
+  private slotIsEmpty: Signal<boolean>;
 
-  init(entityGuid: string, contentType: Signal<EavContentType>, reader: Signal<EntityReader>): void {
+  init(entityGuid: string, contentType: Signal<EavContentType>, reader: Signal<EntityReader>, slotIsEmpty: Signal<boolean>): void {
     this.entityGuid = entityGuid;
     this.contentType = contentType;
     this.reader = reader;
+    this.slotIsEmpty = slotIsEmpty;
   }
 
   /**
@@ -50,10 +52,10 @@ export class ItemFormulaBroadcastService {
     fieldsProps: FieldsProps,
     possibleValueUpdates: FormValues,
     possibleFieldsUpdates: FieldValuePair[],
-    slotIsEmpty: boolean,
   ): boolean {
     const entityGuid = this.entityGuid;
     const contentType = this.contentType();
+    const slotIsEmpty = this.slotIsEmpty();
 
     const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
     const valueUpdates: FormValues = {};

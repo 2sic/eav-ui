@@ -70,6 +70,13 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   /** The item - set on init, used for many other computations */
   #item = signal<EavItem>(null);
 
+  // #slotIsEmpty = computed(() => {
+  //   if (!this.#item())
+  //     return true;
+  //   const slotIsEmptySig = this.itemService.slotIsEmpty(this.#item()?.Entity.Guid);
+  //   return slotIsEmptySig();
+  // });
+
   #contentType = computed(() => {
     if (!this.#item())
       return null;
@@ -89,10 +96,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     const item = this.itemService.getItem(entityGuid);
     this.#item.set(item);
+    const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
 
     this.formulaPromises.init(entityGuid, this.#contentType, this, this.changeBroadcastSvc);
     this.formulaEngine.init(entityGuid, this, this.formulaPromises, this.contentTypeSettings);
-    this.changeBroadcastSvc.init(entityGuid, this.#contentType, this.entityReader);
+    this.changeBroadcastSvc.init(entityGuid, this.#contentType, this.entityReader, slotIsEmpty);
 
     const contentType = this.#contentType();
 
@@ -109,13 +117,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
     const prepared$ = combineLatest([
-      this.itemService.getItemHeader$(entityGuid),  // must watch, as the IsEmpty can be toggled
       this.entityReader$, // also exists as signal
       this.globalConfigService.debugEnabled$, // also exists as signal
       this.formsStateService.readOnly$, // also exists as signal
     ]).pipe(
-      map(([itemHeader, entityReader, debugEnabled, formReadOnly]) => {
-        const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
+      map(([entityReader, debugEnabled, formReadOnly]) => {
         const logicTools: FieldLogicTools = {
           eavConfig: this.formConfig.config,
           entityReader,
@@ -131,7 +137,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           slotIsEmpty,
         );
         return {
-          slotIsEmpty,
           logicTools,
           updHelperFactory,
         };
@@ -162,7 +167,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             const { newFieldProps, valuesUpdated } = this.formulaPromises.updateValuesFromQueue(
               formValues,
               this.latestFieldProps,
-              prepared.slotIsEmpty,
               constantFieldParts,
               itemAttributes,
               prepared.updHelperFactory,
@@ -234,7 +238,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             fieldsProps,
             possibleValueUpdates,
             possibleFieldsUpdates,
-            prepared.slotIsEmpty
           );
           if (changesWereApplied)
             return null;

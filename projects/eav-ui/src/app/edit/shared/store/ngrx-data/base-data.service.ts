@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { BehaviorSubject } from 'rxjs';
 
@@ -6,15 +7,21 @@ import { BehaviorSubject } from 'rxjs';
  * WARNING! Do not use entities$
  */
 export class BaseDataService<T> extends EntityCollectionServiceBase<T> {
-  cache$: BehaviorSubject<T[]>;
+  /**
+   * WIP trying to support signals and observables at the same time
+   */
+  cache = signal<T[]>([]); // wip signals
+
+  /** Old / existing functionality with observables */
+  cache$ = new BehaviorSubject<T[]>([]);
 
   constructor(cacheName: string, serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super(cacheName, serviceElementsFactory);
 
-    this.cache$ = new BehaviorSubject<T[]>([]);
     // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(items => {
       this.cache$.next(items);
+      this.cache.set(items); // wip signals
     });
   }
 }

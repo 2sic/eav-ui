@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, inject, Injectable, Injector, runInInjectionContext, Signal, signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -15,12 +15,14 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = true;
 const nameOfThis = 'ItemService';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseDataService<EavItem> {
+  #injector = inject(Injector);
   log = new EavLogger(nameOfThis, logThis);
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
@@ -236,6 +238,28 @@ export class ItemService extends BaseDataService<EavItem> {
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
       mapUntilObjChanged(m => m),
     );
+  }
+
+  itemHeaderSignal(entityGuid: string): Signal<ItemIdentifierHeader> {
+    // try cached signal first
+    if (this.#itemHeaderCache[entityGuid])
+      return this.#itemHeaderCache[entityGuid];
+
+    const comp = computed(() => {
+      const header = this.cache().find(item => item.Entity.Guid === entityGuid)?.Header;
+      return header;
+    });
+    return this.#itemHeaderCache[entityGuid] = comp;
+  }
+  #itemHeaderCache: Record<string, Signal<ItemIdentifierHeader>> = {};
+
+  slotIsEmpty(entityGuid: string): Signal<boolean> {
+    // prepare signal before creating computed so it doesn't get recreated
+    const itemHeader = this.itemHeaderSignal(entityGuid);
+    return computed(() => {
+      const header = itemHeader();
+      return header == null ? true : header.IsEmptyAllowed && header.IsEmpty
+    });
   }
 
   getItems(entityGuids?: string[]): EavItem[] {
