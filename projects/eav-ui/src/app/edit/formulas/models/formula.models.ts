@@ -1,7 +1,7 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings, FieldValue, PickerItem } from '../../../../../../edit-types';
-import { FormValues } from '../../shared/models';
+import { ItemValuesOfOneLanguage } from '../../shared/models';
 import { FormulaIdentifier, FormulaResultRaw } from './formula-results.models';
 
 /**
@@ -18,18 +18,28 @@ export interface FormulaCacheItemShared {
 }
 
 export interface FormulaCacheItem extends FormulaCacheItemShared, FormulaIdentifier {
+  /** Data cache which can use inside the formula */
   cache: Record<string, any>;
+
   /** Function built when formula is saved */
   fn: FormulaFunction;
+
   /** Is formula currently being edited (not yet saved) */
   isDraft: boolean;
+
   /** Current formula string */
   source: string;
+
   /** Formula string in field settings */
   sourceFromSettings: string;
+
   sourceGuid: string;
   sourceId: number;
+
+  /** Formula version - v1 or v2 */
   version: FormulaVersion;
+
+  /** if the formula is stopped at the moment */
   stopFormula: boolean;
   promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;
   updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
@@ -195,7 +205,7 @@ export interface FormulaV1Experimental {
    * TODO: @2dm Must find out if it's used anywhere, and probably rename to getFieldSettings
    */
   getSettings(fieldName: string): FieldSettings;
-  getValues(entityGuid: string): FormValues;
+  getValues(entityGuid: string): ItemValuesOfOneLanguage;
 }
 
 // TODO: once the id is gone, merge with the type FormulaV1CtxTargetEntityType

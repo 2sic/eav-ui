@@ -11,7 +11,6 @@ export interface FieldsProps extends Record<string, FieldProps> { };
 export interface FieldProps {
   /** The language which applied to these field props as added to cache */
   language: string;
-  calculatedInputType: CalculatedInputType;
   constants: FieldConstants;
   settings: FieldSettings;
   translationState: TranslationState;
@@ -35,7 +34,7 @@ export interface FieldConstants {
   angularAssets?: string;
   dropzonePreviewsClass?: string;
   initialDisabled?: boolean;
-  inputType: CalculatedInputType;
+  inputCalc: CalculatedInputType;
   inputTypeStrict: InputTypeStrict;
   isExternal?: boolean;
   isLastInGroup?: boolean;

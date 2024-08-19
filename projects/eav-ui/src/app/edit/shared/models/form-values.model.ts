@@ -1,5 +1,3 @@
 import { FieldValue } from '../../../../../../edit-types';
 
-export interface FormValues {
-  [fieldName: string]: FieldValue;
-}
+export interface ItemValuesOfOneLanguage extends Record<string, FieldValue> { }

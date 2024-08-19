@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { tap } from 'rxjs';
 import { FormConfigService, FieldsSettingsService } from '.';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { EavItem } from '../models/eav';
+import { EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService, ItemService } from '../store/ngrx-data';
 import { FormLanguage } from '../models/form-languages.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -23,6 +23,8 @@ export class FieldsTranslateService {
 
   log = new EavLogger(nameOfThis, logThis);
 
+  itemAttributes: Signal<EavEntityAttributes>;
+
   constructor(
     private http: HttpClient,
     private itemService: ItemService,
@@ -36,6 +38,7 @@ export class FieldsTranslateService {
     this.entityGuid = entityGuid;
     const item = this.itemService.getItem(entityGuid);
     this.contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+    this.itemAttributes = this.itemService.itemAttributes(entityGuid);
     l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }
 
@@ -48,7 +51,7 @@ export class FieldsTranslateService {
     const language = this.formConfig.language();
     transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
 
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
     const values = attributes[fieldName];
     const doesFieldHaveExistingDimension = LocalizationHelpers.findOfExactDimension(values.Values, language.current) !== undefined;
     const defaultValue = LocalizationHelpers.getValueTranslation(values, FormLanguage.bothPrimary(language));
@@ -79,7 +82,7 @@ export class FieldsTranslateService {
       alert(apiKeyInDemoModeAlert);
 
     const language = this.formConfig.language();
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
 
     // Filter out fields that have translation disabled
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
@@ -120,7 +123,7 @@ export class FieldsTranslateService {
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) return;
 
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
     const values = attributes[fieldName];
     const language = this.formConfig.language();
     const valueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
@@ -185,7 +188,7 @@ export class FieldsTranslateService {
    * Auto-translates all field that have auto-translate enabled and are not empty, empty ones are unlocked.
    */
   autoTranslateMany(autoTranslateLanguageKey: string): void {
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
     // fields that have auto-translate enabled and are not empty
     const canTranslate: string[] = [];
     // fields that have auto-translate enabled but didn't have it by default or are empty
@@ -214,7 +217,7 @@ export class FieldsTranslateService {
    * Returns all fields that can be translated.
    */
   findTranslatableFields(): string[] {
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
   }
 
@@ -222,7 +225,7 @@ export class FieldsTranslateService {
    * Returns all fields that can be translated and autoTranslated.
    */
   findAutoTranslatableFields(): string[] {
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName) && !this.isAutoTranslationDisabled(fieldName));
   }
 
@@ -230,7 +233,7 @@ export class FieldsTranslateService {
    * Returns all fields that can be translated and autoTranslated, but were not autoTranslatable by default.
    */
   findAutoTranslatableFieldsThatWereNotAutoTranslatableByDefault(): string[] {
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const attributes = this.itemAttributes();
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName) && this.isAutoTranslationEnabledButWasDisabledByDefault(fieldName));
   }
 
@@ -255,7 +258,7 @@ export class FieldsTranslateService {
    */
   private isAutoTranslationEnabledButWasDisabledByDefault(fieldName: string) {
     const fieldsProps = this.fieldsSettingsService.getFieldsProps();
-    const logic = FieldLogicManager.singleton().get(fieldsProps[fieldName].calculatedInputType.inputType);
+    const logic = FieldLogicManager.singleton().get(fieldsProps[fieldName].constants.inputCalc.inputType);
     return !fieldsProps[fieldName].settings.DisableAutoTranslation && !logic.canAutoTranslate;
   }
 

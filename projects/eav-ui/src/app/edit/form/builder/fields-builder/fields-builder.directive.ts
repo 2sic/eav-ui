@@ -65,7 +65,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
         focused$: new BehaviorSubject(false),
       };
       this.fieldConfigs.push(fieldConfig);
-      const inputType = fieldProps.calculatedInputType.inputType;
+      const inputType = fieldProps.constants.inputCalc.inputType;
 
       // If we encounter a group-start, then create a new container based on the main container
       if (EmptyFieldHelpers.isGroupStart(inputType))
@@ -86,7 +86,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
-    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.calculatedInputType);
+    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.wrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers);
@@ -94,17 +94,17 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
-    this.log.a('createComponent', { calculatedInputType: fieldProps.calculatedInputType });
+    this.log.a('createComponent', { calculatedInputType: fieldProps.constants.inputCalc });
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
-    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.calculatedInputType);
+    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.wrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers);
 
-    const componentType = fieldProps.calculatedInputType.isExternal
+    const componentType = fieldProps.constants.inputCalc.isExternal
       ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
-      : this.readComponentType(fieldProps.calculatedInputType.inputType);
+      : this.readComponentType(fieldProps.constants.inputCalc.inputType);
 
     // create component - ideally with metadata if provided (ATM can specify alternate wrapper)
     // New 2024-06-11 will not break if metadata not specified
@@ -121,7 +121,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
-      const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
+      const previewType = this.readComponentType(fieldProps.constants.inputCalc.inputType);
       this.log.a('createComponent - add preview', { previewType });
       this.generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }

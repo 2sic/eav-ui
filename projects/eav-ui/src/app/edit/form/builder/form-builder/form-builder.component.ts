@@ -3,7 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { ValidationHelpers } from '../../../shared/helpers';
-import { FormValues, SxcAbstractControl } from '../../../shared/models';
+import { ItemValuesOfOneLanguage, SxcAbstractControl } from '../../../shared/models';
 import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { AdamCacheService, ItemService } from '../../../shared/store/ngrx-data';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
@@ -71,7 +71,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         // 1. create missing controls - usually just on first cycle
         this.log.a('create missing controls');
         for (const [fieldName, fieldProps] of Object.entries(fields)) {
-          const inputType = fieldProps.calculatedInputType.inputType;
+          const inputType = fieldProps.constants.inputCalc.inputType;
 
           if (EmptyFieldHelpers.isEmptyInputType(inputType))
             continue;
@@ -97,8 +97,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 2. sync values - create list comparing the old raw values and new fieldProps
         this.log.a('sync values');
-        const oldValues: FormValues = form.getRawValue();
-        const newValues: FormValues = {};
+        const oldValues: ItemValuesOfOneLanguage = form.getRawValue();
+        const newValues: ItemValuesOfOneLanguage = {};
         for (const [fieldName, fieldProps] of Object.entries(fields))
           if (form.controls.hasOwnProperty(fieldName))
             newValues[fieldName] = fieldProps.value;
@@ -160,7 +160,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
     this.subscriptions.add(
       form.valueChanges.pipe(
-        map(() => form.getRawValue() as FormValues),
+        map(() => form.getRawValue() as ItemValuesOfOneLanguage),
         distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);

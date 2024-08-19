@@ -19,6 +19,7 @@ const nameOfThis = 'FieldsSettingsConstantsService';
  */
 @Injectable()
 export class FieldsSettingsConstantsService {
+  private item: EavItem;
   private itemFieldVisibility: ItemFieldVisibility;
   private entityReader$: Observable<EntityReader>;
   private language$: Observable<FormLanguageComplete>;
@@ -37,14 +38,24 @@ export class FieldsSettingsConstantsService {
     entityReader$: Observable<EntityReader>,
     language$: Observable<FormLanguageComplete>,
     contentType: EavContentType,
-  ): void {
+  ): this {
+    this.item = item;
     this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
     this.entityReader$ = entityReader$;
     this.language$ = language$;
     this.contentType = contentType;
+    return this;
   }
 
-  getConstantFieldPartsOfLanguage$(
+  getUnchangingDataOfLanguage$() {
+    const entityGuid = this.item.Entity.Guid;
+    const entityId = this.item.Entity.Id;
+    const contentTypeNameId = this.contentType.Id;
+    const unchangingPartsAllLanguages = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
+    return this.getConstantFieldPartsOfLanguage$(unchangingPartsAllLanguages);
+  }
+
+  private getConstantFieldPartsOfLanguage$(
     fieldConstants: FieldConstants[],
   ): Observable<FieldConstantsOfLanguage[]> {
     const contentType = this.contentType;
@@ -85,7 +96,7 @@ export class FieldsSettingsConstantsService {
     return constFieldPartsOfLanguage$;
   }
 
-  getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {
+  private getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {
     const contentType = this.contentType;
     const l = this.log.fn('constantFieldParts', { entityGuid, entityId, contentTypeNameId });
     // Get the form languages - but we only need default & initial, so we don't have to observe
@@ -119,7 +130,7 @@ export class FieldsSettingsConstantsService {
         angularAssets: inputType?.AngularAssets,
         dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
         initialDisabled: initialSettings.Disabled ?? false,
-        inputType: calculatedInputType,
+        inputCalc: calculatedInputType,
         inputTypeStrict: calculatedInputType.inputType,
         isExternal: calculatedInputType.isExternal,
         isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),

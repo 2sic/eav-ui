@@ -1,5 +1,5 @@
 import { FieldSettings } from 'projects/edit-types';
-import { FormValues } from '../../shared/models';
+import { ItemValuesOfOneLanguage } from '../../shared/models';
 import { FormulaV1Experimental, FormulaV1ExperimentalEntity } from '../models/formula.models';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 import { LocalizationHelpers } from '../../shared/helpers/localization.helpers';
@@ -33,10 +33,10 @@ export class FormulaExperimentalObject implements FormulaV1Experimental {
     return this.#propsData.fieldsSettingsService.getFieldSettings(fieldName);
   }
 
-  getValues(entityGuid: string): FormValues {
+  getValues(entityGuid: string): ItemValuesOfOneLanguage {
     const { language, itemService } = this.#propsData;
     const item = itemService.getItem(entityGuid);
-    const values: FormValues = {};
+    const values: ItemValuesOfOneLanguage = {};
     for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
       values[fieldName] = LocalizationHelpers.translate(language, fieldValues, null);
     }

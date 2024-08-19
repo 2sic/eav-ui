@@ -14,7 +14,7 @@ export class FormulaSettingsHelper {
    * @param settingsNew Settings that are possibly updated
    * @returns True if setting is updated, false if it is not
    */
-  static keepSettingIfTypeMatches(
+  static keepSettingIfTypeOk(
     target: string,
     settings: FieldSettings,
     valueNew: FieldValue,

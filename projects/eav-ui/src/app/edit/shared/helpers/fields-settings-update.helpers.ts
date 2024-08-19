@@ -67,12 +67,12 @@ export class FieldSettingsUpdateHelper {
   }
 
   /**
-   * Used for calculating new settings.
+   * Used for verifying and updating new settings.
    * @param settingsNew Last settings
    * @param valueBefore
    * @returns Corrected settings
    */
-  ensureNewSettingsMatchRequirements(
+  ensureAllSettingsRequirements(
     settingsNew: FieldSettings,
     valueBefore: FieldValue,
   ): FieldSettings {
@@ -81,7 +81,6 @@ export class FieldSettingsUpdateHelper {
 
     // Why are we doing this?
     settingsNew.Name = settingsNew.Name || this.attribute.Name;
-
 
     settingsNew._currentRequired = ValidationHelpers.isRequired(settingsNew);
     const disableTranslation = this.schemaDisablesTranslation();
@@ -125,10 +124,9 @@ export class FieldSettingsUpdateHelper {
 
     // Disable translation if the Attribute Configuration says so.
     // DisableTranslation is true in any language in @All, @String, @string-default, etc...
-    for (const attrMd of attributeMetadata ?? []) {
+    for (const attrMd of attributeMetadata ?? [])
       if (attrMd.Attributes.DisableTranslation?.Values.some(v => v.Value === true))
         return true;
-    }
 
     return false;
   }

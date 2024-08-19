@@ -1,9 +1,9 @@
-import { FormValues } from "../../shared/models";
+import { ItemValuesOfOneLanguage } from "../../shared/models";
 import { FieldValuePair, FieldSettingPair } from "./formula-results.models";
 
 export class FormulaPromiseResult {
   constructor(
-    valueUpdates: FormValues,
+    valueUpdates: ItemValuesOfOneLanguage,
     fieldUpdates: FieldValuePair[],
     settingUpdates: FieldSettingPair[]
   ) {
@@ -12,7 +12,7 @@ export class FormulaPromiseResult {
     this.settingUpdates = settingUpdates;
   }
 
-  valueUpdates: FormValues;
+  valueUpdates: ItemValuesOfOneLanguage;
   fieldUpdates: FieldValuePair[];
   settingUpdates: FieldSettingPair[];
 }

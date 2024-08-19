@@ -1,7 +1,7 @@
-import { inject, Injectable, Signal } from "@angular/core";
+import { Attribute, inject, Injectable, Signal } from "@angular/core";
 import { FieldValue } from "projects/edit-types";
 import { EntityReader } from "../shared/helpers";
-import { FormValues, FieldsProps } from "../shared/models";
+import { ItemValuesOfOneLanguage, FieldsProps } from "../shared/models";
 import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { ItemService } from "../shared/store/ngrx-data";
@@ -48,9 +48,9 @@ export class ItemFormulaBroadcastService {
    * @returns true if values are updated, false otherwise
    */
   applyValueChangesFromFormulas(
-    formValues: FormValues,
+    formValues: ItemValuesOfOneLanguage,
     fieldsProps: FieldsProps,
-    possibleValueUpdates: FormValues,
+    possibleValueUpdates: ItemValuesOfOneLanguage,
     possibleFieldsUpdates: FieldValuePair[],
   ): boolean {
     const entityGuid = this.entityGuid;
@@ -58,15 +58,18 @@ export class ItemFormulaBroadcastService {
     const slotIsEmpty = this.slotIsEmpty();
 
     const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
-    const valueUpdates: FormValues = {};
+    const valueUpdates: ItemValuesOfOneLanguage = {};
     for (const attribute of contentType.Attributes) {
-      const possibleFieldsUpdatesAttr = possibleFieldsUpdates.filter(f => f.name === attribute.Name);
-      const valueBefore = formValues[attribute.Name];
-      const valueFromFormula = possibleValueUpdates[attribute.Name];
-      const fieldsFromFormula = possibleFieldsUpdatesAttr[possibleFieldsUpdatesAttr.length - 1]?.value;
-      const newValue = fieldsFromFormula ? fieldsFromFormula : valueFromFormula;
-      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation))
-        valueUpdates[attribute.Name] = newValue;
+      const fieldName = attribute.Name;
+      const disabledBecauseTranslations = fieldsProps[fieldName]?.settings._disabledBecauseOfTranslation;
+      const possibleFieldsUpdatesAttr = possibleFieldsUpdates.filter(f => f.name === fieldName);
+      const original = formValues[fieldName];
+      const valueFromFormula = possibleValueUpdates[fieldName];
+      const valFromFields = possibleFieldsUpdatesAttr[possibleFieldsUpdatesAttr.length - 1]?.value;
+      const newValue = valFromFields ? valFromFields : valueFromFormula;
+      const shouldUpdate = this.shouldUpdate(original, newValue, slotIsEmpty, disabledBecauseTranslations);
+      if (shouldUpdate)
+        valueUpdates[fieldName] = newValue;
     }
 
     if (Object.keys(valueUpdates).length == 0)

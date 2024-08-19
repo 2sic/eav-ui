@@ -37,12 +37,12 @@ export class FormulaDataObject implements FormulaV1Data {
 
   get prefill(): FieldValue {
     const { formula, settingsInitial, itemHeader: itemIdWithPrefill, inputTypeName } = this.#propsData.runParameters;
-    if (formula.target !== FormulaTargets.Value) { return; }
+    if (formula.target !== FormulaTargets.Value) return;
     return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputTypeName, settingsInitial, itemIdWithPrefill, true);
   }
 
   get value(): FieldValue {
-    const { formula, settingsCurrent, formValues } = this.#propsData.runParameters;
+    const { formula, settingsCurrent, currentValues: formValues } = this.#propsData.runParameters;
     if (formula.target === FormulaTargets.Value)
       return formValues[formula.fieldName];
 

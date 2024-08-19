@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Injector, runInInjectionContext, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -6,7 +6,7 @@ import { InputType } from '../../../../content-type-fields/models/input-type.mod
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { BestValueModes } from '../../constants';
 import { InputFieldHelpers, LocalizationHelpers } from '../../helpers';
-import { FormValues, Language, SaveResult } from '../../models';
+import { ItemValuesOfOneLanguage, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavItem, EavValue } from '../../models/eav';
 import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
@@ -15,14 +15,13 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 const logThis = true;
 const nameOfThis = 'ItemService';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseDataService<EavItem> {
-  #injector = inject(Injector);
   log = new EavLogger(nameOfThis, logThis);
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
@@ -37,7 +36,8 @@ export class ItemService extends BaseDataService<EavItem> {
     const entityGuid = Object.keys(itemData)[0];
     const entityId = itemData[entityGuid];
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
-    if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
+    if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0))
+      return;
 
     const newItem: EavItem = {
       ...oldItem,
@@ -99,7 +99,7 @@ export class ItemService extends BaseDataService<EavItem> {
     isReadOnly: boolean,
   ): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
-    if (!oldItem) { return; }
+    if (!oldItem) return;
 
     const newItem: EavItem = {
       ...oldItem,
@@ -113,18 +113,19 @@ export class ItemService extends BaseDataService<EavItem> {
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityGuid: string, newValues: FormValues, language: FormLanguage): void {
+  updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfOneLanguage, language: FormLanguage): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
-    if (!oldItem) { return; }
+    if (!oldItem) return;
 
-    const oldValues: FormValues = {};
+    const oldValues: ItemValuesOfOneLanguage = {};
     for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
       if (!newValues.hasOwnProperty(name))
         continue;
       oldValues[name] = LocalizationHelpers.translate(language, values, null);
     }
     const changes = ControlHelpers.getFormChanges(oldValues, newValues);
-    if (changes == null) { return; }
+    if (changes == null)
+      return;
 
     const newItem: EavItem = {
       ...oldItem,
@@ -189,7 +190,7 @@ export class ItemService extends BaseDataService<EavItem> {
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
     const l = this.log.fn('updateItemHeader', { entityGuid, header });
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
-    if (!oldItem) { return; }
+    if (!oldItem) return;
 
     const newItem: EavItem = {
       ...oldItem,
@@ -201,9 +202,36 @@ export class ItemService extends BaseDataService<EavItem> {
     l.end();
   }
 
+  getItem(entityGuid: string): EavItem {
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+  }
+
+  item(entityGuid: string): Signal<EavItem> {
+    // try cached signal first
+    return this.#itemCache[entityGuid]
+      ? this.#itemCache[entityGuid]
+      : this.#itemCache[entityGuid] = computed(
+          () => this.cache().find(item => item.Entity.Guid === entityGuid),
+          { equal: RxHelpers.objectsEqual },
+        );
+  }
+  #itemCache: Record<string, Signal<EavItem>> = {};
+
+  itemAttributes(entityGuid: string): Signal<EavEntityAttributes> {
+    const l = this.log.fn('itemAttributes', { entityGuid });
+    // try cached signal first
+    return this.#itemAttributesCache[entityGuid]
+      ? l.r(this.#itemAttributesCache[entityGuid], 'cached')
+      : this.#itemAttributesCache[entityGuid] = computed(
+          () => this.item(entityGuid)()?.Entity.Attributes,
+          { equal: RxHelpers.objectsEqual },
+        );
+  }
+  #itemAttributesCache: Record<string, Signal<EavEntityAttributes>> = {};
+
   getItemAttributes(entityGuid: string): EavEntityAttributes {
     const l = this.log.fn('getItemAttributes', { entityGuid });
-    const result = this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    const result = this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
     return l.r(result);
   }
 
@@ -212,10 +240,6 @@ export class ItemService extends BaseDataService<EavItem> {
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes),
       mapUntilChanged(m => m),
     );
-  }
-
-  getItem(entityGuid: string): EavItem {
-    return this.cache$.value.find(item => item.Entity.Guid === entityGuid);
   }
 
   /** Sync get-item-for info to show metadata-target info on an entity in the UI */
@@ -240,25 +264,12 @@ export class ItemService extends BaseDataService<EavItem> {
     );
   }
 
-  itemHeaderSignal(entityGuid: string): Signal<ItemIdentifierHeader> {
-    // try cached signal first
-    if (this.#itemHeaderCache[entityGuid])
-      return this.#itemHeaderCache[entityGuid];
-
-    const comp = computed(() => {
-      const header = this.cache().find(item => item.Entity.Guid === entityGuid)?.Header;
-      return header;
-    });
-    return this.#itemHeaderCache[entityGuid] = comp;
-  }
-  #itemHeaderCache: Record<string, Signal<ItemIdentifierHeader>> = {};
-
   slotIsEmpty(entityGuid: string): Signal<boolean> {
     // prepare signal before creating computed so it doesn't get recreated
-    const itemHeader = this.itemHeaderSignal(entityGuid);
+    const itemHeader = this.item(entityGuid);
     return computed(() => {
-      const header = itemHeader();
-      return header == null ? true : header.IsEmptyAllowed && header.IsEmpty
+      const header = itemHeader()?.Header;
+      return header == null ? true : header.IsEmptyAllowed && header.IsEmpty;
     });
   }
 
@@ -299,19 +310,9 @@ export class ItemService extends BaseDataService<EavItem> {
     const languageCode = (languages.length === 0 || inputType?.DisableI18n) ? '*' : defaultLanguage;
     if (defaultLanguageValue === undefined) {
       this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, languageCode, false, ctAttribute.Type);
-      // if (languages.length === 0 || inputType?.DisableI18n) {
-      //   this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type);
-      // } else {
-      //   this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, false, ctAttribute.Type);
-      // }
     } else {
       // most likely used only for entity fields because we can never know if they were cleaned out or brand new
       this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, { current: languageCode, primary: defaultLanguage }, false);
-      // if (languages.length === 0 || inputType?.DisableI18n) {
-      //   this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
-      // } else {
-      //   this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, defaultLanguage, false);
-      // }
     }
 
     // return what was used, so it can be checked on form-init

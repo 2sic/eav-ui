@@ -11,7 +11,7 @@ import { EavEditLoadDto } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants';
 import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { FormValues } from '../models';
+import { ItemValuesOfOneLanguage } from '../models';
 import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
@@ -39,7 +39,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
   public loaded = signal(false);
 
-  private initialFormValues: Record<string, FormValues> = {};
+  private initialFormValues: Record<string, ItemValuesOfOneLanguage> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -173,7 +173,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
     for (const item of items)
       for (const lang of allLangs) {
-        const formValues: FormValues = {};
+        const formValues: ItemValuesOfOneLanguage = {};
         const lookupLang = FormLanguage.diffCurrent(language, lang);
         for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes))
           formValues[fieldName] = LocalizationHelpers.translate(lookupLang, fieldValues, null);
@@ -185,7 +185,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     return `entityGuid:${entityGuid}:language:${language}`;
   }
 
-  getInitialValues(entityGuid: string, language: string): FormValues {
+  getInitialValues(entityGuid: string, language: string): ItemValuesOfOneLanguage {
     return this.initialFormValues[this.initialValuesCacheKey(entityGuid, language)];
   }
   //#endregion

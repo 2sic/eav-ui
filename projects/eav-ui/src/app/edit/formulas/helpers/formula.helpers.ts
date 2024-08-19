@@ -88,7 +88,7 @@ export class FormulaHelpers {
    * @returns Formula properties
    */
   static buildFormulaProps(propsData: FormulaObjectsInternalData,): FormulaProps {
-    const { formula, formValues } = propsData.runParameters;
+    const { formula, currentValues: formValues } = propsData.runParameters;
     
     switch (formula.version) {
       case FormulaVersions.V1:

@@ -1,7 +1,7 @@
 import { FieldValue } from '../../../../../../edit-types';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { BestValueMode, BestValueModes } from '../constants';
-import { FormValues } from '../models';
+import { ItemValuesOfOneLanguage } from '../models';
 import { EavDimension, EavEntityAttributes, EavValue, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
 
@@ -137,7 +137,7 @@ export class LocalizationHelpers {
   /** Update values for languageKey */
   static updateAttributesValues(
     allFields: EavEntityAttributes,
-    updateValues: FormValues,
+    updateValues: ItemValuesOfOneLanguage,
     language: FormLanguage,
   ): EavEntityAttributes {
     const l = log.fn('updateAttributesValues', { allFields, updateValues, language });
