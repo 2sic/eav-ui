@@ -7,7 +7,7 @@ export class UnknownLogic extends FieldLogicBase {
 
   canAutoTranslate = false;
 
-  update(settings: FieldSettings, _v: unknown, _t: unknown): FieldSettings {
+  update(settings: FieldSettings): FieldSettings {
     return settings;
   }
 }

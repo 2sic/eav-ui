@@ -166,7 +166,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       const settingsUpdateHelper = updHelperFactory.create(attr, constFieldPart, attrValues);
 
       // run formulas
-      const formulaResult = this.runAllFormulasOfField(attr.Name,
+      const formulaResult = this.runAllFormulasOfFieldOrInitSettings(attr.Name,
         formValues,
         constFieldPart,
         latestSettings,
@@ -204,7 +204,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * Used for running all formulas for a given attribute/field.
    * @returns Object with all changes that formulas should make
    */
-  runAllFormulasOfField(
+  runAllFormulasOfFieldOrInitSettings(
     fieldName: string,
     formValues: ItemValuesOfOneLanguage,
     constFieldPart: FieldConstantsOfLanguage,
@@ -216,11 +216,46 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   ): RunFormulasResult {
     //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
     const formulas = this.activeFieldFormulas(this.entityGuid, fieldName);
+    const hasFormulas = formulas.length > 0;
 
     // Target variables to fill using formula result
-    let formulaValue: FieldValue;                   // The new value
-    let formulaValidation: FormulaFieldValidation;  // The new validation
-    const formulaFields: FieldValuePair[] = [];     // Any additional fields
+    // let formulaValue: FieldValue;                   // The new value
+    // let formulaValidation: FormulaFieldValidation;  // The new validation
+    // const formulaFields: FieldValuePair[] = [];     // Any additional fields
+    // let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
+
+    // Run all formulas IF we have any
+    const { value, validation, fields, settings } = hasFormulas
+      ? this.runFormulasOfField(formulas, formValues, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
+      : { value: valueBefore, validation: null, fields: [], settings: {} };
+
+    // Note: the valueBefore / value seems to be used for picker-lists? not sure though
+    const settingsShouldBeUpdated = (hasFormulas && Object.keys(settings).length > 0)
+      || (settingsBefore == null || Object.keys(settingsBefore).length === 0);
+    const updatedSettings = setUpdHelper.ensureAllSettingsRequirements({ ...settingsBefore, ...settings }, valueBefore);
+
+    const runFormulaResult: RunFormulasResult = {
+      settings: updatedSettings,
+      validation: validation,
+      value: value,
+      fields: fields,
+    };
+    return runFormulaResult;
+  }
+
+  private runFormulasOfField(
+    formulas: FormulaCacheItem[],
+    formValues: ItemValuesOfOneLanguage,
+    constFieldPart: FieldConstantsOfLanguage,
+    settingsBefore: FieldSettings,
+    itemHeader: ItemIdentifierShared,
+    reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
+  ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
+    const l = this.log.fn('runFormulasOfField');
+    // Target variables to fill using formula result
+    let value: FieldValue;                   // The new value
+    let validation: FormulaFieldValidation;  // The new validation
+    const fields: FieldValuePair[] = [];     // Any additional fields
     let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
 
     const start = performance.now();
@@ -247,7 +282,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
       // If we have field changes, add to the list
       if (formulaResult.fields)
-        formulaFields.push(...formulaResult.fields);
+        fields.push(...formulaResult.fields);
 
       // If the value is not set, skip further result processing
       if (formulaResult.value === undefined)
@@ -256,13 +291,13 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       // If we do have a value, we need to place it in the correct target
       // Target is the value. Remember it for later
       if (formula.target === FormulaTargets.Value) {
-        formulaValue = formulaResult.value;
+        value = formulaResult.value;
         continue;
       }
 
       // Target is the validation. Remember it for later
       if (formula.target === FormulaTargets.Validation) {
-        formulaValidation = formulaResult.value as unknown as FormulaFieldValidation;
+        validation = formulaResult.value as unknown as FormulaFieldValidation;
         continue;
       }
 
@@ -270,17 +305,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, settingsBefore, formulaResult.value, settingsNew));
     }
     const afterRun = performance.now();
-    this.log.a('runAllFormulas ' + `Time: ${afterRun - start}ms`);
-
-    const updatedSettings = setUpdHelper.ensureAllSettingsRequirements({ ...settingsBefore, ...settingsNew }, valueBefore);
-
-    const runFormulaResult: RunFormulasResult = {
-      settings: updatedSettings,
-      validation: formulaValidation,
-      value: formulaValue,
-      fields: formulaFields,
-    };
-    return runFormulaResult;
+    return l.r({ value, validation, fields, settings: settingsNew }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
   }
 
   /**

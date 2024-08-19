@@ -40,6 +40,12 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private contentTypeItemService = inject(ContentTypeItemService);
   private itemService = inject(ItemService);
 
+  // Transient services for this instance only
+  private constantsService = transient(FieldsSettingsConstantsService);
+  private changeBroadcastSvc = transient(ItemFormulaBroadcastService);
+  private formulaEngine = transient(FormulaEngine);
+  private formulaPromises = transient(FormulaPromiseHandler);
+
   /** Local field properties - updated throughout cycles but only "released" selectively */
   private latestFieldProps: FieldsProps = {};
 
@@ -50,16 +56,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
   /** Current items attributes - to be set once available */
   private itemAttributes$: Observable<EavEntityAttributes>;
+  private constFieldPartsOfLanguage$: Observable<FieldConstantsOfLanguage[]>;
 
   private entityReader$ = this.languageSvc.getEntityReader$(this.formConfig.config.formId);
   private entityReader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
-
-  private constFieldPartsOfLanguage$ = new Observable<FieldConstantsOfLanguage[]>();
-
-  private constantsService = transient(FieldsSettingsConstantsService);
-  private changeBroadcastSvc = transient(ItemFormulaBroadcastService);
-  private formulaEngine = transient(FormulaEngine);
-  private formulaPromises = transient(FormulaPromiseHandler);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -85,7 +85,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   /** The settings of the content-type of this item */
   contentTypeSettings = computed(() => !this.#item()
     ? null
-    : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header));
+    : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header)
+  );
 
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
