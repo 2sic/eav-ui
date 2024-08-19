@@ -1,15 +1,14 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicManager } from '../../../shared/field-logic/field-logic-manager';
-import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 
 export class StringDropdownQueryLogic extends FieldLogicBase {
   name = InputTypeConstants.StringDropdownQuery;
 
-  update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
+  update(specs: FieldLogicUpdate<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityDefault);
-    const fixedSettings = entityDefaultLogic.update(settings, value, tools);
+    const fixedSettings = entityDefaultLogic.update(specs);
     fixedSettings.Value ??= '';
     fixedSettings.Label ??= '';
     fixedSettings.EnableTextEntry ??= false;

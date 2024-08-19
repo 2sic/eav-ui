@@ -1,13 +1,13 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 import { calculateDropdownOptions } from '../string-picker/string-picker.helpers';
 
 export class StringDropdownLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeConstants.StringDropdown;
   type: 'string' | 'number' = 'string';
 
-  update(settings: FieldSettings, value: string): FieldSettings {
+  update({ settings, value }: FieldLogicUpdate<string>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EnableTextEntry ??= false;
     fixedSettings.DropdownValues ??= '';

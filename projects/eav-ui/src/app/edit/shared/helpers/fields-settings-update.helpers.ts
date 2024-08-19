@@ -68,33 +68,33 @@ export class FieldSettingsUpdateHelper {
 
   /**
    * Used for verifying and updating new settings.
-   * @param settingsNew Last settings
+   * @param settings Latest/newest settings
    * @param valueBefore
    * @returns Corrected settings
    */
   ensureAllSettingsRequirements(
-    settingsNew: FieldSettings,
+    settings: FieldSettings,
     valueBefore: FieldValue,
   ): FieldSettings {
     const constantFieldPart = this.constantFieldPart;
     const slotIsEmpty = this.formSlotIsEmpty();
 
     // Why are we doing this?
-    settingsNew.Name = settingsNew.Name || this.attribute.Name;
+    settings.Name = settings.Name || this.attribute.Name;
 
-    settingsNew._currentRequired = ValidationHelpers.isRequired(settingsNew);
+    settings._currentRequired = ValidationHelpers.isRequired(settings);
     const disableTranslation = this.schemaDisablesTranslation();
 
-    settingsNew.DisableTranslation = slotIsEmpty || disableTranslation;
-    settingsNew._disabledBecauseOfTranslation = this.getDisabledBecauseTranslations(settingsNew.DisableTranslation);
+    settings.DisableTranslation = slotIsEmpty || disableTranslation;
+    settings._disabledBecauseOfTranslation = this.getDisabledBecauseTranslations(settings.DisableTranslation);
 
-    settingsNew.ForcedDisabled = slotIsEmpty || settingsNew._disabledBecauseOfTranslation || this.formReadOnly;
+    settings.ForcedDisabled = slotIsEmpty || settings._disabledBecauseOfTranslation || this.formReadOnly;
 
-    settingsNew.DisableAutoTranslation = constantFieldPart.settingsInitial.DisableAutoTranslation
-      || settingsNew.DisableTranslation;
+    settings.DisableAutoTranslation = constantFieldPart.settingsInitial.DisableAutoTranslation
+      || settings.DisableTranslation;
 
     // Correct these fresh settings with FieldLogics of this field
-    const fixed = constantFieldPart.logic?.update(settingsNew, valueBefore, this.fieldLogicTools) ?? settingsNew;
+    const fixed = constantFieldPart.logic?.update({ settings: settings, value: valueBefore, tools: this.fieldLogicTools }) ?? settings;
 
     return fixed;
   }

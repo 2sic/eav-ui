@@ -53,7 +53,7 @@ export abstract class FieldLogicBase {
   /** 
    * Update field settings - typically used on init and in every formula cycle
    */
-  abstract update(settings: FieldSettings, value: FieldValue, tools: FieldLogicTools): FieldSettings;
+  abstract update(updateSpecs: FieldLogicUpdate): FieldSettings;
 
   /**
    * Lookup advanced (external) configuration.
@@ -71,4 +71,10 @@ export abstract class FieldLogicBase {
     const advanced = tools.entityReader.flatten(wysiwygConfig) as T;
     return { ...defaults, ...advanced };
   }
+}
+
+export interface FieldLogicUpdate<T = FieldValue> {
+  settings: FieldSettings;
+  tools: FieldLogicTools;
+  value?: T;
 }

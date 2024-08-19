@@ -1,7 +1,7 @@
 import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
@@ -21,7 +21,7 @@ export class EntityPickerLogic extends FieldLogicBase {
     return fs;
   }
 
-  update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
+  update({ settings, tools }: FieldLogicUpdate): FieldSettings {
     let dataSources: EavEntity[] = [];
     let pickerDisplayConfigurations: EavEntity[] = [];
     

@@ -1,13 +1,12 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
-import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 import { EntityPickerLogic } from '../entity-picker/entity-picker-logic';
 
 export class EntityDefaultLogic extends FieldLogicBase {
   name = InputTypeConstants.EntityDefault;
 
-  update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
+  update({ settings, tools }: FieldLogicUpdate): FieldSettings {
     
     let fs = EntityDefaultLogic.setDefaultSettings({ ...settings });
     

@@ -1,5 +1,5 @@
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from './field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from './field-logic-base';
 import { FieldSettings } from 'projects/edit-types';
 
 export class UnknownLogic extends FieldLogicBase {
@@ -7,7 +7,7 @@ export class UnknownLogic extends FieldLogicBase {
 
   canAutoTranslate = false;
 
-  update(settings: FieldSettings): FieldSettings {
+  update({ settings }: FieldLogicUpdate): FieldSettings {
     return settings;
   }
 }

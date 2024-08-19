@@ -1,11 +1,11 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 
 export class BooleanTristateLogic extends FieldLogicBase {
   name = InputTypeConstants.BooleanTristate;
 
-  update(settings: FieldSettings, value: boolean | ''): FieldSettings {
+  update({ settings, value }: FieldLogicUpdate<boolean | ''>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.ReverseToggle ??= false;
     fixedSettings._label = this.calculateLabel(value, fixedSettings);

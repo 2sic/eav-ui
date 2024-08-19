@@ -1,14 +1,14 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 
 export class StringDefaultLogic extends FieldLogicBase {
   name = InputTypeConstants.StringDefault;
 
   canAutoTranslate = true;
 
-  update(settings: FieldSettings): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+  update(specs: FieldLogicUpdate): FieldSettings {
+    const fixedSettings: FieldSettings = { ...specs.settings };
     fixedSettings.InputFontFamily ??= '';
     fixedSettings.RowCount ||= 1;
     return fixedSettings;

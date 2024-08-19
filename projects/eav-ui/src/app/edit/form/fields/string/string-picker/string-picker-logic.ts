@@ -2,9 +2,8 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { FieldSettings, UiPickerSourceCustomList } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicManager } from '../../../shared/field-logic/field-logic-manager';
-import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { calculateDropdownOptions } from './string-picker.helpers';
 
@@ -13,13 +12,13 @@ const logThis = false;
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeConstants.StringPicker;
 
-  update(settings: FieldSettings, value: string, tools: FieldLogicTools): FieldSettings {
+  update({ settings, value, tools }: FieldLogicUpdate<string>): FieldSettings {
     var log = new EavLogger('StringPickerLogic', logThis);
     log.a('update', { settings, value, tools });
 
     let dataSources: EavEntity[] = [];
     const entityPickerLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityPicker);
-    const fs = entityPickerLogic.update(settings, value, tools);
+    const fs = entityPickerLogic.update({ settings, value, tools });
 
     fs.EnableTextEntry ??= false;
     fs.Separator ??= '\n'; //'\\n';

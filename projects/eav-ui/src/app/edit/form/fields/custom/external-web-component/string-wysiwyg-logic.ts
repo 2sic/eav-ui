@@ -1,6 +1,6 @@
 import { AdamItem, FieldSettings, FieldValue, StringWysiwyg } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicBase, FieldLogicUpdate } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { FieldLogicWithValueInit } from '../../../shared/field-logic/field-logic-with-init';
 
@@ -9,7 +9,7 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
 
   canAutoTranslate = true;
 
-  update(settings: StringWysiwyg, value: FieldValue, tools: FieldLogicTools): FieldSettings {
+  update({ settings, tools, value }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: StringWysiwyg = { ...settings };
     // If the `Dialog` setting is blank, it means start inline (default) and allow switching to dialog.
     fixedSettings._allowDialog ??= fixedSettings.Dialog == null || fixedSettings.Dialog === '';
