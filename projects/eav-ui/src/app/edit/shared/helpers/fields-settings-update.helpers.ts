@@ -69,12 +69,12 @@ export class FieldSettingsUpdateHelper {
   /**
    * Used for verifying and updating new settings.
    * @param settings Latest/newest settings
-   * @param valueBefore
+   * @param fieldValue
    * @returns Corrected settings
    */
   ensureAllSettingsRequirements(
     settings: FieldSettings,
-    valueBefore: FieldValue,
+    fieldValue: FieldValue,
   ): FieldSettings {
     const constantFieldPart = this.constantFieldPart;
     const slotIsEmpty = this.formSlotIsEmpty();
@@ -94,7 +94,7 @@ export class FieldSettingsUpdateHelper {
       || settings.DisableTranslation;
 
     // Correct these fresh settings with FieldLogics of this field
-    const fixed = constantFieldPart.logic?.update({ settings: settings, value: valueBefore, tools: this.fieldLogicTools }) ?? settings;
+    const fixed = constantFieldPart.logic?.update({ settings: settings, value: fieldValue, tools: this.fieldLogicTools }) ?? settings;
 
     return fixed;
   }

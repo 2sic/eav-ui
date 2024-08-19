@@ -12,13 +12,14 @@ const logThis = false;
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeConstants.StringPicker;
 
-  update({ settings, value, tools }: FieldLogicUpdate<string>): FieldSettings {
+  update(specs: FieldLogicUpdate<string>): FieldSettings {
+    const { value, tools } = specs;
     var log = new EavLogger('StringPickerLogic', logThis);
-    log.a('update', { settings, value, tools });
+    log.a('update', { specs });
 
     let dataSources: EavEntity[] = [];
     const entityPickerLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityPicker);
-    const fs = entityPickerLogic.update({ settings, value, tools });
+    const fs = entityPickerLogic.update(specs);
 
     fs.EnableTextEntry ??= false;
     fs.Separator ??= '\n'; //'\\n';

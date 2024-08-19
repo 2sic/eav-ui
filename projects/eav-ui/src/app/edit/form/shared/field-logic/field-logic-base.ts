@@ -74,7 +74,12 @@ export abstract class FieldLogicBase {
 }
 
 export interface FieldLogicUpdate<T = FieldValue> {
+  /** Settings before logic update */
   settings: FieldSettings;
+
+  /** Tools for doing various kind of work in the logic, which is singleton and may need context-specific tools */
   tools: FieldLogicTools;
+
+  /** The field value which the settings-update sometimes needs to know, eg. to indicated selected option in a dropdown */
   value?: T;
 }

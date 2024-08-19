@@ -6,9 +6,9 @@ import { FieldLogicManager } from '../../../shared/field-logic/field-logic-manag
 export class EntityContentBlocksLogic extends FieldLogicBase {
   name = InputTypeConstants.EntityContentBlocks;
 
-  update({ settings, tools, value }: FieldLogicUpdate<string[]>): FieldSettings {
+  update(specs: FieldLogicUpdate<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityDefault);
-    const fixedSettings = entityDefaultLogic.update( { settings, value, tools });
+    const fixedSettings = entityDefaultLogic.update(specs);
     fixedSettings.EnableRemove = true;
     fixedSettings.AllowMultiValue = true;
     fixedSettings.EnableAddExisting = false;

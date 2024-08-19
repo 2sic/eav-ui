@@ -11,8 +11,8 @@ export class DateTimeDefaultLogic extends FieldLogicBase {
   }
 
 
-  update({ settings, tools, value }: FieldLogicUpdate<string[]>): FieldSettings {
-    const l = this.log.fn('update', { settings, value, tools });
+  update({ settings, tools }: FieldLogicUpdate<string[]>): FieldSettings {
+    const l = this.log.fn('update', { settings, tools });
     const fixedSettings = settings;
     return l.r(fixedSettings);
   }
