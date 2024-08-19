@@ -88,101 +88,51 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
       }),
     );
 
-    // fieldsToProcess.pipe(
-    //   take(1),
-    // ).subscribe(fields => {
-    //     // 1. create missing controls - usually just on first cycle
-    //     const fieldsForNgForm = fields.filter(({ inputType, hasControl }) =>
-    //       // Empty type, skip
-    //       !EmptyFieldHelpers.isEmptyInputType(inputType)
+    // Create all the controls in the form right at the beginning
+    fieldsToProcess.pipe(take(1)).subscribe(fields => {
+      // 1. create missing controls - usually just on first cycle
+      const fieldsForNgForm = fields.filter(({ inputType, hasControl }) =>
+        // Empty type, skip
+        !EmptyFieldHelpers.isEmptyInputType(inputType)
 
-    //       // If control already exists, skip
-    //       && !hasControl
-    //     );
+        // If control already exists, skip
+        && !hasControl
+      );
 
-    //     this.log.a(`create missing controls ${fieldsForNgForm.length} of ${fields.length}`, { fieldsForNgForm });
+      this.log.a(`create missing controls ${fieldsForNgForm.length} of ${fields.length}`, { fieldsForNgForm });
 
-    //     // Generate any fields which don't exist yet (usually only on first cycle)
-    //     for (const fields of fieldsForNgForm) {
-    //       const { fieldName, fieldProps, inputType, value } = fields;
-    //       // The initial value at the moment the control is first created in this language
-    //       let initialValue = value;
+      // Generate any fields which don't exist yet (usually only on first cycle)
+      for (const fields of fieldsForNgForm) {
+        const { fieldName, fieldProps, inputType, value } = fields;
+        // The initial value at the moment the control is first created in this language
+        let initialValue = value;
 
-    //       // Special treatment for wysiwyg fields
-    //       // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
-    //       // ...except for directly below
-    //       if (inputType === InputTypeConstants.StringWysiwyg && initialValue) {
-    //         const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
-    //         const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
-    //         fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
-    //       }
+        // Special treatment for wysiwyg fields
+        // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
+        // ...except for directly below
+        if (inputType === InputTypeConstants.StringWysiwyg && initialValue) {
+          const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
+          const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
+          fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
+        }
 
-    //       // Build control in the Angular form with validators
-    //       const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
-    //       const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
-    //       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
-    //       // TODO: build all fields at once. That should be faster
-    //       form.addControl(fieldName, newControl);
-    //       ValidationHelpers.ensureWarning(form.controls[fieldName]);
-    //     }
-    // });
+        // Build control in the Angular form with validators
+        const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
+        const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
+        const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
+        // TODO: build all fields at once. That should be faster
+        form.addControl(fieldName, newControl);
+        ValidationHelpers.ensureWarning(form.controls[fieldName]);
+      }
+    });
 
     // This has multiple features, possibly we should separate them
-    // 1. Create missing controls in the angular form
+    // ~~1. Create missing controls in the angular form~~
     // 2. Sync values between form and fieldProps - eg. on value changes which are from formulas
     // 3. Ensure disabled state is in sync eg. after settings recalculations
     // 4. Ensure validators are run in such scenarios
     this.subscriptions.add(
-      fieldProps$.subscribe(allFields => {
-        // 0. Enrich fields with initial values and input types
-        const fields = Object.entries(allFields).map(([fieldName, fieldProps]) => {
-          const hasControl = form.controls.hasOwnProperty(fieldName);
-          const control = hasControl ? form.controls[fieldName] : null;
-          return ({
-            fieldName,
-            fieldProps,
-            inputType: fieldProps.constants.inputCalc.inputType,
-            value: fieldProps.buildValue,
-            hasControl,
-            control,
-          });
-        });
-
-        // 1. create missing controls - usually just on first cycle
-        const fieldsForNgForm = fields.filter(({ inputType, hasControl }) =>
-          // Empty type, skip
-          !EmptyFieldHelpers.isEmptyInputType(inputType)
-
-          // If control already exists, skip
-          && !hasControl
-        );
-
-        this.log.a(`create missing controls ${fieldsForNgForm.length} of ${fields.length}`, { fieldsForNgForm });
-
-        // Generate any fields which don't exist yet (usually only on first cycle)
-        for (const fields of fieldsForNgForm) {
-          const { fieldName, fieldProps, inputType, value } = fields;
-          // The initial value at the moment the control is first created in this language
-          let initialValue = value;
-
-          // Special treatment for wysiwyg fields
-          // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
-          // ...except for directly below
-          if (inputType === InputTypeConstants.StringWysiwyg && initialValue) {
-            const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
-            const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
-            fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
-          }
-
-          // Build control in the Angular form with validators
-          const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
-          const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
-          const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
-          // TODO: build all fields at once. That should be faster
-          form.addControl(fieldName, newControl);
-          ValidationHelpers.ensureWarning(form.controls[fieldName]);
-        }
-
+      fieldsToProcess.subscribe(fields => {
         // Figure out which fields may require further processing
         const fieldsOnNgForm = fields.filter(set => set.hasControl);
 
