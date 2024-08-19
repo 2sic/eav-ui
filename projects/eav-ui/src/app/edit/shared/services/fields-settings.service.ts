@@ -137,7 +137,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           updHelperFactory,
         };
       })
-
     );
 
     const logUpdateFieldProps = this.log.rxTap('updateFieldProps', { enabled: true });
@@ -152,9 +151,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         logUpdateFieldProps.pipe(),
         map(([itemAttributes, entityReader, _, constantFieldParts, prepared]) => {
           // 1. Create list of all current language form values (as is stored in the entity-store) for further processing
-          const formValues: ItemValuesOfOneLanguage = {};
-          for (const [name, values] of Object.entries(itemAttributes))
-            formValues[name] = entityReader.getBestValue(values, null);
+          const formValues = entityReader.currentValues(itemAttributes);
 
           // 2. Process the queue of changes from promises if necessary
           // If things change, we will exit because then the observable will be retriggered
@@ -176,9 +173,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
           // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
           for (const [key, value] of Object.entries(fieldsProps))
-            value.wrappers = isFirstRound
+            value.buildWrappers = isFirstRound
               ? InputFieldHelpers.getWrappers(value.settings, value.constants.inputCalc)
-              : this.latestFieldProps[key]?.wrappers;
+              : this.latestFieldProps[key]?.buildWrappers;
 
           // 5. Update the latest field properties for further cycles
           this.latestFieldProps = fieldsProps;

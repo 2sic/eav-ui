@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
+import { combineLatest, distinctUntilChanged, filter, map, startWith, take } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { ValidationHelpers } from '../../../shared/helpers';
 import { ItemValuesOfOneLanguage, SxcAbstractControl } from '../../../shared/models';
@@ -17,7 +17,7 @@ import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FormBuilderComponent';
 
 @Component({
@@ -66,46 +66,136 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
     const form = this.form;
 
+    const fieldProps$ = this.fieldsSettingsService.getFieldsProps$();
+
+    const fieldsToProcess = fieldProps$.pipe(
+      filter(fields => fields != null && Object.keys(fields).length > 0),
+      map(allFields => {
+        // 0. Enrich fields with initial values and input types
+        const fields = Object.entries(allFields).map(([fieldName, fieldProps]) => {
+          const hasControl = form.controls.hasOwnProperty(fieldName);
+          const control = hasControl ? form.controls[fieldName] : null;
+          return {
+            fieldName,
+            fieldProps,
+            inputType: fieldProps.constants.inputCalc.inputType,
+            value: fieldProps.buildValue,
+            hasControl,
+            control,
+          };
+        });
+        return fields;
+      }),
+    );
+
+    // fieldsToProcess.pipe(
+    //   take(1),
+    // ).subscribe(fields => {
+    //     // 1. create missing controls - usually just on first cycle
+    //     const fieldsForNgForm = fields.filter(({ inputType, hasControl }) =>
+    //       // Empty type, skip
+    //       !EmptyFieldHelpers.isEmptyInputType(inputType)
+
+    //       // If control already exists, skip
+    //       && !hasControl
+    //     );
+
+    //     this.log.a(`create missing controls ${fieldsForNgForm.length} of ${fields.length}`, { fieldsForNgForm });
+
+    //     // Generate any fields which don't exist yet (usually only on first cycle)
+    //     for (const fields of fieldsForNgForm) {
+    //       const { fieldName, fieldProps, inputType, value } = fields;
+    //       // The initial value at the moment the control is first created in this language
+    //       let initialValue = value;
+
+    //       // Special treatment for wysiwyg fields
+    //       // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
+    //       // ...except for directly below
+    //       if (inputType === InputTypeConstants.StringWysiwyg && initialValue) {
+    //         const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
+    //         const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
+    //         fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
+    //       }
+
+    //       // Build control in the Angular form with validators
+    //       const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
+    //       const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
+    //       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
+    //       // TODO: build all fields at once. That should be faster
+    //       form.addControl(fieldName, newControl);
+    //       ValidationHelpers.ensureWarning(form.controls[fieldName]);
+    //     }
+    // });
+
+    // This has multiple features, possibly we should separate them
+    // 1. Create missing controls in the angular form
+    // 2. Sync values between form and fieldProps - eg. on value changes which are from formulas
+    // 3. Ensure disabled state is in sync eg. after settings recalculations
+    // 4. Ensure validators are run in such scenarios
     this.subscriptions.add(
-      this.fieldsSettingsService.getFieldsProps$().subscribe(fields => {
+      fieldProps$.subscribe(allFields => {
+        // 0. Enrich fields with initial values and input types
+        const fields = Object.entries(allFields).map(([fieldName, fieldProps]) => {
+          const hasControl = form.controls.hasOwnProperty(fieldName);
+          const control = hasControl ? form.controls[fieldName] : null;
+          return ({
+            fieldName,
+            fieldProps,
+            inputType: fieldProps.constants.inputCalc.inputType,
+            value: fieldProps.buildValue,
+            hasControl,
+            control,
+          });
+        });
+
         // 1. create missing controls - usually just on first cycle
-        this.log.a('create missing controls');
-        for (const [fieldName, fieldProps] of Object.entries(fields)) {
-          const inputType = fieldProps.constants.inputCalc.inputType;
+        const fieldsForNgForm = fields.filter(({ inputType, hasControl }) =>
+          // Empty type, skip
+          !EmptyFieldHelpers.isEmptyInputType(inputType)
 
-          if (EmptyFieldHelpers.isEmptyInputType(inputType))
-            continue;
+          // If control already exists, skip
+          && !hasControl
+        );
 
-          if (form.controls.hasOwnProperty(fieldName))
-            continue;
+        this.log.a(`create missing controls ${fieldsForNgForm.length} of ${fields.length}`, { fieldsForNgForm });
+
+        // Generate any fields which don't exist yet (usually only on first cycle)
+        for (const fields of fieldsForNgForm) {
+          const { fieldName, fieldProps, inputType, value } = fields;
+          // The initial value at the moment the control is first created in this language
+          let initialValue = value;
 
           // Special treatment for wysiwyg fields
-          if (inputType === InputTypeConstants.StringWysiwyg && fieldProps.value) {
+          // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
+          // ...except for directly below
+          if (inputType === InputTypeConstants.StringWysiwyg && initialValue) {
             const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
             const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
-            fieldProps.value = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(fieldProps.value, adamItems);
+            fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
           }
 
-          const value = fieldProps.value;
+          // Build control in the Angular form with validators
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
-          const newControl = this.formBuilder.control({ disabled, value }, validators);
+          const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
           // TODO: build all fields at once. That should be faster
           form.addControl(fieldName, newControl);
           ValidationHelpers.ensureWarning(form.controls[fieldName]);
         }
 
-        // 2. sync values - create list comparing the old raw values and new fieldProps
-        this.log.a('sync values');
+        // Figure out which fields may require further processing
+        const fieldsOnNgForm = fields.filter(set => set.hasControl);
+
+        // 2. sync values - create list comparing the old raw values and new fieldProps - eg. modified by formulas
+        this.log.a(`sync values for max ${fieldsOnNgForm.length} controls`);
         const oldValues: ItemValuesOfOneLanguage = form.getRawValue();
         const newValues: ItemValuesOfOneLanguage = {};
-        for (const [fieldName, fieldProps] of Object.entries(fields))
-          if (form.controls.hasOwnProperty(fieldName))
-            newValues[fieldName] = fieldProps.value;
+        for (const { fieldName, value } of fieldsOnNgForm)
+          newValues[fieldName] = value;
 
         const changes = ControlHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
-          this.log.a('patching form as it changed', { changes, oldValues, newValues })
+          this.log.a(`patching form as it changed (${Object.keys(changes).length}`, { changes, oldValues, newValues })
           // controls probably don't need to set touched and dirty for this kind of update.
           // This update usually happens for language change, formula or updates on same entity in another Edit Ui.
           // In case controls should be updated, update with control.markAsTouched and control.markAsDirty.
@@ -113,11 +203,9 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
           form.patchValue(changes);
         }
 
-        // 3. sync disabled
-        this.log.a('sync disabled');
-        for (const [fieldName, fieldProps] of Object.entries(fields)) {
-          if (!form.controls.hasOwnProperty(fieldName)) continue;
-          const control = form.controls[fieldName];
+        // 3. sync disabled if state not matching
+        this.log.a('sync "disabled" state');
+        for (const { control, fieldProps } of fieldsOnNgForm) {
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
           ControlHelpers.disableControl(control, disabled);
@@ -125,9 +213,8 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
         this.log.a('run validators');
-        for (const [fieldName, _] of Object.entries(fields))
-          if (form.controls.hasOwnProperty(fieldName))
-            form.controls[fieldName].updateValueAndValidity();
+        for (const { control } of fieldsOnNgForm)
+          control.updateValueAndValidity();
       })
     );
 
@@ -136,18 +223,17 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
       startWith(!form.invalid),
       mapUntilChanged(m => m),
     );
+
     const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
     this.subscriptions.add(
       combineLatest([formValid$, itemHeader$]).pipe(
-        map(([formValid, itemHeader]) => {
-          if (itemHeader.IsEmpty) return true;
-          return formValid;
-        }),
+        map(([formValid, itemHeader]) => itemHeader.IsEmpty || formValid),
         mapUntilChanged(m => m),
       ).subscribe(isValid => {
         this.formsStateService.setFormValid(this.entityGuid, isValid);
       })
     );
+
     this.subscriptions.add(
       form.valueChanges.pipe(
         map(() => form.dirty),
@@ -163,7 +249,7 @@ export class FormBuilderComponent extends BaseComponent implements OnInit, OnDes
         map(() => form.getRawValue() as ItemValuesOfOneLanguage),
         distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
-        const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+        const language = this.formConfig.language();
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, language);
       })
     );

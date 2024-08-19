@@ -51,9 +51,9 @@ export class ControlHelpers {
   }
 
   private static controlValuesEqual(x: FieldValue, y: FieldValue): boolean {
-    if (x === y) { return true; }
-    if (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y)) { return true; }
-    if (Array.isArray(x) && Array.isArray(y) && RxHelpers.arraysEqual(x, y)) { return true; }
+    if (x === y) return true;
+    if (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y)) return true;
+    if (Array.isArray(x) && Array.isArray(y) && RxHelpers.arraysEqual(x, y)) return true;
     return false;
   }
 }

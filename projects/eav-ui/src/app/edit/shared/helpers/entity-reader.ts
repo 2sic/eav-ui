@@ -1,6 +1,7 @@
-import { EavEntity, EavField } from '../models/eav';
+import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
 import { LocalizationHelpers } from './localization.helpers';
 import { FormLanguage } from '../models/form-languages.model';
+import { ItemValuesOfOneLanguage } from '../models/form-values.model';
 
 export class EntityReader implements FormLanguage {
   constructor(public current: string, public primary: string) { }
@@ -46,6 +47,13 @@ export class EntityReader implements FormLanguage {
     }
 
     return merged as T;
+  }
+
+  currentValues(itemAttributes: EavEntityAttributes): ItemValuesOfOneLanguage {
+    const formValues: ItemValuesOfOneLanguage = {};
+    for (const [name, values] of Object.entries(itemAttributes))
+      formValues[name] = this.getBestValue(values, null);
+    return formValues;
   }
 
 }

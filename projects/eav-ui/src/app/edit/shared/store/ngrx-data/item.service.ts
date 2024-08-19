@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Injector, Signal } from '@angular/core';
+import { computed, Injectable, Injector, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -17,7 +17,7 @@ import { ControlHelpers } from '../../helpers/control.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'ItemService';
 
 @Injectable({ providedIn: 'root' })

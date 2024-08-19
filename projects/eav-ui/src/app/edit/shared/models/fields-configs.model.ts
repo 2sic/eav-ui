@@ -14,9 +14,10 @@ export interface FieldProps {
   constants: FieldConstants;
   settings: FieldSettings;
   translationState: TranslationState;
-  /** empty-default value is null */
-  value: FieldValue;
-  wrappers: string[];
+
+  /** INITIAL Value of this field - eg. at form-load or language change. */
+  buildValue: FieldValue;
+  buildWrappers: string[];
   formulaValidation: FormulaFieldValidation;
 }
 

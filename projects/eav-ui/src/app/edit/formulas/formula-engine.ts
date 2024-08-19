@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { FeaturesService } from '../../shared/services/features.service';
 import { ContentTypeSettings, FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, LogSeverities } from '../shared/models';
-import { EavContentType, EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../shared/models/eav';
+import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { FormConfigService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -23,7 +23,7 @@ import { InputTypeStrict } from '../../content-type-fields/constants/input-type.
 import { FieldsSettingsHelpers } from '../shared/helpers/fields-settings.helpers';
 import { FormLanguage } from '../shared/models/form-languages.model';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FormulaEngine';
 /**
  * Formula engine is responsible for running formulas and returning the result.
@@ -192,8 +192,8 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
         constants: constFieldPart,
         settings: fixed,
         translationState,
-        value: valueBefore,
-        wrappers: null, // required, but set elsewhere
+        buildValue: valueBefore,
+        buildWrappers: null, // required, but set elsewhere
         formulaValidation: formulaResult.validation,
       };
     }
@@ -218,21 +218,18 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     const formulas = this.activeFieldFormulas(this.entityGuid, fieldName);
     const hasFormulas = formulas.length > 0;
 
-    // Target variables to fill using formula result
-    // let formulaValue: FieldValue;                   // The new value
-    // let formulaValidation: FormulaFieldValidation;  // The new validation
-    // const formulaFields: FieldValuePair[] = [];     // Any additional fields
-    // let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
-
-    // Run all formulas IF we have any
+    // Run all formulas IF we have any and work with the objects containing specific changes
     const { value, validation, fields, settings } = hasFormulas
       ? this.runFormulasOfField(formulas, formValues, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
       : { value: valueBefore, validation: null, fields: [], settings: {} };
 
-    // Note: the valueBefore / value seems to be used for picker-lists? not sure though
-    const settingsShouldBeUpdated = (hasFormulas && Object.keys(settings).length > 0)
-      || (settingsBefore == null || Object.keys(settingsBefore).length === 0);
-    const updatedSettings = setUpdHelper.ensureAllSettingsRequirements({ ...settingsBefore, ...settings }, valueBefore);
+    // Correct any settings necessary after
+    // possibly making invalid changes in formulas or if settings need to adjust
+    // eg. custom bool labels which react to the value, etc.
+    const updatedSettings = setUpdHelper.correctSettingsAfterChanges(
+      { ...settingsBefore, ...settings },
+      value || valueBefore
+    );
 
     const runFormulaResult: RunFormulasResult = {
       settings: updatedSettings,

@@ -170,7 +170,7 @@ export class FormulaPromiseHandler {
         // Prepare helper which the formula will need to verify if the field is visible
         const setUpdHelper = setUpdHelperFactory.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
 
-        const updatedSettings = setUpdHelper.ensureAllSettingsRequirements(
+        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(
           {
             ...settingsCurrent,
             ...settingsNew,

@@ -72,7 +72,7 @@ export class FieldSettingsUpdateHelper {
    * @param fieldValue
    * @returns Corrected settings
    */
-  ensureAllSettingsRequirements(
+  correctSettingsAfterChanges(
     settings: FieldSettings,
     fieldValue: FieldValue,
   ): FieldSettings {

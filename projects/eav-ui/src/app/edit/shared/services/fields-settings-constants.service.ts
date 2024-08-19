@@ -64,22 +64,22 @@ export class FieldsSettingsConstantsService {
       this.language$,
     ]).pipe(
       map(([entityReader, language]) => {
-        const lConstantFieldParts = this.log.fn('constantFieldPartsLanguage', { contentType, entityReader, language });
+        const l = this.log.fn('constantFieldPartsLanguage(map)', { contentType, entityReader, language });
 
-        const constPartOfLanguage = contentType.Attributes.map((attribute) => {
+        const constPartOfLanguage = contentType.Attributes.map((ctAttrib) => {
           // Input Type config in the current language
-          const inputType = this.inputTypeService.getInputType(attribute.InputType);
+          const inputType = this.inputTypeService.getInputType(ctAttrib.InputType);
 
           // Construct the constants with settings and everything
           // using the EntityReader with the current language
-          const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
+          const mergeRaw = entityReader.flattenAll<FieldSettings>(ctAttrib.Metadata);
 
           // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
-          mergeRaw.InputType = attribute.InputType;
-          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
+          mergeRaw.InputType = ctAttrib.InputType;
+          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
           const constantFieldParts: FieldConstantsOfLanguage = {
-            ...fieldConstants.find(c => c.fieldName === attribute.Name),
+            ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
             settingsInitial,
             inputTypeConfiguration: inputType,
             language: entityReader.current,
@@ -90,7 +90,7 @@ export class FieldsSettingsConstantsService {
 
         const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
 
-        return lConstantFieldParts.r(constPartsWithGroupVisibility);
+        return l.r(constPartsWithGroupVisibility);
       })
     );
     return constFieldPartsOfLanguage$;

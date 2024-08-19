@@ -3,7 +3,6 @@ import { LocalizationHelpers } from '../../../../shared/helpers';
 import { Language } from '../../../../shared/models';
 import { EavEntityAttributes } from '../../../../shared/models/eav';
 import { FormLanguage } from '../../../../shared/models/form-languages.model';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 

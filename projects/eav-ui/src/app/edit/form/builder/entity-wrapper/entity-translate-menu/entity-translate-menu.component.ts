@@ -7,7 +7,6 @@ import { ItemService } from '../../../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
-import { FieldConfigSet } from '../../fields-builder/field-config-set.model';
 import { EntityTranslateMenuViewModel } from './entity-translate-menu.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';

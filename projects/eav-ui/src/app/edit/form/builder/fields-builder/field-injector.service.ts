@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { combineLatest, distinctUntilChanged, map, tap } from 'rxjs';
+import { combineLatest, map, tap } from 'rxjs';
 
 const logThis = false;
 const nameOfThis = 'FieldInjectorService';

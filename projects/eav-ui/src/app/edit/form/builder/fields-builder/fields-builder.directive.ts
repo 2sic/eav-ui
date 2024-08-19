@@ -88,8 +88,8 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
     const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
-    if (fieldProps.wrappers)
-      wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers);
+    if (fieldProps.buildWrappers)
+      wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);
     return wrapperInfo.contentsRef;
   }
 
@@ -99,8 +99,8 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
     const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
-    if (fieldProps.wrappers)
-      wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.wrappers);
+    if (fieldProps.buildWrappers)
+      wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);
 
     const componentType = fieldProps.constants.inputCalc.isExternal
       ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
