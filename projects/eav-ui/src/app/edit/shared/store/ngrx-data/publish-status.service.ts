@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { PublishMode, PublishModes, PublishStatus } from '../../models';
 import { FormConfigService } from '../../services';
 import { BaseDataService } from './base-data.service';
-import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends BaseDataService<PublishStatus> {
@@ -26,9 +26,7 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
 
   private getPublishStatus$(formId: number): Observable<PublishStatus> {
     return this.cache$.pipe(
-      map(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
-      mapUntilChanged(m => m),
-      // distinctUntilChanged(),
+      mapUntilObjChanged(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
     );
   }
 
@@ -52,7 +50,7 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
 
   getPublishMode$(formId: number): Observable<PublishMode> {
     return this.getPublishStatus$(formId).pipe(
-      map(publishStatus => {
+      mapUntilObjChanged(publishStatus => {
         const publishMode: PublishMode = publishStatus.DraftShouldBranch
           ? PublishModes.Branch
           : publishStatus.IsPublished ? PublishModes.Show : PublishModes.Hide;
