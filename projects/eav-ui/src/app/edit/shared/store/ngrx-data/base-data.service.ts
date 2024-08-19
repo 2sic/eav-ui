@@ -20,8 +20,11 @@ export class BaseDataService<T> extends EntityCollectionServiceBase<T> {
 
     // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(items => {
+      // wip signals; ATM I believe it must happen FIRST because the observable will usually trigger
+      // some effect, and then the data must already be updated
+      this.cache.set(items);
+
       this.cache$.next(items);
-      this.cache.set(items); // wip signals
     });
   }
 }

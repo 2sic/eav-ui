@@ -147,6 +147,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         this.forceRefreshSettings$,
         this.constFieldPartsOfLanguage$,
         prepared$,
+        // temp solution for slotIsEmpty - needed ATM, otherwise formulas don't run when the slot-setting changes
+        this.itemService.getItemHeader$(entityGuid), 
       ]).pipe(
         logUpdateFieldProps.pipe(),
         map(([itemAttributes, entityReader, _, constantFieldParts, prepared]) => {
