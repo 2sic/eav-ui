@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { ServiceBase } from './service-base';
-import { FormConfigService } from '../../edit/services/state/form-config.service';
 import { EavLogger } from '../logging/eav-logger';
 import { EntityBasic } from '../../edit/shared/models/entity-basic';
 import { QueryService } from './query.service';
+import { FormConfigService } from '../../edit/state/form-config.service';
 
 const logThis = false;
 
