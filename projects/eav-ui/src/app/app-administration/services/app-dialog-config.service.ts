@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
 import { FeaturesService } from '../../shared/services/features.service';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { DialogContextSiteApp } from '../../shared/models/dialog-context.models';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 const logThis = false;
 

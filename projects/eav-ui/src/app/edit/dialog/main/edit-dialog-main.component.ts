@@ -10,7 +10,7 @@ import { FormulaDesignerService } from '../../formulas/formula-designer.service'
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
@@ -41,6 +41,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
+import { GlobalConfigService } from '../../../shared/services/global-config.service';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -87,7 +88,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   private globalConfigService = inject(GlobalConfigService);
   private formConfig = inject(FormConfigService);
-  
+
   private loadIconsService = transient(LoadIconsService);
 
   /** Signal to determine if we should show the footer */
@@ -97,7 +98,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       this.#debugWasModified = true;
       return true;
     }
-    
+
     // If debug is false, and was never modified, show based on system admin status
     return (!this.#debugWasModified && this.formConfig.config.dialogContext.User?.IsSystemAdmin);
   });
@@ -144,7 +145,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
     const formsValid$ = this.formsStateService.formsValid$;
     const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
-    
+
     this.viewModel$ = combineLatest([
       combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$]),
       combineLatest([hideHeader$, saveButtonDisabled$]),

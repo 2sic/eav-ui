@@ -1,15 +1,14 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { keyDebug } from '../../../../shared/constants/session.constants';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { keyDebug } from '../constants/session.constants';
 
-// TODO: @2dg - it's not part of edit and not part of the store - pls move to shared/services
 
 @Injectable({ providedIn: 'root' })
 export class GlobalConfigService {
 
   private debugState = signal<GlobalConfig>(null);
-  
+
   isDebug = computed(() => !!this.debugState()?.allowDebugMode && !!this.debugState()?.debugEnabled);
 
   /** This observable is a left-over, try to remove once more is refactored */

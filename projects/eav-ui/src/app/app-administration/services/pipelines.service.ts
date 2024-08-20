@@ -6,7 +6,7 @@ import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { Query } from '../models/query.model';
-import { webApiEntityList } from '../../edit/shared/services/entity.service';
+import { webApiEntityList } from '../../shared/services/entity.service';
 
 const webApiQueryImport = 'admin/query/import';
 const webApiQueryClone = 'admin/query/Clone';

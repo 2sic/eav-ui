@@ -4,7 +4,7 @@ import { FieldSettings, PickerItem } from '../../../../../edit-types';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
-import { ContentTypeItemService, ContentTypeService, GlobalConfigService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
+import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
@@ -21,6 +21,7 @@ import { ItemHelper } from '../shared/helpers/item.helper';
 import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './fields-configs.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -28,7 +29,7 @@ const nameOfThis = 'FieldsSettingsService';
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
- * 
+ *
  * Each instance is responsible for a single entity.
  */
 @Injectable()
@@ -151,7 +152,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         this.constFieldPartsOfLanguage$,
         prepared$,
         // temp solution for slotIsEmpty - needed ATM, otherwise formulas don't run when the slot-setting changes
-        this.itemService.getItemHeader$(entityGuid), 
+        this.itemService.getItemHeader$(entityGuid),
       ]).pipe(
         logUpdateFieldProps.pipe(),
         map(([itemAttributes, entityReader, _, constantFieldParts, prepared]) => {

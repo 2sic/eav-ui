@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ArrayHelpers } from '../../../shared/helpers/array.helpers';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
-import { QueryService } from '../../shared/services/query.service';
+import { QueryService } from '../../../shared/services/query.service';
 
 @Component({
   selector: 'app-page-picker',

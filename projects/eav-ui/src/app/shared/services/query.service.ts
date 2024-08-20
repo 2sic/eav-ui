@@ -1,16 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Context } from '../../../shared/services/context';
-import { QueryStreams } from '../models/query-stream.model';
-import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
+import { QueryStreams } from '../../edit/shared/models/query-stream.model';
+import { EavLogger } from '../logging/eav-logger';
+import { ServiceBase } from './service-base';
+import { Context } from './context';
 
 const logThis = false;
 
-// TODO: @2dg - this is also used in /app
-// please move to shared/services
-// also try to use transient only - should be possible
+// TODO: @2dg also try to use transient only - should be possible
 
 @Injectable()
 export class QueryService extends ServiceBase {
@@ -40,7 +38,7 @@ export class QueryService extends ServiceBase {
 
   getEntities({ contentTypes, itemIds, fields, log }: { contentTypes: string[]; itemIds: string[]; fields: string; log: string }): Observable<QueryStreams> {
     this.log.a(`getEntities(${log})`, {contentTypes, itemIds, fields});
-    const allParams = 
+    const allParams =
       '&typeNames=' + (contentTypes?.join(',') ?? '')
       + `&appId=${this.context.appId}`
       + '&itemIds=' + (itemIds?.join(',') ?? '')

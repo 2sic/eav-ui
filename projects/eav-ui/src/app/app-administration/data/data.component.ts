@@ -6,7 +6,6 @@ import { BehaviorSubject, combineLatest, filter, from, map, startWith, take } fr
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
@@ -42,6 +41,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 @Component({
   selector: 'app-data',

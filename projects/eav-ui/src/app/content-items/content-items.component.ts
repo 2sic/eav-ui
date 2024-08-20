@@ -11,7 +11,6 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { DataTypeConstants } from '../content-type-fields/constants/data-type.constants';
 import { Field } from '../content-type-fields/models/field.model';
-import { GlobalConfigService } from '../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../metadata';
 import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
@@ -49,6 +48,7 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { transient } from '../core';
 import { EavLogger } from '../shared/logging/eav-logger';
+import { GlobalConfigService } from '../shared/services/global-config.service';
 
 const logThis = false;
 const nameOfThis = 'ContentItemsComponent';

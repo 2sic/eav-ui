@@ -8,7 +8,7 @@ import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
-import { webApiEntityList, webApiEntityRoot } from '../../edit/shared/services/entity.service';
+import { webApiEntityList, webApiEntityRoot } from '../../shared/services/entity.service';
 
 @Injectable()
 export class ContentItemsService {

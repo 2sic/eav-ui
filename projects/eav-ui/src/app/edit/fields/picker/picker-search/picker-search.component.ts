@@ -2,7 +2,6 @@ import { Component, ElementRef, OnDestroy, OnInit, computed, input, signal, view
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { GlobalConfigService } from '../../../shared/store/ngrx-data';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +23,7 @@ import { messagePickerItem, PickerItem } from '../models/picker-item.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { transient } from '../../../../core/transient';
+import { GlobalConfigService } from 'projects/eav-ui/src/app/shared/services/global-config.service';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */

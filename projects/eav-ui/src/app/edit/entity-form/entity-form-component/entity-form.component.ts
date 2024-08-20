@@ -30,7 +30,7 @@ import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
-import { EntityService } from '../../shared/services/entity.service';
+import { EntityService } from '../../../shared/services/entity.service';
 
 const logThis = true;
 const nameOfThis = 'EntityWrapperComponent';
@@ -122,7 +122,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
-    
+
     private formDataService: FormDataService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,

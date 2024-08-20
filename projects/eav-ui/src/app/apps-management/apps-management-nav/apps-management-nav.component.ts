@@ -99,11 +99,6 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
     this.dialogRef.close();
   }
 
-  // @2dg not longer in use with new routing SideNav
-  // changeUrl(path: string) {
-  //   this.router.navigate([path], { relativeTo: this.route });
-  // }
-
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$(0).subscribe();
   }

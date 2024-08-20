@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inje
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
