@@ -1,8 +1,9 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { keyDebug } from '../../../../shared/constants/session.constants';
-import { GlobalConfig } from '../../models/global-config.model';
 import { toObservable } from '@angular/core/rxjs-interop';
+
+// TODO: @2dg - it's not part of edit and not part of the store - pls move to shared/services
 
 @Injectable({ providedIn: 'root' })
 export class GlobalConfigService {
@@ -49,4 +50,10 @@ export class GlobalConfigService {
     this.debugState.set(newConfig);
     this.snackBar.open(newConfig.debugEnabled ? 'developer mode on' : 'developer mode off', null, { duration: 3000 });
   }
+}
+
+interface GlobalConfig {
+  id: 0;
+  debugEnabled: boolean;
+  allowDebugMode: boolean;
 }

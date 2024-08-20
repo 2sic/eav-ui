@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { AdamItem } from '../../../../../../../edit-types';
-import { PrefetchAdams, PrefetchLinks } from '../../../dialog/main/edit-dialog-main.models';
-import { LinkCache, LinkInfo } from '../../models';
+import { LinkCache, LinkInfo, PrefetchAdams, PrefetchLinks } from '../../../dialog/main/edit-dialog-main.models';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })

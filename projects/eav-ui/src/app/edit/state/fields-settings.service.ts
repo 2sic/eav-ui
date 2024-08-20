@@ -1,25 +1,26 @@
 import { computed, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
-import { FieldSettings, PickerItem } from '../../../../../../edit-types';
-import { FieldLogicTools } from '../../fields/logic/field-logic-tools';
-import { FormulaEngine } from '../../formulas/formula-engine';
-import { ContentTypeSettingsHelpers } from '../../shared/helpers';
-import { FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, TranslationState } from '../../shared/models';
-import { ContentTypeItemService, ContentTypeService, GlobalConfigService, ItemService, LanguageInstanceService } from '../../shared/store/ngrx-data';
-import { ItemFormulaBroadcastService } from '../../formulas/form-item-formula.service';
-import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
-import { EavEntityAttributes, EavItem } from '../../shared/models/eav';
+import { FieldSettings, PickerItem } from '../../../../../edit-types';
+import { FieldLogicTools } from '../fields/logic/field-logic-tools';
+import { FormulaEngine } from '../formulas/formula-engine';
+import { ContentTypeSettingsHelpers } from '../shared/helpers';
+import { ContentTypeItemService, ContentTypeService, GlobalConfigService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
+import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
+import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
+import { EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { ServiceBase } from '../../shared/services/service-base';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
-import { transient } from '../../../core';
+import { transient } from '../../core';
 import { FormConfigService } from './form-config.service';
 import { FormsStateService } from './forms-state.service';
-import { ItemHelper } from '../../shared/helpers/item.helper';
-import { WrapperHelper } from '../../fields/wrappers/wrapper.helper';
+import { ItemHelper } from '../shared/helpers/item.helper';
+import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
+import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './fields-configs.model';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -238,7 +239,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       ]) => {
         const contentType = this.#contentType();
         const attribute = contentType.Attributes.find(a => a.Name === fieldName);
-        const formValues: ItemValuesOfOneLanguage = {};
+        const formValues: ItemValuesOfLanguage = {};
         for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
           formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
         }

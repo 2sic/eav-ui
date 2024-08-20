@@ -9,12 +9,12 @@ import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.c
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { ControlStatus } from '../../../shared/models';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
-import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormConfigService } from '../../../state/form-config.service';
+import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
   selector: InputTypeConstants.CustomJsonEditor,

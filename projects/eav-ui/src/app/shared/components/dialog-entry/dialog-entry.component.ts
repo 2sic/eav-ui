@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavigateFormResult } from '../../../edit/shared/models';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
 import { EavLogger } from '../../logging/eav-logger';
 import { BaseComponent } from '../base.component';
+import { NavigateFormResult } from '../../../edit/shared/services/edit-routing.service';
 
 declare const window: EavWindow;
 

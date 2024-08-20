@@ -6,12 +6,12 @@ import { Injectable, Optional, Signal, computed, inject, signal } from '@angular
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { ControlStatus } from '../../../shared/models';
 import { ServiceBase } from '../../../../shared/services/service-base';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormConfigService } from '../../../state/form-config.service';
+import { ControlStatus } from '../../../shared/models/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'StateAdapter';

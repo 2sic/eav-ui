@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldValue } from '../../../../../../edit-types';
 
 export interface ControlStatus<T = FieldValue> {
   dirty: boolean;

@@ -1,7 +1,7 @@
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { SxcAbstractControl } from '../models';
 import { ControlHelpers } from '../helpers/control.helpers';
 import { FieldConfigSet } from '../../fields/field-config-set.model';
+import { AbstractControlPro } from '../store/ngrx-data/adam-cache.service';
 
 export class ValidationMessagesHelpers {
 
@@ -74,7 +74,7 @@ export class ValidationMessagesHelpers {
     return error;
   }
 
-  static getWarningMessage(control: SxcAbstractControl): string {
+  static getWarningMessage(control: AbstractControlPro): string {
     let warning = '';
     if (control._warning$.value == null) { return warning; }
     if (!control.dirty && !control.touched) { return warning; }

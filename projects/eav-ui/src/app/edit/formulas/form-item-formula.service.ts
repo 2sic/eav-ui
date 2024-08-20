@@ -1,12 +1,13 @@
-import { Attribute, inject, Injectable, Signal } from "@angular/core";
+import { inject, Injectable, Signal } from "@angular/core";
 import { FieldValue } from "projects/edit-types";
 import { EntityReader } from "../shared/helpers";
-import { ItemValuesOfOneLanguage, FieldsProps } from "../shared/models";
 import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { ItemService } from "../shared/store/ngrx-data";
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../shared/logging/eav-logger';
+import { FieldsProps } from '../state/fields-configs.model';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 
 const logThis = false;
 const nameOfThis = 'FormItemFormulaService';
@@ -48,9 +49,9 @@ export class ItemFormulaBroadcastService {
    * @returns true if values are updated, false otherwise
    */
   applyValueChangesFromFormulas(
-    formValues: ItemValuesOfOneLanguage,
+    formValues: ItemValuesOfLanguage,
     fieldsProps: FieldsProps,
-    possibleValueUpdates: ItemValuesOfOneLanguage,
+    possibleValueUpdates: ItemValuesOfLanguage,
     possibleFieldsUpdates: FieldValuePair[],
   ): boolean {
     const entityGuid = this.entityGuid;
@@ -58,7 +59,7 @@ export class ItemFormulaBroadcastService {
     const slotIsEmpty = this.slotIsEmpty();
 
     const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
-    const valueUpdates: ItemValuesOfOneLanguage = {};
+    const valueUpdates: ItemValuesOfLanguage = {};
     for (const attribute of contentType.Attributes) {
       const fieldName = attribute.Name;
       const disabledBecauseTranslations = fieldsProps[fieldName]?.settings._disabledBecauseOfTranslation;

@@ -1,5 +1,5 @@
 import { EntityReader } from '../../shared/helpers/entity-reader';
-import { FormConfiguration } from '../../shared/models/form-configuration';
+import { FormConfiguration } from '../../state/form-configuration.model';
 import { ContentTypeItemService } from '../../shared/store/ngrx-data';
 
 export interface FieldLogicTools {

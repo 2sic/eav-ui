@@ -10,8 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { ControlStatus } from '../../../shared/models';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
   selector: InputTypeConstants.BooleanDefault,

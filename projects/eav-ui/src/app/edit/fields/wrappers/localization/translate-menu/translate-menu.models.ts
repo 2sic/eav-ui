@@ -1,6 +1,6 @@
 import { TranslationLink } from '../../../../localization/translation-link.constants';
-import { TranslationState } from '../../../../shared/models';
-import { FormLanguage } from '../../../../shared/models/form-languages.model';
+import { TranslationState } from '../../../../state/fields-configs.model';
+import { FormLanguage } from '../../../../state/form-languages.model';
 
 export interface TranslationStateCore {
   linkType: TranslationLink;

@@ -1,5 +1,4 @@
 import { Component, OnDestroy, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
-import { WrappersConstants } from '../../../shared/constants';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +10,8 @@ import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FieldsSettingsService } from '../../../services/state/fields-settings.service';
+import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { WrappersConstants } from '../wrappers.constants';
 
 const logThis = false;
 const nameOfThis = 'CollapsibleWrapperComponent'

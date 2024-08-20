@@ -1,10 +1,9 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable, Subject, Subscription } from 'rxjs';
-import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
-import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { FormReadOnly } from '../../shared/models';
-import { ItemService, LanguageService } from '../../shared/store/ngrx-data';
+import { ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormConfigService } from './form-config.service';
 
 /**
@@ -107,4 +106,10 @@ export class FormsStateService implements OnDestroy {
       this.formsDirty$.next(anyDirty);
     }
   }
+}
+
+
+interface FormReadOnly {
+  isReadOnly: boolean;
+  reason: undefined | 'Form' | 'Language';
 }

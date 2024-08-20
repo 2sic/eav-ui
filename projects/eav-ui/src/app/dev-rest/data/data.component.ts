@@ -26,9 +26,9 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
 import { EntityBasic } from '../../edit/shared/models/entity-basic';
 import { transient } from '../../core';
-import { FormConfigService } from '../../edit/services/state/form-config.service';
-import { QueryService } from '../../shared/services/query.service';
-import { EntityService } from '../../shared/services/entity.service';
+import { FormConfigService } from '../../edit/state/form-config.service';
+import { QueryService } from '../../edit/shared/services/query.service';
+import { EntityService } from '../../edit/shared/services/entity.service';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 

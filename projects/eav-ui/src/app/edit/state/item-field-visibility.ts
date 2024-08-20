@@ -1,8 +1,8 @@
-import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
-import { FieldConstantsOfLanguage } from '../../shared/models/fields-configs.model';
-import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { FieldConstantsOfLanguage } from './fields-configs.model';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 
 const logThis = false;
 const nameOfThis = 'ItemFieldVisibility';

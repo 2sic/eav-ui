@@ -1,14 +1,14 @@
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { AbstractControl } from '@angular/forms';
-import { ItemValuesOfOneLanguage } from '../models/form-values.model';
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export class ControlHelpers {
 
 
   /** Searches where newValues has values different from oldValues */
-  static getFormChanges(oldValues: ItemValuesOfOneLanguage, newValues: ItemValuesOfOneLanguage): ItemValuesOfOneLanguage {
-    const changes: ItemValuesOfOneLanguage = {};
+  static getFormChanges(oldValues: ItemValuesOfLanguage, newValues: ItemValuesOfLanguage): ItemValuesOfLanguage {
+    const changes: ItemValuesOfLanguage = {};
     for (const key of Object.keys(newValues)) {
       const newValue = newValues[key];
       const oldValue = oldValues[key];

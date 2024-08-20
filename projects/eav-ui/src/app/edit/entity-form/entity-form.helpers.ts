@@ -1,8 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { EavEntity, EavFor } from '../shared/models/eav';
 import { NoteProps } from './entity-form.models';
-import { FormLanguage } from '../shared/models/form-languages.model';
 import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FormLanguage } from '../state/form-languages.model';
 
 export function getItemForTooltip(itemFor: EavFor, translate: TranslateService) {
   if (!itemFor) { return; }

@@ -1,9 +1,9 @@
-import { ItemValuesOfOneLanguage } from "../../shared/models";
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FieldValuePair, FieldSettingPair } from "./formula-results.models";
 
 export class FormulaPromiseResult {
   constructor(
-    valueUpdates: ItemValuesOfOneLanguage,
+    valueUpdates: ItemValuesOfLanguage,
     fieldUpdates: FieldValuePair[],
     settingUpdates: FieldSettingPair[]
   ) {
@@ -12,7 +12,7 @@ export class FormulaPromiseResult {
     this.settingUpdates = settingUpdates;
   }
 
-  valueUpdates: ItemValuesOfOneLanguage;
+  valueUpdates: ItemValuesOfLanguage;
   fieldUpdates: FieldValuePair[];
   settingUpdates: FieldSettingPair[];
 }

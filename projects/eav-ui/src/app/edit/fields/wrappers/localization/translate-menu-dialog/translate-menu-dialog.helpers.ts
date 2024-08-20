@@ -1,10 +1,9 @@
 import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
 import { LocalizationHelpers } from '../../../../localization/localization.helpers';
-import { Language } from '../../../../shared/models';
 import { EavEntityAttributes } from '../../../../shared/models/eav';
-import { FormLanguage } from '../../../../shared/models/form-languages.model';
 import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
+import { FormLanguage, Language } from '../../../../state/form-languages.model';
 
 export function getTemplateLanguages(
   config: { fieldName: string }, // FieldConfigSet,

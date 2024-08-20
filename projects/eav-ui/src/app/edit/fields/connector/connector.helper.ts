@@ -21,8 +21,8 @@ import { openFeatureDialog } from '../../../features/shared/base-feature.compone
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FormConfigService } from '../../state/form-config.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { AdamService } from '../../shared/services/adam.service';
 

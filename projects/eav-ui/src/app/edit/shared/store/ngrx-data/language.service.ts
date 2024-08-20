@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { BaseDataService } from '.';
-import { Language } from '../../models';
+import { Language } from '../../../../shared/models/language.model';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService extends BaseDataService<Language> {

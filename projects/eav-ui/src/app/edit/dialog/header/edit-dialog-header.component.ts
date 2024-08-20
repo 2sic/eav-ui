@@ -11,8 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { FormConfigService } from '../../services/state/form-config.service';
-import { FormsStateService } from '../../services/state/forms-state.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { FormsStateService } from '../../state/forms-state.service';
 
 @Component({
   selector: 'app-edit-dialog-header',

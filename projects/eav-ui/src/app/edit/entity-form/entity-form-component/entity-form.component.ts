@@ -26,9 +26,9 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FeaturesService } from '../../../shared/services/features.service';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
-import { FormConfigService } from '../../services/state/form-config.service';
-import { FormsStateService } from '../../services/state/forms-state.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { FormsStateService } from '../../state/forms-state.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { EntityService } from '../../../shared/services/entity.service';
 

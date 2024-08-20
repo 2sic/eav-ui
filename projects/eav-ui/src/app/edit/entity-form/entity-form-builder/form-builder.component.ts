@@ -2,8 +2,7 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, filter, map, startWith, take } from 'rxjs';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
-import { ItemValuesOfOneLanguage, SxcAbstractControl } from '../../shared/models';
-import { AdamCacheService, ItemService } from '../../shared/store/ngrx-data';
+import { AbstractControlPro, AdamCacheService, ItemService } from '../../shared/store/ngrx-data';
 import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
@@ -15,10 +14,11 @@ import { ValidationHelpers } from '../../shared/validation/validation.helpers';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
-import { FieldsTranslateService } from '../../services/state/fields-translate.service';
-import { FormConfigService } from '../../services/state/form-config.service';
-import { FormsStateService } from '../../services/state/forms-state.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldsTranslateService } from '../../state/fields-translate.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { FormsStateService } from '../../state/forms-state.service';
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 
 const logThis = true;
 const nameOfThis = 'FormBuilderComponent';
@@ -141,8 +141,8 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
 
         // 2. sync values - create list comparing the old raw values and new fieldProps - eg. modified by formulas
         this.log.a(`sync values for max ${fieldsOnNgForm.length} controls`);
-        const oldValues: ItemValuesOfOneLanguage = form.getRawValue();
-        const newValues: ItemValuesOfOneLanguage = {};
+        const oldValues: ItemValuesOfLanguage = form.getRawValue();
+        const newValues: ItemValuesOfLanguage = {};
         for (const { fieldName, value } of fieldsOnNgForm)
           newValues[fieldName] = value;
 
@@ -199,7 +199,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
 
     this.subscriptions.add(
       form.valueChanges.pipe(
-        map(() => form.getRawValue() as ItemValuesOfOneLanguage),
+        map(() => form.getRawValue() as ItemValuesOfLanguage),
         distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const language = this.formConfig.language();
@@ -209,7 +209,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
   }
 
   ngOnDestroy() {
-    Object.values(this.form.controls).forEach((control: SxcAbstractControl) => {
+    Object.values(this.form.controls).forEach((control: AbstractControlPro) => {
       control._warning$.complete();
     });
     super.ngOnDestroy();

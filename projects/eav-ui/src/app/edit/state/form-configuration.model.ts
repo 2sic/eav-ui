@@ -1,6 +1,5 @@
-import { VersioningOptions } from '.';
-import { DialogContext } from '../../../app-administration/models';
-import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
+import { DialogContext } from '../../app-administration/models';
+import { EditSettings, PublishMode } from '../dialog/main/edit-dialog-main.models';
 
 /** 
  * IMPORTANT! These are constants that form was loaded with. They do not change while form is running
@@ -28,4 +27,8 @@ export interface FormConfiguration {
   overrideEditRestrictions: boolean;
   dialogContext: DialogContext;
   settings: EditSettings;
+}
+
+
+export interface VersioningOptions extends Partial<Record<PublishMode, boolean>> {
 }

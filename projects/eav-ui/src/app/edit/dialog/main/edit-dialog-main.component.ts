@@ -7,8 +7,6 @@ import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, 
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
-import { MetadataDecorators } from '../../shared/constants';
-import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 // tslint:disable-next-line:max-line-length
@@ -16,7 +14,7 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, GlobalCon
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
-import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
+import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
@@ -36,11 +34,13 @@ import { transient } from '../../../core';
 import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
-import { FormConfigService } from '../../services/state/form-config.service';
-import { FormsStateService } from '../../services/state/forms-state.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { FormsStateService } from '../../state/forms-state.service';
 import { ItemHelper } from '../../shared/helpers/item.helper';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
+import { MetadataDecorators } from '../../state/metadata-decorators.constants';
+import { SaveResult } from '../../state/save-result.model';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';

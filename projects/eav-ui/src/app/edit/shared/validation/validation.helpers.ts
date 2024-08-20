@@ -2,11 +2,11 @@ import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@ang
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants, InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
-import { SxcAbstractControl } from '../models';
-import { ItemFieldVisibility } from '../../services/state/item-field-visibility';
+import { ItemFieldVisibility } from '../../state/item-field-visibility';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { AbstractControlPro } from '../store/ngrx-data/adam-cache.service';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
 export class ValidationHelpers {
@@ -40,7 +40,7 @@ export class ValidationHelpers {
    * Validations run when controls are created, but only for fields which are not disabled,
    * and it can be too late to attach warning after field creation
    */
-  static ensureWarning(control: SxcAbstractControl): void {
+  static ensureWarning(control: AbstractControlPro): void {
     if (control._warning$ == null) {
       control._warning$ = new BehaviorSubject<ValidationErrors>(null);
     }
@@ -146,7 +146,7 @@ export class ValidationHelpers {
   }
 
   private static validJson(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
-    return (control: SxcAbstractControl): ValidationErrors | null => {
+    return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       let error: boolean;
@@ -177,7 +177,7 @@ export class ValidationHelpers {
   }
 
   private static formulaValidate(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
-    return (control: SxcAbstractControl): ValidationErrors | null => {
+    return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
       const fieldProps = fieldsSettingsService.getFieldsProps()[fieldName];
       const settings = fieldProps.settings;

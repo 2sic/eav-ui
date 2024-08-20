@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdamConfig, AdamItem } from '../../../../../../edit-types';
 import { SanitizeHelper } from '../helpers';
-import { LinkInfo } from '../models';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { LinkInfo } from '../../dialog/main/edit-dialog-main.models';
 
 /**
  * Form wide ADAM helper to get files, add folders etc.

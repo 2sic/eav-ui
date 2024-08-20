@@ -5,7 +5,6 @@ import { BehaviorSubject, forkJoin } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { Language } from '../edit/shared/models';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
 import { AsyncPipe } from '@angular/common';
@@ -16,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { transient } from '../core';
+import { Language } from '../shared/models/language.model';
 
 @Component({
   selector: 'app-content-export',

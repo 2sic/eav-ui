@@ -1,4 +1,4 @@
-import { PublishMode } from '../../shared/models';
+import { PublishMode } from '../main/edit-dialog-main.models';
 
 export interface EditDialogHeaderViewModel {
   hasLanguages: boolean;

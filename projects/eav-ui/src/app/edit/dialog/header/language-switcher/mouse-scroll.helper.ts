@@ -1,5 +1,5 @@
 import { NgZone } from '@angular/core';
-import { ElementEventListener } from '../../../shared/models';
+import { ElementEventListener } from '../../../shared/models/element-event-listener.model';
 
 export class MouseScrollHelper {
   private oldScrollBehavior: string;

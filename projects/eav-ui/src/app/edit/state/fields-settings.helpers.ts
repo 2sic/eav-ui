@@ -1,17 +1,18 @@
-import { EntityReader } from '../../shared/helpers';
-import { FieldSettings } from '../../../../../../edit-types';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
-import { ItemIdentifierEditConfig } from '../../../shared/models/edit-form.model';
-import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
-import { TranslateMenuHelpers } from '../../fields/wrappers/localization/translate-menu/translate-menu.helpers';
-import { TranslationStateCore } from '../../fields/wrappers/localization/translate-menu/translate-menu.models';
-import { MetadataDecorators } from '../../shared/constants';
-import { ContentTypeSettings, TranslationState } from '../../shared/models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../../shared/models/eav';
-import { FormLanguage } from '../../shared/models/form-languages.model';
-import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
-import { TranslationLinks } from '../../localization/translation-link.constants';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { EntityReader } from '../shared/helpers';
+import { FieldSettings } from '../../../../../edit-types';
+import { InputType } from '../../content-type-fields/models/input-type.model';
+import { ItemIdentifierEditConfig } from '../../shared/models/edit-form.model';
+import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
+import { TranslationStateCore } from '../fields/wrappers/localization/translate-menu/translate-menu.models';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
+import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { TranslationLinks } from '../localization/translation-link.constants';
+import { LocalizationHelpers } from '../localization/localization.helpers';
+import { MetadataDecorators } from './metadata-decorators.constants';
+import { ContentTypeSettings } from './content-type-settings.model';
+import { TranslationState } from './fields-configs.model';
+import { FormLanguage } from './form-languages.model';
 
 export class ContentTypeSettingsHelpers {
 

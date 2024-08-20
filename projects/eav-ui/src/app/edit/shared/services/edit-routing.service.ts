@@ -9,11 +9,10 @@ import { EditForm } from '../../../shared/models/edit-form.model';
 import { EditEntryComponent } from '../../dialog/entry/edit-entry.component';
 import { EditParams } from '../../edit-matcher.models';
 import { UrlHelpers } from '../helpers';
-import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FormConfigService } from '../../state/form-config.service';
 
 /**
  * Special helper to handle opening / closing field-specific popups.
@@ -210,4 +209,17 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
       })
     );
   }
+}
+
+export interface NavigateFormResult {
+  navigateUrl: string;
+}
+
+interface ChildFormResult {
+  updateEntityGuid: string;
+  updateFieldId: number;
+  /** On add, contains GUID and Id of newly added item */
+  result: {
+    [guid: string]: number;
+  };
 }

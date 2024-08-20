@@ -3,8 +3,8 @@ import { FieldSettings } from '../../../../../edit-types';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
-import { ControlStatus } from '../shared/models';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
+import { ControlStatus } from '../shared/models/control-status.model';
 
 /**
  * This is provided / injected at the fields-builder for every single field.

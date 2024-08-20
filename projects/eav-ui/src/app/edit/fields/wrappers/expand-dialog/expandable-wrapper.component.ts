@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, Sig
 import { TranslateModule } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
-import { WrappersConstants } from '../../../shared/constants';
 import { ContentExpandAnimation } from './content-expand.animation';
 import { PreviewHeight } from './expandable-wrapper.models';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -15,16 +14,17 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle, JsonPipe } from '@angular/common';
 import { FieldState } from '../../field-state';
-import { ControlStatus } from '../../../shared/models';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ConnectorHelper } from '../../connector/connector.helper';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { FieldsSettingsService } from '../../../services/state/fields-settings.service';
-import { FormsStateService } from '../../../services/state/forms-state.service';
+import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { WrappersConstants } from '../wrappers.constants';
+import { ControlStatus } from '../../../shared/models/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'ExpandableWrapperComponent';

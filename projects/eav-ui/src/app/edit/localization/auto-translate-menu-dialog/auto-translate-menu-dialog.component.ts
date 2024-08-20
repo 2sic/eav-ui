@@ -21,8 +21,8 @@ import { TranslationLink, TranslationLinks } from '../translation-link.constants
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { FieldsTranslateService } from '../../services/state/fields-translate.service';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FieldsTranslateService } from '../../state/fields-translate.service';
+import { FormConfigService } from '../../state/form-config.service';
 
 @Component({
   selector: 'app-auto-translate-menu-dialog',

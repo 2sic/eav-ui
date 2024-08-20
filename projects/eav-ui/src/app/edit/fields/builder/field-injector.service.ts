@@ -1,10 +1,9 @@
 import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
 import { FieldSettings } from './../../../../../../edit-types/src/FieldSettings';
 import { EnvironmentInjector, Injectable, Injector, Signal, computed, createEnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
-import { CalculatedInputType, ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest, map, tap } from 'rxjs';
 import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
@@ -12,6 +11,8 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FieldConfigSet } from '../field-config-set.model';
+import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
+import { CalculatedInputType } from '../../state/fields-configs.model';
 
 const logThis = false;
 const nameOfThis = 'FieldInjectorService';

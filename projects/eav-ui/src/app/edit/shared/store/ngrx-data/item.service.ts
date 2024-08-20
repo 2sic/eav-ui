@@ -5,11 +5,9 @@ import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { FieldHelper } from '../../helpers';
-import { ItemValuesOfOneLanguage, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavItem, EavValue } from '../../models/eav';
 import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
-import { FormLanguage } from '../../models/form-languages.model';
 import { ControlHelpers } from '../../helpers/control.helpers';
 import { LocalizationHelpers } from '../../../localization/localization.helpers';
 import { ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
@@ -17,6 +15,10 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { BestValueModes } from '../../../localization/localization.constants';
+import { Language } from 'projects/eav-ui/src/app/shared/models/language.model';
+import { SaveResult } from '../../../state/save-result.model';
+import { ItemValuesOfLanguage } from '../../../state/item-values-of-language.model';
+import { FormLanguage } from '../../../state/form-languages.model';
 
 const logThis = false;
 const nameOfThis = 'ItemService';
@@ -114,11 +116,11 @@ export class ItemService extends BaseDataService<EavItem> {
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfOneLanguage, language: FormLanguage): void {
+  updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfLanguage, language: FormLanguage): void {
     const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) return;
 
-    const oldValues: ItemValuesOfOneLanguage = {};
+    const oldValues: ItemValuesOfLanguage = {};
     for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
       if (!newValues.hasOwnProperty(name))
         continue;

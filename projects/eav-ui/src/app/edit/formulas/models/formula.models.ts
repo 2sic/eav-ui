@@ -1,8 +1,8 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings, FieldValue, PickerItem } from '../../../../../../edit-types';
-import { ItemValuesOfOneLanguage } from '../../shared/models';
 import { FormulaIdentifier, FormulaResultRaw } from './formula-results.models';
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -205,7 +205,7 @@ export interface FormulaV1Experimental {
    * TODO: @2dm Must find out if it's used anywhere, and probably rename to getFieldSettings
    */
   getSettings(fieldName: string): FieldSettings;
-  getValues(entityGuid: string): ItemValuesOfOneLanguage;
+  getValues(entityGuid: string): ItemValuesOfLanguage;
 }
 
 // TODO: once the id is gone, merge with the type FormulaV1CtxTargetEntityType

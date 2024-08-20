@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { BaseDataService } from './base-data.service';
 import { EavContentTypeAttribute } from '../../models/eav';
-import { CalculatedInputType } from '../../models/calculated-input-type.model';
 import { InputTypeName } from '../../../../../../../edit-types/src/InputTypeName';
 import { InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
+import { CalculatedInputType } from '../../../state/fields-configs.model';
 
 
 // TODO: @2dm - try to get out of store, and make it provide signals

@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { LogEntry, LogSeverity } from '../models';
 
 @Injectable()
 export class LoggingService implements OnDestroy {
@@ -47,3 +46,19 @@ export class LoggingService implements OnDestroy {
     return this.logs$.asObservable();
   }
 }
+
+
+export interface LogEntry {
+  error: any;
+  label: string;
+  severity: LogSeverity;
+  time: number;
+}
+
+export const LogSeverities = {
+  Error: 'error',
+  Log: 'log',
+  Warn: 'warn',
+} as const;
+
+export type LogSeverity = typeof LogSeverities[keyof typeof LogSeverities];
