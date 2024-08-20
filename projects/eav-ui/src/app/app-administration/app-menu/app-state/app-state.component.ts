@@ -2,23 +2,23 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
-import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { ExportAppService } from '../services/export-app.service';
-import { ImportAppPartsService } from '../services/import-app-parts.service';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
+import { DialogSettings } from '../../../shared/models/dialog-settings.model';
+import { ExportAppService } from '../../services/export-app.service';
+import { ImportAppPartsService } from '../../services/import-app-parts.service';
+import { AppDialogConfigService } from '../../services/app-dialog-config.service';
+import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { transient } from '../../core';
+import { transient } from '../../../core';
 
 @Component({
-  selector: 'app-sync-configuration',
-  templateUrl: './sync-configuration.component.html',
-  styleUrls: ['./sync-configuration.component.scss'],
+  selector: 'app-app-state',
+  templateUrl: './app-state.component.html',
+  styleUrls: ['./app-state.component.scss'],
   standalone: true,
   imports: [
     MatCardModule,
@@ -30,7 +30,7 @@ import { transient } from '../../core';
     RouterOutlet,
   ],
 })
-export class SyncConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppStateComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
 
   private importAppPartsService = transient(ImportAppPartsService);
@@ -56,18 +56,6 @@ export class SyncConfigurationComponent extends BaseWithChildDialogComponent imp
   ngOnDestroy() {
     this.snackBar.dismiss();
     super.ngOnDestroy();
-  }
-
-  exportApp() {
-    this.router.navigate([`export`], { relativeTo: this.route.parent.firstChild });
-  }
-
-  exportParts() {
-    this.router.navigate([`export/parts`], { relativeTo: this.route.parent.firstChild });
-  }
-
-  importParts() {
-    this.router.navigate([`import/parts`], { relativeTo: this.route.parent.firstChild });
   }
 
   exportAppXml(withFiles: boolean) {

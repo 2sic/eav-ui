@@ -1,0 +1,60 @@
+@if (viewModel$ | async; as vm) {
+<div class="outer-container-app" appDragAndDrop [allowedFileTypes]="importData.allowedFileTypes"
+  (filesDropped)="filesDropped($event)">
+  <div>
+    <h3 [innerHtml]="importData.title | safeHtml"></h3>
+  </div>
+  <div>
+    @if (vm.uploading) {
+    <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+    }
+    <p>To import Content-Types, Queries, Views or Data, use the respective tabs.</p>
+    <p>Create an xml containing parts of the app, e.g. content and templates. Import parts from such an xml into this
+      app.
+    </p>
+    <p [innerHtml]="importData.description | safeHtml"></p>
+    <div>
+      <button class="select-btn" mat-raised-button tippy="Open file browser" [disabled]="vm.uploading"
+        (click)="fileInput.click()">
+        @if (!vm.files.length) {
+        <div>Select or drop file</div>
+        }
+        @for (file of vm.files; track file) {
+        <div>{{ file.name }}</div>
+        }
+      </button>
+      <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+    </div>
+    @if (vm.result) {
+    <div class="eav-result-container">
+      @if (vm.result.Success) {
+      <div class="sxc-message sxc-message-info">
+        Upload succeeded. See the messages below for more information.
+      </div>
+      }
+      @if (!vm.result.Success) {
+      <div class="sxc-message sxc-message-error">
+        Upload failed. See the messages below for more information.
+      </div>
+      }
+      @for (message of vm.result.Messages; track message) {
+      <div class="sxc-message" [ngClass]="{
+                'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
+                'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
+                'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error
+                }">
+        {{ message.Text }}
+      </div>
+      }
+    </div>
+    }
+  </div>
+  @if (!vm.result?.Success) {
+  <button mat-button class="eav-button__with-icon" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
+    (click)="upload()">
+    <mat-icon class="eav-icon">cloud_upload</mat-icon>
+    <span>Upload</span>
+  </button>
+  }
+</div>
+}

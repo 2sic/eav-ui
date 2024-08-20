@@ -58,9 +58,7 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
     map(([loading, isExporting]) => ({ loading, isExporting })),
   );
 
-  constructor(
-    private dialogRef: MatDialogRef<ExportAppPartsComponent>,
-  ) { }
+  constructor() { }
 
   ngOnInit() {
     this.fetchScopes();
@@ -72,9 +70,7 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
     this.isExporting$.complete();
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
+
 
   exportAppParts() {
     this.isExporting$.next(true);

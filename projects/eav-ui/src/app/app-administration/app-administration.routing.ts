@@ -7,9 +7,6 @@ import { appAdministrationDialog } from './app-admin-main/app-admin-main.dialog-
 import { analyzeSettingsDialog } from './sub-dialogs/analyze-settings/analyze-settings-dialog.config';
 import { settingsItemDetailsDialog } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
-import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
-import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
-import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-parts-dialog.config';
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
@@ -18,6 +15,10 @@ import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.c
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { EditRoutesSubItems, EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
+import { ExportAppComponent } from './app-menu/export-app/export-app.component';
+import { ExportAppPartsComponent } from './app-menu/export-app-parts/export-app-parts.component';
+import { ImportAppPartsComponent } from './app-menu/import-app-parts/import-app-parts.component';
+import { AppStateComponent } from './app-menu/app-state/app-state.component';
 
 export const appAdministrationRoutes: Routes = [
   {
@@ -233,29 +234,49 @@ export const appAdministrationRoutes: Routes = [
               },
             ],
           },
+          // New Export etc.
+          // {
+          //   path: 'export-app',
+          //   component: ExportAppComponent,
+          //   data: { breadcrumb: 'Export this entire App' },
+          // },
+          // {
+          //   path: 'export-parts',
+          //   component: DialogEntryComponent,
+          //   data: { breadcrumb: 'Export parts of this App' },
+          // },
+          // {
+          //   path: 'import-parts',
+          //   component: DialogEntryComponent,
+          //   data: { breadcrumb: 'Import parts of this App' },
+          // },
+          // {
+          //   path: 'app-state',
+          //   component: DialogEntryComponent,
+          //   data: { breadcrumb: 'App-State Versioning' },
+          // },
         ],
       },
+      // New Export etc.
       {
-        path: 'sync',
-        loadComponent: () => import('./sync-configuration/sync-configuration.component').then(mod => mod.SyncConfigurationComponent),
-        data: { title: 'Sync', breadcrumb: "Sync" }, children: [
-          ...GoToMetadata.getRoutes(),
-          {
-            path: 'export',
-            component: DialogEntryComponent,
-            data: { dialog: exportAppDialog, title: 'Export App' }
-          },
-          {
-            path: 'export/parts',
-            component: DialogEntryComponent,
-            data: { dialog: exportAppPartsDialog, title: 'Export App Parts' }
-          },
-          {
-            path: 'import/parts',
-            component: DialogEntryComponent,
-            data: { dialog: importAppPartsDialog, title: 'Import App Parts' }
-          },
-        ],
+        path: 'export-app',
+        component: ExportAppComponent,
+        data: { breadcrumb: 'Export this entire App' },
+      },
+      {
+        path: 'export-parts',
+        component: ExportAppPartsComponent,
+        data: { breadcrumb: 'Export parts of this App' },
+      },
+      {
+        path: 'import-parts',
+        component: ImportAppPartsComponent,
+        data: { breadcrumb: 'Import parts of this App' },
+      },
+      {
+        path: 'app-state',
+        component: AppStateComponent,
+        data: { breadcrumb: 'App-State Versioning' },
       },
     ]
   },

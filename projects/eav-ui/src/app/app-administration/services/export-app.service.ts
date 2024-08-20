@@ -15,12 +15,14 @@ export class ExportAppService {
     });
   }
 
-  exportApp(includeContentGroups: boolean, resetAppGuid: boolean) {
+  exportApp(includeContentGroups: boolean, resetAppGuid: boolean, assetsAdam: boolean, assetsSite: boolean) {
     const url = this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Export')
       + '?appId=' + this.context.appId
       + '&zoneId=' + this.context.zoneId
       + '&includeContentGroups=' + includeContentGroups
-      + '&resetAppGuid=' + resetAppGuid;
+      + '&resetAppGuid=' + resetAppGuid
+      + '&assetsAdam=' + assetsAdam
+      + '&assetsSite=' + assetsSite;
 
     window.open(url, '_blank', '');
   }
