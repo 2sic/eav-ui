@@ -15,10 +15,10 @@ import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.c
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { CopilotSpecs } from './copilot/copilot-specs';
 import { EditRoutesSubItems, EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
-import { ExportAppComponent } from './sub-dialogs/export-app/export-app.component';
-import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
-import { ImportAppPartsComponent } from './sub-dialogs/import-app-parts/import-app-parts.component';
-import { AppStateComponent } from './app-state/app-state.component';
+import { ExportAppComponent } from './app-menu/export-app/export-app.component';
+import { ExportAppPartsComponent } from './app-menu/export-app-parts/export-app-parts.component';
+import { ImportAppPartsComponent } from './app-menu/import-app-parts/import-app-parts.component';
+import { AppStateComponent } from './app-menu/app-state/app-state.component';
 
 export const appAdministrationRoutes: Routes = [
   {

@@ -2,18 +2,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
-import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { ExportAppService } from '../services/export-app.service';
-import { ImportAppPartsService } from '../services/import-app-parts.service';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
-import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
+import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
+import { DialogSettings } from '../../../shared/models/dialog-settings.model';
+import { ExportAppService } from '../../services/export-app.service';
+import { ImportAppPartsService } from '../../services/import-app-parts.service';
+import { AppDialogConfigService } from '../../services/app-dialog-config.service';
+import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { transient } from '../../core';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-app-state',
