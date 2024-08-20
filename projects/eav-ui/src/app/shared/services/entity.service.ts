@@ -13,6 +13,7 @@ const logThis = false;
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
 
+// TODO: @2dg also try to use transient only - should be possible
 @Injectable()
 export class EntityService extends ServiceBase {
   constructor(private http: HttpClient,

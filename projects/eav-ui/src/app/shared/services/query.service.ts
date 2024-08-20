@@ -6,12 +6,9 @@ import { EavLogger } from '../logging/eav-logger';
 import { ServiceBase } from './service-base';
 import { Context } from './context';
 
-
 const logThis = false;
 
-// TODO: @2dg - this is also used in /app
-// please move to shared/services
-// also try to use transient only - should be possible
+// TODO: @2dg also try to use transient only - should be possible
 
 @Injectable()
 export class QueryService extends ServiceBase {

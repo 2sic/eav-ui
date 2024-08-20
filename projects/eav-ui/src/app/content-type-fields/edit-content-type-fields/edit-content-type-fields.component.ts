@@ -15,7 +15,6 @@ import { Field, FieldInputTypeOption } from '../models/field.model';
 import { ReservedNames } from '../models/reserved-names.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,6 +28,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 import { transient } from '../../core';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 @Component({
   selector: 'app-edit-content-type-fields',

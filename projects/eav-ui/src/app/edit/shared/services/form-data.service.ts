@@ -4,10 +4,10 @@ import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { Context } from '../../../shared/services/context';
 import { EavEditLoadDto, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
-import { GlobalConfigService } from '../store/ngrx-data';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { SaveResult } from '../../state/save-result.model';
+import { GlobalConfigService } from '../../../shared/services/global-config.service';
 
 const logThis = false;
 const nameOfThis = 'FormDataService';

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
+import { ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
@@ -29,12 +29,13 @@ import { FieldConstantsOfLanguage, FieldsProps } from '../state/fields-configs.m
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ContentTypeSettings } from '../state/content-type-settings.model';
 import { FormLanguage } from '../state/form-languages.model';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaEngine';
 /**
  * Formula engine is responsible for running formulas and returning the result.
- * 
+ *
  * Each instance of the engine is responsible for a _single_ entity.
  */
 @Injectable()
@@ -109,7 +110,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       for (const item of availableItems) {
         const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
         const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForDataAndContext };
-          const result = this.runFormula(allObjectParameters);
+        const result = this.runFormula(allObjectParameters);
 
         switch (formula.target) {
           case FormulaTargets.ListItemLabel:
@@ -204,7 +205,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
         formulaValidation: formulaResult.validation,
       };
     }
-    return {fieldsProps, valueUpdates, fieldUpdates};
+    return { fieldsProps, valueUpdates, fieldUpdates };
   }
 
   /**
@@ -360,7 +361,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
           const v1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);
           const isArray = v1Result && Array.isArray(v1Result) && (v1Result as any).every((r: any) => typeof r === 'string');
-          const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date|| isArray || !v1Result;
+          const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date || isArray || !v1Result;
           if (resultIsPure) {
             if (formula.target === FormulaTargets.Value) {
               const valueV1: FormulaResultRaw = {

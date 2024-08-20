@@ -3,7 +3,6 @@ export * from './base-data.service';
 export * from './content-type-item.service';
 export * from './content-type.service';
 export * from './entity-metadata';
-export * from './global-config.service';
 export * from './input-type.service';
 export * from './item.service';
 export * from './language-instance.service';
