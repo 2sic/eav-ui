@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { EavContentType } from '../../models/eav';
 import { EavContentTypeDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
-import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class ContentTypeService extends BaseDataService<EavContentType> {

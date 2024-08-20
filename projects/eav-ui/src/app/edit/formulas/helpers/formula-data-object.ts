@@ -1,8 +1,8 @@
-import { FieldValue } from 'projects/edit-types';
-import { InputFieldHelpers } from '../../shared/helpers';
+import { FieldHelper } from '../../shared/helpers';
 import { FormulaV1Data, FormulaTargets, SettingsFormulaPrefix, FormulaFieldValidation } from '../models/formula.models';
 import { FormulaHelpers } from './formula.helpers';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export class FormulaDataObject implements FormulaV1Data {
   /** Private variable containing the data used in the getters */
@@ -16,7 +16,7 @@ export class FormulaDataObject implements FormulaV1Data {
     const { runParameters } = this.#propsData;
     const { formula, settingsInitial, inputTypeName } = runParameters;
     if (formula.target === FormulaTargets.Value)
-      return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputTypeName, settingsInitial);
+      return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial);
 
     if (formula.target.startsWith(SettingsFormulaPrefix)) {
       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
@@ -38,7 +38,7 @@ export class FormulaDataObject implements FormulaV1Data {
   get prefill(): FieldValue {
     const { formula, settingsInitial, itemHeader: itemIdWithPrefill, inputTypeName } = this.#propsData.runParameters;
     if (formula.target !== FormulaTargets.Value) return;
-    return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputTypeName, settingsInitial, itemIdWithPrefill, true);
+    return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial, itemIdWithPrefill, true);
   }
 
   get value(): FieldValue {

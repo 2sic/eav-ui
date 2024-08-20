@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
-import { FormConfigService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
 import { DataDumpViewModel } from './data-dump.component.models';
 import { AsyncPipe, JsonPipe } from '@angular/common';
+import { FormConfigService } from '../../../services/state/form-config.service';
 
 @Component({
     selector: 'app-data-dump',

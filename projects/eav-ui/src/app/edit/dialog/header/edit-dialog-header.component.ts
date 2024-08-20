@@ -1,7 +1,6 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable } from 'rxjs';
-import { FormConfigService, FormsStateService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditDialogHeaderViewModel } from './edit-dialog-header.models';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
@@ -12,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { FormConfigService } from '../../services/state/form-config.service';
+import { FormsStateService } from '../../services/state/forms-state.service';
 
 @Component({
   selector: 'app-edit-dialog-header',

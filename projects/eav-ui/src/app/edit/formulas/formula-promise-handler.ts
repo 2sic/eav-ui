@@ -6,13 +6,13 @@ import { FormulaSettingsHelper } from "./helpers/formula-settings.helper";
 import { FormulaValueCorrections } from "./helpers/formula-value-corrections.helper";
 import { FormulaCacheItem, FormulaTargets, SettingsFormulaPrefix } from "./models/formula.models";
 import { Injectable, Signal } from "@angular/core";
-import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 import { ItemFormulaBroadcastService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FieldSettingsUpdateHelperFactory } from '../shared/helpers/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from '../services/state/fields-settings-update.helpers';
 import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
 import { ItemService } from '../shared/store/ngrx-data/item.service';
+import { FieldsSettingsService } from '../services/state/fields-settings.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';

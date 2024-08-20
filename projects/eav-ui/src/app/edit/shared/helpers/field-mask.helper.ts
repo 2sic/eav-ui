@@ -1,8 +1,8 @@
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { Injectable, inject, signal, Injector, OnDestroy, effect } from '@angular/core';
-import { FieldState } from '../../form/builder/fields-builder/field-state';
-import { FormConfigService } from '../services';
+import { FieldState } from '../../fields/field-state';
+import { FormConfigService } from '../../services/state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'FieldMask';

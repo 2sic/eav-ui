@@ -5,8 +5,8 @@ import { EntityReader } from '../../helpers';
 import { FormLanguageInStore } from '../../models';
 import { BaseDataService } from './base-data.service';
 import { FormLanguage, FormLanguageComplete } from '../../models/form-languages.model';
-import { mapUntilChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends BaseDataService<FormLanguageInStore> {

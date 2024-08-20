@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, map, Observable } from 'rxjs';
 import { PublishMode, PublishModes } from '../../../shared/models';
-import { FormConfigService } from '../../../shared/services';
 import { PublishStatusService } from '../../../shared/store/ngrx-data';
 import { PublishStatusDialogViewModel } from './publish-status-dialog.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,6 +10,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { FormConfigService } from '../../../services/state/form-config.service';
 
 @Component({
     selector: 'app-publish-status-dialog',

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
 import { TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { EmptyFieldHelpers } from '../form/fields/empty/empty-field-helpers';
-import { InputFieldHelpers } from '../shared/helpers/input-field.helpers';
 import { DesignerState } from './models/formula-results.models';
 import { FormulaCacheItem, FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './models/formula.models';
 import { ContentTypeService, ItemService } from '../shared/store/ngrx-data';
+import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { ItemHelper } from '../shared/helpers/item.helper';
 
 /**
  * Small helper service to get the target options for the formula designer.
@@ -41,7 +41,7 @@ export class FormulaTargetsService {
 
     // optional targets
     const item = this.itemService.getItem(designer.entityGuid);
-    const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+    const contentTypeId = ItemHelper.getContentTypeNameId(item);
     const contentType = this.contentTypeService.getContentType(contentTypeId);
     const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
     const inputType = attribute.InputType;

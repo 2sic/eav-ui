@@ -1,7 +1,7 @@
-import { FieldValue } from 'projects/edit-types';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { AbstractControl } from '@angular/forms';
 import { ItemValuesOfOneLanguage } from '../models/form-values.model';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export class ControlHelpers {
 

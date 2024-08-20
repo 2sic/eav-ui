@@ -8,6 +8,10 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 
 const logThis = false;
 
+// TODO: @2dg - this is also used in /app
+// please move to shared/services
+// also try to use transient only - should be possible
+
 @Injectable()
 export class QueryService extends ServiceBase {
 

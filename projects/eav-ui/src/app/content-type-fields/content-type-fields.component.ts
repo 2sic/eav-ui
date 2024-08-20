@@ -25,7 +25,6 @@ import { ContentTypeFieldsTitleParams } from './content-type-fields-title/conten
 import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
-import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,6 +33,7 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../core';
+import { EmptyFieldHelpers } from '../edit/fields/basic/empty-field-helpers';
 
 @Component({
   selector: 'app-content-type-fields',

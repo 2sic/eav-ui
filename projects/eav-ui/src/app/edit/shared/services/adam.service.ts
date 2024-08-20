@@ -2,10 +2,10 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FormConfigService } from '.';
 import { AdamConfig, AdamItem } from '../../../../../../edit-types';
 import { SanitizeHelper } from '../helpers';
 import { LinkInfo } from '../models';
+import { FormConfigService } from '../../services/state/form-config.service';
 
 /**
  * Form wide ADAM helper to get files, add folders etc.

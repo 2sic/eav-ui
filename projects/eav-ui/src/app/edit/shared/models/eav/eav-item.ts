@@ -1,6 +1,6 @@
-import { ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EavEntity } from '.';
 import { EavEntityBundleDto } from '../json-format-v1';
+import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 
 export class EavItem {
   Entity: EavEntity;

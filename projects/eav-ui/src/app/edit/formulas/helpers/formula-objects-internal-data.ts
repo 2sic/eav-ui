@@ -2,13 +2,14 @@ import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
 import { ItemValuesOfOneLanguage, Language } from '../../shared/models';
 import { FormLanguage } from '../../shared/models/form-languages.model';
-import { FormConfigService, FieldsSettingsService } from '../../shared/services';
 import { ItemService } from '../../shared/store/ngrx-data';
 import { FormulaCacheItem } from '../models/formula.models';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
-import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-import { PickerItem } from '../../form/fields/picker/models/picker-item.model';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldsSettingsService } from '../../services/state/fields-settings.service';
+import { FormConfigService } from '../../services/state/form-config.service';
 
 /** Everything a formula needs to run */
 export interface FormulaRunParameters {
