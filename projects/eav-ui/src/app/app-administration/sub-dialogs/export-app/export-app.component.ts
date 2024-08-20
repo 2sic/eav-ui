@@ -31,6 +31,9 @@ export class ExportAppComponent implements OnInit, OnDestroy {
 
   includeContentGroups = false;
   resetAppGuid = false;
+  assetsAdam = false;
+  assetsSite = false;
+
   private appInfo$ = new BehaviorSubject<AppInfo>(null);
   private isExporting$ = new BehaviorSubject(false);
   viewModel$ = combineLatest([this.appInfo$, this.isExporting$]).pipe(
@@ -56,7 +59,7 @@ export class ExportAppComponent implements OnInit, OnDestroy {
 
   exportApp() {
     this.isExporting$.next(true);
-    this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
+    this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid, this.assetsAdam, this.assetsSite);
     this.isExporting$.next(false);
   }
 }

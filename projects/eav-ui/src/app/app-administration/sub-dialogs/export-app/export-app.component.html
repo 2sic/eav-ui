@@ -31,6 +31,7 @@
             <li>{{ vm.appInfo.FilesCount }} files in the app folder totally</li>
           </ul>
           <div class="eav-options-wrapper">
+            <p class="eav-app-info__title">Advanced</p>
             <div class="oeav-ption-box">
               <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid || vm.isExporting">
                 <span class="eav-option-box__text">
@@ -44,6 +45,20 @@
                 <span class="eav-option-box__text">
                   Reset the app GUID to zero. You only need this option for special tutorial apps,
                   and usually must not select it.
+                </span>
+              </mat-checkbox>
+            </div>
+            <div class="eav-option-box">
+              <mat-checkbox [(ngModel)]="assetsAdam">
+                <span class="eav-option-box__text">
+                  Include all ADAM Assets
+                </span>
+              </mat-checkbox>
+            </div>
+            <div class="eav-option-box">
+              <mat-checkbox [(ngModel)]="assetsSite">
+                <span class="eav-option-box__text">
+                  Include all Site Assets (not in ADAM)
                 </span>
               </mat-checkbox>
             </div>
