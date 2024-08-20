@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { transient } from '../../../core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-export-app',
@@ -22,6 +23,7 @@ import { transient } from '../../../core';
     MatDialogActions,
     MatButtonModule,
     AsyncPipe,
+    MatIconModule,
   ],
 })
 export class ExportAppComponent implements OnInit, OnDestroy {
@@ -40,7 +42,7 @@ export class ExportAppComponent implements OnInit, OnDestroy {
     map(([appInfo, isExporting]) => ({ appInfo, isExporting })),
   );
 
-  constructor(private dialogRef: MatDialogRef<ExportAppComponent>) { }
+  constructor() { }
 
   ngOnInit() {
     this.exportAppService.getAppInfo().subscribe(appInfo => {
@@ -53,13 +55,13 @@ export class ExportAppComponent implements OnInit, OnDestroy {
     this.isExporting$.complete();
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
-
   exportApp() {
     this.isExporting$.next(true);
     this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid, this.assetsAdam, this.assetsSite);
+    this.includeContentGroups = false;
+    this.resetAppGuid = false;
+    this.assetsAdam = false;
+    this.assetsSite = false;
     this.isExporting$.next(false);
   }
 }

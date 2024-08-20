@@ -16,9 +16,9 @@ import { MatCardModule } from '@angular/material/card';
 import { transient } from '../../core';
 
 @Component({
-  selector: 'app-sync-configuration',
-  templateUrl: './sync-configuration.component.html',
-  styleUrls: ['./sync-configuration.component.scss'],
+  selector: 'app-app-state',
+  templateUrl: './app-state.component.html',
+  styleUrls: ['./app-state.component.scss'],
   standalone: true,
   imports: [
     MatCardModule,
@@ -30,7 +30,7 @@ import { transient } from '../../core';
     RouterOutlet,
   ],
 })
-export class SyncConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppStateComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
 
   private importAppPartsService = transient(ImportAppPartsService);
@@ -56,18 +56,6 @@ export class SyncConfigurationComponent extends BaseWithChildDialogComponent imp
   ngOnDestroy() {
     this.snackBar.dismiss();
     super.ngOnDestroy();
-  }
-
-  exportApp() {
-    this.router.navigate([`export`], { relativeTo: this.route.parent.firstChild });
-  }
-
-  exportParts() {
-    this.router.navigate([`export/parts`], { relativeTo: this.route.parent.firstChild });
-  }
-
-  importParts() {
-    this.router.navigate([`import/parts`], { relativeTo: this.route.parent.firstChild });
   }
 
   exportAppXml(withFiles: boolean) {

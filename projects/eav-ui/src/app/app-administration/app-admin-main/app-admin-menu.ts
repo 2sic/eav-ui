@@ -56,6 +56,35 @@ export const AppAdminMenu: NavItem[] = [
     icon: 'settings_applications',
     svgIcon: false,
     tippy: 'App Settings',
+    child: [
+      {
+        name: 'Export App',
+        path: 'export-app',
+        icon: 'cloud_download',
+        svgIcon: false,
+        tippy: 'Export this entire App'
+      },
+      {
+        name: 'Export Parts',
+        path: 'export-parts',
+        icon: 'cloud_download',
+        svgIcon: false,
+        tippy: 'Export parts of this App'
+      },
+      {
+        name: 'Imports Parts',
+        path: 'import-parts',
+        icon: 'cloud_upload',
+        svgIcon: false,
+        tippy: 'Import parts of this App'
+      },
+      {
+        name: 'App-State',
+        path: 'app-state',
+        icon: 'history_toggle_off',
+        svgIcon: false,
+        tippy: 'App-State Versioning'
+      },
+    ]
   },
-  { name: 'Sync', path: 'sync', icon: 'sync', svgIcon: false, tippy: 'App Export / Import' },
 ];

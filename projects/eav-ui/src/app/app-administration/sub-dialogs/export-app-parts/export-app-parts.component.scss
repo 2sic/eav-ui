@@ -23,7 +23,7 @@
   }
 
   &__item {
-    border-top: 1px solid #DDD;
+    border-top: 1px solid #ddd;
     padding: 2px;
   }
 }
@@ -35,4 +35,13 @@
     white-space: normal;
     font-size: 14px;
   }
+}
+
+.form-height {
+  max-height: calc(100vh - 24px - 48px - 200px);
+  overflow: auto;
+}
+
+.btn-bar{
+  margin-top: 24px;
 }
