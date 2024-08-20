@@ -1,10 +1,10 @@
 import { Subscription } from 'rxjs';
-import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
+import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models/element-event-listener.model';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EavLogger } from '../../../eav-ui/src/app/shared/logging/eav-logger';
 import { connectorToDisabled$, registerCustomElement } from '../editor/editor-helpers';
 
 const logThis = false;
