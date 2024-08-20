@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
 import { Context } from '../../shared/services/context';
 import { ContentExport } from '../models/content-export.model';
-import { webApiEntityRoot } from '../../edit/shared/services/entity.service';
+import { webApiEntityRoot } from '../../shared/services/entity.service';
 
 @Injectable()
 export class ContentExportService {

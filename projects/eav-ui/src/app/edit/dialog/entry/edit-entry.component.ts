@@ -8,8 +8,8 @@ import { FormConfigService } from '../../services/state/form-config.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { AdamService } from '../../shared/services/adam.service';
 import { LoggingService } from '../../shared/services/logging.service';
-import { EntityService } from '../../shared/services/entity.service';
-import { QueryService } from '../../shared/services/query.service';
+import { EntityService } from '../../../shared/services/entity.service';
+import { QueryService } from '../../../shared/services/query.service';
 
 /**
  * This component is the entry point for every edit dialog.

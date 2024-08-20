@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { EavFor } from '../../edit/shared/models/eav';
 import { ItemInListIdentifier } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
-import { webApiEntityRoot } from '../../edit/shared/services/entity.service';
+import { webApiEntityRoot } from '../../shared/services/entity.service';
 
 @Injectable()
 export class EntitiesService {

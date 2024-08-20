@@ -5,7 +5,7 @@ import { from, map, switchMap } from 'rxjs';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentImport, EvaluateContentResult, ImportContentRequest, ImportContentResult } from '../models/content-import.model';
-import { webApiEntityRoot } from '../../edit/shared/services/entity.service';
+import { webApiEntityRoot } from '../../shared/services/entity.service';
 
 @Injectable()
 export class ContentImportService {
