@@ -1,5 +1,4 @@
 import { FieldValue } from "projects/edit-types";
-import { ItemValuesOfOneLanguage, FieldsProps, FieldConstantsOfLanguage } from "../shared/models";
 import { EavContentType } from "../shared/models/eav";
 import { FormulaPromiseResult } from "./models/formula-promise-result.model";
 import { FormulaSettingsHelper } from "./helpers/formula-settings.helper";
@@ -9,10 +8,12 @@ import { Injectable, Signal } from "@angular/core";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 import { ItemFormulaBroadcastService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FieldSettingsUpdateHelperFactory } from '../services/state/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
 import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
 import { ItemService } from '../shared/store/ngrx-data/item.service';
-import { FieldsSettingsService } from '../services/state/fields-settings.service';
+import { FieldsSettingsService } from '../state/fields-settings.service';
+import { FieldsProps, FieldConstantsOfLanguage } from '../state/fields-configs.model';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';
@@ -77,7 +78,7 @@ export class FormulaPromiseHandler {
         const corrected = FormulaValueCorrections.correctAllValues(formulaCache.target, result, inputTypeName);
 
         const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
-        let valueUpdates: ItemValuesOfOneLanguage = {};
+        let valueUpdates: ItemValuesOfLanguage = {};
         let settingUpdate: FieldSettingPair[] = [];
 
         if (formulaCache.target === FormulaTargets.Value) {
@@ -117,7 +118,7 @@ export class FormulaPromiseHandler {
    * @returns true if values were updated, false otherwise and new field props
    */
   updateFromQueue(
-    formValues: ItemValuesOfOneLanguage,
+    formValues: ItemValuesOfLanguage,
     fieldsProps: FieldsProps,
     constantFieldParts: FieldConstantsOfLanguage[],
     setUpdHelperFactory: FieldSettingsUpdateHelperFactory,

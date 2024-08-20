@@ -1,17 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
-import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
-import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
-import { EavEntityAttributes, EavItem } from '../../shared/models/eav';
-import { FormLanguage } from '../../shared/models/form-languages.model';
-import { ItemService, ContentTypeService } from '../../shared/store/ngrx-data';
+import { EditApiKeyPaths } from '../../shared/constants/eav.constants';
+import { ApiKeySpecs } from '../../shared/models/dialog-context.models';
+import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { LocalizationHelpers } from '../localization/localization.helpers';
+import { EavEntityAttributes, EavItem } from '../shared/models/eav';
+import { ItemService, ContentTypeService } from '../shared/store/ngrx-data';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FormConfigService } from './form-config.service';
-import { ItemHelper } from '../../shared/helpers/item.helper';
+import { ItemHelper } from '../shared/helpers/item.helper';
+import { FormLanguage } from './form-languages.model';
 
 const logThis = false;
 const nameOfThis = 'FieldsTranslateService';

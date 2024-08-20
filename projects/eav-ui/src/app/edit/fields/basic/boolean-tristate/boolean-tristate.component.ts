@@ -10,7 +10,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldState } from '../../field-state';
-import { ControlStatus } from '../../../shared/models';
+import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
   selector: InputTypeConstants.BooleanTristate,

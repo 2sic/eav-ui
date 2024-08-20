@@ -11,12 +11,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
-import { ControlStatus } from '../../../shared/models';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
+import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,

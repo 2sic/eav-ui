@@ -11,7 +11,7 @@ import { FormulaTargetsService } from './formula-targets.service';
 import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
 import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 import { FormulaCacheService } from './formula-cache.service';
-import { FieldsSettingsService } from '../services/state/fields-settings.service';
+import { FieldsSettingsService } from '../state/fields-settings.service';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';

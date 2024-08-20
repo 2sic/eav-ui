@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../shared/services/features.service';
-import { ContentTypeSettings, FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, LogSeverities } from '../shared/models';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { GlobalConfigService, ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -16,17 +15,20 @@ import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself, FormulaRunParameters } from './helpers/formula-objects-internal-data';
-import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../services/state/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
 import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
-import { FieldsSettingsHelpers } from '../services/state/fields-settings.helpers';
-import { FormLanguage } from '../shared/models/form-languages.model';
+import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { EditInitializerService } from '../services/state/edit-initializer.service';
-import { FieldsSettingsService } from '../services/state/fields-settings.service';
-import { FormConfigService } from '../services/state/form-config.service';
-import { LoggingService } from '../shared/services/logging.service';
+import { EditInitializerService } from '../state/edit-initializer.service';
+import { FieldsSettingsService } from '../state/fields-settings.service';
+import { FormConfigService } from '../state/form-config.service';
+import { LoggingService, LogSeverities } from '../shared/services/logging.service';
+import { FieldConstantsOfLanguage, FieldsProps } from '../state/fields-configs.model';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { ContentTypeSettings } from '../state/content-type-settings.model';
+import { FormLanguage } from '../state/form-languages.model';
 
 const logThis = false;
 const nameOfThis = 'FormulaEngine';
@@ -87,7 +89,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    */
   runAllListItemsFormulas(
     fieldName: string,
-    formValues: ItemValuesOfOneLanguage,
+    formValues: ItemValuesOfLanguage,
     inputTypeName: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
@@ -148,12 +150,12 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     item: EavItem,
     itemAttributes: EavEntityAttributes,
     constantFieldParts: FieldConstantsOfLanguage[],
-    formValues: ItemValuesOfOneLanguage,
+    formValues: ItemValuesOfLanguage,
     languages: FormLanguage,
     updHelperFactory: FieldSettingsUpdateHelperFactory,
   ) {
     const fieldsProps: FieldsProps = {};
-    const valueUpdates: ItemValuesOfOneLanguage = {};
+    const valueUpdates: ItemValuesOfLanguage = {};
     const fieldUpdates: FieldValuePair[] = [];
 
     // Many aspects of a field are re-usable across formulas, so we prepare them here
@@ -211,7 +213,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    */
   runAllFormulasOfFieldOrInitSettings(
     fieldName: string,
-    formValues: ItemValuesOfOneLanguage,
+    formValues: ItemValuesOfLanguage,
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemHeader: ItemIdentifierShared,
@@ -247,7 +249,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
   private runFormulasOfField(
     formulas: FormulaCacheItem[],
-    formValues: ItemValuesOfOneLanguage,
+    formValues: ItemValuesOfLanguage,
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemHeader: ItemIdentifierShared,

@@ -3,13 +3,13 @@ import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, signal, Vi
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
-import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FieldState } from '../../field-state';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormConfigService } from '../../../state/form-config.service';
+import { WrappersConstants } from '../wrappers.constants';
 
 const logThis = false;
 const nameOfThis = 'DropzoneWrapperComponent';

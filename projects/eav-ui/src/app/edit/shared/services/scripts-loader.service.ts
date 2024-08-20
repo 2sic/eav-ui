@@ -3,7 +3,7 @@ import { EavWindow } from '../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FormConfigService } from '../../state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'ScriptsLoaderService';

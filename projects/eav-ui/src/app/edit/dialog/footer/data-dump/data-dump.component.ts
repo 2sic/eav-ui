@@ -3,7 +3,7 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { ItemService } from '../../../shared/store/ngrx-data';
 import { DataDumpViewModel } from './data-dump.component.models';
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormConfigService } from '../../../state/form-config.service';
 
 @Component({
     selector: 'app-data-dump',

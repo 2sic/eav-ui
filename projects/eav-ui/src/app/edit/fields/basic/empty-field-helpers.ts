@@ -1,5 +1,5 @@
+import { CalculatedInputType } from '../../state/fields-configs.model';
 import { InputTypeConstants, InputTypeStrict } from './../../../content-type-fields/constants/input-type.constants';
-import { CalculatedInputType } from '../../shared/models/calculated-input-type.model';
 
 const empty: InputTypeStrict[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
 

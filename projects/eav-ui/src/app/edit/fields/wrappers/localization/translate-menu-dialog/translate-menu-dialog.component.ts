@@ -14,8 +14,8 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
-import { FieldsTranslateService } from '../../../../services/state/fields-translate.service';
-import { FormConfigService } from '../../../../services/state/form-config.service';
+import { FieldsTranslateService } from '../../../../state/fields-translate.service';
+import { FormConfigService } from '../../../../state/form-config.service';
 
 @Component({
   selector: 'app-translate-menu-dialog',

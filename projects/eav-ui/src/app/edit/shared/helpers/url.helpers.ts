@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { FormConfiguration } from '../models';
+import { FormConfiguration } from '../../state/form-configuration.model';
 
 export class UrlHelpers {
 

@@ -22,8 +22,8 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { FormConfigService } from '../../../services/state/form-config.service';
-import { FormsStateService } from '../../../services/state/forms-state.service';
+import { FormConfigService } from '../../../state/form-config.service';
+import { FormsStateService } from '../../../state/forms-state.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 

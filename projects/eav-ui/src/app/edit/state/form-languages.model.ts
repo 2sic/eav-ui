@@ -1,4 +1,6 @@
-import { Language } from '.';
+import { Language } from '../../shared/models/language.model';
+
+export { Language } from '../../shared/models/language.model';
 
 export class FormLanguage
 {
@@ -48,3 +50,4 @@ export interface FormLanguagesConfig
   primary: string;
   list: Language[];
 }
+

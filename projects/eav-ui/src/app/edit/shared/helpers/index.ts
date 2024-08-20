@@ -1,5 +1,5 @@
 export * from './field-mask.helper';
-export * from '../../services/state/fields-settings.helpers';
+export * from '../../state/fields-settings.helpers';
 export * from './entity-reader';
 export * from './file-type.helpers';
 export * from './input-field.helpers';

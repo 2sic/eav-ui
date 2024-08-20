@@ -19,7 +19,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { transient } from '../core';
-import { FormConfigService } from '../edit/services/state/form-config.service';
+import { FormConfigService } from '../edit/state/form-config.service';
 
 @Component({
   selector: 'app-manage-content-list',

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
-import { LogEntry, LogSeverities } from '../../../shared/models';
 import { LogsDumpViewModel } from './logs-dump.component.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
-import { LoggingService } from '../../../shared/services/logging.service';
+import { LogEntry, LoggingService, LogSeverities } from '../../../shared/services/logging.service';
 
 @Component({
   selector: 'app-logs-dump',

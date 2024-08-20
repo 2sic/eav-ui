@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { TranslationState } from '../../shared/models/fields-configs.model';
+import { TranslationState } from '../../state/fields-configs.model';
 import { ItemService } from '../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
@@ -14,10 +14,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout/flex';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
-import { FieldsTranslateService } from '../../services/state/fields-translate.service';
-import { FormConfigService } from '../../services/state/form-config.service';
-import { FormsStateService } from '../../services/state/forms-state.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldsTranslateService } from '../../state/fields-translate.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { FormsStateService } from '../../state/forms-state.service';
 
 @Component({
   selector: 'app-entity-translate-menu',

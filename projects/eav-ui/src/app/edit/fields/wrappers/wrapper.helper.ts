@@ -1,8 +1,8 @@
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { CalculatedInputType } from '../../state/fields-configs.model';
 import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
 import { WrappersConstant, WrappersConstants } from './wrappers.constants';
-import { CalculatedInputType } from '../../shared/models';
 
 const logThis = false;
 

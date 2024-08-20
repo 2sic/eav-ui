@@ -18,7 +18,7 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
-import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormConfigService } from '../../../state/form-config.service';
 import { EntityService } from '../../../shared/services/entity.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 

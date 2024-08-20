@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs';
-import { WrappersConstants } from '../../../shared/constants';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRippleModule } from '@angular/material/core';
@@ -15,9 +14,10 @@ import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended
 import { FieldState } from '../../field-state';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { BaseComponent } from '../../../../shared/components/base.component';
-import { FieldsSettingsService } from '../../../services/state/fields-settings.service';
-import { FormsStateService } from '../../../services/state/forms-state.service';
+import { FieldsSettingsService } from '../../../state/fields-settings.service';
+import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { WrappersConstants } from '../wrappers.constants';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,

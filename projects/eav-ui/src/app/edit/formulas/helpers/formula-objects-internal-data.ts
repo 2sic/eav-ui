@@ -1,21 +1,22 @@
 import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
-import { ItemValuesOfOneLanguage, Language } from '../../shared/models';
-import { FormLanguage } from '../../shared/models/form-languages.model';
 import { ItemService } from '../../shared/store/ngrx-data';
 import { FormulaCacheItem } from '../models/formula.models';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FormConfigService } from '../../state/form-config.service';
+import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
+import { Language } from '../../../shared/models/language.model';
+import { FormLanguage } from '../../state/form-languages.model';
 
 /** Everything a formula needs to run */
 export interface FormulaRunParameters {
   /** The formula to run */
   formula: FormulaCacheItem;
-  currentValues: ItemValuesOfOneLanguage;
+  currentValues: ItemValuesOfLanguage;
   /** The exact name of the input field */
   inputTypeName: InputTypeStrict;
   settingsInitial: FieldSettings;
@@ -26,7 +27,7 @@ export interface FormulaRunParameters {
 
 export interface FormulaObjectsInternalWithoutFormulaItself {
   /** Initial values so formulas can ask for .initial */
-  initialFormValues: ItemValuesOfOneLanguage;
+  initialFormValues: ItemValuesOfLanguage;
 
   /** current language information so all the commands / context work as expected */
   language: FormLanguage;

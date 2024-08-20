@@ -1,6 +1,6 @@
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
-import { WrappersConstants } from '../../../shared/constants';
 import { FieldState } from '../../field-state';
+import { WrappersConstants } from '../wrappers.constants';
 
 @Component({
   selector: WrappersConstants.HiddenWrapper,

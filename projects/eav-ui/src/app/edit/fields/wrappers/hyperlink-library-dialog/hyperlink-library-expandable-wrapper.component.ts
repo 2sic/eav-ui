@@ -1,6 +1,5 @@
 import { Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { AdamItem } from '../../../../../../../edit-types';
-import { WrappersConstants } from '../../../shared/constants';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
@@ -20,8 +19,9 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../shared/services/features.service';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { FormsStateService } from '../../../services/state/forms-state.service';
+import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { WrappersConstants } from '../wrappers.constants';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,

@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { AdamItem } from '../../../../../../../edit-types';
 import { PrefetchAdams } from '../../../dialog/main/edit-dialog-main.models';
-import { AdamSnapshot } from '../../models';
 import { BaseDataService } from './base-data.service';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AdamCacheService extends BaseDataService<AdamSnapshot> {
@@ -27,4 +28,21 @@ export class AdamCacheService extends BaseDataService<AdamSnapshot> {
   getAdamSnapshot(entityGuid: string, fieldName: string): AdamItem[] {
     return this.cache().find(adamSnapshot => adamSnapshot.Guid === entityGuid)?.Attributes[fieldName];
   }
+}
+
+
+
+export interface AdamSnapshot {
+  Guid: string;
+  Attributes: AdamSnapshotAttributes;
+}
+
+interface AdamSnapshotAttributes {
+  [name: string]: AdamItem[];
+}
+
+
+/** Slightly enhanced standard Abstract Control with additional warnings */
+export interface AbstractControlPro extends AbstractControl {
+  _warning$?: BehaviorSubject<ValidationErrors>;
 }

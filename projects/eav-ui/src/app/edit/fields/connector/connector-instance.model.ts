@@ -7,7 +7,7 @@ import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
 import { ExperimentalProps } from '../../../../../../edit-types/src/ExperimentalProps';
 import { loadScripts } from '../../../shared/helpers/load-scripts.helper';
 import { UrlHelpers } from '../../shared/helpers';
-import { FormConfiguration } from '../../shared/models';
+import { FormConfiguration } from '../../state/form-configuration.model';
 
 declare const window: EavWindow;
 

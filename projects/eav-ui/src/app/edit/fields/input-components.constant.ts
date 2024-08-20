@@ -1,6 +1,5 @@
 import { Type } from '@angular/core';
 import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../shared/constants';
 import { BooleanDefaultComponent } from './basic/boolean-default/boolean-default.component';
 import { BooleanTristateComponent } from './basic/boolean-tristate/boolean-tristate.component';
 import { CustomDefaultComponent } from './basic/custom-default/custom-default.component';
@@ -33,6 +32,7 @@ import { StringFontIconPickerComponent } from './basic/string-font-icon-picker/s
 import { StringPickerComponent } from './basic/string-picker/string-picker.component';
 import { StringTemplatePickerComponent } from './basic/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './basic/string-url-path/string-url-path.component';
+import { WrappersConstants } from './wrappers/wrappers.constants';
 
 export const InputComponents: Record<string, Type<any>> = {
   // Wrappers

@@ -1,4 +1,4 @@
-import { FieldMetadataModel } from '../../shared/models/field-metadata.model';
+import { FieldMetadataModel } from '../field-metadata.decorator';
 
 export const WrappersConstants = {
   AdamWrapper: 'app-adam-wrapper', // default

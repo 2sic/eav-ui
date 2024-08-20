@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
-import { PublishMode, PublishModes, PublishStatus } from '../../models';
 import { BaseDataService } from './base-data.service';
 import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
-import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormConfigService } from '../../../state/form-config.service';
+import { PublishStatus, PublishMode, PublishModes } from '../../../dialog/main/edit-dialog-main.models';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends BaseDataService<PublishStatus> {

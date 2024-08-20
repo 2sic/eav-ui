@@ -2,14 +2,28 @@ import { AdamItem, PickerItem } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { Feature } from '../../../features/models/feature.model';
-import { LinkInfo } from '../../shared/models';
 import { EavContentType, EavEntity, EavItem } from '../../shared/models/eav';
 import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
+
 
 export interface EavPublishStatus {
   DraftShouldBranch: boolean;
   IsPublished: boolean;
 }
+
+export interface PublishStatus extends EavPublishStatus {
+  formId: number;
+}
+
+/** PublishMode is short version of PublishStatus */
+export const PublishModes = {
+  Show: 'show',
+  Hide: 'hide',
+  Branch: 'branch',
+} as const;
+
+export type PublishMode = typeof PublishModes[keyof typeof PublishModes];
+
 
 export interface EavEditLoadDto extends EavPublishStatus {
   ContentTypeItems: EavEntityDto[];
@@ -95,4 +109,19 @@ export interface PrefetchAdams {
 
 export interface PrefetchLinks {
   [key: string]: LinkInfo;
+}
+
+
+export interface LinkInfo {
+  /** Null if URL doesn't resolve to ADAM file (is page, external url or blocked by permissions) */
+  Adam?: AdamItem;
+  /** Resolved or original URL */
+  Value: string;
+}
+
+
+/** TODO: this we can probably discard once we remove the rxStore */
+export interface LinkCache {
+  key: string;
+  linkInfo: LinkInfo;
 }

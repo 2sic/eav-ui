@@ -1,7 +1,6 @@
 import { Directive, OnDestroy, OnInit, Type, ViewContainerRef, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
-import { FieldMetadataModel, FieldProps } from '../../shared/models';
 import { CustomDefaultComponent } from '../basic/custom-default/custom-default.component';
 import { PickerExpandableWrapperComponent } from '../../fields/wrappers/picker-dialog/picker-expandable-wrapper.component';
 import { InputComponents } from '../../fields/input-components.constant';
@@ -13,8 +12,9 @@ import { transient } from '../../../core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FieldConfigSet } from '../field-config-set.model';
-import { FieldMetadataKey } from '../field-metadata.decorator';
-import { FieldsSettingsService } from '../../services/state/fields-settings.service';
+import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorator';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldProps } from '../../state/fields-configs.model';
 
 const logThis = false;
 const nameOfThis = 'FieldsBuilderDirective';

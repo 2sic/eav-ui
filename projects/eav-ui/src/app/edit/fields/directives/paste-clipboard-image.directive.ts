@@ -5,10 +5,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { FeaturesService } from '../../../shared/services/features.service';
-import { ElementEventListener, PasteClipboardImageEventDetail } from '../../shared/models';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldConfigSet } from '../field-config-set.model';
+import { ElementEventListener } from '../../shared/models/element-event-listener.model';
 
 const logThis = false;
 const nameOfThis = 'PasteClipboardImageDirective';
@@ -92,4 +92,10 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
     }
     return newFile;
   }
+}
+
+interface PasteClipboardImageEventDetail {
+  file: File;
+  imageFileName: string;
+  originalEvent: ClipboardEvent;
 }

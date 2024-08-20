@@ -2,11 +2,10 @@ import { inject, Injectable, Injector, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map, Observable, shareReplay } from 'rxjs';
 import { EntityReader } from '../../helpers';
-import { FormLanguageInStore } from '../../models';
 import { BaseDataService } from './base-data.service';
-import { FormLanguage, FormLanguageComplete } from '../../models/form-languages.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
+import { FormLanguage, FormLanguageComplete } from '../../../state/form-languages.model';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends BaseDataService<FormLanguageInStore> {
@@ -93,4 +92,9 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
     const languageInstance: Partial<FormLanguageInStore> = { formId, hideHeader };
     this.updateOneInCache(languageInstance);
   }
+}
+
+export interface FormLanguageInStore extends FormLanguageComplete {
+  formId: number;
+  hideHeader: boolean;
 }

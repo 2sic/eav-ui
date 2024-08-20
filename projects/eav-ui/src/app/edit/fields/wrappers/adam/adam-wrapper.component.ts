@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
-import { WrappersConstants } from '../../../shared/constants';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
 import { Subscription } from 'rxjs';
 import { FieldState } from '../../field-state';
+import { WrappersConstants } from '../wrappers.constants';
 
 @Component({
   selector: WrappersConstants.AdamWrapper,

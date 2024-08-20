@@ -25,8 +25,8 @@ import { EavLogger } from '../../../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../../../shared/rxJs/mapUntilChanged';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
-import { FieldsSettingsService } from '../../../../services/state/fields-settings.service';
-import { FormsStateService } from '../../../../services/state/forms-state.service';
+import { FieldsSettingsService } from '../../../../state/fields-settings.service';
+import { FormsStateService } from '../../../../state/forms-state.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { AdamService } from '../../../../shared/services/adam.service';
 

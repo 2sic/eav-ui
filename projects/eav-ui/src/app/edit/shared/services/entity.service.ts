@@ -5,7 +5,7 @@ import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { EntityBasic } from '../models/entity-basic';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../services/state/form-config.service';
+import { FormConfigService } from '../../state/form-config.service';
 import { QueryService } from './query.service';
 
 const logThis = false;

@@ -2,30 +2,30 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
-import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
-import { FeaturesService } from '../../../shared/services/features.service';
-import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
-import { EavEditLoadDto } from '../../dialog/main/edit-dialog-main.models';
-import { EditParams } from '../../edit-matcher.models';
-import { EntityReader, FieldsSettingsHelpers } from '../../shared/helpers';
-import { ItemValuesOfOneLanguage } from '../../shared/models';
-import { EavEntity } from '../../shared/models/eav/eav-entity';
+import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
+import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
+import { FeaturesService } from '../../shared/services/features.service';
+import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
+import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
+import { EditParams } from '../edit-matcher.models';
+import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
+import { EavEntity } from '../shared/models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
-import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
-import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
-import { EavContentType } from '../../shared/models/eav/eav-content-type';
-import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FormDataService } from '../../shared/services/form-data.service';
-import { FormLanguage } from '../../shared/models/form-languages.model';
-import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
-import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
-import { BestValueModes } from '../../localization/localization.constants';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../shared/store/ngrx-data';
+import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
+import { FieldLogicManager } from '../fields/logic/field-logic-manager';
+import { EavContentType } from '../shared/models/eav/eav-content-type';
+import { ServiceBase } from '../../shared/services/service-base';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { FormDataService } from '../shared/services/form-data.service';
+import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { PickerDataCacheService } from '../fields/picker/cache/picker-data-cache.service';
+import { LocalizationHelpers } from '../localization/localization.helpers';
+import { BestValueModes } from '../localization/localization.constants';
 import { FormConfigService } from './form-config.service';
-import { ItemHelper } from '../../shared/helpers/item.helper';
+import { ItemHelper } from '../shared/helpers/item.helper';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { FormLanguage } from './form-languages.model';
 
 const logThis = false;
 const nameOfThis = 'EditInitializerService';
@@ -41,7 +41,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
   public loaded = signal(false);
 
-  private initialFormValues: Record<string, ItemValuesOfOneLanguage> = {};
+  private initialFormValues: Record<string, ItemValuesOfLanguage> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -175,7 +175,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
     for (const item of items)
       for (const lang of allLangs) {
-        const formValues: ItemValuesOfOneLanguage = {};
+        const formValues: ItemValuesOfLanguage = {};
         const lookupLang = FormLanguage.diffCurrent(language, lang);
         for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes))
           formValues[fieldName] = LocalizationHelpers.translate(lookupLang, fieldValues, null);
@@ -187,7 +187,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     return `entityGuid:${entityGuid}:language:${language}`;
   }
 
-  getInitialValues(entityGuid: string, language: string): ItemValuesOfOneLanguage {
+  getInitialValues(entityGuid: string, language: string): ItemValuesOfLanguage {
     return this.initialFormValues[this.initialValuesCacheKey(entityGuid, language)];
   }
   //#endregion

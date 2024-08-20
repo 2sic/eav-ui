@@ -1,5 +1,5 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
-import { Language } from '../../edit/shared/models';
+import { Language } from './language.model';
 
 export interface DialogContextApp {
   /** Root for app APIs and content/query */
