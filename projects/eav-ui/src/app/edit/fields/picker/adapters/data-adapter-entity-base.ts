@@ -14,11 +14,13 @@ import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-qu
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FieldState } from '../../field-state';
 import { FieldMask } from '../../../shared/helpers';
-import { EntityService, FormConfigService, EditRoutingService } from '../../../shared/services';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
+import { FormConfigService } from '../../../services/state/form-config.service';
+import { EntityService } from '../../../shared/services/entity.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {

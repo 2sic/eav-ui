@@ -3,7 +3,6 @@ import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inje
 import { MatDialog } from '@angular/material/dialog';
 import { AdamItem } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
-import { AdamService, FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
@@ -28,6 +27,10 @@ import { FeaturesService } from '../../../../shared/services/features.service';
 import { FeatureNames } from '../../../../features/feature-names';
 import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyperlink-default-base.component';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
+import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormsStateService } from '../../../services/state/forms-state.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { AdamService } from '../../../shared/services/adam.service';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,

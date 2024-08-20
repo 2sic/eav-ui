@@ -4,8 +4,7 @@ import { map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
-import { BestValueModes } from '../../constants';
-import { InputFieldHelpers } from '../../helpers';
+import { FieldHelper } from '../../helpers';
 import { ItemValuesOfOneLanguage, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavItem, EavValue } from '../../models/eav';
 import { EavEntityBundleDto } from '../../models/json-format-v1';
@@ -17,6 +16,7 @@ import { ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/mod
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { mapUntilChanged, mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
+import { BestValueModes } from '../../../localization/localization.constants';
 
 const logThis = false;
 const nameOfThis = 'ItemService';
@@ -299,7 +299,7 @@ export class ItemService extends BaseDataService<EavItem> {
     defaultLanguage: string,
   ): FieldValue {
     const l = this.log.fn('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
-    const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
+    const defaultValue = FieldHelper.getDefaultOrPrefillValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(
       item.Entity.Attributes[ctAttribute.Name],

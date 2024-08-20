@@ -1,68 +1,14 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
-import { WrappersConstant, WrappersConstants } from '../../fields/wrappers/wrappers.constants';
-import { CalculatedInputType } from '../models';
-import { EavItem } from '../models/eav';
+import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
 const logThis = false;
 
-export class InputFieldHelpers {
-
-  static getContentTypeNameId(item: EavItem): string {
-    return item.Entity.Type?.Id
-      ?? (item.Header as ItemAddIdentifier).ContentTypeName;
-  }
-
-  static getWrappers(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
-    const inputType = calculatedInputType.inputType;
-    const isExternal = calculatedInputType.isExternal;
-
-    if (EmptyFieldHelpers.isMessage(inputType))
-      return [];
-
-    // empty input type wrappers
-    if (EmptyFieldHelpers.isGroupStart(inputType))
-      return [WrappersConstants.CollapsibleWrapper];
-
-    // default wrappers
-    const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
-
-    // entity-default/string-dropdown wrappers
-    const isEntityOrStringDropdownType = (inputType === InputTypeConstants.EntityDefault)
-      || (inputType === InputTypeConstants.StringDropdownQuery)
-      || (inputType === InputTypeConstants.EntityQuery)
-      || (inputType === InputTypeConstants.EntityContentBlocks)
-      || (inputType === InputTypeConstants.StringDropdown)
-      /** WIP pickers */
-      || (inputType === InputTypeConstants.EntityPicker)
-      || (inputType === InputTypeConstants.StringPicker);
-    // || (inputType === InputTypeConstants.WIPNumberPicker);
-
-    const allowMultiValue = settings.AllowMultiValue ?? false;
-
-    if (isEntityOrStringDropdownType) {
-      wrappers.push(WrappersConstants.LocalizationWrapper);
-      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks)
-        wrappers.push(WrappersConstants.PickerExpandableWrapper);
-    }
-
-    // External components should always get these wrappers
-    if (isExternal)
-      wrappers.push(
-        WrappersConstants.DropzoneWrapper,
-        WrappersConstants.LocalizationWrapper,
-        WrappersConstants.ExpandableWrapper,
-        WrappersConstants.AdamWrapper,
-      );
-
-    return wrappers;
-  }
+export class FieldHelper {
 
   /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
-  static parseDefaultValue(
+  static getDefaultOrPrefillValue(
     name: string,
     inputType: InputTypeStrict,
     settings: FieldSettings,
@@ -72,11 +18,11 @@ export class InputFieldHelpers {
     const log = new EavLogger('InputFieldHelpers', logThis);
     const l = log.fn('parseDefaultValue', { name, inputType, settings, itemHeader, onlyPrefill });
 
-    if (onlyPrefill && itemHeader?.Prefill?.[name] === undefined)
+    const prefillRaw = itemHeader?.Prefill?.[name];
+    if (onlyPrefill && prefillRaw === undefined)
       return l.rNull('only prefill, but no prefill data found');
 
-    let defaultValue = itemHeader?.Prefill?.[name]?.toString()
-      ?? settings.DefaultValue;
+    let defaultValue = prefillRaw?.toString() ?? settings.DefaultValue;
 
     l.values({ defaultValue });
 

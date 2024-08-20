@@ -5,9 +5,10 @@ import { AsyncPipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FieldState } from '../../field-state';
-import { ScriptsLoaderService, EditRoutingService } from '../../../shared/services';
 import { ConnectorComponent } from '../../connector/connector.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 const logThis = false;
 const nameOfThis = 'ExternalWebComponentComponent';

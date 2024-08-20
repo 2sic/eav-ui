@@ -2,29 +2,30 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { FormConfigService } from '.';
 import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
-import { BestValueModes } from '../constants';
-import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
-import { ItemValuesOfOneLanguage } from '../models';
-import { EavEntity } from '../models/eav/eav-entity';
+import { EntityReader, FieldsSettingsHelpers } from '../../shared/helpers';
+import { ItemValuesOfOneLanguage } from '../../shared/models';
+import { EavEntity } from '../../shared/models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
-import { EavContentType } from '../models/eav/eav-content-type';
+import { EavContentType } from '../../shared/models/eav/eav-content-type';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FormDataService } from './form-data.service';
-import { FormLanguage } from '../models/form-languages.model';
+import { FormDataService } from '../../shared/services/form-data.service';
+import { FormLanguage } from '../../shared/models/form-languages.model';
 import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
 import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { BestValueModes } from '../../localization/localization.constants';
+import { FormConfigService } from './form-config.service';
+import { ItemHelper } from '../../shared/helpers/item.helper';
 
 const logThis = false;
 const nameOfThis = 'EditInitializerService';
@@ -205,7 +206,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const isCreateMode = eavConfig.createMode;
 
     for (const item of items) {
-      const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+      const contentTypeId = ItemHelper.getContentTypeNameId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
 
       for (const ctAttribute of contentType.Attributes) {

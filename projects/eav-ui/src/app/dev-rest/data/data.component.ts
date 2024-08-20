@@ -5,7 +5,6 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
-import { FormConfigService, EntityService, QueryService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -27,6 +26,9 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
 import { EntityBasic } from '../../edit/shared/models/entity-basic';
 import { transient } from '../../core';
+import { FormConfigService } from '../../edit/services/state/form-config.service';
+import { QueryService } from '../../edit/shared/services/query.service';
+import { EntityService } from '../../edit/shared/services/entity.service';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 

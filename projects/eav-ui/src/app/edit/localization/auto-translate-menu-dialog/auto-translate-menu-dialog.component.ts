@@ -2,7 +2,6 @@ import { Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { FormConfigService, FieldsTranslateService } from '../../shared/services';
 import { ItemService, LanguageService } from '../../shared/store/ngrx-data';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { I18nKeys } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
@@ -22,6 +21,8 @@ import { TranslationLink, TranslationLinks } from '../translation-link.constants
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { FieldsTranslateService } from '../../services/state/fields-translate.service';
+import { FormConfigService } from '../../services/state/form-config.service';
 
 @Component({
   selector: 'app-auto-translate-menu-dialog',

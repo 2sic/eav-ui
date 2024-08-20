@@ -2,15 +2,19 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
-import { FormConfigService, QueryService } from '.';
 import { EntityBasic } from '../models/entity-basic';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { FormConfigService } from '../../services/state/form-config.service';
+import { QueryService } from './query.service';
 
 const logThis = false;
 
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
+
+// TODO: @2dg - this is used in /app and other parts too
+// please move to shared/services
 
 @Injectable()
 export class EntityService extends ServiceBase {

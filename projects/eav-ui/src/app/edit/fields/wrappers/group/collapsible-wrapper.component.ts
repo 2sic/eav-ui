@@ -8,10 +8,10 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
-import { FieldsSettingsService } from '../../../shared/services';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { FieldsSettingsService } from '../../../services/state/fields-settings.service';
 
 const logThis = false;
 const nameOfThis = 'CollapsibleWrapperComponent'

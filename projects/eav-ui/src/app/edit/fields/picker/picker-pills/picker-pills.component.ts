@@ -1,5 +1,4 @@
 import { Component, OnDestroy, computed } from '@angular/core';
-import { EditRoutingService } from '../../../shared/services';
 import { MatListModule } from '@angular/material/list';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatRippleModule } from '@angular/material/core';
@@ -9,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { PickerItem } from '../models/picker-item.model';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 @Component({
   selector: 'app-picker-pills',

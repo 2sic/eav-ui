@@ -5,7 +5,6 @@ import { FieldState } from '../../field-state';
 import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { ControlStatus } from '../../../shared/models';
-import { FormConfigService, AdamService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { PagePicker } from '../../page-picker/page-picker.helper';
 import { BaseComponent } from '../../../../shared/components/base.component';
@@ -13,6 +12,10 @@ import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { EditForm } from '../../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
+import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormsStateService } from '../../../services/state/forms-state.service';
+import { AdamService } from '../../../shared/services/adam.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 const logThis = false;
 const nameOfThis = 'HyperlinkDefaultBaseComponent';

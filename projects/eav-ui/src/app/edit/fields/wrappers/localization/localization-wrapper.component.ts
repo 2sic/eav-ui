@@ -1,10 +1,12 @@
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { TranslateMenuComponent } from '../../../fields/wrappers/localization/translate-menu/translate-menu.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../field-state';
+import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormsStateService } from '../../../services/state/forms-state.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 @Component({
   selector: WrappersConstants.LocalizationWrapper,

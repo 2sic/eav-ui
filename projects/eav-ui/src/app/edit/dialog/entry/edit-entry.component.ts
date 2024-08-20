@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { AdamService, EditInitializerService, EntityService, FormConfigService, LoggingService, QueryService, ScriptsLoaderService } from '../../shared/services';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
 import { RouterOutlet } from '@angular/router';
 import { FormDataService } from '../../shared/services/form-data.service';
 import { Context } from '../../../shared/services/context';
+import { EditInitializerService } from '../../services/state/edit-initializer.service';
+import { FormConfigService } from '../../services/state/form-config.service';
+import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
+import { AdamService } from '../../shared/services/adam.service';
+import { LoggingService } from '../../shared/services/logging.service';
+import { EntityService } from '../../shared/services/entity.service';
+import { QueryService } from '../../shared/services/query.service';
 
 /**
  * This component is the entry point for every edit dialog.
@@ -28,7 +34,6 @@ import { Context } from '../../../shared/services/context';
     // 2dm activating...
     Context,              // Form context, such as what app etc. - the same for the entire form
     FormConfigService,    // form configuration valid for this entire form; will be initialized by the EditInitializerService
-    // EavService,
 
     AdamService,          // helper to get files, folders etc.
     ScriptsLoaderService, // for loading external scripts

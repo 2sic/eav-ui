@@ -3,7 +3,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
-import { EditRoutingService, FormsStateService, FieldsSettingsService } from '../../../shared/services';
 import { ContentExpandAnimation } from './content-expand.animation';
 import { PreviewHeight } from './expandable-wrapper.models';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -23,6 +22,9 @@ import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ConnectorHelper } from '../../connector/connector.helper';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
+import { FieldsSettingsService } from '../../../services/state/fields-settings.service';
+import { FormsStateService } from '../../../services/state/forms-state.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 const logThis = false;
 const nameOfThis = 'ExpandableWrapperComponent';

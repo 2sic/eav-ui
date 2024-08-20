@@ -12,7 +12,6 @@ import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
 import { FieldMask } from '../../shared/helpers';
 import { ControlHelpers } from '../../shared/helpers/control.helpers';
-import { FormConfigService, EditRoutingService, AdamService, FieldsSettingsService } from '../../shared/services';
 import { ContentTypeService, InputTypeService } from '../../shared/store/ngrx-data';
 import { FieldState } from '../field-state';
 import { PagePicker } from '../page-picker/page-picker.helper';
@@ -22,6 +21,10 @@ import { openFeatureDialog } from '../../../features/shared/base-feature.compone
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { ServiceBase } from '../../../shared/services/service-base';
+import { FieldsSettingsService } from '../../services/state/fields-settings.service';
+import { FormConfigService } from '../../services/state/form-config.service';
+import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { AdamService } from '../../shared/services/adam.service';
 
 const logThis = false;
 const nameOfThis = 'ConnectorHelper';

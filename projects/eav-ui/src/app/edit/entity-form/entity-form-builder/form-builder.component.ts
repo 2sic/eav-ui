@@ -3,7 +3,6 @@ import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { combineLatest, distinctUntilChanged, filter, map, startWith, take } from 'rxjs';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { ItemValuesOfOneLanguage, SxcAbstractControl } from '../../shared/models';
-import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../shared/services';
 import { AdamCacheService, ItemService } from '../../shared/store/ngrx-data';
 import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
@@ -16,6 +15,10 @@ import { ValidationHelpers } from '../../shared/validation/validation.helpers';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { FieldsSettingsService } from '../../services/state/fields-settings.service';
+import { FieldsTranslateService } from '../../services/state/fields-translate.service';
+import { FormConfigService } from '../../services/state/form-config.service';
+import { FormsStateService } from '../../services/state/forms-state.service';
 
 const logThis = true;
 const nameOfThis = 'FormBuilderComponent';

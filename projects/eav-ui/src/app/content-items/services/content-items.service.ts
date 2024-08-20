@@ -4,11 +4,11 @@ import { Injectable } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { Field } from '../../content-type-fields/models/field.model';
 import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
-import { webApiEntityList, webApiEntityRoot } from '../../edit/shared/services';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
+import { webApiEntityList, webApiEntityRoot } from '../../edit/shared/services/entity.service';
 
 @Injectable()
 export class ContentItemsService {

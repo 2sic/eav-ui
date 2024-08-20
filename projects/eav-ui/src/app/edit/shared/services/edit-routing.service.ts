@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, pairwise, startWith, Subject } from 'rxjs';
-import { FormConfigService } from '.';
+import { filter, map, pairwise, startWith, Subject } from 'rxjs';
 import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
@@ -14,6 +13,7 @@ import { ChildFormResult, NavigateFormResult } from '../models';
 import { LanguageInstanceService } from '../store/ngrx-data';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { FormConfigService } from '../../services/state/form-config.service';
 
 /**
  * Special helper to handle opening / closing field-specific popups.

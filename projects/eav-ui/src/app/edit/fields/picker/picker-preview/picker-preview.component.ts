@@ -1,5 +1,4 @@
 import { Component, OnDestroy, computed } from '@angular/core';
-import { EditRoutingService } from '../../../shared/services';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -15,6 +14,7 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 const logThis = false;
 const nameOfThis = 'PickerPreviewComponent';

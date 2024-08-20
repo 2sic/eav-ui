@@ -9,10 +9,7 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/models/formula.models';
-import { InputFieldHelpers } from '../../../shared/helpers';
-import { FormConfigService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
-// tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
@@ -30,6 +27,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { FormConfigService } from '../../../services/state/form-config.service';
+import { ItemHelper } from '../../../shared/helpers/item.helper';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerComponent';
@@ -221,7 +220,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
     if (formula.sourceId == null) {
       const item = this.itemService.getItem(formula.entityGuid);
-      const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+      const contentTypeId = ItemHelper.getContentTypeNameId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
       const attributeDef = contentType.Attributes.find(a => a.Name === formula.fieldName);
       const atAllFieldSettings = attributeDef.Metadata.find(m => m.Type.Id === '@All');

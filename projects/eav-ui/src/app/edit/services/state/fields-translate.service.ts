@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { FormConfigService, FieldsSettingsService } from '.';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
-import { InputFieldHelpers } from '../helpers';
-import { EavEntityAttributes, EavItem } from '../models/eav';
-import { ContentTypeService, ItemService } from '../store/ngrx-data';
-import { FormLanguage } from '../models/form-languages.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { EavEntityAttributes, EavItem } from '../../shared/models/eav';
+import { FormLanguage } from '../../shared/models/form-languages.model';
+import { ItemService, ContentTypeService } from '../../shared/store/ngrx-data';
+import { FieldsSettingsService } from './fields-settings.service';
+import { FormConfigService } from './form-config.service';
+import { ItemHelper } from '../../shared/helpers/item.helper';
 
 const logThis = false;
 const nameOfThis = 'FieldsTranslateService';
@@ -38,7 +39,7 @@ export class FieldsTranslateService {
     const l = this.log.fn('init');
     this.entityGuid = entityGuid;
     const item = this.itemService.getItem(entityGuid);
-    this.contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+    this.contentTypeId = ItemHelper.getContentTypeNameId(item);
     this.itemAttributes = this.itemService.itemAttributes(entityGuid);
     l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }

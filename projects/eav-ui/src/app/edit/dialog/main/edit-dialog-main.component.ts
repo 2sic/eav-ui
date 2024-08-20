@@ -8,11 +8,9 @@ import { BaseComponent } from '../../../shared/components/base.component';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { MetadataDecorators } from '../../shared/constants';
-import { InputFieldHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
-import { FormConfigService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
@@ -38,6 +36,11 @@ import { transient } from '../../../core';
 import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
+import { FormConfigService } from '../../services/state/form-config.service';
+import { FormsStateService } from '../../services/state/forms-state.service';
+import { ItemHelper } from '../../shared/helpers/item.helper';
+import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { LoadIconsService } from '../../shared/services/load-icons.service';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -219,7 +222,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           // do not try to save item which doesn't have any fields, nothing could have changed about it
           // but enable saving if there is a special metadata
           const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-          const contentTypeId = InputFieldHelpers.getContentTypeNameId(eavItem);
+          const contentTypeId = ItemHelper.getContentTypeNameId(eavItem);
           const contentType = this.contentTypeService.getContentType(contentTypeId);
           const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
           if (!hasAttributes && !saveIfEmpty)

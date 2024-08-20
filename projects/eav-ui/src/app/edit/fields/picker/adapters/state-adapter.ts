@@ -7,11 +7,11 @@ import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { ControlStatus } from '../../../shared/models';
-import { FormConfigService } from '../../../shared/services';
 import { ServiceBase } from '../../../../shared/services/service-base';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { FormConfigService } from '../../../services/state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'StateAdapter';

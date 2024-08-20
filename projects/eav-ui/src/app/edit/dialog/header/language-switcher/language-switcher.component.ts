@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, computed } from '@angular/core';
 import { Language } from '../../../shared/models';
-import { FormConfigService } from '../../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../../shared/store/ngrx-data';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageButtons } from './language-switcher.helpers';
@@ -10,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { FormConfigService } from '../../../services/state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'LanguageSwitcherComponent';

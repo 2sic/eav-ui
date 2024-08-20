@@ -3,10 +3,10 @@ import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants, InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { SxcAbstractControl } from '../models';
-import { FieldsSettingsService } from '../services';
-import { ItemFieldVisibility } from '../services/item-field-visibility';
+import { ItemFieldVisibility } from '../../services/state/item-field-visibility';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
+import { FieldsSettingsService } from '../../services/state/fields-settings.service';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
 export class ValidationHelpers {

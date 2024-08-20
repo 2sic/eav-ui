@@ -5,8 +5,8 @@ import { Injectable, computed, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { QueryStreams } from '../../../shared/models/query-stream.model';
-import { FormConfigService } from '../../../shared/services';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { FormConfigService } from '../../../services/state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'DataSourceQuery';

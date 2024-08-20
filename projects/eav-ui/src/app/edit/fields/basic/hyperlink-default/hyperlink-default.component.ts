@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { FormConfigService, AdamService, EditRoutingService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersConstants } from '../../wrappers/wrappers.constants';
@@ -23,6 +22,10 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
+import { FormConfigService } from '../../../services/state/form-config.service';
+import { FormsStateService } from '../../../services/state/forms-state.service';
+import { AdamService } from '../../../shared/services/adam.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,

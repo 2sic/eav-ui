@@ -1,23 +1,25 @@
 import { computed, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
-import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
 import { FieldLogicTools } from '../../fields/logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-import { ContentTypeSettingsHelpers, InputFieldHelpers } from '../helpers';
-import { FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, TranslationState } from '../models';
-import { ContentTypeItemService, ContentTypeService, GlobalConfigService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
-import { FormsStateService } from './forms-state.service';
+import { ContentTypeSettingsHelpers } from '../../shared/helpers';
+import { FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, TranslationState } from '../../shared/models';
+import { ContentTypeItemService, ContentTypeService, GlobalConfigService, ItemService, LanguageInstanceService } from '../../shared/store/ngrx-data';
 import { ItemFormulaBroadcastService } from '../../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
-import { EavEntityAttributes, EavItem } from '../models/eav';
+import { EavEntityAttributes, EavItem } from '../../shared/models/eav';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FieldSettingsUpdateHelperFactory } from '../helpers/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
 import { transient } from '../../../core';
+import { FormConfigService } from './form-config.service';
+import { FormsStateService } from './forms-state.service';
+import { ItemHelper } from '../../shared/helpers/item.helper';
+import { WrapperHelper } from '../../fields/wrappers/wrapper.helper';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -77,7 +79,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   #contentType = computed(() => {
     if (!this.#item())
       return null;
-    const contentTypeNameId = InputFieldHelpers.getContentTypeNameId(this.#item());
+    const contentTypeNameId = ItemHelper.getContentTypeNameId(this.#item());
     const contentType = this.contentTypeService.getContentType(contentTypeNameId);
     return contentType;
   });
@@ -176,7 +178,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
           for (const [key, value] of Object.entries(fieldsProps))
             value.buildWrappers = isFirstRound
-              ? InputFieldHelpers.getWrappers(value.settings, value.constants.inputCalc)
+              ? WrapperHelper.getWrappers(value.settings, value.constants.inputCalc)
               : this.latestFieldProps[key]?.buildWrappers;
 
           // 5. Update the latest field properties for further cycles

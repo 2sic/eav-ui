@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/materi
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FieldValue, PagePickerResult } from '../../../../../../edit-types';
-import { QueryService } from '../../shared/services';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
 import { PageEntity, PagePickerDialogData, PagePickerViewModel, PageSearchItem, PageTreeItem } from './page-picker.models';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ArrayHelpers } from '../../../shared/helpers/array.helpers';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
+import { QueryService } from '../../shared/services/query.service';
 
 @Component({
   selector: 'app-page-picker',

@@ -1,11 +1,11 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable, Subject, Subscription } from 'rxjs';
-import { FormConfigService } from '.';
-import { FormReadOnly } from '../models';
-import { ItemService, LanguageService } from '../store/ngrx-data';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { FormReadOnly } from '../../shared/models';
+import { ItemService, LanguageService } from '../../shared/store/ngrx-data';
+import { FormConfigService } from './form-config.service';
 
 /**
  * Service to manage the state of forms.

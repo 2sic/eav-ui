@@ -12,11 +12,11 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { ControlStatus } from '../../../shared/models';
-import { ScriptsLoaderService } from '../../../shared/services';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
+import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,

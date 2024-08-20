@@ -14,6 +14,10 @@ const nameOfThis = 'FormDataService';
 
 export const webApiEditRoot = 'cms/edit/';
 
+// TODO: @2dg - this can probably be transient everywhere
+// 1. try to change
+// 2. remove from providers in edit-entry.component.ts
+
 @Injectable()
 export class FormDataService extends ServiceBase {
   constructor(

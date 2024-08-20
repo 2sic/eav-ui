@@ -4,12 +4,12 @@ import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
-import { FormConfigService } from '../../../shared/services';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FieldState } from '../../field-state';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { FormConfigService } from '../../../services/state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'DropzoneWrapperComponent';

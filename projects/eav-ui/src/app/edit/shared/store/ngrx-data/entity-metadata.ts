@@ -3,7 +3,6 @@ import { InputType } from '../../../../content-type-fields/models/input-type.mod
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
 import { AdamSnapshot, Language, FormLanguageInStore, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
-import { IdentityUpperCaseId } from '../../models/identity-upper-case-id';
 import { Feature } from '../../../../features/models/feature.model';
 
 export const entityMetadata: EntityMetadataMap = {

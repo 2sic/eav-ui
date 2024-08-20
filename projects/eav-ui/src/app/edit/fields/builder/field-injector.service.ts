@@ -1,7 +1,7 @@
 import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
 import { FieldSettings } from './../../../../../../edit-types/src/FieldSettings';
 import { EnvironmentInjector, Injectable, Injector, Signal, computed, createEnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
-import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
+import { FieldsSettingsService } from '../../services/state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { CalculatedInputType, ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models';

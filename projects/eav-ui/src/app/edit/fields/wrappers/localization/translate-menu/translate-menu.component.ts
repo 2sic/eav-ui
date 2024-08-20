@@ -2,7 +2,6 @@ import { Component, inject, Input, OnInit, ViewContainerRef } from '@angular/cor
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
 import { TranslationState } from '../../../../shared/models';
-import { FormConfigService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { AutoTranslateDisabledWarningDialog } from '../../../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -21,6 +20,10 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
 import { mapUntilChanged } from '../../../../../shared/rxJs/mapUntilChanged';
 import { FieldState } from '../../../field-state';
 import { TranslationLinks } from '../../../../localization/translation-link.constants';
+import { FieldsSettingsService } from '../../../../services/state/fields-settings.service';
+import { FieldsTranslateService } from '../../../../services/state/fields-translate.service';
+import { FormConfigService } from '../../../../services/state/form-config.service';
+import { FormsStateService } from '../../../../services/state/forms-state.service';
 
 @Component({
   selector: 'app-translate-menu',

@@ -1,9 +1,9 @@
 import { FieldValue } from '../../../../../edit-types';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { BestValueMode, BestValueModes } from '../shared/constants';
 import { ItemValuesOfOneLanguage } from '../shared/models';
 import { EavDimension, EavEntityAttributes, EavValue, EavField } from '../shared/models/eav';
 import { FormLanguage } from '../shared/models/form-languages.model';
+import { BestValueMode, BestValueModes } from './localization.constants';
 
 const logThis = false;
 const nameOfThis = 'LocalizationHelpers';

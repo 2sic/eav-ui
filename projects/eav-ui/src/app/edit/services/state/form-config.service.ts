@@ -3,10 +3,10 @@ import { DialogContext } from '../../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
 import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
-import { FormConfiguration, VersioningOptions } from '../models';
-import { FormLanguageComplete, FormLanguagesConfig } from '../models/form-languages.model';
+import { FormConfiguration, VersioningOptions } from '../../shared/models';
+import { FormLanguageComplete, FormLanguagesConfig } from '../../shared/models/form-languages.model';
 import { Observable } from 'rxjs';
-import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
+import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { toSignal } from '@angular/core/rxjs-interop';
 

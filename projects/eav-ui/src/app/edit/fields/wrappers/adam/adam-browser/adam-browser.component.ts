@@ -8,7 +8,6 @@ import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../..
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamBrowserViewModel, AdamConfigInstance } from './adam-browser.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,6 +25,10 @@ import { EavLogger } from '../../../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../../../shared/rxJs/mapUntilChanged';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
+import { FieldsSettingsService } from '../../../../services/state/fields-settings.service';
+import { FormsStateService } from '../../../../services/state/forms-state.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { AdamService } from '../../../../shared/services/adam.service';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';

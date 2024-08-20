@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
-import { FormConfigService } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
-import { EntityReader, FieldsSettingsHelpers } from '../helpers';
-import { FieldConstants, FieldConstantsOfLanguage } from '../models';
-import { InputTypeService } from '../store/ngrx-data';
-import { ItemFieldVisibility } from './item-field-visibility';
-import { EavContentType, EavItem } from '../models/eav';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FormLanguageComplete } from '../models/form-languages.model';
+import { EntityReader, FieldsSettingsHelpers } from '../../shared/helpers';
+import { FieldConstants, FieldConstantsOfLanguage } from '../../shared/models';
+import { EavItem, EavContentType } from '../../shared/models/eav';
+import { FormLanguageComplete } from '../../shared/models/form-languages.model';
+import { InputTypeService } from '../../shared/store/ngrx-data';
+import { FormConfigService } from './form-config.service';
+import { ItemFieldVisibility } from './item-field-visibility';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsConstantsService';

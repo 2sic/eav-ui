@@ -1,10 +1,10 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { delay, distinctUntilChanged, filter, fromEvent, map, merge, pairwise, tap } from 'rxjs';
-import { FormConfigService } from '../../shared/services';
-import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
+import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
+import { LanguageService } from '../../shared/store/ngrx-data';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { FormConfigService } from '../../services/state/form-config.service';
 
 const logThis = false;
 const nameOfThis = 'FormSlideDirective';

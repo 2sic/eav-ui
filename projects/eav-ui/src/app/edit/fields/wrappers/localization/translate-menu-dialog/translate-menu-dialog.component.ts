@@ -1,7 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { FormConfigService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../../../../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { I18nKeys } from './translate-menu-dialog.constants';
@@ -15,6 +14,8 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
+import { FieldsTranslateService } from '../../../../services/state/fields-translate.service';
+import { FormConfigService } from '../../../../services/state/form-config.service';
 
 @Component({
   selector: 'app-translate-menu-dialog',

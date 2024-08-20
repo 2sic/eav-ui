@@ -3,10 +3,10 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
-import { EditRoutingService } from '../../shared/services';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { transient } from '../../../core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { EditRoutingService } from '../../shared/services/edit-routing.service';
 
 const logThis = false;
 const nameOfThis = 'PickerComponent';

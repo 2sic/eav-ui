@@ -16,10 +16,10 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { FormConfigService } from '../edit/shared/services';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { transient } from '../core';
+import { FormConfigService } from '../edit/services/state/form-config.service';
 
 @Component({
   selector: 'app-manage-content-list',

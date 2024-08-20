@@ -1,10 +1,8 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
-import { FieldValue } from '../../../../../edit-types';
-import { FieldsSettingsService } from '../shared/services';
 import { ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
-import { FormulaTarget, FormulaTargets } from './models/formula.models';
-import { FormulaResult, DesignerState } from './models/formula-results.models';
+import { FormulaTargets } from './models/formula.models';
+import { DesignerState } from './models/formula-results.models';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
@@ -13,6 +11,7 @@ import { FormulaTargetsService } from './formula-targets.service';
 import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
 import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 import { FormulaCacheService } from './formula-cache.service';
+import { FieldsSettingsService } from '../services/state/fields-settings.service';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerService';

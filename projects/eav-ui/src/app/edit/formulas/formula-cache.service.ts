@@ -2,10 +2,9 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers, InputFieldHelpers } from '../shared/helpers';
+import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
-import { FormConfigService, LoggingService } from '../shared/services';
 import { ContentTypeItemService, ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
@@ -15,6 +14,9 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaDesignerService } from './formula-designer.service';
 import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FormConfigService } from '../services/state/form-config.service';
+import { ItemHelper } from '../shared/helpers/item.helper';
+import { LoggingService } from '../shared/services/logging.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaCacheService';
@@ -69,7 +71,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
       const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);
 
-      const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+      const contentTypeId = ItemHelper.getContentTypeNameId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
       for (const attribute of contentType.Attributes) {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
@@ -324,7 +326,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
       } catch (error) {
         this.cacheResults({entityGuid, fieldName, target} satisfies FormulaIdentifier, undefined, true, false);
         const item = this.itemService.getItem(entityGuid);
-        const contentTypeId = InputFieldHelpers.getContentTypeNameId(item);
+        const contentTypeId = ItemHelper.getContentTypeNameId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
         const language = this.formConfig.language();
         const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
