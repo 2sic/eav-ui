@@ -1,11 +1,12 @@
 import { Signal } from '@angular/core';
-import { LocalizationHelpers, ValidationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
+import { FieldLogicTools } from '../../fields/logic/field-logic-tools';
 import { MetadataDecorators } from '../constants';
 import { FieldConstantsOfLanguage } from '../models';
 import { EavContentTypeAttribute, EavEntity, EavField } from '../models/eav';
 import { FormLanguage } from '../models/form-languages.model';
+import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { ValidationHelpers } from '../validation/validation.helpers';
 
 export class FieldSettingsUpdateHelperFactory {
   constructor(

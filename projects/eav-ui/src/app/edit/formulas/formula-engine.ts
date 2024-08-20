@@ -1,6 +1,5 @@
 import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings, FieldValue, PickerItem } from 'projects/edit-types';
 import { FeaturesService } from '../../shared/services/features.service';
 import { ContentTypeSettings, FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, LogSeverities } from '../shared/models';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
@@ -22,6 +21,9 @@ import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../
 import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
 import { FieldsSettingsHelpers } from '../shared/helpers/fields-settings.helpers';
 import { FormLanguage } from '../shared/models/form-languages.model';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
+import { PickerItem } from '../fields/picker/models/picker-item.model';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 
 const logThis = false;
 const nameOfThis = 'FormulaEngine';

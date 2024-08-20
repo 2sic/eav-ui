@@ -1,8 +1,8 @@
-import { FieldValue } from 'projects/edit-types';
 import { InputFieldHelpers } from '../../shared/helpers';
 import { FormulaV1Data, FormulaTargets, SettingsFormulaPrefix, FormulaFieldValidation } from '../models/formula.models';
 import { FormulaHelpers } from './formula.helpers';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export class FormulaDataObject implements FormulaV1Data {
   /** Private variable containing the data used in the getters */

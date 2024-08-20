@@ -2,8 +2,8 @@ import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
-import { WrappersConstant, WrappersConstants } from '../constants/wrappers.constants';
+import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
+import { WrappersConstant, WrappersConstants } from '../../fields/wrappers/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavItem } from '../models/eav';
 

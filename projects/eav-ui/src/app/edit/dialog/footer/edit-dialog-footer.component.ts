@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, QueryList } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
-import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
+import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 import { LogsDumpComponent } from './logs-dump/logs-dump.component';
 import { FormulaDesignerComponent } from './formula-designer/formula-designer.component';

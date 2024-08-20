@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { PublishMode, PublishModes, PublishStatus } from '../../models';
 import { FormConfigService } from '../../services';
 import { BaseDataService } from './base-data.service';
-import { mapUntilObjChanged } from 'projects/eav-ui/src/app/shared/rxJs/mapUntilChanged';
+import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends BaseDataService<PublishStatus> {

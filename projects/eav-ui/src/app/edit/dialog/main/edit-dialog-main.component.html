@@ -20,7 +20,7 @@
               <div class="eav-layout-grid__cell--span-12" appFormSlide>
                 @for (item of vm.items; track trackByFn($index, item)) {
                   <div>
-                    <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
+                    <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
                   </div>
                 }
               </div>

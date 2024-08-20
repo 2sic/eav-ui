@@ -5,10 +5,10 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith } from 'rxjs';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
+import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { MetadataDecorators } from '../../shared/constants';
-import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
+import { InputFieldHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
@@ -21,7 +21,6 @@ import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-s
 import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
 import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
@@ -30,13 +29,15 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { PickerTreeDataHelper } from '../../form/fields/picker/picker-tree/picker-tree-data-helper';
 import { FormDataService } from '../../shared/services/form-data.service';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { SourceService } from '../../../code-editor/services/source.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
+import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
+import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
+import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -53,7 +54,7 @@ const nameOfThis = 'EditDialogMainComponent';
     EditDialogHeaderComponent,
     CdkScrollable,
     FormSlideDirective,
-    FormBuilderComponent,
+    EntityFormBuilderComponent,
     MatRippleModule,
     MatIconModule,
     EditDialogFooterComponent,
@@ -74,18 +75,17 @@ const nameOfThis = 'EditDialogMainComponent';
   ],
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
+  @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
   viewModel$: Observable<EditDialogMainViewModel>;
 
   private viewInitiated$ = new BehaviorSubject(false);
   private saveResult: SaveResult;
 
-  private loadIconsService = transient(LoadIconsService);
   private globalConfigService = inject(GlobalConfigService);
-
-
   private formConfig = inject(FormConfigService);
+  
+  private loadIconsService = transient(LoadIconsService);
 
   /** Signal to determine if we should show the footer */
   protected showFooter = computed(() => {

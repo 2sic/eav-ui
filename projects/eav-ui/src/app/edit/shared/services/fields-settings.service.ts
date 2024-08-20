@@ -2,7 +2,7 @@ import { computed, inject, Injectable, OnDestroy, signal, Signal } from '@angula
 import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings, PickerItem } from '../../../../../../edit-types';
-import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
+import { FieldLogicTools } from '../../fields/logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
 import { ContentTypeSettingsHelpers, InputFieldHelpers } from '../helpers';
 import { FieldConstantsOfLanguage, FieldsProps, ItemValuesOfOneLanguage, TranslationState } from '../models';

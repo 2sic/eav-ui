@@ -27,9 +27,9 @@ import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
-import { transient } from 'projects/eav-ui/src/app/core';
-import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { transient } from '../../../../core/transient';
+import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logThis = true;
 const nameOfThis = 'FormulaDesignerComponent';

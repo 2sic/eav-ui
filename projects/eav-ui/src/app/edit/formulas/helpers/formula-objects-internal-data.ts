@@ -6,9 +6,9 @@ import { FormConfigService, FieldsSettingsService } from '../../shared/services'
 import { ItemService } from '../../shared/store/ngrx-data';
 import { FormulaCacheItem } from '../models/formula.models';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
-import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-import { PickerItem } from '../../form/fields/picker/models/picker-item.model';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 /** Everything a formula needs to run */
 export interface FormulaRunParameters {

@@ -1,8 +1,8 @@
-import { FieldSettings } from 'projects/edit-types';
 import { ItemValuesOfOneLanguage } from '../../shared/models';
 import { FormulaV1Experimental, FormulaV1ExperimentalEntity } from '../models/formula.models';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
-import { LocalizationHelpers } from '../../shared/helpers/localization.helpers';
+import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 export class FormulaExperimentalObject implements FormulaV1Experimental {
 

@@ -1,5 +1,5 @@
 import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
-import { LocalizationHelpers } from './localization.helpers';
+import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FormLanguage } from '../models/form-languages.model';
 import { ItemValuesOfOneLanguage } from '../models/form-values.model';
 

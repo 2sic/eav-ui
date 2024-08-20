@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
 import { TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { EmptyFieldHelpers } from '../form/fields/empty/empty-field-helpers';
 import { InputFieldHelpers } from '../shared/helpers/input-field.helpers';
 import { DesignerState } from './models/formula-results.models';
 import { FormulaCacheItem, FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './models/formula.models';
 import { ContentTypeService, ItemService } from '../shared/store/ngrx-data';
+import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
 
 /**
  * Small helper service to get the target options for the formula designer.

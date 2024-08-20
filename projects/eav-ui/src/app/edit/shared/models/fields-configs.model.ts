@@ -2,8 +2,8 @@ import { CalculatedInputType } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
-import { FieldLogicBase } from '../../form/shared/field-logic/field-logic-base';
-import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
+import { FieldLogicBase } from '../../fields/logic/field-logic-base';
+import { TranslationStateCore } from '../../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { FormulaFieldValidation } from '../../formulas/models/formula.models';
 
 export interface FieldsProps extends Record<string, FieldProps> { };

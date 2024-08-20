@@ -4,12 +4,13 @@ import { tap } from 'rxjs';
 import { FormConfigService, FieldsSettingsService } from '.';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
-import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
-import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
+import { InputFieldHelpers } from '../helpers';
 import { EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService, ItemService } from '../store/ngrx-data';
 import { FormLanguage } from '../models/form-languages.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { LocalizationHelpers } from '../../localization/localization.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsTranslateService';

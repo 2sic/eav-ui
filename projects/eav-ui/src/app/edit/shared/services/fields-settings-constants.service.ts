@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import { FormConfigService } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
-import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
+import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { EntityReader, FieldsSettingsHelpers } from '../helpers';
 import { FieldConstants, FieldConstantsOfLanguage } from '../models';
 import { InputTypeService } from '../store/ngrx-data';

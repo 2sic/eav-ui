@@ -1,10 +1,10 @@
 import { EntityMetadataMap } from '@ngrx/data';
-import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
 import { AdamSnapshot, Language, FormLanguageInStore, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 import { IdentityUpperCaseId } from '../../models/identity-upper-case-id';
+import { Feature } from '../../../../features/models/feature.model';
 
 export const entityMetadata: EntityMetadataMap = {
   GlobalConfig: {},

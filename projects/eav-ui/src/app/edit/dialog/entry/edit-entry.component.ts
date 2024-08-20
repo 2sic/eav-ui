@@ -15,7 +15,6 @@ import { Context } from '../../../shared/services/context';
 @Component({
   selector: 'app-edit-entry',
   templateUrl: './edit-entry.component.html',
-  styleUrls: ['./edit-entry.component.scss'],
   standalone: true,
   imports: [
     RouterOutlet,

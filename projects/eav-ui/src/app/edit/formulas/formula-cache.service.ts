@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
+import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers, InputFieldHelpers } from '../shared/helpers';
 import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { FormConfigService, LoggingService } from '../shared/services';
@@ -14,6 +14,7 @@ import { FormulaResult, DesignerState, FormulaResultRaw, FormulaIdentifier } fro
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaDesignerService } from './formula-designer.service';
+import { LocalizationHelpers } from '../localization/localization.helpers';
 
 const logThis = false;
 const nameOfThis = 'FormulaCacheService';

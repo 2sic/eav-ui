@@ -8,8 +8,8 @@ import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
-import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logThis = false;
 const nameOfThis = 'LanguageSwitcherComponent';

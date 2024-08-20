@@ -10,20 +10,21 @@ import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-d
 import { EavEditLoadDto } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants';
-import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers } from '../helpers';
 import { ItemValuesOfOneLanguage } from '../models';
 import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
-import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
-import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
+import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { EavContentType } from '../models/eav/eav-content-type';
-import { PickerDataCacheService } from '../../form/fields/picker/cache/picker-data-cache.service';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FormDataService } from './form-data.service';
 import { FormLanguage } from '../models/form-languages.model';
+import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
+import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
+import { LocalizationHelpers } from '../../localization/localization.helpers';
 
 const logThis = false;
 const nameOfThis = 'EditInitializerService';
@@ -142,7 +143,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     };
     this.formConfig.initFormConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 
-    var langs = loadDto.Context.Language; // this.formConfig.languages;
+    var langs = loadDto.Context.Language;
     // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
     const isoLangCode = langs.Current.split('-')[0];
     this.translate.use(isoLangCode);
@@ -167,7 +168,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   private keepInitialValues(): void {
     const items = this.itemService.getItems(this.formConfig.config.itemGuids);
     const allLangs = this.languageService.getLanguages().map(language => language.NameId);
-    const language = this.formConfig.language();// this.languageStore.getLanguage(this.formConfig.config.formId);
+    const language = this.formConfig.language();
     if (!allLangs.includes(language.current)) allLangs.push(language.current);
     if (!allLangs.includes(language.primary)) allLangs.push(language.primary);
 
