@@ -6,7 +6,7 @@ import { CopilotSpecs } from '../copilot/copilot-specs';
 
 export const AppAdminMenu: NavItem[] = [
 
-  { name: 'Info', path: 'home', icon: 'info', svgIcon: false, tippy: 'App Info' },
+  { name: 'App Info', path: 'home', icon: 'info', svgIcon: false, tippy: 'App Info' },
   {
     name: 'Data', path: `data/${eavConstants.scopes.default.value}`, icon: 'menu', svgIcon: false, tippy: 'Data / Content',
     child: [
@@ -60,7 +60,9 @@ export const AppAdminMenu: NavItem[] = [
       {
         name: 'Export App',
         path: 'export-app',
-        icon: 'cloud_download',
+        // icon: 'browser_updated',
+        // 2dm: note that I would prefer this icon, but we would first have to switch to Material Symbols
+        icon: 'deployed_code_update',
         svgIcon: false,
         tippy: 'Export this entire App'
       },
@@ -79,9 +81,9 @@ export const AppAdminMenu: NavItem[] = [
         tippy: 'Import parts of this App'
       },
       {
-        name: 'App-State',
+        name: 'App-State Git Sync',
         path: 'app-state',
-        icon: 'history_toggle_off',
+        icon: 'sync',
         svgIcon: false,
         tippy: 'App-State Versioning'
       },
