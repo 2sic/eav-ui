@@ -1,13 +1,10 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { Component, computed, HostBinding, model, OnInit, signal } from '@angular/core';
+import { MatDialogActions } from '@angular/material/dialog';
 import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { transient } from '../../../core';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -17,51 +14,32 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./export-app.component.scss'],
   standalone: true,
   imports: [
-    MatProgressSpinnerModule,
     MatCheckboxModule,
     FormsModule,
     MatDialogActions,
     MatButtonModule,
-    AsyncPipe,
     MatIconModule,
   ],
 })
-export class ExportAppComponent implements OnInit, OnDestroy {
-  @HostBinding('className') hostClass = 'dialog-component';
+export class ExportAppComponent implements OnInit {
 
   private exportAppService = transient(ExportAppService);
 
-  includeContentGroups = false;
-  resetAppGuid = false;
-  assetsAdam = false;
-  assetsSite = false;
-
-  private appInfo$ = new BehaviorSubject<AppInfo>(null);
-  private isExporting$ = new BehaviorSubject(false);
-  viewModel$ = combineLatest([this.appInfo$, this.isExporting$]).pipe(
-    map(([appInfo, isExporting]) => ({ appInfo, isExporting })),
-  );
-
-  constructor() { }
+  appInfo = signal<AppInfo>(null);
 
   ngOnInit() {
-    this.exportAppService.getAppInfo().subscribe(appInfo => {
-      this.appInfo$.next(appInfo);
-    });
+    this.exportAppService.getAppInfo().subscribe(appInfo => this.appInfo.set(appInfo));
   }
 
-  ngOnDestroy() {
-    this.appInfo$.complete();
-    this.isExporting$.complete();
-  }
+  // Use Signals
+  includeContentGroups = model(false);
+  resetAppGuid = model(false);
+  assetsAdam = model(true);
+  assetsSite = model(true);
 
-  exportApp() {
-    this.isExporting$.next(true);
-    this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid, this.assetsAdam, this.assetsSite);
-    this.includeContentGroups = false;
-    this.resetAppGuid = false;
-    this.assetsAdam = false;
-    this.assetsSite = false;
-    this.isExporting$.next(false);
-  }
+  downloadUrl = computed(() => this.exportAppService.exportAppUrl()
+   + `&includeContentGroups=${this.includeContentGroups()}&resetAppGuid=${this.resetAppGuid()}`
+   + `&assetsAdam=${this.assetsAdam()}&assetsSite=${this.assetsSite()}`
+  );
+
 }
