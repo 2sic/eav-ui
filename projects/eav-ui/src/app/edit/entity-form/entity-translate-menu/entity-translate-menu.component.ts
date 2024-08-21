@@ -47,8 +47,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
-   // TODO:: @2dg Question
-  protected slotIsEmpty!: Signal<ItemIdentifierHeader>;
+  protected slotIsEmpty!: Signal<boolean>;
 
   constructor(
     private dialog: MatDialog,
@@ -60,21 +59,12 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // this.slotIsEmpty = computed(() => {
-    //   const headerSig = this.itemService.getItemHeaderSignal(this.entityGuid)();
-    //   return !headerSig.IsEmptyAllowed ? false : headerSig.IsEmpty;
-    // });
+    this.slotIsEmpty = this.itemService.slotIsEmpty(this.entityGuid);
 
-
-    const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
-      map(header => !header.IsEmptyAllowed ? false : header.IsEmpty),
-    );
-
-    this.viewModel$ = combineLatest([slotIsEmpty$, this.eavService.language$]).pipe(
-      map(([slotIsEmpty, lang]) => {
+    this.viewModel$ = combineLatest([this.eavService.language$]).pipe(
+      map(([lang]) => {
         const viewModel: EntityTranslateMenuViewModel = {
           ...lang,
-          slotIsEmpty,
         };
         return viewModel;
       }),

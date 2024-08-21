@@ -2,7 +2,7 @@
 @if (viewModel$ | async; as vm) {
   @if (vm.current !== vm.primary) {
     <div fxLayoutAlign="end center">
-      <button mat-button fxLayoutAlign="end center" [disabled]="readOnly().isReadOnly || vm.slotIsEmpty"
+      <button mat-button fxLayoutAlign="end center" [disabled]="readOnly().isReadOnly || slotIsEmpty()"
         [matMenuTriggerFor]="menu">
         <span fxLayoutAlign="end center">
           {{ 'LangMenu.Translate' | translate | uppercase }}

@@ -1,8 +1,7 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { Component, computed, EventEmitter, inject, Input, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
-import { EditDialogHeaderViewModel } from './edit-dialog-header.models';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
@@ -30,16 +29,19 @@ import { FormsStateService } from '../../state/forms-state.service';
     TippyDirective,
   ],
 })
-export class EditDialogHeaderComponent implements OnInit {
+export class EditDialogHeaderComponent {
   @Input() disabled: boolean;
   @Output() private closeDialog = new EventEmitter<null>();
-
-  viewModel$: Observable<EditDialogHeaderViewModel>;
 
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
   protected publishMode = this.publishStatusService.getPublishModeSignal(this.formConfig.config.formId)
+
+  protected hasLanguages = computed(() => {
+    const languages = this.languageService.getLanguagesSig();
+    return languages().length > 0
+  });
 
   constructor(
     private dialog: MatDialog,
@@ -47,23 +49,7 @@ export class EditDialogHeaderComponent implements OnInit {
     private languageService: LanguageService,
     private publishStatusService: PublishStatusService,
     public formConfig: FormConfigService,
-
   ) { }
-
-  ngOnInit() {
-
-    // TODO:: @2dg Question, refactor store and then this getLanguages Signal ?
-    const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
-
-    this.viewModel$ = combineLatest([hasLanguages$]).pipe(
-      map(([hasLanguages]) => {
-        const viewModel: EditDialogHeaderViewModel = {
-          hasLanguages,
-        };
-        return viewModel;
-      }),
-    );
-  }
 
   close() {
     this.closeDialog.emit();
