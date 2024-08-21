@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { TranslationState } from '../../state/fields-configs.model';
@@ -43,26 +43,26 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   translationState: TranslationState;
   private subscription: Subscription;
 
+  private formsStateService = inject(FormsStateService);
+  protected readOnly = this.formsStateService.readOnly;
+
   constructor(
     private dialog: MatDialog,
     private itemService: ItemService,
     private eavService: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
-    private formsStateService: FormsStateService,
     private viewContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
-    const readOnly$ = this.formsStateService.readOnly$;
     const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
       map(header => !header.IsEmptyAllowed ? false : header.IsEmpty),
     );
-    this.viewModel$ = combineLatest([readOnly$, slotIsEmpty$, this.eavService.language$]).pipe(
-      map(([readOnly, slotIsEmpty, lang]) => {
+    this.viewModel$ = combineLatest([slotIsEmpty$, this.eavService.language$]).pipe(
+      map(([slotIsEmpty, lang]) => {
         const viewModel: EntityTranslateMenuViewModel = {
           ...lang,
-          readOnly: readOnly.isReadOnly,
           slotIsEmpty,
         };
         return viewModel;
