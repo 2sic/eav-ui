@@ -319,6 +319,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     );
   }
 
+  getTranslationStateSignal(fieldName: string): Signal<TranslationState> {
+    const cached = this.signalsTransStateCache[fieldName];
+    if (cached) return cached;
+    var obs = this.getTranslationState$(fieldName);
+    return this.signalsTransStateCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsTransStateCache: Record<string, Signal<TranslationState>> = {};
+
   /**
    * Triggers a reevaluation of all formulas.
    */

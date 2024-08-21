@@ -10,7 +10,7 @@ const logThis = false;
 
 // TODO: @2dg also try to use transient only - should be possible
 // data.component is use in providers
-// edit-entry.component is use in providers
+// TODO:: @2dg Question edit-entry.component is use in providers
 
 @Injectable()
 export class QueryService extends ServiceBase {
@@ -20,7 +20,7 @@ export class QueryService extends ServiceBase {
   }
 
   getAvailableEntities(queryUrl: string, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
-    this.log.a('getAvailableEntities', {queryUrl, params, fields, entitiesFilter});
+    this.log.a('getAvailableEntities', { queryUrl, params, fields, entitiesFilter });
     // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
     const hasParams = !!params;
     const paramsLower = params?.toLocaleLowerCase() ?? '';
@@ -39,7 +39,7 @@ export class QueryService extends ServiceBase {
   }
 
   getEntities({ contentTypes, itemIds, fields, log }: { contentTypes: string[]; itemIds: string[]; fields: string; log: string }): Observable<QueryStreams> {
-    this.log.a(`getEntities(${log})`, {contentTypes, itemIds, fields});
+    this.log.a(`getEntities(${log})`, { contentTypes, itemIds, fields });
     const allParams =
       '&typeNames=' + (contentTypes?.join(',') ?? '')
       + `&appId=${this.context.appId}`

@@ -14,7 +14,7 @@ export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
 
 // TODO: @2dg also try to use transient only - should be possible
-// Only in EditEntryComponent are in the providers
+ // TODO:: @2dg Question Only in EditEntryComponent are in the providers
 @Injectable()
 export class EntityService extends ServiceBase {
   constructor(private http: HttpClient,

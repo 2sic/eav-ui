@@ -8,7 +8,5 @@ export interface TranslationStateCore {
 }
 
 export interface TranslateMenuViewModel extends FormLanguage {
-  translationState: TranslationState;
-  translationStateClass: string;
   disabled: boolean;
 }

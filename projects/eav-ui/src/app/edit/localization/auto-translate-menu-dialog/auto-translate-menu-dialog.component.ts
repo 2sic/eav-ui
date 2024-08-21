@@ -84,6 +84,8 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
     const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
+
+    // TODO:: @2dg Question Languages as Signal
     const languages$ = combineLatest([
       this.languageService.getLanguages$(),
       this.formConfig.language$,

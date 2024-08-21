@@ -83,9 +83,17 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
     return this.cache$.pipe(
       map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.hideHeader),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
   }
+
+  getHideHeaderSignal(formId: number): Signal<boolean> {
+    const cached = this.signalsHideHeaderCache[formId];
+    if (cached) return cached;
+    var obs = this.getHideHeader$(formId);
+    return this.signalsHideHeaderCache[formId] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsHideHeaderCache: Record<number, Signal<boolean>> = {};
+
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
   updateHideHeader(formId: number, hideHeader: boolean): void {

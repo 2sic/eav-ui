@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, Input, OnDestroy, OnInit, Signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { TranslationState } from '../../state/fields-configs.model';
@@ -18,6 +18,7 @@ import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
+import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 
 @Component({
   selector: 'app-entity-translate-menu',
@@ -46,6 +47,9 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
+   // TODO:: @2dg Question
+  protected slotIsEmpty!: Signal<ItemIdentifierHeader>;
+
   constructor(
     private dialog: MatDialog,
     private itemService: ItemService,
@@ -56,9 +60,16 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    // this.slotIsEmpty = computed(() => {
+    //   const headerSig = this.itemService.getItemHeaderSignal(this.entityGuid)();
+    //   return !headerSig.IsEmptyAllowed ? false : headerSig.IsEmpty;
+    // });
+
+
     const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
       map(header => !header.IsEmptyAllowed ? false : header.IsEmpty),
     );
+
     this.viewModel$ = combineLatest([slotIsEmpty$, this.eavService.language$]).pipe(
       map(([slotIsEmpty, lang]) => {
         const viewModel: EntityTranslateMenuViewModel = {

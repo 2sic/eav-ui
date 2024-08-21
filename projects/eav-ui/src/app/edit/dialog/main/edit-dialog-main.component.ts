@@ -42,6 +42,7 @@ import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -92,6 +93,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
+  protected hideHeader = this.languageStore.getHideHeaderSignal(this.formConfig.config.formId);;
 
   private loadIconsService = transient(LoadIconsService);
   private formDataService = transient(FormDataService);
@@ -114,6 +116,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Signal to tell the UI that the footer needs more space (changes CSS) */
   expandDebugFooter = signal(false);
+
+  protected delayForm = toSignal(
+    of(false).pipe(
+      delay(0),
+      startWith(true)
+    ));
 
 
   constructor(
@@ -144,21 +152,16 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.formsStateService.init();
     this.formulaDesignerService.init();
     /** Small delay to make form opening feel smoother. */
-    const delayForm$ = of(false).pipe(delay(0), startWith(true));
-    const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
 
+    // TODO:: @2g Question viewInitiated
     this.viewModel$ = combineLatest([
-      combineLatest([delayForm$, this.viewInitiated$]),
-      combineLatest([hideHeader$]),
+      combineLatest([this.viewInitiated$]),
     ]).pipe(
       map(([
-        [delayForm, viewInitiated],
-        [hideHeader],
+        [viewInitiated],
       ]) => {
         const viewModel: EditDialogMainViewModel = {
-          delayForm,
           viewInitiated,
-          hideHeader,
         };
         return viewModel;
       }),

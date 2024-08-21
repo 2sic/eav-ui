@@ -17,13 +17,13 @@ export const webApiEditRoot = 'cms/edit/';
 
 /**
  * Service which tell us about a single edit-form configuration.
- * 
+ *
  * Things such as language, IDs shown on it, edit-settings etc.
  */
 @Injectable()
 export class FormConfigService {
   /** no constructor */
-  constructor() {}
+  constructor() { }
 
   log = new EavLogger(nameOfThis, logThis);
 
@@ -110,7 +110,7 @@ export class FormConfigService {
   ): VersioningOptions {
 
     const allowAll: VersioningOptions = { show: true, hide: true, branch: true };
-    
+
     if (!partOfPage)
       return allowAll;
 
@@ -135,6 +135,7 @@ export class FormConfigService {
   /**
    * Get the language observable for the form - it will keep track of the current language as it changes.
    * TODO: try to use the signal as much as possible
+    // TODO:: @2dg Question Languages as Signal
    */
   get language$(): Observable<FormLanguageComplete> {
     return this._language$ ??= this.languageService.getLanguage$(this.config.formId);

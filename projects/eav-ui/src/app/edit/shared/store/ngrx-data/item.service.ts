@@ -268,6 +268,15 @@ export class ItemService extends BaseDataService<EavItem> {
     );
   }
 
+  getItemHeaderSignal(entityGuid: string): Signal<ItemIdentifierHeader> {
+    const cached = this.signalsItemHeaderCache[entityGuid];
+    if (cached) return cached;
+    var obs = this.getItemHeader$(entityGuid);
+    return this.signalsItemHeaderCache[entityGuid] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsItemHeaderCache: Record<string, Signal<ItemIdentifierHeader>> = {};
+
+
   slotIsEmpty(entityGuid: string): Signal<boolean> {
     // prepare signal before creating computed so it doesn't get recreated
     const itemHeader = this.item(entityGuid);

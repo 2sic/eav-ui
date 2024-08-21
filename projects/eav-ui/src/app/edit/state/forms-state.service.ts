@@ -23,7 +23,6 @@ export class FormsStateService implements OnDestroy {
   saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
 
   // Old observables being changed to signals
-  // TODO: @2dg - change all components to use signals
   readOnly$ = toObservable(this.readOnly);
 
   private formsValid: Record<string, boolean>;

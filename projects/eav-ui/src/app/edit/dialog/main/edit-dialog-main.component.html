@@ -1,7 +1,7 @@
 <!-- TODO_(mdc-migration) -->
 @if (viewModel$ | async; as vm) {
 <div style="position: relative" mat-dialog__container appToggleDebug>
-  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': vm.hideHeader }">
+  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': hideHeader() }">
     <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!formsValid()"
       (closeDialog)="closeDialog()">
     </app-edit-dialog-header>
@@ -12,11 +12,11 @@
     <div mat-mdc-dialog-content cdkScrollable class="eav-dialog-content u-hide-scrollbar" [ngClass]="{
         'debug-enabled': showFooter(),
         'debug-info-is-open': showFooter() && expandDebugFooter(),
-        'hide-header-height-fix': vm.hideHeader
+        'hide-header-height-fix': hideHeader()
         }">
       <div class="eav-layout-grid">
         <div class="eav-layout-grid__inner">
-          @if (!vm.delayForm) {
+          @if (!delayForm()) {
           <div class="eav-layout-grid__cell--span-12" appFormSlide>
             @for (item of items(); track trackByFn($index, item)) {
             <div>

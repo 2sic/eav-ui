@@ -52,7 +52,7 @@ export class EditDialogHeaderComponent implements OnInit {
 
   ngOnInit() {
 
-    // TODO:: @2dm, refactor store and then this getLanguages Signal ?
+    // TODO:: @2dg Question, refactor store and then this getLanguages Signal ?
     const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
 
     this.viewModel$ = combineLatest([hasLanguages$]).pipe(
