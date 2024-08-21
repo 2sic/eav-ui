@@ -18,7 +18,9 @@
         <div class="eav-layout-grid__inner">
           @if (!delayForm()) {
           <div class="eav-layout-grid__cell--span-12" appFormSlide>
-            @for (item of items(); track trackByFn($index, item)) {
+            @for (item of vm.items; track trackByFn($index, item)) {
+            <!-- TODO:: Items as Signal bug -->
+            <!-- @for (item of items(); track trackByFn($index, item)) { -->
             <div>
               <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
             </div>

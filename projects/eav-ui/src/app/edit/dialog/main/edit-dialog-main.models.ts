@@ -65,6 +65,7 @@ export interface SaveEavFormData extends EavPublishStatus {
 }
 
 export interface EditDialogMainViewModel {
+  items: EavItem[];
   viewInitiated: boolean;
 }
 

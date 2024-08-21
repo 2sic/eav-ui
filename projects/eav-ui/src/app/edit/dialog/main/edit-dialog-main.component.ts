@@ -90,7 +90,9 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private globalConfigService = inject(GlobalConfigService);
   private formConfig = inject(FormConfigService);
 
+  // TODO:: @2g Question Items bug, reopen not working
   protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
+
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
   protected hideHeader = this.languageStore.getHideHeaderSignal(this.formConfig.config.formId);;
@@ -151,16 +153,17 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.loadIconsService.load();
     this.formsStateService.init();
     this.formulaDesignerService.init();
-    /** Small delay to make form opening feel smoother. */
+    const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
 
     // TODO:: @2g Question viewInitiated
     this.viewModel$ = combineLatest([
-      combineLatest([this.viewInitiated$]),
+      combineLatest([items$, this.viewInitiated$]),
     ]).pipe(
       map(([
-        [viewInitiated],
+        [items, viewInitiated],
       ]) => {
         const viewModel: EditDialogMainViewModel = {
+          items,
           viewInitiated,
         };
         return viewModel;
