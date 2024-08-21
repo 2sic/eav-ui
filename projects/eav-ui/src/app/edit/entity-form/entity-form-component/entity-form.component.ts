@@ -31,6 +31,7 @@ import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { EntityService } from '../../../shared/services/entity.service';
+import { transient } from '../../../core';
 
 const logThis = true;
 const nameOfThis = 'EntityWrapperComponent';
@@ -118,12 +119,13 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   private noteRef?: MatDialogRef<undefined, any>;
 
+  private formDataService = transient(FormDataService);
+
   constructor(
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
 
-    private formDataService: FormDataService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,
     private dialog: MatDialog,

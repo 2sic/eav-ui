@@ -90,6 +90,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private formConfig = inject(FormConfigService);
 
   private loadIconsService = transient(LoadIconsService);
+  private formDataService = transient(FormDataService);
+
 
   /** Signal to determine if we should show the footer */
   protected showFooter = computed(() => {
@@ -113,9 +115,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private dialogRef: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
-
-    private formDataService: FormDataService,
-
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,

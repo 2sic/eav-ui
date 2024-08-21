@@ -26,6 +26,7 @@ import { FormConfigService } from './form-config.service';
 import { ItemHelper } from '../shared/helpers/item.helper';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FormLanguage } from './form-languages.model';
+import { transient } from '../../core';
 
 const logThis = false;
 const nameOfThis = 'EditInitializerService';
@@ -40,6 +41,8 @@ const nameOfThis = 'EditInitializerService';
 export class EditInitializerService extends ServiceBase implements OnDestroy {
 
   public loaded = signal(false);
+
+  private formDataService = transient(FormDataService);
 
   private initialFormValues: Record<string, ItemValuesOfLanguage> = {};
 
@@ -59,7 +62,6 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
-    private formDataService: FormDataService,
   ) {
     super(new EavLogger(nameOfThis, logThis));
   }
@@ -261,7 +263,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
             BestValueModes.Strict,
           );
 
-        
+
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
           l.values({ currentName, valueIsEmpty, defaultLanguageValue, isCreateMode }, currentName);
           if (valueIsEmpty) {
