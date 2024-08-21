@@ -54,7 +54,6 @@ export class WebApiRestApiComponent {
       // When Route are reload and have some Guid in the Route
       const urlSegments = this.router.url.split('/');
       const urlPath = urlSegments[urlSegments.length - 1]
-      // var encodedUrlPath = decodeURIComponent(urlPath) // not Working 2dg
       var encodedUrlPath = urlPath.replace("%252F", "/");
 
       const selectedContentType = webApis.find(webApi => webApi.path === encodedUrlPath);

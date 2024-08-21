@@ -1,10 +1,10 @@
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataSourceMasks } from './data-source-masks.model';
-import { EntityBasicWithFields } from '../../../shared/models/entity-basic';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
+import { EntityBasicWithFields } from 'projects/eav-ui/src/app/shared/models/entity-basic';
 
 // const logThis = false;
 

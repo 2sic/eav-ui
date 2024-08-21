@@ -24,7 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
-import { EntityBasic } from '../../edit/shared/models/entity-basic';
+import { EntityBasic } from '../../shared/models/entity-basic';
 import { transient } from '../../core';
 import { FormConfigService } from '../../edit/state/form-config.service';
 import { QueryService } from '../../shared/services/query.service';

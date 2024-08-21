@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { QueryStreams } from '../../edit/shared/models/query-stream.model';
 import { EavLogger } from '../logging/eav-logger';
 import { ServiceBase } from './service-base';
 import { Context } from './context';
+import { QueryStreams } from '../models/query-stream.model';
 
 const logThis = false;
 

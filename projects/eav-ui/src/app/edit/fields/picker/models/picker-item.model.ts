@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { EntityBasicWithFields } from '../../../shared/models/entity-basic';
+import { EntityBasicWithFields } from 'projects/eav-ui/src/app/shared/models/entity-basic';
 
 export interface PickerItem {
   /** The title to show in the dropdown */

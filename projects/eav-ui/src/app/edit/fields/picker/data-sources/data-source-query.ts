@@ -4,9 +4,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { Injectable, computed, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
-import { QueryStreams } from '../../../shared/models/query-stream.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
+import { QueryStreams } from "projects/eav-ui/src/app/shared/models/query-stream.model";
 
 const logThis = false;
 const nameOfThis = 'DataSourceQuery';

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { ServiceBase } from './service-base';
 import { EavLogger } from '../logging/eav-logger';
-import { EntityBasic } from '../../edit/shared/models/entity-basic';
+import { EntityBasic } from '../../shared/models/entity-basic';
 import { QueryService } from './query.service';
 import { FormConfigService } from '../../edit/state/form-config.service';
 

@@ -1,6 +1,6 @@
 import { UntypedFormGroup } from '@angular/forms';
-import { EntityBasic } from '../../shared/models/entity-basic';
 import { FieldConfigSet } from '../field-config-set.model';
+import { EntityBasic } from '../../../shared/models/entity-basic';
 
 export interface PagePickerDialogData {
   config: FieldConfigSet;
