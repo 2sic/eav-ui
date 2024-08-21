@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
-import { LogsDumpViewModel } from './logs-dump.component.models';
+import { Component } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 import { LogEntry, LoggingService, LogSeverities } from '../../../shared/services/logging.service';
@@ -17,23 +15,12 @@ import { LogEntry, LoggingService, LogSeverities } from '../../../shared/service
     DatePipe,
   ],
 })
-export class LogsDumpComponent implements OnInit {
+export class LogsDumpComponent {
   LogSeverities = LogSeverities;
-  viewModel$: Observable<LogsDumpViewModel>;
+
+  protected logs = this.loggingService.getLogsSignal();
 
   constructor(private loggingService: LoggingService) { }
-
-  ngOnInit(): void {
-    const logs$ = this.loggingService.getLogs$();
-    this.viewModel$ = combineLatest([logs$]).pipe(
-      map(([logs]) => {
-        const viewModel: LogsDumpViewModel = {
-          logs,
-        };
-        return viewModel;
-      }),
-    );
-  }
 
   logToConsole(log: LogEntry): void {
     switch (log.severity) {

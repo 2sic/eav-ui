@@ -19,6 +19,7 @@ import { Language } from 'projects/eav-ui/src/app/shared/models/language.model';
 import { SaveResult } from '../../../state/save-result.model';
 import { ItemValuesOfLanguage } from '../../../state/item-values-of-language.model';
 import { FormLanguage } from '../../../state/form-languages.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const nameOfThis = 'ItemService';
@@ -214,9 +215,9 @@ export class ItemService extends BaseDataService<EavItem> {
     return this.#itemCache[entityGuid]
       ? this.#itemCache[entityGuid]
       : this.#itemCache[entityGuid] = computed(
-          () => this.cache().find(item => item.Entity.Guid === entityGuid),
-          { equal: RxHelpers.objectsEqual },
-        );
+        () => this.cache().find(item => item.Entity.Guid === entityGuid),
+        { equal: RxHelpers.objectsEqual },
+      );
   }
   #itemCache: Record<string, Signal<EavItem>> = {};
 
@@ -226,9 +227,9 @@ export class ItemService extends BaseDataService<EavItem> {
     return this.#itemAttributesCache[entityGuid]
       ? l.r(this.#itemAttributesCache[entityGuid], 'cached')
       : this.#itemAttributesCache[entityGuid] = computed(
-          () => this.item(entityGuid)()?.Entity.Attributes,
-          { equal: RxHelpers.objectsEqual },
-        );
+        () => this.item(entityGuid)()?.Entity.Attributes,
+        { equal: RxHelpers.objectsEqual },
+      );
   }
   #itemAttributesCache: Record<string, Signal<EavEntityAttributes>> = {};
 
@@ -291,6 +292,18 @@ export class ItemService extends BaseDataService<EavItem> {
       // distinctUntilChanged(RxHelpers.arraysEqual),
     );
   }
+
+  getItemsSignal(entityGuids?: string[]): Signal<EavItem[]> {
+    // Convert the array to a string key, or use an empty string if entityGuids is undefined
+    const key = entityGuids ? entityGuids.join(',') : '';
+
+    const cached = this.signalsItemsCache[key];
+    if (cached) return cached;
+
+    const obs = this.getItems$(entityGuids);
+    return this.signalsItemsCache[key] = toSignal(obs);
+  }
+  private signalsItemsCache: Record<string, Signal<EavItem[]>> = {};
 
   setDefaultValue(
     item: EavItem,

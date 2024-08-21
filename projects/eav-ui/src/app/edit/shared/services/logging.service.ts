@@ -1,4 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -45,6 +46,11 @@ export class LoggingService implements OnDestroy {
   getLogs$(): Observable<LogEntry[]> {
     return this.logs$.asObservable();
   }
+
+  getLogsSignal(): Signal<LogEntry[]> {
+    return toSignal(this.logs$);
+  }
+
 }
 
 
