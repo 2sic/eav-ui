@@ -71,11 +71,15 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
       shareReplay(1)
     );
   }
-  // private get$Cache: Record<number, Observable<FormLanguageComplete>> = {};
 
-  // getLanguageSignal(formId: number,): Signal<FormLanguageComplete> {
-  //   return toSignal(this.getLanguage$(formId));
-  // }
+  getLanguageSignal(formId: number): Signal<FormLanguageComplete> {
+  const cached = this.signalsLanguageCache[formId];
+  if (cached) return cached;
+  var obs = this.getLanguage$(formId);
+  return this.signalsLanguageCache[formId] = toSignal(obs); // note: no initial value, it should always be up-to-date
+}
+private signalsLanguageCache: Record<number, Signal<FormLanguageComplete>> = {};
+
 
 
   /** Get hideHeader for the form. Fix for safari and mobile browsers */

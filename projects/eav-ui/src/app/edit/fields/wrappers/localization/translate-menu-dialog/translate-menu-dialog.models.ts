@@ -21,8 +21,8 @@ export interface TranslateMenuDialogTemplateLanguage {
 }
 
 export interface TranslateMenuDialogViewModel {
-  primary: string;
-  languages: TranslateMenuDialogTemplateLanguage[];
+  primary?: string;
+  languages?: TranslateMenuDialogTemplateLanguage[];
   translationState: TranslationStateCore;
   showLanguageSelection: boolean;
   i18nRoot: string;

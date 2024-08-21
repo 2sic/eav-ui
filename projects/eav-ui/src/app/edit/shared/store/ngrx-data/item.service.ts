@@ -246,6 +246,10 @@ export class ItemService extends BaseDataService<EavItem> {
     );
   }
 
+  getItemAttributesSignal(entityGuid: string): Signal<EavEntityAttributes> {
+    return computed(() => this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes);
+  }
+
   /** Sync get-item-for info to show metadata-target info on an entity in the UI */
   getItemFor(entityGuid: string): EavFor {
     return this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.For;

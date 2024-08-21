@@ -143,4 +143,9 @@ export class FormConfigService {
   private _language$: Observable<FormLanguageComplete>;
 
 
+  get languageSignal(): Signal<FormLanguageComplete> {
+    return this.languageService.getLanguageSignal(this.config.formId);
+  }
+
+
 }

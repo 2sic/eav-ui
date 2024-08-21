@@ -1,7 +1,7 @@
-import { Component, Inject, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, computed, inject, signal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ItemService, LanguageService } from '../../shared/store/ngrx-data';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { I18nKeys } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
@@ -23,6 +23,7 @@ import { FeaturesService } from '../../../shared/services/features.service';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { FormConfigService } from '../../state/form-config.service';
+import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
 
 @Component({
   selector: 'app-auto-translate-menu-dialog',
@@ -41,16 +42,44 @@ import { FormConfigService } from '../../state/form-config.service';
     SafeHtmlPipe,
   ],
 })
-export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
+export class AutoTranslateMenuDialogComponent implements OnInit {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
   viewModel$: Observable<TranslateMenuDialogViewModel>;
 
-  private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
 
   public features: FeaturesService = inject(FeaturesService);
   public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
+
+  protected language = this.formConfig.languageSignal;
+
+  public translationStateSignal = signal<TranslationStateCore>(this.dialogData.translationState);
+
+  protected translationInfo = computed(() => {
+    const translationState = this.translationStateSignal();
+    this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
+    return {
+      showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
+      i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
+      submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
+    }
+  }, SignalHelpers.objectEquals);
+
+  #languages = this.languageService.getLanguagesSig();
+  #itemAttributes = this.itemService.getItemAttributesSignal(this.dialogData.config.entityGuid);
+
+  protected languages = computed(() => {
+    const languages = this.#languages();
+    const language = this.language();
+    const attributes = this.#itemAttributes();
+    const translationState = this.translationStateSignal();
+
+    return this.dialogData.isTranslateMany
+      ? getTemplateLanguagesWithContent(language, languages, attributes, translationState.linkType, this.dialogData.translatableFields)
+      : getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
+  });
+
 
   constructor(
     private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
@@ -78,45 +107,11 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     const apiKeyInfo = this.formConfig.settings.Values[EditApiKeyPaths.GoogleTranslate] as ApiKeySpecs;
     if (apiKeyInfo.IsDemo)
       this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
-
-
-    this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
-    this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
-
-    const attributes$ = this.itemService.getItemAttributes$(this.dialogData.config.entityGuid);
-
-    // TODO:: @2dg Question Languages as Signal
-    const languages$ = combineLatest([
-      this.languageService.getLanguages$(),
-      this.formConfig.language$,
-      attributes$,
-      this.translationState$,
-    ]).pipe(
-      map(([languages, language, attributes, translationState]) => {
-        return this.dialogData.isTranslateMany
-          ? getTemplateLanguagesWithContent(language, languages, attributes, translationState.linkType, this.dialogData.translatableFields)
-          : getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
-      }),
-    );
-
-    this.viewModel$ = combineLatest([this.formConfig.language$, languages$, this.translationState$]).pipe(
-      map(([lang, languages, translationState]) => {
-        const viewModel: TranslateMenuDialogViewModel = {
-          primary: lang.primary,
-          languages,
-          translationState,
-          showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
-          i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
-          submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
-        };
-        return viewModel;
-      }),
-    );
   }
 
   setLanguage(language: string): void {
-    const newTranslationState: TranslationStateCore = { ...this.translationState$.value, language };
-    this.translationState$.next(newTranslationState);
+    const newTranslationState: TranslationStateCore = { ...this.translationStateSignal(), language };
+    this.translationStateSignal.set(newTranslationState);
 
     const oldState = this.dialogData.translationState;
     const isEqual = oldState.language === newTranslationState.language;
@@ -136,7 +131,4 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  ngOnDestroy(): void {
-    this.translationState$.complete();
-  }
 }

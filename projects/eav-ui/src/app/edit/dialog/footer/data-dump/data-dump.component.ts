@@ -11,6 +11,6 @@ import { FormConfigService } from '../../../state/form-config.service';
   imports: [JsonPipe],
 })
 export class DataDumpComponent {
-  protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids)
+  protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
   constructor(private itemService: ItemService, private formConfig: FormConfigService) { }
 }
