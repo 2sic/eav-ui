@@ -90,11 +90,13 @@
     </div>
     }
   </div>
-  <div class="btn-bar">
-    <button mat-button [disabled]="vm.loading || vm.isExporting" (click)="exportAppParts()">
-      <mat-icon>cloud_download</mat-icon>
+
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+    <button mat-button class="eav-button__with-icon" tippy="Export selected Parts"
+      [disabled]="vm.loading || vm.isExporting" (click)="exportAppParts()">
+      <mat-icon class="eav-icon">cloud_download</mat-icon>
       <span>Export Parts</span>
     </button>
-  </div>
+  </mat-dialog-actions>
 </div>
 }

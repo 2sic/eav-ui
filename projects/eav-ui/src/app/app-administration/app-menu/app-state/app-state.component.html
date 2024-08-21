@@ -26,23 +26,31 @@
   </div>
   <!-- Button -->
   @if (!appStateAdvanced) {
-  <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
-    <mat-icon class="eav-icon">more_time</mat-icon>
-    <span>Save state</span>
-  </button>
-  <button mat-button class="eav-button__with-icon" (click)="resetApp(false)">
-    <mat-icon class="eav-icon">restore</mat-icon>
-    <span>Restore state</span>
-  </button>
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+    <div class="eav-dialog-actions-div">
+      <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
+        <mat-icon class="eav-icon">more_time</mat-icon>
+        <span>Save state</span>
+      </button>
+      <button mat-button class="eav-button__with-icon" (click)="resetApp(false)">
+        <mat-icon class="eav-icon">restore</mat-icon>
+        <span>Restore state</span>
+      </button>
+    </div>
+  </mat-dialog-actions>
   }
   @if (appStateAdvanced) {
-  <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
-    <mat-icon class="eav-icon">more_time</mat-icon>
-    <span>Save with Assets</span>
-  </button>
-  <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
-    <mat-icon class="eav-icon">restore</mat-icon>
-    <span>Restore with Assets</span>
-  </button>
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+    <div class="eav-dialog-actions-div">
+      <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
+        <mat-icon class="eav-icon">more_time</mat-icon>
+        <span>Save with Assets</span>
+      </button>
+      <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
+        <mat-icon class="eav-icon">restore</mat-icon>
+        <span>Restore with Assets</span>
+      </button>
+    </div>
+  </mat-dialog-actions>
   }
 </div>

@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { transient } from '../../../core';
+import { MatDialogActions } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-app-state',
@@ -28,6 +29,7 @@ import { transient } from '../../../core';
     FormsModule,
     FeatureTextInfoComponent,
     RouterOutlet,
+    MatDialogActions,
   ],
 })
 export class AppStateComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

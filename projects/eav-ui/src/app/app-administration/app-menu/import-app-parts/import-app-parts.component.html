@@ -50,11 +50,13 @@
     }
   </div>
   @if (!vm.result?.Success) {
-  <button mat-button class="eav-button__with-icon" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
-    (click)="upload()">
-    <mat-icon class="eav-icon">cloud_upload</mat-icon>
-    <span>Upload</span>
-  </button>
+  <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
+    <button mat-button class="eav-button__with-icon" tippy="Import File"
+      [disabled]="!vm.files.length || vm.uploading || !!vm.result" (click)="upload()">
+      <mat-icon class="eav-icon">cloud_upload</mat-icon>
+      <span>Upload</span>
+    </button>
+  </mat-dialog-actions>
   }
 </div>
 }

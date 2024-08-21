@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NavItem } from '../../models/nav-item.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
@@ -31,17 +31,33 @@ export class NavItemListComponent implements OnInit {
   openChildMenu() {
     if (this.navItem.child?.length) {
 
-      this.router.events.subscribe((event: any) => {
+      const urlSegments = this.router.url.split('/');
+      const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
 
-        if (event.routerEvent instanceof NavigationEnd) {
-          const urlSegments = event.routerEvent.urlAfterRedirects.split('/');
-          const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
-
-          if (matchingChild)
-            this.isOpenMenu = true;
-
-        }
-      });
+      if (matchingChild)
+        this.isOpenMenu = true;
     }
   }
+
+  // TODO:: Old Code, remove later 2dg
+  // openChildMenu() {
+  //   if (this.navItem.child?.length) {
+
+  //     this.router.events.subscribe((event:any) => {
+
+  //       console.log('event', event);
+
+  //       if (event.routerEvent instanceof NavigationEnd) {
+  //         const urlSegments = event.routerEvent.urlAfterRedirects.split('/');
+  //         const matchingChild = this.navItem.child.find(child => urlSegments.includes(child.path));
+
+  //         console.log('matchingChild', matchingChild);
+
+  //         if (matchingChild)
+  //           this.isOpenMenu = true;
+
+  //       }
+  //     });
+  //   }
+  // }
 }
