@@ -10,8 +10,5 @@ export interface TranslationStateCore {
 export interface TranslateMenuViewModel extends FormLanguage {
   translationState: TranslationState;
   translationStateClass: string;
-  disableAutoTranslation: boolean;
   disabled: boolean;
-
-  disableTranslateButton: boolean;
 }

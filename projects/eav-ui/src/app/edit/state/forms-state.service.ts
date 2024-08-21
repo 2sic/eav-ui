@@ -24,7 +24,6 @@ export class FormsStateService implements OnDestroy {
 
   // Old observables being changed to signals
   // TODO: @2dg - change all components to use signals
-  // ...similar to EditDialogHeaderComponent line 38/39
   readOnly$ = toObservable(this.readOnly);
 
   private formsValid: Record<string, boolean>;

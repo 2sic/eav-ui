@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, startWith } from 'rxjs';
 import { AutoTranslateDisabledWarningDialog } from '../../../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
@@ -50,9 +50,17 @@ export class TranslateMenuComponent implements OnInit {
   protected config = this.fieldState.config;
   protected group = this.fieldState.group;
 
-
   TranslationLinks = TranslationLinks;
   viewModel$: Observable<TranslateMenuViewModel>;
+
+  private formsStateService = inject(FormsStateService);
+  protected readOnly = this.formsStateService.readOnly;
+
+  protected settings = this.fieldSettings.getFieldSettingsSignal(this.config.fieldName)
+
+  disableTranslateButtonSignal = computed(() => {
+    return this.readOnly().isReadOnly || this.settings().DisableTranslation;
+    });
 
   constructor(
     private dialog: MatDialog,
@@ -60,21 +68,12 @@ export class TranslateMenuComponent implements OnInit {
     private formConfig: FormConfigService,
     private fieldSettings: FieldsSettingsService,
     private fieldsTranslate: FieldsTranslateService,
-    private formsState: FormsStateService,
   ) { }
 
   ngOnInit(): void {
-    const readOnly$ = this.formsState.readOnly$;
+
     const language$ = this.formConfig.language$;
     const translationState$ = this.fieldSettings.getTranslationState$(this.config.fieldName);
-    const disableTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => settings.DisableTranslation),
-      mapUntilChanged(m => m),
-    );
-    const disableAutoTranslation$ = this.fieldSettings.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => settings.DisableAutoTranslation),
-      mapUntilChanged(m => m),
-    );
 
     const control = this.group.controls[this.config.fieldName];
     const disabled$ = control.valueChanges.pipe(
@@ -84,18 +83,14 @@ export class TranslateMenuComponent implements OnInit {
     );
 
     this.viewModel$ = combineLatest([
-      readOnly$, language$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
+      language$, translationState$, disabled$,
     ]).pipe(
-      map(([readOnly, language, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
-        const disableTranslateButton = readOnly.isReadOnly || disableTranslation;
+      map(([language, translationState, disabled]) => {
         const viewModel: TranslateMenuViewModel = {
           ...language,
           translationState,
           translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
-          disableAutoTranslation,
           disabled,
-
-          disableTranslateButton,
         };
         return viewModel;
       }),
