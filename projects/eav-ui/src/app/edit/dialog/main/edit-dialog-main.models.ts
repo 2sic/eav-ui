@@ -65,12 +65,9 @@ export interface SaveEavFormData extends EavPublishStatus {
 }
 
 export interface EditDialogMainViewModel {
-  items: EavItem[];
-  formsValid: boolean;
   delayForm: boolean;
   viewInitiated: boolean;
   hideHeader: boolean;
-  saveButtonDisabled: boolean;
 }
 
 export interface Prefetch {

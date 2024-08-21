@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { combineLatest, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { PublishStatusService } from '../../../shared/store/ngrx-data';
-import { PublishStatusDialogViewModel } from './publish-status-dialog.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -27,9 +26,11 @@ import { PublishMode, PublishModes } from '../../main/edit-dialog-main.models';
         TranslateModule,
     ],
 })
-export class PublishStatusDialogComponent implements OnInit {
+export class PublishStatusDialogComponent {
   PublishModes = PublishModes;
-  viewModel$: Observable<PublishStatusDialogViewModel>;
+
+  protected publishMode = this.publishStatusService.getPublishModeSignal(this.formConfig.config.formId)
+  protected options = this.formConfig.config.versioningOptions;
 
   constructor(
     private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
@@ -41,19 +42,6 @@ export class PublishStatusDialogComponent implements OnInit {
       if (!CTRL_S) { return; }
       event.preventDefault();
     });
-  }
-
-  ngOnInit() {
-    const publishMode$ = this.publishStatusService.getPublishMode$(this.formConfig.config.formId);
-    this.viewModel$ = combineLatest([publishMode$]).pipe(
-      map(([publishMode]) => {
-        const viewModel: PublishStatusDialogViewModel = {
-          publishMode,
-          options: this.formConfig.config.versioningOptions,
-        };
-        return viewModel;
-      }),
-    );
   }
 
   setPublishMode(publishMode: PublishMode) {

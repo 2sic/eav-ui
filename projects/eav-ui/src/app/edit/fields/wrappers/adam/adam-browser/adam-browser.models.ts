@@ -2,7 +2,6 @@ import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 
 export interface AdamBrowserViewModel {
   adamConfig: AdamConfig;
-  expanded: boolean;
   items: AdamItem[];
   value: string;
   disabled: boolean;

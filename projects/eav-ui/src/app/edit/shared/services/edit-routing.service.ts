@@ -60,14 +60,24 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     return this.route.params.pipe(
       map((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
       mapUntilChanged(m => m),
-      // distinctUntilChanged()
     );
   }
 
   isExpandedSignal(fieldId: number, entityGuid: string): Signal<boolean> {
-    return toSignal(this.isExpanded$(fieldId, entityGuid));
+    // Create a unique key by combining fieldId and entityGuid
+    const key = `${fieldId}-${entityGuid}`;
+
+    // Check if the signal is already cached
+    const cached = this.signalsExpandedCache[key];
+    if (cached) return cached;
+
+    // Get the observable and convert it to a signal
+    const obs = this.isExpanded$(fieldId, entityGuid);
+    return this.signalsExpandedCache[key] = toSignal(obs);
   }
 
+  // Cache to store the signals
+  private signalsExpandedCache: Record<string, Signal<boolean>> = {};
 
 
   /** Fires when child form is closed and has a result, new entity was added */

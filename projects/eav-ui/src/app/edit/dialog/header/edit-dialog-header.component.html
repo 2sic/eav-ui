@@ -23,10 +23,10 @@
       </mat-icon>
     }
     <button mat-button class="eav-publish-button" [disabled]="readOnly().isReadOnly" (click)="openPublishStatusDialog()"
-      [tippy]="'PublishStatus.' + vm.publishMode + '.Tip' | translate">
+      [tippy]="'PublishStatus.' + publishMode() + '.Tip' | translate">
       <span class="eav-publish-mode">
         {{ 'PublishStatus.Label' | translate }}
-        <b>{{ 'PublishStatus.' + vm.publishMode | translate | uppercase }}</b>
+        <b>{{ 'PublishStatus.' + publishMode() | translate | uppercase }}</b>
       </span>
     </button>
   </mat-card>

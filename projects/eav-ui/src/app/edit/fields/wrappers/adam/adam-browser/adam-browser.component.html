@@ -1,6 +1,6 @@
 @if (viewModel$ | async; as vm) {
   <div class="dropzone" [@adamShowAnimate]="vm.adamConfig?.autoLoad ? 'open' : 'closed'">
-    @if (vm.adamConfig?.autoLoad && vm.expanded) {
+    @if (vm.adamConfig?.autoLoad && expanded()) {
       <div [ngClass]="{
         'adam-scope-site': vm.adamConfig.usePortalRoot,
         'adam-scope-field': !vm.adamConfig.usePortalRoot

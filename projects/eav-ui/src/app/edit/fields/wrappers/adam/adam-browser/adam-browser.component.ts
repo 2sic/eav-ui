@@ -88,6 +88,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   public features: FeaturesService = inject(FeaturesService);
   public isPasteImageFromClipboardEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
 
+  protected expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid)
+
   constructor(
     private adamService: AdamService,
     private dnnContext: DnnContext,
@@ -147,7 +149,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       })
     );
 
-    const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       mapUntilChanged(m => m),
@@ -160,11 +162,10 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       // distinctUntilChanged(),
     );
 
-    this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$]).pipe(
-      map(([adamConfig, expanded, items, value, disabled]) => {
+    this.viewModel$ = combineLatest([this.adamConfig$, this.items$, value$, disabled$]).pipe(
+      map(([adamConfig, items, value, disabled]) => {
         const viewModel: AdamBrowserViewModel = {
           adamConfig,
-          expanded,
           items,
           value,
           disabled,

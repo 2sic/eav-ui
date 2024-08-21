@@ -89,6 +89,10 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private globalConfigService = inject(GlobalConfigService);
   private formConfig = inject(FormConfigService);
 
+  protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
+  protected formsValid = this.formsStateService.formsValidTemp;
+  protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
+
   private loadIconsService = transient(LoadIconsService);
   private formDataService = transient(FormDataService);
 
@@ -110,6 +114,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   /** Signal to tell the UI that the footer needs more space (changes CSS) */
   expandDebugFooter = signal(false);
+
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
@@ -140,26 +145,20 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.formulaDesignerService.init();
     /** Small delay to make form opening feel smoother. */
     const delayForm$ = of(false).pipe(delay(0), startWith(true));
-    const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
     const hideHeader$ = this.languageStore.getHideHeader$(this.formConfig.config.formId);
-    const formsValid$ = this.formsStateService.formsValid$;
-    const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
 
     this.viewModel$ = combineLatest([
-      combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$]),
-      combineLatest([hideHeader$, saveButtonDisabled$]),
+      combineLatest([delayForm$, this.viewInitiated$]),
+      combineLatest([hideHeader$]),
     ]).pipe(
       map(([
-        [items, formsValid, delayForm, viewInitiated],
-        [hideHeader, saveButtonDisabled],
+        [delayForm, viewInitiated],
+        [hideHeader],
       ]) => {
         const viewModel: EditDialogMainViewModel = {
-          items,
-          formsValid,
           delayForm,
           viewInitiated,
           hideHeader,
-          saveButtonDisabled,
         };
         return viewModel;
       }),

@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { BaseDataService } from './base-data.service';
 import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../../state/form-config.service';
 import { PublishStatus, PublishMode, PublishModes } from '../../../dialog/main/edit-dialog-main.models';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends BaseDataService<PublishStatus> {
@@ -58,4 +59,15 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
       }),
     );
   }
+
+  getPublishModeSignal(formId: number): Signal<PublishMode> {
+    const cached = this.signalsPublishModeCache[formId];
+    if (cached) return cached;
+    var obs = this.getPublishMode$(formId);
+    return this.signalsPublishModeCache[formId] = toSignal(obs); // note: no initial value, it should always be up-to-date
+  }
+  private signalsPublishModeCache: Record<number, Signal<PublishMode>> = {};
+
+
+
 }

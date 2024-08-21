@@ -39,23 +39,26 @@ export class EditDialogHeaderComponent implements OnInit {
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
+  protected publishMode = this.publishStatusService.getPublishModeSignal(this.formConfig.config.formId)
+
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private languageService: LanguageService,
     private publishStatusService: PublishStatusService,
     public formConfig: FormConfigService,
-    
+
   ) { }
 
   ngOnInit() {
+
+    // TODO:: @2dm, refactor store and then this getLanguages Signal ?
     const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
-    const publishMode$ = this.publishStatusService.getPublishMode$(this.formConfig.config.formId);
-    this.viewModel$ = combineLatest([hasLanguages$, publishMode$]).pipe(
-      map(([hasLanguages, publishMode]) => {
+
+    this.viewModel$ = combineLatest([hasLanguages$]).pipe(
+      map(([hasLanguages]) => {
         const viewModel: EditDialogHeaderViewModel = {
           hasLanguages,
-          publishMode,
         };
         return viewModel;
       }),
