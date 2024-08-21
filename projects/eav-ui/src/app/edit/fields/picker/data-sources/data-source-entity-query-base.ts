@@ -8,6 +8,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from 'projects/eav-ui/src/app/shared/services/query.service';
+import { transient } from 'projects/eav-ui/src/app/core';
 
 /**
  * This is the base class for data-sources providing data from
@@ -19,7 +20,8 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   //#region Inject and blank constructor
 
-  protected querySvc = inject(QueryService);
+  protected querySvc = transient(QueryService);
+
   protected entityCacheSvc = inject(PickerDataCacheService);
 
   constructor(logger: EavLogger) {

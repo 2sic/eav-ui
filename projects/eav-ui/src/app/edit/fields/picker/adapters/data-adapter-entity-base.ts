@@ -25,7 +25,7 @@ import { EntityService } from "projects/eav-ui/src/app/shared/services/entity.se
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
-  private entityService = inject(EntityService);
+  private entityService = transient(EntityService);
   protected formConfig = inject(FormConfigService);
   private editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);

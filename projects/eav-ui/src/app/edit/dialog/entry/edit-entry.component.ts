@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
 import { RouterOutlet } from '@angular/router';
-import { FormDataService } from '../../shared/services/form-data.service';
 import { Context } from '../../../shared/services/context';
 import { EditInitializerService } from '../../state/edit-initializer.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { AdamService } from '../../shared/services/adam.service';
 import { LoggingService } from '../../shared/services/logging.service';
-import { EntityService } from '../../../shared/services/entity.service';
-import { QueryService } from '../../../shared/services/query.service';
 
 /**
  * This component is the entry point for every edit dialog.
@@ -38,8 +35,6 @@ import { QueryService } from '../../../shared/services/query.service';
 
     AdamService,          // helper to get files, folders etc.
     ScriptsLoaderService, // for loading external scripts
-    EntityService,        // for loading entities
-    QueryService,         // for loading queries, also needed by the EntityService
   ],
 })
 export class EditEntryComponent implements OnInit {

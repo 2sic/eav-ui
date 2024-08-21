@@ -14,11 +14,6 @@ const nameOfThis = 'FormDataService';
 
 export const webApiEditRoot = 'cms/edit/';
 
-// TODO: @2dg - this can probably be transient everywhere
-// 1. try to change
-// 2. remove from providers in edit-entry.component.ts
-// TODO:: @2dg Question edit-entry.component.ts  is this in use ? @2dm
-
 @Injectable()
 export class FormDataService extends ServiceBase {
   constructor(

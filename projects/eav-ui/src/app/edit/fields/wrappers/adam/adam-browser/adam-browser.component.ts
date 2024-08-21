@@ -108,6 +108,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
+
+
     this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
     this.items$ = new BehaviorSubject<AdamItem[]>([]);
 

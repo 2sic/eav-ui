@@ -7,20 +7,20 @@ import { EavLogger } from '../logging/eav-logger';
 import { EntityBasic } from '../../shared/models/entity-basic';
 import { QueryService } from './query.service';
 import { FormConfigService } from '../../edit/state/form-config.service';
+import { transient } from '../../core';
 
 const logThis = false;
 
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
 
-// TODO: @2dg also try to use transient only - should be possible
- // TODO:: @2dg Question Only in EditEntryComponent are in the providers
-@Injectable()
-export class EntityService extends ServiceBase {
+ @Injectable()
+ export class EntityService extends ServiceBase {
+  private queryService = transient(QueryService);
+
   constructor(private http: HttpClient,
     private formConfig: FormConfigService,
     private dnnContext: DnnContext,
-    private queryService: QueryService,
   )
   {
     super(new EavLogger('EntityService', logThis));

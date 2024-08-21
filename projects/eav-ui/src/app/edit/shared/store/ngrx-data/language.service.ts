@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { BaseDataService } from '.';
@@ -21,5 +21,9 @@ export class LanguageService extends BaseDataService<Language> {
   // TODO:: @2dg QuestionLanguages as Signal
   getLanguages$(): Observable<Language[]> {
     return this.cache$.asObservable();
+  }
+
+  getLanguagesSig(): Signal<Language[]> {
+    return this.cache;
   }
 }

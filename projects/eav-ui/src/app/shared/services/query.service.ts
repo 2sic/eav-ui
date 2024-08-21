@@ -8,10 +8,6 @@ import { QueryStreams } from '../models/query-stream.model';
 
 const logThis = false;
 
-// TODO: @2dg also try to use transient only - should be possible
-// data.component is use in providers
-// TODO:: @2dg Question edit-entry.component is use in providers
-
 @Injectable()
 export class QueryService extends ServiceBase {
 
