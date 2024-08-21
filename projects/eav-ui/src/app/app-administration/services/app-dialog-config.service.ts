@@ -13,7 +13,6 @@ const logThis = false;
 
 const webApiSettings = 'admin/dialog/settings';
 
-
 @Injectable()
 export class AppDialogConfigService extends ServiceBase implements OnDestroy {
   constructor(

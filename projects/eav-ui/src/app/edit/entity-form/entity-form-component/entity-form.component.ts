@@ -120,6 +120,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   private noteRef?: MatDialogRef<undefined, any>;
 
   private formDataService = transient(FormDataService);
+  private entityService = transient(EntityService);
 
   constructor(
     private itemService: ItemService,
@@ -127,7 +128,6 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     private route: ActivatedRoute,
 
     private editRoutingService: EditRoutingService,
-    private entityService: EntityService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {

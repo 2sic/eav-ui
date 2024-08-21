@@ -26,10 +26,11 @@ import { QueryService } from '../../../shared/services/query.service';
     RouterOutlet,
     EditDialogMainComponent,
   ],
-  providers: [ // must be by Providers
+  providers: [
+    // must be by Providers
     LoggingService,
     EditInitializerService,
-    FormDataService,
+    // FormDataService, // check if this are in used
 
     // 2dm activating...
     Context,              // Form context, such as what app etc. - the same for the entire form

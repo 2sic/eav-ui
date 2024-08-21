@@ -68,6 +68,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
   private entityService = transient(EntityService);
   private contentTypesService = transient(ContentTypesService);
 
+
   constructor(
     dialogRef: MatDialogRef<DevRestDataComponent>,
     router: Router,
