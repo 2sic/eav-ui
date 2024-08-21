@@ -1,6 +1,4 @@
-import { Component, Input, OnInit, computed, inject } from '@angular/core';
-import { combineLatest, map, Observable, startWith } from 'rxjs';
-import { FieldHelperTextViewModel } from './field-help-text.models';
+import { Component, Input, computed, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChangeAnchorTargetDirective } from '../directives/change-anchor-target.directive';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -11,7 +9,6 @@ import { FieldState } from '../field-state';
 import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
-import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -29,45 +26,20 @@ import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
     SafeHtmlPipe,
   ],
 })
-export class FieldHelperTextComponent implements OnInit {
+export class FieldHelperTextComponent {
   @Input() disableError = false;
   @Input() hyperlinkDefaultWrapperFix = false;
 
   protected fieldState = inject(FieldState);
+
+  invalidControl = computed(() => this.fieldState.control.invalid);
+  disabledControl = computed(() => this.fieldState.control.disabled);
 
   protected settings = this.fieldState.settings;
 
   protected notes = computed(() => this.settings().Notes, SignalHelpers.stringEquals);
 
   isFullText = false;
-  viewModel$: Observable<FieldHelperTextViewModel>;
-
-  constructor() { }
-
-  ngOnInit() {
-    const control = this.fieldState.control;
-
-    const invalid$ = control.valueChanges.pipe(
-      map(() => control.invalid),
-      startWith(control.invalid),
-      mapUntilChanged(m => m),
-    );
-    const disabled$ = control.valueChanges.pipe(
-      map(() => control.disabled),
-      startWith(control.disabled),
-      mapUntilChanged(m => m),
-    );
-
-    this.viewModel$ = combineLatest([invalid$, disabled$]).pipe(
-      map(([invalid, disabled]) => {
-        const viewModel: FieldHelperTextViewModel = {
-          invalid,
-          disabled,
-        };
-        return viewModel;
-      }),
-    );
-  }
 
   /** Don't toggle if clicked on an anchor tag or it's children */
   toggleHint(event: MouseEvent) {
