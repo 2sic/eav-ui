@@ -7,6 +7,6 @@ export interface TranslationStateCore {
   language: string;
 }
 
-export interface TranslateMenuViewModel extends FormLanguage {
+export interface TranslateMenuViewModel  {
   disabled: boolean;
 }

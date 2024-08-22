@@ -65,6 +65,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private entityReader$ = this.languageSvc.getEntityReader$(this.formConfig.config.formId);
   private entityReader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
 
+
+  // private entityReader$ = toObservable(this.languageSvc.getEntityReader(this.formConfig.config.formId));
+
+
+
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }

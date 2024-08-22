@@ -58,6 +58,8 @@ export class TranslateMenuComponent implements OnInit {
 
   protected settings = this.fieldSettings.getFieldSettingsSignal(this.config.fieldName)
   protected translationState = this.fieldSettings.getTranslationStateSignal(this.config.fieldName)
+  protected language = this.formConfig.languageSignal;
+
 
   translationStateClass = computed(() => {
     return TranslateMenuHelpers.getTranslationStateClass(this.translationState().linkType);
@@ -77,9 +79,6 @@ export class TranslateMenuComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // TODO:: Open to get a signal from Service
-    const language$ = this.formConfig.language$;
-
     const control = this.group.controls[this.config.fieldName];
     const disabled$ = control.valueChanges.pipe(
       map(() => control.disabled),
@@ -88,11 +87,10 @@ export class TranslateMenuComponent implements OnInit {
     );
 
     this.viewModel$ = combineLatest([
-      language$, disabled$,
+       disabled$,
     ]).pipe(
-      map(([language, disabled]) => {
+      map(([disabled]) => {
         const viewModel: TranslateMenuViewModel = {
-          ...language,
           disabled,
         };
         return viewModel;

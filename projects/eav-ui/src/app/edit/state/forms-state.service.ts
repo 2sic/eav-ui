@@ -67,7 +67,7 @@ export class FormsStateService implements OnDestroy {
         ),
         combineLatest([
           this.formConfig.language$,
-          this.languageService.getLanguages$(),
+          this.languageService.getLanguages$(), // TODO:: Remove later
         ]).pipe(
           map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),
         ),
