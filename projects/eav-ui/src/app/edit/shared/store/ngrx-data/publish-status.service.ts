@@ -1,34 +1,43 @@
 import { Injectable, Signal } from '@angular/core';
-import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Observable } from 'rxjs';
-import { BaseDataService } from './base-data.service';
+import { Observable, of } from 'rxjs';
 import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../../state/form-config.service';
 import { PublishStatus, PublishMode, PublishModes } from '../../../dialog/main/edit-dialog-main.models';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
-export class PublishStatusService extends BaseDataService<PublishStatus> {
-  constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-    super('PublishStatus', serviceElementsFactory);
-  }
+export class PublishStatusService /* extends BaseDataService<PublishStatus> TODO:: Old Code */ {
+
+  publishStatus: Record<number, PublishStatus> = {};
+
+  // TODO::: Old Code remove after testing ist done
+  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
+  //   super('PublishStatus', serviceElementsFactory);
+  // }
 
   private setPublishStatus(publishStatus: PublishStatus): void {
-    this.upsertOneInCache(publishStatus);
+    this.addToCache([publishStatus]);
   }
 
   removePublishStatus(formId: number): void {
-    this.removeOneFromCache(formId);
+    this.publishStatus[formId] = null; // delete this.publishStatus[formId];
+
+    // TODO::: Old Code remove after testing ist done
+    // this.removeOneFromCache(formId);
   }
 
   getPublishStatus(formId: number): PublishStatus {
-    return this.cache().find(publishStatus => publishStatus.formId === formId);
+    return this.publishStatus[formId];
+    // TODO::: Old Code remove after testing ist done
+    // return this.cache().find(publishStatus => publishStatus.formId === formId);
   }
 
   private getPublishStatus$(formId: number): Observable<PublishStatus> {
-    return this.cache$.pipe(
-      mapUntilObjChanged(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
-    );
+    return of(this.publishStatus[formId]);
+    // TODO::: Old Code remove after testing ist done
+    // return this.cache$.pipe(
+    //   mapUntilObjChanged(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
+    // );
   }
 
   /** Convert the booleans to the appropriate "verb" */
@@ -68,6 +77,19 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
   }
   private signalsPublishModeCache: Record<number, Signal<PublishMode>> = {};
 
+
+  private addToCache(publishStatus: PublishStatus[]): void {
+    // TODO:: Old Code, remove after testing ist done
+    // this.upsertManyInCache(contentTypeItems);
+
+    publishStatus.forEach(status => {
+      this.publishStatus[status.formId] = status;
+    });
+  }
+
+  public clearCache(): void {
+    this.publishStatus = {};
+  }
 
 
 }

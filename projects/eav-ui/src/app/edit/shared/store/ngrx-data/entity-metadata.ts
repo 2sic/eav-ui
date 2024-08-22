@@ -30,12 +30,14 @@ export const entityMetadata: EntityMetadataMap = {
   // ContentTypeItem: {
   //   selectId: contentTypeItemSelectId,
   // },
-  InputType: {
-    selectId: inputTypeSelectId,
-  },
-  PublishStatus: {
-    selectId: publishStatusSelectId,
-  },
+  // TODO:: Old Code, remove after testing ist done
+  // InputType: {
+  //   selectId: inputTypeSelectId,
+  // },
+  // TODO:: Old Code, remove after testing ist done
+  // PublishStatus: {
+  //   selectId: publishStatusSelectId,
+  // },
   Prefetch: {
     selectId: prefetchSelectId,
   },
@@ -91,13 +93,15 @@ function languageInstanceSelectId(languageInstance: FormLanguageInStore): number
 //   return contentTypeItem?.Guid;
 // }
 
-function inputTypeSelectId(inputType: InputType): string {
-  return inputType?.Type;
-}
+// TODO:: Old Code, remove after testing ist done
+// function inputTypeSelectId(inputType: InputType): string {
+//   return inputType?.Type;
+// }
 
-function publishStatusSelectId(publishStatus: PublishStatus): number {
-  return publishStatus?.formId;
-}
+// TODO:: Old Code, remove after testing ist done
+// function publishStatusSelectId(publishStatus: PublishStatus): number {
+//   return publishStatus?.formId;
+// }
 
 function prefetchSelectId(entity: Prefetch): string {
   return entity?._guid;

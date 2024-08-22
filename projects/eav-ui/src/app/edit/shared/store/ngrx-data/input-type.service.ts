@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { BaseDataService } from './base-data.service';
 import { EavContentTypeAttribute } from '../../models/eav';
@@ -11,25 +11,34 @@ import { CalculatedInputType } from '../../../state/fields-configs.model';
 
 // TODO: @2dm - try to get out of store, and make it provide signals
 @Injectable({ providedIn: 'root' })
-export class InputTypeService extends BaseDataService<InputType> {
-  constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-    super('InputType', serviceElementsFactory);
-  }
+export class InputTypeService /* extends BaseDataService<InputType> TODO:: Old Code Remove */ {
+
+  inputTypes: Record<string, InputType> = {};
+
+  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
+  //   super('InputType', serviceElementsFactory);
+  // }
 
   addInputTypes(inputTypes: InputType[]): void {
-    this.addManyToCache(inputTypes);
+    this.addToCache(inputTypes);
   }
 
   getInputType(type: string): InputType {
-    return this.cache().find(i => i.Type === type);
+    // TODO:: Old Code, remove after testing ist done
+    // return this.cache().find(i => i.Type === type);
+    return this.inputTypes[type];
   }
 
   getInputTypes(): InputType[] {
-    return this.cache();
+    // TODO:: Old Code, remove after testing ist done
+    // return this.cache();
+    return Object.values(this.inputTypes);
   }
 
   getInputTypes$(): Observable<InputType[]> {
-    return this.cache$;
+    // TODO:: Old Code, remove after testing ist done
+    // return this.cache$;
+    return of(Object.values(this.inputTypes));
   }
 
   getInputTypeNames(attributes: EavContentTypeAttribute[]): InputTypeName[] {
@@ -55,6 +64,19 @@ export class InputTypeService extends BaseDataService<InputType> {
       isExternal: inputType ? !!inputType.AngularAssets : false,
     };
     return calculated;
+  }
+
+  private addToCache(inputTypes: InputType[]): void {
+    // TODO:: Old Code, remove after testing ist done
+    // this.addManyToCache(inputTypes);
+
+    inputTypes.forEach(input => {
+      this.inputTypes[input.Type] = input;
+    });
+  }
+
+  public clearCache(): void {
+    this.inputTypes = {};
   }
 
 }
