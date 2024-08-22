@@ -23,7 +23,8 @@ export class FormsStateService implements OnDestroy {
   saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
 
   // Old observables being changed to signals
-  readOnly$ = toObservable(this.readOnly);
+  // TODO:: @2dm
+  readOnly$ = toObservable(this.readOnly); // is used in fields-settings service
 
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
@@ -59,6 +60,8 @@ export class FormsStateService implements OnDestroy {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }
+
+    // TODO:: @2dg getHeader Signal and Language Signal use computed
 
     this.subscription.add(
       combineLatest([

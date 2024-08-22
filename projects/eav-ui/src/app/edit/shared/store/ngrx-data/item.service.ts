@@ -588,6 +588,8 @@ export class ItemService extends BaseDataService<EavItem> {
   }
   #itemCache: Record<string, Signal<EavItem>> = {};
 
+  // TODO:: new Signal for getHeader
+
   itemAttributes(entityGuid: string): Signal<EavEntityAttributes> {
     const l = this.log.fn('itemAttributes', { entityGuid });
     // try cached signal first
