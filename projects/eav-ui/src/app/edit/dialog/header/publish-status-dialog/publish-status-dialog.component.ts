@@ -29,7 +29,7 @@ import { PublishMode, PublishModes } from '../../main/edit-dialog-main.models';
 export class PublishStatusDialogComponent {
   PublishModes = PublishModes;
 
-  protected publishMode = this.publishStatusService.getPublishModeSignal(this.formConfig.config.formId)
+  protected publishMode = this.publishStatusService.getPublishMode(this.formConfig.config.formId)
   protected options = this.formConfig.config.versioningOptions;
 
   constructor(

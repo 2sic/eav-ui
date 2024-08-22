@@ -35,11 +35,12 @@ export class InputTypeService /* extends BaseDataService<InputType> TODO:: Old C
     return Object.values(this.inputTypes);
   }
 
-  getInputTypes$(): Observable<InputType[]> {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache$;
-    return of(Object.values(this.inputTypes));
-  }
+  // TODO:: Not in used
+  // getInputTypes$(): Observable<InputType[]> {
+  //   // TODO:: Old Code, remove after testing ist done
+  //   // return this.cache$;
+  //   return of(Object.values(this.inputTypes));
+  // }
 
   getInputTypeNames(attributes: EavContentTypeAttribute[]): InputTypeName[] {
     const inputTypes = this.getInputTypes();

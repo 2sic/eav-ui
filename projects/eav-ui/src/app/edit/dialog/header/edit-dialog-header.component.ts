@@ -36,7 +36,7 @@ export class EditDialogHeaderComponent {
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
-  protected publishMode = this.publishStatusService.getPublishModeSignal(this.formConfig.config.formId)
+  protected publishMode = this.publishStatusService.getPublishMode(this.formConfig.config.formId)
 
   protected hasLanguages = computed(() => {
     const languages = this.languageService.getLanguagesSig();
