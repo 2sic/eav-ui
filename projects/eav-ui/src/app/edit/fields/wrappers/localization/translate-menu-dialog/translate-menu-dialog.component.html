@@ -1,4 +1,3 @@
-@if (viewModel$ | async; as vm) {
   <mat-card class="translate-menu-dialog-card u-hide-scrollbar">
     <mat-card-header>
       <mat-card-title>
@@ -11,58 +10,58 @@
     <mat-card-content class="eav-card-content__no-padding">
       <mat-nav-list toggle focus>
         <mat-list-item
-          [ngClass]="{ 'eav-list-item__focus': vm.translationState.linkType === TranslationLinks.DontTranslate }"
+          [ngClass]="{ 'eav-list-item__focus': translationStateSignal().linkType === TranslationLinks.DontTranslate }"
           (click)="setLinkType(TranslationLinks.DontTranslate)">
           <mat-icon matListItemIcon color="accent">lock</mat-icon>
-          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Title') | translate : { primary: vm.primary } }}</span>
-          <span matListItemLine>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Body') | translate : { primary: vm.primary } }}</span>
+          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Title') | translate : { primary: language().primary } }}</span>
+          <span matListItemLine>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Body') | translate : { primary: language().primary } }}</span>
         </mat-list-item>
         <mat-list-item lines=3
-          [ngClass]="{ 'eav-list-item__focus': vm.translationState.linkType === TranslationLinks.Translate }"
+          [ngClass]="{ 'eav-list-item__focus': translationStateSignal().linkType === TranslationLinks.Translate }"
           (click)="setLinkType(TranslationLinks.Translate)">
           <mat-icon matListItemIcon color="accent">lock_open</mat-icon>
-          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.FromPrimary + '.Title') | translate : { primary: vm.primary } }}</span>
-          <span>{{ ('LangMenu.Dialog.' + I18nKeys.FromPrimary + '.Body') | translate : { primary: vm.primary } }}</span>
+          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.FromPrimary + '.Title') | translate : { primary: language().primary } }}</span>
+          <span>{{ ('LangMenu.Dialog.' + I18nKeys.FromPrimary + '.Body') | translate : { primary: language().primary } }}</span>
         </mat-list-item>
         <mat-list-item lines=3
-          [ngClass]="{ 'eav-list-item__focus': vm.translationState.linkType === TranslationLinks.LinkCopyFrom }"
+          [ngClass]="{ 'eav-list-item__focus': translationStateSignal().linkType === TranslationLinks.LinkCopyFrom }"
           (click)="setLinkType(TranslationLinks.LinkCopyFrom)">
           <mat-icon matListItemIcon color="accent">translate</mat-icon>
-          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.FromOther + '.Title') | translate : { primary: vm.primary } }}</span>
-          <span>{{ ('LangMenu.Dialog.' + I18nKeys.FromOther + '.Body') | translate : { primary: vm.primary }
+          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.FromOther + '.Title') | translate : { primary: language().primary } }}</span>
+          <span>{{ ('LangMenu.Dialog.' + I18nKeys.FromOther + '.Body') | translate : { primary: language().primary }
           }}</span>
         </mat-list-item>
         <mat-list-item
-          [ngClass]="{ 'eav-list-item__focus': vm.translationState.linkType === TranslationLinks.LinkReadOnly }"
+          [ngClass]="{ 'eav-list-item__focus': translationStateSignal().linkType === TranslationLinks.LinkReadOnly }"
           (click)="setLinkType(TranslationLinks.LinkReadOnly)">
           <mat-icon matListItemIcon color="accent">link</mat-icon>
-          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Title') | translate : { primary: vm.primary } }}</span>
-          <span matListItemLine>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Body') | translate : { primary: vm.primary } }}</span>
+          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Title') | translate : { primary: language().primary } }}</span>
+          <span matListItemLine>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Body') | translate : { primary: language().primary } }}</span>
         </mat-list-item>
         <mat-list-item lines=3
-          [ngClass]="{ 'eav-list-item__focus': vm.translationState.linkType === TranslationLinks.LinkReadWrite }"
+          [ngClass]="{ 'eav-list-item__focus': translationStateSignal().linkType === TranslationLinks.LinkReadWrite }"
           (click)="setLinkType(TranslationLinks.LinkReadWrite)">
           <mat-icon matListItemIcon color="accent">share</mat-icon>
-          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.LinkShared + '.Title') | translate : { primary: vm.primary } }}</span>
-          <span>{{ ('LangMenu.Dialog.' + I18nKeys.LinkShared + '.Body') | translate : { primary: vm.primary }
+          <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.LinkShared + '.Title') | translate : { primary: language().primary } }}</span>
+          <span>{{ ('LangMenu.Dialog.' + I18nKeys.LinkShared + '.Body') | translate : { primary: language().primary }
           }}</span>
         </mat-list-item>
       </mat-nav-list>
-      @if (vm.showLanguageSelection) {
+      @if (translationInfo().showLanguageSelection) {
         <div>
           <mat-card-header>
             <mat-card-title>
-              {{ (vm.i18nRoot + '.Subtitle') | translate }}
+              {{ (translationInfo().i18nRoot + '.Subtitle') | translate }}
             </mat-card-title>
             <mat-card-subtitle>
               {{'LangMenu.Dialog.PickLanguageIntro' | translate }}
             </mat-card-subtitle>
           </mat-card-header>
           <mat-action-list>
-            @for (language of vm.languages; track language) {
+            @for (language of languages(); track language) {
               <mat-list-item (click)="setLanguage(language.key)"
                 [disabled]="language.disabled" [ngClass]="{
-                'eav-list-item__focus': vm.translationState.language === language.key,
+                'eav-list-item__focus': translationStateSignal().language === language.key,
                 'list-item__disabled': language.disabled
                 }">
                 <mat-icon matListItemIcon [ngClass]="{ 'list-item-icon__disabled': language.disabled }">language</mat-icon>
@@ -74,7 +73,6 @@
       }
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-button color="accent" [disabled]="vm.submitDisabled" (click)="run()">OK</button>
+      <button mat-button color="accent" [disabled]="translationInfo().submitDisabled" (click)="run()">OK</button>
     </mat-card-actions>
   </mat-card>
-}

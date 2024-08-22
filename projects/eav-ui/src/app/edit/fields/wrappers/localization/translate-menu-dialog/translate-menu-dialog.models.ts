@@ -20,11 +20,4 @@ export interface TranslateMenuDialogTemplateLanguage {
   noTranslatableFieldsThatHaveContent?: number;
 }
 
-export interface TranslateMenuDialogViewModel {
-  primary?: string;
-  languages?: TranslateMenuDialogTemplateLanguage[];
-  translationState: TranslationStateCore;
-  showLanguageSelection: boolean;
-  i18nRoot: string;
-  submitDisabled: boolean;
-}
+//

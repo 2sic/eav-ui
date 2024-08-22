@@ -6,7 +6,7 @@ import { ItemService, LanguageService } from '../../shared/store/ngrx-data';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { I18nKeys } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
-import { TranslateMenuDialogData, TranslateMenuDialogViewModel } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
+import { TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { TranslationStateCore } from '../../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
@@ -45,7 +45,6 @@ import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
 export class AutoTranslateMenuDialogComponent implements OnInit {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
-  viewModel$: Observable<TranslateMenuDialogViewModel>;
 
   private noLanguageRequired: TranslationLink[];
 
