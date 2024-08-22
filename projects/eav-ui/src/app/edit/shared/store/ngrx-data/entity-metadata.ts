@@ -15,9 +15,10 @@ export const entityMetadata: EntityMetadataMap = {
   Feature: {
     selectId: featureSelectId,
   },
-  Language: {
-    selectId: languageSelectId,
-  },
+  // TODO:: remove after testing ist done
+  // Language: {
+  //   selectId: languageSelectId,
+  // },
   FormLanguageInStore: {
     selectId: languageInstanceSelectId,
   },
@@ -69,9 +70,10 @@ function featureSelectId(feature: Feature): string {
   return feature?.guid;
 }
 
-function languageSelectId(language: Language): string {
-  return language?.NameId;
-}
+// TODO:: remove after testing ist done
+// function languageSelectId(language: Language): string {
+//   return language?.NameId;
+// }
 
 function languageInstanceSelectId(languageInstance: FormLanguageInStore): number {
   return languageInstance?.formId;
