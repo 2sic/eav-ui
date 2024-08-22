@@ -9,7 +9,7 @@
   </mat-card-header>
   <mat-card-content class="eav-card-content__no-padding">
     <mat-action-list>
-      @for (language of languages(); track language) {
+      @for (language of languagesSig(); track language) {
       <mat-list-item (click)="setLanguage(language.key)"
         [disabled]="language.disabled || !isTranslateWithGoogleFeatureEnabled()" [ngClass]="{
             'eav-list-item__focus': translationStateSignal().language === language.key,

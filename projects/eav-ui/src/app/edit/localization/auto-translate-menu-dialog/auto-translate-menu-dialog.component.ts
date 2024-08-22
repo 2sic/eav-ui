@@ -1,11 +1,8 @@
-import { Component, Inject, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, Inject, OnInit, computed, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { ItemService, LanguageService } from '../../shared/store/ngrx-data';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
-import { I18nKeys } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
-import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
+import { getTemplateLanguages, getTemplateLanguagesWithContent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
 import { TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { TranslationStateCore } from '../../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
@@ -17,13 +14,11 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { MatCardModule } from '@angular/material/card';
-import { TranslationLink, TranslationLinks } from '../translation-link.constants';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
-import { FormConfigService } from '../../state/form-config.service';
-import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
+import { TranslateHelperComponent } from '../../../shared/components/translate-helper.component';
 
 @Component({
   selector: 'app-auto-translate-menu-dialog',
@@ -42,36 +37,15 @@ import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
     SafeHtmlPipe,
   ],
 })
-export class AutoTranslateMenuDialogComponent implements OnInit {
-  TranslationLinks = TranslationLinks;
-  I18nKeys = I18nKeys;
-
-  private noLanguageRequired: TranslationLink[];
+export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent implements OnInit {
 
   public features: FeaturesService = inject(FeaturesService);
   public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
 
-  protected language = this.formConfig.languageSignal;
-
-  public translationStateSignal = signal<TranslationStateCore>(this.dialogData.translationState);
-
-  protected translationInfo = computed(() => {
-    const translationState = this.translationStateSignal();
-    this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
-    return {
-      showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
-      i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
-      submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
-    }
-  }, SignalHelpers.objectEquals);
-
-  #languages = this.languageService.getLanguagesSig();
-  #itemAttributes = this.itemService.getItemAttributesSignal(this.dialogData.config.entityGuid);
-
-  protected languages = computed(() => {
-    const languages = this.#languages();
+  protected languagesSig = computed(() => {
+    const languages = this.languages();
     const language = this.language();
-    const attributes = this.#itemAttributes();
+    const attributes = this.itemAttributes();
     const translationState = this.translationStateSignal();
 
     return this.dialogData.isTranslateMany
@@ -79,16 +53,13 @@ export class AutoTranslateMenuDialogComponent implements OnInit {
       : getTemplateLanguages(this.dialogData.config, language, languages, attributes, translationState.linkType);
   });
 
-
   constructor(
     private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
-    private languageService: LanguageService,
-    private itemService: ItemService,
-    private formConfig: FormConfigService,
     private fieldsTranslateService: FieldsTranslateService,
     private snackBar: MatSnackBar,
   ) {
+    super(dialogData);
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
       if (!CTRL_S) { return; }

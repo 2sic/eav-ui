@@ -58,7 +58,7 @@
             </mat-card-subtitle>
           </mat-card-header>
           <mat-action-list>
-            @for (language of languages(); track language) {
+            @for (language of languagesSig(); track language) {
               <mat-list-item (click)="setLanguage(language.key)"
                 [disabled]="language.disabled" [ngClass]="{
                 'eav-list-item__focus': translationStateSignal().language === language.key,
