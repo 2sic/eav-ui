@@ -22,9 +22,10 @@ export const entityMetadata: EntityMetadataMap = {
   FormLanguageInStore: {
     selectId: languageInstanceSelectId,
   },
-  ContentType: {
-    selectId: contentTypeSelectId,
-  },
+  // TODO:: Old Code, remove after testing ist done
+  // ContentType: {
+  //   selectId: contentTypeSelectId,
+  // },
   // TODO:: Old Code, remove after testing ist done
   // ContentTypeItem: {
   //   selectId: contentTypeItemSelectId,
@@ -80,9 +81,10 @@ function languageInstanceSelectId(languageInstance: FormLanguageInStore): number
   return languageInstance?.formId;
 }
 
-function contentTypeSelectId(contentType: EavContentType): string {
-  return contentType?.Id;
-}
+// TODO:: Old Code, remove after testing ist done
+// function contentTypeSelectId(contentType: EavContentType): string {
+//   return contentType?.Id;
+// }
 
 // TODO:: Old Code, remove after testing ist done
 // function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
