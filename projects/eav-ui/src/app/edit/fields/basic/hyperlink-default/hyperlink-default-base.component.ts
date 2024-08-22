@@ -122,15 +122,16 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     const contentType = this.config.contentTypeNameId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
-      if (!linkInfo) {
-        this.setPreview(value, false);
-        return;
-      }
-      this.linkCacheService.loadLink(value, linkInfo);
-      const isResolved = !this.isFileOrPage(linkInfo.Value);
-      this.setPreview(linkInfo.Value, isResolved, linkInfo.Adam);
-    });
+    this.adamService.getLinkInfo(value, contentType, entityGuid, field)
+      .subscribe(linkInfo => {
+        if (!linkInfo) {
+          this.setPreview(value, false);
+          return;
+        }
+        this.linkCacheService.loadLink(value, linkInfo);
+        const isResolved = !this.isFileOrPage(linkInfo.Value);
+        this.setPreview(linkInfo.Value, isResolved, linkInfo.Adam);
+      });
   }
 
   private setPreview(value: string, isResolved: boolean, adam?: AdamItem) {

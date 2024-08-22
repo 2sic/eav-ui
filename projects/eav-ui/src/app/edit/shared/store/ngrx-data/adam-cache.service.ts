@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { AdamItem } from '../../../../../../../edit-types';
 import { PrefetchAdams } from '../../../dialog/main/edit-dialog-main.models';
-import { BaseDataService } from './base-data.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class AdamCacheService extends BaseDataService<AdamSnapshot> {
-  constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-    super('AdamCache', serviceElementsFactory);
-  }
+
+
+export class AdamCacheService /* extends BaseDataService<AdamSnapshot> Old Code */ {
+
+  snapshot: Record<string, AdamSnapshot> = {};
+
+  // TODO:: Old Code, remove after testing ist done
+  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
+  //   super('AdamCache', serviceElementsFactory);
+  // }
 
   loadPrefetch(prefetchAdams: PrefetchAdams): void {
     if (prefetchAdams == null) { return; }
@@ -22,12 +26,27 @@ export class AdamCacheService extends BaseDataService<AdamSnapshot> {
       };
       return snapshot;
     });
-    this.upsertManyInCache(snapshots);
+    this.addToCache(snapshots);
   }
 
   getAdamSnapshot(entityGuid: string, fieldName: string): AdamItem[] {
-    return this.cache().find(adamSnapshot => adamSnapshot.Guid === entityGuid)?.Attributes[fieldName];
+    // TODO:: Old Code, remove after testing ist done
+    // return this.cacheTemp().find(adamSnapshot => adamSnapshot.Guid === entityGuid)?.Attributes[fieldName];
+    return this.snapshot[entityGuid]?.Attributes[fieldName];
   }
+
+  private addToCache(snapshots: AdamSnapshot[]): void {
+    // TODO:: Old Code, remove after testing ist done
+    // this.upsertManyInCache(snapshots);
+    snapshots.forEach(snapshot => {
+      this.snapshot[snapshot.Guid] = snapshot;
+    });
+  }
+
+  public clearCache(): void {
+    this.snapshot = {};
+  }
+
 }
 
 

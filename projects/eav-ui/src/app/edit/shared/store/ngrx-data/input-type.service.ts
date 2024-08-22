@@ -47,7 +47,7 @@ export class InputTypeService extends BaseDataService<InputType> {
   calculateInputType(attribute: EavContentTypeAttribute): CalculatedInputType {
     return this.calculateInputTypeInt(attribute, this.getInputTypes());
   }
-  
+
   private calculateInputTypeInt(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
     const inputType = inputTypes.find(i => i.Type === attribute.InputType);
     const calculated: CalculatedInputType = {

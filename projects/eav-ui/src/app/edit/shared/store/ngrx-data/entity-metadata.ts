@@ -40,12 +40,15 @@ export const entityMetadata: EntityMetadataMap = {
   EntityCache: {
     selectId: useLowerCaseId,
   },
-  AdamCache: {
-    selectId: adamCacheSelectId,
-  },
-  LinkCache: {
-    selectId: linkCacheSelectId,
-  },
+  // TODO:: Old Code, remove after testing ist done
+  // AdamCache: {
+  //   selectId: adamCacheSelectId,
+  // },
+
+  // TODO:: Old Code, remove after testing ist done
+  // LinkCache: {
+  //   selectId: linkCacheSelectId,
+  // },
 };
 
 const pluralNames = {
@@ -98,10 +101,10 @@ function useLowerCaseId(entity: { id: number } /* PickerItem */): number {
   return entity?.id;
 }
 
-function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {
-  return adamSnapshot?.Guid;
-}
+// function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {  // TODO:: Old Code, remove after testing ist done
+//   return adamSnapshot?.Guid;
+// }
 
-function linkCacheSelectId(link: LinkCache): string {
-  return link?.key;
-}
+// function linkCacheSelectId(link: LinkCache): string { // TODO:: Old Code, remove after testing ist done
+//   return link?.key;
+// }

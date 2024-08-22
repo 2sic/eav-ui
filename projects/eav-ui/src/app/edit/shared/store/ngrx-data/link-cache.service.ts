@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { AdamItem } from '../../../../../../../edit-types';
 import { LinkCache, LinkInfo, PrefetchAdams, PrefetchLinks } from '../../../dialog/main/edit-dialog-main.models';
-import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class LinkCacheService extends BaseDataService<LinkCache> {
-  constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-    super('LinkCache', serviceElementsFactory);
-  }
+export class LinkCacheService /* extends BaseDataService<LinkCache> Old Code */ {
+
+  list: Record<string, LinkCache> = {};
+
+  // TODO:: Old Code, remove after testing ist done
+  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
+  //   super('LinkCache', serviceElementsFactory);
+  // }
 
   loadPrefetch(prefetchLinks: PrefetchLinks, prefetchAdam: PrefetchAdams): void {
+
     const links: LinkCache[] = [];
 
     if (prefetchLinks != null) {
@@ -31,13 +34,12 @@ export class LinkCacheService extends BaseDataService<LinkCache> {
         }
       }
     }
-
-    this.upsertManyInCache(links);
+    this.addToCache(links);
   }
 
   loadAdam(items: AdamItem[]): void {
     const adamLinks = this.adamToLinks(items);
-    this.upsertManyInCache(adamLinks);
+    this.addToCache(adamLinks);
   }
 
   loadLink(key: string, linkInfo: LinkInfo): void {
@@ -51,12 +53,15 @@ export class LinkCacheService extends BaseDataService<LinkCache> {
         },
       },
     };
-    this.upsertOneInCache(link);
+
+    this.addToCache([link]);
   }
 
   getLinkInfo(key: string): LinkInfo {
     key = key.trim().toLocaleLowerCase();
-    return this.cache().find(linkCache => linkCache.key.trim().toLocaleLowerCase() === key)?.linkInfo;
+    // TODO:: Old Code, remove after testing ist done
+    // return this.cache().find(linkCache => linkCache.key.trim().toLocaleLowerCase() === key)?.linkInfo;
+    return this.list[key]?.linkInfo;
   }
 
   private adamToLinks(items: AdamItem[]): LinkCache[] {
@@ -77,4 +82,19 @@ export class LinkCacheService extends BaseDataService<LinkCache> {
 
     return links;
   }
+
+  private addToCache(links: LinkCache[]): void {
+    // this.upsertManyInCache(links); // TODO:: Old Code, remove after testing ist done
+
+    // add all links cache to list
+    links.forEach(link => {
+      this.list[link.key.toLocaleLowerCase()] = link;
+    });
+
+  }
+
+  public clearCache(): void {
+    this.list = {};
+  }
+
 }
