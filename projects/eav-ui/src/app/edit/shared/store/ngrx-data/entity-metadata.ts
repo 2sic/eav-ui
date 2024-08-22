@@ -25,9 +25,10 @@ export const entityMetadata: EntityMetadataMap = {
   ContentType: {
     selectId: contentTypeSelectId,
   },
-  ContentTypeItem: {
-    selectId: contentTypeItemSelectId,
-  },
+  // TODO:: Old Code, remove after testing ist done
+  // ContentTypeItem: {
+  //   selectId: contentTypeItemSelectId,
+  // },
   InputType: {
     selectId: inputTypeSelectId,
   },
@@ -83,9 +84,10 @@ function contentTypeSelectId(contentType: EavContentType): string {
   return contentType?.Id;
 }
 
-function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
-  return contentTypeItem?.Guid;
-}
+// TODO:: Old Code, remove after testing ist done
+// function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
+//   return contentTypeItem?.Guid;
+// }
 
 function inputTypeSelectId(inputType: InputType): string {
   return inputType?.Type;
