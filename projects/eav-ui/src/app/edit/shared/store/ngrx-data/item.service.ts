@@ -569,7 +569,7 @@ export class ItemService extends BaseDataService<EavItem> {
 
 
     const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
-    console.log('@2dg old item', oldItem);
+    // console.log('@2dg old item', oldItem);
 
 
     // TODO:: OLD CODE remove after testing ist done

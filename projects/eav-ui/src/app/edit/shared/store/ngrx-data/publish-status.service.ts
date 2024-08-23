@@ -1,9 +1,6 @@
 import { computed, Injectable, signal, Signal } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../../state/form-config.service';
 import { PublishStatus, PublishMode, PublishModes } from '../../../dialog/main/edit-dialog-main.models';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService /* extends BaseDataService<PublishStatus> TODO:: Old Code */ {
@@ -15,9 +12,9 @@ export class PublishStatusService /* extends BaseDataService<PublishStatus> TODO
   // }
 
   private setPublishStatus(publishStatus: PublishStatus): void {
-    console.log('@2dg setPublish before', this.publishStatusSig());
+    // console.log('@2dg setPublish before', this.publishStatusSig());
     this.addToCache([publishStatus]);
-    console.log('@2dg setPublish after', this.publishStatusSig());
+    // console.log('@2dg setPublish after', this.publishStatusSig());
   }
 
   removePublishStatus(formId: number): void {
@@ -78,7 +75,7 @@ export class PublishStatusService /* extends BaseDataService<PublishStatus> TODO
   // }
 
   getPublishMode(formId: number): Signal<PublishMode> {
-    console.log('@2dg getPublishModeSignal', formId);
+    // console.log('@2dg getPublishModeSignal', formId);
     const cached = this.signalsPublishModeCache[formId];
     if (cached) return cached;
     const sig = computed(() => this.convertToPublishMode(this.getPublishStatus(formId)));
