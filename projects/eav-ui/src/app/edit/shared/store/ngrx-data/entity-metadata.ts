@@ -1,11 +1,8 @@
 import { EntityMetadataMap } from '@ngrx/data';
-import { InputType } from '../../../../content-type-fields/models/input-type.model';
-import { LinkCache, Prefetch, PublishStatus } from '../../../dialog/main/edit-dialog-main.models';
-import { EavContentType, EavEntity, EavItem } from '../../models/eav';
+import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
+import { EavItem } from '../../models/eav';
 import { Feature } from '../../../../features/models/feature.model';
-import { Language } from '../../../state/form-languages.model';
 import { FormLanguageInStore } from './language-instance.service';
-import { AdamSnapshot } from './adam-cache.service';
 
 export const entityMetadata: EntityMetadataMap = {
   GlobalConfig: {},

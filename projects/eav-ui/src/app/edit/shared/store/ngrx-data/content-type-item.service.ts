@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { EavEntity } from '../../models/eav';
 import { EavEntityDto } from '../../models/json-format-v1';
-import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class ContentTypeItemService /* extends BaseDataService<EavEntity> TODO:: Old Code */ {

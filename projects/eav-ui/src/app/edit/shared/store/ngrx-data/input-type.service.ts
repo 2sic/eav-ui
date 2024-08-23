@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Observable, of } from 'rxjs';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
-import { BaseDataService } from './base-data.service';
 import { EavContentTypeAttribute } from '../../models/eav';
 import { InputTypeName } from '../../../../../../../edit-types/src/InputTypeName';
 import { InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
