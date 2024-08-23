@@ -14,7 +14,7 @@ import { FieldProps } from '../../state/fields-configs.model';
 import { FieldValue } from 'projects/edit-types';
 import { ControlHelpers } from '../../shared/helpers/control.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FormConfigService } from '../../state/form-config.service';
+import { EntityFormStateService } from '../entity-form-state.service';
 
 const logThis = true;
 const nameOfThis = 'FormFieldsBuilderService';
@@ -26,7 +26,7 @@ export class FormFieldsBuilderService extends ServiceBase {
     private fieldsSettingsService: FieldsSettingsService,
     private adamCacheService: AdamCacheService,
     private formBuilder: UntypedFormBuilder,
-    private formConfigService: FormConfigService,
+    private entityFormConfigSvc: EntityFormStateService,
   ) {
     super(new EavLogger(nameOfThis, logThis));
   }
@@ -106,8 +106,8 @@ export class FormFieldsBuilderService extends ServiceBase {
         form.addControl(fieldName, newControl);
         ValidationHelpers.ensureWarning(form.controls[fieldName]);
       }
-      
-      this.formConfigService.controlsCreated.set(true);
+
+      this.entityFormConfigSvc.controlsCreated.set(true);
     });    
 
 

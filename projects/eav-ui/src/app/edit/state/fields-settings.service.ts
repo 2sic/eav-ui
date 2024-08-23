@@ -8,7 +8,7 @@ import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstan
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
@@ -17,7 +17,6 @@ import { FieldsSettingsConstantsService } from './fields-settings-constants.serv
 import { transient } from '../../core';
 import { FormConfigService } from './form-config.service';
 import { FormsStateService } from './forms-state.service';
-import { ItemHelper } from '../shared/helpers/item.helper';
 import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './fields-configs.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
@@ -54,7 +53,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private latestFieldProps: FieldsProps = {};
 
   /** Released field properties after the cycles of change are done */
-  private fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
+  private fieldsProps = signal<FieldsProps>(null);
+  private fieldsProps$ = toObservable(this.fieldsProps); //  new BehaviorSubject<FieldsProps>(null);
 
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
 
@@ -75,7 +75,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.fieldsProps$?.complete();
+    // this.fieldsProps$?.complete();
     this.forceRefreshSettings$?.complete();
     super.destroy();
   }
@@ -211,7 +211,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         logUpdateFieldProps.filter(),
       ).subscribe(fieldsProps => {
         this.log.a('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
-        this.fieldsProps$.next(fieldsProps);
+        this.fieldsProps.set(fieldsProps);
       })
     );
   }
@@ -269,7 +269,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Object that has attribute name as a key and all of its field properties as a value
    */
   getFieldsProps(): FieldsProps {
-    return this.fieldsProps$.value;
+    return this.fieldsProps();
   }
 
   /**
@@ -277,7 +277,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Stream of objects that has attribute name as a key and all of its field properties as a value
    */
   getFieldsProps$(): Observable<FieldsProps> {
-    return this.fieldsProps$.asObservable();
+    return this.fieldsProps$;
   }
 
   /**
@@ -286,7 +286,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Field settings
    */
   getFieldSettings(fieldName: string): FieldSettings {
-    return this.fieldsProps$.value[fieldName].settings;
+    return this.fieldsProps()[fieldName].settings;
   }
 
   /**
@@ -306,6 +306,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
     const cached = this.signalsCache[fieldName];
     if (cached) return cached;
+    // var sig = computed(() => {
+    //   return this.getFieldSettings(fieldName); // will access the signal...
+    // }, { equal: RxHelpers.objectsEqual });
+    // return this.signalsCache[fieldName] = sig; // note: no initial value, it should always be up-to-date
     var obs = this.getFieldSettings$(fieldName);
     return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
   }
@@ -345,7 +349,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       ...this.latestFieldProps,
       [fieldName]: { ...props, settings: newSettings }
     };
-    this.fieldsProps$.next(newProps);
+    this.fieldsProps.set(newProps);
 
     // Experimental: had trouble with the _isDialog / Collapsed properties not being persisted
     // since the latestFieldProps never had the value originally

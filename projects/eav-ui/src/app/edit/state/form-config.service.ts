@@ -17,6 +17,7 @@ export const webApiEditRoot = 'cms/edit/';
 
 /**
  * Service which tell us about a single edit-form configuration.
+ * It contains multiple entities.
  *
  * Things such as language, IDs shown on it, edit-settings etc.
  */
@@ -36,8 +37,6 @@ export class FormConfigService {
 
   // WIP, null at first
   configSignal = signal<FormConfiguration>(null);
-
-  controlsCreated = signal(false);
 
   /**
    * Current form language information

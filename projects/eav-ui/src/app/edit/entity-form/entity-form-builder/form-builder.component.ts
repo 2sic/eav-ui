@@ -33,8 +33,7 @@ const nameOfThis = 'FormBuilderComponent';
   providers: [
     FieldsSettingsService,  // used for all field settings - must be shared from here
     FieldsTranslateService, // used for field translations and uses FieldsSettingsService, so also shared here
-    // new
-    EntityFormStateService,
+    EntityFormStateService, // used for sharing information about this entity form
   ],
 })
 export class EntityFormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {

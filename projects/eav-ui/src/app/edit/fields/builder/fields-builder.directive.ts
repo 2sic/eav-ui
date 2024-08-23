@@ -15,7 +15,7 @@ import { FieldConfigSet } from '../field-config-set.model';
 import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorator';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
-import { FormConfigService } from '../../state/form-config.service';
+import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 
 const logThis = true;
 const nameOfThis = 'FieldsBuilderDirective';
@@ -39,7 +39,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
   /** Service to get all settings for each field */
   #fieldsSettingsService = inject(FieldsSettingsService);
 
-  constructor(private formConfigService: FormConfigService) {
+  constructor(private formConfigService: EntityFormStateService) {
     super(new EavLogger(nameOfThis, logThis));
 
     effect(() => {

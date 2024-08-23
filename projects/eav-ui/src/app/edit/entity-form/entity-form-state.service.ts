@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { ServiceBase } from '../../shared/services/service-base'
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { UntypedFormGroup } from '@angular/forms';
@@ -7,7 +7,9 @@ const logThis = false;
 const nameOfThis = 'EntityFormStateService';
 
 /**
- * Experimental: provide a service to hold the form group and anything specific to the form.
+ * Experimental: provide a service to hold the form group and anything specific to a form.
+ * 
+ * This is specific to a single entity.
  */
 @Injectable()
 export class EntityFormStateService extends ServiceBase {
@@ -15,6 +17,8 @@ export class EntityFormStateService extends ServiceBase {
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }
+
+  controlsCreated = signal(false);
 
   setup(formGroup: UntypedFormGroup) {
     this.log.a('Setting up form group');
