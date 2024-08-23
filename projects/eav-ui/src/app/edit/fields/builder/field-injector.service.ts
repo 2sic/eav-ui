@@ -14,7 +14,7 @@ import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
 import { CalculatedInputType } from '../../state/fields-configs.model';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldInjectorService';
 const logDetailsOnFields = ['Boolean'];
 /**
@@ -62,8 +62,10 @@ export class FieldInjectorService {
       runInInjectionContext(this.injector, () => {
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
-        const disabled$ = settings$.pipe(map(s => s.Disabled || s.ForcedDisabled),
-                             mapUntilObjChanged(m => m)); // distinctUntilChanged(RxHelpers.boolEquals));
+        const disabled$ = settings$.pipe(
+          map(s => s.Disabled || s.ForcedDisabled),
+          mapUntilObjChanged(m => m)
+        );
         const controlStatus$ = combineLatest([control.valueChanges, disabled$]).pipe(
           tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
           mapUntilObjChanged(([_, disabled]) => controlToControlStatus(control, disabled)),

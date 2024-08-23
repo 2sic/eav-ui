@@ -63,6 +63,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
   }
 
   ngOnInit() {
+    const l = this.log.fn('ngOnInit');
     this.fieldsSettingsService.init(this.entityGuid);
     this.#formulaDesignerService.itemSettingsServices[this.entityGuid] = this.fieldsSettingsService;
     this.fieldsTranslateService.init(this.entityGuid);
@@ -93,6 +94,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
 
     // Create all the controls in the form right at the beginning
     fieldsToProcess.pipe(take(1)).subscribe(allFields => {
+      l.a('create all controls', { allFields });
       // 1. create missing controls - usually just on first cycle
       const fieldsToCreate = allFields.filter(({ inputType, hasControl }) =>
         // Empty type, skip
@@ -153,7 +155,8 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
           // In case controls should be updated, update with control.markAsTouched and control.markAsDirty.
           // Marking the form will not mark controls, but marking controls marks the form
           form.patchValue(changes);
-        }
+        } else
+          this.log.a('no changes detected', { oldValues, newValues });
 
         // 3. sync disabled if state not matching
         this.log.a('sync "disabled" state');
