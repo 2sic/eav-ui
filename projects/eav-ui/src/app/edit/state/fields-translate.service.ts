@@ -35,6 +35,8 @@ export class FieldsTranslateService {
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
+  updater = this.itemService.updater;
+
   init(entityGuid: string): void {
     const l = this.log.fn('init');
     this.entityGuid = entityGuid;
@@ -51,7 +53,7 @@ export class FieldsTranslateService {
       return l.rNull('Translation is disabled for this field.');
 
     const language = this.formConfig.language();
-    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
+    transactionItem = this.updater.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
 
     const attributes = this.itemAttributes();
     const values = attributes[fieldName];
@@ -69,7 +71,7 @@ export class FieldsTranslateService {
       return l.rNull('Translation is disabled for this field.');
 
     const language = this.formConfig.language();
-    transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
+    transactionItem = this.updater.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
     return transactionItem;
   }
 
@@ -111,7 +113,7 @@ export class FieldsTranslateService {
             const elem = document.createElement('textarea');
             elem.innerHTML = translation.translatedText;
             if (!isMany && doFieldsHaveExistingDimension[i]) {
-              this.itemService.updateItemAttributeValue(
+              this.updater.updateItemAttributeValue(
                 this.entityGuid, fieldNames[i], elem.value, language, false
               );
             } else if (!doFieldsHaveExistingDimension[i]) {
@@ -136,7 +138,7 @@ export class FieldsTranslateService {
 
       if (valueAlreadyExists)
         // Copy attribute value where language is languageKey to value where language is current language
-        this.itemService.updateItemAttributeValue(
+        this.updater.updateItemAttributeValue(
           this.entityGuid, fieldName, valueTranslation.Value, language, false,
         );
       else
@@ -158,8 +160,8 @@ export class FieldsTranslateService {
     if (this.isTranslationDisabled(fieldName)) return;
 
     const language = this.formConfig.language();
-    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
-    this.itemService.addItemAttributeDimension(
+    const transactionItem = this.updater.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, true);
+    this.updater.addItemAttributeDimension(
       this.entityGuid, fieldName, language.current, linkWithLanguageKey, language.primary, isReadOnly, transactionItem,
     );
   }
@@ -268,7 +270,7 @@ export class FieldsTranslateService {
     const l = this.log.fn('addItemAttributeValueHelper', { fieldName, value, currentLanguage, isReadOnly });
     const contentType = this.contentTypeService.getContentType(this.contentTypeId);
     const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
-    const result = this.itemService.addItemAttributeValue(
+    const result = this.updater.addItemAttributeValue(
       this.entityGuid, fieldName, value, currentLanguage, isReadOnly, ctAttribute.Type
     );
     return l.r(result);

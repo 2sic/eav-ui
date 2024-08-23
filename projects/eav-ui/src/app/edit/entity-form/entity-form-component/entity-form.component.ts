@@ -251,7 +251,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
     this.formDataService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
-      this.itemService.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
+      this.itemService.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
       this.#retriggerNoteProps.set(true);
     });
   }

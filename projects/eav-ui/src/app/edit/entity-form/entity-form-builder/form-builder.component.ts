@@ -203,7 +203,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
         distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const language = this.formConfig.language();
-        this.itemService.updateItemAttributesValues(this.entityGuid, formValues, language);
+        this.itemService.updater.updateItemAttributesValues(this.entityGuid, formValues, language);
       })
     );
   }

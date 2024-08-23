@@ -252,7 +252,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       this.formDataService.saveFormData(saveFormData, this.formConfig.config.partOfPage).subscribe({
         next: result => {
           l.a('SAVED!, result:', { result, close });
-          this.itemService.updateItemId(result);
+          this.itemService.updater.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
           this.formsStateService.formsAreDirty.set(false);
           this.saveResult = result;

@@ -78,7 +78,7 @@ export class ItemFormulaBroadcastService {
 
     if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
       this.valueFormulaCounter++;
-      this.itemService.updateItemAttributesValues(entityGuid, valueUpdates, this.reader());
+      this.itemService.updater.updateItemAttributesValues(entityGuid, valueUpdates, this.reader());
       // return true to make sure fieldProps are not updated yet
       return l.r(true);
     }

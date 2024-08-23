@@ -197,6 +197,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   private initMissingValues(): void {
     const l = this.log.fn('initMissingValues');
 
+    const updater = this.itemService.updater;
     const eavConfig = this.formConfig.config;
     const formId = eavConfig.formId;
     const items = this.itemService.getItems(eavConfig.itemGuids);
@@ -230,7 +231,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
           l.a(`${currentName} languages none, simple init`);
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
           if (logic.isValueEmpty(firstValue, isCreateMode))
-            this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
+            updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
         } else {
           l.a(`${currentName} languages many, complex init`);
 
@@ -240,8 +241,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
           l.values({ disableI18n, noLanguageValue }, currentName);
           if (!disableI18n && noLanguageValue !== undefined) {
             // move * value to defaultLanguage
-            const transactionItem = this.itemService.removeItemAttributeDimension(item.Entity.Guid, ctAttribute.Name, '*', true);
-            this.itemService.addItemAttributeValue(
+            const transactionItem = updater.removeItemAttributeDimension(item.Entity.Guid, ctAttribute.Name, '*', true);
+            updater.addItemAttributeValue(
               item.Entity.Guid,
               ctAttribute.Name,
               noLanguageValue,
@@ -266,7 +267,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
           l.values({ currentName, valueIsEmpty, defaultLanguageValue, isCreateMode }, currentName);
           if (valueIsEmpty) {
-            const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
+            const valUsed = updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
 
             // 2022-08-15 2dm added this
             // If we run into more problems (like required date-fields which result in null)
