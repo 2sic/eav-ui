@@ -1,4 +1,4 @@
-import { Directive, OnDestroy, OnInit, Type, ViewContainerRef, inject } from '@angular/core';
+import { Directive, OnDestroy, OnInit, Type, ViewContainerRef, effect, inject, signal, untracked } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { CustomDefaultComponent } from '../basic/custom-default/custom-default.component';
@@ -15,8 +15,9 @@ import { FieldConfigSet } from '../field-config-set.model';
 import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorator';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
+import { FormConfigService } from '../../state/form-config.service';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldsBuilderDirective';
 
 /**
@@ -24,37 +25,54 @@ const nameOfThis = 'FieldsBuilderDirective';
  * It will create the fields based on the settings and attach them to the view.
  */
 @Directive({
-  selector: '[appFieldsBuilder]',
+  selector: '[appEditControlsBuilder]',
   standalone: true,
 })
-export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
-
-
+export class EditControlsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
 
   /** Service to create custom injectors for each field */
-  private fieldInjector = transient(FieldInjectorService);
+  #fieldInjector = transient(FieldInjectorService);
 
   /** Ref to this HTML DOM, for adding controls */
-  private thisContainerRef = inject(ViewContainerRef);
+  #thisContainerRef = inject(ViewContainerRef);
 
   /** Service to get all settings for each field */
-  private fieldsSettingsService = inject(FieldsSettingsService);
+  #fieldsSettingsService = inject(FieldsSettingsService);
 
-  constructor() {
+  constructor(private formConfigService: FormConfigService) {
     super(new EavLogger(nameOfThis, logThis));
+
+    effect(() => {
+      const onInitReady = this.onInitReady();
+      const controlsCreated = this.formConfigService.controlsCreated();
+      this.log.a('createControls - effect', { onInitReady, controlsCreated });
+      if (!(onInitReady && controlsCreated))
+        return;
+
+      this.log.a('createControls RUN');
+      // TODO: NOT YET CLEAR IF THIS IS THE RIGHT SOLUTION
+      untracked(() => this.createControls());
+    }); // , { allowSignalWrites: true });
   }
 
-  private fieldConfigs: FieldConfigSet[] = [];
+  /** Field Configs for clean-up after the control closes */
+  #fieldConfigSets: FieldConfigSet[] = [];
+
+  onInitReady = signal(false);
 
   ngOnInit() {
+    this.onInitReady.set(true);
+  }
+
+  createControls() {
     // clear container
-    this.thisContainerRef.clear();
+    this.#thisContainerRef.clear();
 
     // Set the current container to be "This" = the main container (not a specific group)
     // When groups open/close, this will be set to that group,
     // so fields are then inside that container.
-    let currentContainer = this.thisContainerRef;
-    const fieldsProps = this.fieldsSettingsService.getFieldsProps();
+    let currentContainer = this.#thisContainerRef;
+    const fieldsProps = this.#fieldsSettingsService.getFieldsProps();
 
     // Loop through each field and create the component
     // If we encounter a group, we create a new container and set it as the main one
@@ -64,15 +82,15 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
         fieldName: fieldName,
         focused$: new BehaviorSubject(false),
       };
-      this.fieldConfigs.push(fieldConfig);
+      this.#fieldConfigSets.push(fieldConfig);
       const inputType = fieldProps.constants.inputCalc.inputType;
 
       // If we encounter a group-start, then create a new container based on the main container
       if (EmptyFieldHelpers.isGroupStart(inputType))
-        currentContainer = this.createGroup(this.thisContainerRef, fieldProps, fieldConfig);
+        currentContainer = this.createGroup(this.#thisContainerRef, fieldProps, fieldConfig);
       // If we encounter a group-end, set the main container to be the default one again
       else if (EmptyFieldHelpers.isGroupEnd(inputType))
-        currentContainer = this.thisContainerRef;
+        currentContainer = this.#thisContainerRef;
       // Just create the normal component within the current container
       else
         this.createComponent(currentContainer, fieldProps, fieldConfig);
@@ -80,13 +98,13 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
-    for (const fieldConfig of this.fieldConfigs)
+    for (const fieldConfig of this.#fieldConfigSets)
       fieldConfig.focused$.complete();
     this.destroy();
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
-    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
+    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.buildWrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);
@@ -97,7 +115,7 @@ export class FieldsBuilderDirective extends ServiceBase implements OnInit, OnDes
     this.log.a('createComponent', { calculatedInputType: fieldProps.constants.inputCalc });
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
-    const injectors = this.fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
+    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.buildWrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);

@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../shared/services/form-data.service';
-import { FieldsBuilderDirective } from '../../fields/builder/fields-builder.directive';
+import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FeatureNames } from '../../../features/feature-names';
 import { BaseComponent } from '../../../shared/components/base.component';
@@ -54,7 +54,7 @@ const nameOfThis = 'EntityWrapperComponent';
     MatSlideToggleModule,
     EntityTranslateMenuComponent,
     ChangeAnchorTargetDirective,
-    FieldsBuilderDirective,
+    EditControlsBuilderDirective,
     TranslateModule,
     TippyDirective,
     SafeHtmlPipe,

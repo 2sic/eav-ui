@@ -37,6 +37,8 @@ export class FormConfigService {
   // WIP, null at first
   configSignal = signal<FormConfiguration>(null);
 
+  controlsCreated = signal(false);
+
   /**
    * Current form language information
    */
