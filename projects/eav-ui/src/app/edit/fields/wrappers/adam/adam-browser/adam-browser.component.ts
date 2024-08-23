@@ -4,12 +4,12 @@ import { ChangeDetectorRef, Component, EventEmitter, inject, NgZone, OnDestroy, 
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable, startWith } from 'rxjs';
-import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
+import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
-import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
+import { FileTypeHelpers } from '../../../../shared/helpers';
 import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
-import { AdamBrowserViewModel, AdamConfigInstance } from './adam-browser.models';
+import { AdamConfigInstance } from './adam-browser.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { PasteClipboardImageDirective } from '../../../directives/paste-clipboard-image.directive';
@@ -29,6 +29,7 @@ import { FieldsSettingsService } from '../../../../state/fields-settings.service
 import { FormsStateService } from '../../../../state/forms-state.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { AdamService } from '../../../../shared/services/adam.service';
+import { fixDropzone } from './dropzone-helper';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -133,7 +134,11 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       },
       setConfig: (config) => {
         this.log.a('setConfig', config);
-        this.zone.run(() => this.setConfig(config));
+        const newConfig = AdamConfigInstance.completeConfig(config, this.config, this.adamConfig$.value);
+        this.zone.run(() => {
+          this.adamConfig$.next(newConfig);
+          fixDropzone(newConfig, this.config);
+        });
       },
       getConfig: () => this.adamConfig$.value,
       getConfig$: () => this.adamConfig$.asObservable(),
@@ -325,7 +330,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     this.linkCacheService.loadAdam(items);
 
     const filteredItems: AdamItem[] = [];
-    const extensionsFilter = this.getExtensionsFilter(adamConfig.fileFilter);
+    const extensionsFilter = getExtensionsFilter(adamConfig.fileFilter);
 
     for (const item of items) {
       if (item.Name === '.') { // is root
@@ -374,85 +379,29 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     return item.Id;
   }
 
-  private setConfig(config: Partial<AdamConfig>) {
-    // set new values and use old ones where new value is not provided
-    const startDisabled = this.config.isExternal;
-    const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance(startDisabled);
-    const newConfig = new AdamConfigInstance(startDisabled);
+}
 
-    for (const key of Object.keys(newConfig))
-      (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
+function getExtensionsFilter(fileFilter: string) {
+  if (!fileFilter) return [];
 
-    // fixes
-    const resetSubfolder = oldConfig.usePortalRoot !== newConfig.usePortalRoot;
-    if (resetSubfolder)
-      newConfig.subfolder = '';
+  const extensions = fileFilter.split(',').map(extension => {
+    extension = extension.trim();
 
-    if (newConfig.usePortalRoot) {
-      const fixBackSlashes = newConfig.rootSubfolder.includes('\\');
-      if (fixBackSlashes)
-        newConfig.rootSubfolder = newConfig.rootSubfolder.replace(/\\/g, '/');
-      const fixStartingSlash = newConfig.rootSubfolder.startsWith('/');
-      if (fixStartingSlash)
-        newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
-      const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
-      if (fixRoot)
-        newConfig.subfolder = newConfig.rootSubfolder;
-      newConfig.maxDepthReached = false; // when using portal root depth is infinite
+    if (extension.startsWith('*.')) {
+      extension = extension.replace('*.', '');
+    } else if (extension.startsWith('*')) {
+      extension = extension.replace('*', '');
     }
-    if (!newConfig.usePortalRoot) {
-      const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
-      const fixDepth = currentDepth >= newConfig.folderDepth;
-      if (fixDepth) {
-        let folders = newConfig.subfolder.split('/');
-        folders = folders.slice(0, newConfig.folderDepth);
-        newConfig.subfolder = folders.join('/');
-        newConfig.maxDepthReached = true;
-      } else
-        newConfig.maxDepthReached = false;
-    }
-    this.adamConfig$.next(newConfig);
 
-    // fix dropzone
-    const oldDzConfig = this.config.dropzone.getConfig();
-    const newDzConfig: Partial<DropzoneConfigExt> = {};
-    const dzUrlParams = UrlHelpers.getUrlParams(oldDzConfig.url as string);
-    const dzSubfolder = dzUrlParams.subfolder || '';
-    const dzUsePortalRoot = dzUrlParams.usePortalRoot;
-    const fixUploadUrl = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
-    if (fixUploadUrl) {
-      let newUrl = oldDzConfig.url as string;
-      newUrl = UrlHelpers.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
-      newUrl = UrlHelpers.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
-      newDzConfig.url = newUrl;
-    }
-    const uploadDisabled = !newConfig.allowEdit
-      || (
-        (newConfig.subfolder === '' || newConfig.usePortalRoot && newConfig.subfolder === newConfig.rootSubfolder)
-        && !newConfig.allowAssetsInRoot
-      );
-    const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
-    if (fixDisabled)
-      newDzConfig.disabled = uploadDisabled;
-    if (Object.keys(newDzConfig).length > 0)
-      this.config.dropzone.setConfig(newDzConfig);
-  }
+    return extension.toLocaleLowerCase();
+  });
 
-  private getExtensionsFilter(fileFilter: string) {
-    if (!fileFilter) return [];
+  return extensions;
+}
 
-    const extensions = fileFilter.split(',').map(extension => {
-      extension = extension.trim();
-
-      if (extension.startsWith('*.')) {
-        extension = extension.replace('*.', '');
-      } else if (extension.startsWith('*')) {
-        extension = extension.replace('*', '');
-      }
-
-      return extension.toLocaleLowerCase();
-    });
-
-    return extensions;
-  }
+export interface AdamBrowserViewModel {
+  adamConfig: AdamConfig;
+  items: AdamItem[];
+  value: string;
+  disabled: boolean;
 }
