@@ -8,7 +8,7 @@ import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstan
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
@@ -22,7 +22,6 @@ import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './field
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
-import { SignalHelpers } from '../../shared/helpers/signal.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';

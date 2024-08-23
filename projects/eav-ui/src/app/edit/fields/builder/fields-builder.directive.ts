@@ -133,7 +133,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
       wrapperInfo = this.createWrappers(wrapperInfo, fieldMetadata.wrappers);
 
     // generate the real input field component
-    this.log.a('createComponent - add component', { componentType });
+    // this.log.a('createComponent - add component', { componentType });
     this.generateAndAttachField(componentType, wrapperInfo.contentsRef, wrapperInfo.injectors);
 
     // generate the picker preview component if it exists

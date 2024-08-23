@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
@@ -20,12 +20,12 @@ import { WrappersConstants } from '../../wrappers/wrappers.constants';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
-import { mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,
@@ -106,38 +106,38 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       formsStateService,
     );
     HyperlinkDefaultLogic.importMe();
+
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.attachAdam();
 
+    // Should probably be in ngOnInit, because this.config.adam is created late
+    this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
+    this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
+
+    // Connect items$ from Adam to ...?
     this.config.adam.items$.subscribe(items => {
       this.adamConfig.set(items);
     });
+
+    // ADAM Settings, in a way which ensures they only fire on relevant changes
+    const adamSettings = computed(() => {
+      const s = this.fieldState.settings();
+      return {
+        rootSubfolder: s.Paths,
+        fileFilter: s.FileFilter,
+        autoLoad: true,
+      };
+    }, { equal: RxHelpers.objectsEqual});
+
+    effect(() => {
+      this.config.adam.setConfig(adamSettings());
+    }, { allowSignalWrites: true });
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
-  }
-
-  private attachAdam() {
-    this.subscriptions.add(
-      this.fieldState.settings$.pipe(
-        mapUntilObjChanged(settings => ({
-          Paths: settings.Paths,
-          FileFilter: settings.FileFilter,
-        })),
-      ).subscribe(settings => {
-        this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
-        this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
-        this.config.adam.setConfig({
-          rootSubfolder: settings.Paths,
-          fileFilter: settings.FileFilter,
-          autoLoad: true,
-        });
-      })
-    );
   }
 
   private setValue(item: AdamItem) {
