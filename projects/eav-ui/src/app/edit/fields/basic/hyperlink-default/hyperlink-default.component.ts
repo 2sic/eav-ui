@@ -107,21 +107,8 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     );
     HyperlinkDefaultLogic.importMe();
 
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-
-    // Should probably be in ngOnInit, because this.config.adam is created late
-    this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
-    this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
-
-    // Connect items$ from Adam to ...?
-    this.config.adam.items$.subscribe(items => {
-      this.adamConfig.set(items);
-    });
-
     // ADAM Settings, in a way which ensures they only fire on relevant changes
+    // must be in constructor for effect() to work
     const adamSettings = computed(() => {
       const s = this.fieldState.settings();
       return {
@@ -134,6 +121,20 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     effect(() => {
       this.config.adam.setConfig(adamSettings());
     }, { allowSignalWrites: true });
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+
+    // Connect items$ from Adam to ...?
+    this.config.adam.items$.subscribe(items => {
+      this.adamConfig.set(items);
+    });
+
+    // Should probably be in ngOnInit, because this.config.adam is created late
+    this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
+    this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
+
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
