@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectorRef, Component, EventEmitter, inject, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, NgZone, OnDestroy, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable, startWith } from 'rxjs';
@@ -30,6 +30,7 @@ import { FormsStateService } from '../../../../state/forms-state.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { AdamService } from '../../../../shared/services/adam.service';
 import { fixDropzone } from './dropzone-helper';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -80,8 +81,12 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   viewModel$: Observable<AdamBrowserViewModel>;
 
-  private adamConfig$: BehaviorSubject<AdamConfig>;
-  private items$: BehaviorSubject<AdamItem[]>;
+  // TODO: SWITCHING this to Signals is problematic for now
+  // because of zone.Run below - causes the browser to completely freeze,
+  // probably some kind of infinite loop
+  private adamConfig$ = new BehaviorSubject<AdamConfig>(null)
+  items = signal<AdamItem[]>([]);
+  private items$ = toObservable(this.items);
   private control: AbstractControl;
   private url: string;
   private firstFetch = true;
@@ -110,10 +115,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
 
-
-    this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
-    this.items$ = new BehaviorSubject<AdamItem[]>([]);
-
     // Update data if a child-form closes
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
@@ -126,7 +127,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {
-      items$: this.items$.asObservable(),
+      items: this.items,
+      items$: this.items$,
       toggle: (usePortalRoot, showImagesOnly) => {
         this.zone.run(() => {
           this.toggle(usePortalRoot, showImagesOnly);
@@ -150,6 +152,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
         });
       },
     };
+
     this.subscriptions.add(
       this.adamConfig$.subscribe(() => {
         this.fetchItems();
@@ -160,20 +163,17 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
     const disabled$ = this.control.valueChanges.pipe(
       map(() => this.control.disabled),
       startWith(this.control.disabled),
       mapUntilChanged(m => m),
-      // distinctUntilChanged(),
     );
 
-    this.viewModel$ = combineLatest([this.adamConfig$, this.items$, value$, disabled$]).pipe(
-      map(([adamConfig, items, value, disabled]) => {
+    this.viewModel$ = combineLatest([this.adamConfig$, value$, disabled$]).pipe(
+      map(([adamConfig, value, disabled]) => {
         const viewModel: AdamBrowserViewModel = {
           adamConfig,
-          items,
           value,
           disabled,
         };
@@ -184,7 +184,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnDestroy() {
     this.adamConfig$.complete();
-    this.items$.complete();
     super.ngOnDestroy();
   }
 
@@ -306,17 +305,13 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       this.firstFetch = false;
       const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
       if (adamItems) {
-        const clonedItems = adamItems.map(adamItem => {
-          const clone: AdamItem = { ...adamItem };
-          return clone;
-        });
+        const clonedItems = adamItems.map(adamItem => ({ ...adamItem } satisfies AdamItem));
         setTimeout(() => { this.processFetchedItems(clonedItems, adamConfig); });
         return;
       }
     }
 
     this.adamService.getAll(this.url, adamConfig).subscribe(items => {
-      // console.log('2dm for 2reserve', items);
       this.processFetchedItems(items, adamConfig);
     });
   }
@@ -362,7 +357,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
     filteredItems.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
     filteredItems.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
-    this.items$.next(filteredItems);
+    this.items.set(filteredItems);
   }
 
   private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
@@ -374,11 +369,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
     this.config.adam.setConfig(newConfig);
   }
-
-  trackByFn(index: number, item: AdamItem) {
-    return item.Id;
-  }
-
 }
 
 function getExtensionsFilter(fileFilter: string) {
@@ -401,7 +391,6 @@ function getExtensionsFilter(fileFilter: string) {
 
 export interface AdamBrowserViewModel {
   adamConfig: AdamConfig;
-  items: AdamItem[];
   value: string;
   disabled: boolean;
 }

@@ -78,7 +78,7 @@
             </div>
           </div>
         }
-        @for (item of vm.items; track trackByFn($index, item)) {
+        @for (item of items(); track item.Id) {
           <!-- folders -->
           @if (item.IsFolder) {
             <div class="dz-preview" (click)="goIntoFolder(item)">

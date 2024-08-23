@@ -1,8 +1,10 @@
 import { Observable } from 'rxjs';
 import { AdamItem } from './AdamItem';
 import { AdamConfig } from './AdamConfig';
+import { Signal } from '@angular/core';
 
 export interface Adam {
+  items: Signal<AdamItem[]>;
   /**
    * Stream of filtered ADAM items
    */
