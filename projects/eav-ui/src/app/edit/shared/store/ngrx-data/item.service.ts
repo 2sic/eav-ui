@@ -1,4 +1,4 @@
-import { computed, Injectable, Injector, signal, Signal } from '@angular/core';
+import { computed, Injectable, signal, Signal } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map, Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -20,6 +20,7 @@ import { SaveResult } from '../../../state/save-result.model';
 import { ItemValuesOfLanguage } from '../../../state/item-values-of-language.model';
 import { FormLanguage } from '../../../state/form-languages.model';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ItemUpdateHelper } from './item-updater.helper';
 
 const logThis = false;
 const nameOfThis = 'ItemService';
@@ -34,6 +35,8 @@ export class ItemService extends BaseDataService<EavItem> {
     super('Item', serviceElementsFactory);
   }
 
+  public updater = new ItemUpdateHelper(this);
+
   loadItems(dtoItems: EavEntityBundleDto[]): void {
     const items = dtoItems.map(item => EavItem.convert(item));
 
@@ -47,7 +50,7 @@ export class ItemService extends BaseDataService<EavItem> {
   updateItemId(itemData: SaveResult): void {
     const entityGuid = Object.keys(itemData)[0];
     const entityId = itemData[entityGuid];
-    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.getItem(entityGuid);
     if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0))
       return;
 
@@ -62,54 +65,12 @@ export class ItemService extends BaseDataService<EavItem> {
         Id: entityId,
       }
     };
-    this.updateOneInCache(newItem);
+    this.updateItem(newItem);
   }
-
-  // TODO:: NEW CODE 2dg
-  // updateItemId(itemData: SaveResult): void {
-  //   // Extract the entityGuid (key) and entityId (value) from the itemData object
-  //   const entityGuid = Object.keys(itemData)[0];
-  //   const entityId = itemData[entityGuid];
-
-  //   // Get the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-
-  //   // Find the existing item in the current items that matches the entityGuid
-  //   const oldItem = Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-
-  //   // Check if the item was found and whether it has valid EntityId and Id values
-  //   // If the item is not found or already has valid IDs, exit the function
-  //   if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0)) {
-  //     return;
-  //   }
-
-  //   // Create a new item object with updated entityId
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Header: {
-  //       ...oldItem.Header,
-  //       EntityId: entityId, // Update the EntityId in the Header
-  //     },
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Id: entityId, // Update the Id in the Entity
-  //     }
-  //   };
-
-  //   // Update the signal with the new item, replacing the old item with the new one
-  //   // Use the entityId as the key to update or add the item in the signal state
-  //   this.itemsSig.set({
-  //     ...currentItems,
-  //     [entityId]: newItem
-  //   });
-
-  //   // TODO:: Temporary
-  //   this.updateOneInCache(newItem);
-  // }
 
 // TODO:: Old Code, remove after testing ist done
   updateItemMetadata(entityGuid: string, metadata: EavEntity[]): void {
-    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.getItem(entityGuid);
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
@@ -117,41 +78,9 @@ export class ItemService extends BaseDataService<EavItem> {
         Metadata: metadata,
       }
     };
-    this.updateOneInCache(newItem);
+    this.updateItem(newItem);
   }
 
-  // TODO:: NEW CODE 2dg
-  // updateItemMetadata(entityGuid: string, metadata: EavEntity[]): void {
-  //   // Get the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-
-  //   // Find the old item based on the entityGuid
-  //   const oldItem = Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-
-  //   if (!oldItem) {
-  //     // If no item is found with the given entityGuid, log a warning and exit
-  //     console.warn(`Item with entityGuid ${entityGuid} not found.`);
-  //     return;
-  //   }
-
-  //   // Create the new item with updated metadata
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Metadata: metadata,
-  //     }
-  //   };
-
-  //   // Update the signal with the new item
-  //   this.itemsSig.set({
-  //     ...currentItems,
-  //     [oldItem.Entity.Id]: newItem
-  //   });
-
-  //   // TODO:: Temporary
-  //   this.updateOneInCache(newItem);
-  // }
 
   // TODO:: Old Code, remove after testing ist done
   addItemAttributeValue(
@@ -166,7 +95,7 @@ export class ItemService extends BaseDataService<EavItem> {
   ): EavItem {
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
     const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
-    const oldItem = transactionItem ?? this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.getItem(entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -176,63 +105,10 @@ export class ItemService extends BaseDataService<EavItem> {
       }
     };
 
-    if (!isTransaction) { this.updateOneInCache(newItem); }
+    if (!isTransaction) { this.updateItem(newItem); }
     return newItem;
   }
 
-  // TODO:: NEW CODE 2dg
-  // addItemAttributeValue(
-  //   entityGuid: string,
-  //   attributeKey: string,
-  //   newValue: FieldValue,
-  //   currentLanguage: string,
-  //   isReadOnly: boolean,
-  //   attributeType: string,
-  //   isTransaction = false,
-  //   transactionItem?: EavItem,
-  // ): EavItem {
-  //   // Determine the dimension for the new value based on whether the item is read-only
-  //   const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
-  //   // Create a new EavValue with the provided newValue and dimension
-  //   const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
-  //   // Get the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-  //   // Find the old item in the signal state that matches the entityGuid
-  //   const oldItem = transactionItem ?? Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-  //   // If no old item is found, log a warning and exit
-  //   if (!oldItem) {
-  //     console.warn(`Item with entityGuid ${entityGuid} not found.`);
-  //     return;
-  //   }
-
-  //   // Create a new item by updating the attributes with the new EavValue
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Attributes: LocalizationHelpers.addAttributeValue(
-  //         oldItem.Entity.Attributes,
-  //         newEavValue,
-  //         attributeKey,
-  //         attributeType
-  //       ),
-  //     }
-  //   };
-
-  //   // If this is not a transaction, update the item in the signal
-  //   if (!isTransaction) {
-  //     this.itemsSig.set({
-  //       ...currentItems,
-  //       [oldItem.Entity.Id]: newItem
-  //     });
-
-  //     // TODO:: Temporary
-  //     this.updateOneInCache(newItem);
-  //   }
-
-  //   // Return the new item with the updated attribute value
-  //   return newItem;
-  // }
 
   // TODO:: Old Code, remove after testing ist done
   updateItemAttributeValue(
@@ -242,7 +118,7 @@ export class ItemService extends BaseDataService<EavItem> {
     language: FormLanguage,
     isReadOnly: boolean,
   ): void {
-    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.getItem(entityGuid);
     if (!oldItem) return;
 
     const newItem: EavItem = {
@@ -254,53 +130,13 @@ export class ItemService extends BaseDataService<EavItem> {
         ),
       }
     };
-    this.updateOneInCache(newItem);
+    this.updateItem(newItem);
   }
 
-  // TODO:: NEW CODE 2dg
-  // updateItemAttributeValue(
-  //   entityGuid: string,
-  //   attributeKey: string,
-  //   newValue: FieldValue,
-  //   language: FormLanguage,
-  //   isReadOnly: boolean,
-  // ): void {
-  //   // Get the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-
-  //   // Find the old item in the signal state that matches the entityGuid
-  //   const oldItem = Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-
-  //   // If no old item is found, exit the method
-  //   if (!oldItem) return;
-
-  //   // Create a new item by updating the attributes with the new value
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Attributes: LocalizationHelpers.updateAttributeValue(
-  //         oldItem.Entity.Attributes,
-  //         attributeKey,
-  //         newValue,
-  //         language,
-  //         isReadOnly
-  //       ),
-  //     }
-  //   };
-
-  //   this.itemsSig.set({
-  //     ...currentItems,
-  //     [oldItem.Entity.Id]: newItem
-  //   });
-
-  //   // TODO:: Temporary
-  //   this.updateOneInCache(newItem);
-  // }
 
   // TODO:: Old Code, remove after testing ist done
   updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfLanguage, language: FormLanguage): void {
-    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.getItem(entityGuid);
     if (!oldItem) return;
 
     const oldValues: ItemValuesOfLanguage = {};
@@ -320,50 +156,13 @@ export class ItemService extends BaseDataService<EavItem> {
         Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language),
       }
     };
-    this.updateOneInCache(newItem);
+    this.updateItem(newItem);
   }
 
-  // TODO:: NEW CODE 2dg
-  // updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfLanguage, language: FormLanguage): void {
-  //   // Get the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-  //   // Find the old item in the signal state that matches the entityGuid
-  //   const oldItem = Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-  //   // If no old item is found, exit the method
-  //   if (!oldItem) return;
+  updateItem(item: EavItem): void {
+    this.updateOneInCache(item);
+  }
 
-  //   // Create a map of old attribute values for comparison
-  //   const oldValues: ItemValuesOfLanguage = {};
-  //   for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
-  //     if (!newValues.hasOwnProperty(name)) continue;
-  //     oldValues[name] = LocalizationHelpers.translate(language, values, null);
-  //   }
-
-  //   // Determine the changes between old and new values
-  //   const changes = ControlHelpers.getFormChanges(oldValues, newValues);
-  //   if (changes == null) return;
-
-  //   // Create a new item by updating the attributes with the changes
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Attributes: LocalizationHelpers.updateAttributesValues(
-  //         oldItem.Entity.Attributes,
-  //         changes,
-  //         language
-  //       ),
-  //     }
-  //   };
-
-  //   this.itemsSig.set({
-  //     ...currentItems,
-  //     [oldItem.Entity.Id]: newItem
-  //   });
-
-  //   // TODO:: Temporary
-  //   this.updateOneInCache(newItem);
-  // }
 
   // TODO:: Old Code, remove after testing ist done
   /**
@@ -379,7 +178,7 @@ export class ItemService extends BaseDataService<EavItem> {
     isReadOnly: boolean,
     transactionItem?: EavItem,
   ): void {
-    const oldItem = transactionItem ?? this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.getItem(entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -390,57 +189,8 @@ export class ItemService extends BaseDataService<EavItem> {
         ),
       }
     };
-    this.updateOneInCache(newItem);
+    this.updateItem(newItem);
   }
-
-  // TODO:: NEW CODE 2dg
-  /**
- * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
- * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
- */
-  // addItemAttributeDimension(
-  //   entityGuid: string,
-  //   attributeKey: string,
-  //   currentLanguage: string,
-  //   shareWithLanguage: string,
-  //   defaultLanguage: string,
-  //   isReadOnly: boolean,
-  //   transactionItem?: EavItem,
-  // ): void {
-  //   // Retrieve the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-
-  //   // Find the old item in the signal state that matches the entityGuid
-  //   const oldItem = transactionItem ?? Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-
-  //   // If no old item is found, exit the method
-  //   if (!oldItem) return;
-
-  //   // Create a new item by updating the attributes with a new dimension
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Attributes: LocalizationHelpers.addAttributeDimension(
-  //         oldItem.Entity.Attributes,
-  //         attributeKey,
-  //         currentLanguage,
-  //         shareWithLanguage,
-  //         defaultLanguage,
-  //         isReadOnly
-  //       ),
-  //     }
-  //   };
-
-  //   // Update the signal with the new item
-  //   this.itemsSig.set({
-  //     ...currentItems,
-  //     [oldItem.Entity.Id]: newItem
-  //   });
-
-  //   // TODO:: Temporary
-  //   this.updateOneInCache(newItem);
-  // }
 
   // TODO:: Old Code, remove after testing ist done
   removeItemAttributeDimension(
@@ -451,7 +201,7 @@ export class ItemService extends BaseDataService<EavItem> {
     transactionItem?: EavItem,
   ): EavItem {
     const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
-    const oldItem = transactionItem ?? this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.getItem(entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -462,60 +212,15 @@ export class ItemService extends BaseDataService<EavItem> {
     };
 
     if (!delayUpsert)
-      this.updateOneInCache(newItem);
+      this.updateItem(newItem);
     return l.r(newItem);
   }
 
-  // TODO:: NEW CODE 2dg
-  // removeItemAttributeDimension(
-  //   entityGuid: string,
-  //   fieldName: string,
-  //   current: string,
-  //   delayUpsert = false,
-  //   transactionItem?: EavItem,
-  // ): EavItem {
-  //   // Log the function call with its parameters
-  //   const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
-  //   // Retrieve the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-  //   // Find the old item in the signal state that matches the entityGuid
-  //   const oldItem = transactionItem ?? Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-
-  //   // If no old item is found, exit the method
-  //   if (!oldItem) return l.r(null);
-
-  //   // Create a new item by removing the attribute dimension
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Entity: {
-  //       ...oldItem.Entity,
-  //       Attributes: LocalizationHelpers.removeAttributeDimension(
-  //         oldItem.Entity.Attributes,
-  //         fieldName,
-  //         current
-  //       ),
-  //     }
-  //   };
-
-  //   // Update the signal with the new item if not delaying the upsert
-  //   if (!delayUpsert) {
-  //     this.itemsSig.set({
-  //       ...currentItems,
-  //       [oldItem.Entity.Id]: newItem
-  //     });
-
-  //     // TODO:: Temporary
-  //     this.updateOneInCache(newItem);
-  //   }
-
-  //   // Return the new item after logging
-  //   return l.r(newItem);
-  // }
 
   // TODO:: Old Code, remove after testing ist done
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
     const l = this.log.fn('updateItemHeader', { entityGuid, header });
-    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.getItem(entityGuid);
     if (!oldItem) return;
 
     const newItem: EavItem = {
@@ -524,56 +229,12 @@ export class ItemService extends BaseDataService<EavItem> {
         ...header
       }
     };
-    this.updateOneInCache(newItem);
+    this.updateItem(newItem);
     l.end();
   }
 
-  // updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
-  //   // Log the function call with its parameters
-  //   const l = this.log.fn('updateItemHeader', { entityGuid, header });
-  //   // Retrieve the current state of items from the signal
-  //   const currentItems = this.itemsSig();
-  //   // Find the old item in the signal state that matches the entityGuid
-  //   const oldItem = Object.values(currentItems).find(item => item.Entity.Guid === entityGuid);
-  //   // If no old item is found, exit the method
-  //   if (!oldItem) {
-  //     l.end(); // End logging since no update occurred
-  //     return;
-  //   }
-
-  //   // Create a new item by updating the header
-  //   const newItem: EavItem = {
-  //     ...oldItem,
-  //     Header: {
-  //       ...header
-  //     }
-  //   };
-
-  //   // Update the signal with the new item
-  //   this.itemsSig.set({
-  //     ...currentItems,
-  //     [oldItem.Entity.Id]: newItem
-  //   });
-
-  //   // TODO:: Temporary
-  //   this.updateOneInCache(newItem);
-
-  //   // End logging after the update
-  //   l.end();
-  // }
-
   getItem(entityGuid: string): EavItem {
-    // TODO:: New Code not working
-    // const item = this.itemsSig()[entityGuid];
-    // console.log('@2dg new Item', item);
-
-
-    const oldItem = this.cache().find(item => item.Entity.Guid === entityGuid);
-    // console.log('@2dg old item', oldItem);
-
-
-    // TODO:: OLD CODE remove after testing ist done
-    return oldItem;
+    return this.cache().find(item => item.Entity.Guid === entityGuid);
   }
 
   item(entityGuid: string): Signal<EavItem> {
@@ -582,7 +243,7 @@ export class ItemService extends BaseDataService<EavItem> {
       ? this.#itemCache[entityGuid]
       : this.#itemCache[entityGuid] = computed(
         // () => this.itemsSig()[entityGuid], // TODO:: New Code not working
-        () => this.cache().find(item => item.Entity.Guid === entityGuid), // TODO:: OLD CODE remove after testing ist done
+        () => this.getItem(entityGuid), // TODO:: OLD CODE remove after testing ist done
         { equal: RxHelpers.objectsEqual },
       );
   }
@@ -609,7 +270,7 @@ export class ItemService extends BaseDataService<EavItem> {
     // const result = this.itemsSig()[entityGuid]?.Entity.Attributes;
 
     // TODO:: OLD CODE remove after testing ist done
-    const result = this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    const result = this.getItem(entityGuid)?.Entity.Attributes;
     return l.r(result);
   }
 
@@ -625,7 +286,7 @@ export class ItemService extends BaseDataService<EavItem> {
     // return computed(() => this.itemsSig()[entityGuid]?.Entity.Attributes);
 
     // TODO:: OLD CODE remove after testing ist done
-    return computed(() => this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes);
+    return computed(() => this.getItem(entityGuid)?.Entity.Attributes);
 
   }
 
@@ -635,7 +296,7 @@ export class ItemService extends BaseDataService<EavItem> {
     // return this.itemsSig()[entityGuid]?.Entity.For;
 
     // TODO:: OLD CODE remove after testing ist done
-    return this.cache().find(item => item.Entity.Guid === entityGuid)?.Entity.For;
+    return this.getItem(entityGuid)?.Entity.For;
   }
 
 
@@ -651,8 +312,7 @@ export class ItemService extends BaseDataService<EavItem> {
     // return undefined;
 
     // TODO:: OLD CODE remove after testing ist done
-    return this.cache()
-      .find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
+    return this.getItem(entityGuid)?.Entity.Metadata
       ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes);
   }
 
@@ -661,7 +321,7 @@ export class ItemService extends BaseDataService<EavItem> {
     // return this.itemsSig()[entityGuid]?.Header;
 
     // TODO:: OLD CODE remove after testing ist done
-    return this.cache().find(item => item.Entity.Guid === entityGuid)?.Header;
+    return this.getItem(entityGuid)?.Header;
   };
 
   getItemHeader$(entityGuid: string): Observable<ItemIdentifierHeader> {
