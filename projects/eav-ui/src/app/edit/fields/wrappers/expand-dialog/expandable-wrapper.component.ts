@@ -155,7 +155,7 @@ export class ExpandableWrapperComponent {
   }
 
   saveAll(close: boolean) {
-    this.formsStateService.saveForm$.next(close);
+    this.formsStateService.triggerSave(close);
   }
 
   calculateBottomPixels() {

@@ -75,6 +75,6 @@ export class PickerExpandableWrapperComponent extends BaseComponent implements O
   }
 
   saveAll(close: boolean) {
-    this.formsStateService.saveForm$.next(close);
+    this.formsStateService.triggerSave(close);
   }
 }

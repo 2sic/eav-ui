@@ -86,8 +86,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   #contentType = computed(() => {
     if (!this.#item())
       return null;
-    const contentTypeNameId = ItemHelper.getContentTypeNameId(this.#item());
-    const contentType = this.contentTypeService.getContentType(contentTypeNameId);
+    const contentType = this.contentTypeService.getContentTypeOfItem(this.#item());
     return contentType;
   });
 

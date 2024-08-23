@@ -71,10 +71,10 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
 
     const fieldProps$ = this.fieldsSettingsService.getFieldsProps$();
 
+    // 1. Prepare: Take field props and enrich initial values and input types
     const fieldsToProcess = fieldProps$.pipe(
       filter(fields => fields != null && Object.keys(fields).length > 0),
       map(allFields => {
-        // 0. Enrich fields with initial values and input types
         const fields = Object.entries(allFields).map(([fieldName, fieldProps]) => {
           const hasControl = form.controls.hasOwnProperty(fieldName);
           const control = hasControl ? form.controls[fieldName] : null;
@@ -92,9 +92,9 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
     );
 
     // Create all the controls in the form right at the beginning
-    fieldsToProcess.pipe(take(1)).subscribe(fields => {
+    fieldsToProcess.pipe(take(1)).subscribe(allFields => {
       // 1. create missing controls - usually just on first cycle
-      const fieldsForNgForm = fields.filter(({ inputType, hasControl }) =>
+      const fieldsToCreate = allFields.filter(({ inputType, hasControl }) =>
         // Empty type, skip
         !EmptyFieldHelpers.isEmptyInputType(inputType)
 
@@ -102,10 +102,10 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
         && !hasControl
       );
 
-      this.log.a(`create missing controls ${fieldsForNgForm.length} of ${fields.length}`, { fieldsForNgForm });
+      this.log.a(`create missing controls ${fieldsToCreate.length} of ${allFields.length}`, { fieldsForNgForm: fieldsToCreate });
 
       // Generate any fields which don't exist yet (usually only on first cycle)
-      for (const fields of fieldsForNgForm) {
+      for (const fields of fieldsToCreate) {
         const { fieldName, fieldProps, inputType, value } = fields;
         // The initial value at the moment the control is first created in this language
         let initialValue = value;
@@ -130,20 +130,19 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
     });
 
     // This has multiple features, possibly we should separate them
-    // ~~1. Create missing controls in the angular form~~
     // 2. Sync values between form and fieldProps - eg. on value changes which are from formulas
     // 3. Ensure disabled state is in sync eg. after settings recalculations
     // 4. Ensure validators are run in such scenarios
     this.subscriptions.add(
-      fieldsToProcess.subscribe(fields => {
+      fieldsToProcess.subscribe(allFields => {
         // Figure out which fields may require further processing
-        const fieldsOnNgForm = fields.filter(set => set.hasControl);
+        const fieldsOnForm = allFields.filter(set => set.hasControl);
 
         // 2. sync values - create list comparing the old raw values and new fieldProps - eg. modified by formulas
-        this.log.a(`sync values for max ${fieldsOnNgForm.length} controls`);
+        this.log.a(`sync values for max ${fieldsOnForm.length} controls`);
         const oldValues: ItemValuesOfLanguage = form.getRawValue();
         const newValues: ItemValuesOfLanguage = {};
-        for (const { fieldName, value } of fieldsOnNgForm)
+        for (const { fieldName, value } of fieldsOnForm)
           newValues[fieldName] = value;
 
         const changes = ControlHelpers.getFormChanges(oldValues, newValues);
@@ -158,7 +157,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
 
         // 3. sync disabled if state not matching
         this.log.a('sync "disabled" state');
-        for (const { control, fieldProps } of fieldsOnNgForm) {
+        for (const { control, fieldProps } of fieldsOnForm) {
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
           ControlHelpers.disableControl(control, disabled);
@@ -166,11 +165,12 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
         this.log.a('run validators');
-        for (const { control } of fieldsOnNgForm)
+        for (const { control } of fieldsOnForm)
           control.updateValueAndValidity();
       })
     );
 
+    
     const formValid$ = form.valueChanges.pipe(
       map(() => !form.invalid),
       startWith(!form.invalid),

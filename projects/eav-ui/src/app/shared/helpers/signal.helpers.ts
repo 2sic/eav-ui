@@ -26,6 +26,13 @@ export class SignalHelpers {
 
   /** Options for object signal to ensure equality only on value difference */
   static objectEquals = { equal: RxHelpers.objectsEqual };
+
+  /**
+   * Helper to _not_ set the equal and use the standard equal.
+   * This is just to ensure that the code can explicitly show that RefEquals was expected,
+   * and not an oversight.
+   */
+  static refEquals = {  };
 }
 
 // export class SignalEquals<T>: CreateComputedOptions<T> {

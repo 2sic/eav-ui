@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EavContentType } from '../../models/eav';
+import { EavContentType, EavItem } from '../../models/eav';
 import { EavContentTypeDto } from '../../models/json-format-v1';
+import { ItemHelper } from '../../helpers/item.helper';
 
 @Injectable({ providedIn: 'root' })
 export class ContentTypeService /* extends BaseDataService<EavContentType> TOOD:: remove later */ {
@@ -15,6 +16,11 @@ export class ContentTypeService /* extends BaseDataService<EavContentType> TOOD:
   addContentTypes(contentTypes1: EavContentTypeDto[]): void {
     const contentTypes = EavContentType.convertMany(contentTypes1);
     this.addToCache(contentTypes);
+  }
+
+  getContentTypeOfItem(item: EavItem): EavContentType {
+    const nameId = ItemHelper.getContentTypeNameId(item);
+    return this.getContentType(nameId);
   }
 
   getContentType(id: string): EavContentType {

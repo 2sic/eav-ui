@@ -208,8 +208,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const isCreateMode = eavConfig.createMode;
 
     for (const item of items) {
-      const contentTypeId = ItemHelper.getContentTypeNameId(item);
-      const contentType = this.contentTypeService.getContentType(contentTypeId);
+      const contentType = this.contentTypeService.getContentTypeOfItem(item);
 
       for (const ctAttribute of contentType.Attributes) {
         const currentName = ctAttribute.Name;

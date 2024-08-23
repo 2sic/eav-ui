@@ -70,8 +70,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
       const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);
 
-      const contentTypeId = ItemHelper.getContentTypeNameId(item);
-      const contentType = this.contentTypeService.getContentType(contentTypeId);
+      const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
           entityReader.flattenAll<FieldSettings>(attribute.Metadata),
@@ -325,8 +324,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
       } catch (error) {
         this.cacheResults({entityGuid, fieldName, target} satisfies FormulaIdentifier, undefined, true, false);
         const item = this.itemService.getItem(entityGuid);
-        const contentTypeId = ItemHelper.getContentTypeNameId(item);
-        const contentType = this.contentTypeService.getContentType(contentTypeId);
+        const contentType = this.contentTypeService.getContentTypeOfItem(item);
         const language = this.formConfig.language();
         const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;

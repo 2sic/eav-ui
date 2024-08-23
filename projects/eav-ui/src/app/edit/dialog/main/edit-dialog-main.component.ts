@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -146,7 +146,16 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   ) {
     super(new EavLogger(nameOfThis, logThis));
     this.dialogRef.disableClose = true;
+
+    // Watch to save based on messages from sub-dialogs.
+    effect(() => {
+      const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
+      if (!tryToSave) return;
+      this.saveAll(close);
+    });
   }
+
+
 
   ngOnInit() {
     this.editRoutingService.init();
@@ -156,26 +165,18 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
 
     // TODO:: @2g Question viewInitiated
-    this.viewModel$ = combineLatest([
-      combineLatest([items$, this.viewInitiated$]),
-    ]).pipe(
-      map(([
-        [items, viewInitiated],
-      ]) => {
-        const viewModel: EditDialogMainViewModel = {
-          items,
-          viewInitiated,
-        };
-        return viewModel;
-      }),
+    this.viewModel$ = combineLatest([items$, this.viewInitiated$]).pipe(
+      map(([items, viewInitiated]) => ({
+        items,
+        viewInitiated,
+      } satisfies EditDialogMainViewModel)),
     );
     this.startSubscriptions();
+    this.activateCtrlSaveListener();
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.viewInitiated$.next(true);
-    });
+    setTimeout(() => this.viewInitiated$.next(true));
   }
 
   ngOnDestroy() {
@@ -202,7 +203,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
       this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
-    } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsDirty$.value) {
+    } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty()) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
       this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
@@ -216,27 +217,28 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   /** Save all forms */
   saveAll(close: boolean) {
     const l = this.log.fn('saveAll', { close });
-    if (this.formsStateService.formsValid$.value) {
+    if (this.formsStateService.formsAreValid()) {
+
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
           const eavItem = this.itemService.getItem(formBuilderRef.entityGuid);
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
           if (!isValid)
-            return;
+            return null;
 
           // do not try to save item which doesn't have any fields, nothing could have changed about it
           // but enable saving if there is a special metadata
           const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-          const contentTypeId = ItemHelper.getContentTypeNameId(eavItem);
-          const contentType = this.contentTypeService.getContentType(contentTypeId);
+          const contentType = this.contentTypeService.getContentTypeOfItem(eavItem);
           const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
           if (!hasAttributes && !saveIfEmpty)
-            return;
+            return null;
 
           const item = EavEntityBundleDto.bundleToDto(eavItem);
           return item;
         })
         .filter(item => item != null);
+
       const publishStatus = this.publishStatusService.getPublishStatus(this.formConfig.config.formId);
 
       const saveFormData: SaveEavFormData = {
@@ -252,11 +254,10 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           l.a('SAVED!, result:', { result, close });
           this.itemService.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
-          this.formsStateService.formsDirty$.next(false);
+          this.formsStateService.formsAreDirty.set(false);
           this.saveResult = result;
-          if (close) {
+          if (close)
             this.closeDialog();
-          }
         },
         error: err => {
           l.a('SAVE FAILED:', err);
@@ -264,11 +265,16 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         },
       });
     } else {
-      if (this.formBuilderRefs == null) { return; }
+      // Case form is not valid
+
+      // check if there is even a formBuilder to process, otherwise exit
+      if (this.formBuilderRefs == null)
+        return;
 
       const formErrors: Record<string, string>[] = [];
       this.formBuilderRefs.forEach(formBuilderRef => {
-        if (!formBuilderRef.form.invalid) { return; }
+        if (!formBuilderRef.form.invalid)
+          return;
         formErrors.push(ValidationMessagesHelpers.validateForm(formBuilderRef.form));
       });
 
@@ -278,11 +284,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
           fieldErrors.push({ field: key, message: formError[key] });
         });
       });
-      const snackBarData: SaveErrorsSnackBarData = {
-        fieldErrors,
-      };
+
       this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-        data: snackBarData,
+        data: {
+          fieldErrors,
+        } satisfies SaveErrorsSnackBarData,
         duration: 5000,
       });
     }
@@ -296,7 +302,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private startSubscriptions() {
     this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
+        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty()) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
@@ -304,13 +310,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     );
 
     this.subscriptions.add(
-      this.formsStateService.saveForm$.subscribe(close => this.saveAll(close))
-    );
-
-    this.subscriptions.add(
       this.dialogRef.backdropClick().subscribe(_ => this.closeDialog())
     );
+  }
 
+  private activateCtrlSaveListener() {
     this.dialogRef.keydownEvents().subscribe(event => {
       const ESCAPE = event.keyCode === 27;
       if (ESCAPE) {
