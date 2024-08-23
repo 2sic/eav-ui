@@ -230,7 +230,10 @@ export class FieldsTranslateService {
    */
   findAutoTranslatableFields(): string[] {
     const attributes = this.itemAttributes();
-    return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName) && !this.isAutoTranslationDisabled(fieldName));
+    return Object.keys(attributes).filter(fieldName =>
+      !this.isTranslationDisabled(fieldName)
+      && !this.isAutoTranslationDisabled(fieldName)
+    );
   }
 
   /**

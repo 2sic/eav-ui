@@ -21,6 +21,8 @@ import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './fields-configs.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { SignalHelpers } from '../../shared/helpers/signal.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -306,12 +308,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
     const cached = this.signalsCache[fieldName];
     if (cached) return cached;
-    // var sig = computed(() => {
-    //   return this.getFieldSettings(fieldName); // will access the signal...
-    // }, { equal: RxHelpers.objectsEqual });
-    // return this.signalsCache[fieldName] = sig; // note: no initial value, it should always be up-to-date
-    var obs = this.getFieldSettings$(fieldName);
-    return this.signalsCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+    var sig = computed(() => {
+      return this.getFieldSettings(fieldName); // will access the signal...
+    }, { equal: RxHelpers.objectsEqual });
+    return this.signalsCache[fieldName] = sig; // note: no initial value, it should always be up-to-date
   }
   private signalsCache: Record<string, Signal<FieldSettings>> = {};
 
@@ -320,18 +320,22 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @param fieldName
    * @returns Translation state stream
    */
-  getTranslationState$(fieldName: string): Observable<TranslationState> {
-    return this.fieldsProps$.pipe(
-      map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      mapUntilObjChanged(m => m),
-    );
+  getTranslationStateNow(fieldName: string): TranslationState {
+    return this.fieldsProps()[fieldName].translationState;
   }
 
+  /**
+   * Used for translation state stream for a specific field.
+   * @param fieldName
+   * @returns Translation state stream
+   */
   getTranslationStateSignal(fieldName: string): Signal<TranslationState> {
     const cached = this.signalsTransStateCache[fieldName];
     if (cached) return cached;
-    var obs = this.getTranslationState$(fieldName);
-    return this.signalsTransStateCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+    var sig = computed(() => this.fieldsProps()[fieldName].translationState, { equal: RxHelpers.objectsEqual });
+    return this.signalsTransStateCache[fieldName] = sig; // note: no initial value, it should always be up-to-date
+    // var obs = this.getTranslationState$(fieldName);
+    // return this.signalsTransStateCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
   }
   private signalsTransStateCache: Record<string, Signal<TranslationState>> = {};
 

@@ -1,12 +1,9 @@
-import { Component, computed, inject, Input, OnDestroy, OnInit, Signal, ViewContainerRef } from '@angular/core';
+import { Component, computed, inject, input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { TranslationState } from '../../state/fields-configs.model';
 import { ItemService } from '../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
-import { EntityTranslateMenuViewModel } from './entity-translate-menu.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
@@ -18,7 +15,7 @@ import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
-import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
 
 @Component({
   selector: 'app-entity-translate-menu',
@@ -36,18 +33,11 @@ import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
     TranslateModule,
   ],
 })
-export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
-  @Input() entityGuid: string;
-
-  viewModel$: Observable<EntityTranslateMenuViewModel>;
-  autoTranslatableFields: string[];
-  translationState: TranslationState;
-  private subscription: Subscription;
+export class EntityTranslateMenuComponent {
+  entityGuid = input<string>();
 
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
-
-  protected slotIsEmpty!: Signal<boolean>;
 
   constructor(
     private dialog: MatDialog,
@@ -56,44 +46,47 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     private fieldsTranslateService: FieldsTranslateService,
     private viewContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
-  ) { }
-
-  ngOnInit() {
-    this.slotIsEmpty = this.itemService.slotIsEmpty(this.entityGuid);
-
-    this.viewModel$ = combineLatest([this.eavService.language$]).pipe(
-      map(([lang]) => {
-        const viewModel: EntityTranslateMenuViewModel = {
-          ...lang,
-        };
-        return viewModel;
-      }),
-    );
-    this.autoTranslatableFields = this.fieldsTranslateService.findAutoTranslatableFields();
-    if (this.autoTranslatableFields.length > 0)
-      this.subscription = this.fieldsSettingsService.getTranslationState$(this.autoTranslatableFields[0]).subscribe(x => this.translationState = x);
+  ) {
+    // debug...
+    // effect(() => {
+    //   console.log(`2dm ${this.entityGuid()} slotIsEmpty:` + this.slotIsEmpty());
+    //   console.log(`2dm autoTranslatableFields:` + this.#autoTranslatableFields());
+    // });
   }
+
+  #autoTranslatableFields = computed(() => {
+    // console.log(`2dm #AutoTrans:`, val, (this.fieldsTranslateService as any).entityGuid);
+    return this.fieldsTranslateService.findAutoTranslatableFields();
+  });
+
+  protected slotIsEmpty = computed(() => {
+    return this.itemService.slotIsEmpty(this.entityGuid())();
+  }, SignalHelpers.boolEquals);
+
+  language = this.eavService.languageSignal;
 
   translateMany() {
     this.fieldsTranslateService.translateMany();
   }
 
   autoTranslateMany(): void {
-    if (this.autoTranslatableFields.length > 0) {
+    const autoTransFields = this.#autoTranslatableFields();
+    const transStateForLanguages = this.fieldsSettingsService.getTranslationStateNow(this.#autoTranslatableFields()[0]);
+    if (autoTransFields.length > 0) {
       const config: TranslateMenuDialogConfig = {
-        entityGuid: this.entityGuid,
-        fieldName: this.autoTranslatableFields[0],
+        entityGuid: this.entityGuid(),
+        fieldName: autoTransFields[0],
         // name: '',
         // focused$: undefined
       }
       const dialogData: TranslateMenuDialogData = {
         config,
         translationState: {
-          language: this.translationState.language,
-          linkType: this.translationState.linkType,
+          language: transStateForLanguages.language,
+          linkType: transStateForLanguages.linkType,
         },
         isTranslateMany: true,
-        translatableFields: this.autoTranslatableFields,
+        translatableFields: autoTransFields,
       };
       this.dialog.open(AutoTranslateMenuDialogComponent, {
         autoFocus: false,
@@ -115,8 +108,4 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     this.fieldsTranslateService.dontTranslateMany();
   }
 
-  ngOnDestroy(): void {
-    if (this.autoTranslatableFields.length > 0)
-      this.subscription.unsubscribe();
-  }
 }
