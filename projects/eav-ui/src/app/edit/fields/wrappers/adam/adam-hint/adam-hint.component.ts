@@ -1,5 +1,5 @@
 import { FeatureNames } from './../../../../../features/feature-names';
-import { FeaturesService } from './../../../../../shared/services/features.service';
+import { FeaturesService } from '../../../../../features/features.service';
 import { Component, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';

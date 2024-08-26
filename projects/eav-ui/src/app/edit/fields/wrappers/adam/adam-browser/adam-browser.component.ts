@@ -19,7 +19,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 import { BaseComponent } from '../../../../../shared/components/base.component';
-import { FeaturesService } from '../../../../../shared/services/features.service';
+import { FeaturesService } from '../../../../../features/features.service';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { EavLogger } from '../../../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../../../shared/rxJs/mapUntilChanged';

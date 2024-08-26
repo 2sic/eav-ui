@@ -8,7 +8,7 @@ import { BaseWithChildDialogComponent } from '../../shared/components/base-with-
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesService } from '../../features/features.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';

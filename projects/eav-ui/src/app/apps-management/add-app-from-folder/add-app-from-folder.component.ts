@@ -7,7 +7,7 @@ import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesService } from '../../features/features.service';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';

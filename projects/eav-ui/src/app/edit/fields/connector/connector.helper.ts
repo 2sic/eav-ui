@@ -19,7 +19,7 @@ import { transient } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FeaturesService } from '../../../shared/services/features.service';
+import { FeaturesService } from '../../../features/features.service';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FormConfigService } from '../../state/form-config.service';

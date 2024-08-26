@@ -1,14 +1,16 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
 import { map, Observable, ReplaySubject } from 'rxjs';
-import { AppDialogConfigService } from '../../app-administration/services';
-import { DialogContext } from '../models/dialog-settings.model';
-import { ServiceBase } from './service-base';
-import { EavLogger } from '../logging/eav-logger';
-import { FeatureSummary } from '../../features/models/feature-summary.model';
-import { SignalHelpers } from '../helpers/signal.helpers';
-import { RxHelpers } from '../rxJs/rx.helpers';
+import { AppDialogConfigService } from '../app-administration/services';
+import { DialogContext } from '../shared/models/dialog-settings.model';
+import { ServiceBase } from '../shared/services/service-base';
+import { EavLogger } from '../shared/logging/eav-logger';
+import { FeatureSummary } from './models/feature-summary.model';
+import { SignalHelpers } from '../shared/helpers/signal.helpers';
+import { RxHelpers } from '../shared/rxJs/rx.helpers';
 
 const logThis = false;
+
+// TODO: @2dg - try to refactor the observables away so it only provides signals
 
 /**
  * Singleton Service to provide information about enabled/disabled features.

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesService } from '../../features/features.service';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';

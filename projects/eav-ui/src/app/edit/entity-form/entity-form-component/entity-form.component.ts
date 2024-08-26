@@ -25,7 +25,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
-import { FeaturesService } from '../../../shared/services/features.service';
+import { FeaturesService } from '../../../features/features.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';

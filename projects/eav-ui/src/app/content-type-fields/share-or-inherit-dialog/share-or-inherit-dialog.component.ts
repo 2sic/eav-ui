@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesService } from '../../features/features.service';
 import { FeatureNames } from '../../features/feature-names';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass, AsyncPipe } from '@angular/common';

@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
-import { FeaturesService } from '../../../shared/services/features.service';
+import { FeaturesService } from '../../../features/features.service';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldConfigSet } from '../field-config-set.model';

@@ -17,7 +17,7 @@ import { FieldState } from '../../field-state';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesService } from '../../../../shared/services/features.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';

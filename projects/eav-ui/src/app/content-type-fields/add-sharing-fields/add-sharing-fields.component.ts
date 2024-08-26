@@ -10,7 +10,7 @@ import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
 import { NgForm, FormsModule } from '@angular/forms';
-import { FeaturesService } from '../../shared/services/features.service';
+import { FeaturesService } from '../../features/features.service';
 import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';

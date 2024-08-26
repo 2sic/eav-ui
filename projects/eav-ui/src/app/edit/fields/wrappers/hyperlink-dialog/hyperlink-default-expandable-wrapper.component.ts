@@ -22,7 +22,7 @@ import { FieldState } from '../../field-state';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
-import { FeaturesService } from '../../../../shared/services/features.service';
+import { FeaturesService } from '../../../../features/features.service';
 import { FeatureNames } from '../../../../features/feature-names';
 import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyperlink-default-base.component';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';

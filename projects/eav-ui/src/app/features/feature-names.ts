@@ -12,4 +12,7 @@ export const FeatureNames = {
   ContentSecurityPolicy: 'ContentSecurityPolicy',
   PermissionsByLanguage: 'PermissionsByLanguage',
   FieldShareConfigManagement: 'FieldShareConfigManagement',
+
+  AppExportAssetsAdvanced: 'AppExportAssetsAdvanced',
+  
 };
