@@ -102,7 +102,7 @@ export class FormConfigService {
       settings,
     };
     this.configSignal.set(this.config);
-    this.language = toSignal(this.language$, { injector: this.injector });
+    this.language = this.languageSignal, { injector: this.injector };
   }
 
   private getVersioningOptions(

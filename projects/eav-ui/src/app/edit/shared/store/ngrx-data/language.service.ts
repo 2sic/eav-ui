@@ -24,7 +24,6 @@ export class LanguageService /* extends BaseDataService<Language> Old Code */ {
       updatedStatus[lang.NameId.toLocaleLowerCase()] = lang;
     });
 
-    // Signal mit dem neuen Status aktualisieren
     this.#languages.set(updatedStatus);
   }
 
@@ -34,11 +33,11 @@ export class LanguageService /* extends BaseDataService<Language> Old Code */ {
   }
 
   // TODO:: @2dg Question, i will use new getLanguagesSig
-  getLanguages$(): Observable<Language[]> {
-    const lang = computed(() => this.getLanguages());
-    return of(lang());  // only give one value, not a update, remove the fn and use the new signal
-    // return this.cache$.asObservable(); // Old Code
-  }
+  // getLanguages$(): Observable<Language[]> {
+  //   const lang = computed(() => this.getLanguages());
+  //   return of(lang());  // only give one value, not a update, remove the fn and use the new signal
+  //   // return this.cache$.asObservable(); // Old Code
+  // }
 
   getLanguagesSig(): Signal<Language[]> {
     return computed(() => this.getLanguages());

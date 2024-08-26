@@ -37,7 +37,9 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   updateItem(item: EavItem): void {
-    this.updateOneInCache(item);
+    this.itemsSig.set({ ...this.itemsSig(), [item.Entity.Guid]: item });
+
+    // this.updateOneInCache(item);
   }
 
 
@@ -155,6 +157,14 @@ export class ItemService extends BaseDataService<EavItem> {
     );
   }
 
+  getItemHeaderSig(entityGuid: string): Signal<ItemIdentifierHeader> {
+    const sig = computed(() => {
+      const item = this.getItem(entityGuid);
+      return item?.Header;
+    });
+    return sig
+  }
+
   slotIsEmpty(entityGuid: string): Signal<boolean> {
     // prepare signal before creating computed so it doesn't get recreated
     const itemHeader = this.item(entityGuid);
@@ -165,17 +175,16 @@ export class ItemService extends BaseDataService<EavItem> {
   }
 
   getItems(entityGuids?: string[]): EavItem[] {
-    // TODO:: New Code not working
-    // if (entityGuids == null) {
-    //   return Object.values(this.itemsSig()) as EavItem[];
-    // }
+    if (entityGuids == null) {
+      return Object.values(this.itemsSig()) as EavItem[];
+    }
 
-    // return Object.values(this.itemsSig())
-    //   .filter(item => entityGuids.includes(item.Entity.Guid));
+    return Object.values(this.itemsSig())
+      .filter(item => entityGuids.includes(item.Entity.Guid));
 
     // TODO:: OLD CODE remove after testing ist done
-    if (entityGuids == null) { return this.cache(); }
-    return this.cache().filter(item => entityGuids.includes(item.Entity.Guid));
+    // if (entityGuids == null) { return this.cache(); }
+    // return this.cache().filter(item => entityGuids.includes(item.Entity.Guid));
   }
 
 

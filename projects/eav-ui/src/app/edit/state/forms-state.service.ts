@@ -17,7 +17,7 @@ const nameOfThis = 'FormsStateService';
  */
 @Injectable()
 export class FormsStateService extends ServiceBase implements OnDestroy {
-  
+
   // new with Signal
 
   /** Signal which is filled by sub-dialogs to trigger save (other saves like ctrl+s don't go through this) */
@@ -48,32 +48,53 @@ export class FormsStateService extends ServiceBase implements OnDestroy {
 
   init() {
 
-    for (const entityGuid of this.formConfig.config.itemGuids) {
+
+    let entityGuid;
+
+    for (entityGuid of this.formConfig.config.itemGuids) {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }
 
-    // TODO:: @2dg getHeader Signal and Language Signal use computed
+    const itemHeaders = signal(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeaderSig(entityGuid)));
+    const language = this.languageService.getLanguagesSig();
 
-    this.subscriptions.add(
-      combineLatest([
-        combineLatest(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
-          map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
-        ),
-        combineLatest([
-          this.formConfig.language$,
-          this.languageService.getLanguages$(), // TODO:: Remove later
-        ]).pipe(
-          map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),
-        ),
-      ]).subscribe(([itemsReadOnly, languageAllowed]) => {
-        const readOnly: FormReadOnly = {
-          isReadOnly: itemsReadOnly || !languageAllowed,
-          reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
-        };
-        this.readOnly.set(readOnly);
-      })
-    );
+
+    const sig = computed<FormReadOnly>(() => {
+      const itemsReadOnly = itemHeaders().some(itemHeader => itemHeader().EditInfo?.ReadOnly ?? false);
+      const languageAllowed = language().find(l => l.NameId === this.formConfig.language().current)?.IsAllowed ?? true;
+      const isReadOnly = itemsReadOnly || !languageAllowed;
+      const reason = itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined;
+
+      return {
+        isReadOnly,
+        reason,
+      };
+    });
+
+
+    this.readOnly.set(sig());
+
+    // TODO:: @2dg Old code to be removed after testing is done
+    //   this.subscriptions.add(
+    //     combineLatest([
+    //       combineLatest(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
+    //         map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
+    //       ),
+    //       combineLatest([
+    //         this.formConfig.language$,
+    //         this.languageService.getLanguages$(), // TODO:: Remove later
+    //       ]).pipe(
+    //         map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),
+    //       ),
+    //     ]).subscribe(([itemsReadOnly, languageAllowed]) => {
+    //       const readOnly: FormReadOnly = {
+    //         isReadOnly: itemsReadOnly || !languageAllowed,
+    //         reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
+    //       };
+    //       this.readOnly.set(readOnly);
+    //     })
+    //   );
   }
 
   getFormValid(entityGuid: string) {

@@ -155,6 +155,7 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
   //   );
   // }
 
+  /** Get hideHeader for the form. Fix for safari and mobile browsers */
   getHideHeaderSignal(formId: number): Signal<boolean> {
     const cached = this.signalsHideHeaderCache[formId];
     if (cached) return cached;
