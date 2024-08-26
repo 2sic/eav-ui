@@ -39,7 +39,9 @@ export class ItemService extends BaseDataService<EavItem> {
   updateItem(item: EavItem): void {
     this.itemsSig.set({ ...this.itemsSig(), [item.Entity.Guid]: item });
 
-    // this.updateOneInCache(item);
+    // TODO: @2dg - we can't remove this yet because there is a lot of code
+    // using cache() or cache$ directly!
+    this.updateOneInCache(item);
   }
 
 
