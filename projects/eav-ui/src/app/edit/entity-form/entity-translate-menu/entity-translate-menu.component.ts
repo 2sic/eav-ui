@@ -63,7 +63,7 @@ export class EntityTranslateMenuComponent {
     return this.itemService.slotIsEmpty(this.entityGuid())();
   }, SignalHelpers.boolEquals);
 
-  language = this.eavService.languageSignal;
+  language = this.eavService.language;
 
   translateMany() {
     this.fieldsTranslateService.translateMany();

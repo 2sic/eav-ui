@@ -57,7 +57,6 @@ export class FormConfigService {
   /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
   private context = inject(Context);
   private languageService = inject(LanguageInstanceService);
-  private injector = inject(Injector);
 
   /** Create EavConfiguration from sessionStorage */
   initFormConfig(
@@ -102,7 +101,7 @@ export class FormConfigService {
       settings,
     };
     this.configSignal.set(this.config);
-    this.language = this.languageSignal, { injector: this.injector };
+    this.language = this.languageService.getLanguageSignal(this.config.formId);
   }
 
   private getVersioningOptions(
@@ -142,11 +141,5 @@ export class FormConfigService {
     return this._language$ ??= this.languageService.getLanguage$(this.config.formId);
   }
   private _language$: Observable<FormLanguageComplete>;
-
-
-  get languageSignal(): Signal<FormLanguageComplete> {
-    return this.languageService.getLanguageSignal(this.config.formId);
-  }
-
 
 }

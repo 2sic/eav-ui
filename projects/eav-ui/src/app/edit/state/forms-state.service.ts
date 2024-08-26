@@ -48,10 +48,7 @@ export class FormsStateService extends ServiceBase implements OnDestroy {
 
   init() {
 
-
-    let entityGuid;
-
-    for (entityGuid of this.formConfig.config.itemGuids) {
+    for (const entityGuid of this.formConfig.config.itemGuids) {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }

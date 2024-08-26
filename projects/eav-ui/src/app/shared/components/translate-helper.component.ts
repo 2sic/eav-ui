@@ -30,7 +30,7 @@ export abstract class TranslateHelperComponent {
 
   public noLanguageRequired: TranslationLink[];
 
-  protected language = this.formConfig.languageSignal;
+  protected language = this.formConfig.language;
   public translationStateSignal = signal<TranslationStateCore>(this.dialogData.translationState);
 
   protected translationInfo: Signal<TranslationInfo> = computed<TranslationInfo>(() => {
