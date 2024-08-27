@@ -28,9 +28,8 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
-import { ItemHelper } from '../../../shared/helpers/item.helper';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FormulaDesignerComponent';
 
 @Component({

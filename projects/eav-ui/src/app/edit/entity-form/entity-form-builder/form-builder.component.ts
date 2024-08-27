@@ -17,7 +17,7 @@ import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model'
 import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { transient } from '../../../core';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FormBuilderComponent';
 
 @Component({

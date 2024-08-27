@@ -13,7 +13,7 @@ import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 import { FormulaCacheService } from './formula-cache.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FormulaDesignerService';
 
 /**

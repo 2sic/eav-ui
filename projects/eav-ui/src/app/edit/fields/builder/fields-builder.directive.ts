@@ -17,7 +17,7 @@ import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsBuilderDirective';
 
 /**

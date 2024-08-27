@@ -14,7 +14,7 @@ import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
 import { CalculatedInputType } from '../../state/fields-configs.model';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldInjectorService';
 const logDetailsOnFields = ['Boolean'];
 /**

@@ -16,7 +16,7 @@ import { ControlHelpers } from '../../shared/helpers/control.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { EntityFormStateService } from '../entity-form-state.service';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FormFieldsBuilderService';
 
 @Injectable()
