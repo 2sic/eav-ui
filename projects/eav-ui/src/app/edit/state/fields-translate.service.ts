@@ -271,7 +271,7 @@ export class FieldsTranslateService {
 
   private addItemAttributeValueHelper(fieldName: string, value: any, currentLanguage: string, isReadOnly: boolean): EavItem {
     const l = this.log.fn('addItemAttributeValueHelper', { fieldName, value, currentLanguage, isReadOnly });
-    const contentType = this.contentTypeService.getContentType(this.contentTypeId);
+    const contentType = this.contentTypeService.get(this.contentTypeId);
     const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
     const result = this.updater.addItemAttributeValue(
       this.entityGuid, fieldName, value, currentLanguage, isReadOnly, ctAttribute.Type

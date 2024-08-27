@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { EavEntity } from '../../models/eav';
 import { EavEntityDto } from '../../models/json-format-v1';
+import { SignalStoreBase } from '../signal-store-base';
+
+const logThis = false;
+const nameOfThis = 'ContentTypeItemService';
 
 /**
  * Content-Type Items are additional entities which the ContentType info needs.
@@ -9,51 +13,17 @@ import { EavEntityDto } from '../../models/json-format-v1';
  * This service stores / retrieves these.
  */
 @Injectable({ providedIn: 'root' })
-export class ContentTypeItemService /* extends BaseDataService<EavEntity> TODO:: Old Code */ {
+export class ContentTypeItemService extends SignalStoreBase<string, EavEntity> {
 
-  contentTypeItems: Record<string, EavEntity> = {};
+  constructor() {
+    super({ nameOfThis, logThis });
+  }
 
-  // TODO:: Old Code, remove after testing ist done
-  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-  //   super('ContentTypeItem', serviceElementsFactory);
-  // }
-
-  //#region Add / Clear Cache
+  override getId = (item: EavEntity) => item.Guid;
 
   addContentTypeItems(contentTypeItems: EavEntityDto[]): void {
     const converted = EavEntity.convertMany(contentTypeItems);
-    this.addToCache(converted);
+    this.addMany(converted);
   }
-
-  private addToCache(contentTypeItems: EavEntity[]): void {
-    // TODO:: Old Code, remove after testing ist done
-    // this.upsertManyInCache(contentTypeItems);
-
-    contentTypeItems.forEach(content => {
-      this.contentTypeItems[content.Guid] = content;
-    });
-  }
-
-  public clearCache(): void {
-    this.contentTypeItems = {};
-  }
-
-  //#endregion
-
-  //#region Getters
-
-  getContentTypeItem(guid: string): EavEntity {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache().find(contentTypeItem => contentTypeItem.Guid === guid);
-    return this.contentTypeItems[guid];
-  }
-
-  getContentTypeItems(guids: string[]): EavEntity[] {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache().filter(contentTypeItem => guids.includes(contentTypeItem.Guid));
-    return guids.map(guid => this.contentTypeItems[guid]);
-  }
-
-  //#endregion
 
 }

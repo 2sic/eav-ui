@@ -30,7 +30,7 @@ export class EntityPickerLogic extends FieldLogicBase {
     fs = EntityPickerLogic.maybeOverrideEditRestrictions(fs, tools);
 
     if(fs.DataSources?.length > 0) 
-      dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
+      dataSources = tools.contentTypeItemService.getMany(fs.DataSources);
 
     // Transfer configuration
     const dataSource = dataSources[0];
@@ -86,7 +86,7 @@ export class EntityPickerLogic extends FieldLogicBase {
     fs.PickerDisplayConfiguration ??= [];
 
     if (fs.PickerDisplayConfiguration?.length > 0)
-      pickerDisplayConfigurations = tools.contentTypeItemService.getContentTypeItems(fs.PickerDisplayConfiguration);
+      pickerDisplayConfigurations = tools.contentTypeItemService.getMany(fs.PickerDisplayConfiguration);
 
     if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigModels.UiPickerModeTree) {
       const specsTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;

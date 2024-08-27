@@ -26,7 +26,7 @@ export class StringPickerLogic extends FieldLogicBase {
     if (fs.Separator == '\\n') fs.Separator = '\n'; //buggy temp double-slash-n
 
     if (fs.DataSources?.length > 0)
-      dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
+      dataSources = tools.contentTypeItemService.getMany(fs.DataSources);
 
     /** Dropdown data source aka custom-list picker */
     if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceCustomList) {

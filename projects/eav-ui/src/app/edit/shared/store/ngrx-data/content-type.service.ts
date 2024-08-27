@@ -1,61 +1,29 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { EavContentType, EavItem } from '../../models/eav';
 import { EavContentTypeDto } from '../../models/json-format-v1';
 import { ItemHelper } from '../../helpers/item.helper';
+import { SignalStoreBase } from '../signal-store-base';
+
+const logThis = false;
+const nameOfThis = 'ContentTypeService';
 
 @Injectable({ providedIn: 'root' })
-export class ContentTypeService /* extends BaseDataService<EavContentType> TOOD:: remove later */ {
+export class ContentTypeService extends SignalStoreBase<string, EavContentType> {
 
-  contentTypes: Record<string, EavContentType> = {};
-
-  // TODO:: Old Code, remove after testing ist done
-  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-  //   super('ContentType', serviceElementsFactory);
-  // }
-
-  //#region Add / Clear Cache
+  constructor() {
+    super({ nameOfThis, logThis });
+  }
+  
+  override getId = (item: EavContentType) => item.Id;
 
   addContentTypes(contentTypes: EavContentTypeDto[]): void {
     const converted = EavContentType.convertMany(contentTypes);
-    this.addToCache(converted);
+    this.addMany(converted);
   }
-
-  private addToCache(contentTypes: EavContentType[]): void {
-    // TODO:: Old Code, remove after testing ist done
-    // this.addManyToCache(contentTypeItems);
-
-    contentTypes.forEach(content => {
-      this.contentTypes[content.Id] = content;
-    });
-  }
-
-  public clearCache(): void {
-    this.contentTypes = {};
-  }
-
-  //#endregion
-
-  //#region Getters
 
   getContentTypeOfItem(item: EavItem): EavContentType {
     const nameId = ItemHelper.getContentTypeNameId(item);
-    return this.getContentType(nameId);
+    return this.get(nameId);
   }
 
-  getContentType(id: string): EavContentType {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache().find(contentType => contentType.Id === id);
-    return this.contentTypes[id];
-  }
-
-  // TODO:: Old Code, remove after testing ist done
-  // getContentType$(id: string): Observable<EavContentType> {
-  //   // return this.cache$.pipe(
-  //   //   map(contentTypes => contentTypes.find(contentType => contentType.Id === id)),
-  //   //   mapUntilChanged(m => m),
-  //   // );
-  //   return of(this.contentTypes[id]);
-  // }
-
-  //#endregion
 }

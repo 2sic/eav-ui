@@ -3,55 +3,41 @@ import { AdamItem } from '../../../../../../../edit-types';
 import { PrefetchAdams } from '../../../dialog/main/edit-dialog-main.models';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { SignalStoreBase } from '../signal-store-base';
+
+const logThis = true;
+const nameOfThis = 'AdamCacheService';
 
 @Injectable({ providedIn: 'root' })
+export class AdamCacheService extends SignalStoreBase<string, AdamSnapshot> {
 
+  constructor() {
+    super({ nameOfThis, logThis });
+  }
 
-export class AdamCacheService /* extends BaseDataService<AdamSnapshot> Old Code */ {
-
-  snapshot: Record<string, AdamSnapshot> = {};
-
-  // TODO:: Old Code, remove after testing ist done
-  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-  //   super('AdamCache', serviceElementsFactory);
-  // }
+  override getId = (item: AdamSnapshot) => item.Guid;
 
   loadPrefetch(prefetchAdams: PrefetchAdams): void {
-    if (prefetchAdams == null) { return; }
+    if (prefetchAdams == null)
+      return;
 
-    const snapshots = Object.entries(prefetchAdams).map(([entityGuid, attributes]) => {
-      const snapshot: AdamSnapshot = {
+    const snapshots = Object.entries(prefetchAdams)
+      .map(([entityGuid, attributes]) => ({
         Guid: entityGuid,
         Attributes: attributes,
-      };
-      return snapshot;
-    });
-    this.addToCache(snapshots);
+      } satisfies AdamSnapshot));
+    this.addMany(snapshots);
   }
 
   getAdamSnapshot(entityGuid: string, fieldName: string): AdamItem[] {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cacheTemp().find(adamSnapshot => adamSnapshot.Guid === entityGuid)?.Attributes[fieldName];
-    return this.snapshot[entityGuid]?.Attributes[fieldName];
-  }
-
-  private addToCache(snapshots: AdamSnapshot[]): void {
-    // TODO:: Old Code, remove after testing ist done
-    // this.upsertManyInCache(snapshots);
-    snapshots.forEach(snapshot => {
-      this.snapshot[snapshot.Guid] = snapshot;
-    });
-  }
-
-  public clearCache(): void {
-    this.snapshot = {};
+    return this.cache()[entityGuid]?.Attributes[fieldName];
   }
 
 }
 
 
 
-export interface AdamSnapshot {
+interface AdamSnapshot {
   Guid: string;
   Attributes: AdamSnapshotAttributes;
 }

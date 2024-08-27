@@ -75,7 +75,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
           entityReader.flattenAll<FieldSettings>(attribute.Metadata),
         );
-        const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas).filter(formulaItem => {
+        const formulaItems = this.contentTypeItemService.getMany(settings.Formulas).filter(formulaItem => {
           const enabled: boolean = LocalizationHelpers.translate<boolean>(language, formulaItem.Attributes.Enabled, null);
           return enabled;
         });
