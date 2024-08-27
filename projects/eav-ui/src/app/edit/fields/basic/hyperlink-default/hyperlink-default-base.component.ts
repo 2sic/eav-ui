@@ -128,7 +128,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
           this.setPreview(value, false);
           return;
         }
-        this.linkCacheService.loadLink(value, linkInfo);
+        this.linkCacheService.addLink(value, linkInfo);
         const isResolved = !this.isFileOrPage(linkInfo.Value);
         this.setPreview(linkInfo.Value, isResolved, linkInfo.Adam);
       });

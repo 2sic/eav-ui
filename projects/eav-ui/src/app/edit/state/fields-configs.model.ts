@@ -34,7 +34,7 @@ export interface FieldConstants {
   angularAssets?: string;
   dropzonePreviewsClass?: string;
   initialDisabled?: boolean;
-  inputCalc: CalculatedInputType;
+  inputCalc: InputTypeSpecs;
   inputTypeStrict: InputTypeStrict;
   isExternal?: boolean;
   isLastInGroup?: boolean;
@@ -60,7 +60,7 @@ export interface TranslationState extends TranslationStateCore {
 }
 
 /** Information about the InputType */
-export interface CalculatedInputType {
+export interface InputTypeSpecs {
   inputType: InputTypeStrict;
   isExternal: boolean;
 }

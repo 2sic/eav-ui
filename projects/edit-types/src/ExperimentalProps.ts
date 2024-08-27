@@ -1,7 +1,7 @@
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { InputTypeName } from './InputTypeName';
+import { AttributeInputType } from './InputTypeName';
 import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
@@ -10,7 +10,7 @@ import { FieldMask } from 'projects/eav-ui/src/app/edit/shared/helpers';
 
 export interface ExperimentalProps {
   entityGuid: string;
-  allInputTypeNames: InputTypeName[];
+  allInputTypeNames: AttributeInputType[];
   formGroup: UntypedFormGroup;
   translateService: TranslateService;
   isExpanded$: Observable<boolean>;

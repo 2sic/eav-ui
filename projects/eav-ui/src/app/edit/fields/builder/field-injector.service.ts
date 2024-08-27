@@ -12,7 +12,7 @@ import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
-import { CalculatedInputType } from '../../state/fields-configs.model';
+import { InputTypeSpecs } from '../../state/fields-configs.model';
 
 const logThis = false;
 const nameOfThis = 'FieldInjectorService';
@@ -35,7 +35,7 @@ export class FieldInjectorService {
 
   constructor() { }
 
-  public getInjectors(fieldConfig: FieldConfigSet, inputType: CalculatedInputType) {
+  public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs) {
     const l = this.log.fn('getInjectors');
     const fieldName = fieldConfig.fieldName;
 

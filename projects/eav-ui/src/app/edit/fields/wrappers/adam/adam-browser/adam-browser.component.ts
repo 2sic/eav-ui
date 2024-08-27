@@ -322,7 +322,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
-    this.linkCacheService.loadAdam(items);
+    this.linkCacheService.addAdam(items);
 
     const filteredItems: AdamItem[] = [];
     const extensionsFilter = getExtensionsFilter(adamConfig.fileFilter);

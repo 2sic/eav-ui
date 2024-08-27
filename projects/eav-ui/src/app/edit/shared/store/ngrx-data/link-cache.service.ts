@@ -12,7 +12,23 @@ export class LinkCacheService /* extends BaseDataService<LinkCache> Old Code */ 
   //   super('LinkCache', serviceElementsFactory);
   // }
 
-  loadPrefetch(prefetchLinks: PrefetchLinks, prefetchAdam: PrefetchAdams): void {
+  //#region Add / Clear Cache
+
+  private addToCache(links: LinkCache[]): void {
+    // this.upsertManyInCache(links); // TODO:: Old Code, remove after testing ist done
+
+    // add all links cache to list
+    links.forEach(link => {
+      this.list[link.key.toLocaleLowerCase()] = link;
+    });
+
+  }
+
+  public clearCache(): void {
+    this.list = {};
+  }
+
+  addPrefetch(prefetchLinks: PrefetchLinks, prefetchAdam: PrefetchAdams): void {
 
     const links: LinkCache[] = [];
 
@@ -37,12 +53,12 @@ export class LinkCacheService /* extends BaseDataService<LinkCache> Old Code */ 
     this.addToCache(links);
   }
 
-  loadAdam(items: AdamItem[]): void {
+  addAdam(items: AdamItem[]): void {
     const adamLinks = this.adamToLinks(items);
     this.addToCache(adamLinks);
   }
 
-  loadLink(key: string, linkInfo: LinkInfo): void {
+  addLink(key: string, linkInfo: LinkInfo): void {
     key = key.trim().toLocaleLowerCase();
     const link: LinkCache = {
       key,
@@ -56,6 +72,10 @@ export class LinkCacheService /* extends BaseDataService<LinkCache> Old Code */ 
 
     this.addToCache([link]);
   }
+
+  //#endregion
+
+  //#region Getters
 
   getLinkInfo(key: string): LinkInfo {
     key = key.trim().toLocaleLowerCase();
@@ -83,18 +103,6 @@ export class LinkCacheService /* extends BaseDataService<LinkCache> Old Code */ 
     return links;
   }
 
-  private addToCache(links: LinkCache[]): void {
-    // this.upsertManyInCache(links); // TODO:: Old Code, remove after testing ist done
-
-    // add all links cache to list
-    links.forEach(link => {
-      this.list[link.key.toLocaleLowerCase()] = link;
-    });
-
-  }
-
-  public clearCache(): void {
-    this.list = {};
-  }
+  //#endregion
 
 }

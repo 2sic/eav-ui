@@ -13,10 +13,29 @@ export class ContentTypeService /* extends BaseDataService<EavContentType> TOOD:
   //   super('ContentType', serviceElementsFactory);
   // }
 
-  addContentTypes(contentTypes1: EavContentTypeDto[]): void {
-    const contentTypes = EavContentType.convertMany(contentTypes1);
-    this.addToCache(contentTypes);
+  //#region Add / Clear Cache
+
+  addContentTypes(contentTypes: EavContentTypeDto[]): void {
+    const converted = EavContentType.convertMany(contentTypes);
+    this.addToCache(converted);
   }
+
+  private addToCache(contentTypes: EavContentType[]): void {
+    // TODO:: Old Code, remove after testing ist done
+    // this.addManyToCache(contentTypeItems);
+
+    contentTypes.forEach(content => {
+      this.contentTypes[content.Id] = content;
+    });
+  }
+
+  public clearCache(): void {
+    this.contentTypes = {};
+  }
+
+  //#endregion
+
+  //#region Getters
 
   getContentTypeOfItem(item: EavItem): EavContentType {
     const nameId = ItemHelper.getContentTypeNameId(item);
@@ -38,17 +57,5 @@ export class ContentTypeService /* extends BaseDataService<EavContentType> TOOD:
   //   return of(this.contentTypes[id]);
   // }
 
-  private addToCache(contentTypes: EavContentType[]): void {
-    // TODO:: Old Code, remove after testing ist done
-    // this.addManyToCache(contentTypeItems);
-
-    contentTypes.forEach(content => {
-      this.contentTypes[content.Id] = content;
-    });
-  }
-
-  public clearCache(): void {
-    this.contentTypes = {};
-  }
-
+  //#endregion
 }

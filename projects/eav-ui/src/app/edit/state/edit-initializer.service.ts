@@ -133,7 +133,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     this.contentTypeService.addContentTypes(loadDto.ContentTypes);
     this.adamCacheService.loadPrefetch(loadDto.Prefetch?.Adam);
     this.entityCacheService.loadEntities(loadDto.Prefetch?.Entities);
-    this.linkCacheService.loadPrefetch(loadDto.Prefetch?.Links, loadDto.Prefetch?.Adam);
+    this.linkCacheService.addPrefetch(loadDto.Prefetch?.Links, loadDto.Prefetch?.Adam);
 
     const items = this.itemService.getItems(itemGuids);
     const createMode = items[0].Entity.Id === 0;
@@ -159,7 +159,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     this.languageStore.addToStore(formId, langs.Primary, langs.Current, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
-    const publishMode = this.publishStatusService.asPublishMode(loadDto.IsPublished, loadDto.DraftShouldBranch);
+    const publishMode = this.publishStatusService.toPublishMode(loadDto);
     this.publishStatusService.setPublishMode(publishMode, formId, this.formConfig);
   }
 

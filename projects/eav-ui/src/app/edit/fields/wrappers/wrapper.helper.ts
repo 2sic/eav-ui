@@ -1,6 +1,6 @@
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
-import { CalculatedInputType } from '../../state/fields-configs.model';
+import { InputTypeSpecs } from '../../state/fields-configs.model';
 import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
 import { WrappersConstant, WrappersConstants } from './wrappers.constants';
 
@@ -8,7 +8,7 @@ const logThis = false;
 
 export class WrapperHelper {
 
-  static getWrappers(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
+  static getWrappers(settings: FieldSettings, calculatedInputType: InputTypeSpecs) {
     const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 

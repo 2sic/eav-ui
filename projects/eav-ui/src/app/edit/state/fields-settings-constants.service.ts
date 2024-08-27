@@ -111,7 +111,7 @@ export class FieldsSettingsConstantsService {
       const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
       const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
 
-      const calculatedInputType = this.inputTypeService.calculateInputType(attribute);
+      const calculatedInputType = this.inputTypeService.getSpecs(attribute);
       const inputType = this.inputTypeService.getInputType(attribute.InputType);
 
       this.log.a('details', { contentType, language });
