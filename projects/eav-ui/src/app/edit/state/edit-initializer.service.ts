@@ -19,11 +19,9 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormDataService } from '../shared/services/form-data.service';
 import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
-import { PickerDataCacheService } from '../fields/picker/cache/picker-data-cache.service';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { BestValueModes } from '../localization/localization.constants';
 import { FormConfigService } from './form-config.service';
-import { ItemHelper } from '../shared/helpers/item.helper';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FormLanguage } from './form-languages.model';
 import { transient } from '../../core';
@@ -58,7 +56,6 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     private languageService: LanguageService,
     private languageStore: LanguageInstanceService,
     private snackBar: MatSnackBar,
-    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
@@ -132,7 +129,6 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     this.contentTypeItemService.addContentTypeItems(loadDto.ContentTypeItems);
     this.contentTypeService.addContentTypes(loadDto.ContentTypes);
     this.adamCacheService.loadPrefetch(loadDto.Prefetch?.Adam);
-    this.entityCacheService.loadEntities(loadDto.Prefetch?.Entities);
     this.linkCacheService.addPrefetch(loadDto.Prefetch?.Links, loadDto.Prefetch?.Adam);
 
     const items = this.itemService.getItems(itemGuids);

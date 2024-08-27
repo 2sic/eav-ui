@@ -31,12 +31,10 @@ import { SourceService } from '../../../code-editor/services/source.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
-import { PickerDataCacheService } from '../../fields/picker/cache/picker-data-cache.service';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
-import { ItemHelper } from '../../shared/helpers/item.helper';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
@@ -139,7 +137,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
     private formsStateService: FormsStateService,
-    private entityCacheService: PickerDataCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
@@ -193,7 +190,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
       this.publishStatusService.clearCache();
-      this.entityCacheService.clearCache();
       this.adamCacheService.clearCache();
       this.linkCacheService.clearCache();
     }

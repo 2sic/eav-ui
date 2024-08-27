@@ -169,9 +169,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
       getSettings: (name) => this.formConfig.config.settings?.Values[name],
-      // 2024-04-26 2dm removed this, don't think it's used and believe it's a leftover #cleanup-picker
-      // getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
-      // getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
 
       getFieldMask: (mask: string, name?: string, watch?: boolean) => {
         return transient(FieldMask, this.injector).init(name, mask, watch);

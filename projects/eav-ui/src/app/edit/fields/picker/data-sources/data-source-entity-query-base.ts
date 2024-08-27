@@ -1,8 +1,7 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
-import { PickerDataCacheService } from '../cache/picker-data-cache.service';
+import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
@@ -21,8 +20,6 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   //#region Inject and blank constructor
 
   protected querySvc = transient(QueryService);
-
-  protected entityCacheSvc = inject(PickerDataCacheService);
 
   constructor(logger: EavLogger) {
     super(logger);
