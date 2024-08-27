@@ -99,11 +99,11 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   translate(): void {
-    this.fieldsTranslate.translate(this.config.fieldName);
+    this.fieldsTranslate.unlock(this.config.fieldName);
   }
 
   dontTranslate(): void {
-    this.fieldsTranslate.dontTranslate(this.config.fieldName);
+    this.fieldsTranslate.lock(this.config.fieldName);
   }
 
   openTranslateMenuDialog(translationState: TranslationState): void {

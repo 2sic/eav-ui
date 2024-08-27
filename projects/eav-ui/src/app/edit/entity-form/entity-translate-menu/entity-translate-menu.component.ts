@@ -43,9 +43,9 @@ export class EntityTranslateMenuComponent {
     private dialog: MatDialog,
     private itemService: ItemService,
     private eavService: FormConfigService,
-    private fieldsTranslateService: FieldsTranslateService,
+    private fieldTranslateSvc: FieldsTranslateService,
     private viewContainerRef: ViewContainerRef,
-    private fieldsSettingsService: FieldsSettingsService,
+    private fieldSettingsSvc: FieldsSettingsService,
   ) {
     // debug...
     // effect(() => {
@@ -56,7 +56,7 @@ export class EntityTranslateMenuComponent {
 
   #autoTranslatableFields = computed(() => {
     // console.log(`2dm #AutoTrans:`, val, (this.fieldsTranslateService as any).entityGuid);
-    return this.fieldsTranslateService.findAutoTranslatableFields();
+    return this.fieldTranslateSvc.findAutoTranslatableFields();
   });
 
   protected slotIsEmpty = computed(() => {
@@ -65,19 +65,24 @@ export class EntityTranslateMenuComponent {
 
   language = this.eavService.language;
 
-  translateMany() {
-    this.fieldsTranslateService.translateMany();
+  unlockAll() {
+    this.fieldTranslateSvc.toggleUnlockOnAll(true);
+  }
+
+  lockAll() {
+    this.fieldTranslateSvc.toggleUnlockOnAll(false);
   }
 
   autoTranslateMany(): void {
     const autoTransFields = this.#autoTranslatableFields();
-    const transStateForLanguages = this.fieldsSettingsService.getTranslationStateNow(this.#autoTranslatableFields()[0]);
+    if (autoTransFields.length === 0) 
+      return this.fieldTranslateSvc.showMessageNoTranslatableFields(true);
+
+    const transStateForLanguages = this.fieldSettingsSvc.getTranslationStateNow(autoTransFields[0]);
     if (autoTransFields.length > 0) {
       const config: TranslateMenuDialogConfig = {
         entityGuid: this.entityGuid(),
         fieldName: autoTransFields[0],
-        // name: '',
-        // focused$: undefined
       }
       const dialogData: TranslateMenuDialogData = {
         config,
@@ -102,10 +107,6 @@ export class EntityTranslateMenuComponent {
         width: '400px',
       });
     }
-  }
-
-  dontTranslateMany() {
-    this.fieldsTranslateService.dontTranslateMany();
   }
 
 }

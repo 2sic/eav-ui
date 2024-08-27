@@ -83,10 +83,10 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
 
     switch (newState.linkType) {
       case TranslationLinks.Translate:
-        this.fieldsTranslateService.translate(this.dialogData.config.fieldName);
+        this.fieldsTranslateService.unlock(this.dialogData.config.fieldName);
         break;
       case TranslationLinks.DontTranslate:
-        this.fieldsTranslateService.dontTranslate(this.dialogData.config.fieldName);
+        this.fieldsTranslateService.lock(this.dialogData.config.fieldName);
         break;
       case TranslationLinks.LinkReadOnly:
         this.fieldsTranslateService.linkReadOnly(this.dialogData.config.fieldName, newState.language);

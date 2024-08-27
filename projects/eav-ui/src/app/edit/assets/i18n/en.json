@@ -67,6 +67,8 @@
       "Title": "⚠️ Warning: You are using a test account",
       "Body": "You are using a demo Google Account to translate. This can stop working at any time. <br>You <strong>must</strong> register your own API key. It's free for 500'000 words per month. See <a href='https://go.2sxc.org/translate-api-key' target='_blank'>docs</a>."
     },
+    "NoTranslatableFieldsFound": "No fields found which can be translated/unlocked.",
+    "NoAutoTranslatableFieldsFound": "No fields found which can be auto-translated.",
     "Dialog": {
       "Title": "Translate {{name}}",
       "Intro": "You can do many things when translating, like linking languages together.",
