@@ -14,7 +14,7 @@ export class FormulaExperimentalObject implements FormulaV1Experimental {
   }
   getEntities(): FormulaV1ExperimentalEntity[] {
     const { itemService, formConfig } = this.#propsData;
-    const v1Entities = itemService.getItems(formConfig.config.itemGuids).map(item => {
+    const v1Entities = itemService.getMany(formConfig.config.itemGuids).map(item => {
       const v1Entity: FormulaV1ExperimentalEntity = {
         guid: item.Entity.Guid,
         id: item.Entity.Id,
@@ -35,7 +35,7 @@ export class FormulaExperimentalObject implements FormulaV1Experimental {
 
   getValues(entityGuid: string): ItemValuesOfLanguage {
     const { language, itemService } = this.#propsData;
-    const item = itemService.getItem(entityGuid);
+    const item = itemService.get(entityGuid);
     const values: ItemValuesOfLanguage = {};
     for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
       values[fieldName] = LocalizationHelpers.translate(language, fieldValues, null);

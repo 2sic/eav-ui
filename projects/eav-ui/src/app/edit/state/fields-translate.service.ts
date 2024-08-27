@@ -40,7 +40,7 @@ export class FieldsTranslateService {
   init(entityGuid: string): void {
     const l = this.log.fn('init');
     this.entityGuid = entityGuid;
-    const item = this.itemService.getItem(entityGuid);
+    const item = this.itemService.get(entityGuid);
     this.contentTypeId = ItemHelper.getContentTypeNameId(item);
     this.#itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
     l.end({ entityGuid, contentTypeId: this.contentTypeId });

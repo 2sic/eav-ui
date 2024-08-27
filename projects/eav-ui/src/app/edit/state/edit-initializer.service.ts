@@ -131,7 +131,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     this.adamCacheService.loadPrefetch(loadDto.Prefetch?.Adam);
     this.linkCacheService.addPrefetch(loadDto.Prefetch?.Links, loadDto.Prefetch?.Adam);
 
-    const items = this.itemService.getItems(itemGuids);
+    const items = this.itemService.getMany(itemGuids);
     const createMode = items[0].Entity.Id === 0;
     const isCopy = (items[0].Header as ItemAddIdentifier).DuplicateEntity != null;
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
@@ -165,7 +165,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
    * Preserve initial values for future use in formulas which may need to know the initial value
    */
   private keepInitialValues(): void {
-    const items = this.itemService.getItems(this.formConfig.config.itemGuids);
+    const items = this.itemService.getMany(this.formConfig.config.itemGuids);
     const allLangs = this.languageService.getLanguages().map(language => language.NameId);
     const language = this.formConfig.language();
     if (!allLangs.includes(language.current)) allLangs.push(language.current);
@@ -196,7 +196,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const updater = this.itemService.updater;
     const eavConfig = this.formConfig.config;
     const formId = eavConfig.formId;
-    const items = this.itemService.getItems(eavConfig.itemGuids);
+    const items = this.itemService.getMany(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
     const language = this.formConfig.language();

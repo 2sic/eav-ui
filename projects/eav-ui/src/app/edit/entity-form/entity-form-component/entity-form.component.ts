@@ -113,7 +113,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     const entityGuid = this.entityGuid();
     const languages = this.formConfig.language();
     const note = this.itemService.getItemNote(entityGuid);
-    const notCreatedYet = this.itemService.getItem(entityGuid).Entity.Id === 0;
+    const notCreatedYet = this.itemService.get(entityGuid).Entity.Id === 0;
     return getNoteProps(note, languages, notCreatedYet);
   });
 
@@ -169,7 +169,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   }
 
   openHistory() {
-    const item = this.itemService.getItem(this.entityGuid());
+    const item = this.itemService.get(this.entityGuid());
     this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
   }
 
@@ -206,7 +206,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   editNote(note?: EavEntity) {
     const entityGuid = this.entityGuid();
     const l = this.log.fn('editNote', { note });
-    const item = this.itemService.getItem(entityGuid);
+    const item = this.itemService.get(entityGuid);
     if (item.Entity.Id === 0) {
       l.end(null, 'Item not saved yet, ID = 0');
       return;
@@ -244,7 +244,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   private fetchNote() {
     const entityGuid = this.entityGuid();
-    const item = this.itemService.getItem(entityGuid);
+    const item = this.itemService.get(entityGuid);
     if (item.Entity.Id === 0)
       return;
 

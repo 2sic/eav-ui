@@ -1,6 +1,7 @@
 import { computed, Signal, signal } from '@angular/core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/helpers/computed-cache';
+import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;
 const logThisUndefined = true;
@@ -142,6 +143,16 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
     return result.signal;
   }
   #itemSignalsCache = new ComputedCacheHelper<TKey, TValue>();
+
+
+  getManySignal(ids: TKey[]): Signal<TValue[]> {
+    const sig = computed(
+      () => ids.map(id => this.get(id)).filter(item => item != null),
+      { equal: isEqual }
+    );
+    this.log.a('getManySignal()', { ids });
+    return sig;
+  }
 
   getListSignal(): Signal<TValue[]> {
     const list = this.#list;

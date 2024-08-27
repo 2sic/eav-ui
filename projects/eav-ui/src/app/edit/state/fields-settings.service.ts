@@ -116,7 +116,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     const l = this.log.fn('init', { entityGuid });
 
     this.#itemGuid.set(entityGuid);
-    const item = this.itemService.getItem(entityGuid);
+    const item = this.itemService.get(entityGuid);
     this.#item.set(item);
     this.fieldSignals = new FieldsSignalsHelper(entityGuid, this.#item, this.entityReader, this.itemService);
 

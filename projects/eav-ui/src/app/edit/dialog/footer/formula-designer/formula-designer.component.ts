@@ -218,7 +218,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     const formula = this.#designerSvc.currentFormula();
 
     if (formula.sourceId == null) {
-      const item = this.itemService.getItem(formula.entityGuid);
+      const item = this.itemService.get(formula.entityGuid);
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       const attributeDef = contentType.Attributes.find(a => a.Name === formula.fieldName);
       const atAllFieldSettings = attributeDef.Metadata.find(m => m.Type.Id === '@All');

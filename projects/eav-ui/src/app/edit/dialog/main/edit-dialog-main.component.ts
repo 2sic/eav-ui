@@ -89,7 +89,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   private formConfig = inject(FormConfigService);
 
   // TODO:: @2g Question Items bug, reopen not working
-  protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
+  // TODO: @2dg - what did you mean by this?
+  // protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
 
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
@@ -159,7 +160,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.loadIconsService.load();
     this.formsStateService.init();
     this.formulaDesignerService.init();
-    const items$ = this.itemService.getItems$(this.formConfig.config.itemGuids);
+    const items$ = this.itemService.getMany$(this.formConfig.config.itemGuids);
 
     // TODO:: @2g Question viewInitiated
     this.viewModel$ = combineLatest([items$, this.viewInitiated$]).pipe(
@@ -217,7 +218,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
       const items = this.formBuilderRefs
         .map(formBuilderRef => {
-          const eavItem = this.itemService.getItem(formBuilderRef.entityGuid);
+          const eavItem = this.itemService.get(formBuilderRef.entityGuid);
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
           if (!isValid)
             return null;

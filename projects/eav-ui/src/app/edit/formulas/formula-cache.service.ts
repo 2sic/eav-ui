@@ -66,7 +66,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     const entityReader = new EntityReader(language.current, language.primary);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {
-      const item = this.itemService.getItem(entityGuid);
+      const item = this.itemService.get(entityGuid);
 
       const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);
 
@@ -136,7 +136,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @returns
    */
   buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemShared {
-    item = item ?? this.itemService.getItem(entityGuid);
+    item = item ?? this.itemService.get(entityGuid);
     const entity = item.Entity;
     const mdFor = entity.For;
     const targetEntity: FormulaV1CtxTargetEntity = {
@@ -323,7 +323,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
       } catch (error) {
         this.cacheResults({entityGuid, fieldName, target} satisfies FormulaIdentifier, undefined, true, false);
-        const item = this.itemService.getItem(entityGuid);
+        const item = this.itemService.get(entityGuid);
         const contentType = this.contentTypeService.getContentTypeOfItem(item);
         const language = this.formConfig.language();
         const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);

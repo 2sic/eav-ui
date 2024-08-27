@@ -25,7 +25,7 @@ export class ItemUpdateHelper {
   updateItemId(saveResult: SaveResult): void {
     const entityGuid = Object.keys(saveResult)[0];
     const entityId = saveResult[entityGuid];
-    const oldItem = this.itemSvc.getItem(entityGuid);
+    const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0))
       return;
 
@@ -40,14 +40,14 @@ export class ItemUpdateHelper {
         Id: entityId,
       }
     };
-    this.itemSvc.updateItem(newItem);
+    this.itemSvc.add(newItem);
   }
 
 
   /** Update parts of the header; ATM just to tell us about the slot being empty */
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
     const l = this.log.fn('updateItemHeader', { entityGuid, header });
-    const oldItem = this.itemSvc.getItem(entityGuid);
+    const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return;
 
     const newItem: EavItem = {
@@ -56,7 +56,7 @@ export class ItemUpdateHelper {
         ...header
       }
     };
-    this.itemSvc.updateItem(newItem);
+    this.itemSvc.add(newItem);
     l.end();
   }
 
@@ -75,7 +75,7 @@ export class ItemUpdateHelper {
   ): EavItem {
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
     const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
-    const oldItem = transactionItem ?? this.itemSvc.getItem(entityGuid);
+    const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -87,7 +87,7 @@ export class ItemUpdateHelper {
 
     // if we're in a transaction, then save/update will happen later on, so don't trigger state changes yet
     if (!isTransaction) 
-      this.itemSvc.updateItem(newItem);
+      this.itemSvc.add(newItem);
 
     return newItem;
   }
@@ -100,7 +100,7 @@ export class ItemUpdateHelper {
     language: FormLanguage,
     isReadOnly: boolean,
   ): void {
-    const oldItem = this.itemSvc.getItem(entityGuid);
+    const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return;
 
     const newItem: EavItem = {
@@ -112,7 +112,7 @@ export class ItemUpdateHelper {
         ),
       }
     };
-    this.itemSvc.updateItem(newItem);
+    this.itemSvc.add(newItem);
   }
 
   setDefaultValue(
@@ -150,7 +150,7 @@ export class ItemUpdateHelper {
   //#region Item Attribute - Multi Value
 
   updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfLanguage, language: FormLanguage): void {
-    const oldItem = this.itemSvc.getItem(entityGuid);
+    const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return;
 
     const oldValues: ItemValuesOfLanguage = {};
@@ -170,7 +170,7 @@ export class ItemUpdateHelper {
         Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language),
       }
     };
-    this.itemSvc.updateItem(newItem);
+    this.itemSvc.add(newItem);
   }
 
   //#endregion
@@ -190,7 +190,7 @@ export class ItemUpdateHelper {
     isReadOnly: boolean,
     transactionItem?: EavItem,
   ): void {
-    const oldItem = transactionItem ?? this.itemSvc.getItem(entityGuid);
+    const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -201,7 +201,7 @@ export class ItemUpdateHelper {
         ),
       }
     };
-    this.itemSvc.updateItem(newItem);
+    this.itemSvc.add(newItem);
   }
 
   // TODO:: Old Code, remove after testing ist done
@@ -213,7 +213,7 @@ export class ItemUpdateHelper {
     transactionItem?: EavItem,
   ): EavItem {
     const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
-    const oldItem = transactionItem ?? this.itemSvc.getItem(entityGuid);
+    const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -224,7 +224,7 @@ export class ItemUpdateHelper {
     };
 
     if (!delayUpsert)
-      this.itemSvc.updateItem(newItem);
+      this.itemSvc.add(newItem);
     return l.r(newItem);
   }
 
@@ -233,7 +233,7 @@ export class ItemUpdateHelper {
   //#region Metadata
 
   updateItemMetadata(entityGuid: string, metadata: EavEntity[]): void {
-    const oldItem = this.itemSvc.getItem(entityGuid);
+    const oldItem = this.itemSvc.get(entityGuid);
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
@@ -241,7 +241,7 @@ export class ItemUpdateHelper {
         Metadata: metadata,
       }
     };
-    this.itemSvc.updateItem(newItem);
+    this.itemSvc.add(newItem);
   }
 
   //#endregion
