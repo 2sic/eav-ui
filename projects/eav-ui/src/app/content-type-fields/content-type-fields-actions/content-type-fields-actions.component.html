@@ -1,58 +1,34 @@
 <div class="actions-component">
   <!-- Metadata Button -->
-  @if (!field.EditInfo.DisableMetadata) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata" (click)="do('metadata')">
-      <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
-        matBadgePosition="below after" aria-hidden="false"
-      >local_offer</mat-icon>
-    </div>
-  }
-  @else {
-    <div class="eav-grid-action-button disabled">
-      <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">
-        local_offer
-      </mat-icon>
-    </div>
-  }
+  <div class="eav-grid-action-button {{ highlightOrDisabled(enableMetadata) }}"
+    matRipple tippy="Metadata"
+    (click)="enableMetadata ? do('metadata') : ''"
+  >
+    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeDisabled]="!enableMetadata"
+      [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false"
+    >local_offer</mat-icon>
+  </div>
 
   <!-- Image Config Button -->
-  @if (!field.EditInfo.DisableEdit && field.imageConfiguration.isRecommended) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Image Configuration" (click)="do('image')">
-      <mat-icon [matBadge]="field.imageConfiguration.entityId ? 1 : 0" matBadgeSize="small"
-        [matBadgeHidden]="!field.imageConfiguration.entityId" matBadgePosition="below after" aria-hidden="false"
-        matBadgeColor="accent">
-        filter-center-focus
-      </mat-icon>
-    </div>
-  }
-  @else {
-    <div class="eav-grid-action-button disabled" tippy="no image configuration for this field">
-      <mat-icon [matBadge]="field.imageConfiguration.entityId ? 1 : 0" matBadgeSize="small"
-        [matBadgeHidden]="!field.imageConfiguration.entityId" matBadgePosition="below after" aria-hidden="false"
-        matBadgeDisabled="true">
-        filter-center-focus
-      </mat-icon>
-    </div>
-  }
+  <div class="eav-grid-action-button {{ highlightOrDisabled(enableImageConfig) }}"
+    matRipple
+    tippy="{{ enableImageConfig ? 'Image Configuration' : 'no image configuration for this field' }}"
+    (click)="enableImageConfig ? do('image') : ''">
+    <mat-icon [matBadge]="imgConfigCount" matBadgeSize="small"
+      [matBadgeHidden]="!imgConfigCount" matBadgePosition="below after" aria-hidden="false"
+      matBadgeColor="accent" [matBadgeDisabled]="!enableImageConfig"
+      >filter_center_focus</mat-icon>
+  </div>
 
   <!-- Permissions Button -->
-  @if (!field.EditInfo.DisableEdit && enablePermissions) {
-    <div class="eav-grid-action-button highlight" matRipple tippy="Permissions" (click)="do('permissions')">
-      <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-        [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-        person
-      </mat-icon>
-    </div>
-  }
-  @else {
-    <div class="eav-grid-action-button disabled" tippy="no permissions to configure on this field">
-      <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-        [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
-        person
-      </mat-icon>
-    </div>
-  }
+  <div class="eav-grid-action-button {{ highlightOrDisabled(enablePermissions) }}"
+    matRipple
+    tippy="{{ enablePermissions ? 'Permissions' : 'no permissions to configure on this field' }}"
+    (click)="enablePermissions ? do('permissions') : ''">
+    <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" [matBadgeDisabled]="!enablePermissions"
+      [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false"
+      >person</mat-icon>
+  </div>
 
 
   <!-- Share Button -->

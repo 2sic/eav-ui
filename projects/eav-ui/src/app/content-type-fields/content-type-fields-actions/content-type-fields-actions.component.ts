@@ -29,6 +29,10 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
   field: Field;
   metadataCount: number;
   enablePermissions: boolean;
+  enableMetadata: boolean;
+
+  enableImageConfig: boolean;
+  imgConfigCount: number;
   private params: ICellRendererParams & ContentTypeFieldsActionsParams;
 
   constructor() {
@@ -38,8 +42,18 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
   agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
     this.params = params;
     this.field = this.params.data;
+    const disableEdit = this.field.EditInfo.DisableEdit;
+
+    this.enablePermissions = !disableEdit && (this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink);
+    this.enableMetadata = !this.field.EditInfo.DisableMetadata;
     this.metadataCount = this.field.Metadata ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length : 0;
-    this.enablePermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
+
+    this.enableImageConfig = !disableEdit && this.field.imageConfiguration.isRecommended;
+    this.imgConfigCount = this.field.imageConfiguration.entityId ? 1 : 0;
+  }
+
+  highlightOrDisabled(toggle: boolean): string {
+    return toggle ? 'highlight' : 'disabled';
   }
 
   // #region Sharing Info for better icons #SharedFieldDefinition
