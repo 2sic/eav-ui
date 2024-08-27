@@ -45,9 +45,3 @@ interface AdamSnapshot {
 interface AdamSnapshotAttributes {
   [name: string]: AdamItem[];
 }
-
-
-/** Slightly enhanced standard Abstract Control with additional warnings */
-export interface AbstractControlPro extends AbstractControl {
-  _warning$?: BehaviorSubject<ValidationErrors>;
-}

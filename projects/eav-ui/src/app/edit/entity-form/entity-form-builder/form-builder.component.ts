@@ -1,3 +1,4 @@
+import { AbstractControlPro } from './../../shared/validation/validation.helpers';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
@@ -16,7 +17,6 @@ import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model'
 import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
-import { AbstractControlPro } from '../../shared/store/adam-cache.service';
 
 const logThis = false;
 const nameOfThis = 'FormBuilderComponent';

@@ -6,7 +6,12 @@ import { ItemFieldVisibility } from '../../state/item-field-visibility';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { AbstractControlPro } from '../store/adam-cache.service';
+
+
+/** Slightly enhanced standard Abstract Control with additional warnings */
+export interface AbstractControlPro extends AbstractControl {
+  _warning$?: BehaviorSubject<ValidationErrors>;
+}
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
 export class ValidationHelpers {

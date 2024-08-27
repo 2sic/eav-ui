@@ -1,7 +1,7 @@
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { ControlHelpers } from '../helpers/control.helpers';
 import { FieldConfigSet } from '../../fields/field-config-set.model';
-import { AbstractControlPro } from '../store/adam-cache.service';
+import { AbstractControlPro } from './validation.helpers';
 
 export class ValidationMessagesHelpers {
 
