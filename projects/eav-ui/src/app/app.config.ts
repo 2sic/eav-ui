@@ -13,12 +13,6 @@ import { AppInstallSettingsService } from './shared/services/getting-started.ser
 import { InstallerService } from './shared/services/installer.service';
 import { Context } from './shared/services/context';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoreModule } from '@ngrx/store';
-import { metaReducers, reducers } from './edit/shared/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EntityDataModule } from '@ngrx/data';
-import { entityConfig } from './edit/shared/store/ngrx-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { buildTranslateConfiguration } from './shared/translation';
 import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
@@ -32,10 +26,6 @@ export const appConfig: ApplicationConfig = {
       BrowserModule,
       BrowserAnimationsModule,
       HttpClientModule,
-      StoreModule.forRoot(reducers, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
-      EffectsModule.forRoot([]),
-      StoreDevtoolsModule.instrument({ maxAge: 25 }),
-      EntityDataModule.forRoot(entityConfig),
       TranslateModule.forRoot(),
       TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
     ),
