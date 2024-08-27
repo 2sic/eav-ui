@@ -38,7 +38,6 @@ import { EmptyFieldHelpers } from '../edit/fields/basic/empty-field-helpers';
 @Component({
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
-  styleUrls: ['./content-type-fields.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -316,6 +315,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     shareOrInheritDialogRef.afterClosed().subscribe(() => this.fetchFields());
   }
 
+  //#region Grid Options
+
   private buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -446,6 +447,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     };
     return gridOptions;
   }
+
+  //#endregion
 }
 
 interface ContentTypeFieldsViewModel {

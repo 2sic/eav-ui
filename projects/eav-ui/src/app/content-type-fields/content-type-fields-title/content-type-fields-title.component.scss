@@ -1,0 +1,16 @@
+
+div.hover-only {
+  mat-icon {
+    display: none;
+  }
+  &:hover {
+    mat-icon {
+      display: block;
+    }
+  }
+}
+div.no-button {
+  mat-icon {
+    display: none;
+  }
+}
