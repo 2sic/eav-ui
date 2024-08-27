@@ -6,7 +6,6 @@
     [tippyDisabled]="!disabled">
     @for (langButton of buttons; track langButton) {
       <button mat-flat-button class="lang-switch__button"
-        [disabled]="disabled && current() !== langButton.NameId"
         [color]="current() === langButton.NameId ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
         (click)="lngButtonClick($event, langButton)" [tippy]="langButton.Culture" [tippyDisabled]="disabled">
         {{ langButton.buttonText }}
