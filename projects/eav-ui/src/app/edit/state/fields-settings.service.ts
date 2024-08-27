@@ -71,19 +71,19 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
 
-    const attributes = computed(() => {
-      const itemGuid = this.#itemGuid();
-      if (itemGuid == null) {
-        console.log('2dm - null');
-        return;
-      }
-      return this.itemService.getItemAttributes(itemGuid);
-    });
+    // const attributes = computed(() => {
+    //   const itemGuid = this.#itemGuid();
+    //   if (itemGuid == null) {
+    //     console.log('2dm - null');
+    //     return;
+    //   }
+    //   return this.itemService.getItemAttributes(itemGuid);
+    // });
 
-    effect(() => {
-      const attr = attributes();
-      console.log('2dm - effect', attr);
-    });
+    // effect(() => {
+    //   const attr = attributes();
+    //   console.log('2dm - effect', attr);
+    // });
   }
 
   ngOnDestroy(): void {
