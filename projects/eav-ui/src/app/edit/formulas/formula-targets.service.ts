@@ -3,9 +3,9 @@ import { InputTypeConstants } from '../../content-type-fields/constants/input-ty
 import { TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
 import { DesignerState } from './models/formula-results.models';
 import { FormulaCacheItem, FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './models/formula.models';
-import { ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
-import { ItemHelper } from '../shared/helpers/item.helper';
+import { ItemService } from '../shared/store/item.service';
+import { ContentTypeService } from '../shared/store/content-type.service';
 
 /**
  * Small helper service to get the target options for the formula designer.

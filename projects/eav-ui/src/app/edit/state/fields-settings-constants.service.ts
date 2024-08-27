@@ -5,11 +5,11 @@ import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
 import { EavItem, EavContentType } from '../shared/models/eav';
-import { InputTypeService } from '../shared/store/ngrx-data';
 import { FormConfigService } from './form-config.service';
 import { ItemFieldVisibility } from './item-field-visibility';
 import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
 import { FormLanguageComplete } from './form-languages.model';
+import { InputTypeService } from '../shared/store/input-type.service';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsConstantsService';

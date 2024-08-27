@@ -7,11 +7,12 @@ import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { ItemService, ContentTypeService } from '../shared/store/ngrx-data';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FormConfigService } from './form-config.service';
 import { ItemHelper } from '../shared/helpers/item.helper';
 import { FormLanguage } from './form-languages.model';
+import { ItemService } from '../shared/store/item.service';
+import { ContentTypeService } from '../shared/store/content-type.service';
 
 const logThis = false;
 const nameOfThis = 'FieldsTranslateService';

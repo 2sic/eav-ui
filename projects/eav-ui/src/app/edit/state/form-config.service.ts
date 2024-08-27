@@ -4,7 +4,7 @@ import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../shared/co
 import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { Observable } from 'rxjs';
-import { LanguageInstanceService } from '../shared/store/ngrx-data/language-instance.service';
+import { LanguageInstanceService } from '../shared/store/language-instance.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormConfiguration, VersioningOptions } from './form-configuration.model';

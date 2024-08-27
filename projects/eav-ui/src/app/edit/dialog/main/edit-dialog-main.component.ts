@@ -9,8 +9,6 @@ import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builde
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
-// tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
@@ -41,6 +39,15 @@ import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ContentTypeItemService } from '../../shared/store/content-type-item.service';
+import { ContentTypeService } from '../../shared/store/content-type.service';
+import { InputTypeService } from '../../shared/store/input-type.service';
+import { ItemService } from '../../shared/store/item.service';
+import { LanguageService } from '../../shared/store/language.service';
+import { LanguageInstanceService } from '../../shared/store/language-instance.service';
+import { PublishStatusService } from '../../shared/store/publish-status.service';
+import { AdamCacheService } from '../../shared/store/adam-cache.service';
+import { LinkCacheService } from '../../shared/store/link-cache.service';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';

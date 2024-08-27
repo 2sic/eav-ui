@@ -1,6 +1,5 @@
 import { Component, computed, inject, input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ItemService } from '../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogConfig, TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
@@ -16,6 +15,7 @@ import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
 import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
+import { ItemService } from '../../shared/store/item.service';
 
 @Component({
   selector: 'app-entity-translate-menu',

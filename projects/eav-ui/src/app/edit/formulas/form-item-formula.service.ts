@@ -3,11 +3,11 @@ import { FieldValue } from "projects/edit-types";
 import { EntityReader } from "../shared/helpers";
 import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
-import { ItemService } from "../shared/store/ngrx-data";
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldsProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { ItemService } from '../shared/store/item.service';
 
 const logThis = false;
 const nameOfThis = 'FormItemFormulaService';

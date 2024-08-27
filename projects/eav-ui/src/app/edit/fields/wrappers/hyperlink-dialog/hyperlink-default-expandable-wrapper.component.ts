@@ -2,7 +2,6 @@ import { TippyDirective } from './../../../../shared/directives/tippy.directive'
 import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AdamItem } from '../../../../../../../edit-types';
-import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
@@ -31,6 +30,7 @@ import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { WrappersConstants } from '../wrappers.constants';
+import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -55,7 +55,6 @@ import { WrappersConstants } from '../wrappers.constants';
     TranslateModule,
     ClickStopPropagationDirective,
     ...ExtendedFabSpeedDialImports,
-    // ExtendedFabSpeedDialComponent,
     TippyDirective,
   ],
 })

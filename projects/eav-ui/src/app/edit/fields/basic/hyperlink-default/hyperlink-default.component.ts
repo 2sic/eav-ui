@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersConstants } from '../../wrappers/wrappers.constants';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
@@ -26,6 +25,7 @@ import { FormsStateService } from '../../../state/forms-state.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,

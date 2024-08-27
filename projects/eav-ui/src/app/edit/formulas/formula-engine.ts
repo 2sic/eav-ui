@@ -2,7 +2,6 @@ import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { ItemService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
@@ -31,6 +30,8 @@ import { ContentTypeSettings } from '../state/content-type-settings.model';
 import { FormLanguage } from '../state/form-languages.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { FieldsSignalsHelper } from '../state/fields-signals.helper';
+import { ItemService } from '../shared/store/item.service';
+import { LanguageService } from '../shared/store/language.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaEngine';

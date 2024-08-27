@@ -9,7 +9,6 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/models/formula.models';
-import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
@@ -28,6 +27,8 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
+import { ItemService } from '../../../shared/store/item.service';
+import { ContentTypeService } from '../../../shared/store/content-type.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaDesignerComponent';

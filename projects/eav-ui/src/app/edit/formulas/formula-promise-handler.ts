@@ -10,7 +10,7 @@ import { ItemFormulaBroadcastService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
 import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
-import { ItemService } from '../shared/store/ngrx-data/item.service';
+import { ItemService } from '../shared/store/item.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { FieldsProps, FieldConstantsOfLanguage } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';

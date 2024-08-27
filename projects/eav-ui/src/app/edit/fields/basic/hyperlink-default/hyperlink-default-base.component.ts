@@ -4,7 +4,6 @@ import { Preview } from './hyperlink-default.models';
 import { FieldState } from '../../field-state';
 import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { PagePicker } from '../../page-picker/page-picker.helper';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
@@ -16,6 +15,7 @@ import { FormsStateService } from '../../../state/forms-state.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { ControlStatus } from '../../../shared/models/control-status.model';
+import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
 const logThis = false;
 const nameOfThis = 'HyperlinkDefaultBaseComponent';

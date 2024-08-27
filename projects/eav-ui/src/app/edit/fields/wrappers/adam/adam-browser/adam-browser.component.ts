@@ -8,7 +8,6 @@ import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { FileTypeHelpers } from '../../../../shared/helpers';
-import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamConfigInstance } from './adam-browser.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -31,6 +30,8 @@ import { EditRoutingService } from '../../../../shared/services/edit-routing.ser
 import { AdamService } from '../../../../shared/services/adam.service';
 import { fixDropzone } from './dropzone-helper';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { AdamCacheService } from '../../../../shared/store/adam-cache.service';
+import { LinkCacheService } from '../../../../shared/store/link-cache.service';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';

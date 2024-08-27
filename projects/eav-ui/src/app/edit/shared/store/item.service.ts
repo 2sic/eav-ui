@@ -1,14 +1,14 @@
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { eavConstants } from '../../../../shared/constants/eav.constants';
-import { EavEntity, EavFor, EavItem } from '../../models/eav';
-import { EavEntityBundleDto } from '../../models/json-format-v1';
-import { ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
-import { mapUntilChanged, mapUntilObjChanged } from '../../../../shared/rxJs/mapUntilChanged';
+import { eavConstants } from '../../../shared/constants/eav.constants';
+import { EavEntity, EavFor, EavItem } from '../models/eav';
+import { EavEntityBundleDto } from '../models/json-format-v1';
+import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { mapUntilChanged, mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { ItemUpdateHelper } from './item-updater.helper';
-import { ComputedCacheHelper } from '../../../../../../../eav-ui/src/app/shared/helpers/computed-cache';
-import { EavEntityAttributes } from '../../models/eav/eav-entity-attributes';
-import { SignalStoreObservableBase } from '../signal-store-observable-base';
+import { ComputedCacheHelper } from '../../../shared/helpers/computed-cache';
+import { EavEntityAttributes } from '../models/eav/eav-entity-attributes';
+import { SignalStoreObservableBase } from './signal-store-observable-base';
 
 const logThis = false;
 const nameOfThis = 'ItemService';

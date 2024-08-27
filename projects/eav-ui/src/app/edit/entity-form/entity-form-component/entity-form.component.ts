@@ -5,7 +5,6 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { EavEntity, EavItem } from '../../shared/models/eav';
-import { ItemService } from '../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from '../entity-form.helpers';
 import { ChangeAnchorTargetDirective } from '../../fields/directives/change-anchor-target.directive';
 import { EntityTranslateMenuComponent } from '../entity-translate-menu/entity-translate-menu.component';
@@ -32,6 +31,7 @@ import { FormsStateService } from '../../state/forms-state.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { EntityService } from '../../../shared/services/entity.service';
 import { transient } from '../../../core';
+import { ItemService } from '../../shared/store/item.service';
 
 const logThis = false;
 const nameOfThis = 'EntityWrapperComponent';

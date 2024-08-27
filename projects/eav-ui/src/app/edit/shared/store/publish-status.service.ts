@@ -1,8 +1,8 @@
 import { Injectable, Signal } from '@angular/core';
-import { FormConfigService } from '../../../state/form-config.service';
-import { PublishStatus, PublishMode, PublishModes, EavPublishStatus } from '../../../dialog/main/edit-dialog-main.models';
+import { FormConfigService } from '../../state/form-config.service';
+import { PublishStatus, PublishMode, PublishModes, EavPublishStatus } from '../../dialog/main/edit-dialog-main.models';
 import { ComputedCacheHelper } from 'projects/eav-ui/src/app/shared/helpers/computed-cache';
-import { SignalStoreBase } from '../signal-store-base';
+import { SignalStoreBase } from './signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'PublishStatusService';

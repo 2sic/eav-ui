@@ -1,6 +1,5 @@
 import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
-import { ItemService } from '../../shared/store/ngrx-data';
 import { FormulaCacheItem } from '../models/formula.models';
 import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
@@ -11,6 +10,7 @@ import { FormConfigService } from '../../state/form-config.service';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { Language } from '../../../shared/models/language.model';
 import { FormLanguage } from '../../state/form-languages.model';
+import { ItemService } from '../../shared/store/item.service';
 
 /** Everything a formula needs to run */
 export interface FormulaRunParameters {

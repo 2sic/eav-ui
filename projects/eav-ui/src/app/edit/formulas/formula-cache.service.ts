@@ -4,7 +4,6 @@ import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav/eav-item';
-import { ContentTypeItemService, ContentTypeService, ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
@@ -16,6 +15,9 @@ import { LocalizationHelpers } from '../localization/localization.helpers';
 import { FormConfigService } from '../state/form-config.service';
 import { ItemHelper } from '../shared/helpers/item.helper';
 import { LoggingService, LogSeverities } from '../shared/services/logging.service';
+import { ItemService } from '../shared/store/item.service';
+import { ContentTypeService } from '../shared/store/content-type.service';
+import { ContentTypeItemService } from '../shared/store/content-type-item.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaCacheService';

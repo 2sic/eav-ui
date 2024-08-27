@@ -1,7 +1,5 @@
 import { Component, computed, EventEmitter, inject, Input, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
@@ -12,6 +10,8 @@ import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
+import { LanguageService } from '../../shared/store/language.service';
+import { PublishStatusService } from '../../shared/store/publish-status.service';
 
 @Component({
   selector: 'app-edit-dialog-header',

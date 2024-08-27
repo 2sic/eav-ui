@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AdamItem } from '../../../../../../../edit-types';
-import { PrefetchAdams } from '../../../dialog/main/edit-dialog-main.models';
+import { AdamItem } from '../../../../../../edit-types';
+import { PrefetchAdams } from '../../dialog/main/edit-dialog-main.models';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { SignalStoreBase } from '../signal-store-base';
+import { SignalStoreBase } from './signal-store-base';
 
 const logThis = true;
 const nameOfThis = 'AdamCacheService';

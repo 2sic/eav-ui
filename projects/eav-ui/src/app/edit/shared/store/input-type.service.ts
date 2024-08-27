@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { InputType } from '../../../../content-type-fields/models/input-type.model';
-import { EavContentTypeAttribute } from '../../models/eav';
-import { AttributeInputType } from '../../../../../../../edit-types/src/InputTypeName';
-import { InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
-import { InputTypeSpecs } from '../../../state/fields-configs.model';
-import { SignalStoreBase } from '../signal-store-base';
+import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { EavContentTypeAttribute } from '../models/eav';
+import { AttributeInputType } from '../../../../../../edit-types/src/InputTypeName';
+import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeSpecs } from '../../state/fields-configs.model';
+import { SignalStoreBase } from './signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'InputTypeService';

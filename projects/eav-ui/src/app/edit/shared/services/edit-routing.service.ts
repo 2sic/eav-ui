@@ -9,10 +9,10 @@ import { EditForm } from '../../../shared/models/edit-form.model';
 import { EditEntryComponent } from '../../dialog/entry/edit-entry.component';
 import { EditParams } from '../../edit-matcher.models';
 import { UrlHelpers } from '../helpers';
-import { LanguageInstanceService } from '../store/ngrx-data';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../state/form-config.service';
+import { LanguageInstanceService } from '../store/language-instance.service';
 
 /**
  * Special helper to handle opening / closing field-specific popups.

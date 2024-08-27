@@ -4,7 +4,6 @@ import { FieldSettings, PickerItem } from '../../../../../edit-types';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
-import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
@@ -23,6 +22,10 @@ import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { FieldsSignalsHelper } from './fields-signals.helper';
+import { LanguageInstanceService } from '../shared/store/language-instance.service';
+import { ContentTypeService } from '../shared/store/content-type.service';
+import { ContentTypeItemService } from '../shared/store/content-type-item.service';
+import { ItemService } from '../shared/store/item.service';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';

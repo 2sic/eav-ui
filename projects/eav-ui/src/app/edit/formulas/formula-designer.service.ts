@@ -1,5 +1,4 @@
 import { computed, Injectable, OnDestroy, signal } from '@angular/core';
-import { ItemService } from '../shared/store/ngrx-data';
 import { FormulaHelpers } from './helpers/formula.helpers';
 import { FormulaTargets } from './models/formula.models';
 import { DesignerState } from './models/formula-results.models';
@@ -12,6 +11,7 @@ import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/for
 import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 import { FormulaCacheService } from './formula-cache.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
+import { ItemService } from '../shared/store/item.service';
 
 const logThis = false;
 const nameOfThis = 'FormulaDesignerService';

@@ -1,3 +1,4 @@
+import { ContentTypeItemService } from '../shared/store/content-type-item.service';
 import { Injectable, OnDestroy, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -10,8 +11,6 @@ import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../edit-matcher.models';
 import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
 import { EavEntity } from '../shared/models/eav/eav-entity';
-// tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../shared/store/ngrx-data';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
@@ -25,6 +24,14 @@ import { FormConfigService } from './form-config.service';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FormLanguage } from './form-languages.model';
 import { transient } from '../../core';
+import { AdamCacheService } from '../shared/store/adam-cache.service';
+import { ContentTypeService } from '../shared/store/content-type.service';
+import { ItemService } from '../shared/store/item.service';
+import { InputTypeService } from '../shared/store/input-type.service';
+import { PublishStatusService } from '../shared/store/publish-status.service';
+import { LanguageService } from '../shared/store/language.service';
+import { LanguageInstanceService } from '../shared/store/language-instance.service';
+import { LinkCacheService } from '../shared/store/link-cache.service';
 
 const logThis = false;
 const nameOfThis = 'EditInitializerService';

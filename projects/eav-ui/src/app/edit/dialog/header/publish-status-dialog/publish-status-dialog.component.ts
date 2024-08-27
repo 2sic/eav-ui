@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { PublishStatusService } from '../../../shared/store/ngrx-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -10,6 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { FormConfigService } from '../../../state/form-config.service';
 import { PublishMode, PublishModes } from '../../main/edit-dialog-main.models';
+import { PublishStatusService } from '../../../shared/store/publish-status.service';
 
 @Component({
     selector: 'app-publish-status-dialog',

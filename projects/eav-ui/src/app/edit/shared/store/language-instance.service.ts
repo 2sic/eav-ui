@@ -1,9 +1,9 @@
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { EntityReader } from '../../helpers';
-import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
-import { FormLanguage, FormLanguageComplete } from '../../../state/form-languages.model';
-import { SignalStoreObservableBase } from '../signal-store-observable-base';
+import { EntityReader } from '../helpers';
+import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
+import { FormLanguage, FormLanguageComplete } from '../../state/form-languages.model';
+import { SignalStoreObservableBase } from './signal-store-observable-base';
 import { ComputedCacheHelper } from 'projects/eav-ui/src/app/shared/helpers/computed-cache';
 
 const logThis = false;

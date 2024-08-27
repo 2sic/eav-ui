@@ -3,7 +3,7 @@ import { EavItem } from '../shared/models/eav';
 import { EntityReader } from '../shared/helpers';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldValue } from '../../../../../edit-types';
-import { ItemService } from '../shared/store/ngrx-data';
+import { ItemService } from '../shared/store/item.service';
 
 const logThis = false;
 const nameOfThis = 'FieldsSignalsHelper';
