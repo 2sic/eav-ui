@@ -1,108 +1,77 @@
 import { Injectable } from '@angular/core';
 import { AdamItem } from '../../../../../../../edit-types';
-import { LinkCache, LinkInfo, PrefetchAdams, PrefetchLinks } from '../../../dialog/main/edit-dialog-main.models';
+import { LinkInfo, PrefetchAdams, PrefetchLinks } from '../../../dialog/main/edit-dialog-main.models';
+import { SignalStoreBase } from '../signal-store-base';
 
+const logThis = true;
+const nameOfThis = 'LinkCacheService';
+
+/**
+ * The link Cache will store info to all links incl. file references (ADAM)
+ * to provide previews and link-resolution (eg. file:72 = /assets/icon.jpg)
+ */
 @Injectable({ providedIn: 'root' })
-export class LinkCacheService /* extends BaseDataService<LinkCache> Old Code */ {
+export class LinkCacheService extends SignalStoreBase<string, LinkCache> {
 
-  list: Record<string, LinkCache> = {};
-
-  // TODO:: Old Code, remove after testing ist done
-  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-  //   super('LinkCache', serviceElementsFactory);
-  // }
-
-  //#region Add / Clear Cache
-
-  private addToCache(links: LinkCache[]): void {
-    // this.upsertManyInCache(links); // TODO:: Old Code, remove after testing ist done
-
-    // add all links cache to list
-    links.forEach(link => {
-      this.list[link.key.toLocaleLowerCase()] = link;
-    });
-
+  constructor() {
+    super({ nameOfThis, logThis });
   }
 
-  public clearCache(): void {
-    this.list = {};
-  }
+  override getId = (item: LinkCache) => item.key.trim().toLocaleLowerCase();
 
   addPrefetch(prefetchLinks: PrefetchLinks, prefetchAdam: PrefetchAdams): void {
 
-    const links: LinkCache[] = [];
+    // Convert PrefetchLinks to LinkCache
+    const links: LinkCache[] = prefetchLinks
+      ? Object.entries(prefetchLinks)
+          .map(([key, linkInfo]) => ({ key, ...linkInfo }))
+      : [];
 
-    if (prefetchLinks != null) {
-      for (const [key, linkInfo] of Object.entries(prefetchLinks)) {
-        const link: LinkCache = {
-          key,
-          linkInfo,
-        };
-        links.push(link);
-      }
-    }
+    // Convert PrefetchAdam to LinkCache
+    // This is more complex, as the raw data is nested
+    const adamLinkList: LinkCache[] = prefetchAdam != null
+      ? Object.entries(prefetchAdam)
+          .flatMap(([_, prefetchFields]) => Object.entries(prefetchFields)
+            .flatMap(([__, items]) => this.adamToLinks(items))
+          )
+      : [];
 
-    if (prefetchAdam != null) {
-      for (const [entityGuid, prefetchFields] of Object.entries(prefetchAdam)) {
-        for (const [fieldName, items] of Object.entries(prefetchFields)) {
-          const adamLinks = this.adamToLinks(items);
-          links.push(...adamLinks);
-        }
-      }
-    }
-    this.addToCache(links);
+    this.addMany([ ...links, ...adamLinkList ]);
   }
 
+  /** Add a new ADAM which was just uploaded */
   addAdam(items: AdamItem[]): void {
-    const adamLinks = this.adamToLinks(items);
-    this.addToCache(adamLinks);
+    this.addMany(this.adamToLinks(items));
   }
 
+  /** Add a link which was just added (typed/selected) in the UI */
   addLink(key: string, linkInfo: LinkInfo): void {
     key = key.trim().toLocaleLowerCase();
     const link: LinkCache = {
       key,
-      linkInfo: {
-        ...linkInfo,
-        Adam: {
-          ...linkInfo.Adam,
-        },
+      ...linkInfo,
+      Adam: {
+        ...linkInfo.Adam,
       },
-    };
+    } satisfies LinkCache;
 
-    this.addToCache([link]);
+    this.add(link);
   }
 
   //#endregion
-
-  //#region Getters
-
-  getLinkInfo(key: string): LinkInfo {
-    key = key.trim().toLocaleLowerCase();
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache().find(linkCache => linkCache.key.trim().toLocaleLowerCase() === key)?.linkInfo;
-    return this.list[key]?.linkInfo;
-  }
 
   private adamToLinks(items: AdamItem[]): LinkCache[] {
-    const links: LinkCache[] = [];
-
-    for (const item of items) {
-      if (item.IsFolder) { continue; }
-
-      const link: LinkCache = {
+    return items
+      .filter(item => !item.IsFolder)
+      .map(item => ({
         key: item.ReferenceId,
-        linkInfo: {
-          Adam: { ...item },
-          Value: item.Url,
-        },
-      };
-      links.push(link);
-    }
-
-    return links;
+        Adam: { ...item },
+        Value: item.Url,
+      } satisfies LinkCache));
   }
+}
 
-  //#endregion
 
+interface LinkCache extends LinkInfo{
+  key: string;
 }

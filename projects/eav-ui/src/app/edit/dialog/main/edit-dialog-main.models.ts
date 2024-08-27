@@ -115,17 +115,9 @@ export interface PrefetchLinks {
   [key: string]: LinkInfo;
 }
 
-
 export interface LinkInfo {
   /** Null if URL doesn't resolve to ADAM file (is page, external url or blocked by permissions) */
   Adam?: AdamItem;
   /** Resolved or original URL */
   Value: string;
-}
-
-
-/** TODO: this we can probably discard once we remove the rxStore */
-export interface LinkCache {
-  key: string;
-  linkInfo: LinkInfo;
 }

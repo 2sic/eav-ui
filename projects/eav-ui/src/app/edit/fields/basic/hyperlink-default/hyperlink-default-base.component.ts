@@ -111,7 +111,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
       return;
     }
 
-    const cached = this.linkCacheService.getLinkInfo(value);
+    const cached = this.linkCacheService.get(value);
     if (cached) {
       const isResolved = !this.isFileOrPage(cached.Value);
       this.setPreview(cached.Value, isResolved, cached.Adam);
