@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureIconIndicatorComponent } from '../../features/feature-icon-indicator/feature-icon-indicator.component';
+import { transient } from '../../core/transient';
 
 @Component({
   selector: 'app-share-or-inherit-dialog',
@@ -47,11 +48,12 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
 
   public features: FeaturesService = inject(FeaturesService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
+  
+  private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
     private dialogRef: MatDialogRef<ShareOrInheritDialogComponent>,
-    private contentTypesFieldsService: ContentTypesFieldsService,
     // All this is just for the feature dialog
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
@@ -106,14 +108,15 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   save() {
     if (!this.fieldShareConfigManagement()) {
       openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
-    } else {
-      if (this.state == SharingOrInheriting.Sharing) {
-        this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
-          .subscribe(() => this.dialogRef.close()));
-      } else if (this.state == SharingOrInheriting.Inheriting) {
-        this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
-          .subscribe(() => this.dialogRef.close()));
-      }
+      return;
+    }
+    
+    if (this.state == SharingOrInheriting.Sharing) {
+      this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
+        .subscribe(() => this.dialogRef.close()));
+    } else if (this.state == SharingOrInheriting.Inheriting) {
+      this.subscriptions.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
+        .subscribe(() => this.dialogRef.close()));
     }
   }
 
