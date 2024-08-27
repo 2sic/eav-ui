@@ -96,10 +96,9 @@ export class LanguageInstanceService extends BaseDataService<FormLanguageInStore
   }
 
   getEntityReader(formId: number): Signal<EntityReader> {
-    const entityReader = computed(() => {
-      const language = this.getLanguageSignal(formId);
-      return new EntityReader(language().current, language().primary);
-    });
+    // Place creation of the language signal here to avoid creating it multiple times
+    const language = this.getLanguageSignal(formId);
+    const entityReader = computed(() => new EntityReader(language().current, language().primary));
     return entityReader;
 
     // TODO:: Old Code, remove after testing ist done

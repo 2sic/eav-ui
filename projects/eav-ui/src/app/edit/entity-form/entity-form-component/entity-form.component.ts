@@ -33,7 +33,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { EntityService } from '../../../shared/services/entity.service';
 import { transient } from '../../../core';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'EntityWrapperComponent';
 
 /**
@@ -164,7 +164,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
       IsEmpty: !oldHeader.IsEmpty,
     };
     const l = this.log.fn('toggleSlotIsEmpty', { oldHeader, newHeader });
-    this.itemService.updateItemHeader(entityGuid, newHeader);
+    this.itemService.updater.updateItemHeader(entityGuid, newHeader);
     l.end();
   }
 

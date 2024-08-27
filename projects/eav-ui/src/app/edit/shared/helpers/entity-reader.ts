@@ -8,7 +8,7 @@ export class EntityReader implements FormLanguage {
 
   // WIP - to make code clearer, this is what should be used from now on
   // But we'll probably end up calling this from the EntityReader only, so it should be straight forward
-  getBestValue<T>(attributeValues: EavField<unknown>, defaultValue: T): T {
+  getBestValue<T>(attributeValues: EavField<unknown>, defaultValue: T = null): T {
     return LocalizationHelpers.translate<T>(this, attributeValues as EavField<T>, defaultValue);
   }
 
@@ -26,7 +26,7 @@ export class EntityReader implements FormLanguage {
       if (item.Type.Id === '@All') { continue; }
 
       for (const [name, values] of Object.entries(item.Attributes)) {
-        const value = this.getBestValue(values, null);
+        const value = this.getBestValue(values);
         merged[name] = value;
       }
     }
@@ -36,7 +36,7 @@ export class EntityReader implements FormLanguage {
       if (item.Type.Id !== '@All') { continue; }
 
       for (const [name, values] of Object.entries(item.Attributes)) {
-        const value = this.getBestValue(values, null);
+        const value = this.getBestValue(values);
         // do not overwrite previous settings if @All is empty
         const exists = merged[name] != null;
         const emptyAll = value == null || value === '';
@@ -52,7 +52,7 @@ export class EntityReader implements FormLanguage {
   currentValues(itemAttributes: EavEntityAttributes): ItemValuesOfLanguage {
     const formValues: ItemValuesOfLanguage = {};
     for (const [name, values] of Object.entries(itemAttributes))
-      formValues[name] = this.getBestValue(values, null);
+      formValues[name] = this.getBestValue(values);
     return formValues;
   }
 

@@ -53,7 +53,7 @@ export class FormsStateService extends ServiceBase implements OnDestroy {
       this.formsDirty[entityGuid] = false;
     }
 
-    const itemHeaders = signal(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeaderSig(entityGuid)));
+    const itemHeaders = signal(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeaderSignal(entityGuid)));
     const language = this.languageService.getLanguagesSig();
 
 

@@ -1,4 +1,4 @@
-import { ItemEditIdentifier } from '../../../../shared/models/edit-form.model';
+import { ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 import { SaveResult } from '../../../state/save-result.model';
 import { ItemService } from './item.service';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../../models/eav';
@@ -19,8 +19,7 @@ export class ItemUpdateHelper {
 
   log = new EavLogger(nameOfThis, logThis);
   
-  constructor(private itemSvc: ItemService) {
-    
+  constructor(private itemSvc: ItemService) {  
   }
 
   updateItemId(saveResult: SaveResult): void {
@@ -42,6 +41,23 @@ export class ItemUpdateHelper {
       }
     };
     this.itemSvc.updateItem(newItem);
+  }
+
+
+  /** Update parts of the header; ATM just to tell us about the slot being empty */
+  updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
+    const l = this.log.fn('updateItemHeader', { entityGuid, header });
+    const oldItem = this.itemSvc.getItem(entityGuid);
+    if (!oldItem) return;
+
+    const newItem: EavItem = {
+      ...oldItem,
+      Header: {
+        ...header
+      }
+    };
+    this.itemSvc.updateItem(newItem);
+    l.end();
   }
 
   //#region Item Attribute - Single Value

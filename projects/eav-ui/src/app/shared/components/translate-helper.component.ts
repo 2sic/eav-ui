@@ -44,7 +44,7 @@ export abstract class TranslateHelperComponent {
   }, SignalHelpers.objectEquals);
 
   protected languages = this.languageService.getLanguagesSig();
-  protected itemAttributes = this.itemService.getItemAttributesSignal(this.dialogData.config.entityGuid);
+  protected itemAttributes = this.itemService.itemAttributesSignal(this.dialogData.config.entityGuid);
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData) {}
 

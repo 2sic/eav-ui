@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
+import { computed, effect, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
 import { FieldSettings, PickerItem } from '../../../../../edit-types';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
@@ -22,6 +22,7 @@ import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './field
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { FieldsSignalsHelper } from './fields-signals.helper';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -51,11 +52,12 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private formulaPromises = transient(FormulaPromiseHandler);
 
   /** Local field properties - updated throughout cycles but only "released" selectively */
-  private latestFieldProps: FieldsProps = {};
+  #fieldPropsLatest: FieldsProps = {};
 
   /** Released field properties after the cycles of change are done */
   private fieldsProps = signal<FieldsProps>(null);
-  private fieldsProps$ = toObservable(this.fieldsProps); //  new BehaviorSubject<FieldsProps>(null);
+  private fieldsProps$ = toObservable(this.fieldsProps);
+
 
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
 
@@ -66,13 +68,22 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private entityReader$ = this.languageSvc.getEntityReader$(this.formConfig.config.formId);
   private entityReader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
 
-
-  // private entityReader$ = toObservable(this.languageSvc.getEntityReader(this.formConfig.config.formId));
-
-
-
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
+
+    const attributes = computed(() => {
+      const itemGuid = this.#itemGuid();
+      if (itemGuid == null) {
+        console.log('2dm - null');
+        return;
+      }
+      return this.itemService.getItemAttributes(itemGuid);
+    });
+
+    effect(() => {
+      const attr = attributes();
+      console.log('2dm - effect', attr);
+    });
   }
 
   ngOnDestroy(): void {
@@ -82,6 +93,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   /** The item - set on init, used for many other computations */
+  #itemGuid = signal<string>(null);
   #item = signal<EavItem>(null);
 
   #contentType = computed(() => {
@@ -97,12 +109,17 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header)
   );
 
+  fieldSignals: FieldsSignalsHelper;
+
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
     const l = this.log.fn('init', { entityGuid });
 
+    this.#itemGuid.set(entityGuid);
     const item = this.itemService.getItem(entityGuid);
     this.#item.set(item);
+    this.fieldSignals = new FieldsSignalsHelper(entityGuid, this.#item, this.entityReader, this.itemService);
+
     const contentType = this.#contentType();
     const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
 
@@ -166,14 +183,14 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
           // 2. Process the queue of changes from promises if necessary
           // If things change, we will exit because then the observable will be retriggered
-          const isFirstRound = Object.keys(this.latestFieldProps).length === 0;
+          const isFirstRound = Object.keys(this.#fieldPropsLatest).length === 0;
           if (!isFirstRound) {
             const { newFieldProps, hadValueChanges } = this.formulaPromises
-              .updateFromQueue(formValues, this.latestFieldProps, constantFieldParts, prepared.updHelperFactory);
+              .updateFromQueue(formValues, this.#fieldPropsLatest, constantFieldParts, prepared.updHelperFactory);
             // If we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
             if (newFieldProps)
-              this.latestFieldProps = newFieldProps;
+              this.#fieldPropsLatest = newFieldProps;
             if (hadValueChanges)
               return null;
           }
@@ -186,10 +203,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           for (const [key, value] of Object.entries(fieldsProps))
             value.buildWrappers = isFirstRound
               ? WrapperHelper.getWrappers(value.settings, value.constants.inputCalc)
-              : this.latestFieldProps[key]?.buildWrappers;
+              : this.#fieldPropsLatest[key]?.buildWrappers;
 
           // 5. Update the latest field properties for further cycles
-          this.latestFieldProps = fieldsProps;
+          this.#fieldPropsLatest = fieldsProps;
 
           // 6.1 If we have value changes were applied
           const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(
@@ -222,7 +239,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
    */
   getLatestFieldSettings(constFieldPart: FieldConstantsOfLanguage): FieldSettings {
-    const latestProps = this.latestFieldProps[constFieldPart.fieldName];
+    const latestProps = this.#fieldPropsLatest[constFieldPart.fieldName];
     // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
     const cachedLanguageUnchanged = constFieldPart.language == latestProps?.language;
     const latestSettings: FieldSettings = cachedLanguageUnchanged
@@ -247,7 +264,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         const attribute = contentType.Attributes.find(a => a.Name === fieldName);
         const formValues: ItemValuesOfLanguage = {};
         for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
-          formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
+          formValues[fieldName] = entityReader.getBestValue(fieldValues);
         }
         const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
         const latestSettings = this.getLatestFieldSettings(constantFieldPart);
@@ -346,16 +363,20 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
-    const props = this.latestFieldProps[fieldName];
+    const props = this.#fieldPropsLatest[fieldName];
     const newSettings = { ...props.settings, ...update };
     const newProps = {
-      ...this.latestFieldProps,
+      ...this.#fieldPropsLatest,
       [fieldName]: { ...props, settings: newSettings }
     };
     this.fieldsProps.set(newProps);
 
     // Experimental: had trouble with the _isDialog / Collapsed properties not being persisted
     // since the latestFieldProps never had the value originally
-    this.latestFieldProps = newProps;
+    this.#fieldPropsLatest = newProps;
   }
+
+
+
+
 }

@@ -25,7 +25,7 @@ export class FieldsTranslateService {
 
   log = new EavLogger(nameOfThis, logThis);
 
-  itemAttributes: Signal<EavEntityAttributes>;
+  #itemAttributes: Signal<EavEntityAttributes>;
 
   constructor(
     private http: HttpClient,
@@ -42,7 +42,7 @@ export class FieldsTranslateService {
     this.entityGuid = entityGuid;
     const item = this.itemService.getItem(entityGuid);
     this.contentTypeId = ItemHelper.getContentTypeNameId(item);
-    this.itemAttributes = this.itemService.itemAttributes(entityGuid);
+    this.#itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
     l.end({ entityGuid, contentTypeId: this.contentTypeId });
   }
 
@@ -55,7 +55,7 @@ export class FieldsTranslateService {
     const language = this.formConfig.language();
     transactionItem = this.updater.removeItemAttributeDimension(this.entityGuid, fieldName, language.current, isTransaction, transactionItem);
 
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
     const values = attributes[fieldName];
     const doesFieldHaveExistingDimension = LocalizationHelpers.findOfExactDimension(values.Values, language.current) !== undefined;
     const defaultValue = LocalizationHelpers.getValueTranslation(values, FormLanguage.bothPrimary(language));
@@ -86,7 +86,7 @@ export class FieldsTranslateService {
       alert(apiKeyInDemoModeAlert);
 
     const language = this.formConfig.language();
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
 
     // Filter out fields that have translation disabled
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
@@ -127,7 +127,7 @@ export class FieldsTranslateService {
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) return;
 
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
     const values = attributes[fieldName];
     const language = this.formConfig.language();
     const valueTranslation = LocalizationHelpers.getValueTranslation(values, FormLanguage.diffCurrent(language, copyFromLanguageKey));
@@ -192,7 +192,7 @@ export class FieldsTranslateService {
    * Auto-translates all field that have auto-translate enabled and are not empty, empty ones are unlocked.
    */
   autoTranslateMany(autoTranslateLanguageKey: string): void {
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
     // fields that have auto-translate enabled and are not empty
     const canTranslate: string[] = [];
     // fields that have auto-translate enabled but didn't have it by default or are empty
@@ -221,7 +221,7 @@ export class FieldsTranslateService {
    * Returns all fields that can be translated.
    */
   findTranslatableFields(): string[] {
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
   }
 
@@ -229,7 +229,7 @@ export class FieldsTranslateService {
    * Returns all fields that can be translated and autoTranslated.
    */
   findAutoTranslatableFields(): string[] {
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
     return Object.keys(attributes).filter(fieldName =>
       !this.isTranslationDisabled(fieldName)
       && !this.isAutoTranslationDisabled(fieldName)
@@ -240,7 +240,7 @@ export class FieldsTranslateService {
    * Returns all fields that can be translated and autoTranslated, but were not autoTranslatable by default.
    */
   findAutoTranslatableFieldsThatWereNotAutoTranslatableByDefault(): string[] {
-    const attributes = this.itemAttributes();
+    const attributes = this.#itemAttributes();
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName) && this.isAutoTranslationEnabledButWasDisabledByDefault(fieldName));
   }
 
