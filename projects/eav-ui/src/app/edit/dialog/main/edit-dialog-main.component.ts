@@ -178,7 +178,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   ngOnDestroy() {
     this.viewInitiated$.complete();
-    this.languageStore.removeFromStore(this.formConfig.config.formId);
+    this.languageStore.remove(this.formConfig.config.formId);
     this.publishStatusService.removePublishStatus(this.formConfig.config.formId);
 
     if (this.formConfig.config.isParentDialog) {

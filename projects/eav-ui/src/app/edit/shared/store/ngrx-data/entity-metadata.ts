@@ -16,9 +16,11 @@ export const entityMetadata: EntityMetadataMap = {
   // Language: {
   //   selectId: languageSelectId,
   // },
-  FormLanguageInStore: {
-    selectId: languageInstanceSelectId,
-  },
+
+  // FormLanguageInStore: {
+  //   selectId: languageInstanceSelectId,
+  // },
+
   // TODO:: Old Code, remove after testing ist done
   // ContentType: {
   //   selectId: contentTypeSelectId,

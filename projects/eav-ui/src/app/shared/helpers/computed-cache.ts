@@ -13,9 +13,17 @@ export class ComputedCacheHelper<TKey extends string | number, TValue> {
   }
 
   getOrCreate(key: TKey, factory: () => TValue, options: CreateComputedOptions<TValue> = null): Signal<TValue> {
-    if (this.cache[key]) return this.cache[key];
+    return this.getOrCreateWithInfo(key, factory, options).signal;
+    // if (this.cache[key]) return this.cache[key];
+    // const sig = computed(() => factory(), options ?? { equal: isEqual });
+    // return this.set(key, sig);
+  }
+
+  getOrCreateWithInfo(key: TKey, factory: () => TValue, options: CreateComputedOptions<TValue> = null): { signal: Signal<TValue>, isNew: boolean } {
+    if (this.cache[key])
+      return { signal: this.cache[key], isNew: false };
     const sig = computed(() => factory(), options ?? { equal: isEqual });
-    return this.set(key, sig);
+    return { signal: this.set(key, sig), isNew: true };
   }
 
 

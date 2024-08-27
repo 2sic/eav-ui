@@ -70,7 +70,8 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   lngButtonClick(event: MouseEvent, language: Language) {
-    if (this.disabled) return;
+    if (this.disabled)
+      return;
     this.centerSelectedHelper.lngButtonClick(event);
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {

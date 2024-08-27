@@ -101,7 +101,7 @@ export class FormConfigService {
       settings,
     };
     this.configSignal.set(this.config);
-    this.language = this.languageService.getLanguageSignal(this.config.formId);
+    this.language = this.languageService.getSignal(this.config.formId);
   }
 
   private getVersioningOptions(

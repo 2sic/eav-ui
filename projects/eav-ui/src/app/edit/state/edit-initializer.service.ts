@@ -152,7 +152,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       const sortedLanguages = sortLanguages(langs.Primary, langs.List);
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageStore.addToStore(formId, langs.Primary, langs.Current, false);
+    this.languageStore.addForm(formId, langs.Primary, langs.Current, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
     const publishMode = this.publishStatusService.toPublishMode(loadDto);
