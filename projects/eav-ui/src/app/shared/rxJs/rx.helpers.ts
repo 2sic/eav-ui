@@ -1,3 +1,4 @@
+import isEqual from 'lodash-es/isEqual';
 
 export class RxHelpers {
 

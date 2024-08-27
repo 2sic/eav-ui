@@ -30,6 +30,7 @@ import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ContentTypeSettings } from '../state/content-type-settings.model';
 import { FormLanguage } from '../state/form-languages.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { FieldsSignalsHelper } from '../state/fields-signals.helper';
 
 const logThis = false;
 const nameOfThis = 'FormulaEngine';
@@ -41,13 +42,6 @@ const nameOfThis = 'FormulaEngine';
 @Injectable()
 export class FormulaEngine extends ServiceBase implements OnDestroy {
   private features = inject(FeaturesService).getAll();
-
-  // properties to set on init
-  private entityGuid: string;
-  private contentType: EavContentType;
-  private contentTypeSettings: Signal<ContentTypeSettings>;
-  private settingsSvc: FieldsSettingsService = null;
-  private promiseHandler: FormulaPromiseHandler = null;
 
   constructor(
     private formConfig: FormConfigService,
@@ -73,6 +67,14 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     this.contentType = contentType;
     this.contentTypeSettings = ctSettings;
   }
+
+  // properties to set on init
+  private entityGuid: string;
+  private contentType: EavContentType;
+  private contentTypeSettings: Signal<ContentTypeSettings>;
+  private settingsSvc: FieldsSettingsService;
+  private promiseHandler: FormulaPromiseHandler;
+  private fieldSignals: FieldsSignalsHelper;
 
   // TODO: 2dm -> Here we call all list item formulas on some picker for each item
   /**

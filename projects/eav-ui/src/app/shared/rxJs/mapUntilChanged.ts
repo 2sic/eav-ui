@@ -1,6 +1,6 @@
 import { Observable, pipe, UnaryFunction } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { RxHelpers } from './rx.helpers';
+import isEqual from 'lodash-es/isEqual';
 
 /**
  * Combine map and distinctUntilChanged, as this is a very common pattern.
@@ -23,6 +23,6 @@ export function mapUntilObjChanged<T, R>(
   return pipe(
     distinctUntilChanged(),
     map(fn),
-    distinctUntilChanged(RxHelpers.objectsEqual),
+    distinctUntilChanged(isEqual),
   );
 }
