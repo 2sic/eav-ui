@@ -6,14 +6,14 @@ import { FormLanguage, FormLanguageComplete } from '../../../state/form-language
 import { SignalStoreObservableBase } from '../signal-store-observable-base';
 import { ComputedCacheHelper } from 'projects/eav-ui/src/app/shared/helpers/computed-cache';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'LanguageInstanceService';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends SignalStoreObservableBase<number, FormLanguageInStore> {
 
   constructor() {
-    super({ name: nameOfThis, logThis});
+    super({ nameOfThis, logThis});
   }
 
   protected override getId = (item: FormLanguageInStore) => item.formId;

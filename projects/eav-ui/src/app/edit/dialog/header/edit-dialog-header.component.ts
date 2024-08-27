@@ -39,7 +39,7 @@ export class EditDialogHeaderComponent {
   protected publishMode = this.publishStatusService.getPublishMode(this.formConfig.config.formId)
 
   protected hasLanguages = computed(() => {
-    const languages = this.languageService.getLanguagesSignal();
+    const languages = this.languageService.getAllSignal();
     return languages().length > 0
   });
 

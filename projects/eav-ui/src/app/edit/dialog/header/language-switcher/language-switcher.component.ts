@@ -39,7 +39,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   current = computed(() => this.formConfig.language().current);
 
-  buttons = getLanguageButtons(this.languageService.getLanguages());
+  buttons = getLanguageButtons(this.languageService.getAll());
 
   constructor(
     private languageService: LanguageService,

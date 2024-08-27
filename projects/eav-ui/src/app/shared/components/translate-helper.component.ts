@@ -43,7 +43,7 @@ export abstract class TranslateHelperComponent {
     };
   }, SignalHelpers.objectEquals);
 
-  protected languages = this.languageService.getLanguagesSignal();
+  protected languages = this.languageService.getAllSignal();
   protected itemAttributes = this.itemService.itemAttributesSignal(this.dialogData.config.entityGuid);
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData) {}

@@ -125,7 +125,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
     this.itemService.loadItems(loadDto.Items);
     // we assume that input type and content type data won't change between loading parent and child forms
-    this.inputTypeService.addInputTypes(loadDto.InputTypes);
+    this.inputTypeService.addMany(loadDto.InputTypes);
     this.contentTypeItemService.addContentTypeItems(loadDto.ContentTypeItems);
     this.contentTypeService.addContentTypes(loadDto.ContentTypes);
     this.adamCacheService.loadPrefetch(loadDto.Prefetch?.Adam);
@@ -150,7 +150,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (isParentDialog) {
       const sortedLanguages = sortLanguages(langs.Primary, langs.List);
-      this.languageService.loadLanguages(sortedLanguages);
+      this.languageService.addMany(sortedLanguages);
     }
     this.languageStore.addForm(formId, langs.Primary, langs.Current, false);
 
@@ -166,7 +166,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
    */
   private keepInitialValues(): void {
     const items = this.itemService.getMany(this.formConfig.config.itemGuids);
-    const allLangs = this.languageService.getLanguages().map(language => language.NameId);
+    const allLangs = this.languageService.getAll().map(language => language.NameId);
     const language = this.formConfig.language();
     if (!allLangs.includes(language.current)) allLangs.push(language.current);
     if (!allLangs.includes(language.primary)) allLangs.push(language.primary);
@@ -197,8 +197,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     const eavConfig = this.formConfig.config;
     const formId = eavConfig.formId;
     const items = this.itemService.getMany(eavConfig.itemGuids);
-    const inputTypes = this.inputTypeService.getInputTypes();
-    const languages = this.languageService.getLanguages();
+    const inputTypes = this.inputTypeService.getAll();
+    const languages = this.languageService.getAll();
     const language = this.formConfig.language();
     /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;

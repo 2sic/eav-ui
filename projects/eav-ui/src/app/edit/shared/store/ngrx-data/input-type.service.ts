@@ -4,68 +4,26 @@ import { EavContentTypeAttribute } from '../../models/eav';
 import { AttributeInputType } from '../../../../../../../edit-types/src/InputTypeName';
 import { InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
 import { InputTypeSpecs } from '../../../state/fields-configs.model';
+import { SignalStoreBase } from '../signal-store-base';
 
+const logThis = false;
+const nameOfThis = 'InputTypeService';
 
 @Injectable({ providedIn: 'root' })
-export class InputTypeService /* extends BaseDataService<InputType> TODO:: Old Code Remove */ {
+export class InputTypeService extends SignalStoreBase<string, InputType> {
 
-  #inputTypes: Record<string, InputType> = {};
-
-  // constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-  //   super('InputType', serviceElementsFactory);
-  // }
-
-  //#region Add / Clear Cache
-
-  addInputTypes(inputTypes: InputType[]): void {
-    this.addToCache(inputTypes);
+  constructor() {
+    super({ nameOfThis, logThis });
   }
 
-  private addToCache(inputTypes: InputType[]): void {
-    // TODO:: Old Code, remove after testing ist done
-    // this.addManyToCache(inputTypes);
-
-    inputTypes.forEach(input => {
-      this.#inputTypes[input.Type] = input;
-    });
-  }
-
-  public clearCache(): void {
-    this.#inputTypes = {};
-  }
-
-  //#endregion
-
-  //#region Getters
-
-  getInputType(type: string): InputType {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache().find(i => i.Type === type);
-    return this.#inputTypes[type];
-  }
-
-  getInputTypes(): InputType[] {
-    // TODO:: Old Code, remove after testing ist done
-    // return this.cache();
-    return Object.values(this.#inputTypes);
-  }
-
-  // TODO:: Not in used
-  // getInputTypes$(): Observable<InputType[]> {
-  //   // TODO:: Old Code, remove after testing ist done
-  //   // return this.cache$;
-  //   return of(Object.values(this.inputTypes));
-  // }
-
-  //#endregion
-
+  override getId = (item: InputType) => item.Type;
 
   /**
    * Get Name specs with a nice name and a longer name
    * Note: ATM only used in the external connector, not sure why it's even here.
    */
   getAttributeInputTypes(attributes: EavContentTypeAttribute[]): AttributeInputType[] {
-    const inputTypes = this.getInputTypes();
+    const inputTypes = this.getAll();
     return attributes.map(attribute => {
       const calculatedInputType = this.calculateInputTypeInt(attribute, inputTypes);
       return {
@@ -76,7 +34,7 @@ export class InputTypeService /* extends BaseDataService<InputType> TODO:: Old C
   }
 
   getSpecs(attribute: EavContentTypeAttribute): InputTypeSpecs {
-    return this.calculateInputTypeInt(attribute, this.getInputTypes());
+    return this.calculateInputTypeInt(attribute, this.getAll());
   }
 
   private calculateInputTypeInt(attribute: EavContentTypeAttribute, inputTypes: InputType[]): InputTypeSpecs {

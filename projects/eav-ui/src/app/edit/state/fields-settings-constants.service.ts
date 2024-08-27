@@ -68,7 +68,7 @@ export class FieldsSettingsConstantsService {
 
         const constPartOfLanguage = contentType.Attributes.map((ctAttrib) => {
           // Input Type config in the current language
-          const inputType = this.inputTypeService.getInputType(ctAttrib.InputType);
+          const inputType = this.inputTypeService.get(ctAttrib.InputType);
 
           // Construct the constants with settings and everything
           // using the EntityReader with the current language
@@ -112,7 +112,7 @@ export class FieldsSettingsConstantsService {
       const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
 
       const calculatedInputType = this.inputTypeService.getSpecs(attribute);
-      const inputType = this.inputTypeService.getInputType(attribute.InputType);
+      const inputType = this.inputTypeService.get(attribute.InputType);
 
       this.log.a('details', { contentType, language });
 

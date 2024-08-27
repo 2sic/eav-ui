@@ -40,9 +40,9 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
   protected log: EavLogger;
 
   constructor(options: SignalStoreOptions) {
-    this.log = new EavLogger(options.name ?? nameOfThis, options.logThis ?? logThisUndefined);
+    this.log = new EavLogger(options.nameOfThis ?? nameOfThis, options.logThis ?? logThisUndefined);
     this.log.a('SignalStoreBase created', { options });
-    this.name = options.name;
+    this.name = options.nameOfThis;
   }
 
   //#region Add / Update / Remove / Clear Cache
@@ -95,11 +95,10 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
     l.end(null, 'updated');
   }
 
-  remove(formId: TKey): void {
-    const l = this.log.fn('remove', { formId });
-    const updatedStore = { ...this.#cache() };
-    delete updatedStore[formId];
-    this.#cache.set(updatedStore);
+  remove(id: TKey): void {
+    const l = this.log.fn('remove', { id });
+    const { [id]: _, ...updatedStore } = this.#cache();
+    this.#cache.set(updatedStore as Record<TKey, TValue>);
     l.end(null, 'removed');
   }
 
@@ -154,7 +153,7 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
     return sig;
   }
 
-  getListSignal(): Signal<TValue[]> {
+  getAllSignal(): Signal<TValue[]> {
     const list = this.#list;
     this.log.a(`getAllSignal() - found ${list().length} items`);
     return list;
@@ -165,6 +164,6 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 }
 
 export interface SignalStoreOptions {
-  name: string;
+  nameOfThis: string;
   logThis?: boolean
 }

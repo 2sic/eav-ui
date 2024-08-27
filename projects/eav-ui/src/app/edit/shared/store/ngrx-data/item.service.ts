@@ -22,7 +22,7 @@ const nameOfThis = 'ItemService';
 export class ItemService extends SignalStoreObservableBase<string, EavItem> {
 
   constructor() {
-    super( { name: nameOfThis, logThis });
+    super( { nameOfThis, logThis });
   }
 
   override getId = (item: EavItem) => item.Entity.Guid;

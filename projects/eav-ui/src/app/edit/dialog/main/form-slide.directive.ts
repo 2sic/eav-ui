@@ -31,7 +31,7 @@ export class FormSlideDirective extends BaseDirective implements OnInit, OnDestr
 
   ngOnInit() {
     const l = this.log.fn('ngOnInit');
-    const languages = this.languageService.getLanguages();
+    const languages = this.languageService.getAll();
     const nativeElement = this.elementRef.nativeElement;
     this.subscriptions.add(
       merge(

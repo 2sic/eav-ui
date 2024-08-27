@@ -180,7 +180,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   ngOnDestroy() {
     this.viewInitiated$.complete();
     this.languageStore.remove(this.formConfig.config.formId);
-    this.publishStatusService.removePublishStatus(this.formConfig.config.formId);
+    this.publishStatusService.remove(this.formConfig.config.formId);
 
     if (this.formConfig.config.isParentDialog) {
       // clear the rest of the store
@@ -236,7 +236,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         })
         .filter(item => item != null);
 
-      const publishStatus = this.publishStatusService.getPublishStatus(this.formConfig.config.formId);
+      const publishStatus = this.publishStatusService.get(this.formConfig.config.formId);
 
       const saveFormData: SaveEavFormData = {
         Items: items,

@@ -322,7 +322,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    */
   prepareDataForFormulaObjects(entityGuid: string): FormulaObjectsInternalWithoutFormulaItself {
     const language = this.formConfig.language();
-    const languages = this.languageService.getLanguages();
+    const languages = this.languageService.getAll();
     const debugEnabled = this.globalConfigService.isDebug();
     const initialFormValues = this.editInitializerService.getInitialValues(entityGuid, language.current);
     return {
