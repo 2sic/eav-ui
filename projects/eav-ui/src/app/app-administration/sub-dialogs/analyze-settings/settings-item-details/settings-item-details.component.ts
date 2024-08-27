@@ -10,9 +10,9 @@ import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SxcGridModule } from 'projects/eav-ui/src/app/shared/modules/sxc-grid-module/sxc-grid.module';
-import { ColumnDefinitions } from 'projects/eav-ui/src/app/shared/ag-grid/column-definitions';
-import { transient } from 'projects/eav-ui/src/app/core';
+import { SxcGridModule } from '../../../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { ColumnDefinitions } from '../../../../shared/ag-grid/column-definitions';
+import { transient } from '../../../../core';
 
 @Component({
   selector: 'app-settings-item-details',

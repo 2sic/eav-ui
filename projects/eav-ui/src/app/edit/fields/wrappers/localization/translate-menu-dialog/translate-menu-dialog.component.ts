@@ -12,7 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
 import { FieldsTranslateService } from '../../../../state/fields-translate.service';
-import { TranslateHelperComponent } from 'projects/eav-ui/src/app/shared/components/translate-helper.component';
+import { TranslateHelperComponent } from '../../../../../shared/components/translate-helper.component';
 
 interface TranslationInfo {
   showLanguageSelection: boolean;

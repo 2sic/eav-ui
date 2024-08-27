@@ -2,7 +2,7 @@ import { DataSourceBase } from './data-source-base';
 import { Injectable, computed, signal } from '@angular/core';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { EntityBasicWithFields } from 'projects/eav-ui/src/app/shared/models/entity-basic';
+import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 
 const logThis = false;
 const nameOfThis = 'DataSourceString';

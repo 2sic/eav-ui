@@ -10,7 +10,7 @@ import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
 import { ValidationHelpers } from '../../shared/validation/validation.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
-import { FieldValue } from 'projects/edit-types';
+import { FieldValue } from '../../../../../../edit-types';
 import { ControlHelpers } from '../../shared/helpers/control.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { EntityFormStateService } from '../entity-form-state.service';

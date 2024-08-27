@@ -24,7 +24,7 @@ import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { RxHelpers } from 'projects/eav-ui/src/app/shared/rxJs/rx.helpers';
+import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
 @Component({

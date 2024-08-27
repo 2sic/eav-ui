@@ -3,6 +3,9 @@ import isEqual from 'lodash-es/isEqual';
 
 export type ComputedCache<TKey extends string, TValue> = Record<TKey, Signal<TValue>>;
 
+/**
+ * Special helper with Signals to cache computed signals.
+ */
 export class ComputedCacheHelper<TKey extends string | number, TValue> {
   // private cache: ComputedCache<TKey, TValue> = {};// as any;
 

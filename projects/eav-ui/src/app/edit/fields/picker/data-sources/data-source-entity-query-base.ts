@@ -6,8 +6,8 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
-import { QueryService } from 'projects/eav-ui/src/app/shared/services/query.service';
-import { transient } from 'projects/eav-ui/src/app/core';
+import { QueryService } from '../../../../shared/services/query.service';
+import { transient } from '../../../../core';
 
 /**
  * This is the base class for data-sources providing data from

@@ -23,7 +23,7 @@ import { messagePickerItem, PickerItem } from '../models/picker-item.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { transient } from '../../../../core/transient';
-import { GlobalConfigService } from 'projects/eav-ui/src/app/shared/services/global-config.service';
+import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 
 const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
