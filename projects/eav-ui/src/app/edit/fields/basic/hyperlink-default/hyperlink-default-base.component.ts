@@ -16,6 +16,7 @@ import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { ControlStatus } from '../../../shared/models/control-status.model';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
+import { transient } from '../../../../core/transient';
 
 const logThis = false;
 const nameOfThis = 'HyperlinkDefaultBaseComponent';
@@ -48,9 +49,10 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
 
   private injector = inject(Injector);
 
+  public adamService = transient(AdamService);
+
   constructor(
     private formConfig: FormConfigService,
-    public adamService: AdamService,
     public dialog: MatDialog,
     public viewContainerRef: ViewContainerRef,
     public changeDetectorRef: ChangeDetectorRef,

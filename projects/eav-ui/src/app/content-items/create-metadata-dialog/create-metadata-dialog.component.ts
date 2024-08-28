@@ -26,6 +26,7 @@ import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
+import { transient } from '../../core';
 
 @Component({
   selector: 'app-create-metadata-dialog',
@@ -70,11 +71,12 @@ export class CreateMetadataDialogComponent extends BaseComponent implements OnIn
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
 
+  private contentItemsService = transient(ContentItemsService);
+  
+  private contentTypesService = transient(ContentTypesService);
   constructor(
     private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
     private context: Context,
-    private contentItemsService: ContentItemsService,
-    private contentTypesService: ContentTypesService,
   ) {
     super();
   }

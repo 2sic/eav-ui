@@ -6,7 +6,6 @@ import { ServiceBase } from './service-base';
 import { EavLogger } from '../logging/eav-logger';
 import { EntityBasic } from '../../shared/models/entity-basic';
 import { QueryService } from './query.service';
-import { FormConfigService } from '../../edit/state/form-config.service';
 import { transient } from '../../core';
 
 const logThis = false;
@@ -18,10 +17,7 @@ export const webApiEntityList = 'admin/entity/list';
  export class EntityService extends ServiceBase {
   private queryService = transient(QueryService);
 
-  constructor(private http: HttpClient,
-    private formConfig: FormConfigService,
-    private dnnContext: DnnContext,
-  )
+  constructor(private http: HttpClient, private dnnContext: DnnContext)
   {
     super(new EavLogger('EntityService', logThis));
   }
@@ -52,12 +48,12 @@ export const webApiEntityList = 'admin/entity/list';
     );
   }
 
-  delete(contentType: string, entityId: number, force: boolean, parentId?: number, parentField?: string): Observable<null> {
+  delete(appId: number, contentType: string, entityId: number, force: boolean, parentId?: number, parentField?: string): Observable<null> {
     return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
       params: {
         contentType,
         id: entityId.toString(),
-        appId: this.formConfig.config.appId,
+        appId,
         force: force.toString(),
         ...(parentId && { parentId: parentId.toString() }),
         ...(parentId && parentField && { parentField }),

@@ -27,7 +27,6 @@ import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { AdamService } from '../../../shared/services/adam.service';
 import { WrappersCatalog } from '../wrappers.constants';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
@@ -94,7 +93,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   constructor(
     eavService: FormConfigService,
-    adamService: AdamService,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
@@ -106,7 +104,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   ) {
     super(
       eavService,
-      adamService,
       dialog,
       viewContainerRef,
       changeDetectorRef,

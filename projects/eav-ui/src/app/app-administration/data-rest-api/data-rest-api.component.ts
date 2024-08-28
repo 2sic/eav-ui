@@ -10,7 +10,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { DevRestDataComponent } from '../../dev-rest/data/data.component';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { MetadataService } from '../../permissions';
 import { transient } from '../../core';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 

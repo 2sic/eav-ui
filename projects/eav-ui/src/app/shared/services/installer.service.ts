@@ -1,8 +1,5 @@
-import { of } from 'rxjs';
-
-import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InstallPackage } from '../models/installer-models';
 
@@ -10,9 +7,7 @@ import { InstallPackage } from '../models/installer-models';
 @Injectable()
 export class InstallerService {
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) { }
 
   installPackages(packages: InstallPackage[], step: (p: InstallPackage) => void): Observable<any> {
     return packages.reduce(

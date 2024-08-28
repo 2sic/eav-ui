@@ -19,6 +19,7 @@ import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { transient } from '../../../core';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -42,13 +43,16 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
   appSettingsInternal$ = new Subject<AppInternals>();
   viewModel$: Observable<ViewModel>;
 
+  private appInternalsService = transient(AppInternalsService);
+
+  private contentItemsService = transient(ContentItemsService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private contentItemsService: ContentItemsService,
     private context: Context,
     private snackBar: MatSnackBar,
-    private appInternalsService: AppInternalsService) {
+  ) {
     super(router, route);
 
     // New with proper ViewModel

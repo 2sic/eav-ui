@@ -70,10 +70,11 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
     upload$: (files: File[]) => this.importAppPartsService.importAppParts(files[0]),
   };
 
+  private installerService = transient(InstallerService);
+  private installSettingsService = transient(AppInstallSettingsService);
+
   constructor(
     private snackBar: MatSnackBar,
-    private installSettingsService: AppInstallSettingsService,
-    private installerService: InstallerService,
     private sanitizer: DomSanitizer,
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,

@@ -19,8 +19,6 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MetadataService } from './services/metadata.service';
-import { EntitiesService } from '../content-items/services/entities.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../core';
 
@@ -36,9 +34,6 @@ import { transient } from '../core';
     MatDialogActions,
     AsyncPipe,
     SxcGridModule,
-  ],
-  providers: [
-    EntitiesService,
   ],
 })
 export class PermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

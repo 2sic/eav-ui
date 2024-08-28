@@ -236,7 +236,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
       return;
-    this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
+    this.entityService.delete(this.formConfig.config.appId, eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.noteRef?.close();
       this.fetchNote();
     });

@@ -6,6 +6,7 @@ import { filter, map, Subscription } from 'rxjs';
 import { AppIconsService } from './shared/icons/app-icons.service';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { Context } from './shared/services/context';
+import { transient } from './core';
 
 @Component({
   selector: 'app-root',
@@ -20,14 +21,16 @@ import { Context } from './shared/services/context';
 export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
+  private titleService = transient(Title);
+
+  private appIconsService = transient(AppIconsService);
+
   constructor(
     el: ElementRef,
     dnnContext: DnnContext,
     private context: Context,
-    private titleService: Title,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private appIconsService: AppIconsService,
   ) {
     super(
       el,

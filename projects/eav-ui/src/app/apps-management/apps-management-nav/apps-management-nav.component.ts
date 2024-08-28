@@ -80,10 +80,10 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
 
   ngOnInit() {
     this.fetchDialogSettings();
+    
+    // Trigger settings load? not sure why, because it's cached in the service... on dialog close?
     this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => {
-        this.fetchDialogSettings();
-      })
+      this.childDialogClosed$().subscribe(() => this.fetchDialogSettings())
     );
 
     this.smallScreen.addEventListener(

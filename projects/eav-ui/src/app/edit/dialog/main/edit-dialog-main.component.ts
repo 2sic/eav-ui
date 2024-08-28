@@ -77,8 +77,6 @@ const nameOfThis = 'EditDialogMainComponent';
     EditRoutingService,
     FormsStateService,
     FormulaDesignerService,
-    // 2dm: don't think it's used for real - except for in the create template, where it's referenced directly
-    SourceService,
 
     // TODO: probably move to each picker component (Errors)
     PickerTreeDataHelper,

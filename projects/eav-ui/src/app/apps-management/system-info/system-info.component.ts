@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
@@ -102,15 +102,22 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   openSiteSettings(): void {
-    this.dialogSettings.getSitePrimaryApp$().subscribe(sitePrimaryApp => {
-      this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
-    })
+    this.dialogSettings.getCurrent$()
+      .pipe(
+        map(dc => dc?.Context.Site.PrimaryApp),
+        take(1)
+      )
+      .subscribe(sitePrimaryApp => {
+        this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+      })
   }
 
   openGlobalSettings(): void {
-    this.dialogSettings.getGlobalPrimaryApp$().subscribe(globalPrimaryApp => {
-      this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
-    })
+    this.dialogSettings.getCurrent$()
+      .pipe(map(dc => dc?.Context.System.PrimaryApp), take(1))
+      .subscribe(globalPrimaryApp => {
+        this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+      })
   }
 
   openInsights() {

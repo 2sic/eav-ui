@@ -33,8 +33,7 @@ import { LoggingService } from '../../shared/services/logging.service';
     Context,              // Form context, such as what app etc. - the same for the entire form
     FormConfigService,    // form configuration valid for this entire form; will be initialized by the EditInitializerService
 
-    AdamService,          // helper to get files, folders etc.
-    ScriptsLoaderService, // for loading external scripts
+    ScriptsLoaderService, // for loading external scripts - must be shared as it keeps track of what's been loaded
   ],
 })
 export class EditEntryComponent implements OnInit {
@@ -42,6 +41,7 @@ export class EditEntryComponent implements OnInit {
   constructor(protected editInitializerService: EditInitializerService) { }
 
   ngOnInit(): void {
+    // Load the data - when it's loaded, the HTML will show the rest
     this.editInitializerService.fetchFormData();
   }
 }

@@ -74,12 +74,13 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private urlItems: ViewOrFileIdentifier[];
 
+  private titleService = transient(Title);
+
   constructor(
     private context: Context,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private zone: NgZone,
-    private titleService: Title,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {

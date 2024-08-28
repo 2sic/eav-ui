@@ -54,7 +54,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   private inputTypeService = inject(InputTypeService);
   private featuresService = inject(FeaturesService);
   private editRoutingService = inject(EditRoutingService);
-  private adamService = inject(AdamService);
+  private adamService = transient(AdamService);
   private dialog = inject(MatDialog);
 
   private viewContainerRef: ViewContainerRef;

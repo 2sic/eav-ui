@@ -4,13 +4,10 @@ import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, Injector } fro
 import { SxcHttpInterceptorProvider } from '@2sic.com/sxc-angular';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { paramsInitFactory } from './params-init.factory';
-import { AppIconsService } from './shared/icons/app-icons.service';
 import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.interceptor';
 import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interceptor';
-import { AppInstallSettingsService } from './shared/services/getting-started.service';
-import { InstallerService } from './shared/services/installer.service';
 import { Context } from './shared/services/context';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,10 +28,6 @@ export const appConfig: ApplicationConfig = {
     ),
     SxcHttpInterceptorProvider,
     Context,
-    Title,
-    AppIconsService,
-    AppInstallSettingsService,// copied from 2sxc-ui
-    InstallerService,// copied from 2sxc-ui
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },

@@ -5,7 +5,7 @@ import { map, Observable } from 'rxjs';
 import { GoToDevRest } from '../../dev-rest';
 import { Context } from '../../shared/services/context';
 import { PipelineModel } from '../models';
-import { VisualQueryService } from '../services/visual-query.service';
+import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,7 +33,7 @@ export class RunExplorerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
-    private visualQueryService: VisualQueryService,
+    private visualQueryService: VisualQueryStateService,
   ) { }
 
   ngOnInit() {

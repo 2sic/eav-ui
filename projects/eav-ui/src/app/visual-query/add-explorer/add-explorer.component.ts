@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DataSource, SortedDataSources } from '../models';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
-import { VisualQueryService } from '../services/visual-query.service';
+import { VisualQueryStateService } from '../services/visual-query.service';
 import { filterAndSortDataSources } from './add-explorer.helpers';
 import { MatIconModule } from '@angular/material/icon';
 import { ArrayHelpers } from '../../shared/helpers/array.helpers';
@@ -33,7 +33,7 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<AddExplorerViewModel>;
 
-  constructor(private visualQueryService: VisualQueryService) { }
+  constructor(private visualQueryService: VisualQueryStateService) { }
 
   ngOnInit() {
     this.viewModel$ = combineLatest([

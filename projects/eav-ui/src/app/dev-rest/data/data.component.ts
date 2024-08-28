@@ -21,13 +21,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
 import { EntityBasic } from '../../shared/models/entity-basic';
 import { transient } from '../../core';
 import { FormConfigService } from '../../edit/state/form-config.service';
-import { QueryService } from '../../shared/services/query.service';
 import { EntityService } from '../../shared/services/entity.service';
 
 
@@ -54,11 +52,6 @@ const pathToContent = 'app/{appname}/data/{typename}';
     DevRestTabPermissionsComponent,
     DevRestHttpHeadersComponent,
     AsyncPipe,
-  ],
-  providers: [ // must be by Providers
-    EntitiesService,
-    FormConfigService,
-    QueryService,
   ],
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {

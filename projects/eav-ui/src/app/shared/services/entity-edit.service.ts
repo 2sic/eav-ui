@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EavFor } from '../../edit/shared/models/eav';
-import { ItemInListIdentifier } from '../../shared/models/edit-form.model';
-import { Context } from '../../shared/services/context';
-import { webApiEntityRoot } from '../../shared/services/entity.service';
+import { ItemInListIdentifier } from '../models/edit-form.model';
+import { Context } from './context';
+import { webApiEntityRoot } from './entity.service';
 
 @Injectable()
-export class EntitiesService {
+export class EntityEditService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   create<T = QuickEntityResponse>(contentType: string, entity: QuickEntityRequest): Observable<T> {
@@ -30,7 +30,7 @@ export class EntitiesService {
   }
 }
 
-export interface QuickEntityRequest {
+interface QuickEntityRequest {
   /** Metadata target */
   For?: EavFor;
   /** Parent linking target (add to this entity) */
@@ -38,7 +38,7 @@ export interface QuickEntityRequest {
   [field: string]: any;
 }
 
-export interface QuickEntityResponse {
+interface QuickEntityResponse {
   Created: string;
   Guid: string;
   Id: number;

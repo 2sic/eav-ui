@@ -3,7 +3,7 @@ import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
-import { EntitiesService } from '../../../../content-items/services/entities.service';
+import { EntityEditService } from '../../../../shared/services/entity-edit.service';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
@@ -78,7 +78,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   filename = `formula${this.formConfig.config.formId}.js`;
   focused = false;
 
-  private entitiesService = transient(EntitiesService);
+  private entitiesService = transient(EntityEditService);
 
   #designerSvc = inject(FormulaDesignerService);
   protected state = this.#designerSvc.designerState;

@@ -176,10 +176,10 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const parentField = config.fieldName;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
-    if (!confirmed) { return; }
+    if (!confirmed) return;
 
     this.snackBar.open(this.translate.instant('Message.Deleting'));
-    this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
+    this.entityService.delete(this.formConfig.config.appId, contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.deleteCallback(props); // removes value from selected values
@@ -187,9 +187,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
-        if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
+        if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) return;
         this.snackBar.open(this.translate.instant('Message.Deleting'));
-        this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
+        this.entityService.delete(this.formConfig.config.appId, contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.deleteCallback(props); // removes value from selected values

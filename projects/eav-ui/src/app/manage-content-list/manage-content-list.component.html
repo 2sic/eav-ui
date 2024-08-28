@@ -11,18 +11,20 @@
             {{'ManageContentList.Description' | translate}}
           </p>
           <p>
-            @if (vm.header.Type) {
+            @if (vm.header.Type)
+            {
               <span>{{ vm.header.Title }}</span>
               <button mat-icon-button tippy="Edit header" (click)="editHeader()">
                 <mat-icon>edit</mat-icon>
               </button>
             }
-            @if (!vm.header.Type) {
+            @else {
               {{'ManageContentList.NoHeader' | translate}}
             }
           </p>
         }
-        @if (vm.items && vm.items?.length < 25 ) {
+        @if (vm.items && vm.items?.length < 25 )
+        {
           <p class="eav-sort-title">
             {{'ManageContentList.SortItems' | translate}}
           </p>

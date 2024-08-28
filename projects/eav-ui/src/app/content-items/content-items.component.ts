@@ -37,7 +37,7 @@ import { ExtendedColDef } from './models/extended-col-def.model';
 import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
-import { EntitiesService } from './services/entities.service';
+import { EntityEditService } from '../shared/services/entity-edit.service';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -69,10 +69,6 @@ const nameOfThis = 'ContentItemsComponent';
     ToggleDebugDirective,
     SxcGridModule,
   ],
-  providers: [
-    ContentItemsService, // used in import Content item and create metadata
-    ContentTypesService, // used create metadata
-  ],
 })
 export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();
@@ -84,12 +80,16 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   private gridApi$ = new BehaviorSubject<GridApi>(null);
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
-  private entitiesService = transient(EntitiesService);
+  private entitiesService = transient(EntityEditService);
   private contentExportService = transient(ContentExportService);
 
   viewModel$: Observable<ContentItemsViewModel>;
 
   isDebug = inject(GlobalConfigService).isDebug;
+
+  private contentItemsService = transient(ContentItemsService);
+
+  private contentTypesService = transient(ContentTypesService);
 
   constructor(
     protected router: Router,
@@ -99,9 +99,6 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-    private contentItemsService: ContentItemsService,
-    private contentTypesService: ContentTypesService,
-
   ) {
     super(router, route, new EavLogger(nameOfThis, logThis));
   }

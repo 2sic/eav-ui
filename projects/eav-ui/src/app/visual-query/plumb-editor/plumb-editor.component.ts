@@ -7,7 +7,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
-import { VisualQueryService } from '../services/visual-query.service';
+import { VisualQueryStateService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
 import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
@@ -17,6 +17,7 @@ import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
+import { transient } from '../../core';
 
 const logThis = false;
 const nameOfThis = 'PlumbEditorComponent';
@@ -48,10 +49,11 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   private scriptLoaded$ = new BehaviorSubject(false);
 
   viewModel$: Observable<PlumbEditorViewModel>;
+  
+  private queryDefinitionService = transient(QueryDefinitionService);
 
   constructor(
-    private visualQueryService: VisualQueryService,
-    private queryDefinitionService: QueryDefinitionService,
+    private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

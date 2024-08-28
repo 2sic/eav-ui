@@ -49,10 +49,6 @@ import { transient } from '../../core';
     AsyncPipe,
     TippyDirective,
   ],
-  providers: [
-    ContentItemsService, // used
-    AppInternalsService, // used by app config card
-  ],
 })
 export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
@@ -80,13 +76,15 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
   protected langPermsEnabled = this.features.isEnabled(FeatureNames.PermissionsByLanguage);
 
+  private appInternalsService = transient(AppInternalsService);
+
+  private contentItemsService = transient(ContentItemsService);
+
   constructor(
-    private contentItemsService: ContentItemsService,
     protected router: Router,
     protected route: ActivatedRoute,
     private context: Context,
     private snackBar: MatSnackBar,
-    private appInternalsService: AppInternalsService,
     private appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

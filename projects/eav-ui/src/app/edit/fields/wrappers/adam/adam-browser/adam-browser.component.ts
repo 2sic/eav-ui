@@ -31,6 +31,7 @@ import { LinkCacheService } from '../../../../shared/store/link-cache.service';
 import isEqual from 'lodash-es/isEqual';
 import { AdamConnector } from './adam-connector';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
+import { transient } from '../../../../../core/transient';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -97,8 +98,9 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   protected expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid)
 
+  private adamService = transient(AdamService);
+
   constructor(
-    private adamService: AdamService,
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
     private adamCacheService: AdamCacheService,

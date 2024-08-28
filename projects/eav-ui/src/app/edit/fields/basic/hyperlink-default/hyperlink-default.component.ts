@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, effect, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
@@ -22,9 +22,7 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
-import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
 import isEqual from 'lodash-es/isEqual';
 
@@ -83,10 +81,9 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     const adamItem = adamItems.find(i => i.Id === adamItemId);
     return adamItem;
   });
-
+  
   constructor(
     eavService: FormConfigService,
-    adamService: AdamService,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
@@ -96,7 +93,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   ) {
     super(
       eavService,
-      adamService,
       dialog,
       viewContainerRef,
       changeDetectorRef,

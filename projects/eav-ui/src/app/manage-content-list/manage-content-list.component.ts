@@ -40,9 +40,6 @@ import { FormConfigService } from '../edit/state/form-config.service';
     TippyDirective,
     MousedownStopPropagationDirective,
   ],
-  providers: [
-    FormConfigService,
-  ],
 })
 export class ManageContentListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -17,7 +17,6 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
-import { transient } from '../../core';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 
 const logThis = false;
@@ -42,7 +41,7 @@ const logThis = false;
     // Must have a new config service here, to restart with new settings
     // which are injected into it from the context
     // Because of standalone-components, it's not enough to have it in the module-definition
-    AppDialogConfigService, // must be by Providers
+    AppDialogConfigService,
   ],
 })
 export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
-import { EntitiesService } from '../content-items/services/entities.service';
+import { EntityEditService } from '../shared/services/entity-edit.service';
 import { EavFor } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
 import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
@@ -58,7 +58,7 @@ const logThis = false;
 export class MetadataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
-  private entitiesService = transient(EntitiesService);
+  private entitiesService = transient(EntityEditService);
   private metadataService = transient(MetadataService);
   private contentItemsService = transient(ContentItemsService);
 

@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DebugStreamInfo, PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models';
-import { VisualQueryService } from '../services/visual-query.service';
+import { VisualQueryStateService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
 import { JsonPipe, KeyValuePipe } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -35,7 +35,7 @@ export class QueryResultComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData,
     private dialogRef: MatDialogRef<QueryResultComponent>,
-    private visualQueryService: VisualQueryService,
+    private visualQueryService: VisualQueryStateService,
   ) { }
 
   ngOnInit() {

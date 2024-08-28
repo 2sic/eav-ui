@@ -14,6 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import { DragAndDropDirective } from '../../directives/drag-and-drop.directive';
 import { MatButtonModule } from '@angular/material/button';
+import { transient } from '../../../core';
 
 
 @Component({
@@ -53,12 +54,13 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   ready = false;
   settings: InstallSettings;
 
+  private installerService = transient(InstallerService);
+  private installSettingsService = transient(AppInstallSettingsService);
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
     private dialogRef: MatDialogRef<FileUploadDialogComponent>,
     private snackBar: MatSnackBar,
-    private installSettingsService: AppInstallSettingsService,
-    private installerService: InstallerService,
     private sanitizer: DomSanitizer,
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,

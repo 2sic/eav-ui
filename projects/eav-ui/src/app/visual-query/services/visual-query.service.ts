@@ -20,9 +20,14 @@ import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
 import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
+import { transient } from '../../core';
 
+/**
+ * Service containing the state for the visual query.
+ * It's shared, so should not be used with transient(...);
+ */
 @Injectable()
-export class VisualQueryService extends BaseWithChildDialogComponent implements OnDestroy {
+export class VisualQueryStateService extends BaseWithChildDialogComponent implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
@@ -33,17 +38,21 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
   private refreshPipeline = false;
   private refreshDataSourceConfigs = false;
 
+  private contentTypesService = transient(ContentTypesService);
+  
+  private metadataService = transient(MetadataService);
+
+  private queryDefinitionService = transient(QueryDefinitionService);
+
+  private titleService = transient(Title);
+  
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    private queryDefinitionService: QueryDefinitionService,
-    private titleService: Title,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone,
-    private metadataService: MetadataService,
-    private contentTypesService: ContentTypesService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
@@ -157,12 +166,12 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
   private calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
     const dataSourceConfigs: DataSourceConfigs = {};
     dataSources.forEach(dataSource => {
-      if (dataSource.EntityId == null) { return; }
+      if (dataSource.EntityId == null) return;
       dataSourceConfigs[dataSource.EntityId] = [];
       dataSource.Metadata?.forEach(metadataItem => {
         Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
-          if (attributeValue == null || attributeValue === '') { return; }
-          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
+          if (attributeValue == null || attributeValue === '') return;
+          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) return;
           if (Array.isArray(attributeValue) && attributeValue[0]?.Title != null && attributeValue[0]?.Id != null) {
             attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
           }
@@ -264,7 +273,7 @@ export class VisualQueryService extends BaseWithChildDialogComponent implements 
       return;
     }
 
-    if (stream.Count === 0) { return; }
+    if (stream.Count === 0) return;
 
     this.snackBar.open('Running stream...');
     const pipelineId = this.pipelineModel$.value.Pipeline.EntityId;

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, share } from 'rxjs';
 import { GoToDevRest } from '..';
 import { AppDialogConfigService, PipelinesService } from '../../app-administration/services';
-import { MetadataService, PermissionsService } from '../../permissions';
+import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -24,7 +24,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-help.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { EntitiesService } from '../../content-items/services/entities.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
 
@@ -50,9 +49,6 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
     DevRestTabPermissionsComponent,
     DevRestHttpHeadersComponent,
     AsyncPipe,
-  ],
-  providers: [
-    EntitiesService,
   ],
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> implements OnDestroy {
