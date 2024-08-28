@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
-import { Subscription } from 'rxjs';
 import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
 

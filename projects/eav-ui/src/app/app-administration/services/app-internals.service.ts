@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppInternals } from '../../app-administration/models/app-internals.model';
-import { MetadataKeyType } from '../../shared/constants/eav.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 
 const webApiRoot = 'admin/appinternals/get';
@@ -19,14 +19,10 @@ export class AppInternalsService {
    * @param key key of target metadata item is for
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
-  getAppInternals(targetType: number, keyType: MetadataKeyType, key: string | number, contentTypeName?: string): Observable<AppInternals> {
+  getAppInternals(): Observable<AppInternals> {
     return this.http.get<AppInternals>(this.dnnContext.$2sxc.http.apiUrl(webApiRoot), {
       params: {
         appId: this.context.appId.toString(),
-        targetType: targetType.toString(),
-        keyType,
-        key: key.toString(),
-        ...(contentTypeName && { contentType: contentTypeName }),
       },
     });
   }

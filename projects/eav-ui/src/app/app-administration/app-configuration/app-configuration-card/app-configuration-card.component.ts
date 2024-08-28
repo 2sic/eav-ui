@@ -115,7 +115,7 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
   }
 
   private fetchSettings() {
-    const getObservable = this.appInternalsService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId);
+    const getObservable = this.appInternalsService.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);

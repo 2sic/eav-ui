@@ -1,4 +1,4 @@
-@if (viewModel$ | async; as vm) {
+
 <mat-toolbar appToggleDebug>
   <div class="toolbar-container">
     <!-- Mat Icon Menu -->
@@ -10,9 +10,10 @@
     <!-- Breadcrum in the Toolbar after show Img and Aoo Name -->
     <xng-breadcrumb [separator]="emptyTemplate">
       <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
-        @if (last) {
-        <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
-        {{ breadcrumb }}
+        @if (last)
+        {
+          <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+          {{ breadcrumb }}
         }
       </ng-container>
     </xng-breadcrumb>
@@ -25,8 +26,9 @@
 </mat-toolbar>
 <mat-sidenav-container appToggleDebug>
   <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-    @for (navItem of navItems; track navItem.path) {
-    <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
+    @for (navItem of navItems; track navItem.path)
+    {
+      <app-nav-item-list [navItem]="navItem"></app-nav-item-list>
     }
 
     <div class="sideNav-bottom-info">
@@ -40,4 +42,3 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-}

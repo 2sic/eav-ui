@@ -95,24 +95,23 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
     super(router, route);
 
     // New with proper ViewModel
-    this.viewModel$ = combineLatest([
-      this.appSettingsInternal$,
-    ]).pipe(map(([settings]) => {
-      const result: AppConfigurationViewModel = {
-        appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
-        systemSettingsCount: this.isPrimary
-          ? settings.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : settings.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
-        customSettingsCount: settings.EntityLists.AppSettings?.length,
-        customSettingsFieldsCount: settings.FieldAll.AppSettings?.length,
-        systemResourcesCount: this.isPrimary
-          ? settings.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : settings.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
-        customResourcesCount: settings.EntityLists.AppResources?.length,
-        customResourcesFieldsCount: settings.FieldAll.AppResources?.length,
-      }
-      return result;
-    }));
+    this.viewModel$ = this.appSettingsInternal$.pipe(
+      map(s => {
+        const result: AppConfigurationViewModel = {
+          appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+          systemSettingsCount: this.isPrimary
+            ? s.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+            : s.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
+          customSettingsCount: s.EntityLists.AppSettings?.length,
+          customSettingsFieldsCount: s.FieldAll.AppSettings?.length,
+          systemResourcesCount: this.isPrimary
+            ? s.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+            : s.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
+          customResourcesCount: s.EntityLists.AppResources?.length,
+          customResourcesFieldsCount: s.FieldAll.AppResources?.length,
+        }
+        return result;
+      }));
   }
 
 
@@ -224,7 +223,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   }
 
   private fetchSettings() {
-    const getObservable = this.appInternalsService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId);
+    const getObservable = this.appInternalsService.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);

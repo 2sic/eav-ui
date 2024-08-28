@@ -1,20 +1,17 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { combineLatest, filter, map, startWith } from 'rxjs';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { GlobalDialogConfigService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-items';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
-import { transient } from '../../core';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 
 @Component({
@@ -29,41 +26,18 @@ import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.direc
     MatButtonModule,
     MatSidenavModule,
     RouterOutlet,
-    AsyncPipe,
     NavItemListComponent,
     ToggleDebugDirective,
   ],
 })
 export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
   private globalDialogConfigSvc = inject(GlobalDialogConfigService);
 
   zoneId = this.context.zoneId;
 
-  private currentPath$ = combineLatest([
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.route.snapshot.firstChild.url[0].path),
-      startWith(this.route.snapshot.firstChild.url[0].path)
-    ),
-  ]).pipe(
-    map(([paths]) => {
-      if (paths == null) return;
-      return paths;
-    })
-  );
-
-  // Generate View Model
-  viewModel$ = combineLatest([this.currentPath$]).pipe(
-    map(([currentPath]) => {
-      return {
-        currentPath,
-      };
-    })
-  );
-
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
-  @ViewChild('sidenav') sidenav!: MatSidenav;
   sideNavOpened = !this.smallScreen.matches;
 
   navItems = AppsManagementNavItems;
@@ -86,13 +60,10 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
       this.childDialogClosed$().subscribe(() => this.fetchDialogSettings())
     );
 
-    this.smallScreen.addEventListener(
-      'change',
-      (c) => (
-        this.sidenav.opened = !c.matches,
-        this.sidenav.mode = c.matches ? 'over' : 'side'
-      )
-    );
+    this.smallScreen.addEventListener('change', c => (
+      this.sidenav.opened = !c.matches,
+      this.sidenav.mode = c.matches ? 'over' : 'side'
+    ));
   }
 
   closeDialog() {
