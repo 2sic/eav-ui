@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FeatureSummary } from '../models';
-import { FeatureComponentBase, FeatureComponentProviders } from '../shared/base-feature.component';
+import { FeatureComponentBase } from '../shared/base-feature.component';
 import { BehaviorSubject, map, Observable, combineLatest } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -18,9 +18,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TranslateModule,
     TippyDirective,
   ],
-  providers: [
-    ...FeatureComponentProviders,
-  ]
 })
 export class FeatureTextInfoComponent extends FeatureComponentBase {
   @Input()

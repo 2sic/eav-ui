@@ -29,7 +29,6 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
 
@@ -53,7 +52,6 @@ import { transient } from '../../core';
   providers: [
     ContentItemsService, // used
     AppInternalsService, // used by app config card
-    FeatureDetailService, // For feature info Dialog
   ],
 })
 export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {

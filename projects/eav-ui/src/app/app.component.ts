@@ -49,17 +49,11 @@ export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
         filter(event => event instanceof NavigationEnd),
         map(() => {
           let child = this.activatedRoute.firstChild;
-          while (child?.firstChild) {
+          while (child?.firstChild)
             child = child.firstChild;
-          }
-          if (child?.snapshot.data['title']) {
-            return child.snapshot.data['title'];
-          }
-          return appTitle;
+          return child?.snapshot.data['title'] ?? appTitle;
         }),
-      ).subscribe((title: string) => {
-        this.titleService.setTitle(title);
-      })
+      ).subscribe((title: string) => this.titleService.setTitle(title))
     );
   }
 

@@ -23,7 +23,6 @@ import { MatCardModule } from '@angular/material/card';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
-import { FeatureDetailService } from '../../features/services/feature-detail.service';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
 

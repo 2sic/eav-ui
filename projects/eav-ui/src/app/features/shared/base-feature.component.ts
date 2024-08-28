@@ -4,11 +4,6 @@ import { FeaturesService } from '../features.service';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
 import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
 import { FeatureSummary } from '../models';
-import { FeatureDetailService } from '../services/feature-detail.service';
-
-export const FeatureComponentProviders = [
-  FeatureDetailService,
-];
 
 @Directive()
 export class FeatureComponentBase {
