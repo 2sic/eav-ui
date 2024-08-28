@@ -23,8 +23,8 @@ import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
 import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
-import { Field } from './models/field.model';
-import { ContentTypesFieldsService } from './services/content-types-fields.service';
+import { Field } from '../shared/fields/field.model';
+import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,7 +33,7 @@ import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../core';
-import { EmptyFieldHelpers } from '../edit/fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -172,16 +172,16 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
     const currentField: Field = params.data;
     const inputType = currentField.InputType;
 
-    if (EmptyFieldHelpers.endsPreviousGroup(inputType))
+    if (InputTypeHelpers.endsPreviousGroup(inputType))
       return params.value;
 
     let isGroupOpen = false;
     for (const field of this.fields$.value) {
-      if (EmptyFieldHelpers.isGroupStart(inputType)) {
+      if (InputTypeHelpers.isGroupStart(inputType)) {
         isGroupOpen = true;
         continue;
       }
-      if (EmptyFieldHelpers.isGroupEnd(inputType)) {
+      if (InputTypeHelpers.isGroupEnd(inputType)) {
         isGroupOpen = false;
         continue;
       }
@@ -324,8 +324,8 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
         const field: Field = params.data;
         const rowClass: string[] = [];
         if (field.EditInfo.DisableSort) { rowClass.push('disable-row-drag'); }
-        if (EmptyFieldHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
-        if (EmptyFieldHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
+        if (InputTypeHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
+        if (InputTypeHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
       },
       columnDefs: [

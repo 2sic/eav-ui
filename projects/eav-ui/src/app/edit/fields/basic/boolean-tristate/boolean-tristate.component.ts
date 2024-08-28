@@ -1,5 +1,5 @@
 import { Component, computed, inject, Signal } from '@angular/core';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
@@ -13,7 +13,7 @@ import { FieldState } from '../../field-state';
 import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
-  selector: InputTypeConstants.BooleanTristate,
+  selector: InputTypeCatalog.BooleanTristate,
   templateUrl: './boolean-tristate.component.html',
   styleUrls: ['./boolean-tristate.component.scss'],
   standalone: true,

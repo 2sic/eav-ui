@@ -1,11 +1,11 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { Field } from '../models/field.model';
+import { Field } from '../../shared/fields/field.model';
 import { ContentTypeFieldsTitleParams } from './content-type-fields-title.models';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
-import { EmptyFieldHelpers } from '../../edit/fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 
 @Component({
   selector: 'app-content-type-fields-title',
@@ -32,7 +32,7 @@ export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp
     this.isTitle = params.value;
     this.field = params.data;
 
-    this.suitableForTitle = !EmptyFieldHelpers.isEmpty(this.field.InputType)
+    this.suitableForTitle = !InputTypeHelpers.isEmpty(this.field.InputType)
   }
 
   refresh(params?: any): boolean {

@@ -8,11 +8,11 @@ import { FieldHelperTextComponent } from '../../help-text/field-help-text.compon
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 
 @Component({
-  selector: InputTypeConstants.NumberDefault,
+  selector: InputTypeCatalog.NumberDefault,
   templateUrl: './number-default.component.html',
   styleUrls: ['./number-default.component.scss'],
   standalone: true,

@@ -1,9 +1,9 @@
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeConstants } from './../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
 export class BooleanTristateLogic extends FieldLogicBase {
-  name = InputTypeConstants.BooleanTristate;
+  name = InputTypeCatalog.BooleanTristate;
 
   update({ settings, value }: FieldLogicUpdate<boolean | ''>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };

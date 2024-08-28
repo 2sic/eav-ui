@@ -6,7 +6,7 @@ import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest, map, tap } from 'rxjs';
-import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
@@ -81,7 +81,7 @@ export class FieldInjectorService {
     } else {
       // No control found - could be a problem, could be expected
       // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
-      if (!EmptyFieldHelpers.isEmpty(inputType.inputType)) {
+      if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
         console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
         // try to have a temporary result, so that in most cases it won't just fail
         controlStatusChangeSignal = signal(emptyControlStatus);

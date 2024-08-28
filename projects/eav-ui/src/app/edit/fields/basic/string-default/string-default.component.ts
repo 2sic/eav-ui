@@ -5,7 +5,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
@@ -13,7 +13,7 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 
 @Component({
-  selector: InputTypeConstants.StringDefault,
+  selector: InputTypeCatalog.StringDefault,
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.scss'],
   standalone: true,

@@ -8,7 +8,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
@@ -19,7 +19,7 @@ import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.se
 import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
-  selector: InputTypeConstants.StringFontIconPicker,
+  selector: InputTypeCatalog.StringFontIconPicker,
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.scss'],
   standalone: true,

@@ -2,10 +2,10 @@ import { Component, inject } from '@angular/core';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { FieldState } from '../../field-state';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 
 @Component({
-  selector: InputTypeConstants.CustomDefault,
+  selector: InputTypeCatalog.CustomDefault,
   templateUrl: './custom-default.component.html',
   styleUrls: ['./custom-default.component.scss'],
   standalone: true,

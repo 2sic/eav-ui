@@ -1,10 +1,10 @@
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeConstants } from './../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { EntityPickerLogic } from '../entity-picker/entity-picker-logic';
 
 export class EntityDefaultLogic extends FieldLogicBase {
-  name = InputTypeConstants.EntityDefault;
+  name = InputTypeCatalog.EntityDefault;
 
   update({ settings, tools }: FieldLogicUpdate): FieldSettings {
     

@@ -1,5 +1,5 @@
 import { Type } from '@angular/core';
-import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { BooleanDefaultComponent } from './basic/boolean-default/boolean-default.component';
 import { BooleanTristateComponent } from './basic/boolean-tristate/boolean-tristate.component';
 import { CustomDefaultComponent } from './basic/custom-default/custom-default.component';
@@ -47,31 +47,31 @@ export const InputComponents: Record<string, Type<any>> = {
   [WrappersCatalog.LocalizationWrapper]: LocalizationWrapperComponent,
 
   // Input Types
-  [InputTypeConstants.BooleanDefault]: BooleanDefaultComponent,
-  [InputTypeConstants.BooleanTristate]: BooleanTristateComponent,
-  [InputTypeConstants.CustomDefault]: CustomDefaultComponent,
-  [InputTypeConstants.CustomJsonEditor]: CustomJsonEditorComponent,
-  [InputTypeConstants.DateTimeDefault]: DatetimeDefaultComponent,
-  [InputTypeConstants.EmptyDefault]: EmptyDefaultComponent,
-  [InputTypeConstants.EmptyMessage]: EmptyMessageComponent,
-  [InputTypeConstants.EntityContentBlocks]: EntityContentBlockComponent,
-  [InputTypeConstants.EntityDefault]: EntityDefaultComponent,
-  [InputTypeConstants.EntityQuery]: EntityQueryComponent,
-  [InputTypeConstants.ExternalWebComponent]: ExternalWebComponentComponent,
-  [InputTypeConstants.HyperlinkDefault]: HyperlinkDefaultComponent,
-  [InputTypeConstants.HyperlinkLibrary]: HyperlinkLibraryComponent,
-  [InputTypeConstants.NumberDefault]: NumberDefaultComponent,
-  [InputTypeConstants.NumberDropdown]: NumberDropdownComponent,
-  [InputTypeConstants.StringDefault]: StringDefaultComponent,
-  [InputTypeConstants.StringDropdown]: StringDropdownComponent,
-  [InputTypeConstants.StringDropdownQuery]: StringDropdownQueryComponent,
-  [InputTypeConstants.StringFontIconPicker]: StringFontIconPickerComponent,
-  [InputTypeConstants.StringJson]: CustomJsonEditorComponent,
-  [InputTypeConstants.StringTemplatePicker]: StringTemplatePickerComponent,
-  [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
+  [InputTypeCatalog.BooleanDefault]: BooleanDefaultComponent,
+  [InputTypeCatalog.BooleanTristate]: BooleanTristateComponent,
+  [InputTypeCatalog.CustomDefault]: CustomDefaultComponent,
+  [InputTypeCatalog.CustomJsonEditor]: CustomJsonEditorComponent,
+  [InputTypeCatalog.DateTimeDefault]: DatetimeDefaultComponent,
+  [InputTypeCatalog.EmptyDefault]: EmptyDefaultComponent,
+  [InputTypeCatalog.EmptyMessage]: EmptyMessageComponent,
+  [InputTypeCatalog.EntityContentBlocks]: EntityContentBlockComponent,
+  [InputTypeCatalog.EntityDefault]: EntityDefaultComponent,
+  [InputTypeCatalog.EntityQuery]: EntityQueryComponent,
+  [InputTypeCatalog.ExternalWebComponent]: ExternalWebComponentComponent,
+  [InputTypeCatalog.HyperlinkDefault]: HyperlinkDefaultComponent,
+  [InputTypeCatalog.HyperlinkLibrary]: HyperlinkLibraryComponent,
+  [InputTypeCatalog.NumberDefault]: NumberDefaultComponent,
+  [InputTypeCatalog.NumberDropdown]: NumberDropdownComponent,
+  [InputTypeCatalog.StringDefault]: StringDefaultComponent,
+  [InputTypeCatalog.StringDropdown]: StringDropdownComponent,
+  [InputTypeCatalog.StringDropdownQuery]: StringDropdownQueryComponent,
+  [InputTypeCatalog.StringFontIconPicker]: StringFontIconPickerComponent,
+  [InputTypeCatalog.StringJson]: CustomJsonEditorComponent,
+  [InputTypeCatalog.StringTemplatePicker]: StringTemplatePickerComponent,
+  [InputTypeCatalog.StringUrlPath]: StringUrlPathComponent,
 
   // Pickers
-  [InputTypeConstants.EntityPicker]: EntityPickerComponent,
-  [InputTypeConstants.StringPicker]: StringPickerComponent,
-  [InputTypeConstants.NumberPicker]: NumberDropdownComponent,
+  [InputTypeCatalog.EntityPicker]: EntityPickerComponent,
+  [InputTypeCatalog.StringPicker]: StringPickerComponent,
+  [InputTypeCatalog.NumberPicker]: NumberDropdownComponent,
 };

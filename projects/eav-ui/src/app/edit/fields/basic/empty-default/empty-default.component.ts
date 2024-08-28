@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 
 @Component({
-  selector: InputTypeConstants.EmptyDefault,
+  selector: InputTypeCatalog.EmptyDefault,
   template: '',
   styleUrls: [],
   standalone: true,

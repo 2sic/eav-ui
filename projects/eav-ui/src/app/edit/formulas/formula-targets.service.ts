@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
 import { DesignerState } from './models/formula-results.models';
 import { FormulaCacheItem, FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './models/formula.models';
-import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { ItemService } from '../shared/store/item.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 
@@ -44,7 +44,7 @@ export class FormulaTargetsService {
     const contentType = this.contentTypeService.getContentTypeOfItem(item);
     const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
     const inputType = attribute.InputType;
-    if (EmptyFieldHelpers.isGroupStart(inputType)) {
+    if (InputTypeHelpers.isGroupStart(inputType)) {
       for (const target of [FormulaOptionalTargets.Collapsed]) {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
@@ -54,7 +54,7 @@ export class FormulaTargetsService {
         targetOptions.push(targetOption);
       }
     }
-    if (inputType === InputTypeConstants.StringDropdown || inputType === InputTypeConstants.NumberDropdown) {
+    if (inputType === InputTypeCatalog.StringDropdown || inputType === InputTypeCatalog.NumberDropdown) {
       for (const target of [FormulaOptionalTargets.DropdownValues]) {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
@@ -64,9 +64,9 @@ export class FormulaTargetsService {
         targetOptions.push(targetOption);
       }
     }
-    if (inputType === InputTypeConstants.EntityPicker
-      || inputType === InputTypeConstants.StringPicker
-      || inputType === InputTypeConstants.NumberPicker) {
+    if (inputType === InputTypeCatalog.EntityPicker
+      || inputType === InputTypeCatalog.StringPicker
+      || inputType === InputTypeCatalog.NumberPicker) {
       for (const target of Object.values(FormulaListItemTargets)) {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),

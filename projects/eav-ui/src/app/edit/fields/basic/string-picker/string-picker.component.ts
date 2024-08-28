@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { StringPickerLogic } from './string-picker-logic';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 import { PickerImports } from '../../picker/picker-providers.constant';
 import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
@@ -17,7 +17,7 @@ const logThis = false;
 const nameOfThis = 'StringPickerComponent';
 
 @Component({
-  selector: InputTypeConstants.StringPicker,
+  selector: InputTypeCatalog.StringPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   standalone: true,

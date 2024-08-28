@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 
 @Component({
-  selector: InputTypeConstants.EmptyMessage,
+  selector: InputTypeCatalog.EmptyMessage,
   templateUrl: './empty-message.component.html',
   styleUrls: ['./empty-message.component.scss'],
   standalone: true,

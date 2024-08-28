@@ -1,9 +1,9 @@
 import { FieldSettings } from './../../../../../../../edit-types/src/FieldSettings';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 
 export class BooleanDefaultLogic extends FieldLogicBase {
-  name = InputTypeConstants.BooleanDefault;
+  name = InputTypeCatalog.BooleanDefault;
 
   update({ settings, value }: FieldLogicUpdate<boolean>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };

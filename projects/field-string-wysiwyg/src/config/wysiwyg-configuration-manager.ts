@@ -1,5 +1,5 @@
 import { Connector } from 'projects/edit-types';
-import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { StringWysiwyg } from '../../../edit-types/src/FieldSettings';
 import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
@@ -41,7 +41,7 @@ export class WysiwygConfigurationManager {
 
     // 2. Feature detection
     // contentBlocks is on if the following field can hold inner-content items
-    const useContentBlocks = exp.allInputTypeNames[this.connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
+    const useContentBlocks = exp.allInputTypeNames[this.connector.field.index + 1]?.inputType === InputTypeCatalog.EntityContentBlocks;
     const features: WysiwygFeatures = {
       ...preset.features,
       contentBlocks: useContentBlocks,

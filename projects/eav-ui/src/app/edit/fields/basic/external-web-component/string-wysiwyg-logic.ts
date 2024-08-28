@@ -1,13 +1,13 @@
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicWithValueInit } from '../../logic/field-logic-with-init';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettings, StringWysiwyg } from '../../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 
 
 export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWithValueInit {
-  name = InputTypeConstants.StringWysiwyg;
+  name = InputTypeCatalog.StringWysiwyg;
 
   canAutoTranslate = true;
 

@@ -17,7 +17,7 @@ import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormDataService } from '../shared/services/form-data.service';
-import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { BestValueModes } from '../localization/localization.constants';
 import { FormConfigService } from './form-config.service';
@@ -217,7 +217,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       for (const ctAttribute of contentType.Attributes) {
         const currentName = ctAttribute.Name;
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        const isEmptyType = EmptyFieldHelpers.isEmpty(inputType?.Type);
+        const isEmptyType = InputTypeHelpers.isEmpty(inputType?.Type);
         l.a(`Attribute: '${currentName}' InputType: '${inputType?.Type}' isEmptyType: '${isEmptyType}'`);
 
         if (isEmptyType)

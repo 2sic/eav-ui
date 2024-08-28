@@ -1,12 +1,12 @@
 import { EntityReader } from '../shared/helpers';
 import { FieldSettings } from '../../../../../edit-types';
-import { InputType } from '../../content-type-fields/models/input-type.model';
+import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { ItemIdentifierEditConfig } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
-import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { TranslationLinks } from '../localization/translation-link.constants';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
@@ -78,7 +78,7 @@ export class FieldsSettingsHelpers {
   /** Find if DisableTranslation is true in any setting and in any language */
   static findDisableTranslation(
     contentTypeMetadata: EavEntity[],
-    inputType: InputType,
+    inputType: InputTypeMetadata,
     attributeValues: EavField<any>,
     defaultLanguage: string,
     attributeMetadata: EavEntity[],
@@ -107,12 +107,12 @@ export class FieldsSettingsHelpers {
     const index = contentType.Attributes.indexOf(attribute);
     if (contentType.Attributes[index + 1] == null) return true;
 
-    const indexOfFirstEmpty = contentType.Attributes.findIndex(a => EmptyFieldHelpers.isGroupStart(a.InputType));
+    const indexOfFirstEmpty = contentType.Attributes.findIndex(a => InputTypeHelpers.isGroupStart(a.InputType));
     if (index < indexOfFirstEmpty) return false;
 
-    if (EmptyFieldHelpers.isGroupEnd(attribute.InputType)) return true;
+    if (InputTypeHelpers.isGroupEnd(attribute.InputType)) return true;
 
-    if (EmptyFieldHelpers.endsPreviousGroup(contentType.Attributes[index + 1].InputType)) return true;
+    if (InputTypeHelpers.endsPreviousGroup(contentType.Attributes[index + 1].InputType)) return true;
 
     return false;
   }

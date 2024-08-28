@@ -1,6 +1,6 @@
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
-import { InputType } from '../../content-type-fields/models/input-type.model';
+import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
+import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
 import { TranslationStateCore } from '../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { FormulaFieldValidation } from '../formulas/models/formula.models';
@@ -49,7 +49,7 @@ export interface FieldConstantsOfLanguage extends FieldConstants {
   settingsInitial: FieldSettings,
 
   /** The input type configuration of this language */
-  inputTypeConfiguration: InputType,
+  inputTypeConfiguration: InputTypeMetadata,
 }
 
 
@@ -75,5 +75,5 @@ export interface InputTypeSpecs {
   componentTagDialogName: string;
 
   /** Additional information about the input type such as Angular Assets */
-  metadata: InputType;
+  metadata: InputTypeMetadata;
 }

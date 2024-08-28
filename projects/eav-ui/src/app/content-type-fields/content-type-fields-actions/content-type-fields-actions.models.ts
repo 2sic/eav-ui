@@ -1,4 +1,4 @@
-import { Field } from '../models/field.model';
+import { Field } from '../../shared/fields/field.model';
 
 export type ContentTypeFieldsActions = 'rename' | 'delete' | 'permissions' | 'metadata' | 'shareOrInherit' | 'image';
 

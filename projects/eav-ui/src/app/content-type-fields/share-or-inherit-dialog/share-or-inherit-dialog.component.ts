@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { Field } from '../models/field.model';
+import { Field } from '../../shared/fields/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeaturesService } from '../../features/features.service';

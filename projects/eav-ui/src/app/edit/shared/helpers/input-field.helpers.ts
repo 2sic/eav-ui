@@ -1,5 +1,5 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict, InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
@@ -27,26 +27,26 @@ export class FieldHelper {
     l.values({ defaultValue });
 
     switch (inputType) {
-      case InputTypeConstants.BooleanDefault:
+      case InputTypeCatalog.BooleanDefault:
         return defaultValue?.toLowerCase() === 'true';
-      case InputTypeConstants.BooleanTristate:
+      case InputTypeCatalog.BooleanTristate:
         return defaultValue != null && defaultValue !== ''
           ? defaultValue.toLowerCase() === 'true'
           : null;
-      case InputTypeConstants.DateTimeDefault:
+      case InputTypeCatalog.DateTimeDefault:
         return defaultValue != null && defaultValue !== ''
           ? new Date(defaultValue).toJSON()
           : null;
-      case InputTypeConstants.NumberDefault:
-      case InputTypeConstants.NumberDropdown:
-      case InputTypeConstants.NumberPicker:
+      case InputTypeCatalog.NumberDefault:
+      case InputTypeCatalog.NumberDropdown:
+      case InputTypeCatalog.NumberPicker:
         return defaultValue != null && defaultValue !== ''
           ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;
-      case InputTypeConstants.EntityDefault:
-      case InputTypeConstants.EntityQuery:
-      case InputTypeConstants.EntityContentBlocks:
-      case InputTypeConstants.EntityPicker:
+      case InputTypeCatalog.EntityDefault:
+      case InputTypeCatalog.EntityQuery:
+      case InputTypeCatalog.EntityContentBlocks:
+      case InputTypeCatalog.EntityPicker:
         // Empty - return []
         if (defaultValue == null || defaultValue === '')
           return [];

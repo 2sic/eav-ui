@@ -18,7 +18,7 @@ import { MatDayjsModule, MatDayjsDateAdapter } from '../../../shared/date-adapte
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
 import { ControlStatus } from '../../../shared/models/control-status.model';
@@ -27,7 +27,7 @@ const logThis = false;
 const nameOfThis = 'DateTimeDefaultComponent';
 
 @Component({
-  selector: InputTypeConstants.DateTimeDefault,
+  selector: InputTypeCatalog.DateTimeDefault,
   templateUrl: './datetime-default.component.html',
   styleUrls: ['./datetime-default.component.scss'],
   standalone: true,

@@ -1,9 +1,9 @@
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 
 export class CustomGpsLogic extends FieldLogicBase {
-  name = InputTypeConstants.CustomGps;
+  name = InputTypeCatalog.CustomGps;
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };

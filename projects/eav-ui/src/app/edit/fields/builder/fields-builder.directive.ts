@@ -1,13 +1,13 @@
 import { Directive, OnDestroy, OnInit, Type, ViewContainerRef, effect, inject, signal, untracked } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { CustomDefaultComponent } from '../basic/custom-default/custom-default.component';
 import { PickerExpandableWrapperComponent } from '../../fields/wrappers/picker-dialog/picker-expandable-wrapper.component';
 import { InputComponents } from '../../fields/input-components.constant';
 import { InjectorBundle } from './injector-bundle.model';
 import { DynamicControlInfo } from './dynamic-control-info.model';
 import { FieldInjectorService } from './field-injector.service';
-import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { transient } from '../../../core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ServiceBase } from '../../../shared/services/service-base';
@@ -86,10 +86,10 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
       const inputType = fieldProps.constants.inputTypeSpecs.inputType;
 
       // If we encounter a group-start, then create a new container based on the main container
-      if (EmptyFieldHelpers.isGroupStart(inputType))
+      if (InputTypeHelpers.isGroupStart(inputType))
         currentContainer = this.createGroup(this.#thisContainerRef, fieldProps, fieldConfig);
       // If we encounter a group-end, set the main container to be the default one again
-      else if (EmptyFieldHelpers.isGroupEnd(inputType))
+      else if (InputTypeHelpers.isGroupEnd(inputType))
         currentContainer = this.#thisContainerRef;
       // Just create the normal component within the current container
       else
@@ -121,7 +121,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);
 
     const componentType = fieldProps.constants.inputTypeSpecs.isExternal
-      ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
+      ? this.readComponentType(InputTypeCatalog.ExternalWebComponent)
       : this.readComponentType(fieldProps.constants.inputTypeSpecs.inputType);
 
     // create component - ideally with metadata if provided (ATM can specify alternate wrapper)

@@ -4,10 +4,10 @@ import { FieldLogicTools } from '../../logic/field-logic-tools';
 import { EavEntity } from '../../../shared/models/eav';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 import { FieldSettings, RelationshipParentChild, UiPickerModeTree, UiPickerSourceEntity, UiPickerSourceEntityAndQuery, UiPickerSourceQuery } from '../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 
 export class EntityPickerLogic extends FieldLogicBase {
-  name = InputTypeConstants.EntityPicker;
+  name = InputTypeCatalog.EntityPicker;
 
   static maybeOverrideEditRestrictions(fs: FieldSettings, tools: FieldLogicTools): FieldSettings {
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {

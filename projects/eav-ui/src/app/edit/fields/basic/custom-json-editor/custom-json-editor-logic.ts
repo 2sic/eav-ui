@@ -1,9 +1,9 @@
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 
 export class CustomJsonEditorLogic extends FieldLogicBase {
-  name = InputTypeConstants.CustomJsonEditor as string;
+  name = InputTypeCatalog.CustomJsonEditor as string;
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
@@ -21,7 +21,7 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
 FieldLogicBase.add(CustomJsonEditorLogic);
 
 export class StringJsonLogic extends CustomJsonEditorLogic {
-  name = InputTypeConstants.StringJson;
+  name = InputTypeCatalog.StringJson;
 }
 
 FieldLogicBase.add(StringJsonLogic);

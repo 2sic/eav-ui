@@ -1,6 +1,6 @@
 import { EavEntity, EavEntityAttributes } from '.';
 import { EavContentTypeAttributesDto } from '../json-format-v1';
-import { InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
 
 export class EavContentTypeAttribute {
   InputType: InputTypeStrict;

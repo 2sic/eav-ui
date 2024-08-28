@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { AdamHintComponent } from './adam-hint/adam-hint.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
@@ -35,7 +35,7 @@ export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.fullscreenAdam = this.config.inputTypeSpecs.inputType === InputTypeConstants.HyperlinkLibrary;
+    this.fullscreenAdam = this.config.inputTypeSpecs.inputType === InputTypeCatalog.HyperlinkLibrary;
   }
 
   ngAfterViewInit() {

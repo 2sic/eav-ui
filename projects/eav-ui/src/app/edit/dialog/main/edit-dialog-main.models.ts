@@ -1,6 +1,6 @@
 import { AdamItem, PickerItem } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { Feature } from '../../../features/models/feature.model';
 import { EavContentType, EavEntity, EavItem } from '../../shared/models/eav';
 import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
@@ -30,7 +30,7 @@ export interface EavEditLoadDto extends EavPublishStatus {
   ContentTypes: EavContentTypeDto[];
   Context: DialogContext;
   Features: Feature[];
-  InputTypes: InputType[];
+  InputTypes: InputTypeMetadata[];
   Items: EavEntityBundleDto[];
   Prefetch?: Prefetch;
   Settings: EditSettingsDto;

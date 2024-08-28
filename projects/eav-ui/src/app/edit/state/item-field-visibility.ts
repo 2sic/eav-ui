@@ -1,6 +1,6 @@
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { EmptyFieldHelpers } from '../fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { FieldConstantsOfLanguage } from './fields-configs.model';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 
@@ -71,7 +71,7 @@ export class ItemFieldVisibility {
     try {
       allConstFieldParts.forEach((groupField, index) => {
         // Only work on group-starts
-        if (!EmptyFieldHelpers.isGroupStart(groupField.inputTypeSpecs.inputType))
+        if (!InputTypeHelpers.isGroupStart(groupField.inputTypeSpecs.inputType))
           return;
 
         // Ignore if visible-disabled is already ok
@@ -83,7 +83,7 @@ export class ItemFieldVisibility {
           const innerField = allConstFieldParts[i];
 
           // Stop checking the current group if we found another group start/end
-          if (EmptyFieldHelpers.endsPreviousGroup(innerField.inputTypeSpecs.inputType))
+          if (InputTypeHelpers.endsPreviousGroup(innerField.inputTypeSpecs.inputType))
             return;
 
           if (innerField.settingsInitial.VisibleDisabled == false) {

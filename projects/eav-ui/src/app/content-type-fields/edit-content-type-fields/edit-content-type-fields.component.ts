@@ -8,11 +8,11 @@ import { fieldNameError, fieldNamePattern } from '../../app-administration/const
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { BaseComponent } from '../../shared/components/base.component';
-import { DataTypeConstants } from '../constants/data-type.constants';
-import { InputTypeStrict, InputTypeConstants } from '../constants/input-type.constants';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { InputTypeStrict, InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
-import { Field, FieldInputTypeOption } from '../models/field.model';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { Field, FieldInputTypeOption } from '../../shared/fields/field.model';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -125,8 +125,8 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
           for (let i = 1; i <= 8; i++) {
             this.fields.push({
               Id: 0,
-              Type: DataTypeConstants.String,
-              InputType: InputTypeConstants.StringDefault,
+              Type: DataTypeCatalog.String,
+              InputType: InputTypeCatalog.StringDefault,
               StaticName: '',
               IsTitle: fields.length === 0,
               SortOrder: fields.length + i,
@@ -161,7 +161,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
   }
 
   resetInputType(index: number) {
-    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix as InputTypeStrict;
+    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeCatalog.DefaultSuffix as InputTypeStrict;
     const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
     if (!defaultExists)
       defaultInputType = this.filteredInputTypeOptions[index][0].inputType;

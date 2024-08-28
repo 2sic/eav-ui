@@ -1,9 +1,9 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component, OnDestroy } from '@angular/core';
-import { DataTypeConstants } from '../constants/data-type.constants';
-import { InputTypeConstants } from '../constants/input-type.constants';
-import { Field } from '../models/field.model';
+import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
+import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
+import { Field } from '../../shared/fields/field.model';
 import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 import { BaseComponent } from '../../shared/components/base.component';
 import { MatMenuModule } from '@angular/material/menu';
@@ -44,7 +44,7 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
     this.field = this.params.data;
     const disableEdit = this.field.EditInfo.DisableEdit;
 
-    this.enablePermissions = !disableEdit && (this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink);
+    this.enablePermissions = !disableEdit && (this.field.InputType === InputTypeCatalog.StringWysiwyg || this.field.Type === DataTypeCatalog.Hyperlink);
     this.enableMetadata = !this.field.EditInfo.DisableMetadata;
     this.metadataCount = this.field.Metadata ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length : 0;
 

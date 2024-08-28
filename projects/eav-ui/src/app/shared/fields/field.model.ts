@@ -1,8 +1,8 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
 import { EavType } from '../../edit/shared/models/eav/eav-type';
-import { EditInfo } from '../../shared/models/edit-info';
-import { InputTypeStrict } from '../constants/input-type.constants';
-import { InputType } from './input-type.model';
+import { EditInfo } from '../models/edit-info';
+import { InputTypeStrict } from './input-type-catalog';
+import { InputTypeMetadata } from './input-type-metadata.model';
 
 export interface Field {
   AttributeId: number;
@@ -10,7 +10,7 @@ export interface Field {
   HasFormulas: boolean;
   Id: number;
   InputType: InputTypeStrict;
-  InputTypeConfig: InputType;
+  InputTypeConfig: InputTypeMetadata;
   IsEphemeral: boolean;
   IsTitle: boolean;
   Metadata: FieldMetadata;

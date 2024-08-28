@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { PickerImports } from '../../picker/picker-providers.constant';
 
 const logThis = false;
 const nameOfThis = 'EntityContentBlockComponent';
 
 @Component({
-  selector: InputTypeConstants.EntityContentBlocks,
+  selector: InputTypeCatalog.EntityContentBlocks,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   standalone: true,

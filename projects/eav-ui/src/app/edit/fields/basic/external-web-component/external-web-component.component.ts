@@ -3,7 +3,7 @@ import { CustomGpsLogic } from './custom-gps-logic';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 import { AsyncPipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldState } from '../../field-state';
 import { ConnectorComponent } from '../../connector/connector.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
@@ -14,7 +14,7 @@ const logThis = false;
 const nameOfThis = 'ExternalWebComponentComponent';
 
 @Component({
-  selector: InputTypeConstants.ExternalWebComponent,
+  selector: InputTypeCatalog.ExternalWebComponent,
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
   standalone: true,

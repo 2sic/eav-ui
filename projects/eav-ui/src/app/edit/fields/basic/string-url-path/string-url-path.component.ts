@@ -4,7 +4,7 @@ import { StringUrlPathLogic } from './string-url-path-logic';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMask, UrlHelpers } from '../../../shared/helpers';
@@ -19,7 +19,7 @@ import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 const logThis = false;
 const nameOfThis = 'StringUrlPathComponent';
 @Component({
-  selector: InputTypeConstants.StringUrlPath,
+  selector: InputTypeCatalog.StringUrlPath,
   templateUrl: './string-url-path.component.html',
   styleUrls: ['./string-url-path.component.scss'],
   standalone: true,

@@ -1,4 +1,4 @@
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { FieldLogicBase } from './field-logic-base';
 import { UnknownLogic } from './field-logic-unknown';
@@ -29,6 +29,6 @@ export class FieldLogicManager {
 
   /** Get or use unknown - temporary solution v16.04 to prevent any scenario where there is none */
   getOrUnknown(inputTypeName: string): FieldLogicBase {
-    return this.get(inputTypeName) ?? this.get(InputTypeConstants.Unknown);
+    return this.get(inputTypeName) ?? this.get(InputTypeCatalog.Unknown);
   }
 }

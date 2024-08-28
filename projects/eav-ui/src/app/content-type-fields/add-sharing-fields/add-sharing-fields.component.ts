@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { Field } from '../models/field.model';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { Field } from '../../shared/fields/field.model';
+import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';

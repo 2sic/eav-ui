@@ -12,7 +12,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
@@ -28,7 +28,7 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
 @Component({
-  selector: InputTypeConstants.HyperlinkDefault,
+  selector: InputTypeCatalog.HyperlinkDefault,
   templateUrl: './hyperlink-default.component.html',
   styleUrls: ['./hyperlink-default.component.scss'],
   standalone: true,

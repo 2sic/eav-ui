@@ -9,7 +9,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMask } from '../../../shared/helpers';
@@ -23,7 +23,7 @@ import { CreateFileDialogComponent } from '../../../../create-file-dialog/create
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
 
 @Component({
-  selector: InputTypeConstants.StringTemplatePicker,
+  selector: InputTypeCatalog.StringTemplatePicker,
   templateUrl: './string-template-picker.component.html',
   styleUrls: ['./string-template-picker.component.scss'],
   standalone: true,

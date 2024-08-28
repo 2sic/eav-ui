@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { EavContentTypeAttribute } from '../models/eav';
 import { AttributeInputType } from '../../../../../../edit-types/src/InputTypeName';
-import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { InputTypeSpecs } from '../../state/fields-configs.model';
 import { SignalStoreBase } from './signal-store-base';
 
@@ -10,13 +10,13 @@ const logThis = false;
 const nameOfThis = 'InputTypeService';
 
 @Injectable({ providedIn: 'root' })
-export class InputTypeService extends SignalStoreBase<string, InputType> {
+export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata> {
 
   constructor() {
     super({ nameOfThis, logThis });
   }
 
-  override getId = (item: InputType) => item.Type;
+  override getId = (item: InputTypeMetadata) => item.Type;
 
   /**
    * Get Name specs with a nice name and a longer name
@@ -37,7 +37,7 @@ export class InputTypeService extends SignalStoreBase<string, InputType> {
     return this.getSpecsInternal(attribute, this.getAll());
   }
 
-  private getSpecsInternal(attribute: EavContentTypeAttribute, inputTypes: InputType[]): InputTypeSpecs {
+  private getSpecsInternal(attribute: EavContentTypeAttribute, inputTypes: InputTypeMetadata[]): InputTypeSpecs {
     const inputTypeMetadata = inputTypes.find(i => i.Type === attribute.InputType);
     const inputType = attribute.InputType as InputTypeStrict;
     const calculated: InputTypeSpecs = {

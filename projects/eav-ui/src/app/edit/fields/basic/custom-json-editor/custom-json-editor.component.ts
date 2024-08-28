@@ -4,7 +4,7 @@ import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-log
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
@@ -17,7 +17,7 @@ import { FormConfigService } from '../../../state/form-config.service';
 import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
-  selector: InputTypeConstants.CustomJsonEditor,
+  selector: InputTypeCatalog.CustomJsonEditor,
   templateUrl: './custom-json-editor.component.html',
   styleUrls: ['./custom-json-editor.component.scss'],
   standalone: true,

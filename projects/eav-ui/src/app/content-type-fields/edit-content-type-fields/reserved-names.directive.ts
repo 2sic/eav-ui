@@ -1,6 +1,6 @@
 import { Directive, Input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
-import { Field } from '../models/field.model';
+import { Field } from '../../shared/fields/field.model';
 
 @Directive({
     selector: '[appReservedNames]',

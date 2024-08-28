@@ -1,6 +1,6 @@
 import { FieldValue } from "projects/edit-types";
-import { DataTypeConstants } from "../../../content-type-fields/constants/data-type.constants";
-import { InputTypeConstants, InputTypeStrict } from "../../../content-type-fields/constants/input-type.constants";
+import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
+import { InputTypeCatalog, InputTypeStrict } from "../../../shared/fields/input-type-catalog";
 import { FormulaTarget, FormulaTargets } from "../models/formula.models";
 import { FormulaResultRaw } from "../models/formula-results.models";
 
@@ -58,7 +58,7 @@ export class FormulaValueCorrections {
     if (value == null)
       return value;
     
-    if (inputTypeName === InputTypeConstants.DateTimeDefault) {
+    if (inputTypeName === InputTypeCatalog.DateTimeDefault) {
       const date = new Date(value as string | number | Date);
 
       // if value is not ISO string, nor milliseconds, correct timezone
@@ -70,8 +70,8 @@ export class FormulaValueCorrections {
       return date.toJSON();
     }
     
-    if (typeof (value) !== 'string' && (inputTypeName?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
-      || inputTypeName?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
+    if (typeof (value) !== 'string' && (inputTypeName?.startsWith(DataTypeCatalog.String.toLocaleLowerCase())
+      || inputTypeName?.startsWith(DataTypeCatalog.Hyperlink.toLocaleLowerCase()))) {
       return value.toString();
     }
     return value;

@@ -15,7 +15,7 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself, FormulaRunParameters } from './helpers/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
-import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../fields/picker/models/picker-item.model';

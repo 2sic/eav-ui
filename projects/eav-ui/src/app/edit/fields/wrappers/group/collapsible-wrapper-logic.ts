@@ -1,9 +1,9 @@
 import { FieldSettings } from '../../../../../../../edit-types';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 
 export class EmptyDefaultLogic extends FieldLogicBase {
-  name = InputTypeConstants.EmptyDefault;
+  name = InputTypeCatalog.EmptyDefault;
 
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };

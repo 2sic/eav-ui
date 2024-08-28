@@ -3,9 +3,9 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { filter, map, Observable, take } from 'rxjs';
-import { EmptyFieldHelpers } from '../../fields/basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { InputTypeConstants, InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
 import { ValidationHelpers } from '../../shared/validation/validation.helpers';
@@ -75,7 +75,7 @@ export class FormFieldsBuilderService extends ServiceBase {
       // 1. create missing controls - usually just on first cycle
       const fieldsToCreate = allFields.filter(({ inputType, hasControl }) =>
         // Empty type, skip
-        !EmptyFieldHelpers.isEmpty(inputType)
+        !InputTypeHelpers.isEmpty(inputType)
 
         // If control already exists, skip
         && !hasControl
@@ -92,8 +92,8 @@ export class FormFieldsBuilderService extends ServiceBase {
         // Special treatment for wysiwyg fields
         // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
         // ...except for directly below
-        if (inputType === InputTypeConstants.StringWysiwyg && initialValue) {
-          const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
+        if (inputType === InputTypeCatalog.StringWysiwyg && initialValue) {
+          const logic = FieldLogicManager.singleton().get(InputTypeCatalog.StringWysiwyg);
           const adamItems = this.adamCacheService.getAdamSnapshot(entityGuid, fieldName);
           fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
         }

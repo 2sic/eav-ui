@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { EntityDefaultLogic } from '../entity-default/entity-default-logic';
 import { DataAdapterString } from '../../picker/adapters/data-adapter-string';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
@@ -13,7 +13,7 @@ const logThis = false;
 const nameOfThis = 'StringDropdownComponent';
 
 @Component({
-  selector: InputTypeConstants.StringDropdown,
+  selector: InputTypeCatalog.StringDropdown,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   standalone: true,

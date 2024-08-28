@@ -1,6 +1,6 @@
-import { InputTypeStrict } from '../constants/input-type.constants';
+import { InputTypeStrict } from './input-type-catalog';
 
-export interface InputType {
+export interface InputTypeMetadata {
   AngularAssets?: string;
   Assets?: string;
   Description: string;

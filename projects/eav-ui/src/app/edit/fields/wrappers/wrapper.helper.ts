@@ -1,7 +1,7 @@
 import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { InputTypeSpecs } from '../../state/fields-configs.model';
-import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { Wrapper, WrappersCatalog } from './wrappers.constants';
 
 const logThis = false;
@@ -11,11 +11,11 @@ export class WrapperHelper {
   static getWrappers(settings: FieldSettings, inputTypeSpecs: InputTypeSpecs): Wrapper[] {
     const inputType = inputTypeSpecs.inputType;
 
-    if (EmptyFieldHelpers.isMessage(inputType))
+    if (InputTypeHelpers.isMessage(inputType))
       return [];
 
     // empty input type wrappers
-    if (EmptyFieldHelpers.isGroupStart(inputType))
+    if (InputTypeHelpers.isGroupStart(inputType))
       return [WrappersCatalog.CollapsibleWrapper];
 
     // default wrappers
@@ -23,13 +23,13 @@ export class WrapperHelper {
 
     // entity-default/string-dropdown wrappers
     const inputsEntityOrStringDropdown: string[] = [
-      InputTypeConstants.EntityDefault,
-      InputTypeConstants.StringDropdownQuery,
-      InputTypeConstants.EntityQuery,
-      InputTypeConstants.EntityContentBlocks,
-      InputTypeConstants.StringDropdown,
-      InputTypeConstants.EntityPicker,
-      InputTypeConstants.StringPicker,
+      InputTypeCatalog.EntityDefault,
+      InputTypeCatalog.StringDropdownQuery,
+      InputTypeCatalog.EntityQuery,
+      InputTypeCatalog.EntityContentBlocks,
+      InputTypeCatalog.StringDropdown,
+      InputTypeCatalog.EntityPicker,
+      InputTypeCatalog.StringPicker,
       // || (inputType === InputTypeConstants.WIPNumberPicker);
     ];
     const isEntityOrStringDropdownType = inputsEntityOrStringDropdown.includes(inputType);
@@ -37,7 +37,7 @@ export class WrapperHelper {
     if (isEntityOrStringDropdownType) {
       wrappers.push(WrappersCatalog.LocalizationWrapper);
       const allowMultiValue = settings.AllowMultiValue ?? false;
-      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks)
+      if (allowMultiValue || inputType === InputTypeCatalog.EntityContentBlocks)
         wrappers.push(WrappersCatalog.PickerExpandableWrapper);
     }
 

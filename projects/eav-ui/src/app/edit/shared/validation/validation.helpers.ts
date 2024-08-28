@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeConstants, InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { ItemFieldVisibility } from '../../state/item-field-visibility';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
@@ -24,7 +24,7 @@ export class ValidationHelpers {
   static getValidators(fieldName: string, inputType: InputTypeStrict, fieldsSettingsService: FieldsSettingsService): ValidatorFn[] {
     // TODO: merge all validators in a single function? Should be faster
     const validators: ValidatorFn[] = [
-      inputType !== InputTypeConstants.HyperlinkLibrary
+      inputType !== InputTypeCatalog.HyperlinkLibrary
         ? this.required(fieldName, fieldsSettingsService)
         : this.requiredAdam(fieldName, fieldsSettingsService),
       this.pattern(fieldName, fieldsSettingsService),
@@ -35,7 +35,7 @@ export class ValidationHelpers {
       this.maxNoItems(fieldName, fieldsSettingsService),
       this.formulaValidate(fieldName, fieldsSettingsService),
     ];
-    if (inputType === InputTypeConstants.CustomJsonEditor) {
+    if (inputType === InputTypeCatalog.CustomJsonEditor) {
       validators.push(this.validJson(fieldName, fieldsSettingsService));
     }
     return validators;

@@ -10,7 +10,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
@@ -20,7 +20,7 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 
 @Component({
-  selector: InputTypeConstants.NumberDropdown,
+  selector: InputTypeCatalog.NumberDropdown,
   templateUrl: './number-dropdown.component.html',
   styleUrls: ['./number-dropdown.component.scss'],
   standalone: true,

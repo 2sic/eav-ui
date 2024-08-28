@@ -1,13 +1,13 @@
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 
 export class EntityContentBlocksLogic extends FieldLogicBase {
-  name = InputTypeConstants.EntityContentBlocks;
+  name = InputTypeCatalog.EntityContentBlocks;
 
   update(specs: FieldLogicUpdate<string[]>): FieldSettings {
-    const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityDefault);
+    const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
     const fixedSettings = entityDefaultLogic.update(specs);
     fixedSettings.EnableRemove = true;
     fixedSettings.AllowMultiValue = true;

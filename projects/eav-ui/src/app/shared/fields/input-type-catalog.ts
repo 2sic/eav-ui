@@ -1,4 +1,4 @@
-export const InputTypeConstants = {
+export const InputTypeCatalog = {
   BooleanDefault: 'boolean-default',
   BooleanTristate: 'boolean-tristate',
   CustomDefault: 'custom-default',
@@ -35,4 +35,4 @@ export const InputTypeConstants = {
   Unknown: 'unknown',
 } as const;
 
-export type InputTypeStrict = typeof InputTypeConstants[keyof typeof InputTypeConstants];
+export type InputTypeStrict = typeof InputTypeCatalog[keyof typeof InputTypeCatalog];

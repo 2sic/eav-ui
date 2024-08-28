@@ -1,4 +1,4 @@
-export const DataTypeConstants = {
+export const DataTypeCatalog = {
   Boolean: 'Boolean',
   Custom: 'Custom',
   DateTime: 'DateTime',
@@ -9,4 +9,4 @@ export const DataTypeConstants = {
   String: 'String',
 } as const;
 
-export type DataTypeConstant = typeof DataTypeConstants[keyof typeof DataTypeConstants];
+export type DataTypeStrict = typeof DataTypeCatalog[keyof typeof DataTypeCatalog];

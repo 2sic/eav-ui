@@ -1,9 +1,9 @@
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { FieldLogicBase, FieldLogicUpdate } from './field-logic-base';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 export class UnknownLogic extends FieldLogicBase {
-  name = InputTypeConstants.Unknown;
+  name = InputTypeCatalog.Unknown;
 
   canAutoTranslate = false;
 

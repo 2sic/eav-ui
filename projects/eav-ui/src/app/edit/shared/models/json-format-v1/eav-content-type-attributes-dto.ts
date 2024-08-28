@@ -1,5 +1,5 @@
 import { EavEntityDto } from '.';
-import { InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
 
 /**
  * A JSON representation of an EavContentType.

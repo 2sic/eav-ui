@@ -1,11 +1,11 @@
 import { FieldLogicUpdate, FieldLogicBase } from '../../logic/field-logic-base';
 import { StringDropdownLogic } from '../string-dropdown/string-dropdown-logic';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 
 
 export class NumberDropdownLogic extends StringDropdownLogic {
-  name = InputTypeConstants.NumberDropdown;
+  name = InputTypeCatalog.NumberDropdown;
   type = 'number' as 'number';
 
   update(specs: FieldLogicUpdate<string>): FieldSettings {

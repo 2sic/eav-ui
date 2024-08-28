@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, Injector, OnInit } from '@angular/
 import { map } from 'rxjs';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
@@ -11,7 +11,7 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 
 @Component({
-  selector: InputTypeConstants.HyperlinkLibrary,
+  selector: InputTypeCatalog.HyperlinkLibrary,
   template: '', // note: no template - it will just show the adam component in the popup
   styleUrls: [],
   standalone: true,

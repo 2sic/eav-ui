@@ -1,10 +1,10 @@
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { calculateDropdownOptions } from '../string-picker/string-picker.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { InputTypeConstants, InputTypeStrict } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog, InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
 
 export class StringDropdownLogic extends FieldLogicBase {
-  name: InputTypeStrict = InputTypeConstants.StringDropdown;
+  name: InputTypeStrict = InputTypeCatalog.StringDropdown;
   type: 'string' | 'number' = 'string';
 
   update({ settings, value }: FieldLogicUpdate<string>): FieldSettings {

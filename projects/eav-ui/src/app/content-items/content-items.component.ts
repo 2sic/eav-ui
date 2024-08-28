@@ -9,8 +9,8 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
-import { DataTypeConstants } from '../content-type-fields/constants/data-type.constants';
-import { Field } from '../content-type-fields/models/field.model';
+import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
+import { Field } from '../shared/fields/field.model';
 import { GoToMetadata } from '../metadata';
 import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
@@ -355,22 +355,22 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
         sortable: true,
       };
       switch (column.Type) {
-        case DataTypeConstants.Entity:
+        case DataTypeCatalog.Entity:
           colDef.allowMultiValue = column.Metadata?.Entity?.AllowMultiValue ?? true;
           colDef.cellRenderer = ContentItemsEntityComponent;
           colDef.valueGetter = this.valueGetterEntityField;
           colDef.filter = EntityFilterComponent;
           break;
-        case DataTypeConstants.DateTime:
+        case DataTypeCatalog.DateTime:
           colDef.useTimePicker = column.Metadata?.DateTime?.UseTimePicker ?? false;
           colDef.valueGetter = this.valueGetterDateTime;
           colDef.filter = 'agTextColumnFilter';
           break;
-        case DataTypeConstants.Boolean:
+        case DataTypeCatalog.Boolean:
           colDef.valueGetter = this.valueGetterBoolean;
           colDef.filter = BooleanFilterComponent;
           break;
-        case DataTypeConstants.Number:
+        case DataTypeCatalog.Number:
           colDef.filter = 'agNumberColumnFilter';
           break;
         default:

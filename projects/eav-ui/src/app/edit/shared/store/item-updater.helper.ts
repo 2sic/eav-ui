@@ -7,7 +7,7 @@ import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FormLanguage, Language } from '../../state/form-languages.model';
 import { BestValueModes } from '../../localization/localization.constants';
 import { FieldHelper } from '../helpers';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { ControlHelpers } from '../helpers/control.helpers';
@@ -118,7 +118,7 @@ export class ItemUpdateHelper {
   setDefaultValue(
     item: EavItem,
     ctAttribute: EavContentTypeAttribute,
-    inputType: InputType,
+    inputType: InputTypeMetadata,
     settings: FieldSettings,
     languages: Language[],
     defaultLanguage: string,

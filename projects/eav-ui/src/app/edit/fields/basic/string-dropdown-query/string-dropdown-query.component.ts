@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { EntityQueryComponent } from '../entity-query/entity-query.component';
 import { StateAdapterString } from '../../picker/adapters/state-adapter-string';
 import { PickerImports } from '../../picker/picker-providers.constant';
@@ -10,7 +10,7 @@ const logThis = false;
 const nameOfThis = 'StringDropdownQueryComponent';
 
 @Component({
-  selector: InputTypeConstants.StringDropdownQuery,
+  selector: InputTypeCatalog.StringDropdownQuery,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   standalone: true,

@@ -1,4 +1,4 @@
-import { InputTypeStrict } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
+import { InputTypeStrict } from '../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { FieldSettings } from './FieldSettings';
 
 export interface FieldConfig {

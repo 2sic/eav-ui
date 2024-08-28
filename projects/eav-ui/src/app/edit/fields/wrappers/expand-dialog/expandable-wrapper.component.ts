@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { ContentExpandAnimation } from './content-expand.animation';
 import { PreviewHeight } from './expandable-wrapper.models';
@@ -81,7 +81,7 @@ export class ExpandableWrapperComponent {
       maxHeight: '50vh',
     };
 
-    if (this.config.inputTypeSpecs.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
+    if (this.config.inputTypeSpecs.inputType !== InputTypeCatalog.StringWysiwyg && settings.Dialog !== 'inline')
       return previewHeight;
 
     let rows = parseInt(settings.InlineInitialHeight, 10);

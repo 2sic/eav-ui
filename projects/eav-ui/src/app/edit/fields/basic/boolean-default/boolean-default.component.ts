@@ -10,11 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { ControlStatus } from '../../../shared/models/control-status.model';
 
 @Component({
-  selector: InputTypeConstants.BooleanDefault,
+  selector: InputTypeCatalog.BooleanDefault,
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.scss'],
   standalone: true,

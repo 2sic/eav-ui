@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EntityQueryLogic } from './entity-query-logic';
-import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
 import { PickerImports } from '../../picker/picker-providers.constant';
@@ -13,7 +13,7 @@ const logThis = false;
 const nameOfThis = 'EntityQueryComponent';
 
 @Component({
-  selector: InputTypeConstants.EntityQuery,
+  selector: InputTypeCatalog.EntityQuery,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
   standalone: true,

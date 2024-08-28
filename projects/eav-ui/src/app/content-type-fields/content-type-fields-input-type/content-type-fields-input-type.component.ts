@@ -1,7 +1,7 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { Field } from '../models/field.model';
+import { Field } from '../../shared/fields/field.model';
 import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type.models';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
