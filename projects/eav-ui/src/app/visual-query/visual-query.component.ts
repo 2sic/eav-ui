@@ -22,8 +22,7 @@ import { NgClass } from '@angular/common';
     PlumbEditorComponent,
   ],
   providers: [
-    // Shared State for the entire Visual Query, - init run here
-    VisualQueryStateService,
+    VisualQueryStateService,  // Shared State for the entire Visual Query, - init run here
   ],
 })
 export class VisualQueryComponent implements OnInit {

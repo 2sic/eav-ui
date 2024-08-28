@@ -23,6 +23,10 @@ const nameOfThis = 'FieldsTranslateService';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
 
+/**
+ * Fields-Translation service.
+ * TODO: should probably split into two, to move Auto-Translate SoC
+ */
 @Injectable()
 export class FieldsTranslateService {
   private entityGuid: string;

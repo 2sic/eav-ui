@@ -5,7 +5,6 @@ import { Context } from '../../../shared/services/context';
 import { EditInitializerService } from '../../state/edit-initializer.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
-import { AdamService } from '../../shared/services/adam.service';
 import { LoggingService } from '../../shared/services/logging.service';
 
 /**
@@ -26,14 +25,12 @@ import { LoggingService } from '../../shared/services/logging.service';
   providers: [
     // must be by Providers
     LoggingService,
-    EditInitializerService,
-    // FormDataService, // check if this are in used
 
-    // 2dm activating...
-    Context,              // Form context, such as what app etc. - the same for the entire form
-    FormConfigService,    // form configuration valid for this entire form; will be initialized by the EditInitializerService
-
-    ScriptsLoaderService, // for loading external scripts - must be shared as it keeps track of what's been loaded
+    // Shared Services across the edit form
+    EditInitializerService,   // for loading the data and having it ready downstream
+    Context,                  // Form context, such as what app etc. - the same for the entire form
+    FormConfigService,        // form configuration valid for this entire form; will be initialized by the EditInitializerService
+    ScriptsLoaderService,     // Loader for external scripts. Shared as it keeps track of what's been loaded. Maybe should be providedIn: 'root'?
   ],
 })
 export class EditEntryComponent implements OnInit {

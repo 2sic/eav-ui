@@ -3,6 +3,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+/**
+ * Logging service - ATM not really used, but would be great
+ * to show logs in the debug-panel.
+ * So don't delete - reconsider how to use.
+ */
 @Injectable()
 export class LoggingService implements OnDestroy {
   private logs$ = new BehaviorSubject<LogEntry[]>([]);

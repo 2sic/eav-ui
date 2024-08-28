@@ -40,11 +40,6 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
     this.dialogData = navigation?.extras?.state || {};
   }
 
-  // 2dm experimental - may improve readability where this is used
-  // static routeFor(dialog: DialogConfig, data?: Data): Partial<Route> {
-  //   return { component: DialogEntryComponent, data: { ...data, dialog: dialog } };
-  // }
-
   ngOnInit() {
     const l = this.log.fn('ngOnInit');
     const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
