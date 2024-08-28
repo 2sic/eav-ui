@@ -1,9 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnDestroy, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, map, Observable, startWith } from 'rxjs';
 import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
@@ -21,7 +19,6 @@ import { BaseComponent } from '../../../../../shared/components/base.component';
 import { FeaturesService } from '../../../../../features/features.service';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { EavLogger } from '../../../../../shared/logging/eav-logger';
-import { mapUntilChanged } from '../../../../../shared/rxJs/mapUntilChanged';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
 import { FieldsSettingsService } from '../../../../state/fields-settings.service';
@@ -71,9 +68,6 @@ const nameOfThis = 'AdamBrowserComponent';
     ClickStopPropagationDirective,
     TippyDirective,
   ],
-  // providers: [
-  //   FeatureDetailService TODO:: is this in use???
-  // ]
 })
 export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
   @Output() openUpload = new EventEmitter<null>();
@@ -82,20 +76,24 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   protected config = this.fieldState.config;
   protected group = this.fieldState.group;
+  private control = this.fieldState.control;
 
-  viewModel$: Observable<AdamBrowserViewModel>;
+  disabled = computed(() => this.fieldState.controlStatus().disabled);
 
-  // TODO: SWITCHING this to Signals is problematic for now
-  // because of zone.Run below - causes the browser to completely freeze,
-  // probably some kind of infinite loop
+  value = computed(() => this.fieldState.controlStatus().value);
+  
   public adamConfig = signal<AdamConfig>(null, SignalHelpers.objectEquals); // here the change detection is critical
   items = signal<AdamItem[]>([]);
 
   // temp public
   public items$ = toObservable(this.items);
-  private control: AbstractControl;
-  private url: string;
+  #url: string;
   private firstFetch = true;
+
+  allowAddButtons = computed(() => {
+    const cnf = this.adamConfig();
+    return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
+  });
 
   public features: FeaturesService = inject(FeaturesService);
   public isPasteImageFromClipboardEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
@@ -116,53 +114,28 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   ) {
     super(new EavLogger(nameOfThis, logThis));
 
+    // Ensure that we fetch items when we have the configuration
     effect(() => {
       const adamConfig = this.adamConfig();
       if (adamConfig == null) return;
       this.fetchItems();
     });
+
+    const cnf = this.config;
+    this.#url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${cnf.contentTypeNameId}/${cnf.entityGuid}/${cnf.fieldName}`);
   }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.fieldName];
-
     // Update data if a child-form closes
     this.subscriptions.add(
       this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
     );
 
-    const contentType = this.config.contentTypeNameId;
-    const entityGuid = this.config.entityGuid;
-    const field = this.config.fieldName;
-    this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
-
     // Attach this browser to the AdamConnector
     (this.config.adam as AdamConnector).setBrowser(this);
-
-    const value$ = this.control.valueChanges.pipe(
-      startWith(this.control.value),
-      mapUntilChanged(m => m),
-    );
-
-    const disabled$ = this.control.valueChanges.pipe(
-      map(() => this.control.disabled),
-      startWith(this.control.disabled),
-      mapUntilChanged(m => m),
-    );
-
-    this.viewModel$ = combineLatest([value$, disabled$]).pipe(
-      map(([value, disabled]) => {
-        const viewModel: AdamBrowserViewModel = {
-          value,
-          disabled,
-        };
-        return viewModel;
-      }),
-    );
   }
 
   ngOnDestroy() {
-    // this.adamConfig$.complete();
     super.ngOnDestroy();
   }
 
@@ -172,7 +145,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (!folderName) return;
 
-    this.adamService.addFolder(folderName, this.url, this.adamConfig())
+    this.adamService.addFolder(folderName, this.#url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -182,7 +155,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (!ok) return;
 
-    this.adamService.deleteItem(item, this.url, this.adamConfig())
+    this.adamService.deleteItem(item, this.#url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -257,7 +230,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
     if (!newName) return;
 
-    this.adamService.rename(item, newName, this.url, this.adamConfig())
+    this.adamService.rename(item, newName, this.#url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -286,7 +259,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       }
     }
 
-    this.adamService.getAll(this.url, adamConfig)
+    this.adamService.getAll(this.#url, adamConfig)
       .subscribe(items => this.processFetchedItems(items, adamConfig));
   }
 
@@ -373,6 +346,4 @@ function getExtensionsFilter(fileFilter: string) {
 }
 
 export interface AdamBrowserViewModel {
-  value: string;
-  disabled: boolean;
 }
