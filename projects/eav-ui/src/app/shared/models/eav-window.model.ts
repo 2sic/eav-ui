@@ -2,7 +2,8 @@ import type { SxcGlobal } from '@2sic.com/2sxc-typings';
 import type { TinyMCE } from 'tinymce';
 import { FieldLogicManager } from '../../edit/fields/logic/field-logic-manager';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
-import { RequirejsType } from './requirejs.models';
+
+export type RequirejsType = any;
 
 interface EavWindowProps {
   contextId: number;

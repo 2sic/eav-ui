@@ -7,7 +7,6 @@ import { webApiTypeRoot } from '../../app-administration/services/content-types.
 import { Context } from '../../shared/services/context';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { InputType } from '../models/input-type.model';
-import { ReservedNames } from '../models/reserved-names.model';
 import { InputTypeStrict } from '../constants/input-type.constants';
 
 export const webApiFieldsRoot = 'admin/field/';
@@ -53,7 +52,7 @@ export class ContentTypesFieldsService {
   }
 
   getReservedNames() {
-    return this.http.get<ReservedNames>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
+    return this.http.get<Record<string, string>>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
   }
 
   /** Get all fields for some content type */

@@ -32,7 +32,7 @@ export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp
     this.isTitle = params.value;
     this.field = params.data;
 
-    this.suitableForTitle = !EmptyFieldHelpers.isEmptyInputType(this.field.InputType)
+    this.suitableForTitle = !EmptyFieldHelpers.isEmpty(this.field.InputType)
   }
 
   refresh(params?: any): boolean {

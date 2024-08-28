@@ -2,25 +2,24 @@ import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputTypeSpecs } from '../../state/fields-configs.model';
 import { EmptyFieldHelpers } from '../basic/empty-field-helpers';
-import { WrappersConstant, WrappersConstants } from './wrappers.constants';
+import { Wrapper, WrappersCatalog } from './wrappers.constants';
 
 const logThis = false;
 
 export class WrapperHelper {
 
-  static getWrappers(settings: FieldSettings, calculatedInputType: InputTypeSpecs) {
-    const inputType = calculatedInputType.inputType;
-    const isExternal = calculatedInputType.isExternal;
+  static getWrappers(settings: FieldSettings, inputTypeSpecs: InputTypeSpecs): Wrapper[] {
+    const inputType = inputTypeSpecs.inputType;
 
     if (EmptyFieldHelpers.isMessage(inputType))
       return [];
 
     // empty input type wrappers
     if (EmptyFieldHelpers.isGroupStart(inputType))
-      return [WrappersConstants.CollapsibleWrapper];
+      return [WrappersCatalog.CollapsibleWrapper];
 
     // default wrappers
-    const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
+    const wrappers: Wrapper[] = [WrappersCatalog.HiddenWrapper];
 
     // entity-default/string-dropdown wrappers
     const inputsEntityOrStringDropdown: string[] = [
@@ -36,19 +35,19 @@ export class WrapperHelper {
     const isEntityOrStringDropdownType = inputsEntityOrStringDropdown.includes(inputType);
 
     if (isEntityOrStringDropdownType) {
-      wrappers.push(WrappersConstants.LocalizationWrapper);
+      wrappers.push(WrappersCatalog.LocalizationWrapper);
       const allowMultiValue = settings.AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks)
-        wrappers.push(WrappersConstants.PickerExpandableWrapper);
+        wrappers.push(WrappersCatalog.PickerExpandableWrapper);
     }
 
     // External components should always get these wrappers
-    if (isExternal)
+    if (inputTypeSpecs.isExternal)
       wrappers.push(
-        WrappersConstants.DropzoneWrapper,
-        WrappersConstants.LocalizationWrapper,
-        WrappersConstants.ExpandableWrapper,
-        WrappersConstants.AdamWrapper,
+        WrappersCatalog.DropzoneWrapper,
+        WrappersCatalog.LocalizationWrapper,
+        WrappersCatalog.ExpandableWrapper,
+        WrappersCatalog.AdamWrapper,
       );
 
     return wrappers;

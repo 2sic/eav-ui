@@ -271,7 +271,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       const runParameters: FormulaRunParameters = {
         formula,
         currentValues: formValues,
-        inputTypeName: constFieldPart.inputTypeStrict,
+        inputTypeName: constFieldPart.inputTypeSpecs.inputType,
         settingsInitial: constFieldPart.settingsInitial,
         settingsCurrent: settingsBefore,
         itemHeader
@@ -283,7 +283,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = formulaResult?.promise instanceof Promise;
       if (containsPromise)
-        this.promiseHandler.handleFormulaPromise(formulaResult, formula, constFieldPart.inputTypeStrict);
+        this.promiseHandler.handleFormulaPromise(formulaResult, formula, constFieldPart.inputTypeSpecs.inputType);
 
       // Stop depends on explicit result and the default is different if it has a promise
       formula.stopFormula = formulaResult.stop ?? (containsPromise ? true : formula.stopFormula);

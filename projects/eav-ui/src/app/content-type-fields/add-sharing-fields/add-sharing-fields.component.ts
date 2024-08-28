@@ -8,7 +8,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
-import { ReservedNames } from '../models/reserved-names.model';
 import { NgForm, FormsModule } from '@angular/forms';
 import { FeaturesService } from '../../features/features.service';
 import { FeatureNames } from '../../features/feature-names';
@@ -54,7 +53,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
   selectedFields = new MatTableDataSource<NewNameField>([]);
   fieldNamePattern = fieldNamePattern;
   fieldNameError = fieldNameError;
-  reservedNames: ReservedNames;
+  reservedNames: Record<string, string> = {};
 
   saving$ = new BehaviorSubject(false);
 
@@ -90,16 +89,10 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
       this.shareableFields.data = shareableFields;
     }));
     this.subscriptions.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => {
-      const existingFields: ReservedNames = {};
-      this.dialogData.existingFields.forEach(field => {
-        existingFields[field.StaticName] = 'Field with this name already exists';
-      });
-      this.reservedNames = {
-        ...reservedNames,
-        ...existingFields,
-      };
+      this.reservedNames = ReservedNamesValidatorDirective.assembleReservedNames(reservedNames, this.dialogData.existingFields);
     }));
   }
+
 
   ngOnDestroy() {
     this.saving$.complete();

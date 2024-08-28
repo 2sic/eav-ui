@@ -6,10 +6,10 @@ import { FieldState } from '../../field-state';
 import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersConstants.LocalizationWrapper,
+  selector: WrappersCatalog.LocalizationWrapper,
   templateUrl: './localization-wrapper.component.html',
   styleUrls: ['./localization-wrapper.component.scss'],
   standalone: true,

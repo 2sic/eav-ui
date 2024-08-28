@@ -11,13 +11,13 @@ import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 const logThis = false;
 const nameOfThis = 'CollapsibleWrapperComponent'
 
 @Component({
-  selector: WrappersConstants.CollapsibleWrapper,
+  selector: WrappersCatalog.CollapsibleWrapper,
   templateUrl: './collapsible-wrapper.component.html',
   styleUrls: ['./collapsible-wrapper.component.scss'],
   standalone: true,

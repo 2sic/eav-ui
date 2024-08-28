@@ -81,7 +81,7 @@ export class FieldInjectorService {
     } else {
       // No control found - could be a problem, could be expected
       // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
-      if (!EmptyFieldHelpers.isEmptyField(inputType)) {
+      if (!EmptyFieldHelpers.isEmpty(inputType.inputType)) {
         console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
         // try to have a temporary result, so that in most cases it won't just fail
         controlStatusChangeSignal = signal(emptyControlStatus);

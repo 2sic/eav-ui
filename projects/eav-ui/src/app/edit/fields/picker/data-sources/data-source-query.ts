@@ -33,7 +33,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
    * Behavior changes a bit if the query is meant to supply data for string-inputs
    * ...mainly because the value is allowed to be any field, not just the Guid.
    */
-  private isForStringField = this.fieldState.config.inputTypeStrict?.toString().startsWith('string');
+  private isForStringField = this.fieldState.config.inputTypeSpecs.isString;
 
   /** Get the data from a query - all or only the ones listed in the guids */
   public override getFromBackend(params: string, guids: string[], purposeForLog: string)

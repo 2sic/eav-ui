@@ -30,7 +30,7 @@ export class AdamConfigInstance implements AdamConfig {
 
   static completeConfig(config: Partial<AdamConfig>, fieldConfig: FieldConfigSet, oldConfig?: AdamConfigInstance): AdamConfigInstance {
     // set new values and use old ones where new value is not provided
-    const startDisabled = fieldConfig.isExternal;
+    const startDisabled = fieldConfig.inputTypeSpecs.isExternal;
     oldConfig = oldConfig ?? new AdamConfigInstance(startDisabled);
     const newConfig = new AdamConfigInstance(startDisabled);
 

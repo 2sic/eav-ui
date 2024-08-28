@@ -291,7 +291,7 @@ class FieldTranslationInfo implements Pick<FieldSettings, 'DisableTranslation' |
     // so it's not added (again) to lists of Fields that should not be translated
     if (this.DisableAutoTranslation) return false;
     const fieldsProps = this.getFieldsProps();
-    const logic = FieldLogicManager.singleton().get(fieldsProps[this.name].constants.inputCalc.inputType);
+    const logic = FieldLogicManager.singleton().get(fieldsProps[this.name].constants.inputTypeSpecs.inputType);
     return !logic.canAutoTranslate;
   }
 

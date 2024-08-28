@@ -6,10 +6,10 @@ import { NgClass } from '@angular/common';
 import { AdamBrowserComponent } from './adam-browser/adam-browser.component';
 import { Subscription } from 'rxjs';
 import { FieldState } from '../../field-state';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersConstants.AdamWrapper,
+  selector: WrappersCatalog.AdamWrapper,
   templateUrl: './adam-wrapper.component.html',
   styleUrls: ['./adam-wrapper.component.scss'],
   standalone: true,
@@ -35,16 +35,13 @@ export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.fullscreenAdam = this.config.inputTypeStrict === InputTypeConstants.HyperlinkLibrary;
+    this.fullscreenAdam = this.config.inputTypeSpecs.inputType === InputTypeConstants.HyperlinkLibrary;
   }
 
   ngAfterViewInit() {
     this.subscriptions =
       this.config.adam.getConfig$().subscribe(adamConfig => {
-        const disabled = adamConfig?.disabled ?? true;
-        if (this.adamDisabled() !== disabled) {
-          this.adamDisabled.set(disabled);
-        }
+        this.adamDisabled.set(adamConfig?.disabled ?? true);
       })
   }
 

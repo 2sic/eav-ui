@@ -29,11 +29,11 @@ import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { AdamService } from '../../../shared/services/adam.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
 
 @Component({
-  selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
+  selector: WrappersCatalog.HyperlinkDefaultExpandableWrapper,
   templateUrl: './hyperlink-default-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],

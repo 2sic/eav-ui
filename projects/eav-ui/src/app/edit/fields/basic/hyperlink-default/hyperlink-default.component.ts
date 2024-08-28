@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersConstants } from '../../wrappers/wrappers.constants';
+import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
@@ -51,10 +51,10 @@ import { LinkCacheService } from '../../../shared/store/link-cache.service';
 })
 @FieldMetadata({
   wrappers: [
-    WrappersConstants.DropzoneWrapper,
-    WrappersConstants.LocalizationWrapper,
-    WrappersConstants.HyperlinkDefaultExpandableWrapper,
-    WrappersConstants.AdamWrapper,
+    WrappersCatalog.DropzoneWrapper,
+    WrappersCatalog.LocalizationWrapper,
+    WrappersCatalog.HyperlinkDefaultExpandableWrapper,
+    WrappersCatalog.AdamWrapper,
   ],
 })
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {

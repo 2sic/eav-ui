@@ -55,26 +55,24 @@ export class ContentTypeSettingsHelpers {
 
 export class FieldsSettingsHelpers {
 
-  static setDefaultFieldSettings(settings: FieldSettings): FieldSettings {
-    const defaultSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
+  static getDefaultFieldSettings(settings: FieldSettings): FieldSettings {
+    const defSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
     // update @All settings
-    defaultSettings.Name ??= '';
-    defaultSettings.Placeholder ??= '';
-    defaultSettings.Notes ??= '';
-    // defaultSettings.VisibleInEditUI ??= true;
-    defaultSettings.Required ??= false;
-    defaultSettings.Disabled ??= false;
-    defaultSettings.DisableTranslation ??= false;
-    defaultSettings.Visible ??= true; // defaultSettings.VisibleInEditUI;
-    // delete defaultSettings.VisibleInEditUI;
-    if (defaultSettings.DefaultCollapsed != null) {
-      defaultSettings.Collapsed = defaultSettings.DefaultCollapsed;
-      delete defaultSettings.DefaultCollapsed;
+    defSettings.Name ??= '';
+    defSettings.Placeholder ??= '';
+    defSettings.Notes ??= '';
+    defSettings.Required ??= false;
+    defSettings.Disabled ??= false;
+    defSettings.DisableTranslation ??= false;
+    defSettings.Visible ??= true;
+    if (defSettings.DefaultCollapsed != null) {
+      defSettings.Collapsed = defSettings.DefaultCollapsed;
+      delete defSettings.DefaultCollapsed;
     }
-    defaultSettings.Formulas ??= [];
+    defSettings.Formulas ??= [];
     let logic = FieldLogicManager.singleton().get(settings.InputType);
-    defaultSettings.DisableAutoTranslation ??= !logic?.canAutoTranslate;
-    return defaultSettings;
+    defSettings.DisableAutoTranslation ??= !logic?.canAutoTranslate;
+    return defSettings;
   }
 
   /** Find if DisableTranslation is true in any setting and in any language */
@@ -86,8 +84,8 @@ export class FieldsSettingsHelpers {
     attributeMetadata: EavEntity[],
   ): boolean {
     // disable translation if LanguagesDecorator in ContentType is false in any language
-    const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
+    const langDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
+    if (langDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
       return true;
 
     if (inputType?.DisableI18n)
@@ -97,15 +95,15 @@ export class FieldsSettingsHelpers {
       return true;
 
     // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
-    for (const metadataItem of attributeMetadata ?? []) {
-      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true))
+    for (const mdItem of attributeMetadata ?? []) {
+      if (mdItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true))
         return true;
     }
 
     return false;
   }
 
-  static findIsLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {
+  static isLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {
     const index = contentType.Attributes.indexOf(attribute);
     if (contentType.Attributes[index + 1] == null) return true;
 

@@ -71,7 +71,7 @@ export class ItemFieldVisibility {
     try {
       allConstFieldParts.forEach((groupField, index) => {
         // Only work on group-starts
-        if (!EmptyFieldHelpers.isGroupStart(groupField.inputTypeStrict))
+        if (!EmptyFieldHelpers.isGroupStart(groupField.inputTypeSpecs.inputType))
           return;
 
         // Ignore if visible-disabled is already ok
@@ -83,7 +83,7 @@ export class ItemFieldVisibility {
           const innerField = allConstFieldParts[i];
 
           // Stop checking the current group if we found another group start/end
-          if (EmptyFieldHelpers.endsPreviousGroup(innerField.inputTypeStrict))
+          if (EmptyFieldHelpers.endsPreviousGroup(innerField.inputTypeSpecs.inputType))
             return;
 
           if (innerField.settingsInitial.VisibleDisabled == false) {

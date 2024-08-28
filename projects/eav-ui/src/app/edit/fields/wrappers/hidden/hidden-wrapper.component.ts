@@ -1,9 +1,9 @@
 import { Component, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { FieldState } from '../../field-state';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersConstants.HiddenWrapper,
+  selector: WrappersCatalog.HiddenWrapper,
   templateUrl: './hidden-wrapper.component.html',
   standalone: true,
   imports: [],

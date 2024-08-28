@@ -46,7 +46,7 @@ export class FormFieldsBuilderService extends ServiceBase {
           return {
             fieldName,
             fieldProps,
-            inputType: fieldProps.constants.inputCalc.inputType,
+            inputType: fieldProps.constants.inputTypeSpecs.inputType,
             value: fieldProps.buildValue,
             hasControl,
             control,
@@ -75,7 +75,7 @@ export class FormFieldsBuilderService extends ServiceBase {
       // 1. create missing controls - usually just on first cycle
       const fieldsToCreate = allFields.filter(({ inputType, hasControl }) =>
         // Empty type, skip
-        !EmptyFieldHelpers.isEmptyInputType(inputType)
+        !EmptyFieldHelpers.isEmpty(inputType)
 
         // If control already exists, skip
         && !hasControl

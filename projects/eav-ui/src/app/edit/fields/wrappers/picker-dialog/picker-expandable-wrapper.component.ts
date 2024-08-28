@@ -17,10 +17,10 @@ import { BaseComponent } from '../../../../shared/components/base.component';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersConstants.PickerExpandableWrapper,
+  selector: WrappersCatalog.PickerExpandableWrapper,
   templateUrl: './picker-expandable-wrapper.component.html',
   styleUrls: ['./picker-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],

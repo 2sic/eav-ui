@@ -29,7 +29,7 @@ export class ConnectorComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     const l = this.log.fn('ngAfterViewInit');
-    const componentTag = history?.state?.componentTag || `field-${this.fieldState.config.inputTypeStrict}-dialog`;
+    const componentTag = history?.state?.componentTag || this.fieldState.config.inputTypeSpecs.componentTagDialogName;
     l.a('Connector created for:', { componentTag });
     this.connectorCreator.init(
       componentTag,

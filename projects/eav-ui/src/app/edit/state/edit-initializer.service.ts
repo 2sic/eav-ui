@@ -217,7 +217,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
       for (const ctAttribute of contentType.Attributes) {
         const currentName = ctAttribute.Name;
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        const isEmptyType = EmptyFieldHelpers.isEmptyInputType(inputType?.Type);
+        const isEmptyType = EmptyFieldHelpers.isEmpty(inputType?.Type);
         l.a(`Attribute: '${currentName}' InputType: '${inputType?.Type}' isEmptyType: '${isEmptyType}'`);
 
         if (isEmptyType)
@@ -226,7 +226,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         const logic = FieldLogicManager.singleton().getOrUnknown(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
+        const fieldSettings = FieldsSettingsHelpers.getDefaultFieldSettings(
           new EntityReader(language.primary, language.primary).flattenAll(ctAttribute.Metadata)
         );
 

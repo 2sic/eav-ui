@@ -1,6 +1,6 @@
 import { FieldMetadataModel } from '../field-metadata.decorator';
 
-export const WrappersConstants = {
+export const WrappersCatalog = {
   AdamWrapper: 'app-adam-wrapper', // default
   CollapsibleWrapper: 'app-collapsible-wrapper', // empty specific
   DropzoneWrapper: 'app-dropzone-wrapper', // default
@@ -13,9 +13,9 @@ export const WrappersConstants = {
   LocalizationWrapper: 'app-localization-wrapper', // default
 } as const;
 
-export type WrappersConstant = typeof WrappersConstants[keyof typeof WrappersConstants];
+export type Wrapper = typeof WrappersCatalog[keyof typeof WrappersCatalog];
 
 
 export const WrappersLocalizationOnly: FieldMetadataModel = {
-  wrappers: [WrappersConstants.LocalizationWrapper],
+  wrappers: [WrappersCatalog.LocalizationWrapper],
 };

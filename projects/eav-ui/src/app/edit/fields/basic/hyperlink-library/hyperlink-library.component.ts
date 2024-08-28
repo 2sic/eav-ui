@@ -5,7 +5,7 @@ import { AdamControl } from './hyperlink-library.models';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
-import { WrappersConstants } from '../../wrappers/wrappers.constants';
+import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { AdamConfig } from '../../../../../../../edit-types/src/AdamConfig';
 import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
@@ -18,10 +18,10 @@ import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 })
 @FieldMetadata({
   wrappers: [
-    WrappersConstants.DropzoneWrapper,
-    WrappersConstants.LocalizationWrapper,
-    WrappersConstants.HyperlinkLibraryExpandableWrapper,
-    WrappersConstants.AdamWrapper,
+    WrappersCatalog.DropzoneWrapper,
+    WrappersCatalog.LocalizationWrapper,
+    WrappersCatalog.HyperlinkLibraryExpandableWrapper,
+    WrappersCatalog.AdamWrapper,
   ],
 })
 export class HyperlinkLibraryComponent implements OnInit {

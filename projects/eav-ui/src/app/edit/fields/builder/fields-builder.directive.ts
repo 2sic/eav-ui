@@ -83,7 +83,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
         focused$: new BehaviorSubject(false),
       };
       this.#fieldConfigSets.push(fieldConfig);
-      const inputType = fieldProps.constants.inputCalc.inputType;
+      const inputType = fieldProps.constants.inputTypeSpecs.inputType;
 
       // If we encounter a group-start, then create a new container based on the main container
       if (EmptyFieldHelpers.isGroupStart(inputType))
@@ -104,7 +104,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
-    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
+    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputTypeSpecs);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.buildWrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);
@@ -112,17 +112,17 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
   }
 
   private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
-    this.log.a('createComponent', { calculatedInputType: fieldProps.constants.inputCalc });
+    this.log.a('createComponent', { inputTypeSpecs: fieldProps.constants.inputTypeSpecs });
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
-    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputCalc);
+    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputTypeSpecs);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.buildWrappers)
       wrapperInfo = this.createWrappers(wrapperInfo, fieldProps.buildWrappers);
 
-    const componentType = fieldProps.constants.inputCalc.isExternal
+    const componentType = fieldProps.constants.inputTypeSpecs.isExternal
       ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
-      : this.readComponentType(fieldProps.constants.inputCalc.inputType);
+      : this.readComponentType(fieldProps.constants.inputTypeSpecs.inputType);
 
     // create component - ideally with metadata if provided (ATM can specify alternate wrapper)
     // New 2024-06-11 will not break if metadata not specified
@@ -139,7 +139,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
-      const previewType = this.readComponentType(fieldProps.constants.inputCalc.inputType);
+      const previewType = this.readComponentType(fieldProps.constants.inputTypeSpecs.inputType);
       this.log.a('createComponent - add preview', { previewType });
       this.generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }

@@ -25,23 +25,29 @@ export class InputTypeService extends SignalStoreBase<string, InputType> {
   getAttributeInputTypes(attributes: EavContentTypeAttribute[]): AttributeInputType[] {
     const inputTypes = this.getAll();
     return attributes.map(attribute => {
-      const calculatedInputType = this.calculateInputTypeInt(attribute, inputTypes);
+      const specs = this.getSpecsInternal(attribute, inputTypes);
       return {
         name: attribute.Name,
-        inputType: calculatedInputType.inputType,
+        inputType: specs.inputType,
       } satisfies AttributeInputType;
     });
   }
 
   getSpecs(attribute: EavContentTypeAttribute): InputTypeSpecs {
-    return this.calculateInputTypeInt(attribute, this.getAll());
+    return this.getSpecsInternal(attribute, this.getAll());
   }
 
-  private calculateInputTypeInt(attribute: EavContentTypeAttribute, inputTypes: InputType[]): InputTypeSpecs {
-    const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+  private getSpecsInternal(attribute: EavContentTypeAttribute, inputTypes: InputType[]): InputTypeSpecs {
+    const inputTypeMetadata = inputTypes.find(i => i.Type === attribute.InputType);
+    const inputType = attribute.InputType as InputTypeStrict;
     const calculated: InputTypeSpecs = {
-      inputType: attribute.InputType as InputTypeStrict,
-      isExternal: inputType ? !!inputType.AngularAssets : false,
+      inputType,
+      isExternal: inputTypeMetadata ? !!inputTypeMetadata.AngularAssets : false,
+      isString: inputType.toString().startsWith('string'),
+      isNewPicker: false, // TODO
+      componentTagName: `field-${inputType}`,
+      componentTagDialogName: `field-${inputType}-dialog`,
+      metadata: inputTypeMetadata,
     };
     return calculated;
   }

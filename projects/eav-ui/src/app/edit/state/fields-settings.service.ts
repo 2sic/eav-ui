@@ -61,7 +61,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private fieldsProps = signal<FieldsProps>(null);
   private fieldsProps$ = toObservable(this.fieldsProps);
 
-
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
 
   /** Current items attributes - to be set once available */
@@ -74,6 +73,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
 
+    // Debugging effects
     // const attributes = computed(() => {
     //   const itemGuid = this.#itemGuid();
     //   if (itemGuid == null) {
@@ -90,7 +90,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // this.fieldsProps$?.complete();
     this.forceRefreshSettings$?.complete();
     super.destroy();
   }
@@ -134,7 +133,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
     this.constFieldPartsOfLanguage$ = this.constantsService
-      .init(item, this.entityReader$, this.formConfig.language$, contentType)
+      .init(item, this.entityReader$, contentType)
       .getUnchangingDataOfLanguage$();
 
     // WIP trying to drop this observable, but surprisingly it fails...
@@ -168,6 +167,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
       })
     );
 
+    // temp solution for slotIsEmpty - needed ATM, otherwise formulas don't run when the slot-setting changes
+    const watchHeaderChanges$ = this.itemService.getItemHeader$(entityGuid);
+
     const logUpdateFieldProps = this.log.rxTap('updateFieldProps', { enabled: true });
     this.subscriptions.add(
       combineLatest([
@@ -176,11 +178,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         this.forceRefreshSettings$,
         this.constFieldPartsOfLanguage$,
         prepared$,
-        // temp solution for slotIsEmpty - needed ATM, otherwise formulas don't run when the slot-setting changes
-        this.itemService.getItemHeader$(entityGuid),
+        watchHeaderChanges$,
       ]).pipe(
         logUpdateFieldProps.pipe(),
-        map(([itemAttributes, entityReader, _, constantFieldParts, prepared]) => {
+        map(([itemAttributes, entityReader, _, constantFieldParts, prepared, __]) => {
           // 1. Create list of all current language form values (as is stored in the entity-store) for further processing
           const formValues = entityReader.currentValues(itemAttributes);
 
@@ -190,10 +191,13 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           if (!isFirstRound) {
             const { newFieldProps, hadValueChanges } = this.formulaPromises
               .updateFromQueue(formValues, this.#fieldPropsLatest, constantFieldParts, prepared.updHelperFactory);
+
             // If we only updated values from promise (queue), don't trigger property regular updates
-            // NOTE: if any value changes then the entire cycle will automatically retrigger
             if (newFieldProps)
               this.#fieldPropsLatest = newFieldProps;
+            
+            // If any value changes then the entire cycle will automatically retrigger.
+            // So we exit now as the whole cycle will re-init and repeat.
             if (hadValueChanges)
               return null;
           }
@@ -205,7 +209,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
           for (const [key, value] of Object.entries(fieldsProps))
             value.buildWrappers = isFirstRound
-              ? WrapperHelper.getWrappers(value.settings, value.constants.inputCalc)
+              ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
               : this.#fieldPropsLatest[key]?.buildWrappers;
 
           // 5. Update the latest field properties for further cycles
@@ -275,7 +279,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         return this.formulaEngine.runAllListItemsFormulas(
           attribute.Name,
           formValues,
-          constantFieldPart.inputTypeStrict,
+          constantFieldPart.inputTypeSpecs.inputType,
           constantFieldPart.settingsInitial,
           latestSettings,
           this.#item().Header,
@@ -374,7 +378,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     };
     this.fieldsProps.set(newProps);
 
-    // Experimental: had trouble with the _isDialog / Collapsed properties not being persisted
+    // Also make sure the changes are in the latest field props
+    // because we had trouble with the _isDialog / Collapsed properties not being persisted
     // since the latestFieldProps never had the value originally
     this.#fieldPropsLatest = newProps;
   }

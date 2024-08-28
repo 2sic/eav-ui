@@ -9,13 +9,13 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { FieldState } from '../../field-state';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 const logThis = false;
 const nameOfThis = 'DropzoneWrapperComponent';
 
 @Component({
-  selector: WrappersConstants.DropzoneWrapper,
+  selector: WrappersCatalog.DropzoneWrapper,
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss'],
   standalone: true,
@@ -139,7 +139,7 @@ export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestro
     const field = this.config.fieldName;
     const appId = this.formConfig.config.appId;
 
-    const startDisabled = this.config.isExternal;
+    const startDisabled = this.config.inputTypeSpecs.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 

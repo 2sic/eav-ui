@@ -32,19 +32,19 @@ import { StringFontIconPickerComponent } from './basic/string-font-icon-picker/s
 import { StringPickerComponent } from './basic/string-picker/string-picker.component';
 import { StringTemplatePickerComponent } from './basic/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './basic/string-url-path/string-url-path.component';
-import { WrappersConstants } from './wrappers/wrappers.constants';
+import { WrappersCatalog } from './wrappers/wrappers.constants';
 
 export const InputComponents: Record<string, Type<any>> = {
   // Wrappers
-  [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
-  [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
-  [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
-  [WrappersConstants.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
-  [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
-  [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
-  [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
-  [WrappersConstants.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
-  [WrappersConstants.LocalizationWrapper]: LocalizationWrapperComponent,
+  [WrappersCatalog.AdamWrapper]: AdamWrapperComponent,
+  [WrappersCatalog.CollapsibleWrapper]: CollapsibleWrapperComponent,
+  [WrappersCatalog.DropzoneWrapper]: DropzoneWrapperComponent,
+  [WrappersCatalog.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
+  [WrappersCatalog.ExpandableWrapper]: ExpandableWrapperComponent,
+  [WrappersCatalog.HiddenWrapper]: HiddenWrapperComponent,
+  [WrappersCatalog.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
+  [WrappersCatalog.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
+  [WrappersCatalog.LocalizationWrapper]: LocalizationWrapperComponent,
 
   // Input Types
   [InputTypeConstants.BooleanDefault]: BooleanDefaultComponent,

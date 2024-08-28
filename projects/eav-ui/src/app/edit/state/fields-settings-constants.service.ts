@@ -21,28 +21,24 @@ const nameOfThis = 'FieldsSettingsConstantsService';
 export class FieldsSettingsConstantsService {
   private item: EavItem;
   private itemFieldVisibility: ItemFieldVisibility;
-  private entityReader$: Observable<EntityReader>;
-  private language$: Observable<FormLanguageComplete>;
+  private entityReaderCurrent$: Observable<EntityReader>;
   private contentType: EavContentType;
 
   log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private formConfig: FormConfigService,
-    private inputTypeService: InputTypeService,
-  ) {
-  }
+    private inputTypeSvc: InputTypeService,
+  ) { }
 
   init(
     item: EavItem,
-    entityReader$: Observable<EntityReader>,
-    language$: Observable<FormLanguageComplete>,
+    entityReaderCurrent$: Observable<EntityReader>,
     contentType: EavContentType,
   ): this {
     this.item = item;
     this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
-    this.entityReader$ = entityReader$;
-    this.language$ = language$;
+    this.entityReaderCurrent$ = entityReaderCurrent$;
     this.contentType = contentType;
     return this;
   }
@@ -55,20 +51,15 @@ export class FieldsSettingsConstantsService {
     return this.getConstantFieldPartsOfLanguage$(unchangingPartsAllLanguages);
   }
 
-  private getConstantFieldPartsOfLanguage$(
-    fieldConstants: FieldConstants[],
-  ): Observable<FieldConstantsOfLanguage[]> {
+  private getConstantFieldPartsOfLanguage$(fieldConstants: FieldConstants[]): Observable<FieldConstantsOfLanguage[]> {
     const contentType = this.contentType;
-    const constFieldPartsOfLanguage$ = combineLatest([
-      this.entityReader$,
-      this.language$,
-    ]).pipe(
-      map(([entityReader, language]) => {
-        const l = this.log.fn('constantFieldPartsLanguage(map)', { contentType, entityReader, language });
+    const constFieldPartsOfLanguage$ = this.entityReaderCurrent$.pipe(
+      map((entityReader) => {
+        const l = this.log.fn('constantFieldPartsLanguage(map)', { contentType, entityReader });
 
         const constPartOfLanguage = contentType.Attributes.map((ctAttrib) => {
           // Input Type config in the current language
-          const inputType = this.inputTypeService.get(ctAttrib.InputType);
+          const inputType = this.inputTypeSvc.get(ctAttrib.InputType);
 
           // Construct the constants with settings and everything
           // using the EntityReader with the current language
@@ -77,7 +68,7 @@ export class FieldsSettingsConstantsService {
           // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
           mergeRaw.InputType = ctAttrib.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
-          const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+          const settingsInitial = FieldsSettingsHelpers.getDefaultFieldSettings(mergeRaw);
           const constantFieldParts: FieldConstantsOfLanguage = {
             ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
             settingsInitial,
@@ -109,12 +100,11 @@ export class FieldsSettingsConstantsService {
     const constFieldParts = contentType.Attributes.map((attribute, index) => {
       // metadata in the initial language with all the core settings
       const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
-      const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(metadata);
+      const initialSettings = FieldsSettingsHelpers.getDefaultFieldSettings(metadata);
 
-      const calculatedInputType = this.inputTypeService.getSpecs(attribute);
-      const inputType = this.inputTypeService.get(attribute.InputType);
+      const inputTypeSpecs = this.inputTypeSvc.getSpecs(attribute);
 
-      this.log.a('details', { contentType, language });
+      this.log.a('details', { contentType, language, attribute, initialSettings, inputTypeSpecs });
 
       const logic = FieldLogicManager.singleton().get(attribute.InputType);
 
@@ -127,13 +117,10 @@ export class FieldsSettingsConstantsService {
         contentTypeNameId,
         fieldName: attribute.Name,
         index,
-        angularAssets: inputType?.AngularAssets,
         dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
         initialDisabled: initialSettings.Disabled ?? false,
-        inputCalc: calculatedInputType,
-        inputTypeStrict: calculatedInputType.inputType,
-        isExternal: calculatedInputType.isExternal,
-        isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
+        inputTypeSpecs,
+        isLastInGroup: FieldsSettingsHelpers.isLastInGroup(contentType, attribute),
         type: attribute.Type,
         logic,
       };

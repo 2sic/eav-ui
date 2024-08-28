@@ -23,14 +23,14 @@ import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 import { ControlStatus } from '../../../shared/models/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'ExpandableWrapperComponent';
 
 @Component({
-  selector: WrappersConstants.ExpandableWrapper,
+  selector: WrappersCatalog.ExpandableWrapper,
   templateUrl: './expandable-wrapper.component.html',
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
@@ -81,7 +81,7 @@ export class ExpandableWrapperComponent {
       maxHeight: '50vh',
     };
 
-    if (this.config.inputTypeStrict !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
+    if (this.config.inputTypeSpecs.inputType !== InputTypeConstants.StringWysiwyg && settings.Dialog !== 'inline')
       return previewHeight;
 
     let rows = parseInt(settings.InlineInitialHeight, 10);
@@ -127,7 +127,7 @@ export class ExpandableWrapperComponent {
         this.adamDisabled.set(disabled);
     })
 
-    const componentTagName = `field-${this.config.inputTypeStrict}`;
+    const componentTagName = this.config.inputTypeSpecs.componentTagName;
     l.a('ExpandableWrapper created for:', { componentTagName });
     this.connectorCreator.init(
       componentTagName,

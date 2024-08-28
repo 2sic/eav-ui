@@ -12,7 +12,6 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeStrict, InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { Field, FieldInputTypeOption } from '../models/field.model';
-import { ReservedNames } from '../models/reserved-names.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
@@ -58,7 +57,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
 
   fields: Partial<Field>[] = [];
   existingFields: Field[] = [];
-  reservedNames: ReservedNames;
+  reservedNames: Record<string, string> = {};
   editMode: 'name' | 'inputType';
   dataTypes: DataType[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
@@ -114,15 +113,7 @@ export class EditContentTypeFieldsComponent extends BaseComponent implements OnI
         this.inputTypeOptions = inputTypes;
         this.existingFields = fields;
 
-        const existingFields: ReservedNames = {};
-        fields.forEach(field => {
-          existingFields[field.StaticName] = 'Field with this name already exists';
-        });
-
-        this.reservedNames = {
-          ...reservedNames,
-          ...existingFields,
-        };
+        this.reservedNames = ReservedNamesValidatorDirective.assembleReservedNames(reservedNames, fields);
 
         if (this.editMode != null) {
           const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;

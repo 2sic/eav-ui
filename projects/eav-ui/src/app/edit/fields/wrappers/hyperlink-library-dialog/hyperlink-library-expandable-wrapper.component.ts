@@ -21,10 +21,10 @@ import { FeaturesService } from '../../../../features/features.service';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { WrappersConstants } from '../wrappers.constants';
+import { WrappersCatalog } from '../wrappers.constants';
 
 @Component({
-  selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
+  selector: WrappersCatalog.HyperlinkLibraryExpandableWrapper,
   templateUrl: './hyperlink-library-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],

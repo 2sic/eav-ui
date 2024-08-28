@@ -74,7 +74,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
-        const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
+        const settings = FieldsSettingsHelpers.getDefaultFieldSettings(
           entityReader.flattenAll<FieldSettings>(attribute.Metadata),
         );
         const formulaItems = this.contentTypeItemService.getMany(settings.Formulas).filter(formulaItem => {

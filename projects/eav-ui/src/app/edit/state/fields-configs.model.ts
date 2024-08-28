@@ -24,6 +24,8 @@ export interface FieldProps {
 export interface FieldConstants {
   /** The GUID it belongs to - must always be provided */
   entityGuid: string;
+
+  /** The EntityId is used in field masks (for placeholders and for certain delete operations) */
   entityId: number;
   contentTypeNameId: string;
 
@@ -31,12 +33,9 @@ export interface FieldConstants {
   fieldName: string;
   index: number;
 
-  angularAssets?: string;
   dropzonePreviewsClass?: string;
   initialDisabled?: boolean;
-  inputCalc: InputTypeSpecs;
-  inputTypeStrict: InputTypeStrict;
-  isExternal?: boolean;
+  inputTypeSpecs: InputTypeSpecs;
   isLastInGroup?: boolean;
   type: string;
   logic?: FieldLogicBase,
@@ -63,4 +62,18 @@ export interface TranslationState extends TranslationStateCore {
 export interface InputTypeSpecs {
   inputType: InputTypeStrict;
   isExternal: boolean;
+
+  /** Is the input type a string? */
+  isString: boolean;
+
+  /** Is the input type a new picker - eg. to modify Formula behavior */
+  isNewPicker: boolean;
+
+  /** The tag name of the component to use */
+  componentTagName: string;
+
+  componentTagDialogName: string;
+
+  /** Additional information about the input type such as Angular Assets */
+  metadata: InputType;
 }
