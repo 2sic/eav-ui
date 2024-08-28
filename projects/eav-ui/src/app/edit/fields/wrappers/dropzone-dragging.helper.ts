@@ -28,9 +28,8 @@ export class DropzoneDraggingHelper {
         document.body.classList.remove(window.draggingClass);
       }
       function clearTimeouts(timeoutsArray: number[]) {
-        for (const timeout of timeoutsArray) {
+        for (const timeout of timeoutsArray)
           clearTimeout(timeout);
-        }
         timeoutsArray.splice(0, timeoutsArray.length);
       }
     });
@@ -39,9 +38,7 @@ export class DropzoneDraggingHelper {
   /** Removes event listeners from registered elements */
   detach() {
     this.zone.runOutsideAngular(() => {
-      this.eventListeners.forEach(({ element, type, listener }) => {
-        element.removeEventListener(type, listener);
-      });
+      this.eventListeners.forEach(({ element, type, listener }) => element.removeEventListener(type, listener));
     });
   }
 }

@@ -115,11 +115,11 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
     this.subscriptions.add(
       combineLatest([this.templates$, this.openViews$]).subscribe(([templates, openViews]) => {
-        if (templates.length === 0) { return; }
+        if (templates.length === 0) return;
 
         let viewInfos = this.viewInfos$.value;
         const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
-        if (notLoaded.length === 0) { return; }
+        if (notLoaded.length === 0) return;
 
         forkJoin(
           notLoaded.map(viewKey => {
@@ -139,7 +139,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
           results.forEach(([viewKey, view, snippets, tooltips]) => {
             const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
-            if (selectedIndex < 0) { return; }
+            if (selectedIndex < 0) return;
 
             const newViewInfo: ViewInfo = {
               viewKey,
@@ -227,7 +227,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     //     width: '650px',
     //   });
     //   fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
-    //     if (isShared == null) { return; }
+    //     if (isShared == null) return;
     //     params.isShared = isShared;
     //     this.createTemplate(params);
     //   });
@@ -247,7 +247,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     });
 
     createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
-      if (!result) { return; }
+      if (!result) return;
 
       this.sourceService.create(result.name, params.isShared, result.templateKey).subscribe(() => {
         this.sourceService.getAll().subscribe(files => {
@@ -309,7 +309,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   save(viewKey?: ViewKey): void {
     viewKey ??= this.activeView$.value;
     const viewInfo = this.viewInfos$.value.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
-    if (viewInfo?.view == null) { return; }
+    if (viewInfo?.view == null) return;
 
     this.snackBar.open('Saving...');
     const codeToSave = viewInfo.view.Code;
@@ -322,7 +322,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
         let newViewInfos = [...this.viewInfos$.value];
         const selectedIndex = newViewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
-        if (selectedIndex < 0) { return; }
+        if (selectedIndex < 0) return;
 
         const selectedViewInfo = newViewInfos[selectedIndex];
         const newViewInfo: ViewInfo = {
@@ -333,9 +333,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
         this.viewInfos$.next(newViewInfos);
         this.snackBar.open('Saved', null, { duration: 2000 });
       },
-      error: () => {
-        this.snackBar.open('Failed', null, { duration: 2000 });
-      }
+      error: () => this.snackBar.open('Failed', null, { duration: 2000 }),
     });
   }
 
@@ -377,20 +375,22 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   private attachListeners(): void {
     this.zone.runOutsideAngular(() => {
       this.subscriptions.add(
-        fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-          const allSaved = !this.viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
-          if (allSaved) { return; }
-          event.preventDefault();
-          event.returnValue = ''; // fix for Chrome
-        })
+        fromEvent<BeforeUnloadEvent>(window, 'beforeunload')
+          .subscribe(event => {
+            const allSaved = !this.viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
+            if (allSaved) return;
+            event.preventDefault();
+            event.returnValue = ''; // fix for Chrome
+          })
       );
       this.subscriptions.add(
-        fromEvent<KeyboardEvent>(window, 'keydown').subscribe(event => {
-          const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
-          if (!CTRL_S) { return; }
-          event.preventDefault();
-          this.zone.run(() => { this.save(); });
-        })
+        fromEvent<KeyboardEvent>(window, 'keydown')
+          .subscribe(event => {
+            const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
+            if (!CTRL_S) return;
+            event.preventDefault();
+            this.zone.run(() => { this.save(); });
+          })
       );
     });
   }

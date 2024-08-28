@@ -237,7 +237,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   /**
-   * 
    * Note: since all fetch-items happen in a timeout or subscribe, it doesn't need to be in the NgZone
    * @returns 
    */

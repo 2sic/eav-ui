@@ -125,7 +125,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   private calculateRegularProps() {
     const connectorHost: ConnectorHost = {
       update: (value) => {
-        this.zone.run(() => { this.updateControl(this.control, value); });
+        this.zone.run(() => this.updateControl(this.control, value));
       },
       expand: (expand, componentTag) => {
         this.zone.run(() => {
