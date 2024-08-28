@@ -23,7 +23,6 @@ import { ViewActionsParams } from './views-actions/views-actions.models';
 import { ViewsShowComponent } from './views-show/views-show.component';
 import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeatureNames } from '../../features/feature-names';
@@ -35,6 +34,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-views',
@@ -69,11 +69,12 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
 
   private viewsService = transient(ViewsService);
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private dialogConfigSvc: AppDialogConfigService,
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

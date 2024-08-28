@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, share } from 'rxjs';
 import { GoToDevRest } from '..';
-import { AppDialogConfigService, PipelinesService } from '../../app-administration/services';
+import { PipelinesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
@@ -66,7 +66,6 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   private pipelinesService = transient(PipelinesService);
 
   constructor(
-    appDialogConfigService: AppDialogConfigService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     dialogRef: MatDialogRef<DevRestQueryComponent>,
@@ -76,7 +75,7 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> im
   ) {
     const permissionsService = transient(PermissionsService);
 
-    super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
+    super(context, dialogRef, dnnContext, router, route, permissionsService);
 
     this.isSideNavContent = this.router.url.includes(GoToDevRest.routeQuery);
 

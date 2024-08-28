@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, share, switchMap } from 'rxjs';
 import { AllScenarios, DevRestBaseViewModel, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
 import { DialogSettings } from '../app-administration/models';
-import { AppDialogConfigService } from '../app-administration/services';
 import { Permission, PermissionsService } from '../permissions';
 import { BaseComponent } from '../shared/components/base.component';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
+import { transient } from '../core';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-dev-rest-base',
@@ -30,9 +31,10 @@ export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestr
   permissions$: Observable<Permission[]>;
   dialogSettings$: Observable<DialogSettings>;
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   // Shared Constructor for things all the Dev-REST things will need
   constructor(
-    appDialogConfigService: AppDialogConfigService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     private context: Context,
     private dialogRef: MatDialogRef<any>,
@@ -46,7 +48,7 @@ export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestr
 
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
-    this.dialogSettings$ = appDialogConfigService.getCurrent$();
+    this.dialogSettings$ = this.dialogConfigSvc.getCurrent$();
   }
 
   buildPermissionStream(routeTargetName: string) {

@@ -20,11 +20,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
+import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
 
 declare const window: EavWindow;
 
@@ -102,21 +102,18 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   openSiteSettings(): void {
-    this.dialogSettings.getCurrent$()
-      .pipe(
-        map(dc => dc?.Context.Site.PrimaryApp),
-        take(1)
-      )
-      .subscribe(sitePrimaryApp => {
-        this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
-      })
+    this.openParentAppSettings("Site");
   }
 
   openGlobalSettings(): void {
+    this.openParentAppSettings("System");
+  }
+
+  openParentAppSettings(partName: "System" | "Site"): void {
     this.dialogSettings.getCurrent$()
-      .pipe(map(dc => dc?.Context.System.PrimaryApp), take(1))
-      .subscribe(globalPrimaryApp => {
-        this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+      .pipe(map(dc => dc?.Context[partName].PrimaryApp), take(1))
+      .subscribe(appIdentity => {
+        this.dialogService.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
       })
   }
 

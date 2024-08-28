@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, shareReplay, switchMap } from 'rxjs';
 import { DevRestBase } from '..';
-import { AppDialogConfigService } from '../../app-administration/services';
 import { SourceService } from '../../code-editor/services/source.service';
 import { Context } from '../../shared/services/context';
 import { GoToDevRest } from '../go-to-dev-rest';
@@ -72,6 +71,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
 
   log = new EavLogger("DevRestApiComponent", logThis);
   private sourceService = transient(SourceService);
+  
   constructor(
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
@@ -80,8 +80,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
     router: Router,
     route: ActivatedRoute,
   ) {
-    const appDialogConfigService = transient(AppDialogConfigService);
-    super(appDialogConfigService, context, dialogRef, dnnContext, router, route, null);
+    super(context, dialogRef, dnnContext, router, route, null);
 
     const logWebApi = this.log.rxTap('webApi$', { enabled: true });
     const webApi$ = combineLatest([

@@ -6,7 +6,6 @@ import { BaseWithChildDialogComponent } from '../../../shared/components/base-wi
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
-import { AppDialogConfigService } from '../../services/app-dialog-config.service';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -15,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { transient } from '../../../core';
 import { MatDialogActions } from '@angular/material/dialog';
+import { AppDialogConfigService } from '../../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-app-state',
@@ -40,17 +40,18 @@ export class AppStateComponent extends BaseWithChildDialogComponent implements O
 
   public appStateAdvanced = false;
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private appDialogConfigService: AppDialogConfigService
   ) {
     super(router, route);
   }
 
   ngOnInit() {
-    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
+    this.dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
     });
   }

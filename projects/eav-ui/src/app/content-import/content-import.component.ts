@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/materi
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, map } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
@@ -14,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { transient } from '../core';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-content-import',
@@ -34,7 +34,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
 
   private contentImportService = transient(ContentImportService);
   private contentTypesService = transient(ContentTypesService);
-  private appDialogConfigService = transient(AppDialogConfigService);
+  private dialogConfigSvc = transient(AppDialogConfigService);
 
   formValues: ContentImport;
   private contentType$ = new BehaviorSubject<ContentType>(null);
@@ -77,7 +77,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading$.next(true);
     const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
-    const dialogSettings$ = this.appDialogConfigService.getCurrent$();
+    const dialogSettings$ = this.dialogConfigSvc.getCurrent$();
     forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
       this.contentType$.next(contentType);
       this.formValues = {

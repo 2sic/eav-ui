@@ -3,7 +3,6 @@ import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
@@ -16,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { transient } from '../core';
 import { Language } from '../shared/models/language.model';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-content-export',
@@ -38,7 +38,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
 
   private contentExportService = transient(ContentExportService);
   private contentTypesService = transient(ContentTypesService);
-  private appDialogConfigService = transient(AppDialogConfigService);
+  private dialogConfigSvc = transient(AppDialogConfigService);
 
   formValues: ContentExport;
   languages: Language[];
@@ -63,7 +63,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading$.next(true);
     const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
-    const dialogSettings$ = this.appDialogConfigService.getCurrent$();
+    const dialogSettings$ = this.dialogConfigSvc.getCurrent$();
     forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
       this.contentType$.next(contentType);
       this.languages = dialogSettings.Context.Language.List;

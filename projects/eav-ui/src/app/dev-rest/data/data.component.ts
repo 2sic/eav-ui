@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
-import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
+import { ContentTypesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
@@ -25,7 +25,6 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
 import { EntityBasic } from '../../shared/models/entity-basic';
 import { transient } from '../../core';
-import { FormConfigService } from '../../edit/state/form-config.service';
 import { EntityService } from '../../shared/services/entity.service';
 
 
@@ -73,19 +72,13 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     dnnContext: DnnContext,
   ) {
     const permissionsService = transient(PermissionsService);
-    const appDialogConfigService = transient(AppDialogConfigService);
-    super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
-    // this.isSideNavContent = this.router.url.includes(GoToDevRest.routeData);
+    super(context, dialogRef, dnnContext, router, route, permissionsService);
 
     const contentType$ = route.paramMap.pipe(
       map(pm => pm.get(GoToDevRest.paramTypeName)),
       switchMap(ctName => this.contentTypesService.retrieveContentType(ctName)),
       share()
     );
-
-    // Build Dialog Settings Stream
-    // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
-    // const dialogSettings$ = appDialogConfigService.getDialogSettings().pipe(share());
 
     this.permissions$ = this.buildPermissionStream(GoToDevRest.paramTypeName);
 

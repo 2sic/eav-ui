@@ -14,7 +14,7 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { FeaturesService } from '../../features/features.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
-import { AppDialogConfigService, ContentTypesService } from '../services';
+import { ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
@@ -31,6 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-app-configuration',
@@ -80,18 +81,18 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   private contentItemsService = transient(ContentItemsService);
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private context: Context,
     private snackBar: MatSnackBar,
-    private appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super(router, route);
-    this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
     this.viewModel$ = combineLatest([
@@ -119,7 +120,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
     this.fetchSettings();
     this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
 
-    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
+    this.dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
       const appScope = dialogSettings.Context.App.SettingsScope;
       this.isGlobal = appScope === AppScopes.Global;

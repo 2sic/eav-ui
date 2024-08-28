@@ -6,7 +6,6 @@ import { BaseWithChildDialogComponent } from '../../shared/components/base-with-
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppAdminMenu } from './app-admin-menu';
@@ -18,6 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { transient } from '../../core';
 
 const logThis = false;
 
@@ -37,24 +38,19 @@ const logThis = false;
     NavItemListComponent,
     ToggleDebugDirective,
   ],
-  providers: [
-    // Must have a new config service here, to restart with new settings
-    // which are injected into it from the context
-    // Because of standalone-components, it's not enough to have it in the module-definition
-    AppDialogConfigService,
-  ],
 })
 export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+
+  private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppAdminMainComponent>,
-    private appDialogConfigService: AppDialogConfigService,
     private media: MediaMatcher
   ) {
     super(router, route, new EavLogger('AppAdminMainComponent', logThis));
-    this.log.a('constructor', { appDialogConfigService });
+    this.log.a('constructor');
   }
 
   AppScopes = AppScopes;
@@ -124,7 +120,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getCurrent$().subscribe((dialogSettings) => {
+    this.dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

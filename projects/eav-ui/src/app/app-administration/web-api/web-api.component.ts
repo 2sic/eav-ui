@@ -11,7 +11,6 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { transient } from '../../core';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-web-api',
@@ -48,11 +48,12 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<WebApiViewModel>;
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   constructor(
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private dialogConfigSvc: AppDialogConfigService,
   ) { }
 
   ngOnInit() {

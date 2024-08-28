@@ -27,7 +27,6 @@ import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
-import { AppDialogConfigService } from '../services';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,6 +41,7 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { transient } from '../../core';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-data',
@@ -83,11 +83,12 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
 
   isDebug = inject(GlobalConfigService).isDebug;
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
 

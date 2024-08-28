@@ -20,7 +20,6 @@ import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,6 +28,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-queries',
@@ -59,11 +59,12 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
     map(([queries]) => ({ queries }))
   );
 
+  private dialogConfigSvc = transient(AppDialogConfigService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private dialogConfigSvc: AppDialogConfigService,
   ) {
     super(router, route);
   }

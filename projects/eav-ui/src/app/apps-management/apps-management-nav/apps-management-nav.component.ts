@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { combineLatest, filter, map, startWith } from 'rxjs';
@@ -6,7 +6,7 @@ import { BaseWithChildDialogComponent } from '../../shared/components/base-with-
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { AppDialogConfigService } from '../../app-administration/services';
+import { GlobalDialogConfigService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-items';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +36,7 @@ import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.direc
 })
 export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
 
-  private appDialogConfigService = transient(AppDialogConfigService);
+  private globalDialogConfigSvc = inject(GlobalDialogConfigService);
 
   zoneId = this.context.zoneId;
 
@@ -80,7 +80,7 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
 
   ngOnInit() {
     this.fetchDialogSettings();
-    
+
     // Trigger settings load? not sure why, because it's cached in the service... on dialog close?
     this.subscriptions.add(
       this.childDialogClosed$().subscribe(() => this.fetchDialogSettings())
@@ -100,7 +100,7 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getShared$(0).subscribe();
+    this.globalDialogConfigSvc.getShared$(0).subscribe();
   }
 
 }

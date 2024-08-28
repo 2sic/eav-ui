@@ -1,12 +1,15 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
 import { map, Observable, ReplaySubject } from 'rxjs';
-import { AppDialogConfigService } from '../app-administration/services';
+import { GlobalDialogConfigService } from '../app-administration/services';
 import { DialogContext } from '../shared/models/dialog-settings.model';
 import { ServiceBase } from '../shared/services/service-base';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { FeatureSummary } from './models/feature-summary.model';
 import { SignalHelpers } from '../shared/helpers/signal.helpers';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { transient } from '../core';
 
 const logThis = false;
 
@@ -17,27 +20,31 @@ const logThis = false;
  *
  * It currently has a strange architecture, since it's singleton,
  * but needs context data.
- * So the AppDialogConfigService seems to call the loadFromService.
+ * So the GlobalDialogConfigService seems to call the loadFromService.
  * TODO: 2dm: I don't like this, should rethink the architecture, feels a bit flaky.
+ * 2024-08-28 2dm modified this, but still not perfect. 
+ * ATM it would still load the dialog-settings by itself, even if the form service would provide it. on .load(...)
  */
 @Injectable({ providedIn: 'root' })
 export class FeaturesService extends ServiceBase {
   // new 2dm WIP
   // Provide context information and ensure that previously added data is always available
-  private dialogContext$ = new ReplaySubject<DialogContext>(1);
   private dialogContextSignal = signal<DialogContext>(null);
+  private dialogContext$ = toObservable(this.dialogContextSignal);
+
+  private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor() {
     super(new EavLogger('FeaturesService', logThis));
+
+    this.dialogConfigSvc.getCurrent$().subscribe(ds => this.load(ds.Context));
   }
 
-  loadFromService(configService: AppDialogConfigService) {
-    configService.getCurrent$().subscribe(ds => this.load(ds.Context));
-  }
+  // loadFromService(configService: GlobalDialogConfigService) {
+  //   configService.getCurrent$().subscribe(ds => this.load(ds.Context));
+  // }
 
   load(dialogContext: DialogContext) {
-    // new 2dm WIP
-    this.dialogContext$.next(dialogContext);
     this.dialogContextSignal.set(dialogContext);
   }
 
@@ -48,10 +55,9 @@ export class FeaturesService extends ServiceBase {
     );
   }
 
-  // new 2dm WIP
+  // TODO: @2dm - only used once, should be able to remove in ca. 20 mins
   get$(featureNameId: string): Observable<FeatureSummary> {
     return this.dialogContext$.pipe(
-      // tap(f => console.log('2dm', f, featureNameId)),
       map(dc => dc?.Features.find(f => f.nameId === featureNameId))
     );
   }

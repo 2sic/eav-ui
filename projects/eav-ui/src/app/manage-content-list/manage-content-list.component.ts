@@ -3,13 +3,12 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
-import { AppDialogConfigService } from '../app-administration/services';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { AsyncPipe } from '@angular/common';
@@ -19,7 +18,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { transient } from '../core';
-import { FormConfigService } from '../edit/state/form-config.service';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -59,7 +58,7 @@ export class ManageContentListComponent extends BaseWithChildDialogComponent imp
   reordered = false;
 
   private contentGroupService = transient(ContentGroupService);
-  private appDialogConfigService = transient(AppDialogConfigService);
+  private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
     protected router: Router,
@@ -88,7 +87,7 @@ export class ManageContentListComponent extends BaseWithChildDialogComponent imp
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getCurrent$().subscribe(dialogSettings => {
+    this.dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
       this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);
       this.translate.use(dialogSettings.Context.Language.Current.split('-')[0]);
     });
