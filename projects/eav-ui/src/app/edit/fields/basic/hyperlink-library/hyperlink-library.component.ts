@@ -55,6 +55,7 @@ export class HyperlinkLibraryComponent implements OnInit {
 
     effect(() => {
       const config = adamConfig();
+      // console.warn('adamConfig in HyperlinkLibrary', config);
       this.fieldState.config.adam.setConfig(config);
     }, { injector: this.injector, allowSignalWrites: true });
   }

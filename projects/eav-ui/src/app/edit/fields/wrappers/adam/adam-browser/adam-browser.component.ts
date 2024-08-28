@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectorRef, Component, EventEmitter, inject, NgZone, OnDestroy, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnDestroy, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable, startWith } from 'rxjs';
@@ -32,6 +32,9 @@ import { fixDropzone } from './dropzone-helper';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { AdamCacheService } from '../../../../shared/store/adam-cache.service';
 import { LinkCacheService } from '../../../../shared/store/link-cache.service';
+import isEqual from 'lodash-es/isEqual';
+import { AdamConnector } from './adam-connector';
+import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -85,9 +88,11 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   // TODO: SWITCHING this to Signals is problematic for now
   // because of zone.Run below - causes the browser to completely freeze,
   // probably some kind of infinite loop
-  private adamConfig$ = new BehaviorSubject<AdamConfig>(null)
+  public adamConfig = signal<AdamConfig>(null, SignalHelpers.objectEquals); // here the change detection is critical
   items = signal<AdamItem[]>([]);
-  private items$ = toObservable(this.items);
+
+  // temp public
+  public items$ = toObservable(this.items);
   private control: AbstractControl;
   private url: string;
   private firstFetch = true;
@@ -101,7 +106,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     private adamService: AdamService,
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
-    private zone: NgZone,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formsStateService: FormsStateService,
@@ -111,6 +115,12 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     private changeDetectorRef: ChangeDetectorRef
   ) {
     super(new EavLogger(nameOfThis, logThis));
+
+    effect(() => {
+      const adamConfig = this.adamConfig();
+      if (adamConfig == null) return;
+      this.fetchItems();
+    });
   }
 
   ngOnInit() {
@@ -126,55 +136,23 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
 
-    // run inside zone to detect changes when called from custom components
-    this.config.adam = {
-      items: this.items,
-      items$: this.items$,
-      toggle: (usePortalRoot, showImagesOnly) => {
-        this.zone.run(() => {
-          this.toggle(usePortalRoot, showImagesOnly);
-        });
-      },
-      setConfig: (config) => {
-        this.log.a('setConfig', config);
-        const newConfig = AdamConfigInstance.completeConfig(config, this.config, this.adamConfig$.value);
-        this.zone.run(() => {
-          this.adamConfig$.next(newConfig);
-          fixDropzone(newConfig, this.config);
-        });
-      },
-      getConfig: () => this.adamConfig$.value,
-      getConfig$: () => this.adamConfig$.asObservable(),
-      onItemClick: () => { return; },
-      onItemUpload: () => { return; },
-      refresh: () => {
-        this.zone.run(() => {
-          this.fetchItems();
-        });
-      },
-    };
-
-    this.subscriptions.add(
-      this.adamConfig$.subscribe(() => {
-        this.fetchItems();
-      })
-    );
-
+    // Attach this browser to the AdamConnector
+    (this.config.adam as AdamConnector).setBrowser(this);
 
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       mapUntilChanged(m => m),
     );
+
     const disabled$ = this.control.valueChanges.pipe(
       map(() => this.control.disabled),
       startWith(this.control.disabled),
       mapUntilChanged(m => m),
     );
 
-    this.viewModel$ = combineLatest([this.adamConfig$, value$, disabled$]).pipe(
-      map(([adamConfig, value, disabled]) => {
+    this.viewModel$ = combineLatest([value$, disabled$]).pipe(
+      map(([value, disabled]) => {
         const viewModel: AdamBrowserViewModel = {
-          adamConfig,
           value,
           disabled,
         };
@@ -184,7 +162,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   ngOnDestroy() {
-    this.adamConfig$.complete();
+    // this.adamConfig$.complete();
     super.ngOnDestroy();
   }
 
@@ -194,7 +172,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (!folderName) return;
 
-    this.adamService.addFolder(folderName, this.url, this.adamConfig$.value)
+    this.adamService.addFolder(folderName, this.url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -204,7 +182,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (!ok) return;
 
-    this.adamService.deleteItem(item, this.url, this.adamConfig$.value)
+    this.adamService.deleteItem(item, this.url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -223,9 +201,9 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   goUp() {
-    let subfolder = this.adamConfig$.value.subfolder;
+    let subfolder = this.adamConfig().subfolder;
     subfolder = subfolder.includes('/') ? subfolder.slice(0, subfolder.lastIndexOf('/')) : '';
-    this.config.adam.setConfig({ subfolder });
+    this.setConfig({ subfolder });
   }
 
   private getImageConfigurationContentType(item: AdamItem) {
@@ -241,7 +219,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
     // check if it's a folder and if this has a special registration
     if (item.Type === 'folder') {
-      found = this.adamConfig$.value.metadataContentTypes.match(/^(folder)(:)([^\n]*)/im);
+      found = this.adamConfig().metadataContentTypes.match(/^(folder)(:)([^\n]*)/im);
       if (found) {
         return found[3];
       } else {
@@ -256,7 +234,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     // -- not implemented yet
 
     // nothing found so far, go for the default with nothing as the prefix
-    found = this.adamConfig$.value.metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
+    found = this.adamConfig().metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
     if (found) { return found[1]; }
 
     // this is if we don't find anything
@@ -264,9 +242,9 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   }
 
   goIntoFolder(item: AdamItem) {
-    let subfolder = this.adamConfig$.value.subfolder;
+    let subfolder = this.adamConfig().subfolder;
     subfolder = subfolder ? `${subfolder}/${item.Name}` : item.Name;
-    this.config.adam.setConfig({ subfolder });
+    this.setConfig({ subfolder });
   }
 
   openUploadClick(event: MouseEvent) {
@@ -279,13 +257,12 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
     if (!newName) return;
 
-    this.adamService.rename(item, newName, this.url, this.adamConfig$.value).subscribe(res => {
-      this.fetchItems();
-    });
+    this.adamService.rename(item, newName, this.url, this.adamConfig())
+      .subscribe(() => this.fetchItems());
   }
 
   select(item: AdamItem) {
-    if (this.control.disabled || !this.adamConfig$.value.enableSelect) return;
+    if (this.control.disabled || !this.adamConfig().enableSelect) return;
     this.config.adam.onItemClick(item);
   }
 
@@ -294,8 +271,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
    * Note: since all fetch-items happen in a timeout or subscribe, it doesn't need to be in the NgZone
    * @returns 
    */
-  private fetchItems() {
-    const adamConfig = this.adamConfig$.value;
+  fetchItems() {
+    const adamConfig = this.adamConfig();
     if (adamConfig == null) return;
     if (!adamConfig.autoLoad) return;
 
@@ -328,7 +305,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       if (item.Name === '.') { // is root
         const allowEdit = item.AllowEdit;
         if (allowEdit !== adamConfig.allowEdit)
-          this.config.adam.setConfig({ allowEdit });
+          this.setConfig({ allowEdit });
         continue;
       }
       if (item.Name === '2sxc' || item.Name === 'adam')
@@ -357,14 +334,23 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     this.items.set(filteredItems);
   }
 
-  private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
-    const newConfig: AdamConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
-    if (JSON.stringify(newConfig) === JSON.stringify(this.adamConfig$.value))
+  setConfig(config: Partial<AdamConfig>) {
+    this.log.a('setConfig', config);
+    const newConfig = AdamConfigInstance.completeConfig(config, this.config, this.adamConfig());
+    this.adamConfig.set(newConfig);
+    fixDropzone(newConfig, this.config);
+  }
+
+
+  toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
+    const newConfig: AdamConfig = { ...this.adamConfig(), ...{ usePortalRoot, showImagesOnly } };
+    if (isEqual(newConfig, this.adamConfig()))
       newConfig.autoLoad = !newConfig.autoLoad;
+
     else if (!newConfig.autoLoad)
       newConfig.autoLoad = true;
 
-    this.config.adam.setConfig(newConfig);
+    this.setConfig(newConfig);
   }
 }
 
@@ -387,7 +373,6 @@ function getExtensionsFilter(fileFilter: string) {
 }
 
 export interface AdamBrowserViewModel {
-  adamConfig: AdamConfig;
   value: string;
   disabled: boolean;
 }

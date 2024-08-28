@@ -26,6 +26,7 @@ import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
+import isEqual from 'lodash-es/isEqual';
 
 @Component({
   selector: InputTypeCatalog.HyperlinkDefault,
@@ -116,10 +117,12 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
         fileFilter: s.FileFilter,
         autoLoad: true,
       };
-    }, { equal: RxHelpers.objectsEqual});
+    }, { equal: isEqual});
 
     effect(() => {
-      this.config.adam.setConfig(adamSettings());
+      const config = adamSettings();
+      // console.warn('adamConfig in Hyperlink-Default', config);
+      this.config.adam.setConfig(config);
     }, { allowSignalWrites: true });
   }
 

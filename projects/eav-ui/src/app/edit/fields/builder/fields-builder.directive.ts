@@ -16,6 +16,7 @@ import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorato
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
+import { AdamConnector } from '../wrappers/adam/adam-browser/adam-connector';
 
 const logThis = false;
 const nameOfThis = 'FieldsBuilderDirective';
@@ -81,6 +82,7 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
         ...fieldProps.constants,
         fieldName: fieldName,
         focused$: new BehaviorSubject(false),
+        adam: new AdamConnector(),
       };
       this.#fieldConfigSets.push(fieldConfig);
       const inputType = fieldProps.constants.inputTypeSpecs.inputType;

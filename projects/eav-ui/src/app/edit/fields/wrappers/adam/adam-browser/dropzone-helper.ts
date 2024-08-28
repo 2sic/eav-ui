@@ -10,20 +10,24 @@ export function fixDropzone(newConfig: AdamConfigInstance, fieldConfig: FieldCon
   const dzSubfolder = dzUrlParams.subfolder || '';
   const dzUsePortalRoot = dzUrlParams.usePortalRoot;
   const fixUploadUrl = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
+
   if (fixUploadUrl) {
     let newUrl = oldDzConfig.url as string;
     newUrl = UrlHelpers.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
     newUrl = UrlHelpers.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
     newDzConfig.url = newUrl;
   }
+
   const uploadDisabled = !newConfig.allowEdit
     || (
       (newConfig.subfolder === '' || newConfig.usePortalRoot && newConfig.subfolder === newConfig.rootSubfolder)
       && !newConfig.allowAssetsInRoot
     );
+
   const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
   if (fixDisabled)
     newDzConfig.disabled = uploadDisabled;
+  
   if (Object.keys(newDzConfig).length > 0)
     this.config.dropzone.setConfig(newDzConfig);
 }

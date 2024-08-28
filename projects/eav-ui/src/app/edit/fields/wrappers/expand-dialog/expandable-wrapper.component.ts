@@ -72,7 +72,7 @@ export class ExpandableWrapperComponent {
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
   focused = signal(false);
 
-  adamDisabled = signal<boolean>(true);
+  adamDisabled = this.config.adam.isDisabled;
 
   previewHeight = computed(() => {
     const settings = this.settings();
@@ -114,18 +114,11 @@ export class ExpandableWrapperComponent {
   ) { }
 
   ngOnInit() {
-
-    this.config.focused$
-      .subscribe(this.focused.set);
+    this.config.focused$.subscribe(this.focused.set);
   }
 
   ngAfterViewInit() {
     const l = this.log.fn('ngAfterViewInit');
-    this.config.adam.getConfig$().subscribe(adamConfig => {
-      const disabled = adamConfig?.disabled ?? true;
-      if (this.adamDisabled() !== disabled)
-        this.adamDisabled.set(disabled);
-    })
 
     const componentTagName = this.config.inputTypeSpecs.componentTagName;
     l.a('ExpandableWrapper created for:', { componentTagName });

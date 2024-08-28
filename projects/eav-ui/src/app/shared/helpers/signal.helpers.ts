@@ -1,6 +1,6 @@
 import { CreateComputedOptions } from '@angular/core';
 import { RxHelpers } from '../rxJs/rx.helpers';
-import { ValueEqualityFn } from '@angular/core/primitives/signals';
+import isEqual from 'lodash-es/isEqual';
 
 export class SignalHelpers {
   /** Options for number signal to ensure equality only on value difference */
@@ -25,7 +25,7 @@ export class SignalHelpers {
   // };
 
   /** Options for object signal to ensure equality only on value difference */
-  static objectEquals = { equal: RxHelpers.objectsEqual };
+  static objectEquals = { equal: isEqual };
 
   /**
    * Helper to _not_ set the equal and use the standard equal.

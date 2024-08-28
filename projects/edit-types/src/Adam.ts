@@ -21,10 +21,9 @@ export interface Adam {
    * Returns a snapshot of ADAM configuration
    */
   getConfig(): AdamConfig;
-  /**
-   * Returns a stream (an observable) of ADAM configuration
-   */
-  getConfig$(): Observable<AdamConfig>;
+
+  isDisabled: Signal<boolean>;
+
   /**
    * Runs when user clicks on an item in ADAM browser
    */

@@ -20,7 +20,7 @@ import { WrappersCatalog } from '../wrappers.constants';
     AdamHintComponent,
   ],
 })
-export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AdamWrapperComponent implements OnInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 
@@ -28,22 +28,10 @@ export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   protected config = this.fieldState.config;
 
   fullscreenAdam: boolean;
-  adamDisabled = signal<boolean>(true);
-  subscriptions = new Subscription();
+  adamDisabled = this.config.adam.isDisabled;
 
   ngOnInit() {
     this.fullscreenAdam = this.config.inputTypeSpecs.inputType === InputTypeCatalog.HyperlinkLibrary;
-  }
-
-  ngAfterViewInit() {
-    this.subscriptions =
-      this.config.adam.getConfig$().subscribe(adamConfig => {
-        this.adamDisabled.set(adamConfig?.disabled ?? true);
-      })
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
   }
 
   openUpload() {

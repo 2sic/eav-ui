@@ -7,7 +7,9 @@ import { FieldConstants } from '../state/fields-configs.model';
 export interface FieldConfigSet extends FieldConstants {
   fieldName: string;
   focused$: BehaviorSubject<boolean>;
-  adam?: Adam;
+  // TODO: ATM it always adds this, but it would be better if we detect the input-type
+  // and only add it then
+  adam: Adam;
   dropzone?: Dropzone;
 
   /** 2dm experimental - try to share the picker data between the preview and dialog */
