@@ -4,11 +4,11 @@ import { AdamConfig } from './AdamConfig';
 import { Signal } from '@angular/core';
 
 export interface Adam {
-  items: Signal<AdamItem[]>;
   /**
-   * Stream of filtered ADAM items
+   * Signal of ADAM items shown in the current control
    */
-  items$: Observable<AdamItem[]>;
+  items: Signal<AdamItem[]>;
+  
   /**
    * Changes ADAM configuration, but if values match previous, then shows/hides ADAM browser
    */

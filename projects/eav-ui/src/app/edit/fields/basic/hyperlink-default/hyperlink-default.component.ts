@@ -70,11 +70,9 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
-  adamConfig = signal([]);
-
   adamItem = computed(() => {
     const controlStatus = this.controlStatus();
-    const adamItems = this.adamConfig() as AdamItem[];
+    const adamItems = this.config.adam.items() as AdamItem[];
 
     if (!controlStatus.value || !adamItems.length) return;
 
@@ -128,11 +126,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   ngOnInit() {
     super.ngOnInit();
-
-    // Connect items$ from Adam to ...?
-    this.config.adam.items$.subscribe(items => {
-      this.adamConfig.set(items);
-    });
 
     // Should probably be in ngOnInit, because this.config.adam is created late
     this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };

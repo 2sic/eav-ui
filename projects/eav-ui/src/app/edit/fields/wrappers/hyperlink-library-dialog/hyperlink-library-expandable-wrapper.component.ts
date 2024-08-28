@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, computed, ElementRef, inject, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
 import { AdamItem } from '../../../../../../../edit-types';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
@@ -59,9 +59,8 @@ export class HyperlinkLibraryExpandableWrapperComponent {
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
-  adamConfig = signal([]);
-  protected items = computed(() => this.adamConfig().slice(0, 9));
-  protected itemsNumber = computed(() => this.adamConfig().length, SignalHelpers.numberEquals);
+  protected items = computed(() => this.config.adam.items().slice(0, 9));
+  protected itemsNumber = computed(() => this.config.adam.items().length, SignalHelpers.numberEquals);
 
   protected hideAdamSponsor = this.featuresService.isEnabled(FeatureNames.NoSponsoredByToSic);
   adamSponsorI18nKey = computed(() => this.hideAdamSponsor()
@@ -82,7 +81,6 @@ export class HyperlinkLibraryExpandableWrapperComponent {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.config.adam.items$.subscribe(items => this.adamConfig.set(items));
   }
 
   ngOnDestroy() {

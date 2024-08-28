@@ -1,4 +1,4 @@
-import { Adam, AdamConfig } from 'projects/edit-types';
+import { Adam, AdamConfig, AdamItem } from 'projects/edit-types';
 import { AdamBrowserComponent } from './adam-browser.component';
 import { computed, signal } from '@angular/core';
 import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
@@ -25,9 +25,7 @@ export class AdamConnector implements Adam {
 
   private log = new EavLogger(nameOfThis, logThis);
 
-  get items() { return this.browser.items};
-
-  get items$() { return this.browser.items$ }
+  get items() { return computed(() => this.#browser()?.items() ?? [] satisfies AdamItem[]) };
 
   toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.log.fn('toggle', { usePortalRoot, showImagesOnly });

@@ -26,7 +26,6 @@ import { FormsStateService } from '../../../../state/forms-state.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { AdamService } from '../../../../shared/services/adam.service';
 import { fixDropzone } from './dropzone-helper';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { AdamCacheService } from '../../../../shared/store/adam-cache.service';
 import { LinkCacheService } from '../../../../shared/store/link-cache.service';
 import isEqual from 'lodash-es/isEqual';
@@ -85,8 +84,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
   public adamConfig = signal<AdamConfig>(null, SignalHelpers.objectEquals); // here the change detection is critical
   items = signal<AdamItem[]>([]);
 
-  // temp public
-  public items$ = toObservable(this.items);
   #url: string;
   private firstFetch = true;
 

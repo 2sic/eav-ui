@@ -1,7 +1,6 @@
 import { TippyDirective } from './../../../../shared/directives/tippy.directive';
-import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AdamItem } from '../../../../../../../edit-types';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconTextComponent } from '../../../../features/feature-icon-text/feature-icon-text.component';
@@ -76,11 +75,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
-  adamConfig = signal([]);
-
   adamItem = computed(() => {
     const controlStatus = this.controlStatus();
-    const adamItems = this.adamConfig() as AdamItem[];
+    const adamItems = this.config.adam.items();
 
     if (!controlStatus.value || !adamItems.length) return;
 
@@ -129,9 +126,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.subscriptions.add(
-      this.config.adam.items$.subscribe(items => this.adamConfig.set(items))
-    );
   }
 
   ngOnDestroy() {

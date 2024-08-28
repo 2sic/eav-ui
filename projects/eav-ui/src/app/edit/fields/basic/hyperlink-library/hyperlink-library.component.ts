@@ -32,11 +32,22 @@ export class HyperlinkLibraryComponent implements OnInit {
 
   constructor() {
     HyperlinkLibraryLogic.importMe();
+
+    let first = true;
+    effect(() => {
+      // Patch length info to the control state, so the validator can pick it up
+      (this.fieldState.control as AdamControl).adamItems = this.fieldState.config.adam.items().length;
+      // Update the validity of the control - but not during initialization, only on later changes
+      // otherwise the field would glow red right from the start
+      if (!first)
+        this.fieldState.control.updateValueAndValidity();
+      first = false;
+    });
   }
 
   ngOnInit() {
     this.attachAdamConfig();
-    this.attachAdamValidator();
+    // this.attachAdamValidator();
   }
 
   private attachAdamConfig() {
@@ -58,20 +69,5 @@ export class HyperlinkLibraryComponent implements OnInit {
       // console.warn('adamConfig in HyperlinkLibrary', config);
       this.fieldState.config.adam.setConfig(config);
     }, { injector: this.injector, allowSignalWrites: true });
-  }
-
-  private attachAdamValidator() {
-    let first = true;
-    // this.subscriptions.add(
-    this.fieldState.config.adam.items$.pipe(
-      map(items => items.length),
-      mapUntilChanged(m => m),
-    ).subscribe(itemsCount => {
-      (this.fieldState.control as AdamControl).adamItems = itemsCount;
-      if (!first)
-        this.fieldState.control.updateValueAndValidity();
-      first = false;
-    })
-    // );
   }
 }
