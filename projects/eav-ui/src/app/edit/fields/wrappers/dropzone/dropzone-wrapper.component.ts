@@ -1,15 +1,15 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { AfterViewInit, Component, inject, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective, DropzoneModule } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FieldState } from '../../field-state';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
 import { WrappersCatalog } from '../wrappers.constants';
+import { DropzoneWysiwyg } from './dropzone-wysiwyg';
 
 const logThis = false;
 const nameOfThis = 'DropzoneWrapperComponent';
@@ -23,91 +23,54 @@ const nameOfThis = 'DropzoneWrapperComponent';
     NgClass,
     ExtendedModule,
     DropzoneModule,
-    AsyncPipe,
   ],
 })
-export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent implements AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
-
-  dropzoneDisabled = signal(false);
-  dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
 
   protected fieldState = inject(FieldState);
   protected config = this.fieldState.config;
   protected controlStatus = this.fieldState.controlStatus;
 
-
-  imageTypes: string[] = ["image/jpeg", "image/png"];
-  isStringWysiwyg = false;
+  dropzoneConfig = signal<DropzoneConfigExt>(null);
+  dropzoneDisabled = computed(() => this.controlStatus().disabled || (this.dropzoneConfig()?.disabled ?? true));
+  
+  wysiwygHelper = new DropzoneWysiwyg();
 
   private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private formConfig: FormConfigService,
     private dnnContext: DnnContext,
-    private zone: NgZone,
   ) {
+    this.extendFieldConfigWithDropZone();
+    this.setConfig({});
   }
 
-  ngOnInit() {
-    combineLatest([
-      this.dropzoneConfig$,
-    ]).pipe(
-      map(([dropzoneConfig]) => {
-        const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
-        return this.controlStatus().disabled || dropzoneDisabled;
-      }),
-    ).subscribe(value => {
-      this.dropzoneDisabled.set(value)
-    }
-    );
-
+  extendFieldConfigWithDropZone() {
     this.config.dropzone = {
-      setConfig: (config) => {
-        this.zone.run(() => {
-          this.setConfig(config);
-        });
-      },
-      getConfig: () => this.dropzoneConfig$.value,
-      getConfig$: () => this.dropzoneConfig$.asObservable(),
-      uploadFile: (image) => {
-        this.zone.run(() => {
-          this.uploadFile(image);
-        });
-      }
+      setConfig: (config) => this.setConfig(config),
+      getConfig: () => this.dropzoneConfig(),
+      uploadFile: (image) => this.uploadFile(image),
     };
-
-    this.config.dropzone.setConfig({});
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.config.dropzone.setConfig({
-        previewsContainer: `.${this.config.dropzonePreviewsClass} .dropzone-previews`,
-        clickable: `.${this.config.dropzonePreviewsClass} .invisible-clickable`,
-      });
+    this.setConfig({
+      previewsContainer: `.${this.config.dropzonePreviewsClass} .dropzone-previews`,
+      clickable: `.${this.config.dropzonePreviewsClass} .invisible-clickable`,
     });
-  }
-
-  ngOnDestroy() {
-    this.dropzoneConfig$.complete();
   }
 
   // on onDrop we check if drop is on wysiwyg or not
   onDrop(event: any) {
-    if (this.isParentWysiwyg((event.toElement as HTMLElement))) {
-      this.isStringWysiwyg = true;
-    } else {
-      this.isStringWysiwyg = false;
-    }
+    this.wysiwygHelper.detectWysiwygOnDrop(event);
   }
 
   // here we check if file is image type so we can cancel upload if it is also uploaded on wysiwyg
   onAddedFile(file: any) {
-    if (this.isStringWysiwyg && this.imageTypes.some(x => x === file.type)) {
-      this.dropzoneRef.dropzone().removeFile(file);
-    }
+    this.wysiwygHelper.removeFilesHandledByWysiwyg(this.dropzoneRef.dropzone(), file);
   }
 
   onUploadError(event: DropzoneType) {
@@ -143,42 +106,35 @@ export class DropzoneWrapperComponent implements OnInit, AfterViewInit, OnDestro
     const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 
-    const oldConfig = (this.dropzoneConfig$.value != null)
-      ? this.dropzoneConfig$.value
-      : new DropzoneConfigInstance(startDisabled, url, headers);
     const newConfig = new DropzoneConfigInstance(startDisabled, url, headers);
+    const oldConfig = this.dropzoneConfig() ?? newConfig;
 
-    for (const key of Object.keys(newConfig)) {
+    for (const key of Object.keys(newConfig))
       (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
-    }
 
     // fixes
     const syncUploadLimit = newConfig.maxFiles !== newConfig.parallelUploads;
     if (syncUploadLimit) {
-      const uploadLimit = (newConfig.maxFiles >= newConfig.parallelUploads) ? newConfig.maxFiles : newConfig.parallelUploads;
+      const uploadLimit = (newConfig.maxFiles >= newConfig.parallelUploads)
+        ? newConfig.maxFiles
+        : newConfig.parallelUploads;
       newConfig.maxFiles = uploadLimit;
       newConfig.parallelUploads = uploadLimit;
     }
-    const fixAcceptedFiles = newConfig.acceptedFiles == null || newConfig.acceptedFiles === '';
-    if (fixAcceptedFiles) {
-      delete newConfig.acceptedFiles; // only way to tell dropzone to accept all files is to remove acceptedFiles from config
-    }
 
-    this.dropzoneConfig$.next(newConfig);
+    // Make sure dropzone accepts all files, since we'll process it afterwards
+    // only way to tell dropzone to accept all files is to remove acceptedFiles from config
+    // so if the config exists but is empty/null, we must completely remove it
+    const fixAcceptedFiles = newConfig.acceptedFiles == null || newConfig.acceptedFiles === '';
+    if (fixAcceptedFiles)
+      delete newConfig.acceptedFiles; 
+
+    this.dropzoneConfig.set(newConfig);
   }
 
   private uploadFile(file: File & { upload?: { chunked: boolean; }; }) {
     const dropzone = this.dropzoneRef.dropzone();
     file.upload = { chunked: dropzone.defaultOptions.chunking };
     dropzone.processFile(file);
-  }
-
-  private isParentWysiwyg(element: HTMLElement): boolean {
-    do {
-      if (element == null) return false;
-      if (element?.classList.contains("class-distinguish-from-adam-dropzone")) return true;
-      element = element.parentElement;
-    } while (!element?.classList.contains("class-distinguish-from-adam-dropzone") || element.parentElement != document.body);
-    return false;
   }
 }

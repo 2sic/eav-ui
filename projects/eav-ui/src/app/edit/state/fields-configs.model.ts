@@ -76,4 +76,5 @@ export interface InputTypeSpecs {
 
   /** Additional information about the input type such as Angular Assets */
   metadata: InputTypeMetadata;
+
 }

@@ -39,6 +39,7 @@ import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
+import { DropzoneWysiwyg } from '../../../eav-ui/src/app/edit/fields/wrappers/dropzone/dropzone-wysiwyg';
 
 const logThis = false;
 const nameOfThis = 'FieldStringWysiwygEditor';
@@ -59,13 +60,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   configurator: TinyMceConfigurator;
 
   /** random, unique ID for this instance of the editor to keep them separate */
-  private instanceId = `${Math.floor(Math.random() * 99999)}`;
+  #instanceId = `${Math.floor(Math.random() * 99999)}`;
 
   /** class to uniquely identify this editor */
-  private containerClass = `tinymce-container-${this.instanceId}`;
+  #containerClass = `tinymce-container-${this.#instanceId}`;
 
   /** class to uniquely identify the toolbar area */
-  private toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
+  #toolbarContainerClass = `tinymce-toolbar-container-${this.#instanceId}`;
+
+  /** Class to add to the DOM so the surrounding Dropzone does everything right */
+  #adamIntegrationClass = DropzoneWysiwyg.classToDetectWysiwyg;
 
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
@@ -92,8 +96,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.log.a(`connectedCallback`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
-    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
-    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.#containerClass, this.#adamIntegrationClass);
+    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.#toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
 
     // ensure it respects activated features for Paste-Image
@@ -124,8 +128,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
-      this.containerClass,
-      this.toolbarContainerClass,
+      this.#containerClass,
+      this.#toolbarContainerClass,
       this.mode === 'inline',
       // setup callback when the editor is initialized by TinyMCE
       (editor: Editor) => this.tinyMceSetup(editor, tinyOptions),

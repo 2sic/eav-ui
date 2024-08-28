@@ -1,5 +1,4 @@
 import { DropzoneConfigExt } from './DropzoneConfigExt';
-import { Observable } from 'rxjs';
 
 export interface Dropzone {
   /**
@@ -10,10 +9,6 @@ export interface Dropzone {
    * Returns a snapshot of Dropzone configuration
    */
   getConfig(): DropzoneConfigExt;
-  /**
-   * Returns a stream (an observable) of Dropzone configuration
-   */
-  getConfig$(): Observable<DropzoneConfigExt>;
   /**
    * Uploads image using Dropzone
    */

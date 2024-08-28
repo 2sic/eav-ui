@@ -5,6 +5,7 @@ import { AttributeInputType } from '../../../../../../edit-types/src/InputTypeNa
 import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { InputTypeSpecs } from '../../state/fields-configs.model';
 import { SignalStoreBase } from './signal-store-base';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 
 const logThis = false;
 const nameOfThis = 'InputTypeService';
@@ -42,12 +43,12 @@ export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata>
     const inputType = attribute.InputType as InputTypeStrict;
     const calculated: InputTypeSpecs = {
       inputType,
-      isExternal: inputTypeMetadata ? !!inputTypeMetadata.AngularAssets : false,
+      isExternal: !!inputTypeMetadata?.AngularAssets,
       isString: inputType.toString().startsWith('string'),
-      isNewPicker: false, // TODO
       componentTagName: `field-${inputType}`,
       componentTagDialogName: `field-${inputType}-dialog`,
       metadata: inputTypeMetadata,
+      isNewPicker: InputTypeHelpers.isNewPicker(inputType),
     };
     return calculated;
   }

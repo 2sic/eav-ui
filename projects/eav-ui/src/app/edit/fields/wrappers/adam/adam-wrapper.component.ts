@@ -32,6 +32,7 @@ export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   subscriptions = new Subscription();
 
   constructor() {
+    console.log('2dm-wrapper.component.ts');
   }
 
   ngOnInit() {

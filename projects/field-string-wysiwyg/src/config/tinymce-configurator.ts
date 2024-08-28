@@ -64,7 +64,7 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean, setup: (editor: Editor) => void): RawEditorOptionsExtended {
+  buildOptions(selectorClass: string, fixedToolbarClass: string, modeIsInline: boolean, setup: (editor: Editor) => void): RawEditorOptionsExtended {
     const connector = this.connector;
     const exp = connector._experimental;
     // Create a TinyMceModeConfig object with bool only
@@ -90,7 +90,7 @@ export class TinyMceConfigurator {
 
     const options: RawEditorOptionsExtended = {
       ...wysiwygConfiguration.tinyMce,
-      selector: `.${containerClass}`,
+      selector: `.${selectorClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
       content_css: contentCssFile,
