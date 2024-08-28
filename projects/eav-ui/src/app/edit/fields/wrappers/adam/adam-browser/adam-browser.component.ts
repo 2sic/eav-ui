@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable, startWith } from 'rxjs';
 import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
-import { EditForm } from '../../../../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../../../../shared/models/edit-form.model';
 import { FileTypeHelpers } from '../../../../shared/helpers';
 import { AdamConfigInstance } from './adam-browser.models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -194,9 +194,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (!folderName) return;
 
-    this.adamService.addFolder(folderName, this.url, this.adamConfig$.value).subscribe(res => {
-      this.fetchItems();
-    });
+    this.adamService.addFolder(folderName, this.url, this.adamConfig$.value)
+      .subscribe(() => this.fetchItems());
   }
 
   del(item: AdamItem) {
@@ -205,26 +204,19 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (!ok) return;
 
-    this.adamService.deleteItem(item, this.url, this.adamConfig$.value).subscribe(res => {
-      this.fetchItems();
-    });
+    this.adamService.deleteItem(item, this.url, this.adamConfig$.value)
+      .subscribe(() => this.fetchItems());
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
-    if (this.formsStateService.readOnly().isReadOnly || !contentTypeName) return;
+    if (this.formsStateService.readOnly().isReadOnly || !contentTypeName)
+      return;
 
     const form: EditForm = {
       items: [
         metadataId > 0
-          ? { EntityId: metadataId }
-          : {
-            ContentTypeName: contentTypeName,
-            For: {
-              Target: eavConstants.metadata.cmsObject.target,
-              TargetType: eavConstants.metadata.cmsObject.targetType,
-              String: adamItem.ReferenceId,
-            },
-          },
+          ? EditPrep.editId(metadataId)
+          : EditPrep.newMetadata(adamItem.ReferenceId, contentTypeName, eavConstants.metadata.cmsObject),
       ],
     };
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
@@ -297,6 +289,11 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     this.config.adam.onItemClick(item);
   }
 
+  /**
+   * 
+   * Note: since all fetch-items happen in a timeout or subscribe, it doesn't need to be in the NgZone
+   * @returns 
+   */
   private fetchItems() {
     const adamConfig = this.adamConfig$.value;
     if (adamConfig == null) return;
@@ -307,14 +304,13 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
       if (adamItems) {
         const clonedItems = adamItems.map(adamItem => ({ ...adamItem } satisfies AdamItem));
-        setTimeout(() => { this.processFetchedItems(clonedItems, adamConfig); });
+        setTimeout(() => this.processFetchedItems(clonedItems, adamConfig));
         return;
       }
     }
 
-    this.adamService.getAll(this.url, adamConfig).subscribe(items => {
-      this.processFetchedItems(items, adamConfig);
-    });
+    this.adamService.getAll(this.url, adamConfig)
+      .subscribe(items => this.processFetchedItems(items, adamConfig));
   }
 
   openFeatureInfoDialog() {

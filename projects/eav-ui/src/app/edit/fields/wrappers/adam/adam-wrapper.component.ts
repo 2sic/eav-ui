@@ -31,10 +31,6 @@ export class AdamWrapperComponent implements OnInit, OnDestroy, AfterViewInit {
   adamDisabled = signal<boolean>(true);
   subscriptions = new Subscription();
 
-  constructor() {
-    console.log('2dm-wrapper.component.ts');
-  }
-
   ngOnInit() {
     this.fullscreenAdam = this.config.inputTypeSpecs.inputType === InputTypeCatalog.HyperlinkLibrary;
   }
