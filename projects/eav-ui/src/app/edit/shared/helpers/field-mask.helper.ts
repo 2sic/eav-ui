@@ -44,7 +44,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
 
   /** Fields used in the mask */
   // #fieldsUsedInMask: string[] = [];
-  #fieldsUsedInMask = computed(() => this.extractFieldNames(this.#mask()));
+  #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
 
   constructor(private injector: Injector) {
     super(new EavLogger(nameOfThis, logThis));
@@ -81,7 +81,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     // mut happen before updateMask
     if (watch != null) this.#watch.set(watch);
     this.#maskText.set(mask ?? '');
-    this.updateMaskFinal();
+    this.#updateMaskFinal();
     return l.r(this, 'first result:' + this.result());
   }
 
@@ -90,7 +90,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     // mut happen before updateMask
     if (watch != null) this.#watch.set(watch);
     this.#maskSignal.set(mask);
-    this.updateMaskFinal();
+    this.#updateMaskFinal();
     return this;
   }
 
@@ -104,19 +104,22 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     return this;
   }
 
-  private updateMaskFinal() {
+  #updateMaskFinal() {
     // bind auto-watch only if needed...
     // otherwise it's just on-demand
     if (this.#watch() || this.#callback)
-      this.watchAllFields();
+      this.#watchAllFields();
 
-    this.onChange();
+    this.#onChange();
   }
 
 
 
-  /** Resolves a mask to the final value */
-  resolve(): string {
+  /**
+   * Process a mask to the final value
+   * @deprecated use result() instead - still WIP. Once all use result(), remove this warning
+   */
+  process(): string {
 
     // if no mask, exit early
     if (!hasPlaceholders(this.#mask()))
@@ -142,7 +145,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   }
 
   /** Retrieves a list of all fields used in the mask */
-  private extractFieldNames(mask: string): string[] {
+  #extractFieldNames(mask: string): string[] {
     // exit early if mask very simple or not a mask
     if (!mask || !hasPlaceholders(mask))
       return [];
@@ -168,8 +171,8 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   }
 
   /** Change-event - will only fire if it really changes */
-  private onChange() {
-    const maybeNew = this.resolve();
+  #onChange() {
+    const maybeNew = this.process();
     if (this.result() !== maybeNew) {
       this.result.set(maybeNew);
       this.#callback?.(maybeNew);
@@ -180,12 +183,12 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
    * Add watcher and execute onChange.
    * Uses observables, since that's what angular provides on valueChanges.
    */
-  private watchAllFields() {
+  #watchAllFields() {
     // add a watch for each field in the field-mask
     this.#fieldsUsedInMask().forEach(field => {
       const control = this.#controls[field];
       if (!control) return;
-      const valueSub = control.valueChanges.subscribe(_ => this.onChange());
+      const valueSub = control.valueChanges.subscribe(_ => this.#onChange());
       this.subscriptions.add(valueSub);
     });
   }

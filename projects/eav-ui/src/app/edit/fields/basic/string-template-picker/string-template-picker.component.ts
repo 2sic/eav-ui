@@ -65,8 +65,9 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
+  private sourceService = transient(SourceService);
+
   constructor(
-    private sourceService: SourceService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) { }
@@ -86,8 +87,8 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
       .initCallback(this.onLocationChange.bind(this))
       .init('String-LocationMask', '[Location]');
 
-    this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
-    this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
+    this.setFileConfig(this.typeMask.result() || 'Token'); // use token setting as default, till the UI tells us otherwise
+    this.onLocationChange(this.locationMask.result() || null); // set initial file list
   }
 
   ngOnDestroy() {
@@ -131,7 +132,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
       global: this.global,
       purpose: this.activeSpec.purpose,
       type: this.activeSpec.type,
-      name: nameMask.resolve(),
+      name: nameMask.result(),
     };
     nameMask.destroy();
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {

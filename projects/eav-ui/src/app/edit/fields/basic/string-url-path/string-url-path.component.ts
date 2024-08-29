@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { StringUrlPathLogic } from './string-url-path-logic';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,10 +10,8 @@ import { FieldMask, UrlHelpers } from '../../../shared/helpers';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { BaseComponent } from '../../../../shared/components/base.component';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 const logThis = false;
@@ -33,7 +31,10 @@ const nameOfThis = 'StringUrlPathComponent';
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class StringUrlPathComponent extends BaseComponent implements OnInit, OnDestroy {
+export class StringUrlPathComponent {
+  /** Logger, must be early as it's used in the ... */
+  log = new EavLogger(nameOfThis, logThis);
+
 
   protected fieldState = inject(FieldState);
 
@@ -56,18 +57,17 @@ export class StringUrlPathComponent extends BaseComponent implements OnInit, OnD
   /** The Field-Mask Helper which will continuously parse the result */
   #fieldMask = transient(FieldMask)
     .initPreClean((_, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
-    .initCallback((newValue) => this.#onSourcesChanged(newValue))
-    .initSignal('UrlPath', this.#maskFromSettings)
+    // .initCallback((newValue) => this.#onSourcesChanged(newValue))
+    .initSignal('UrlPath', this.#maskFromSettings, true)
     .logChanges();
 
   /** The cleaned value, ready for broadcasting back to the field */
   #maskedValueCleaned = computed(() => {
-    const newValue = this.#fieldMask.resolve();
+    const newValue = this.#fieldMask.result();
     return UrlHelpers.stripNonUrlCharacters(newValue, this.settings().AllowSlashes, true);
   });
 
   constructor() {
-    super(new EavLogger(nameOfThis, logThis));
     StringUrlPathLogic.importMe();
 
     // Listen to value changes to correct spaces and other non-allowed characters
@@ -75,11 +75,14 @@ export class StringUrlPathComponent extends BaseComponent implements OnInit, OnD
       const _ = this.fieldState.uiValue();
       this.clean(false);
     });
+
+    // Listen to the mask changes to update the field
+    effect(() => {
+      const maskResult = this.#fieldMask.result();
+      this.#onSourcesChanged(maskResult);
+    }, { allowSignalWrites: true });
   }
 
-  ngOnInit() {
-    this.log.a('ngOnInit');
-  }
 
   #onSourcesChanged(newValue: string) {
     const l = this.log.fn('#onSourcesChanged', { newValue });

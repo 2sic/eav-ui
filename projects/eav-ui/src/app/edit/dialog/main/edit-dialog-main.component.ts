@@ -25,7 +25,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FormDataService } from '../../shared/services/form-data.service';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
-import { SourceService } from '../../../code-editor/services/source.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
