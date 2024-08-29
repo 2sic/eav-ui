@@ -216,7 +216,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     try {
       const prefillRaw = this.fieldState.settings().Prefill;
       const prefillMask = transient(FieldMask, this.injector).init('Prefill', prefillRaw, false);
-      const prefill = prefillMask.process();
+      const prefill = prefillMask.result();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }
       const result: Record<string, string> = {};

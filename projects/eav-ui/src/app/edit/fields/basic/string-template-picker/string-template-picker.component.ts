@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit, ViewContainerRef, inject, signal } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { templateTypes } from './string-template-picker.constants';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,6 +21,11 @@ import { transient } from '../../../../core/transient';
 import { SourceService } from '../../../../code-editor/services/source.service';
 import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog.component';
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { take } from 'rxjs';
+
+const logThis = true;
+const nameOfThis = 'StringTemplatePickerComponent';
 
 @Component({
   selector: InputTypeCatalog.StringTemplatePicker,
@@ -42,7 +47,9 @@ import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create
   ],
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
-export class StringTemplatePickerComponent implements OnInit, OnDestroy {
+export class StringTemplatePickerComponent implements OnDestroy {
+  log = new EavLogger(nameOfThis, logThis);
+
   protected fieldState = inject(FieldState);
   protected group = this.fieldState.group;
   protected config = this.fieldState.config;
@@ -55,9 +62,13 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   templateOptions = signal([]);
 
   // needed to create more FieldMasks as needed
-  private injector = inject(Injector);
-  private typeMask = transient(FieldMask);
-  private locationMask = transient(FieldMask);
+  #injector = inject(Injector);
+
+  // If we have a configured type, use that, otherwise use the field mask
+  // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
+  #typeMask = transient(FieldMask).init('String-TypeMask', this.fieldState.settings().FileType ?? '[Type]', true);
+
+  #locationMask = transient(FieldMask).init('String-LocationMask', '[Location]', true);
 
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
@@ -70,30 +81,17 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) { }
+  ) {
+    // Watch for location changes to update the files in the dropdown
+    effect(() => this.onLocationChange(this.#locationMask.result()));
 
-  ngOnInit() {
-
-    // If we have a configured type, use that, otherwise use the field mask
-    // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-    const typeFilterMask = this.fieldState.settings().FileType ?? '[Type]';
-
-    // set change-watchers to the other values
-    // console.log('2dm: typedMask', this.typeMask);
-    this.typeMask
-      .initCallback(this.setFileConfig.bind(this))
-      .init('String-TypeMask', typeFilterMask);
-    this.locationMask
-      .initCallback(this.onLocationChange.bind(this))
-      .init('String-LocationMask', '[Location]');
-
-    this.setFileConfig(this.typeMask.result() || 'Token'); // use token setting as default, till the UI tells us otherwise
-    this.onLocationChange(this.locationMask.result() || null); // set initial file list
+    // Watch for changes to the Type mask
+    effect(() => this.setFileConfig(this.#typeMask.result()), { allowSignalWrites: true });
   }
 
   ngOnDestroy() {
-    this.typeMask.destroy();
-    this.locationMask.destroy();
+    this.#typeMask.destroy();
+    this.#locationMask.destroy();
   }
 
   private setFileConfig(type: string) {
@@ -101,11 +99,19 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
     this.setTemplateOptions();
   }
 
+  #prevLocation = '';
   private onLocationChange(location: string) {
-    this.global = (location === 'Host File System' // Original value used from 2sxc up until v12.01
-      || location === 'Global'); // New key used in 2sxc 12.02 and later
+    const l = this.log.fn('onLocationChange', { location });
+    this.global = (
+      location === 'Host File System' // Original value used from 2sxc up until v12.01
+      || location === 'Global' // New key used in 2sxc 12.02 and later
+    );
 
-    this.sourceService.getAll().subscribe(files => {
+    if (this.#prevLocation === location)
+      return;
+    this.#prevLocation = location;
+
+    this.sourceService.getAll().pipe(take(1)).subscribe(files => {
       this.templates = files.filter(file => file.Shared === this.global).map(file => file.Path);
       this.resetIfNotFound = true;
       this.setTemplateOptions();
@@ -121,13 +127,12 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
     this.templateOptions.set(filtered);
 
     const resetValue = this.resetIfNotFound && !filtered.some(template => template === this.control.value);
-    if (resetValue) {
+    if (resetValue)
       ControlHelpers.patchControlValue(this.control, '');
-    }
   }
 
   createTemplate() {
-    const nameMask = transient(FieldMask, this.injector).init('String-NameMask', '[Name]', false);
+    const nameMask = transient(FieldMask, this.#injector).init('String-NameMask', '[Name]', false);
     const data: CreateFileDialogData = {
       global: this.global,
       purpose: this.activeSpec.purpose,
@@ -143,7 +148,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
-      if (!result) { return; }
+      if (!result) return;
 
       this.sourceService.create(result.name, this.global, result.templateKey).subscribe(res => {
         if (res === false) {

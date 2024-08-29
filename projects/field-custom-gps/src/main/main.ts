@@ -68,7 +68,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.log.a(`${gpsDialogTag} addressMask:`, {addressMaskSetting});
     if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');
-      formattedAddressContainer.innerText = this.addressMask.process();
+      formattedAddressContainer.innerText = this.addressMask.result();
     }
 
     // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
@@ -153,7 +153,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   private autoSelect(): void {
     this.log.a(`${gpsDialogTag} geocoder called`);
-    const address = this.addressMask.process();
+    const address = this.addressMask.result();
     this.geocoder.geocode({
       address,
     }, (results, status) => {

@@ -23,17 +23,12 @@ const FieldUnwrap = /[\[\]]/ig;
 export class FieldMask extends ServiceBase /* for field-change subscription */ implements OnDestroy {
   public result = signal<string>('');
 
-  #watch = signal(false);
-
-
   #fieldState = inject(FieldState);
 
   #controls = this.#fieldState.group.controls;
   #fieldConfig = this.#fieldState.config;
 
   #formConfig = inject(FormConfigService);
-
-  #callback?: (newValue: string) => void;
 
   /** The mask as text */
   #maskText = signal<string | null>('');
@@ -43,7 +38,6 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   #mask = computed(() => this.#maskSignal()?.() ?? this.#maskText());
 
   /** Fields used in the mask */
-  // #fieldsUsedInMask: string[] = [];
   #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
 
   constructor(private injector: Injector) {
@@ -62,24 +56,10 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     return this;
   }
 
-  /**
-   * attach a callback.
-   * Someday should simply be replaced to use the signal instead.
-   * @param callback
-   * @returns
-   */
-  public initCallback(callback: (newValue: string) => void): this {
-    this.log.a('initCallback');
-    this.#callback = callback;
-    this.#watch.set(true);
-    return this;
-  }
-
   public init(name: string, mask: string, watch?: boolean): this {
     this.log.rename(`${this.log.name}-${name}`);
     const l = this.log.fn('init', { name, mask, watch });
     // mut happen before updateMask
-    if (watch != null) this.#watch.set(watch);
     this.#maskText.set(mask ?? '');
     this.#updateMaskFinal();
     return l.r(this, 'first result:' + this.result());
@@ -88,7 +68,6 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   public initSignal(name: string, mask: Signal<string>, watch?: boolean): this {
     this.log.rename(`${this.log.name}-${name}`);
     // mut happen before updateMask
-    if (watch != null) this.#watch.set(watch);
     this.#maskSignal.set(mask);
     this.#updateMaskFinal();
     return this;
@@ -107,8 +86,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   #updateMaskFinal() {
     // bind auto-watch only if needed...
     // otherwise it's just on-demand
-    if (this.#watch() || this.#callback)
-      this.#watchAllFields();
+    this.#watchAllFields();
 
     this.#onChange();
   }
@@ -173,10 +151,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   /** Change-event - will only fire if it really changes */
   #onChange() {
     const maybeNew = this.process();
-    if (this.result() !== maybeNew) {
-      this.result.set(maybeNew);
-      this.#callback?.(maybeNew);
-    }
+    this.result.set(maybeNew);
   }
 
   /**

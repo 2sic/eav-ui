@@ -57,7 +57,6 @@ export class StringUrlPathComponent {
   /** The Field-Mask Helper which will continuously parse the result */
   #fieldMask = transient(FieldMask)
     .initPreClean((_, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
-    // .initCallback((newValue) => this.#onSourcesChanged(newValue))
     .initSignal('UrlPath', this.#maskFromSettings, true)
     .logChanges();
 
