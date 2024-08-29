@@ -21,21 +21,28 @@ const FieldUnwrap = /[\[\]]/ig;
  */
 @Injectable()
 export class FieldMask extends ServiceBase /* for field-change subscription */ implements OnDestroy {
+
+  /**
+   * The result of the mask as a signal, for external use/subscribing.
+   */
   public result = signal<string>('');
 
   #fieldState = inject(FieldState);
-
   #controls = this.#fieldState.group.controls;
   #fieldConfig = this.#fieldState.config;
-
   #formConfig = inject(FormConfigService);
 
-  /** The mask as text */
-  #maskText = signal<string | null>('');
+  /**
+   * The mask as a signal.
+   * This allows us to use a simple value or a possibly runtime-changing mask. 
+   */
+  #maskSignal = signal<Signal<string>>(signal<string>(''));
 
-  /** The mask as a signal - in case we attach it directly to a computed */
-  #maskSignal = signal<Signal<string>>(null);
-  #mask = computed(() => this.#maskSignal()?.() ?? this.#maskText());
+  /**
+   * The final mask to use - either picking the signal or the text
+   * TODO: we should be able to simplify this to just use a signal
+   */
+  #mask = computed(() => this.#maskSignal()());
 
   /** Fields used in the mask */
   #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
@@ -49,37 +56,36 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     this.destroy();
   }
 
-  /** Attach any processing events before the mask is resolved the first time */
+  /**
+   * Attach any processing events before the mask is resolved the first time
+   */
   public initPreClean(overloadPreCleanValues: (key: string, value: string) => string): this {
     this.log.a('initPreClean');
     this.preClean = overloadPreCleanValues;
     return this;
   }
 
-  public init(name: string, mask: string, watch?: boolean): this {
+  public init(name: string, mask: string): this {
+    this.initSignal(name, signal(mask));
+    return this;
+  }
+
+  public initSignal(name: string, mask: Signal<string>): this {
     this.log.rename(`${this.log.name}-${name}`);
-    const l = this.log.fn('init', { name, mask, watch });
-    // mut happen before updateMask
-    this.#maskText.set(mask ?? '');
+    const l = this.log.fn('init', { name, mask });
+    this.#maskSignal.set(mask);
     this.#updateMaskFinal();
     return l.r(this, 'first result:' + this.result());
   }
 
-  public initSignal(name: string, mask: Signal<string>, watch?: boolean): this {
-    this.log.rename(`${this.log.name}-${name}`);
-    // mut happen before updateMask
-    this.#maskSignal.set(mask);
-    this.#updateMaskFinal();
-    return this;
-  }
-
+  /**
+   * Activate an aggressive change logger to debug what's happening.
+   * Should only be used in development, as it will log a lot of data to the console.
+   */
   public logChanges(): this {
     // use logger, but if not enabled, create new just for this
     const l = this.log.enabled ? this.log : new EavLogger(nameOfThis, true);
-    effect(() => {
-      const latest = this.result();
-      l.a(`Mask '${this.#mask()}' value changed to: ${latest}`);
-    }, { injector: this.injector });
+    effect(() => l.a(`Mask '${this.#mask()}' value changed to: ${this.result()}`), { injector: this.injector });
     return this;
   }
 
@@ -87,23 +93,22 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     // bind auto-watch only if needed...
     // otherwise it's just on-demand
     this.#watchAllFields();
-
     this.#onChange();
   }
 
 
 
   /**
-   * Process a mask to the final value
-   * @deprecated use result() instead - still WIP. Once all use result(), remove this warning
+   * Process a mask to the get the final value
    */
-  process(): string {
+  #process(): string {
 
     // if no mask, exit early
     if (!hasPlaceholders(this.#mask()))
       return this.#mask();
 
     let value = lowercaseInsideSquareBrackets(this.#mask());
+
     if (this.#formConfig != null)
       value = value
         .replace('[app:appid]', this.#formConfig.config.appId.toString())
@@ -143,14 +148,15 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     return result;
   }
 
-  /** Default preClean function, if no other function was specified for this */
-  private preClean(key: string, value: string): string {
-    return value;
-  }
+  /**
+   * Default preClean function, if no other function was specified for this
+   * Will be replaced if need be.
+   */
+  private preClean(key: string, value: string): string { return value; }
 
   /** Change-event - will only fire if it really changes */
   #onChange() {
-    const maybeNew = this.process();
+    const maybeNew = this.#process();
     this.result.set(maybeNew);
   }
 

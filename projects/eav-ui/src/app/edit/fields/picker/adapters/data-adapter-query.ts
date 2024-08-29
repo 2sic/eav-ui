@@ -27,7 +27,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
-      fieldMask = transient(FieldMask, this.injector).init(logName, urlParameters, true);
+      fieldMask = transient(FieldMask, this.injector).init(logName, urlParameters);
     });
     return fieldMask;
   });

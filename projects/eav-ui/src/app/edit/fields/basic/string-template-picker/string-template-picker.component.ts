@@ -66,9 +66,9 @@ export class StringTemplatePickerComponent implements OnDestroy {
 
   // If we have a configured type, use that, otherwise use the field mask
   // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-  #typeMask = transient(FieldMask).init('String-TypeMask', this.fieldState.settings().FileType ?? '[Type]', true);
+  #typeMask = transient(FieldMask).init('String-TypeMask', this.fieldState.settings().FileType ?? '[Type]');
 
-  #locationMask = transient(FieldMask).init('String-LocationMask', '[Location]', true);
+  #locationMask = transient(FieldMask).init('String-LocationMask', '[Location]');
 
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
@@ -132,7 +132,7 @@ export class StringTemplatePickerComponent implements OnDestroy {
   }
 
   createTemplate() {
-    const nameMask = transient(FieldMask, this.#injector).init('String-NameMask', '[Name]', false);
+    const nameMask = transient(FieldMask, this.#injector).init('String-NameMask', '[Name]');
     const data: CreateFileDialogData = {
       global: this.global,
       purpose: this.activeSpec.purpose,

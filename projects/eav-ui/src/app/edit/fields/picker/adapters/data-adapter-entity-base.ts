@@ -46,7 +46,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
-      fieldMask = transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask, true);
+      fieldMask = transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask);
     });
     return fieldMask;
   });
@@ -215,7 +215,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
       const prefillRaw = this.fieldState.settings().Prefill;
-      const prefillMask = transient(FieldMask, this.injector).init('Prefill', prefillRaw, false);
+      const prefillMask = transient(FieldMask, this.injector).init('Prefill', prefillRaw);
       const prefill = prefillMask.result();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

@@ -170,8 +170,8 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       },
       getSettings: (name) => this.formConfig.config.settings?.Values[name],
 
-      getFieldMask: (mask: string, name?: string, watch?: boolean) => {
-        return transient(FieldMask, this.injector).init(name, mask, watch);
+      getFieldMask: (mask: string, name?: string) => {
+        return transient(FieldMask, this.injector).init(name, mask);
       },
     };
 

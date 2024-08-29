@@ -32,8 +32,6 @@ const nameOfThis = 'StringUrlPathComponent';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringUrlPathComponent {
-  /** Logger, must be early as it's used in the ... */
-  log = new EavLogger(nameOfThis, logThis);
 
 
   protected fieldState = inject(FieldState);
@@ -56,15 +54,17 @@ export class StringUrlPathComponent {
 
   /** The Field-Mask Helper which will continuously parse the result */
   #fieldMask = transient(FieldMask)
+    // .logChanges()
     .initPreClean((_, value) => typeof value === 'string' ? value.replace('/', '-').replace('\\', '-') : value)
-    .initSignal('UrlPath', this.#maskFromSettings, true)
-    .logChanges();
+    .initSignal('UrlPath', this.#maskFromSettings);
 
   /** The cleaned value, ready for broadcasting back to the field */
   #maskedValueCleaned = computed(() => {
     const newValue = this.#fieldMask.result();
     return UrlHelpers.stripNonUrlCharacters(newValue, this.settings().AllowSlashes, true);
   });
+
+  log = new EavLogger(nameOfThis, logThis);
 
   constructor() {
     StringUrlPathLogic.importMe();
@@ -76,24 +76,18 @@ export class StringUrlPathComponent {
     });
 
     // Listen to the mask changes to update the field
-    effect(() => {
-      const maskResult = this.#fieldMask.result();
-      this.#onSourcesChanged(maskResult);
-    }, { allowSignalWrites: true });
+    effect(() => this.#publishFieldMaskResult(this.#maskedValueCleaned()), { allowSignalWrites: true });
   }
 
 
-  #onSourcesChanged(newValue: string) {
-    const l = this.log.fn('#onSourcesChanged', { newValue });
-
-    const cleaned = UrlHelpers.stripNonUrlCharacters(newValue, this.settings().AllowSlashes, true);
+  #publishFieldMaskResult(cleanedNewValue: string) {
+    const l = this.log.fn('#onSourcesChanged', { newValue: cleanedNewValue });
 
     const v = {
-      newValue,
       uiValue: this.control.value,
       lastAutoCopy: this.#lastAutoCopy(),
       allowSlashes: this.settings().AllowSlashes,
-      cleaned, //: this.#maskedValueCleaned() as string,
+      cleaned: cleanedNewValue,
     };
 
     // Exit early if the UI is a) not empty and b) doesn't have the last copy of the stripped value
