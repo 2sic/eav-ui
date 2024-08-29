@@ -1,7 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import { FieldValue } from '../../../../../../edit-types';
 
-export interface ControlStatus<T = FieldValue> {
+export interface ControlStatus<T extends FieldValue> {
   dirty: boolean;
   disabled: boolean;
   invalid: boolean;
@@ -12,7 +12,7 @@ export interface ControlStatus<T = FieldValue> {
   value: T;
 }
 
-export const emptyControlStatus: ControlStatus<unknown> = {
+export const emptyControlStatus: ControlStatus<FieldValue> = {
   value: null,
   disabled: true,
   dirty: false,
@@ -21,7 +21,7 @@ export const emptyControlStatus: ControlStatus<unknown> = {
   touchedAndInvalid: false
 };
 
-export function controlToControlStatus<T>(control: AbstractControl, moreDisabled: boolean): ControlStatus<T> {
+export function controlToControlStatus<T extends FieldValue>(control: AbstractControl, moreDisabled: boolean): ControlStatus<T> {
   const touched = control.touched;
   const invalid = control.invalid;
   // must merge the control status with settings, as the control often has a

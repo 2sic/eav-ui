@@ -5,14 +5,14 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export class ControlHelpers {
 
-
   /** Searches where newValues has values different from oldValues */
   static getFormChanges(oldValues: ItemValuesOfLanguage, newValues: ItemValuesOfLanguage): ItemValuesOfLanguage {
     const changes: ItemValuesOfLanguage = {};
     for (const key of Object.keys(newValues)) {
       const newValue = newValues[key];
       const oldValue = oldValues[key];
-      if (this.controlValuesEqual(newValue, oldValue)) { continue; }
+      if (this.controlValuesEqual(newValue, oldValue))
+        continue;
 
       changes[key] = newValue;
     }
@@ -21,7 +21,8 @@ export class ControlHelpers {
 
   /** TODO: Try to remove this by assigning controls [formControlName] in [formGroup] */
   static markControlTouched(control: AbstractControl): void {
-    if (control.touched) { return; }
+    if (control.touched)
+      return;
 
     control.markAsTouched();
     control.updateValueAndValidity();
@@ -30,19 +31,20 @@ export class ControlHelpers {
 
   /** Use to update form controls value */
   static patchControlValue(control: AbstractControl, newValue: FieldValue): void {
-    if (!control.touched) {
+    if (!control.touched)
       control.markAsTouched();
-    }
-    if (!control.dirty && !this.controlValuesEqual(control.value, newValue)) {
+
+    if (!control.dirty && !this.controlValuesEqual(control.value, newValue))
       control.markAsDirty();
-    }
+
     control.patchValue(newValue);
   }
 
 
   /** Disables/enables control if not already disabled/enabled. Use this helper to trigger fewer events on the form */
   static disableControl(control: AbstractControl, disable: boolean) {
-    if (control.disabled === disable) return;
+    if (control.disabled === disable)
+      return;
 
     if (disable)
       control.disable();

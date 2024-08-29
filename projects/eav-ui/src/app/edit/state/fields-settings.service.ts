@@ -26,6 +26,7 @@ import { LanguageInstanceService } from '../shared/store/language-instance.servi
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { ContentTypeItemService } from '../shared/store/content-type-item.service';
 import { ItemService } from '../shared/store/item.service';
+import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -106,12 +107,12 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   });
 
   /** The settings of the content-type of this item */
-  contentTypeSettings = computed(() => !this.#item()
+  public contentTypeSettings = computed(() => !this.#item()
     ? null
     : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header)
   );
 
-  fieldSignals: FieldsSignalsHelper;
+  #fieldSignals: FieldsSignalsHelper;
 
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
@@ -120,7 +121,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.#itemGuid.set(entityGuid);
     const item = this.itemService.get(entityGuid);
     this.#item.set(item);
-    this.fieldSignals = new FieldsSignalsHelper(entityGuid, this.#item, this.entityReader, this.itemService);
+    this.#fieldSignals = new FieldsSignalsHelper(entityGuid, this.#item, this.entityReader, this.itemService);
 
     const contentType = this.#contentType();
     const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
@@ -246,11 +247,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
    */
   getLatestFieldSettings(constFieldPart: FieldConstantsOfLanguage): FieldSettings {
-    const latestProps = this.#fieldPropsLatest[constFieldPart.fieldName];
+    const latest = this.#fieldPropsLatest[constFieldPart.fieldName];
     // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
-    const cachedLanguageUnchanged = constFieldPart.language == latestProps?.language;
-    const latestSettings: FieldSettings = cachedLanguageUnchanged
-      ? latestProps?.settings ?? { ...constFieldPart.settingsInitial }
+    const cachedStillValid = constFieldPart.language == latest?.language;
+    const latestSettings: FieldSettings = cachedStillValid
+      ? latest?.settings ?? { ...constFieldPart.settingsInitial }
       : { ...constFieldPart.settingsInitial };
     return latestSettings;
   }
@@ -329,14 +330,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
-    const cached = this.signalsCache[fieldName];
-    if (cached) return cached;
-    var sig = computed(() => {
-      return this.getFieldSettings(fieldName); // will access the signal...
-    }, { equal: RxHelpers.objectsEqual });
-    return this.signalsCache[fieldName] = sig; // note: no initial value, it should always be up-to-date
+    /* will access the signal internally, so it's "hot" */
+    return this.#fieldSignalsCache.getOrCreate(fieldName, () => this.getFieldSettings(fieldName));
   }
-  private signalsCache: Record<string, Signal<FieldSettings>> = {};
+  #fieldSignalsCache = new ComputedCacheHelper<string, FieldSettings>();
 
   /**
    * Used for translation state stream for a specific field.
@@ -353,14 +350,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Translation state stream
    */
   getTranslationStateSignal(fieldName: string): Signal<TranslationState> {
-    const cached = this.signalsTransStateCache[fieldName];
-    if (cached) return cached;
-    var sig = computed(() => this.fieldsProps()[fieldName].translationState, { equal: RxHelpers.objectsEqual });
-    return this.signalsTransStateCache[fieldName] = sig; // note: no initial value, it should always be up-to-date
-    // var obs = this.getTranslationState$(fieldName);
-    // return this.signalsTransStateCache[fieldName] = toSignal(obs); // note: no initial value, it should always be up-to-date
+    return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.fieldsProps()[fieldName].translationState);
   }
-  private signalsTransStateCache: Record<string, Signal<TranslationState>> = {};
+  #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>();
 
   /**
    * Triggers a reevaluation of all formulas.

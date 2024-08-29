@@ -13,6 +13,8 @@ import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
 import { InputTypeSpecs } from '../../state/fields-configs.model';
+import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
+import { FieldValue } from 'projects/edit-types';
 
 const logThis = false;
 const nameOfThis = 'FieldInjectorService';
@@ -52,7 +54,7 @@ export class FieldInjectorService {
 
     // Control and Control Status
     const control = this.group.controls[fieldName];
-    let controlStatusChangeSignal: Signal<ControlStatus<unknown>>;
+    let controlStatusChangeSignal: Signal<ControlStatus<FieldValue>>;
 
     // Create a signal to watch for value changes
     // Note: 2dm is not sure if this is a good thing to provide, since it could be misused
@@ -63,12 +65,11 @@ export class FieldInjectorService {
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
         const disabled$ = settings$.pipe(
-          map(s => s.Disabled || s.ForcedDisabled),
-          mapUntilObjChanged(m => m)
+          mapUntilObjChanged(s => s.Disabled || s.ForcedDisabled),
         );
         const controlStatus$ = combineLatest([control.valueChanges, disabled$]).pipe(
           tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
-          mapUntilObjChanged(([_, disabled]) => controlToControlStatus(control, disabled)),
+          mapUntilObjChanged(([_, disabled]) => controlToControlStatus(control, disabled) as ControlStatus<FieldValue>),
           tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
         );
 
@@ -88,6 +89,8 @@ export class FieldInjectorService {
       }
     }
 
+    /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
+    const uiValue: Signal<FieldValue> = computed(() => controlStatusChangeSignal().value, SignalHelpers.objectEquals);
 
     const fieldState = new FieldState(
       fieldName,
@@ -98,6 +101,7 @@ export class FieldInjectorService {
       settings,
       basics,
       controlStatusChangeSignal,
+      uiValue,
     );
 
     const providers = [

@@ -18,7 +18,7 @@ import { FieldsProps } from './fields-configs.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsTranslateService';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
@@ -149,9 +149,7 @@ export class FieldsTranslateService {
             const elem = document.createElement('textarea');
             elem.innerHTML = translation.translatedText;
             if (!isMany && doFieldsHaveExistingDimension[i]) {
-              this.updater.updateItemAttributeValue(
-                this.entityGuid, fieldNames[i], elem.value, language, false
-              );
+              this.updater.updateItemAttributeValue(this.entityGuid, fieldNames[i], elem.value, language, false);
             } else if (!doFieldsHaveExistingDimension[i]) {
               this.addItemAttributeValueHelper(fieldNames[i], elem.value, language.current, false);
             }

@@ -52,7 +52,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   });
 
 
-  protected contentType = computed(() => this.contentTypeMaskLazy()?.signal() ?? '', SignalHelpers.stringEquals);
+  protected contentType = computed(() => this.contentTypeMaskLazy()?.result() ?? '', SignalHelpers.stringEquals);
 
   private createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalHelpers.stringEquals);
 

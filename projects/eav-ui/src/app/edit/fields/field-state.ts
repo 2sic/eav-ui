@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { FieldSettings } from '../../../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
@@ -10,7 +10,7 @@ import { ControlStatus } from '../shared/models/control-status.model';
  * This is provided / injected at the fields-builder for every single field.
  * So any control or service within that field, which requests this service, will get one containing exactly that fields.
  */
-export class FieldState {
+export class FieldState<T extends FieldValue> {
   constructor(
     /** The fields technical name to access settings etc. */
     public name: string,
@@ -33,6 +33,13 @@ export class FieldState {
     /** The basic settings - use this for most cases as it will change less than the settings signal */
     public basics: Signal<BasicControlSettings>,
 
-    public controlStatus: Signal<ControlStatus<unknown>>,
+    /**
+     * @deprecated Not really deprecated, but we just introduced uiValue below, which should be used in most cases
+     * remove the @deprecated once we've checked all uses
+     * also make sure we optimize casting, since now we can cast it to FieldState<string>
+     */
+    public controlStatus: Signal<ControlStatus<T>>,
+
+    public uiValue: Signal<T>,
   ) { }
 }
