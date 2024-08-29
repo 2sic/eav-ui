@@ -1,7 +1,8 @@
 <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
   <div class="icon-option">
-    @if (controlStatus().value) {
-      <i class="icon-preview {{ previewCss() }} {{ controlStatus().value }}"></i>
+    @if (uiValue())
+    {
+      <i class="icon-preview {{ previewCss() }} {{ uiValue() }}"></i>
     }
     <input matInput class="eav-translate-on-dblclick"
       [formControlName]="config.fieldName"

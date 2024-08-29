@@ -2,7 +2,7 @@ import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, Optional, Signal, computed, inject, signal } from '@angular/core';
+import { Injectable, Optional, computed, inject, signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
@@ -11,7 +11,6 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
-import { ControlStatus } from '../../../shared/models/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'StateAdapter';
@@ -20,7 +19,7 @@ const nameOfThis = 'StateAdapter';
 export class StateAdapter extends ServiceBase {
 
   public formConfigSvc = inject(FormConfigService);
-  private fieldState = inject(FieldState);
+  private fieldState = inject(FieldState) as FieldState<string | string[]>;
 
   public isInFreeTextMode = signal(false, SignalHelpers.boolEquals);
 
@@ -37,7 +36,7 @@ export class StateAdapter extends ServiceBase {
   }, { equal: RxHelpers.arraysEqual });
 
   protected readonly settings = this.fieldState.settings;
-  public controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string | string[]>>;
+  public controlStatus = this.fieldState.controlStatus;
   public basics = this.fieldState.basics;
 
 

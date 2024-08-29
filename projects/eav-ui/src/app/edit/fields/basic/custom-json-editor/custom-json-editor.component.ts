@@ -32,11 +32,11 @@ import { ControlStatus } from '../../../shared/models/control-status.model';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomJsonEditorComponent {
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<string>;
   protected config = this.fieldState.config;
   protected control = this.fieldState.control;
 
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected controlStatus = this.fieldState.controlStatus;
   protected basics = this.fieldState.basics;
   protected settings = this.fieldState.settings;
 

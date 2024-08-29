@@ -39,28 +39,28 @@ import { ControlStatus } from '../../../shared/models/control-status.model';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringFontIconPickerComponent {
 
-  protected fieldState = inject(FieldState);
+  #fieldState = inject(FieldState) as FieldState<string>;
 
-  protected group = this.fieldState.group;
-  protected config = this.fieldState.config;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected group = this.#fieldState.group;
+  protected config = this.#fieldState.config;
+  protected uiValue = this.#fieldState.uiValue;
 
-  protected settings = this.fieldState.settings;
-  protected basics = this.fieldState.basics;
+  #settings = this.#fieldState.settings;
+  protected basics = this.#fieldState.basics;
 
-  protected previewCss = computed(() => this.settings().PreviewCss, SignalHelpers.stringEquals);
+  protected previewCss = computed(() => this.#settings().PreviewCss, SignalHelpers.stringEquals);
 
-  private iconOptions = signal<IconOption[]>([], { equal: RxHelpers.arraysEqual });
+  #iconOptions = signal<IconOption[]>([], { equal: RxHelpers.arraysEqual });
 
   filteredIcons = computed(() => {
-    const search = this.controlStatus().value;
+    const search = this.uiValue();
     const filtered = search
-      ? this.iconOptions().filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
-      : this.iconOptions();
+      ? this.#iconOptions().filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
+      : this.#iconOptions();
     return filtered;
   });
 
-  private injector = inject(Injector);
+  #injector = inject(Injector);
 
   constructor(private scriptsLoaderService: ScriptsLoaderService) {
     StringFontIconPickerLogic.importMe();
@@ -68,7 +68,7 @@ export class StringFontIconPickerComponent {
 
   ngOnInit() {
     const fileLoadSettings = computed(() => {
-      const s = this.settings();
+      const s = this.#settings();
       return {
         Files: s.Files,
         CssPrefix: s.CssPrefix,
@@ -80,8 +80,8 @@ export class StringFontIconPickerComponent {
       const settings = fileLoadSettings();
       this.scriptsLoaderService.load(settings.Files.split('\n'), () => {
         const newIconOptions = findAllIconsInCss(settings.CssPrefix, settings.ShowPrefix);
-        this.iconOptions.set(newIconOptions);
+        this.#iconOptions.set(newIconOptions);
       });
-    }, { allowSignalWrites: true, injector: this.injector });
+    }, { allowSignalWrites: true, injector: this.#injector });
   }
 }

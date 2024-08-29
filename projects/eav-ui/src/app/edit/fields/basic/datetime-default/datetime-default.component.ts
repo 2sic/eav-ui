@@ -49,12 +49,13 @@ const nameOfThis = 'DateTimeDefaultComponent';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {
 
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<string>;
 
   protected group = this.fieldState.group;
   protected control = this.fieldState.control;
 
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected controlStatus = this.fieldState.controlStatus;
+  uiValue = this.fieldState.uiValue;
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
@@ -63,7 +64,7 @@ export class DatetimeDefaultComponent {
   log = new EavLogger(nameOfThis, logThis);
 
   /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
-  valueForTimePicker = computed(() => this.controlStatus().value?.replace('Z', ''), SignalHelpers.stringEquals);
+  valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalHelpers.stringEquals);
 
   private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
   constructor(

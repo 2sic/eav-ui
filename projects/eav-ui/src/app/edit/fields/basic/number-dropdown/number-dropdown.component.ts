@@ -43,7 +43,7 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class NumberDropdownComponent {
 
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<number>;
 
   protected group = this.fieldState.group;
   protected config = this.fieldState.config;

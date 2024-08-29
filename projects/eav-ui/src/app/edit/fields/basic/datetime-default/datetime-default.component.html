@@ -5,7 +5,7 @@
       [disabled]="controlStatus().disabled"
       [matDatepicker]="picker"
       [placeholder]="basics().placeholder"
-      [required]="basics().required" [value]="controlStatus().value"
+      [required]="basics().required" [value]="uiValue()"
       (dateChange)="updateValue($event)">
     <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>

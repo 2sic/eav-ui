@@ -38,14 +38,14 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     icon: '',
   });
 
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<string>;
 
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
   public config = this.fieldState.config;
   public group = this.fieldState.group;
   public control = this.fieldState.control;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected controlStatus = this.fieldState.controlStatus;
 
   private injector = inject(Injector);
 
@@ -66,7 +66,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
   ngOnInit() {
     effect(() => {
       this.log.a('controlStatus effect');
-      const status = (this.fieldState.controlStatus as Signal<ControlStatus<string>>)().value;
+      const status = this.fieldState.controlStatus().value;
       this.fetchLink(status);
     }, { injector: this.injector, allowSignalWrites: true });
   }

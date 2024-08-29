@@ -30,19 +30,20 @@ import { ControlStatus } from '../../../shared/models/control-status.model';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanDefaultComponent {
 
-  protected fieldState = inject(FieldState);
+  #fieldState = inject(FieldState) as FieldState<boolean>;
 
-  protected group = this.fieldState.group;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean>>;
-  protected control = this.fieldState.control;
+  group = this.#fieldState.group;
+  controlStatus = this.#fieldState.controlStatus;
+  uiValue = this.#fieldState.uiValue;
+  #control = this.#fieldState.control;
 
-  protected settings = this.fieldState.settings;
-  protected basics = this.fieldState.basics;
+  #settings = this.#fieldState.settings;
+  basics = this.#fieldState.basics;
 
-  changedLabel = computed(() => this.settings()._label, SignalHelpers.stringEquals);
+  changedLabel = computed(() => this.#settings()._label, SignalHelpers.stringEquals);
   checkedState = computed(() => {
-    const value = this.controlStatus().value;
-    const reverseToggle = this.settings().ReverseToggle;
+    const value = this.uiValue();
+    const reverseToggle = this.#settings().ReverseToggle;
     return reverseToggle ? !value : value;
   }, SignalHelpers.boolEquals);
 
@@ -51,9 +52,8 @@ export class BooleanDefaultComponent {
   }
 
   updateValue(disabled: boolean) {
-    if (!disabled) {
-      const newValue = !this.control.value;
-      ControlHelpers.patchControlValue(this.control, newValue);
-    }
+    if (disabled) return;
+    const newValue = !this.#control.value;
+    ControlHelpers.patchControlValue(this.#control, newValue);
   }
 }

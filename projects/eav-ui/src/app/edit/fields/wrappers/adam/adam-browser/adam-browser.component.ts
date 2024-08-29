@@ -80,7 +80,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   disabled = computed(() => this.fieldState.controlStatus().disabled);
 
-  value = computed(() => this.fieldState.controlStatus().value);
+  value = computed(() => this.fieldState.uiValue());
   
   public adamConfig = signal<AdamConfig>(null, SignalHelpers.objectEquals); // here the change detection is critical
   items = signal<AdamItem[]>([]);

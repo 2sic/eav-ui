@@ -50,14 +50,13 @@ const nameOfThis = 'StringTemplatePickerComponent';
 export class StringTemplatePickerComponent implements OnDestroy {
   log = new EavLogger(nameOfThis, logThis);
 
-  protected fieldState = inject(FieldState);
-  protected group = this.fieldState.group;
-  protected config = this.fieldState.config;
+  #fieldState = inject(FieldState) as FieldState<string>;
+  protected group = this.#fieldState.group;
+  protected config = this.#fieldState.config;
 
-  protected settings = this.fieldState.settings;
-  protected basics = this.fieldState.basics;
-  protected controlStatus = this.fieldState.controlStatus;
-  protected control = this.fieldState.control;
+  protected basics = this.#fieldState.basics;
+  protected controlStatus = this.#fieldState.controlStatus;
+  #control = this.#fieldState.control;
 
   templateOptions = signal([]);
 
@@ -66,27 +65,27 @@ export class StringTemplatePickerComponent implements OnDestroy {
 
   // If we have a configured type, use that, otherwise use the field mask
   // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-  #typeMask = transient(FieldMask).init('String-TypeMask', this.fieldState.settings().FileType ?? '[Type]');
+  #typeMask = transient(FieldMask).init('String-TypeMask', this.#fieldState.settings().FileType ?? '[Type]');
 
   #locationMask = transient(FieldMask).init('String-LocationMask', '[Location]');
 
-  private activeSpec = templateTypes.Token;
-  private templates: string[] = [];
-  private global = false;
+  #activeSpec = templateTypes.Token;
+  #templates: string[] = [];
+  #global = false;
   /** Reset only after templates have been fetched once */
-  private resetIfNotFound = false;
+  #resetIfNotFound = false;
 
-  private sourceService = transient(SourceService);
+  #sourceService = transient(SourceService);
 
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
     // Watch for location changes to update the files in the dropdown
-    effect(() => this.onLocationChange(this.#locationMask.result()));
+    effect(() => this.#onLocationChange(this.#locationMask.result()));
 
     // Watch for changes to the Type mask
-    effect(() => this.setFileConfig(this.#typeMask.result()), { allowSignalWrites: true });
+    effect(() => this.#setFileConfig(this.#typeMask.result()), { allowSignalWrites: true });
   }
 
   ngOnDestroy() {
@@ -94,15 +93,15 @@ export class StringTemplatePickerComponent implements OnDestroy {
     this.#locationMask.destroy();
   }
 
-  private setFileConfig(type: string) {
-    this.activeSpec = templateTypes[type];
-    this.setTemplateOptions();
+  #setFileConfig(type: string) {
+    this.#activeSpec = templateTypes[type];
+    this.#setTemplateOptions();
   }
 
   #prevLocation = '';
-  private onLocationChange(location: string) {
+  #onLocationChange(location: string) {
     const l = this.log.fn('onLocationChange', { location });
-    this.global = (
+    this.#global = (
       location === 'Host File System' // Original value used from 2sxc up until v12.01
       || location === 'Global' // New key used in 2sxc 12.02 and later
     );
@@ -111,32 +110,32 @@ export class StringTemplatePickerComponent implements OnDestroy {
       return;
     this.#prevLocation = location;
 
-    this.sourceService.getAll().pipe(take(1)).subscribe(files => {
-      this.templates = files.filter(file => file.Shared === this.global).map(file => file.Path);
-      this.resetIfNotFound = true;
-      this.setTemplateOptions();
+    this.#sourceService.getAll().pipe(take(1)).subscribe(files => {
+      this.#templates = files.filter(file => file.Shared === this.#global).map(file => file.Path);
+      this.#resetIfNotFound = true;
+      this.#setTemplateOptions();
     });
   }
 
-  private setTemplateOptions() {
-    const ext = this.activeSpec.ext;
-    const filtered = this.templates
+  #setTemplateOptions() {
+    const ext = this.#activeSpec.ext;
+    const filtered = this.#templates
       // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
       .filter(template => !/\.code\.[a-zA-Z0-9]+$/.test(template))
       .filter(template => template.endsWith(ext));
     this.templateOptions.set(filtered);
 
-    const resetValue = this.resetIfNotFound && !filtered.some(template => template === this.control.value);
+    const resetValue = this.#resetIfNotFound && !filtered.some(template => template === this.#control.value);
     if (resetValue)
-      ControlHelpers.patchControlValue(this.control, '');
+      ControlHelpers.patchControlValue(this.#control, '');
   }
 
   createTemplate() {
     const nameMask = transient(FieldMask, this.#injector).init('String-NameMask', '[Name]');
     const data: CreateFileDialogData = {
-      global: this.global,
-      purpose: this.activeSpec.purpose,
-      type: this.activeSpec.type,
+      global: this.#global,
+      purpose: this.#activeSpec.purpose,
+      type: this.#activeSpec.type,
       name: nameMask.result(),
     };
     nameMask.destroy();
@@ -150,13 +149,13 @@ export class StringTemplatePickerComponent implements OnDestroy {
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) return;
 
-      this.sourceService.create(result.name, this.global, result.templateKey).subscribe(res => {
+      this.#sourceService.create(result.name, this.#global, result.templateKey).subscribe(res => {
         if (res === false) {
           alert('Server reported that create failed - the file probably already exists');
         } else {
-          this.templates.push(result.name);
-          this.setTemplateOptions();
-          ControlHelpers.patchControlValue(this.control, result.name);
+          this.#templates.push(result.name);
+          this.#setTemplateOptions();
+          ControlHelpers.patchControlValue(this.#control, result.name);
         }
       });
     });

@@ -62,12 +62,12 @@ export class ExpandableWrapperComponent {
 
   public fieldsSettingsService = inject(FieldsSettingsService);
 
-  protected fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState) as FieldState<string>;
   private config = this.fieldState.config;
 
   protected basics = this.fieldState.basics;
   protected settings = this.fieldState.settings;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<string>>;
+  protected controlStatus = this.fieldState.controlStatus;
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
   focused = signal(false);

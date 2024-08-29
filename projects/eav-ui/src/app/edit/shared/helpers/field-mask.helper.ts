@@ -66,8 +66,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   }
 
   public init(name: string, mask: string): this {
-    this.initSignal(name, signal(mask));
-    return this;
+    return this.initSignal(name, signal(mask));
   }
 
   public initSignal(name: string, mask: Signal<string>): this {

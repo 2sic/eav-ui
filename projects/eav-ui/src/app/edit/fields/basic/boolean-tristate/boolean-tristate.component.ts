@@ -29,19 +29,19 @@ import { ControlStatus } from '../../../shared/models/control-status.model';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class BooleanTristateComponent {
 
-  protected fieldState = inject(FieldState);
+  #fieldState = inject(FieldState) as FieldState<boolean | ''>;;
 
-  protected group = this.fieldState.group;
-  protected controlStatus = this.fieldState.controlStatus as Signal<ControlStatus<boolean | ''>>;
-  protected control = this.fieldState.control;
+  protected group = this.#fieldState.group;
+  protected controlStatus = this.#fieldState.controlStatus;
+  protected control = this.#fieldState.control;
 
-  protected settings = this.fieldState.settings;
-  protected basics = this.fieldState.basics;
+  protected settings = this.#fieldState.settings;
+  protected basics = this.#fieldState.basics;
 
 
   changedLabel = computed(() => this.settings()._label)
   checkedState = computed(() => {
-    const value = this.controlStatus().value;
+    const value = this.#fieldState.uiValue();
     const reverseToggle = this.settings().ReverseToggle;
     return reverseToggle
       ? (value === true ? false : value === false ? true : value)

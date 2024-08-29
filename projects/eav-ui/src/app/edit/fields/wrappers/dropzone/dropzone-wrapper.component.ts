@@ -29,14 +29,13 @@ export class DropzoneWrapperComponent implements AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
-  protected fieldState = inject(FieldState);
-  protected config = this.fieldState.config;
-  protected controlStatus = this.fieldState.controlStatus;
+  #fieldState = inject(FieldState);
+  #config = this.#fieldState.config;
 
   dropzoneConfig = signal<DropzoneConfigExt>(null);
-  dropzoneDisabled = computed(() => this.controlStatus().disabled || (this.dropzoneConfig()?.disabled ?? true));
+  dropzoneDisabled = computed(() => this.#fieldState.controlStatus().disabled || (this.dropzoneConfig()?.disabled ?? true));
   
-  wysiwygHelper = new DropzoneWysiwyg();
+  #wysiwygHelper = new DropzoneWysiwyg();
 
   private log = new EavLogger(nameOfThis, logThis);
 
@@ -45,32 +44,32 @@ export class DropzoneWrapperComponent implements AfterViewInit {
     private dnnContext: DnnContext,
   ) {
     this.extendFieldConfigWithDropZone();
-    this.setConfig({});
+    this.#setConfig({});
   }
 
   extendFieldConfigWithDropZone() {
-    this.config.dropzone = {
-      setConfig: (config) => this.setConfig(config),
+    this.#config.dropzone = {
+      setConfig: (config) => this.#setConfig(config),
       getConfig: () => this.dropzoneConfig(),
-      uploadFile: (image) => this.uploadFile(image),
+      uploadFile: (image) => this.#uploadFile(image),
     };
   }
 
   ngAfterViewInit() {
-    this.setConfig({
-      previewsContainer: `.${this.config.dropzonePreviewsClass} .dropzone-previews`,
-      clickable: `.${this.config.dropzonePreviewsClass} .invisible-clickable`,
+    this.#setConfig({
+      previewsContainer: `.${this.#config.dropzonePreviewsClass} .dropzone-previews`,
+      clickable: `.${this.#config.dropzonePreviewsClass} .invisible-clickable`,
     });
   }
 
   // on onDrop we check if drop is on wysiwyg or not
   onDrop(event: any) {
-    this.wysiwygHelper.detectWysiwygOnDrop(event);
+    this.#wysiwygHelper.detectWysiwygOnDrop(event);
   }
 
   // here we check if file is image type so we can cancel upload if it is also uploaded on wysiwyg
   onAddedFile(file: any) {
-    this.wysiwygHelper.removeFilesHandledByWysiwyg(this.dropzoneRef.dropzone(), file);
+    this.#wysiwygHelper.removeFilesHandledByWysiwyg(this.dropzoneRef.dropzone(), file);
   }
 
   onUploadError(event: DropzoneType) {
@@ -83,9 +82,9 @@ export class DropzoneWrapperComponent implements AfterViewInit {
     const l = this.log.fn('onUploadSuccess', { event });
     const response: AdamItem = event[1]; // gets the server response as second argument.
     if (!response.Error) {
-      if (this.config.adam) {
-        this.config.adam.onItemUpload(response);
-        this.config.adam.refresh();
+      if (this.#config.adam) {
+        this.#config.adam.onItemUpload(response);
+        this.#config.adam.refresh();
       } else {
         l.a(`Upload failed because: ADAM reference doesn't exist`);
       }
@@ -96,13 +95,13 @@ export class DropzoneWrapperComponent implements AfterViewInit {
     this.dropzoneRef.reset();
   }
 
-  private setConfig(config: Partial<DropzoneConfigExt>) {
-    const contentType = this.config.contentTypeNameId;
-    const entityGuid = this.config.entityGuid;
-    const field = this.config.fieldName;
+  #setConfig(config: Partial<DropzoneConfigExt>) {
+    const contentType = this.#config.contentTypeNameId;
+    const entityGuid = this.#config.entityGuid;
+    const field = this.#config.fieldName;
     const appId = this.formConfig.config.appId;
 
-    const startDisabled = this.config.inputTypeSpecs.isExternal;
+    const startDisabled = this.#config.inputTypeSpecs.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 
@@ -132,7 +131,7 @@ export class DropzoneWrapperComponent implements AfterViewInit {
     this.dropzoneConfig.set(newConfig);
   }
 
-  private uploadFile(file: File & { upload?: { chunked: boolean; }; }) {
+  #uploadFile(file: File & { upload?: { chunked: boolean; }; }) {
     const dropzone = this.dropzoneRef.dropzone();
     file.upload = { chunked: dropzone.defaultOptions.chunking };
     dropzone.processFile(file);

@@ -34,9 +34,7 @@ export class FieldState<T extends FieldValue> {
     public basics: Signal<BasicControlSettings>,
 
     /**
-     * @deprecated Not really deprecated, but we just introduced uiValue below, which should be used in most cases
-     * remove the @deprecated once we've checked all uses
-     * also make sure we optimize casting, since now we can cast it to FieldState<string>
+     * Note: e just introduced uiValue below, which should be used in most cases
      */
     public controlStatus: Signal<ControlStatus<T>>,
 
