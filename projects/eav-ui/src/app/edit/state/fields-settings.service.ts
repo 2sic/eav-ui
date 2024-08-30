@@ -184,7 +184,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     // temp solution for slotIsEmpty - needed ATM, otherwise formulas don't run when the slot-setting changes
     const watchHeaderChanges$ = this.itemService.getItemHeader$(entityGuid);
 
-    const logUpdateFieldProps = this.log.rxTap('updateFieldProps', { enabled: true });
     this.subscriptions.add(
       combineLatest([
         this.itemAttributes$,
@@ -194,7 +193,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         prepared$,
         watchHeaderChanges$,
       ]).pipe(
-        logUpdateFieldProps.pipe(),
         map(([itemAttributes, entityReader, _, constantFieldParts, prepared, __]) => {
           // 1. Create list of all current language form values (as is stored in the entity-store) for further processing
           const formValues = entityReader.currentValues(itemAttributes);
@@ -220,51 +218,13 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
           return props;
-
         }),
-        logUpdateFieldProps.map(),
         filter(fieldsProps => !!fieldsProps), // filter out nulls to skip/not process
-        logUpdateFieldProps.filter(),
       ).subscribe(fieldsProps => {
-        this.log.a('fieldsProps', JSON.parse(JSON.stringify(fieldsProps)));
         this.fieldsProps.set(fieldsProps);
       })
     );
   }
-
-  // //TODO: @2dm -> Here we call the formula engine to process the picker items
-  // //TODO: @SDV -> Possible issue here as all pickers use same instance of this service, when we have multiple pickers we could get data crosscontamination
-  // //           -> Consider multiple streams (one for each picker)
-  // processPickerItems$(fieldName: string, availableItems$: BehaviorSubject<PickerItem[]>): Observable<PickerItem[]> {
-  //   return combineLatest([
-  //     availableItems$,
-  //     this.itemAttributes$,
-  //     this.entityReader$,
-  //     this.constFieldPartsOfLanguage$,
-  //   ]).pipe(map(([
-  //       availableItems, itemAttributes, entityReader, constantFieldParts,
-  //     ]) => {
-  //       const contentType = this.#contentType();
-  //       const attribute = contentType.Attributes.find(a => a.Name === fieldName);
-  //       const formValues: ItemValuesOfLanguage = {};
-  //       for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
-  //         formValues[fieldName] = entityReader.getBestValue(fieldValues);
-  //       }
-  //       const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
-  //       const latestSettings = this.getLatestFieldSettings(constantFieldPart);
-
-  //       return this.formulaEngine.runAllListItemsFormulas(
-  //         attribute.Name,
-  //         formValues,
-  //         constantFieldPart.inputTypeSpecs.inputType,
-  //         constantFieldPart.settingsInitial,
-  //         latestSettings,
-  //         this.#item().Header,
-  //         availableItems
-  //       );
-  //     }
-  //   ));
-  // }
 
   /**
    * Used to get field properties for all fields.
@@ -298,10 +258,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    */
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
-      map(fieldsSettings => fieldsSettings[fieldName].settings),
-      mapUntilObjChanged(m => m),
-      // 2024-08-19 2dm changed to always replay; monitor in case we run into trouble
-      shareReplay(1),
+      mapUntilObjChanged(fieldsSettings => fieldsSettings[fieldName].settings),
     );
   }
 
@@ -316,16 +273,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @param fieldName
    * @returns Translation state stream
    */
-  getTranslationStateNow(fieldName: string): TranslationState {
-    return this.fieldsProps()[fieldName].translationState;
-  }
-
-  /**
-   * Used for translation state stream for a specific field.
-   * @param fieldName
-   * @returns Translation state stream
-   */
-  getTranslationStateSignal(fieldName: string): Signal<TranslationState> {
+  getTranslationState(fieldName: string): Signal<TranslationState> {
     return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.fieldsProps()[fieldName].translationState);
   }
   #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>();
@@ -338,14 +286,18 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   }
 
   /**
-   * Modify a setting, ATM just to set collapsed / dialog-open states
+   * Modify a setting, ATM just to set collapsed / dialog-open states.
+   * Note that this change won't fire the formulas - which may not be correct.
    */
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
-    const props = this.fieldsProps()[fieldName];
-    const newSettings = { ...props.settings, ...update };
+    const all = this.fieldsProps();
+    const ofField = all[fieldName];
     const newProps = {
-      ...this.fieldsProps(),
-      [fieldName]: { ...props, settings: newSettings }
+      ...all,
+      [fieldName]: {
+        ...ofField,
+        settings: { ...ofField.settings, ...update }
+      }
     };
     this.fieldsProps.set(newProps);
   }

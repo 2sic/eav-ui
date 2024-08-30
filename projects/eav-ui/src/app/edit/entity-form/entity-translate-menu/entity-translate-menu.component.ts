@@ -78,7 +78,7 @@ export class EntityTranslateMenuComponent {
     if (autoTransFields.length === 0) 
       return this.fieldTranslateSvc.showMessageNoTranslatableFields(true);
 
-    const transStateForLanguages = this.fieldSettingsSvc.getTranslationStateNow(autoTransFields[0]);
+    const transStateForLanguages = this.fieldSettingsSvc.getTranslationState(autoTransFields[0])();
     if (autoTransFields.length > 0) {
       const config: TranslateMenuDialogConfig = {
         entityGuid: this.entityGuid(),

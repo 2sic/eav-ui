@@ -56,7 +56,7 @@ export class TranslateMenuComponent implements OnInit {
   protected readOnly = this.formsStateService.readOnly;
 
   protected settings = this.fieldSettings.getFieldSettingsSignal(this.config.fieldName)
-  protected translationState = this.fieldSettings.getTranslationStateSignal(this.config.fieldName)
+  protected translationState = this.fieldSettings.getTranslationState(this.config.fieldName)
   protected language = this.formConfig.language;
 
 
