@@ -12,6 +12,7 @@ import { ValidationHelpers } from '../../shared/validation/validation.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
 import { FieldValue } from '../../../../../../edit-types';
 import { ControlHelpers } from '../../shared/helpers/control.helpers';
+import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { AdamCacheService } from '../../shared/store/adam-cache.service';
@@ -132,7 +133,7 @@ export class FormFieldsBuilderService extends ServiceBase {
         for (const { fieldName, value } of fieldsOnForm)
           newValues[fieldName] = value;
 
-        const changes = ControlHelpers.getFormChanges(oldValues, newValues);
+        const changes = FieldValueHelpers.getItemValuesChanges(oldValues, newValues);
         if (changes != null) {
           this.log.a(`patching form as it changed (${Object.keys(changes).length}`, { changes, oldValues, newValues })
           // controls probably don't need to set touched and dirty for this kind of update.

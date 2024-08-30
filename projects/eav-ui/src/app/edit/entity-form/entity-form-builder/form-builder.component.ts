@@ -4,6 +4,7 @@ import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/for
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
 import { ControlHelpers } from '../../shared/helpers/control.helpers';
+import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { BaseComponent } from '../../../shared/components/base.component';
@@ -97,7 +98,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
     this.subscriptions.add(
       form.valueChanges.pipe(
         map(() => form.getRawValue() as ItemValuesOfLanguage),
-        distinctUntilChanged((previous, current) => ControlHelpers.getFormChanges(previous, current) == null),
+        distinctUntilChanged((previous, current) => FieldValueHelpers.getItemValuesChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const language = this.formConfig.language();
         this.itemService.updater.updateItemAttributesValues(this.entityGuid, formValues, language);

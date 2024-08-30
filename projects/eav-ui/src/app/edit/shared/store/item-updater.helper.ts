@@ -10,7 +10,7 @@ import { FieldHelper } from '../helpers';
 import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { ControlHelpers } from '../helpers/control.helpers';
+import { FieldValueHelpers } from '../helpers/FieldValueHelpers';
 
 const logThis = true;
 const nameOfThis = 'ItemUpdateHelper';
@@ -160,7 +160,7 @@ export class ItemUpdateHelper {
         continue;
       oldValues[name] = LocalizationHelpers.translate(language, values, null);
     }
-    const changes = ControlHelpers.getFormChanges(oldValues, newValues);
+    const changes = FieldValueHelpers.getItemValuesChanges(oldValues, newValues);
     if (changes == null)
       return l.end('No changes');
 
