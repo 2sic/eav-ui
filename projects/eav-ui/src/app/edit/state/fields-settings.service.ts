@@ -26,6 +26,7 @@ import { ContentTypeItemService } from '../shared/store/content-type-item.servic
 import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
+import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -138,9 +139,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     const contentType = this.#contentType();
     const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
 
-    this.formulaPromises.init(entityGuid, this.#contentType, this, this.changeBroadcastSvc);
+    const modifiedChecker = new FieldsValuesModifiedHelper(this.#contentType, slotIsEmpty);
+
+    this.formulaPromises.init(entityGuid, this.#contentType, this, modifiedChecker, this.changeBroadcastSvc);
     this.formulaEngine.init(entityGuid, this, this.formulaPromises, contentType, this.contentTypeSettings);
-    this.changeBroadcastSvc.init(entityGuid, this.#contentType, this.entityReader, slotIsEmpty);
+    this.changeBroadcastSvc.init(entityGuid, this.entityReader);
 
 
     // Constant field parts which don't ever change.
@@ -174,6 +177,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           formReadOnly.isReadOnly,
           slotIsEmpty,
         );
+
         return {
           updHelperFactory,
         };
@@ -197,7 +201,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
         map(([itemAttributes, entityReader, _, constantFieldParts, prepared, __]) => {
           // 1. Create list of all current language form values (as is stored in the entity-store) for further processing
           const formValues = entityReader.currentValues(itemAttributes);
-
           const engine = new FieldsPropsEngine(
             item,
             itemAttributes,
@@ -207,6 +210,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
             entityReader,
             prepared.updHelperFactory,
+            modifiedChecker,
             this.changeBroadcastSvc,
             this.formulaEngine,
             this.formulaPromises,
@@ -216,49 +220,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           this.#fieldPropsLatest = props;
           return broadcastProps ? props : null;
 
-          // // 2. Process the queue of changes from promises if necessary
-          // // If things change, we will exit because then the observable will be retriggered
-          // const isFirstRound = Object.keys(this.#fieldPropsLatest).length === 0;
-          // if (!isFirstRound) {
-          //   const { newFieldProps, hadValueChanges } = this.formulaPromises.updateFromQueue(engine);
-
-          //   // If we only updated values from promise (queue), don't trigger property regular updates
-          //   if (newFieldProps)
-          //     this.#fieldPropsLatest = newFieldProps;
-            
-          //   // If any value changes then the entire cycle will automatically retrigger.
-          //   // So we exit now as the whole cycle will re-init and repeat.
-          //   if (hadValueChanges)
-          //     return null;
-          // }
-
-          // // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
-          // const { fieldsProps, valueUpdates, fieldUpdates } = this.formulaEngine.runFormulasForAllFields(engine);
-
-          // // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
-          // for (const [key, value] of Object.entries(fieldsProps))
-          //   value.buildWrappers = isFirstRound
-          //     ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
-          //     : this.#fieldPropsLatest[key]?.buildWrappers;
-
-          // // 5. Update the latest field properties for further cycles
-          // this.#fieldPropsLatest = fieldsProps;
-
-          // // 6.1 If we have value changes were applied
-          // const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(
-          //   formValues,
-          //   fieldsProps,
-          //   valueUpdates,
-          //   fieldUpdates,
-          // );
-
-          // // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
-          // if (changesWereApplied)
-          //   return null;
-
-          // // 6.3 If no more changes were applied, then trigger field property updates and reset the loop counter
-          // this.changeBroadcastSvc.valueFormulaCounter = 0;
-          // return fieldsProps;
         }),
         logUpdateFieldProps.map(),
         filter(fieldsProps => !!fieldsProps), // filter out nulls to skip/not process

@@ -15,6 +15,7 @@ import { FieldsSettingsService } from '../state/fields-settings.service';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
+import { FieldsValuesModifiedHelper } from '../state/fields-values-modified.helper';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';
@@ -29,6 +30,7 @@ export class FormulaPromiseHandler {
   private entityGuid: string;
   private contentType: Signal<EavContentType>;
   private changeBroadcastSvc: ItemFormulaBroadcastService;
+  private modifiedChecker: FieldsValuesModifiedHelper;
 
   private log = new EavLogger(nameOfThis, logThis);
 
@@ -39,11 +41,13 @@ export class FormulaPromiseHandler {
   init(entityGuid: string,
     contentType: Signal<EavContentType>,
     fieldsSettingsService: FieldsSettingsService,
+    modifiedChecker: FieldsValuesModifiedHelper,
     changeBroadcastSvc: ItemFormulaBroadcastService,
   ) {
     this.entityGuid = entityGuid;
     this.#fieldsSettingsService = fieldsSettingsService;
     this.contentType = contentType;
+    this.modifiedChecker = modifiedChecker;
     this.changeBroadcastSvc = changeBroadcastSvc;
   }
 
@@ -137,12 +141,8 @@ export class FormulaPromiseHandler {
     // Handle values (of this field) and fields (values of other fields)
     let hadValueChanges = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
-      this.changeBroadcastSvc.applyValueChangesFromFormulas(
-        engine.values,
-        engine.fieldProps,
-        values,
-        fields,
-      );
+      const modifiedValues = this.modifiedChecker.getValueUpdates(engine, fields, values);
+      this.changeBroadcastSvc.applyValueChangesFromFormulas(modifiedValues);
       hadValueChanges = true;
     }
 

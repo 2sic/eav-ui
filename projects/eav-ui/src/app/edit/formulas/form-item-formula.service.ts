@@ -1,11 +1,6 @@
 import { inject, Injectable, Signal } from "@angular/core";
-import { FieldValue } from "projects/edit-types";
 import { EntityReader } from "../shared/helpers";
-import { EavContentType } from "../shared/models/eav";
-import { FieldValuePair } from "./models/formula-results.models";
-import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ItemService } from '../shared/store/item.service';
 
@@ -28,15 +23,11 @@ export class ItemFormulaBroadcastService {
   maxValueFormulaCycles = 5;
 
   private entityGuid: string;
-  private contentType: Signal<EavContentType>;
   private reader: Signal<EntityReader>;
-  private slotIsEmpty: Signal<boolean>;
 
-  init(entityGuid: string, contentType: Signal<EavContentType>, reader: Signal<EntityReader>, slotIsEmpty: Signal<boolean>): void {
+  init(entityGuid: string, reader: Signal<EntityReader>): void {
     this.entityGuid = entityGuid;
-    this.contentType = contentType;
     this.reader = reader;
-    this.slotIsEmpty = slotIsEmpty;
   }
 
   /**
@@ -48,67 +39,20 @@ export class ItemFormulaBroadcastService {
    * @param slotIsEmpty
    * @returns true if values are updated, false otherwise
    */
-  applyValueChangesFromFormulas(
-    formValues: ItemValuesOfLanguage,
-    fieldsProps: Record<string, FieldProps>,
-    possibleValueUpdates: ItemValuesOfLanguage,
-    possibleFieldsUpdates: FieldValuePair[],
-  ): boolean {
-    const entityGuid = this.entityGuid;
-    const contentType = this.contentType();
-    const slotIsEmpty = this.slotIsEmpty();
+  applyValueChangesFromFormulas(modifiedValues: ItemValuesOfLanguage): boolean {
+    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: this.entityGuid });
 
-    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: entityGuid, contentType, formValues, fieldsProps, possibleValueUpdates, possibleFieldsUpdates, slotIsEmpty });
-    const valueUpdates: ItemValuesOfLanguage = {};
-    for (const attribute of contentType.Attributes) {
-      const fieldName = attribute.Name;
-      const disabledBecauseTranslations = fieldsProps[fieldName]?.settings._disabledBecauseOfTranslation;
-      const possibleFieldsUpdatesAttr = possibleFieldsUpdates.filter(f => f.name === fieldName);
-      const original = formValues[fieldName];
-      const valueFromFormula = possibleValueUpdates[fieldName];
-      const valFromFields = possibleFieldsUpdatesAttr[possibleFieldsUpdatesAttr.length - 1]?.value;
-      const newValue = valFromFields ? valFromFields : valueFromFormula;
-      const shouldUpdate = this.shouldUpdate(original, newValue, slotIsEmpty, disabledBecauseTranslations);
-      if (shouldUpdate)
-        valueUpdates[fieldName] = newValue;
-    }
-
-    if (Object.keys(valueUpdates).length == 0)
+    if (Object.keys(modifiedValues).length == 0)
       return l.r(false);
 
     if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
       this.valueFormulaCounter++;
-      this.itemService.updater.updateItemAttributesValues(entityGuid, valueUpdates, this.reader());
+      this.itemService.updater.updateItemAttributesValues(this.entityGuid, modifiedValues, this.reader());
       // return true to make sure fieldProps are not updated yet
       return l.r(true);
     }
     return l.r(false, 'Max value formula cycles reached');
   }
 
-  /**
-   * Used to check if the value of a field should be updated with the value from a formula.
-   * @param valueBefore
-   * @param valueFromFormula
-   * @param slotIsEmpty
-   * @param disabledBecauseTranslations
-   * @returns true if value should be updated, false otherwise
-   */
-  private shouldUpdate(
-    valueBefore: FieldValue,
-    valueFromFormula: FieldValue,
-    slotIsEmpty: boolean,
-    disabledBecauseTranslations: boolean
-  ): boolean {
-    // important to compare with undefined because null is allowed value
-    if (slotIsEmpty || disabledBecauseTranslations || valueBefore === undefined || valueFromFormula === undefined)
-      return false;
-
-    let valuesNotEqual = valueBefore !== valueFromFormula;
-    // do a more in depth comparison in case of calculated entity fields
-    if (valuesNotEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
-      valuesNotEqual = !RxHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
-    }
-    return valuesNotEqual;
-  }
 }
 

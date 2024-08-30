@@ -9,6 +9,11 @@ import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
+
+const logThis = false;
+const nameOfThis = 'FieldsPropsEngine';
 
 /**
  * Assistant helper to process / recalculate the value of fields and their settings.
@@ -24,6 +29,8 @@ import { EavEntityAttributes, EavItem } from '../shared/models/eav';
  * Note that as of now, this engine should be created and discarded on every cycle.
  */
 export class FieldsPropsEngine {
+  private log = new EavLogger(nameOfThis, logThis);
+
   constructor(
     public item: EavItem,
     public itemAttributes: EavEntityAttributes,
@@ -34,6 +41,7 @@ export class FieldsPropsEngine {
     public fieldConstants: FieldConstantsOfLanguage[],
     readerWithLanguage: EntityReader,
     public updateHelper: FieldSettingsUpdateHelperFactory,
+    private modifiedChecker: FieldsValuesModifiedHelper,
     private changeBroadcastSvc: ItemFormulaBroadcastService,
     private formulaEngine: FormulaEngine,
     private formulaPromises: FormulaPromiseHandler,
@@ -54,7 +62,7 @@ export class FieldsPropsEngine {
   #values: ItemValuesOfLanguage;
 
   public getLatestSettingsAndBroadcastUpdates(): CycleResults {
-    const formValues = this.values;
+
     // 2. Process the queue of changes from promises if necessary
     // If things change, we will exit because then the observable will be retriggered
     const isFirstRound = Object.keys(this.fieldProps).length === 0;
@@ -84,12 +92,8 @@ export class FieldsPropsEngine {
     this.fieldProps = fieldsProps;
 
     // 6.1 If we have value changes were applied
-    const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(
-      formValues,
-      fieldsProps,
-      valueUpdates,
-      fieldUpdates,
-    );
+    const modifiedValues = this.modifiedChecker.getValueUpdates(this, fieldUpdates, valueUpdates);
+    const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(modifiedValues);
 
     // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
     if (changesWereApplied)
