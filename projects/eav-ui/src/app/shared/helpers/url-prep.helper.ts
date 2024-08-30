@@ -269,7 +269,7 @@ function addParamToItemIdentifier(item: ItemIdentifierShared, part: string): voi
     item.ClientData = { ...item.ClientData, parameters: formParams };
     return l.end();
   }
-  l.end(null, 'no match');
+  l.end('no match');
 }
 
 /** Encodes characters in URL parameter to not mess up routing. Don't forget to decode it! :) */

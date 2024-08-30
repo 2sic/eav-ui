@@ -176,7 +176,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   loadMoreIntoSignal(cache: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], message: string): void {
     const l = this.log.fn('loadMoreIntoSignal', { additionalGuids });
     if (additionalGuids == null || additionalGuids.length === 0)
-      return l.end(null, 'no additional guids to load/refresh');
+      return l.end('no additional guids to load/refresh');
 
     // get existing value and set loading to true
     const before = cache();

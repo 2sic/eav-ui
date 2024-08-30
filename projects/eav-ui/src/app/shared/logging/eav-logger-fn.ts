@@ -17,19 +17,27 @@ export class EavLoggerFn {
     this.parent.a(`${this.fnName}/${message}`, data);
   }
 
-  /** Return */
-  r<TResult>(value: TResult, message?: string): TResult {
-    this.parent.a(`${this.fnName}/return${message ? ' ' + message : ''}`, { result: value });
-    return value;
+  /** Return result and log it */
+  r<TResult>(result: TResult, message?: string, showData: boolean = true): TResult {
+    this.parent.a(`${this.fnName}/return${message ? ' ' + message : ''}`, showData ? { result: result } : null);
+    return result;
   }
 
+  /** Return without logging the result data */
+  rSilent<TResult>(result: TResult, message?: string): TResult {
+    this.parent.a(`${this.fnName}/return${message ? ' ' + message : ''}`, null);
+    return result;
+  }
+
+  /** Return NULL */
   rNull(message?: string): null {
     this.parent.a(`${this.fnName}/return NULL ${message}`);
     return null;
   }
 
-  /** End without return */
-  end(data?: Record<string, unknown>, message?: string) {
+  /** End without return but show message and optional data */
+  end(message?: string, data?: Record<string, unknown>) {
     this.parent.a(`${this.fnName}/end${message ? ' ' + message : ''}`, data);
   }
+
 }

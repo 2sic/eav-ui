@@ -22,7 +22,7 @@ export class ItemFieldVisibility {
     const l = this.log.fn('ctor', { identifier });
     var fields = identifier.ClientData?.fields as string;
     if (fields == null || fields == '') {
-      l.end(null, 'no fields specified');
+      l.end('no fields specified');
       return;
     }
     
@@ -37,7 +37,7 @@ export class ItemFieldVisibility {
         prev[f] = ruleIsShow;
         return prev;
       }, {} as Record<string, boolean>);
-    l.end({ fields: this.fields, defaultIsShow: this.defaultIsShow });
+    l.end('', { fields: this.fields, defaultIsShow: this.defaultIsShow });
   }
 
   hasRules(): boolean {

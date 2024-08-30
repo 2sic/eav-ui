@@ -50,20 +50,20 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
   add(item: TValue): void {
     const l = this.log.fn('add', { item });
     if (!item)
-      return l.end(null, 'item is null');
+      return l.end('item is null');
 
     // add to signal
     this.#cache.set({
       ...this.#cache(),
       [this.getId(item)]: this.sanitizeAdd(item)
     });
-    l.end(null, 'added');
+    l.end('added');
   }
 
   addMany(items: TValue[]): void {
     var l = this.log.fn('addMany', { items });
     if (!items || items.length == 0)
-      return l.end(null, 'items is null or empty');
+      return l.end('items is null or empty');
 
     // also add to signal, but in one go
     const result = items.reduce((acc, item) => ({
@@ -72,17 +72,17 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
     }), { ...this.#cache() });
     
     this.#cache.set(result);
-    l.end(null, 'added');
+    l.end('added');
   }
 
   update(id: TKey, item: Partial<TValue>): void {
     const l = this.log.fn('update', { id, item });
     if (!id || !item)
-      return l.end(null, 'id or item is null');
+      return l.end('id or item is null');
 
     const before = this.get(id);
     if (!before)
-      return l.end(null, `Item with id ${id} not found in store`);
+      return l.end(`Item with id ${id} not found in store`);
 
     // merge
     const newItem = { ...before, ...item };
@@ -92,20 +92,20 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
       ...this.#cache(),
       [id]: newItem
     });
-    l.end(null, 'updated');
+    l.end('updated');
   }
 
   remove(id: TKey): void {
     const l = this.log.fn('remove', { id });
     const { [id]: _, ...updatedStore } = this.#cache();
     this.#cache.set(updatedStore as Record<TKey, TValue>);
-    l.end(null, 'removed');
+    l.end('removed');
   }
 
   clearCache(): void {
     const l = this.log.fn('clearCache');
     this.#cache.set({} as Record<TKey, TValue>);
-    l.end(null, 'cleared');
+    l.end('cleared');
   }
 
   //#endregion

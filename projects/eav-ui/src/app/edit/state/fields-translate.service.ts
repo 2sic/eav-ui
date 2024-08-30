@@ -54,7 +54,7 @@ export class FieldsTranslateService {
     const item = this.itemService.get(entityGuid);
     this.contentTypeId = ItemHelper.getContentTypeNameId(item);
     this.#itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
-    l.end({ entityGuid, contentTypeId: this.contentTypeId });
+    l.end('', { entityGuid, contentTypeId: this.contentTypeId });
   }
 
   //#region Lock / Unlock

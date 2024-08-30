@@ -92,17 +92,17 @@ export class StringUrlPathComponent {
 
     // Exit early if the UI is a) not empty and b) doesn't have the last copy of the stripped value
     if (v.uiValue && (v.uiValue !== v.lastAutoCopy))
-      return l.end(v, `UI not empty but manually modified, so no auto-update`);
+      return l.end(`UI not empty but manually modified, so no auto-update`, v);
 
     if (!v.cleaned)
-      return l.end(v, 'cleaned is empty');
+      return l.end('cleaned is empty', v);
 
     if (v.uiValue === v.cleaned)
-      return l.end(v, 'no changes');
+      return l.end('no changes', v);
 
     this.#lastAutoCopy.set(v.cleaned);
     ControlHelpers.patchControlValue(this.control, v.cleaned);
-    l.end(v, `updated to "${v.cleaned}"`);
+    l.end(`updated to "${v.cleaned}"`, v);
   }
 
   clean(trimEnd: boolean) {

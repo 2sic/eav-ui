@@ -205,7 +205,7 @@ export class Plumber {
   private initWirings() {
     const l = this.log.fn('initWirings');
     const wirings = this.pipelineModel.Pipeline.StreamWiring;
-    if (!wirings) return l.end(null, 'no wirings');
+    if (!wirings) return l.end('no wirings');
 
     const inGroups = groupBy(wirings, wire => wire.To);
     const outGroups = groupBy(wirings, wire => wire.From);
@@ -298,7 +298,7 @@ export class Plumber {
     overlay.setLabel(endpointInfo.name);
     if (angled)
       overlay.addClass('angled');
-    l.end({count, angled, overlay}, "end");
+    l.end("end", {count, angled, overlay});
   }
 
   private buildSourceEndpoint(pipelineDataSourceGuid: string, style?: string) {

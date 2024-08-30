@@ -208,7 +208,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     const l = this.log.fn('editNote', { note });
     const item = this.itemService.get(entityGuid);
     if (item.Entity.Id === 0) {
-      l.end(null, 'Item not saved yet, ID = 0');
+      l.end('Item not saved yet, ID = 0');
       return;
     }
 

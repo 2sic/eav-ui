@@ -77,7 +77,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     const l = this.log.fn('lngButtonClick');
     if (this.disabled) {
       this.snackBar.open(this.translate.instant('Message.CantSwitchLanguage'), null, { duration: 3000, verticalPosition: 'top' });
-      return l.end(null, 'disabled');
+      return l.end('disabled');
     }
     this.centerSelectedHelper.lngButtonClick(event);
 
