@@ -20,7 +20,6 @@ import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './fields-configs.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
@@ -88,6 +87,18 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     //   const attr = attributes();
     //   console.log('2dm - effect', attr);
     // });
+
+    // const sigStringInput = computed(() => {
+    //   const l = this.log.fn('effect pre-computed');
+    //   const val = this.fieldValues.get('Title');
+    //   return l.r(val() as string);
+    // });
+
+    // effect(() => {
+    //   const l = this.log.fn('effect debugFieldSignals');
+    //   const val = sigStringInput();
+    //   console.log('2dm - effect', val);
+    // });
   }
 
   ngOnDestroy(): void {
@@ -112,7 +123,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header)
   );
 
-  #fieldSignals: FieldsSignalsHelper;
+  /** Signals for each field value */
+  fieldValues = new FieldsSignalsHelper(this.itemService, this.entityReader);
 
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
@@ -121,7 +133,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.#itemGuid.set(entityGuid);
     const item = this.itemService.get(entityGuid);
     this.#item.set(item);
-    this.#fieldSignals = new FieldsSignalsHelper(entityGuid, this.#item, this.entityReader, this.itemService);
+    this.fieldValues.init(entityGuid);
 
     const contentType = this.#contentType();
     const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);

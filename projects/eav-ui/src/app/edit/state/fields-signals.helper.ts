@@ -1,43 +1,63 @@
-import { Signal } from '@angular/core';
-import { EavItem } from '../shared/models/eav';
+import { signal, Signal } from '@angular/core';
+import { EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { EntityReader } from '../shared/helpers';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldValue } from '../../../../../edit-types';
 import { ItemService } from '../shared/store/item.service';
+import { EavLogger } from '../../shared/logging/eav-logger';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldsSignalsHelper';
 
 export class FieldsSignalsHelper {
-  constructor(
-    itemGuid: string,
-    private item: Signal<EavItem>,
-    private reader: Signal<EntityReader>,
-    itemSvc: ItemService,
-  ) {
-    var attributes = itemSvc.itemAttributesSignal(itemGuid);
+
+  log = new EavLogger(nameOfThis, logThis);
+
+  constructor(private itemSvc: ItemService, private reader: Signal<EntityReader>) {
+
+    // for (const [name, values] of Object.entries(attributes))
+    //   this.#fieldValueOrNullSignal(name);
+  }
+
+  init(itemGuid: string): this {
+    const attributes = this.itemSvc.itemAttributesSignal(itemGuid);
     if (attributes == null)
       console.error('item-entity-attributes is null');
 
-    for (const [name, values] of Object.entries(attributes))
-      this.fieldValueSignalOrNull(name);
+    this.#attributesLazy.set(attributes);
+    return this;
   }
 
-  #fieldValueSignals = new ComputedCacheHelper<string, FieldValue>();
-  fieldValueSignalOrNull(fieldName: string): Signal<FieldValue> {
-    return this.#fieldValueSignals.getOrCreate(fieldName, () => {
-      const item = this.item()?.Entity.Attributes;
-      if (!item || Object.keys(item).length == 0)
+  #attributesLazy = signal<Signal<EavEntityAttributes>>(null);
+
+  get(field: string): Signal<FieldValue> {
+    const l = this.log.fn('get', { field });
+    const sig = this.#fieldValueOrNullSignal(field);
+    return l.rSilent(sig);
+  }
+
+  #fieldValueSigCache = new ComputedCacheHelper<string, FieldValue>();
+  #fieldValueOrNullSignal(fieldName: string): Signal<FieldValue> {
+    const l = this.log.fn('#fieldValueOrNullSignal', { fieldName });
+    const sig = this.#fieldValueSigCache.getOrCreateWithInfo(fieldName, () => {
+      // Do we already have attributes?
+      const attrSig = this.#attributesLazy();
+      if (attrSig == null)
         return null;
 
-      const attribute = item[fieldName];
+      const attributes = attrSig();
+      if (!attributes || Object.keys(attributes).length == 0)
+        return null;
+
+      const attribute = attributes[fieldName];
       const values = attribute?.Values;
       if (values == null || values.length == 0)
         return null;
 
-      var value = this.reader().getBestValue(attribute);
+      const value = this.reader().getBestValue(attribute);
       return value as FieldValue;
     });
+    return l.rSilent(sig.signal, `isNew: ${sig.isNew}`);
   }
 
 }

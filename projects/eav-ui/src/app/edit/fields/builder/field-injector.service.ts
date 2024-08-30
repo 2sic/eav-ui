@@ -89,6 +89,10 @@ export class FieldInjectorService {
       }
     }
 
+    //
+    // TODO: this is probably better solved using a toSignal(control.valueChanges)
+    //
+
     /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
     const uiValue: Signal<FieldValue> = computed(() => controlStatusChangeSignal().value, SignalHelpers.objectEquals);
 
