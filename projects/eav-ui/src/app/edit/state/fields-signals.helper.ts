@@ -14,9 +14,6 @@ export class FieldsSignalsHelper {
   log = new EavLogger(nameOfThis, logThis);
 
   constructor(private itemSvc: ItemService, private reader: Signal<EntityReader>) {
-
-    // for (const [name, values] of Object.entries(attributes))
-    //   this.#fieldValueOrNullSignal(name);
   }
 
   init(itemGuid: string): this {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -16,6 +16,7 @@ import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { AdamCacheService } from '../../shared/store/adam-cache.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const logThis = false;
 const nameOfThis = 'FormFieldsBuilderService';
@@ -28,6 +29,7 @@ export class FormFieldsBuilderService extends ServiceBase {
     private adamCacheService: AdamCacheService,
     private formBuilder: UntypedFormBuilder,
     private entityFormConfigSvc: EntityFormStateService,
+    private injector: Injector,
   ) {
     super(new EavLogger(nameOfThis, logThis));
   }
@@ -35,7 +37,8 @@ export class FormFieldsBuilderService extends ServiceBase {
   start(entityGuid: string, form: UntypedFormGroup) {
     const l = this.log.fn('start');
 
-    const fieldProps$ = this.fieldsSettingsService.getFieldsProps$();
+    const fieldProps = this.fieldsSettingsService.getFieldsPropsSignal();
+    const fieldProps$ = toObservable(fieldProps, { injector: this.injector });
 
     // 1. Prepare: Take field props and enrich initial values and input types
     const fieldsToProcess: Observable<FieldToProcess[]> = fieldProps$.pipe(
@@ -57,61 +60,55 @@ export class FormFieldsBuilderService extends ServiceBase {
       }),
     );
 
-    this.createFields(entityGuid, form, fieldsToProcess);
+    // Create all the controls in the form right at the beginning
+    fieldsToProcess.pipe(
+      filter(fields => fields != null && fields.length > 0),
+      take(1)
+    ).subscribe(allFields => {
+      this.createFields(entityGuid, form, allFields);
+    });
 
     this.keepFieldsAndStateInSync(entityGuid, form, fieldsToProcess);
 
     l.end();
   }
 
-  createFields(entityGuid: string, form: UntypedFormGroup, fieldsToProcess: Observable<FieldToProcess[]>) {
+  createFields(entityGuid: string, form: UntypedFormGroup, allFields: FieldToProcess[]) {
     const l = this.log.fn('createFields');
 
-    // Create all the controls in the form right at the beginning
-    fieldsToProcess.pipe(
-      filter(fields => fields != null && fields.length > 0),
-      take(1)
-    ).subscribe(allFields => {
-      l.a('create all controls', { allFields });
-      // 1. create missing controls - usually just on first cycle
-      const fieldsToCreate = allFields.filter(({ inputType, hasControl }) =>
-        // Empty type, skip
-        !InputTypeHelpers.isEmpty(inputType)
+    // 1. create missing controls - usually just on first cycle
+    const fieldsToCreate = allFields.filter(({ inputType, hasControl }) =>
+      !InputTypeHelpers.isEmpty(inputType)    // Empty type, skip
+      && !hasControl                          // If control already exists, skip
+    );
 
-        // If control already exists, skip
-        && !hasControl
-      );
+    this.log.a(`create missing controls ${fieldsToCreate.length} of ${allFields.length}`, { fieldsForNgForm: fieldsToCreate });
 
-      this.log.a(`create missing controls ${fieldsToCreate.length} of ${allFields.length}`, { fieldsForNgForm: fieldsToCreate });
+    // Generate any fields which don't exist yet (usually only on first cycle)
+    for (const fields of fieldsToCreate) {
+      const { fieldName, fieldProps, inputType, value } = fields;
+      // The initial value at the moment the control is first created in this language
+      let initialValue = value;
 
-      // Generate any fields which don't exist yet (usually only on first cycle)
-      for (const fields of fieldsToCreate) {
-        const { fieldName, fieldProps, inputType, value } = fields;
-        // The initial value at the moment the control is first created in this language
-        let initialValue = value;
-
-        // Special treatment for wysiwyg fields
-        // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
-        // ...except for directly below
-        if (inputType === InputTypeCatalog.StringWysiwyg && initialValue) {
-          const logic = FieldLogicManager.singleton().get(InputTypeCatalog.StringWysiwyg);
-          const adamItems = this.adamCacheService.getAdamSnapshot(entityGuid, fieldName);
-          fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
-        }
-
-        // Build control in the Angular form with validators
-        const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
-        const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
-        const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
-        // TODO: build all fields at once. That should be faster
-        form.addControl(fieldName, newControl);
-        ValidationHelpers.ensureWarning(form.controls[fieldName]);
+      // Special treatment for wysiwyg fields
+      // Note by 2dm 2024-08-19 - not sure if this actually works, because the changed buildValue is maybe never reused
+      // ...except for directly below
+      if (inputType === InputTypeCatalog.StringWysiwyg && initialValue) {
+        const logic = FieldLogicManager.singleton().get(InputTypeCatalog.StringWysiwyg);
+        const adamItems = this.adamCacheService.getAdamSnapshot(entityGuid, fieldName);
+        fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
       }
 
-      this.entityFormConfigSvc.controlsCreated.set(true);
-    });    
+      // Build control in the Angular form with validators
+      const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
+      const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
+      const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
+      // TODO: build all fields at once. That should be faster
+      form.addControl(fieldName, newControl);
+      ValidationHelpers.ensureWarning(form.controls[fieldName]);
+    }
 
-
+    this.entityFormConfigSvc.controlsCreated.set(true);
     l.end();
   }
 

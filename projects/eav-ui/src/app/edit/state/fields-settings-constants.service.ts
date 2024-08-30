@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
-import { FieldSettings } from '../../../../../edit-types';
+import { Entity, FieldSettings } from '../../../../../edit-types';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
@@ -10,6 +10,7 @@ import { ItemFieldVisibility } from './item-field-visibility';
 import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
 import { FormLanguageComplete } from './form-languages.model';
 import { InputTypeService } from '../shared/store/input-type.service';
+import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsConstantsService';
@@ -21,7 +22,8 @@ const nameOfThis = 'FieldsSettingsConstantsService';
 export class FieldsSettingsConstantsService {
   private item: EavItem;
   private itemFieldVisibility: ItemFieldVisibility;
-  private entityReaderCurrent$: Observable<EntityReader>;
+  // private entityReaderCurrent$: Observable<EntityReader>;
+  private entityReaderCurrent: Signal<EntityReader>;
   private contentType: EavContentType;
 
   log = new EavLogger(nameOfThis, logThis);
@@ -32,59 +34,74 @@ export class FieldsSettingsConstantsService {
   ) { }
 
   init(
-    item: EavItem,
-    entityReaderCurrent$: Observable<EntityReader>,
+    itemForIds: EavItem,
     contentType: EavContentType,
+    entityReaderCurrent: Signal<EntityReader>,
+    // entityReaderCurrent$: Observable<EntityReader>,
   ): this {
-    this.item = item;
-    this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
-    this.entityReaderCurrent$ = entityReaderCurrent$;
+    this.item = itemForIds;
     this.contentType = contentType;
+    this.itemFieldVisibility = new ItemFieldVisibility(itemForIds.Header);
+    this.entityReaderCurrent = entityReaderCurrent;
+    // this.entityReaderCurrent$ = entityReaderCurrent$;
     return this;
   }
 
-  getUnchangingDataOfLanguage$() {
+  getUnchangingDataOfLanguage() {
     const entityGuid = this.item.Entity.Guid;
     const entityId = this.item.Entity.Id;
     const contentTypeNameId = this.contentType.Id;
     const unchangingPartsAllLanguages = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
-    return this.getConstantFieldPartsOfLanguage$(unchangingPartsAllLanguages);
+    return this.getConstantFieldPartsOfLanguage(unchangingPartsAllLanguages);
   }
 
-  private getConstantFieldPartsOfLanguage$(fieldConstants: FieldConstants[]): Observable<FieldConstantsOfLanguage[]> {
+  private getConstantFieldPartsOfLanguage(fieldConstants: FieldConstants[]): Signal<FieldConstantsOfLanguage[]> {
+    return computed(() => this.getConstantPartsOfLanguage(this.entityReaderCurrent(), fieldConstants), { equal: isEqual });
+  }
+
+  // getUnchangingDataOfLanguage$() {
+  //   const entityGuid = this.item.Entity.Guid;
+  //   const entityId = this.item.Entity.Id;
+  //   const contentTypeNameId = this.contentType.Id;
+  //   const unchangingPartsAllLanguages = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
+  //   return this.getConstantFieldPartsOfLanguage$(unchangingPartsAllLanguages);
+  // }
+
+  // private getConstantFieldPartsOfLanguage$(fieldConstants: FieldConstants[]): Observable<FieldConstantsOfLanguage[]> {
+  //   return this.entityReaderCurrent$.pipe(
+  //     map((entityReader) => this.getConstantPartsOfLanguage(entityReader, fieldConstants))
+  //   );
+  // }
+
+  private getConstantPartsOfLanguage(entityReader: EntityReader, fieldConstants: FieldConstants[]) {
     const contentType = this.contentType;
-    const constFieldPartsOfLanguage$ = this.entityReaderCurrent$.pipe(
-      map((entityReader) => {
-        const l = this.log.fn('constantFieldPartsLanguage(map)', { contentType, entityReader });
+    const l = this.log.fn('constantFieldPartsLanguage(map)', { contentType, entityReader });
 
-        const constPartOfLanguage = contentType.Attributes.map((ctAttrib) => {
-          // Input Type config in the current language
-          const inputType = this.inputTypeSvc.get(ctAttrib.InputType);
+    const constPartOfLanguage = contentType.Attributes.map((ctAttrib) => {
+      // Input Type config in the current language
+      const inputType = this.inputTypeSvc.get(ctAttrib.InputType);
 
-          // Construct the constants with settings and everything
-          // using the EntityReader with the current language
-          const mergeRaw = entityReader.flattenAll<FieldSettings>(ctAttrib.Metadata);
+      // Construct the constants with settings and everything
+      // using the EntityReader with the current language
+      const mergeRaw = entityReader.flattenAll<FieldSettings>(ctAttrib.Metadata);
 
-          // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
-          mergeRaw.InputType = ctAttrib.InputType;
-          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
-          const settingsInitial = FieldsSettingsHelpers.getDefaultFieldSettings(mergeRaw);
-          const constantFieldParts: FieldConstantsOfLanguage = {
-            ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
-            settingsInitial,
-            inputTypeConfiguration: inputType,
-            language: entityReader.current,
-          };
+      // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
+      mergeRaw.InputType = ctAttrib.InputType;
+      mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
+      const settingsInitial = FieldsSettingsHelpers.getDefaultFieldSettings(mergeRaw);
+      const constantFieldParts: FieldConstantsOfLanguage = {
+        ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
+        settingsInitial,
+        inputTypeConfiguration: inputType,
+        language: entityReader.current,
+      };
 
-          return constantFieldParts;
-        });
+      return constantFieldParts;
+    });
 
-        const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
+    const constPartsWithGroupVisibility = this.itemFieldVisibility.makeParentGroupsVisible(constPartOfLanguage);
 
-        return l.r(constPartsWithGroupVisibility);
-      })
-    );
-    return constFieldPartsOfLanguage$;
+    return l.r(constPartsWithGroupVisibility);
   }
 
   private getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {

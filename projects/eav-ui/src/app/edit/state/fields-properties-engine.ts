@@ -6,7 +6,6 @@ import { FormLanguage } from './form-languages.model';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
-import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';
@@ -113,6 +112,8 @@ export class FieldsPropsEngine {
       l.a('First round, no queue to process');
 
     // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
+    // Note that in the case of promises being executed, the whole process will need to run again
+    // when the promises finish
     const { fieldsProps, valueUpdates, fieldUpdates } = this.formulaEngine.runFormulasForAllFields(this);
 
     // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous

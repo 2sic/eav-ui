@@ -109,6 +109,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
   }
 
   ngOnDestroy() {
+    this.fieldsSettingsService.cleanUp();
     Object.values(this.form.controls).forEach((control: AbstractControlPro) => {
       control._warning$.complete();
     });

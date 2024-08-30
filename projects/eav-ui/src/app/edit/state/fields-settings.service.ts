@@ -1,25 +1,21 @@
-import { computed, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
-import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
+import { computed, inject, Injectable, Injector, OnDestroy, signal, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
-import { EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { EavItem } from '../shared/models/eav';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
 import { transient } from '../../core';
 import { FormConfigService } from './form-config.service';
 import { FormsStateService } from './forms-state.service';
-import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
+import { FieldProps } from './fields-configs.model';
 import { TranslationState } from './translate-state.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { FieldsSignalsHelper } from './fields-signals.helper';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { ContentTypeItemService } from '../shared/store/content-type-item.service';
@@ -27,7 +23,7 @@ import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
-import isEqual from 'lodash-es/isEqual';
+import { computedWithPrev } from '../../shared/helpers/signal.helpers';
 
 const logThis = true;
 const nameOfThis = 'FieldsSettingsService';
@@ -35,11 +31,12 @@ const nameOfThis = 'FieldsSettingsService';
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
- *
  * Each instance is responsible for a single entity.
  */
 @Injectable()
-export class FieldsSettingsService extends ServiceBase implements OnDestroy {
+export class FieldsSettingsService {
+
+  //#region injected services, constructor, clean-up
 
   // Shared / inherited services
   private languageSvc = inject(LanguageInstanceService);
@@ -56,83 +53,49 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private formulaEngine = transient(FormulaEngine);
   private formulaPromises = transient(FormulaPromiseHandler);
 
+  log = new EavLogger(nameOfThis, logThis);
+
+  constructor() { }
+
+  cleanUp(): void {
+    this.log.fn('cleanUp');
+    this.#disabled.set(true);
+  }
+
+  //#endregion
+
   /** Released field properties after the cycles of change are done */
-  private fieldsProps = signal<Record<string, FieldProps>>({}, { equal: isEqual});
-  private fieldsProps$ = toObservable(this.fieldsProps);
+  #fieldsProps: Signal<Record<string, FieldProps>>;
 
-  private forceRefreshSettings$ = new BehaviorSubject<void>(null);
+  /** Signal to force a refresh. */
+  #forceRefresh = signal(0);
 
-  /** Current items attributes - to be set once available */
-  private itemAttributes$: Observable<EavEntityAttributes>;
-  private constFieldPartsOfLanguage$: Observable<FieldConstantsOfLanguage[]>;
+  /** Signal to disable everything. Mainly on clean-up, as the computed will still run when data is removed from cache */
+  #disabled = signal(false);
 
-  private entityReader$ = this.languageSvc.getEntityReader$(this.formConfig.config.formId);
-  private entityReader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
+  #fieldPropsMixins: Record<string, Partial<FieldSettings>> = {};
 
-  constructor() {
-    super(new EavLogger(nameOfThis, logThis));
-
-    // Debugging effects
-    // const attributes = computed(() => {
-    //   const itemGuid = this.#itemGuid();
-    //   if (itemGuid == null) {
-    //     console.log('2dm - null');
-    //     return;
-    //   }
-    //   return this.itemService.getItemAttributes(itemGuid);
-    // });
-
-    // effect(() => {
-    //   const attr = attributes();
-    //   console.log('2dm - effect', attr);
-    // });
-
-    // const sigStringInput = computed(() => {
-    //   const l = this.log.fn('effect pre-computed');
-    //   const val = this.fieldValues.get('Title');
-    //   return l.r(val() as string);
-    // });
-
-    // effect(() => {
-    //   const l = this.log.fn('effect debugFieldSignals');
-    //   const val = sigStringInput();
-    //   console.log('2dm - effect', val);
-    // });
-  }
-
-  ngOnDestroy(): void {
-    this.forceRefreshSettings$?.complete();
-    super.destroy();
-  }
+  #reader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
 
   /** The item - set on init, used for many other computations */
-  #itemGuid = signal<string>(null);
   #item = signal<EavItem>(null);
 
-  #contentType = computed(() => {
-    if (!this.#item())
-      return null;
-    const contentType = this.contentTypeService.getContentTypeOfItem(this.#item());
-    return contentType;
-  });
+  #contentType = computed(() => (!this.#item()) ? null : this.contentTypeService.getContentTypeOfItem(this.#item()));
 
   /** The settings of the content-type of this item */
   public contentTypeSettings = computed(() => !this.#item()
     ? null
-    : ContentTypeSettingsHelpers.initDefaultSettings(this.entityReader(), this.#contentType(), this.#item().Header)
+    : ContentTypeSettingsHelpers.initDefaultSettings(this.#reader(), this.#contentType(), this.#item().Header)
   );
 
   /** Signals for each field value */
-  fieldValues = new FieldsSignalsHelper(this.itemService, this.entityReader);
+  // #fieldValues = new FieldsSignalsHelper(this.itemService, this.entityReader);
 
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
-    const l = this.log.fn('init', { entityGuid });
 
-    this.#itemGuid.set(entityGuid);
     const item = this.itemService.get(entityGuid);
     this.#item.set(item);
-    this.fieldValues.init(entityGuid);
 
     const contentType = this.#contentType();
     const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
@@ -141,89 +104,84 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
 
     this.formulaPromises.init(entityGuid, this.#contentType, this, modifiedChecker, this.changeBroadcastSvc);
     this.formulaEngine.init(entityGuid, this, this.formulaPromises, contentType, this.contentTypeSettings);
-    this.changeBroadcastSvc.init(entityGuid, this.entityReader);
+    this.changeBroadcastSvc.init(entityGuid, this.#reader);
 
 
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
-    this.constFieldPartsOfLanguage$ = this.constantsService
-      .init(item, this.entityReader$, contentType)
-      .getUnchangingDataOfLanguage$();
+    const constFieldPartsOfLanguage = this.constantsService
+      .init(item, contentType, this.#reader) //, this.entityReader$)
+      .getUnchangingDataOfLanguage();
 
     // WIP trying to drop this observable, but surprisingly it fails...
-    this.itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
+    const itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
 
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
-    const prepared$ = combineLatest([
-      this.entityReader$, // also exists as signal
-      this.globalConfigService.debugEnabled$, // also exists as signal
-      this.formsStateService.readOnly$, // also exists as signal
-    ]).pipe(
-      map(([entityReader, debugEnabled, formReadOnly]) => {
+    const prepared = computed(() => {
+      const languages = this.#reader();
+      const isDebug = this.globalConfigService.isDebug();
+      const isReadOnly = this.formsStateService.readOnly();
+
         // Logic Tools are needed when checking for settings defaults etc.
         const logicTools: FieldLogicTools = {
           eavConfig: this.formConfig.config,
-          entityReader,
-          debug: debugEnabled,
+          entityReader: this.#reader(),
+          debug: isDebug,
           contentTypeItemService: this.contentTypeItemService,
         };
         // This factory will generate helpers to validate settings updates
         const updHelperFactory = new FieldSettingsUpdateHelperFactory(
           contentType.Metadata,
-          entityReader, // for languages current, default, initial
+          languages, // for languages current, default, initial
           logicTools,
-          formReadOnly.isReadOnly,
+          isReadOnly.isReadOnly,
           slotIsEmpty,
         );
-        return {
-          updHelperFactory,
-        };
-      })
-    );
+        return updHelperFactory;
+    });
 
-    // temp solution for slotIsEmpty - needed ATM, otherwise formulas don't run when the slot-setting changes
-    const watchHeaderChanges$ = this.itemService.getItemHeader$(entityGuid);
+    this.#fieldsProps = computedWithPrev(prevFieldProps => {
+      // If disabled, return the previous value
+      // This is just a safeguard as data will be missing when this is being cleaned up
+      if (this.#disabled())
+        return prevFieldProps;
 
-    this.subscriptions.add(
-      combineLatest([
-        this.itemAttributes$,
-        this.entityReader$,
-        this.forceRefreshSettings$,
-        this.constFieldPartsOfLanguage$,
-        prepared$,
-        watchHeaderChanges$,
-      ]).pipe(
-        map(([itemAttributes, entityReader, _, constantFieldParts, prepared, __]) => {
-          // 1. Create list of all current language form values (as is stored in the entity-store) for further processing
-          const formValues = entityReader.currentValues(itemAttributes);
-          const engine = new FieldsPropsEngine(
-            item,
-            itemAttributes,
-            formValues,
-            this.fieldsProps(),
-            constantFieldParts,
+      // Just watchers for change detection
+      slotIsEmpty();
+      // This is triggered by promise-completed messages + v1 formulas
+      this.#forceRefresh();
 
-            entityReader,
-            prepared.updHelperFactory,
-            modifiedChecker,
-            this.formulaEngine,
-            this.formulaPromises,
-          );
+      const latestFieldProps = (Object.keys(this.#fieldPropsMixins).length)
+        ? this.#mergeMixins(prevFieldProps)
+        : prevFieldProps;
 
-          const { valueChanges, props } = engine.getLatestSettingsAndValues();
+      const reader = this.#reader();
+      const itmAttributes = itemAttributes();
+      const formValues = reader.currentValues(itmAttributes);
+      const engine = new FieldsPropsEngine(
+        item,
+        itmAttributes,
+        formValues,
+        latestFieldProps,
+        constFieldPartsOfLanguage(),
+
+        reader,
+        prepared(),
+        modifiedChecker,
+        this.formulaEngine,
+        this.formulaPromises,
+      );
+
+      const { props, valueChanges } = engine.getLatestSettingsAndValues();
           
-          // TODO: 2dm - not sure why but everything seems to work without this
-          // which I find very suspicious
-          // if (Object.keys(valueChanges).length > 0)
-          //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+      // TODO: 2dm - not sure why but everything seems to work without this
+      // which I find very suspicious
+      // if (Object.keys(valueChanges).length > 0)
+      //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-          return props;
-        }),
-        filter(fieldsProps => !!fieldsProps), // filter out nulls to skip/not process
-      ).subscribe(fieldsProps => {
-        this.fieldsProps.set(fieldsProps);
-      })
-    );
+      return props;
+    }, {} as Record<string, FieldProps>);
+
   }
 
   /**
@@ -231,15 +189,11 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Object that has attribute name as a key and all of its field properties as a value
    */
   getFieldsProps(): Record<string, FieldProps> {
-    return this.fieldsProps();
+    return this.#fieldsProps();
   }
 
-  /**
-   * Used to get field properties stream for all fields.
-   * @returns Stream of objects that has attribute name as a key and all of its field properties as a value
-   */
-  getFieldsProps$(): Observable<Record<string, FieldProps>> {
-    return this.fieldsProps$;
+  getFieldsPropsSignal(): Signal<Record<string, FieldProps>> {
+    return this.#fieldsProps;
   }
 
   /**
@@ -248,18 +202,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Field settings
    */
   getFieldSettings(fieldName: string): FieldSettings {
-    return this.fieldsProps()[fieldName].settings;
-  }
-
-  /**
-   * Used for getting field settings stream for a specific field.
-   * @param fieldName
-   * @returns Field settings stream
-   */
-  getFieldSettings$(fieldName: string): Observable<FieldSettings> {
-    return this.fieldsProps$.pipe(
-      mapUntilObjChanged(fieldsSettings => fieldsSettings[fieldName].settings),
-    );
+    return this.#fieldsProps()[fieldName].settings;
   }
 
   getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
@@ -274,7 +217,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * @returns Translation state stream
    */
   getTranslationState(fieldName: string): Signal<TranslationState> {
-    return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.fieldsProps()[fieldName].translationState);
+    return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.#fieldsProps()[fieldName].translationState);
   }
   #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>();
 
@@ -282,7 +225,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * Triggers a reevaluation of all formulas.
    */
   retriggerFormulas(): void {
-    this.forceRefreshSettings$.next();
+    this.#forceRefresh.update(v => v + 1);
   }
 
   /**
@@ -290,15 +233,30 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * Note that this change won't fire the formulas - which may not be correct.
    */
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
-    const all = this.fieldsProps();
-    const ofField = all[fieldName];
-    const newProps = {
-      ...all,
-      [fieldName]: {
-        ...ofField,
-        settings: { ...ofField.settings, ...update }
-      }
-    };
-    this.fieldsProps.set(newProps);
+    this.log.fn('updateSetting', { fieldName, update });
+    this.#fieldPropsMixins[fieldName] = update;
+    this.retriggerFormulas();
+  }
+
+  #mergeMixins(before: Record<string, FieldProps>) {
+    const l = this.log.fn('mergeMixins', { before, mixins: this.#fieldPropsMixins });
+    const mixins = this.#fieldPropsMixins;
+    if (Object.keys(mixins).length === 0)
+      return before;
+
+    const final = Object.keys(mixins).reduce((acc, key) => {
+      const ofField = acc[key];
+      const update = mixins[key];
+      return {
+        ...acc,
+        [key]: {
+          ...ofField,
+          settings: { ...ofField.settings, ...update }
+        }
+      };
+    }, before);
+
+    this.#fieldPropsMixins = {};
+    return l.r(final);
   }
 }

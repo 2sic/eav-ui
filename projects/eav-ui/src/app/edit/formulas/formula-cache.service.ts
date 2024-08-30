@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { Injectable, OnDestroy, signal, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
@@ -409,7 +409,10 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     const newResults = index >= 0
       ? [...list.slice(0, index), newResult, ...list.slice(index + 1)]
       : [newResult, ...list];
-    this.results.set(newResults);
+
+    // TODO: REACTIVATE IF POSSIBLE
+    untracked(() => this.results.set(newResults));
+    // this.results.set(newResults);
   }
 
   resultListIndexAndOriginal(r: FormulaIdentifier) {

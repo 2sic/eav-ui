@@ -1,4 +1,4 @@
-import { CreateComputedOptions } from '@angular/core';
+import { computed, CreateComputedOptions, Signal } from '@angular/core';
 import { RxHelpers } from '../rxJs/rx.helpers';
 import isEqual from 'lodash-es/isEqual';
 
@@ -38,3 +38,15 @@ export class SignalHelpers {
 // export class SignalEquals<T>: CreateComputedOptions<T> {
 //   equal: RxHelpers.objectsEqual<T>;
 // }
+
+
+/** Slightly unclean signal with previous value */
+// https://github.com/angular/angular/issues/54339
+export function computedWithPrev<T>(computation: (prev: T | undefined) => T, initial?: T): Signal<T> {
+	let previous = initial;
+	return computed(() => {
+		const newValue = computation(previous);
+		previous = newValue;
+		return newValue;
+	}, { equal: isEqual});
+}

@@ -4,7 +4,7 @@ import { EnvironmentInjector, Injectable, Injector, Signal, computed, createEnvi
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest, map, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -26,12 +26,12 @@ const logDetailsOnFields = ['Boolean'];
 @Injectable()
 export class FieldInjectorService {
 
-  private injector = inject(Injector);
-  private envInjector = inject(EnvironmentInjector);
-  private fieldsSettingsService = inject(FieldsSettingsService);
+  #injector = inject(Injector);
+  #envInjector = inject(EnvironmentInjector);
+  #fieldsSettingsService = inject(FieldsSettingsService);
 
-  private entityForm = inject(EntityFormStateService);
-  private group = this.entityForm.formGroup();
+  #entityForm = inject(EntityFormStateService);
+  #group = this.#entityForm.formGroup();
 
   log = new EavLogger(nameOfThis, logThis);
 
@@ -45,15 +45,15 @@ export class FieldInjectorService {
     const lDetailed = this.log.fnCond(logDetailsOnFields.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
 
     // Create settings() and basics() signal for further use
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
-    let settings: Signal<FieldSettings>;
-    runInInjectionContext(this.injector, () => {
-      settings = this.fieldsSettingsService.getFieldSettingsSignal(fieldName);
-    });
+    // const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
+    const settings = this.#fieldsSettingsService.getFieldSettingsSignal(fieldName);
+
+    const settings$ = toObservable(settings, { injector: this.#injector });
+
     const basics = computed(() => BasicControlSettings.fromSettings(settings()), { equal: RxHelpers.objectsEqual });
 
     // Control and Control Status
-    const control = this.group.controls[fieldName];
+    const control = this.#group.controls[fieldName];
     let controlStatusChangeSignal: Signal<ControlStatus<FieldValue>>;
 
     // Create a signal to watch for value changes
@@ -61,7 +61,7 @@ export class FieldInjectorService {
     // This signal spreads value changes even if they don't spread to the state/store
     // so we must be careful with what we do with it
     if (control) {
-      runInInjectionContext(this.injector, () => {
+      runInInjectionContext(this.#injector, () => {
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
         const disabled$ = settings$.pipe(
@@ -99,7 +99,7 @@ export class FieldInjectorService {
     const fieldState = new FieldState(
       fieldName,
       fieldConfig,
-      this.group,
+      this.#group,
       control,
       settings$,
       settings,
@@ -115,14 +115,14 @@ export class FieldInjectorService {
     // Component injector, not actually sure if it's used, because standalone only use environmentInjector AFAIK
     const injector = Injector.create({
       providers: providers,
-      parent: this.injector,
+      parent: this.#injector,
       name: 'FieldInjector',
     });
 
     // Environment injector
     const environmentInjector = createEnvironmentInjector(
       providers,
-      this.envInjector,
+      this.#envInjector,
       'FieldEnvInjector'
     );
 
