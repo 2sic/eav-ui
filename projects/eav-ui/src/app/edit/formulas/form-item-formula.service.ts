@@ -5,7 +5,7 @@ import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FieldsProps } from '../state/fields-configs.model';
+import { FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ItemService } from '../shared/store/item.service';
 
@@ -50,7 +50,7 @@ export class ItemFormulaBroadcastService {
    */
   applyValueChangesFromFormulas(
     formValues: ItemValuesOfLanguage,
-    fieldsProps: FieldsProps,
+    fieldsProps: Record<string, FieldProps>,
     possibleValueUpdates: ItemValuesOfLanguage,
     possibleFieldsUpdates: FieldValuePair[],
   ): boolean {

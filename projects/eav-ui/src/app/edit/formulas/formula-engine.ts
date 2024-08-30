@@ -15,23 +15,21 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself, FormulaRunParameters } from './helpers/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
-import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { EditInitializerService } from '../state/edit-initializer.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { FormConfigService } from '../state/form-config.service';
 import { LoggingService, LogSeverities } from '../shared/services/logging.service';
-import { FieldConstantsOfLanguage, FieldsProps } from '../state/fields-configs.model';
+import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ContentTypeSettings } from '../state/content-type-settings.model';
-import { FormLanguage } from '../state/form-languages.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { FieldsSignalsHelper } from '../state/fields-signals.helper';
 import { ItemService } from '../shared/store/item.service';
 import { LanguageService } from '../shared/store/language.service';
+import { FieldsPropsEngine } from '../state/fields-properties-engine';
 
 const logThis = false;
 const nameOfThis = 'FormulaEngine';
@@ -77,70 +75,70 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   private promiseHandler: FormulaPromiseHandler;
   private fieldSignals: FieldsSignalsHelper;
 
-  // TODO: 2dm -> Here we call all list item formulas on some picker for each item
-  /**
-   * Used for running all list item formulas for a given attribute/field.
-   * @param entityGuid
-   * @param entityId
-   * @param attribute
-   * @param formValues
-   * @param inputTypeName
-   * @param settingsInitial
-   * @param settingsCurrent
-   * @param itemHeader
-   * @param availableItems
-   * @returns List of processed picker items
-   */
-  runAllListItemsFormulas(
-    fieldName: string,
-    formValues: ItemValuesOfLanguage,
-    inputTypeName: InputTypeStrict,
-    settingsInitial: FieldSettings,
-    settingsCurrent: FieldSettings,
-    itemHeader: ItemIdentifierShared,
-    availableItems: PickerItem[],
-  ): PickerItem[] {
-    const formulas = this.activeFieldFormulas(this.entityGuid, fieldName, true);
+  // // TODO: 2dm -> Here we call all list item formulas on some picker for each item
+  // /**
+  //  * Used for running all list item formulas for a given attribute/field.
+  //  * @param entityGuid
+  //  * @param entityId
+  //  * @param attribute
+  //  * @param formValues
+  //  * @param inputTypeName
+  //  * @param settingsInitial
+  //  * @param settingsCurrent
+  //  * @param itemHeader
+  //  * @param availableItems
+  //  * @returns List of processed picker items
+  //  */
+  // runAllListItemsFormulas(
+  //   fieldName: string,
+  //   formValues: ItemValuesOfLanguage,
+  //   inputTypeName: InputTypeStrict,
+  //   settingsInitial: FieldSettings,
+  //   settingsCurrent: FieldSettings,
+  //   itemHeader: ItemIdentifierShared,
+  //   availableItems: PickerItem[],
+  // ): PickerItem[] {
+  //   const formulas = this.activeFieldFormulas(this.entityGuid, fieldName, true);
 
-    if (formulas.length === 0)
-      return availableItems;
+  //   if (formulas.length === 0)
+  //     return availableItems;
 
-    const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { currentValues: formValues, settingsInitial, inputTypeName, settingsCurrent, itemHeader };
+  //   const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { currentValues: formValues, settingsInitial, inputTypeName, settingsCurrent, itemHeader };
 
-    const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(this.entityGuid);
+  //   const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(this.entityGuid);
 
-    for (const formula of formulas)
-      for (const item of availableItems) {
-        const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
-        const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForDataAndContext };
-        const result = this.runFormula(allObjectParameters);
+  //   for (const formula of formulas)
+  //     for (const item of availableItems) {
+  //       const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
+  //       const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForDataAndContext };
+  //       const result = this.runFormula(allObjectParameters);
 
-        switch (formula.target) {
-          case FormulaTargets.ListItemLabel:
-            item.label = result.value as string;
-            break;
-          case FormulaTargets.ListItemDisabled:
-            item.notSelectable = result.value as boolean;
-            break;
-          case FormulaTargets.ListItemTooltip:
-            item.tooltip = result.value as string;
-            break;
-          case FormulaTargets.ListItemInformation:
-            item.infoBox = result.value as string;
-            break;
-          case FormulaTargets.ListItemHelpLink:
-            item.helpLink = result.value as string;
-            break;
-        }
-      }
-    return availableItems;
-  }
+  //       switch (formula.target) {
+  //         case FormulaTargets.ListItemLabel:
+  //           item.label = result.value as string;
+  //           break;
+  //         case FormulaTargets.ListItemDisabled:
+  //           item.notSelectable = result.value as boolean;
+  //           break;
+  //         case FormulaTargets.ListItemTooltip:
+  //           item.tooltip = result.value as string;
+  //           break;
+  //         case FormulaTargets.ListItemInformation:
+  //           item.infoBox = result.value as string;
+  //           break;
+  //         case FormulaTargets.ListItemHelpLink:
+  //           item.helpLink = result.value as string;
+  //           break;
+  //       }
+  //     }
+  //   return availableItems;
+  // }
 
   /**
    * Find formulas of the current field which are still running.
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
-  public activeFieldFormulas(entityGuid: string, name: string, forListItems: boolean = false): FormulaCacheItem[] {
+  #activeFieldFormulas(entityGuid: string, name: string, forListItems: boolean = false): FormulaCacheItem[] {
     const targets = forListItems
       ? Object.values(FormulaListItemTargets)
       : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
@@ -150,38 +148,32 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   }
 
 
-  runFormulasForAllFields(
-    item: EavItem,
-    itemAttributes: EavEntityAttributes,
-    constantFieldParts: FieldConstantsOfLanguage[],
-    formValues: ItemValuesOfLanguage,
-    languages: FormLanguage,
-    updHelperFactory: FieldSettingsUpdateHelperFactory,
-  ) {
-    const fieldsProps: FieldsProps = {};
+  runFormulasForAllFields(propsEngine: FieldsPropsEngine) {
+    const fieldsProps: Record<string, FieldProps> = {};
     const valueUpdates: ItemValuesOfLanguage = {};
     const fieldUpdates: FieldValuePair[] = [];
 
     // Many aspects of a field are re-usable across formulas, so we prepare them here
     // These are things explicit to the entity and either never change, or only rarely
     // so never between cycles
-    const reuseObjectsForFormulaDataAndContext = this.prepareDataForFormulaObjects(item.Entity.Guid);
+    const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(propsEngine.item.Entity.Guid);
 
     for (const attr of this.contentType.Attributes) {
-      const attrValues = itemAttributes[attr.Name];
-      const valueBefore = formValues[attr.Name];
-      const constFieldPart = constantFieldParts.find(f => f.fieldName === attr.Name);
+      const attrValues = propsEngine.itemAttributes[attr.Name];
+      const valueBefore = propsEngine.values[attr.Name];
+      const constFieldPart = propsEngine.fieldConstants.find(f => f.fieldName === attr.Name);
 
-      const latestSettings: FieldSettings = this.settingsSvc.getLatestFieldSettings(constFieldPart);
+      const latestSettings: FieldSettings = propsEngine.getFieldSettingsInCycle(constFieldPart);
 
-      const settingsUpdateHelper = updHelperFactory.create(attr, constFieldPart, attrValues);
+      const settingsUpdateHelper = propsEngine.updateHelper.create(attr, constFieldPart, attrValues);
 
       // run formulas
-      const formulaResult = this.runAllFormulasOfFieldOrInitSettings(attr.Name,
-        formValues,
+      const formulaResult = this.#runAllFormulasOfFieldOrInitSettings(
+        propsEngine,
+        attr.Name,
         constFieldPart,
         latestSettings,
-        item.Header,
+        propsEngine.item.Header,
         valueBefore,
         reuseObjectsForFormulaDataAndContext,
         settingsUpdateHelper,
@@ -196,7 +188,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       if (formulaResult.fields)
         fieldUpdates.push(...formulaResult.fields);
 
-      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, languages);
+      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, propsEngine.languages);
 
       fieldsProps[attr.Name] = {
         language: constFieldPart.language,
@@ -215,9 +207,9 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * Used for running all formulas for a given attribute/field.
    * @returns Object with all changes that formulas should make
    */
-  runAllFormulasOfFieldOrInitSettings(
+  #runAllFormulasOfFieldOrInitSettings(
+    propsEngine: FieldsPropsEngine,
     fieldName: string,
-    formValues: ItemValuesOfLanguage,
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemHeader: ItemIdentifierShared,
@@ -226,12 +218,12 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
     //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
-    const formulas = this.activeFieldFormulas(this.entityGuid, fieldName);
+    const formulas = this.#activeFieldFormulas(this.entityGuid, fieldName);
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
     const { value, validation, fields, settings } = hasFormulas
-      ? this.runFormulasOfField(formulas, formValues, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
+      ? this.#runFormulasOfField(propsEngine, formulas, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
       : { value: valueBefore, validation: null, fields: [], settings: {} };
 
     // Correct any settings necessary after
@@ -251,9 +243,9 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     return runFormulaResult;
   }
 
-  private runFormulasOfField(
+  #runFormulasOfField(
+    propsEngine: FieldsPropsEngine,
     formulas: FormulaCacheItem[],
-    formValues: ItemValuesOfLanguage,
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemHeader: ItemIdentifierShared,
@@ -270,7 +262,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     for (const formula of formulas) {
       const runParameters: FormulaRunParameters = {
         formula,
-        currentValues: formValues,
+        currentValues: propsEngine.values,
         inputTypeName: constFieldPart.inputTypeSpecs.inputType,
         settingsInitial: constFieldPart.settingsInitial,
         settingsCurrent: settingsBefore,
@@ -278,7 +270,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       };
       const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForFormulaDataAndContext };
 
-      const formulaResult = this.runFormula(allObjectParameters);
+      const formulaResult = this.#runFormula(allObjectParameters);
 
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = formulaResult?.promise instanceof Promise;
@@ -321,7 +313,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * Can be reused for a short time, as the data doesn't change in a normal cycle,
    * but it will need to be regenerated after things such as language or feature change.
    */
-  prepareDataForFormulaObjects(entityGuid: string): FormulaObjectsInternalWithoutFormulaItself {
+  #prepareDataForFormulaObjects(entityGuid: string): FormulaObjectsInternalWithoutFormulaItself {
     const language = this.formConfig.language();
     const languages = this.languageService.getAll();
     const debugEnabled = this.globalConfigService.isDebug();
@@ -349,12 +341,12 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  private runFormula(allObjectsForDataAndContext: FormulaObjectsInternalData): FormulaResultRaw {
+  #runFormula(allObjectsForDataAndContext: FormulaObjectsInternalData): FormulaResultRaw {
     const { formula, item, inputTypeName } = allObjectsForDataAndContext.runParameters;
 
     const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
 
-    const isOpenInDesigner = this.isDesignerOpen(formula);
+    const isOpenInDesigner = this.#isDesignerOpen(formula);
     const ctTitle = this.contentTypeSettings()._itemTitle;
     try {
       switch (formula.version) {
@@ -441,7 +433,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @param f
    * @returns True if formula is open in designer, otherwise false
    */
-  private isDesignerOpen(f: FormulaCacheItem): boolean {
+  #isDesignerOpen(f: FormulaCacheItem): boolean {
     const ds = this.designerSvc.designerState();
     const isOpenInDesigner = ds.isOpen && ds.entityGuid === f.entityGuid && ds.fieldName === f.fieldName && ds.target === f.target;
     return isOpenInDesigner;

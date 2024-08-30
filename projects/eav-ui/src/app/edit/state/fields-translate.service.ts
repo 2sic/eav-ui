@@ -14,7 +14,7 @@ import { FormLanguage } from './form-languages.model';
 import { ItemService } from '../shared/store/item.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { FieldSettings } from 'projects/edit-types';
-import { FieldsProps } from './fields-configs.model';
+import { FieldProps } from './fields-configs.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -273,7 +273,7 @@ export class FieldsTranslateService {
 }
 
 class FieldTranslationInfo implements Pick<FieldSettings, 'DisableTranslation' | 'DisableAutoTranslation'> {
-  constructor(private name: string, private settings: FieldSettings, private getFieldsProps: () => FieldsProps) { }
+  constructor(private name: string, private settings: FieldSettings, private getFieldsProps: () => Record<string, FieldProps>) { }
 
   get isAutoTranslatable(): boolean { return !this.DisableTranslation && !this.DisableAutoTranslation }
 

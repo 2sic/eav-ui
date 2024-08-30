@@ -1,6 +1,6 @@
-import { computed, effect, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, OnDestroy, signal, Signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, filter, map, Observable, shareReplay } from 'rxjs';
-import { FieldSettings, PickerItem } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
@@ -17,8 +17,7 @@ import { transient } from '../../core';
 import { FormConfigService } from './form-config.service';
 import { FormsStateService } from './forms-state.service';
 import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
-import { FieldsProps, FieldConstantsOfLanguage, TranslationState } from './fields-configs.model';
-import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { FieldConstantsOfLanguage, TranslationState, FieldProps } from './fields-configs.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
@@ -26,6 +25,7 @@ import { ContentTypeService } from '../shared/store/content-type.service';
 import { ContentTypeItemService } from '../shared/store/content-type-item.service';
 import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
+import { FieldsPropsEngine } from './fields-properties-engine';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -55,10 +55,10 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private formulaPromises = transient(FormulaPromiseHandler);
 
   /** Local field properties - updated throughout cycles but only "released" selectively */
-  #fieldPropsLatest: FieldsProps = {};
+  #fieldPropsLatest: Record<string, FieldProps> = {};
 
   /** Released field properties after the cycles of change are done */
-  private fieldsProps = signal<FieldsProps>(null);
+  private fieldsProps = signal<Record<string, FieldProps>>(null);
   private fieldsProps$ = toObservable(this.fieldsProps);
 
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
@@ -198,51 +198,67 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           // 1. Create list of all current language form values (as is stored in the entity-store) for further processing
           const formValues = entityReader.currentValues(itemAttributes);
 
-          // 2. Process the queue of changes from promises if necessary
-          // If things change, we will exit because then the observable will be retriggered
-          const isFirstRound = Object.keys(this.#fieldPropsLatest).length === 0;
-          if (!isFirstRound) {
-            const { newFieldProps, hadValueChanges } = this.formulaPromises
-              .updateFromQueue(formValues, this.#fieldPropsLatest, constantFieldParts, prepared.updHelperFactory);
-
-            // If we only updated values from promise (queue), don't trigger property regular updates
-            if (newFieldProps)
-              this.#fieldPropsLatest = newFieldProps;
-            
-            // If any value changes then the entire cycle will automatically retrigger.
-            // So we exit now as the whole cycle will re-init and repeat.
-            if (hadValueChanges)
-              return null;
-          }
-
-          // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
-          const { fieldsProps, valueUpdates, fieldUpdates } = this.formulaEngine
-            .runFormulasForAllFields(item, itemAttributes, constantFieldParts, formValues, entityReader, prepared.updHelperFactory);
-
-          // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
-          for (const [key, value] of Object.entries(fieldsProps))
-            value.buildWrappers = isFirstRound
-              ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
-              : this.#fieldPropsLatest[key]?.buildWrappers;
-
-          // 5. Update the latest field properties for further cycles
-          this.#fieldPropsLatest = fieldsProps;
-
-          // 6.1 If we have value changes were applied
-          const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(
+          const engine = new FieldsPropsEngine(
+            item,
+            itemAttributes,
             formValues,
-            fieldsProps,
-            valueUpdates,
-            fieldUpdates,
+            this.#fieldPropsLatest,
+            constantFieldParts,
+
+            entityReader,
+            prepared.updHelperFactory,
+            this.changeBroadcastSvc,
+            this.formulaEngine,
+            this.formulaPromises,
           );
 
-          // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
-          if (changesWereApplied)
-            return null;
+          const { props, broadcastProps } = engine.getLatestSettingsAndBroadcastUpdates();
+          this.#fieldPropsLatest = props;
+          return broadcastProps ? props : null;
 
-          // 6.3 If no more changes were applied, then trigger field property updates and reset the loop counter
-          this.changeBroadcastSvc.valueFormulaCounter = 0;
-          return fieldsProps;
+          // // 2. Process the queue of changes from promises if necessary
+          // // If things change, we will exit because then the observable will be retriggered
+          // const isFirstRound = Object.keys(this.#fieldPropsLatest).length === 0;
+          // if (!isFirstRound) {
+          //   const { newFieldProps, hadValueChanges } = this.formulaPromises.updateFromQueue(engine);
+
+          //   // If we only updated values from promise (queue), don't trigger property regular updates
+          //   if (newFieldProps)
+          //     this.#fieldPropsLatest = newFieldProps;
+            
+          //   // If any value changes then the entire cycle will automatically retrigger.
+          //   // So we exit now as the whole cycle will re-init and repeat.
+          //   if (hadValueChanges)
+          //     return null;
+          // }
+
+          // // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
+          // const { fieldsProps, valueUpdates, fieldUpdates } = this.formulaEngine.runFormulasForAllFields(engine);
+
+          // // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
+          // for (const [key, value] of Object.entries(fieldsProps))
+          //   value.buildWrappers = isFirstRound
+          //     ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
+          //     : this.#fieldPropsLatest[key]?.buildWrappers;
+
+          // // 5. Update the latest field properties for further cycles
+          // this.#fieldPropsLatest = fieldsProps;
+
+          // // 6.1 If we have value changes were applied
+          // const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(
+          //   formValues,
+          //   fieldsProps,
+          //   valueUpdates,
+          //   fieldUpdates,
+          // );
+
+          // // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
+          // if (changesWereApplied)
+          //   return null;
+
+          // // 6.3 If no more changes were applied, then trigger field property updates and reset the loop counter
+          // this.changeBroadcastSvc.valueFormulaCounter = 0;
+          // return fieldsProps;
         }),
         logUpdateFieldProps.map(),
         filter(fieldsProps => !!fieldsProps), // filter out nulls to skip/not process
@@ -254,59 +270,45 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     );
   }
 
-  /**
-   * Get latest/current valid field settings - if possible from cache
-   * if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
-   */
-  getLatestFieldSettings(constFieldPart: FieldConstantsOfLanguage): FieldSettings {
-    const latest = this.#fieldPropsLatest[constFieldPart.fieldName];
-    // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
-    const cachedStillValid = constFieldPart.language == latest?.language;
-    const latestSettings: FieldSettings = cachedStillValid
-      ? latest?.settings ?? { ...constFieldPart.settingsInitial }
-      : { ...constFieldPart.settingsInitial };
-    return latestSettings;
-  }
+  // //TODO: @2dm -> Here we call the formula engine to process the picker items
+  // //TODO: @SDV -> Possible issue here as all pickers use same instance of this service, when we have multiple pickers we could get data crosscontamination
+  // //           -> Consider multiple streams (one for each picker)
+  // processPickerItems$(fieldName: string, availableItems$: BehaviorSubject<PickerItem[]>): Observable<PickerItem[]> {
+  //   return combineLatest([
+  //     availableItems$,
+  //     this.itemAttributes$,
+  //     this.entityReader$,
+  //     this.constFieldPartsOfLanguage$,
+  //   ]).pipe(map(([
+  //       availableItems, itemAttributes, entityReader, constantFieldParts,
+  //     ]) => {
+  //       const contentType = this.#contentType();
+  //       const attribute = contentType.Attributes.find(a => a.Name === fieldName);
+  //       const formValues: ItemValuesOfLanguage = {};
+  //       for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
+  //         formValues[fieldName] = entityReader.getBestValue(fieldValues);
+  //       }
+  //       const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
+  //       const latestSettings = this.getLatestFieldSettings(constantFieldPart);
 
-  //TODO: @2dm -> Here we call the formula engine to process the picker items
-  //TODO: @SDV -> Possible issue here as all pickers use same instance of this service, when we have multiple pickers we could get data crosscontamination
-  //           -> Consider multiple streams (one for each picker)
-  processPickerItems$(fieldName: string, availableItems$: BehaviorSubject<PickerItem[]>): Observable<PickerItem[]> {
-    return combineLatest([
-      availableItems$,
-      this.itemAttributes$,
-      this.entityReader$,
-      this.constFieldPartsOfLanguage$,
-    ]).pipe(map(([
-        availableItems, itemAttributes, entityReader, constantFieldParts,
-      ]) => {
-        const contentType = this.#contentType();
-        const attribute = contentType.Attributes.find(a => a.Name === fieldName);
-        const formValues: ItemValuesOfLanguage = {};
-        for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
-          formValues[fieldName] = entityReader.getBestValue(fieldValues);
-        }
-        const constantFieldPart = constantFieldParts.find(f => f.fieldName === attribute.Name);
-        const latestSettings = this.getLatestFieldSettings(constantFieldPart);
-
-        return this.formulaEngine.runAllListItemsFormulas(
-          attribute.Name,
-          formValues,
-          constantFieldPart.inputTypeSpecs.inputType,
-          constantFieldPart.settingsInitial,
-          latestSettings,
-          this.#item().Header,
-          availableItems
-        );
-      }
-    ));
-  }
+  //       return this.formulaEngine.runAllListItemsFormulas(
+  //         attribute.Name,
+  //         formValues,
+  //         constantFieldPart.inputTypeSpecs.inputType,
+  //         constantFieldPart.settingsInitial,
+  //         latestSettings,
+  //         this.#item().Header,
+  //         availableItems
+  //       );
+  //     }
+  //   ));
+  // }
 
   /**
    * Used to get field properties for all fields.
    * @returns Object that has attribute name as a key and all of its field properties as a value
    */
-  getFieldsProps(): FieldsProps {
+  getFieldsProps(): Record<string, FieldProps> {
     return this.fieldsProps();
   }
 
@@ -314,7 +316,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * Used to get field properties stream for all fields.
    * @returns Stream of objects that has attribute name as a key and all of its field properties as a value
    */
-  getFieldsProps$(): Observable<FieldsProps> {
+  getFieldsProps$(): Observable<Record<string, FieldProps>> {
     return this.fieldsProps$;
   }
 
@@ -373,6 +375,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
     this.forceRefreshSettings$.next();
   }
 
+  /**
+   * Modify a setting, ATM just to set collapsed / dialog-open states
+   */
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
     const props = this.#fieldPropsLatest[fieldName];
     const newSettings = { ...props.settings, ...update };

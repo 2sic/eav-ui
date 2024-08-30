@@ -5,8 +5,6 @@ import { FieldLogicBase } from '../fields/logic/field-logic-base';
 import { TranslationStateCore } from '../fields/wrappers/localization/translate-menu/translate-menu.models';
 import { FormulaFieldValidation } from '../formulas/models/formula.models';
 
-export interface FieldsProps extends Record<string, FieldProps> { };
-
 export interface FieldProps {
   /** The language which applied to these field props as added to cache */
   language: string;

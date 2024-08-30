@@ -12,8 +12,9 @@ import { FieldSettingsUpdateHelperFactory } from '../state/fields-settings-updat
 import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { ItemService } from '../shared/store/item.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
-import { FieldsProps, FieldConstantsOfLanguage } from '../state/fields-configs.model';
+import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { FieldsPropsEngine } from '../state/fields-properties-engine';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';
@@ -117,12 +118,7 @@ export class FormulaPromiseHandler {
    * @param formItemFormulaService
    * @returns true if values were updated, false otherwise and new field props
    */
-  updateFromQueue(
-    formValues: ItemValuesOfLanguage,
-    fieldsProps: FieldsProps,
-    constantFieldParts: FieldConstantsOfLanguage[],
-    setUpdHelperFactory: FieldSettingsUpdateHelperFactory,
-  ): { hadValueChanges: boolean, newFieldProps: FieldsProps } {
+  updateFromQueue(engine: FieldsPropsEngine): { hadValueChanges: boolean, newFieldProps: Record<string, FieldProps> } {
     // Get data from change queue
     const toProcess = this.updateValueQueue[this.entityGuid];
 
@@ -142,8 +138,8 @@ export class FormulaPromiseHandler {
     let hadValueChanges = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
       this.changeBroadcastSvc.applyValueChangesFromFormulas(
-        formValues,
-        fieldsProps,
+        engine.values,
+        engine.fieldProps,
         values,
         fields,
       );
@@ -152,12 +148,12 @@ export class FormulaPromiseHandler {
 
     // Handle settings
     const contentType = this.contentType();
-    let newFieldProps: FieldsProps = null;
+    let newFieldProps: Record<string, FieldProps> = null;
     if (settings.length) {
-      newFieldProps = { ...fieldsProps };
+      newFieldProps = { ...engine.fieldProps };
       const itemAttributes = this.itemService.getItemAttributes(this.entityGuid);
       settings.forEach(valueSet => {
-        const settingsCurrent = fieldsProps[valueSet.name]?.settings;
+        const settingsCurrent = engine.fieldProps[valueSet.name]?.settings;
         
         let settingsNew: Record<string, any> = {};
         valueSet.settings.forEach(setting => {
@@ -165,18 +161,18 @@ export class FormulaPromiseHandler {
           ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(target, settingsCurrent, setting.value, settingsNew));
         });
 
-        const constantFieldPart = constantFieldParts.find(f => f.fieldName === valueSet.name);
+        const constantFieldPart = engine.fieldConstants.find(f => f.fieldName === valueSet.name);
         const attribute = contentType.Attributes.find(a => a.Name === valueSet.name);
 
         // Prepare helper which the formula will need to verify if the field is visible
-        const setUpdHelper = setUpdHelperFactory.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
+        const setUpdHelper = engine.updateHelper.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
 
         const updatedSettings = setUpdHelper.correctSettingsAfterChanges(
           {
             ...settingsCurrent,
             ...settingsNew,
           },
-          formValues[valueSet.name],
+          engine.values[valueSet.name],
         );
 
         newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };
