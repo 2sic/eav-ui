@@ -12,7 +12,7 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { ControlHelpers } from '../helpers/control.helpers';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'ItemUpdateHelper';
 
 export class ItemUpdateHelper {
@@ -62,7 +62,6 @@ export class ItemUpdateHelper {
 
   //#region Item Attribute - Single Value
 
-  // TODO:: Old Code, remove after testing ist done
   addItemAttributeValue(
     entityGuid: string,
     attributeKey: string,
@@ -73,6 +72,7 @@ export class ItemUpdateHelper {
     isTransaction = false,
     transactionItem?: EavItem,
   ): EavItem {
+    const l = this.log.fn('addItemAttributeValue', { entityGuid, attributeKey, newValue, currentLanguage, isReadOnly, attributeType, isTransaction, transactionItem });
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
     const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
     const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
@@ -92,7 +92,6 @@ export class ItemUpdateHelper {
     return newItem;
   }
 
-  // TODO:: Old Code, remove after testing ist done
   updateItemAttributeValue(
     entityGuid: string,
     attributeKey: string,
@@ -100,6 +99,7 @@ export class ItemUpdateHelper {
     language: FormLanguage,
     isReadOnly: boolean,
   ): void {
+    const l = this.log.fn('updateItemAttributeValue', { entityGuid, attributeKey, newValue, language, isReadOnly });
     const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return;
 
@@ -150,8 +150,9 @@ export class ItemUpdateHelper {
   //#region Item Attribute - Multi Value
 
   updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfLanguage, language: FormLanguage): void {
+    const l = this.log.fn('updateItemAttributesValues', { entityGuid, newValues, language });
     const oldItem = this.itemSvc.get(entityGuid);
-    if (!oldItem) return;
+    if (!oldItem) return l.end('Item not found');
 
     const oldValues: ItemValuesOfLanguage = {};
     for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
@@ -161,13 +162,14 @@ export class ItemUpdateHelper {
     }
     const changes = ControlHelpers.getFormChanges(oldValues, newValues);
     if (changes == null)
-      return;
+      return l.end('No changes');
 
+    const newAttributes = LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language);
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language),
+        Attributes: newAttributes,
       }
     };
     this.itemSvc.add(newItem);

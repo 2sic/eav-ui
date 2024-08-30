@@ -22,13 +22,14 @@ export class FieldsValuesModifiedHelper {
     engine: FieldsPropsEngine,
     valueUpdatesFromSideEffects: FieldValuePair[],
     valueUpdates: ItemValuesOfLanguage,
+    originalValues?: ItemValuesOfLanguage
   ): ItemValuesOfLanguage {
     const contentType = this.contentType();
     const slotIsEmpty = this.slotIsEmpty();
 
-    const formValues = engine.values;
+    originalValues ??= engine.values;
     const fieldsProps = engine.fieldProps;
-    const l = this.log.fn('applyValueChangesFromFormulas', { contentType, formValues, fieldsProps, valueUpdates, valueUpdatesFromSideEffects, slotIsEmpty });
+    const l = this.log.fn('getValueUpdates', { contentType, originalValues, fieldsProps, valueUpdates, valueUpdatesFromSideEffects, slotIsEmpty });
 
     if (slotIsEmpty)
       return l.r({}, 'Slot is empty, exit early');
@@ -36,7 +37,7 @@ export class FieldsValuesModifiedHelper {
     const result: ItemValuesOfLanguage = {};
     for (const attribute of contentType.Attributes) {
       const fieldName = attribute.Name;
-      const original = formValues[fieldName];
+      const original = originalValues[fieldName];
 
       // if field is not in formValues, we should not update it. Check `undefined` because `null` is allowed
       if (original === undefined)

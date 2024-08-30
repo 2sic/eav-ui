@@ -8,11 +8,10 @@ import { Injectable, Signal } from "@angular/core";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 import { ItemFormulaBroadcastService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
 import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { ItemService } from '../shared/store/item.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
-import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
+import { FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsValuesModifiedHelper } from '../state/fields-values-modified.helper';
@@ -89,7 +88,6 @@ export class FormulaPromiseHandler {
         if (formulaCache.target === FormulaTargets.Value) {
           valueUpdates = queueItem.valueUpdates ?? {};
           valueUpdates[formulaCache.fieldName] = corrected.value;
-
         } else if (formulaCache.target.startsWith(SettingsFormulaPrefix)) {
           l.a("formula promise settings");
           const settingName = formulaCache.target.substring(SettingsFormulaPrefix.length);
@@ -122,16 +120,14 @@ export class FormulaPromiseHandler {
    * @param formItemFormulaService
    * @returns true if values were updated, false otherwise and new field props
    */
-  updateFromQueue(engine: FieldsPropsEngine): { hadValueChanges: boolean, newFieldProps: Record<string, FieldProps> } {
-    // Get data from change queue
+  changesFromQueue(engine: FieldsPropsEngine): QueuedChanges {
+    // Get data from change queue and then flush, as we'll process it next and in case of errors we don't want to reprocess it
     const toProcess = this.updateValueQueue[this.entityGuid];
+    this.updateValueQueue[this.entityGuid] = null;
 
     // If nothing in the queue for this entity, exit early
     if (toProcess == null)
-      return { hadValueChanges: false, newFieldProps: null };
-
-    // Flush queue for this item, as we'll process it next and in case of errors we don't want to reprocess it
-    this.updateValueQueue[this.entityGuid] = null;
+      return { valueChanges: {}, newFieldProps: null };
 
     // Updates to process/import
     const values = toProcess.valueUpdates;
@@ -139,12 +135,9 @@ export class FormulaPromiseHandler {
     const settings = toProcess.settingUpdates;
 
     // Handle values (of this field) and fields (values of other fields)
-    let hadValueChanges = false;
-    if (Object.keys(values).length !== 0 || fields.length !== 0) {
-      const modifiedValues = this.modifiedChecker.getValueUpdates(engine, fields, values);
-      this.changeBroadcastSvc.applyValueChangesFromFormulas(modifiedValues);
-      hadValueChanges = true;
-    }
+    const modifiedValues = (Object.keys(values).length !== 0 || fields.length !== 0)
+      ? this.modifiedChecker.getValueUpdates(engine, fields, values)
+      : {};
 
     // Handle settings
     const contentType = this.contentType();
@@ -167,18 +160,19 @@ export class FormulaPromiseHandler {
         // Prepare helper which the formula will need to verify if the field is visible
         const setUpdHelper = engine.updateHelper.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
 
-        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(
-          {
-            ...settingsCurrent,
-            ...settingsNew,
-          },
-          engine.values[valueSet.name],
-        );
+        const mergedSettings = { ...settingsCurrent, ...settingsNew };
+        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(mergedSettings, engine.values[valueSet.name]);
 
         newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };
       });
     }
 
-    return { hadValueChanges, newFieldProps };
+    return { valueChanges: modifiedValues, newFieldProps };
   }
+}
+
+interface QueuedChanges {
+  /** value changes, may not be null */
+  valueChanges: ItemValuesOfLanguage,
+  newFieldProps: Record<string, FieldProps>
 }

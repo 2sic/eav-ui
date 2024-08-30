@@ -177,7 +177,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           formReadOnly.isReadOnly,
           slotIsEmpty,
         );
-
         return {
           updHelperFactory,
         };
@@ -216,9 +215,15 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             this.formulaPromises,
           );
 
-          const { props, broadcastProps } = engine.getLatestSettingsAndBroadcastUpdates();
+          const { valueChanges, props } = engine.getLatestSettingsAndValues();
+          
+          // TODO: 2dm - not sure why but everything seems to work without this
+          // which I find very suspicious
+          // if (Object.keys(valueChanges).length > 0)
+          //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+
           this.#fieldPropsLatest = props;
-          return broadcastProps ? props : null;
+          return props;
 
         }),
         logUpdateFieldProps.map(),

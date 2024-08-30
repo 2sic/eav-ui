@@ -5,13 +5,20 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export class ControlHelpers {
 
+  private static fieldValuesAreEqual(x: FieldValue, y: FieldValue): boolean {
+    if (x === y) return true;
+    if (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y)) return true;
+    if (Array.isArray(x) && Array.isArray(y) && RxHelpers.arraysEqual(x, y)) return true;
+    return false;
+  }
+  
   /** Searches where newValues has values different from oldValues */
   static getFormChanges(oldValues: ItemValuesOfLanguage, newValues: ItemValuesOfLanguage): ItemValuesOfLanguage {
     const changes: ItemValuesOfLanguage = {};
     for (const key of Object.keys(newValues)) {
       const newValue = newValues[key];
       const oldValue = oldValues[key];
-      if (this.controlValuesEqual(newValue, oldValue))
+      if (this.fieldValuesAreEqual(newValue, oldValue))
         continue;
 
       changes[key] = newValue;
@@ -34,7 +41,7 @@ export class ControlHelpers {
     if (!control.touched)
       control.markAsTouched();
 
-    if (!control.dirty && !this.controlValuesEqual(control.value, newValue))
+    if (!control.dirty && !this.fieldValuesAreEqual(control.value, newValue))
       control.markAsDirty();
 
     control.patchValue(newValue);
@@ -52,10 +59,4 @@ export class ControlHelpers {
       control.enable();
   }
 
-  private static controlValuesEqual(x: FieldValue, y: FieldValue): boolean {
-    if (x === y) return true;
-    if (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y)) return true;
-    if (Array.isArray(x) && Array.isArray(y) && RxHelpers.arraysEqual(x, y)) return true;
-    return false;
-  }
 }

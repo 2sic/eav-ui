@@ -11,9 +11,12 @@ import { FormulaEngine } from '../formulas/formula-engine';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
+import isEqual from 'lodash-es/isEqual';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldsPropsEngine';
+
+const maxChangeCycles = 3;
 
 /**
  * Assistant helper to process / recalculate the value of fields and their settings.
@@ -35,7 +38,7 @@ export class FieldsPropsEngine {
     public item: EavItem,
     public itemAttributes: EavEntityAttributes,
     /** The values of the form - initialized here and to be updated until complete */
-    initialValues: ItemValuesOfLanguage,
+    private readonly initialValues: ItemValuesOfLanguage,
     /** The field props at start and during the calculation cycles (may be updated until complete) */
     public fieldProps: Record<string, FieldProps>,
     public fieldConstants: FieldConstantsOfLanguage[],
@@ -47,7 +50,7 @@ export class FieldsPropsEngine {
     private formulaPromises: FormulaPromiseHandler,
   ) {
     this.languages = readerWithLanguage;
-    this.#values = initialValues;
+    this.values = { ...initialValues };
   }
 
   /**
@@ -58,26 +61,57 @@ export class FieldsPropsEngine {
   /**
    * Get the current values of the fields, as they may update during the cycle
    */
-  get values() { return this.#values; }
-  #values: ItemValuesOfLanguage;
+  values: ItemValuesOfLanguage;
 
-  public getLatestSettingsAndBroadcastUpdates(): CycleResults {
+  public getLatestSettingsAndValues(): PropsUpdate {
+    const l = this.log.fn('getLatestSettingsAndValues');
+
+    for (let i = 0; i < maxChangeCycles; i++) {
+      const cycle = this.#getLatestSettingsAndValues(i);
+      const mergedValues = { ...this.values, ...cycle.valueChanges };
+
+      // Quit if we have no more changes
+      if (isEqual(this.fieldProps, cycle.props) && isEqual(this.values, mergedValues)) {
+        l.a('No more changes, stable, exit');
+        break;
+      }
+
+      // Update state for next cycles
+      this.fieldProps = cycle.props;
+      this.values = mergedValues;
+    }
+
+    // figure out the final changes to propagate
+    const finalChanges = this.modifiedChecker.getValueUpdates(this, [], this.values, this.initialValues);
+
+    return { valueChanges: finalChanges, props: this.fieldProps };
+  }
+
+  #getLatestSettingsAndValues(loopIndex: number): PropsUpdate {
+    const l = this.log.fn('getLatestSettingsAndBroadcastUpdates', { loopIndex });
+
+    // 1. Detect first round as it has slightly different behavior
+    const isFirstRound = Object.keys(this.fieldProps).length === 0;
 
     // 2. Process the queue of changes from promises if necessary
     // If things change, we will exit because then the observable will be retriggered
-    const isFirstRound = Object.keys(this.fieldProps).length === 0;
     if (!isFirstRound) {
-      const { newFieldProps, hadValueChanges } = this.formulaPromises.updateFromQueue(this);
+      const { valueChanges, newFieldProps } = this.formulaPromises.changesFromQueue(this);
 
       // If we only updated values from promise (queue), don't trigger property regular updates
-      if (newFieldProps)
+      if (newFieldProps) {
+        l.a('New field props from queue', { newFieldProps });
         this.fieldProps = newFieldProps;
+      }
       
       // If any value changes then the entire cycle will automatically retrigger.
       // So we exit now as the whole cycle will re-init and repeat.
-      if (hadValueChanges)
-        return { props: this.fieldProps, broadcastProps: false };
-    }
+      if (Object.keys(valueChanges).length > 0) {
+        l.a('Value changes from queue', { valueChanges });
+        this.values = { ...this.values, ...valueChanges };
+      }
+    } else
+      l.a('First round, no queue to process');
 
     // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
     const { fieldsProps, valueUpdates, fieldUpdates } = this.formulaEngine.runFormulasForAllFields(this);
@@ -88,20 +122,22 @@ export class FieldsPropsEngine {
         ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
         : this.fieldProps[key]?.buildWrappers;
 
-    // 5. Update the latest field properties for further cycles
-    this.fieldProps = fieldsProps;
+    // // 5. Update the latest field properties for further cycles
+    // this.fieldProps = fieldsProps;
 
     // 6.1 If we have value changes were applied
     const modifiedValues = this.modifiedChecker.getValueUpdates(this, fieldUpdates, valueUpdates);
-    const changesWereApplied = this.changeBroadcastSvc.applyValueChangesFromFormulas(modifiedValues);
+    // const hasValueChanges = Object.keys(modifiedValues).length == 0
+    //   ? false
+    //   : true;
 
-    // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
-    if (changesWereApplied)
-      return { props: this.fieldProps, broadcastProps: false };
+    // // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
+    // if (hasValueChanges)
+    //   return { valueChanges: modifiedValues, props: this.fieldProps };
 
-    // 6.3 If no more changes were applied, then trigger field property updates and reset the loop counter
-    this.changeBroadcastSvc.valueFormulaCounter = 0;
-    return { props: fieldsProps, broadcastProps: true };
+    // // 6.3 If no more changes were applied, then trigger field property updates and reset the loop counter
+    // this.changeBroadcastSvc.valueFormulaCounter = 0;
+    return { valueChanges: modifiedValues, props: fieldsProps };
   }
 
 
@@ -113,14 +149,14 @@ export class FieldsPropsEngine {
     const latest = this.fieldProps[constFieldPart.fieldName];
     // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
     const cachedStillValid = constFieldPart.language == latest?.language;
-    const latestSettings: FieldSettings = cachedStillValid
+    const result: FieldSettings = cachedStillValid
       ? latest?.settings ?? { ...constFieldPart.settingsInitial }
       : { ...constFieldPart.settingsInitial };
-    return latestSettings;
+    return result;
   }
 }
 
-interface CycleResults {
+interface PropsUpdate {
+  valueChanges: ItemValuesOfLanguage;
   props: Record<string, FieldProps>;
-  broadcastProps: boolean;
 }
