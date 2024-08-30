@@ -6,6 +6,7 @@ import { FieldsPropsEngine } from './fields-properties-engine';
 import { Signal } from '@angular/core';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { FieldValueHelpers } from '../shared/helpers/FieldValueHelpers';
+import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsValuesModifiedHelper';
@@ -18,6 +19,8 @@ export class FieldsValuesModifiedHelper {
     private slotIsEmpty: Signal<boolean>) {
   }
 
+
+  // NEW WIP
   getValueUpdates(
     engine: FieldsPropsEngine,
     valueUpdatesFromSideEffects: FieldValuePair[],
@@ -47,7 +50,8 @@ export class FieldsValuesModifiedHelper {
         ...p,
         value: this.#findBestValue(p.name, valueUpdatesFromSideEffects, valueUpdates)
       }))
-      .filter(p => !FieldValueHelpers.fieldValuesAreEqual(p.original, p.value));
+      .filter(p => p.value !== undefined && !FieldValueHelpers.fieldValuesAreEqual(p.original, p.value))
+
 
     // Convert to object
     const changes = prep.reduce((acc, p) => { acc[p.name] = p.value; return acc; }, {} as ItemValuesOfLanguage);
@@ -67,4 +71,5 @@ export class FieldsValuesModifiedHelper {
     // If no value from formula, check if the field has a new value from a formula
     return valueUpdates[fieldName];
   }
+
 }
