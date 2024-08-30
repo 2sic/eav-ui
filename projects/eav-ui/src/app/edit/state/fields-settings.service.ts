@@ -29,7 +29,7 @@ import { FieldsPropsEngine } from './fields-properties-engine';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
 import isEqual from 'lodash-es/isEqual';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldsSettingsService';
 // const logOnlyFields = ['Boolean'];
 
@@ -219,8 +219,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           
           // TODO: 2dm - not sure why but everything seems to work without this
           // which I find very suspicious
-          // if (Object.keys(valueChanges).length > 0)
-          //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+          if (Object.keys(valueChanges).length > 0)
+            this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
           this.#fieldPropsLatest = props;
           return props;
