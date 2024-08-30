@@ -18,9 +18,7 @@ export class FieldSettingsUpdateHelperFactory {
     /** Info that the form is read-only */
     private formReadOnly: boolean,
     private formSlotIsEmpty: Signal<boolean>,
-  ) {
-
-  }
+  ) {}
 
   create(
     attribute: EavContentTypeAttribute,
@@ -63,9 +61,7 @@ export class FieldSettingsUpdateHelper {
     private attribute: EavContentTypeAttribute,
     private constantFieldPart: FieldConstantsOfLanguage,
     private attributeValues: EavField<any>,
-  ) {
-
-  }
+  ) { }
 
   /**
    * Used for verifying and updating new settings.
@@ -84,10 +80,10 @@ export class FieldSettingsUpdateHelper {
     settings.Name = settings.Name || this.attribute.Name;
 
     settings._currentRequired = ValidationHelpers.isRequired(settings);
-    const disableTranslation = this.schemaDisablesTranslation();
+    const disableTranslation = this.#schemaDisablesTranslation();
 
     settings.DisableTranslation = slotIsEmpty || disableTranslation;
-    settings._disabledBecauseOfTranslation = this.getDisabledBecauseTranslations(settings.DisableTranslation);
+    settings._disabledBecauseOfTranslation = this.#getDisabledBecauseTranslations(settings.DisableTranslation);
 
     settings.ForcedDisabled = slotIsEmpty || settings._disabledBecauseOfTranslation || this.formReadOnly;
 
@@ -102,7 +98,7 @@ export class FieldSettingsUpdateHelper {
 
 
   /** Find if DisableTranslation is true in any setting and in any language */
-  private schemaDisablesTranslation(): boolean {
+  #schemaDisablesTranslation(): boolean {
     const contentTypeMetadata = this.contentTypeMetadata;
     const inputType = this.constantFieldPart.inputTypeConfiguration;
     const attributeValues = this.attributeValues;
@@ -132,7 +128,7 @@ export class FieldSettingsUpdateHelper {
     return false;
   }
 
-  private getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
+  #getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
     const attributeValues = this.attributeValues;
     const language = this.language;
     // On primary edit is never disabled by translations

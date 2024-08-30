@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
-import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
+import { EavContentType } from '../shared/models/eav';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
@@ -14,7 +14,7 @@ import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself, FormulaRunParameters } from './helpers/formula-objects-internal-data';
-import { FieldSettingsUpdateHelper, FieldSettingsUpdateHelperFactory } from '../state/fields-settings-update.helpers';
+import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
 import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
@@ -159,9 +159,9 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(propsEngine.item.Entity.Guid);
 
     for (const attr of this.contentType.Attributes) {
-      const attrValues = propsEngine.itemAttributes[attr.Name];
+      const attrValues = propsEngine.itemAttributes()[attr.Name];
       const valueBefore = propsEngine.cycle.values[attr.Name];
-      const constFieldPart = propsEngine.fieldConstants.find(f => f.fieldName === attr.Name);
+      const constFieldPart = propsEngine.getFieldConstants(attr.Name);
 
       const latestSettings: FieldSettings = propsEngine.cycle.getFieldSettingsInCycle(constFieldPart);
 

@@ -6,7 +6,6 @@ import { FormulaValueCorrections } from "./helpers/formula-value-corrections.hel
 import { FormulaCacheItem, FormulaTargets, SettingsFormulaPrefix } from "./models/formula.models";
 import { Injectable, Signal } from "@angular/core";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
-import { ItemFormulaBroadcastService } from "./form-item-formula.service";
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { ItemService } from '../shared/store/item.service';
@@ -28,7 +27,6 @@ export class FormulaPromiseHandler {
 
   private entityGuid: string;
   private contentType: Signal<EavContentType>;
-  private changeBroadcastSvc: ItemFormulaBroadcastService;
   private modifiedChecker: FieldsValuesModifiedHelper;
 
   private log = new EavLogger(nameOfThis, logThis);
@@ -41,13 +39,11 @@ export class FormulaPromiseHandler {
     contentType: Signal<EavContentType>,
     fieldsSettingsService: FieldsSettingsService,
     modifiedChecker: FieldsValuesModifiedHelper,
-    changeBroadcastSvc: ItemFormulaBroadcastService,
   ) {
     this.entityGuid = entityGuid;
     this.#fieldsSettingsService = fieldsSettingsService;
     this.contentType = contentType;
     this.modifiedChecker = modifiedChecker;
-    this.changeBroadcastSvc = changeBroadcastSvc;
   }
 
   /**
@@ -155,7 +151,7 @@ export class FormulaPromiseHandler {
           ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(target, settingsCurrent, setting.value, settingsNew));
         });
 
-        const constantFieldPart = engine.fieldConstants.find(f => f.fieldName === valueSet.name);
+        const constantFieldPart = engine.getFieldConstants(valueSet.name);
         const attribute = contentType.Attributes.find(a => a.Name === valueSet.name);
 
         // Prepare helper which the formula will need to verify if the field is visible

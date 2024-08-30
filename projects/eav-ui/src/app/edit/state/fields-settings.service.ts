@@ -1,32 +1,22 @@
-import { computed, inject, Injectable, Injector, OnDestroy, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
-import { FieldLogicTools } from '../fields/logic/field-logic-tools';
-import { FormulaEngine } from '../formulas/formula-engine';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
-import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
-import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
 import { transient } from '../../core';
 import { FormConfigService } from './form-config.service';
-import { FormsStateService } from './forms-state.service';
 import { FieldProps } from './fields-configs.model';
 import { TranslationState } from './translate-state.model';
-import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
-import { ContentTypeItemService } from '../shared/store/content-type-item.service';
 import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
-import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
 import { computedWithPrev } from '../../shared/helpers/signal.helpers';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
-// const logOnlyFields = ['Boolean'];
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
@@ -38,19 +28,15 @@ export class FieldsSettingsService {
   //#region injected services, constructor, clean-up
 
   // Shared / inherited services
-  private languageSvc = inject(LanguageInstanceService);
-  private formConfig = inject(FormConfigService);
-  private globalConfigService = inject(GlobalConfigService);
-  private formsStateService = inject(FormsStateService);
-  private contentTypeService = inject(ContentTypeService);
-  private contentTypeItemService = inject(ContentTypeItemService);
-  private itemService = inject(ItemService);
+  #languageSvc = inject(LanguageInstanceService);
+  #formConfig = inject(FormConfigService);
+  #contentTypeSvc = inject(ContentTypeService);
+  #itemSvc = inject(ItemService);
 
   // Transient services for this instance only
-  private constantsService = transient(FieldsSettingsConstantsService);
-  private changeBroadcastSvc = transient(ItemFormulaBroadcastService);
-  private formulaEngine = transient(FormulaEngine);
-  private formulaPromises = transient(FormulaPromiseHandler);
+  // Note that it's not clear if we are going to use this...
+  #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
+  #propsEngine = transient(FieldsPropsEngine);
 
   log = new EavLogger(nameOfThis, logThis);
 
@@ -74,12 +60,14 @@ export class FieldsSettingsService {
 
   #fieldPropsMixins: Record<string, Partial<FieldSettings>> = {};
 
-  #reader = this.languageSvc.getEntityReader(this.formConfig.config.formId);
+  #reader = this.#languageSvc.getEntityReader(this.#formConfig.config.formId);
+
+  //#region Item and content-type
 
   /** The item - set on init, used for many other computations */
   #item = signal<EavItem>(null);
 
-  #contentType = computed(() => (!this.#item()) ? null : this.contentTypeService.getContentTypeOfItem(this.#item()));
+  #contentType = computed(() => (!this.#item()) ? null : this.#contentTypeSvc.getContentTypeOfItem(this.#item()));
 
   /** The settings of the content-type of this item */
   public contentTypeSettings = computed(() => !this.#item()
@@ -87,57 +75,22 @@ export class FieldsSettingsService {
     : ContentTypeSettingsHelpers.initDefaultSettings(this.#reader(), this.#contentType(), this.#item().Header)
   );
 
+  //#endregion
+
   /** Signals for each field value */
   // #fieldValues = new FieldsSignalsHelper(this.itemService, this.entityReader);
 
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
 
-    const item = this.itemService.get(entityGuid);
+    const item = this.#itemSvc.get(entityGuid);
     this.#item.set(item);
 
-    const contentType = this.#contentType();
-    const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
+    const slotIsEmpty = this.#itemSvc.slotIsEmpty(entityGuid);
 
-    const modifiedChecker = new FieldsValuesModifiedHelper(this.#contentType, slotIsEmpty);
+    this.#changeBroadcastSvc.init(entityGuid, this.#reader);
 
-    this.formulaPromises.init(entityGuid, this.#contentType, this, modifiedChecker, this.changeBroadcastSvc);
-    this.formulaEngine.init(entityGuid, this, this.formulaPromises, contentType, this.contentTypeSettings);
-    this.changeBroadcastSvc.init(entityGuid, this.#reader);
-
-
-    // Constant field parts which don't ever change.
-    // They can only be created once the inputTypes and contentTypes are available
-    const constFieldPartsOfLanguage = this.constantsService
-      .init(item, contentType, this.#reader)
-      .getUnchangingDataOfLanguage();
-
-    // WIP trying to drop this observable, but surprisingly it fails...
-    const itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
-
-    // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
-    const prepared = computed(() => {
-      const languages = this.#reader();
-      const isDebug = this.globalConfigService.isDebug();
-      const isReadOnly = this.formsStateService.readOnly();
-
-        // Logic Tools are needed when checking for settings defaults etc.
-        const logicTools: FieldLogicTools = {
-          eavConfig: this.formConfig.config,
-          entityReader: this.#reader(),
-          debug: isDebug,
-          contentTypeItemService: this.contentTypeItemService,
-        };
-        // This factory will generate helpers to validate settings updates
-        const updHelperFactory = new FieldSettingsUpdateHelperFactory(
-          contentType.Metadata,
-          languages, // for languages current, default, initial
-          logicTools,
-          isReadOnly.isReadOnly,
-          slotIsEmpty,
-        );
-        return updHelperFactory;
-    });
+    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader);
 
     this.#fieldsProps = computedWithPrev(prevFieldProps => {
       // If disabled, return the previous value
@@ -153,25 +106,10 @@ export class FieldsSettingsService {
       const latestFieldProps = (Object.keys(this.#fieldPropsMixins).length)
         ? this.#mergeMixins(prevFieldProps)
         : prevFieldProps;
-
-      const reader = this.#reader();
-      const itmAttributes = itemAttributes();
-      const formValues = reader.currentValues(itmAttributes);
-      const engine = new FieldsPropsEngine(
-        item,
-        itmAttributes,
-        // formValues,
-        // latestFieldProps,
-        constFieldPartsOfLanguage(),
-
-        reader,
-        prepared(),
-        modifiedChecker,
-        this.formulaEngine,
-        this.formulaPromises,
-      );
-
-      const { props, valueChanges } = engine.getLatestSettingsAndValues(formValues, latestFieldProps);
+      
+      // Note that this will access a lot of source signals
+      // whose dependencies will be incorporated into this calculation
+      const { props, valueChanges } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
           
       // TODO: 2dm - not sure why but everything seems to work without this
       // which I find very suspicious
@@ -227,6 +165,8 @@ export class FieldsSettingsService {
     this.#forceRefresh.update(v => v + 1);
   }
 
+  //#region Update Settings of a field
+
   /**
    * Modify a setting, ATM just to set collapsed / dialog-open states.
    * Note that this change won't fire the formulas - which may not be correct.
@@ -258,4 +198,6 @@ export class FieldsSettingsService {
     this.#fieldPropsMixins = {};
     return l.r(final);
   }
+
+  //#endregion
 }
