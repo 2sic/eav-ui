@@ -3,6 +3,7 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { Injectable, inject, signal, Injector, OnDestroy, effect, computed, Signal } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../state/form-config.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
 
 const logThis = false;
 const nameOfThis = 'FieldMask';
@@ -46,6 +47,17 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
 
   /** Fields used in the mask */
   #fieldsUsedInMask = computed(() => this.#extractFieldNames(this.#mask()));
+
+  // #fieldValuesSignals = inject(FieldsSettingsService).fieldValues;
+
+  // // TODO create a multi-field signal?
+
+  // public result2 = computed(() => {
+  //   // listen to all the fields for changes
+  //   this.#fieldsUsedInMask().forEach(field => {
+
+  //   });
+  // });
 
   constructor(private injector: Injector) {
     super(new EavLogger(nameOfThis, logThis));
@@ -119,7 +131,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
         .replace('[id]', this.#fieldConfig.entityId.toString());
 
     this.#fieldsUsedInMask().forEach((e, i) => {
-      const replaceValue = this.#controls.hasOwnProperty(e) && this.#controls[e] && this.#controls[e].value ? this.#controls[e].value : '';
+      const replaceValue = this.#controls?.[e]?.value ?? '';
       const cleaned = this.preClean(e, replaceValue);
       value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
@@ -138,13 +150,8 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
     if (!matches)
       return [mask];
     
-    const result: string[] = [];
-    if (matches)
-      matches.forEach((fieldName) => {
-        const staticName = fieldName.replace(FieldUnwrap, '');
-        result.push(staticName);
-      });
-    return result;
+    const fields: string[] = matches.map(token => token.replace(FieldUnwrap, ''));
+    return fields;
   }
 
   /**
