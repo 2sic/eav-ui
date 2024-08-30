@@ -56,11 +56,8 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   private formulaEngine = transient(FormulaEngine);
   private formulaPromises = transient(FormulaPromiseHandler);
 
-  /** Local field properties - updated throughout cycles but only "released" selectively */
-  #fieldPropsLatest: Record<string, FieldProps> = {};
-
   /** Released field properties after the cycles of change are done */
-  private fieldsProps = signal<Record<string, FieldProps>>(null, { equal: isEqual});
+  private fieldsProps = signal<Record<string, FieldProps>>({}, { equal: isEqual});
   private fieldsProps$ = toObservable(this.fieldsProps);
 
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
@@ -205,7 +202,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             item,
             itemAttributes,
             formValues,
-            this.#fieldPropsLatest,
+            this.fieldsProps(),
             constantFieldParts,
 
             entityReader,
@@ -219,10 +216,9 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
           
           // TODO: 2dm - not sure why but everything seems to work without this
           // which I find very suspicious
-          if (Object.keys(valueChanges).length > 0)
-            this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+          // if (Object.keys(valueChanges).length > 0)
+          //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-          this.#fieldPropsLatest = props;
           return props;
 
         }),
@@ -345,21 +341,12 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
    * Modify a setting, ATM just to set collapsed / dialog-open states
    */
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
-    const props = this.#fieldPropsLatest[fieldName];
+    const props = this.fieldsProps()[fieldName];
     const newSettings = { ...props.settings, ...update };
     const newProps = {
-      ...this.#fieldPropsLatest,
+      ...this.fieldsProps(),
       [fieldName]: { ...props, settings: newSettings }
     };
     this.fieldsProps.set(newProps);
-
-    // Also make sure the changes are in the latest field props
-    // because we had trouble with the _isDialog / Collapsed properties not being persisted
-    // since the latestFieldProps never had the value originally
-    this.#fieldPropsLatest = newProps;
   }
-
-
-
-
 }

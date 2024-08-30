@@ -12,7 +12,7 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FieldValueHelpers } from '../helpers/FieldValueHelpers';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'ItemUpdateHelper';
 
 export class ItemUpdateHelper {
