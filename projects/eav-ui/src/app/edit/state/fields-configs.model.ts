@@ -2,7 +2,7 @@ import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
-import { TranslationStateCore } from '../fields/wrappers/localization/translate-menu/translate-menu.models';
+import { TranslationState } from './translate-state.model';
 import { FormulaFieldValidation } from '../formulas/models/formula.models';
 
 export interface FieldProps {
@@ -50,11 +50,6 @@ export interface FieldConstantsOfLanguage extends FieldConstants {
   inputTypeConfiguration: InputTypeMetadata,
 }
 
-
-export interface TranslationState extends TranslationStateCore {
-  infoLabel: string;
-  infoMessage: string;
-}
 
 /** Information about the InputType */
 export interface InputTypeSpecs {

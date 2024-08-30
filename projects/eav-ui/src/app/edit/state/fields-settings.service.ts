@@ -16,8 +16,8 @@ import { FieldsSettingsConstantsService } from './fields-settings-constants.serv
 import { transient } from '../../core';
 import { FormConfigService } from './form-config.service';
 import { FormsStateService } from './forms-state.service';
-import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
-import { FieldConstantsOfLanguage, TranslationState, FieldProps } from './fields-configs.model';
+import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
+import { TranslationState } from './translate-state.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
@@ -27,6 +27,7 @@ import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
+import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
@@ -59,7 +60,7 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
   #fieldPropsLatest: Record<string, FieldProps> = {};
 
   /** Released field properties after the cycles of change are done */
-  private fieldsProps = signal<Record<string, FieldProps>>(null);
+  private fieldsProps = signal<Record<string, FieldProps>>(null, { equal: isEqual});
   private fieldsProps$ = toObservable(this.fieldsProps);
 
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
@@ -210,7 +211,6 @@ export class FieldsSettingsService extends ServiceBase implements OnDestroy {
             entityReader,
             prepared.updHelperFactory,
             modifiedChecker,
-            this.changeBroadcastSvc,
             this.formulaEngine,
             this.formulaPromises,
           );

@@ -4,14 +4,14 @@ import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model
 import { ItemIdentifierEditConfig } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
-import { TranslationStateCore } from '../fields/wrappers/localization/translate-menu/translate-menu.models';
+import { TranslationStateCore } from './translate-state.model';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { TranslationLinks } from '../localization/translation-link.constants';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
 import { ContentTypeSettings } from './content-type-settings.model';
-import { TranslationState } from './fields-configs.model';
+import { TranslationState } from './translate-state.model';
 import { FormLanguage } from './form-languages.model';
 
 export class ContentTypeSettingsHelpers {
@@ -130,11 +130,7 @@ export class FieldsSettingsHelpers {
     return true;
   }
 
-  static getTranslationState(
-    attributeValues: EavField<any>,
-    disableTranslation: boolean,
-    language: FormLanguage,
-  ): TranslationState {
+  static getTranslationState(attributeValues: EavField<any>, disableTranslation: boolean, language: FormLanguage): TranslationState {
     let infoLabel: string;
     let infoMessage: string;
 
@@ -145,19 +141,19 @@ export class FieldsSettingsHelpers {
       infoLabel = 'LangMenu.MissingDefaultLangValue';
       infoMessage = language.primary;
     } else {
-      const editableTranslationExists = LocalizationHelpers.hasEditableValue(attributeValues, language);
-      const readonlyTranslationExists = LocalizationHelpers.hasReadonlyValue(attributeValues, language.current);
+      const hasEditable = LocalizationHelpers.hasEditableValue(attributeValues, language);
+      const hasReadonly = LocalizationHelpers.hasReadonlyValue(attributeValues, language.current);
 
-      if (editableTranslationExists || readonlyTranslationExists) {
+      if (hasEditable || hasReadonly) {
         const dimensions = LocalizationHelpers.getValueTranslation(attributeValues, language)
           .Dimensions.map(dimension => dimension.Value)
           .filter(dimension => !dimension.includes(language.current));
 
         const isShared = dimensions.length > 0;
         if (isShared) {
-          if (editableTranslationExists)
+          if (hasEditable)
             infoLabel = 'LangMenu.In';
-          else if (readonlyTranslationExists)
+          else if (hasReadonly)
             infoLabel = 'LangMenu.From';
 
           infoMessage = TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, language.current);
@@ -170,7 +166,7 @@ export class FieldsSettingsHelpers {
         infoMessage = '';
       }
     }
-    const state = this.getTranslationStateCore(attributeValues, disableTranslation, language);
+    const state = this.#getTranslationStateCore(attributeValues, disableTranslation, language);
     const translationState: TranslationState = {
       infoLabel,
       infoMessage,
@@ -180,7 +176,7 @@ export class FieldsSettingsHelpers {
     return translationState;
   }
 
-  private static getTranslationStateCore(
+  static #getTranslationStateCore(
     attributeValues: EavField<any>,
     disableTranslation: boolean,
     language: FormLanguage,

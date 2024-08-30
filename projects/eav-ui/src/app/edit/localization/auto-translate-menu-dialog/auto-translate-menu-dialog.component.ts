@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { getTemplateLanguages, getTemplateLanguagesWithContent } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
 import { TranslateMenuDialogData } from '../../fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
-import { TranslationStateCore } from '../../fields/wrappers/localization/translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../../state/translate-state.model';
 import { EditApiKeyPaths } from '../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../shared/models/dialog-context.models';
 import { TranslateModule } from '@ngx-translate/core';

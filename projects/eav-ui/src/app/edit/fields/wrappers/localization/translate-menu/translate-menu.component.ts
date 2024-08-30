@@ -6,7 +6,6 @@ import { AutoTranslateMenuDialogComponent } from '../../../../localization/auto-
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
-import { TranslateMenuViewModel } from './translate-menu.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureIconIndicatorComponent } from '../../../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +22,7 @@ import { FieldsSettingsService } from '../../../../state/fields-settings.service
 import { FieldsTranslateService } from '../../../../state/fields-translate.service';
 import { FormConfigService } from '../../../../state/form-config.service';
 import { FormsStateService } from '../../../../state/forms-state.service';
-import { TranslationState } from '../../../../state/fields-configs.model';
+import { TranslationState } from '../../../../state/translate-state.model';
 
 @Component({
   selector: 'app-translate-menu',
@@ -139,4 +138,9 @@ export class TranslateMenuComponent implements OnInit {
       width: '400px',
     });
   }
+}
+
+
+export interface TranslateMenuViewModel  {
+  disabled: boolean;
 }

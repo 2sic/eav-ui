@@ -16,7 +16,7 @@ import isEqual from 'lodash-es/isEqual';
 const logThis = true;
 const nameOfThis = 'FieldsPropsEngine';
 
-const maxChangeCycles = 3;
+const maxChangeCycles = 5;
 
 /**
  * Assistant helper to process / recalculate the value of fields and their settings.
@@ -45,7 +45,6 @@ export class FieldsPropsEngine {
     readerWithLanguage: EntityReader,
     public updateHelper: FieldSettingsUpdateHelperFactory,
     private modifiedChecker: FieldsValuesModifiedHelper,
-    private changeBroadcastSvc: ItemFormulaBroadcastService,
     private formulaEngine: FormulaEngine,
     private formulaPromises: FormulaPromiseHandler,
   ) {

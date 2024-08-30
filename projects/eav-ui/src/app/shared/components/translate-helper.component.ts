@@ -6,7 +6,7 @@ import { TranslateMenuDialogData } from '../../edit/fields/wrappers/localization
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SignalHelpers } from '../helpers/signal.helpers';
 import { findI18nKey } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
-import { TranslationStateCore } from '../../edit/fields/wrappers/localization/translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../../edit/state/translate-state.model';
 import { LanguageService } from '../../edit/shared/store/language.service';
 import { ItemService } from '../../edit/shared/store/item.service';
 

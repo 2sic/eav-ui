@@ -41,21 +41,19 @@ export class TranslateMenuHelpers {
   }
 
   private static calculateShortDimensions(dimensions: string[], currentLanguage: string): string[] {
-    const dimensionsMap: Record<string, string[]> = {};
-    const shortCurrentLanguage = currentLanguage.slice(0, currentLanguage.indexOf('-'));
+    const dimMap: Record<string, string[]> = {};
+    const langCode = currentLanguage.slice(0, currentLanguage.indexOf('-'));
 
-    dimensionsMap[shortCurrentLanguage] = [];
-    dimensionsMap[shortCurrentLanguage].push(shortCurrentLanguage);
+    dimMap[langCode] = [langCode];
 
     dimensions.forEach(dimension => {
       const shortDimension = dimension.slice(0, dimension.indexOf('-'));
       const shortNoReadOnly = shortDimension.replace('~', '');
 
-      if (!dimensionsMap[shortNoReadOnly]) {
-        dimensionsMap[shortNoReadOnly] = [];
-        dimensionsMap[shortNoReadOnly].push(dimension);
+      if (!dimMap[shortNoReadOnly]) {
+        dimMap[shortNoReadOnly] = [dimension];
       } else {
-        dimensionsMap[shortNoReadOnly].push(dimension);
+        dimMap[shortNoReadOnly].push(dimension);
       }
     });
 
@@ -63,7 +61,7 @@ export class TranslateMenuHelpers {
       const shortDimension = dimension.slice(0, dimension.indexOf('-'));
       const shortNoReadOnly = shortDimension.replace('~', '');
 
-      if (dimensionsMap[shortNoReadOnly].length > 1) {
+      if (dimMap[shortNoReadOnly].length > 1) {
         return dimension;
       } else {
         return shortDimension;
@@ -74,20 +72,9 @@ export class TranslateMenuHelpers {
   }
 
   private static calculateEditAndReadDimensions(dimensions: string[]) {
-    const editableDimensions: string[] = [];
-    const readOnlyDimensions: string[] = [];
-
-    dimensions.forEach(dimension => {
-      if (!dimension.includes('~')) {
-        editableDimensions.push(dimension);
-      } else {
-        readOnlyDimensions.push(dimension.replace('~', ''));
-      }
-    });
-
     return {
-      editableDimensions,
-      readOnlyDimensions
+      editableDimensions: [] as string[],
+      readOnlyDimensions: dimensions.map(d => d.replace('~', '')),
     };
   }
 }
