@@ -160,10 +160,10 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
     for (const attr of this.contentType.Attributes) {
       const attrValues = propsEngine.itemAttributes[attr.Name];
-      const valueBefore = propsEngine.values[attr.Name];
+      const valueBefore = propsEngine.cycle.values[attr.Name];
       const constFieldPart = propsEngine.fieldConstants.find(f => f.fieldName === attr.Name);
 
-      const latestSettings: FieldSettings = propsEngine.getFieldSettingsInCycle(constFieldPart);
+      const latestSettings: FieldSettings = propsEngine.cycle.getFieldSettingsInCycle(constFieldPart);
 
       const settingsUpdateHelper = propsEngine.updateHelper.create(attr, constFieldPart, attrValues);
 
@@ -262,7 +262,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     for (const formula of formulas) {
       const runParameters: FormulaRunParameters = {
         formula,
-        currentValues: propsEngine.values,
+        currentValues: propsEngine.cycle.values,
         inputTypeName: constFieldPart.inputTypeSpecs.inputType,
         settingsInitial: constFieldPart.settingsInitial,
         settingsCurrent: settingsBefore,

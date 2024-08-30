@@ -6,7 +6,6 @@ import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { EavItem } from '../shared/models/eav';
-import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
@@ -110,7 +109,7 @@ export class FieldsSettingsService {
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
     const constFieldPartsOfLanguage = this.constantsService
-      .init(item, contentType, this.#reader) //, this.entityReader$)
+      .init(item, contentType, this.#reader)
       .getUnchangingDataOfLanguage();
 
     // WIP trying to drop this observable, but surprisingly it fails...
@@ -161,8 +160,8 @@ export class FieldsSettingsService {
       const engine = new FieldsPropsEngine(
         item,
         itmAttributes,
-        formValues,
-        latestFieldProps,
+        // formValues,
+        // latestFieldProps,
         constFieldPartsOfLanguage(),
 
         reader,
@@ -172,7 +171,7 @@ export class FieldsSettingsService {
         this.formulaPromises,
       );
 
-      const { props, valueChanges } = engine.getLatestSettingsAndValues();
+      const { props, valueChanges } = engine.getLatestSettingsAndValues(formValues, latestFieldProps);
           
       // TODO: 2dm - not sure why but everything seems to work without this
       // which I find very suspicious

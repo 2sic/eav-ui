@@ -137,17 +137,17 @@ export class FormulaPromiseHandler {
 
     // Handle values (of this field) and fields (values of other fields)
     const modifiedValues = (Object.keys(values).length !== 0 || fields.length !== 0)
-      ? this.modifiedChecker.getValueUpdates(engine, fields, values)
+      ? this.modifiedChecker.getValueUpdates(engine.cycle, fields, values)
       : {};
 
     // Handle settings
     const contentType = this.contentType();
     let newFieldProps: Record<string, FieldProps> = null;
     if (settings.length) {
-      newFieldProps = { ...engine.fieldProps };
+      newFieldProps = { ...engine.cycle.fieldProps };
       const itemAttributes = this.itemService.getItemAttributes(this.entityGuid);
       settings.forEach(valueSet => {
-        const settingsCurrent = engine.fieldProps[valueSet.name]?.settings;
+        const settingsCurrent = engine.cycle.fieldProps[valueSet.name]?.settings;
         
         let settingsNew: Record<string, any> = {};
         valueSet.settings.forEach(setting => {
@@ -162,7 +162,7 @@ export class FormulaPromiseHandler {
         const setUpdHelper = engine.updateHelper.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
 
         const mergedSettings = { ...settingsCurrent, ...settingsNew };
-        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(mergedSettings, engine.values[valueSet.name]);
+        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(mergedSettings, engine.cycle.values[valueSet.name]);
 
         newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };
       });

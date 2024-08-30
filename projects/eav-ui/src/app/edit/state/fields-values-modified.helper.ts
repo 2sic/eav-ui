@@ -2,11 +2,10 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FieldValuePair } from '../formulas/models/formula-results.models';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
-import { FieldsPropsEngine } from './fields-properties-engine';
 import { Signal } from '@angular/core';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { FieldValueHelpers } from '../shared/helpers/FieldValueHelpers';
-import { RxHelpers } from '../../shared/rxJs/rx.helpers';
+import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 
 const logThis = false;
 const nameOfThis = 'FieldsValuesModifiedHelper';
@@ -22,7 +21,7 @@ export class FieldsValuesModifiedHelper {
 
   // NEW WIP
   getValueUpdates(
-    engine: FieldsPropsEngine,
+    cycle: FieldsPropsEngineCycle,
     valueUpdatesFromSideEffects: FieldValuePair[],
     valueUpdates: ItemValuesOfLanguage,
     originalValues?: ItemValuesOfLanguage
@@ -30,8 +29,8 @@ export class FieldsValuesModifiedHelper {
     const contentType = this.contentType();
     const slotIsEmpty = this.slotIsEmpty();
 
-    originalValues ??= engine.values;
-    const fieldsProps = engine.fieldProps;
+    originalValues ??= cycle.values;
+    const fieldsProps = cycle.fieldProps;
     const l = this.log.fn('getValueUpdates', { contentType, originalValues, fieldsProps, valueUpdates, valueUpdatesFromSideEffects, slotIsEmpty });
 
     if (slotIsEmpty)

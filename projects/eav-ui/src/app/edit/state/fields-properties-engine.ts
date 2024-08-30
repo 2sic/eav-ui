@@ -1,21 +1,17 @@
 import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
-import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { EntityReader } from '../shared/helpers';
 import { FormLanguage } from './form-languages.model';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
-import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
-import isEqual from 'lodash-es/isEqual';
+import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 
 const logThis = true;
 const nameOfThis = 'FieldsPropsEngine';
-
-const maxChangeCycles = 5;
 
 /**
  * Assistant helper to process / recalculate the value of fields and their settings.
@@ -36,19 +32,14 @@ export class FieldsPropsEngine {
   constructor(
     public item: EavItem,
     public itemAttributes: EavEntityAttributes,
-    /** The values of the form - initialized here and to be updated until complete */
-    private readonly initialValues: ItemValuesOfLanguage,
-    /** The field props at start and during the calculation cycles (may be updated until complete) */
-    public fieldProps: Record<string, FieldProps>,
     public fieldConstants: FieldConstantsOfLanguage[],
     readerWithLanguage: EntityReader,
     public updateHelper: FieldSettingsUpdateHelperFactory,
-    private modifiedChecker: FieldsValuesModifiedHelper,
-    private formulaEngine: FormulaEngine,
-    private formulaPromises: FormulaPromiseHandler,
+    public modifiedChecker: FieldsValuesModifiedHelper,
+    public formulaEngine: FormulaEngine,
+    public formulaPromises: FormulaPromiseHandler,
   ) {
     this.languages = readerWithLanguage;
-    this.values = { ...initialValues };
   }
 
   /**
@@ -57,103 +48,30 @@ export class FieldsPropsEngine {
   languages: FormLanguage;
 
   /**
-   * Get the current values of the fields, as they may update during the cycle
+   * The current cycle of updating the properties.
+   * Will be reset every time a new round starts.
    */
-  values: ItemValuesOfLanguage;
-
-  public getLatestSettingsAndValues(): PropsUpdate {
-    const l = this.log.fn('getLatestSettingsAndValues');
-
-    for (let i = 0; i < maxChangeCycles; i++) {
-      const cycle = this.#getLatestSettingsAndValues(i);
-      const mergedValues = { ...this.values, ...cycle.valueChanges };
-
-      // Quit if we have no more changes
-      if (isEqual(this.fieldProps, cycle.props) && isEqual(this.values, mergedValues)) {
-        l.a('No more changes, stable, exit');
-        break;
-      }
-
-      // Update state for next cycles
-      this.fieldProps = cycle.props;
-      this.values = mergedValues;
-    }
-
-    // figure out the final changes to propagate
-    const finalChanges = this.modifiedChecker.getValueUpdates(this, [], this.values, this.initialValues);
-
-    return { valueChanges: finalChanges, props: this.fieldProps };
-  }
-
-  #getLatestSettingsAndValues(loopIndex: number): PropsUpdate {
-    const l = this.log.fn('getLatestSettingsAndBroadcastUpdates', { loopIndex });
-
-    // 1. Detect first round as it has slightly different behavior
-    const isFirstRound = Object.keys(this.fieldProps).length === 0;
-
-    // 2. Process the queue of changes from promises if necessary
-    // If things change, we will exit because then the observable will be retriggered
-    if (!isFirstRound) {
-      const { valueChanges, newFieldProps } = this.formulaPromises.changesFromQueue(this);
-
-      // If we only updated values from promise (queue), don't trigger property regular updates
-      if (newFieldProps) {
-        l.a('New field props from queue', { newFieldProps });
-        this.fieldProps = newFieldProps;
-      }
-      
-      // If any value changes then the entire cycle will automatically retrigger.
-      // So we exit now as the whole cycle will re-init and repeat.
-      if (Object.keys(valueChanges).length > 0) {
-        l.a('Value changes from queue', { valueChanges });
-        this.values = { ...this.values, ...valueChanges };
-      }
-    } else
-      l.a('First round, no queue to process');
-
-    // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
-    // Note that in the case of promises being executed, the whole process will need to run again
-    // when the promises finish
-    const { fieldsProps, valueUpdates, fieldUpdates } = this.formulaEngine.runFormulasForAllFields(this);
-
-    // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
-    for (const [key, value] of Object.entries(fieldsProps))
-      value.buildWrappers = isFirstRound
-        ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
-        : this.fieldProps[key]?.buildWrappers;
-
-    // // 5. Update the latest field properties for further cycles
-    // this.fieldProps = fieldsProps;
-
-    // 6.1 If we have value changes were applied
-    const modifiedValues = this.modifiedChecker.getValueUpdates(this, fieldUpdates, valueUpdates);
-    // const hasValueChanges = Object.keys(modifiedValues).length == 0
-    //   ? false
-    //   : true;
-
-    // // 6.2 If changes had been made before, do not trigger field property updates yet, but wait for the next cycle
-    // if (hasValueChanges)
-    //   return { valueChanges: modifiedValues, props: this.fieldProps };
-
-    // // 6.3 If no more changes were applied, then trigger field property updates and reset the loop counter
-    // this.changeBroadcastSvc.valueFormulaCounter = 0;
-    return { valueChanges: modifiedValues, props: fieldsProps };
-  }
-
+  cycle: FieldsPropsEngineCycle;
 
   /**
-   * Get latest/current valid field settings - if possible from cache
-   * if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
+   *
+   *
+   * @param {ItemValuesOfLanguage} initialValues The values of the form - initialized here and to be updated until complete
+   * @param {Record<string, FieldProps>} fieldProps The field props at start and during the calculation cycles (may be updated until complete)
+   * @return {*}  {PropsUpdate}
+   * @memberof FieldsPropsEngine
    */
-  getFieldSettingsInCycle(constFieldPart: FieldConstantsOfLanguage): FieldSettings {
-    const latest = this.fieldProps[constFieldPart.fieldName];
-    // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
-    const cachedStillValid = constFieldPart.language == latest?.language;
-    const result: FieldSettings = cachedStillValid
-      ? latest?.settings ?? { ...constFieldPart.settingsInitial }
-      : { ...constFieldPart.settingsInitial };
-    return result;
+  public getLatestSettingsAndValues(initialValues: ItemValuesOfLanguage, fieldProps: Record<string, FieldProps>): PropsUpdate {  
+    const l = this.log.fn('getLatestSettingsAndValues');
+    this.cycle = new FieldsPropsEngineCycle(this, initialValues, fieldProps);
+    const cycleResult = this.cycle.getLatestSettingsAndValues();
+
+    // figure out the final changes to propagate
+    const finalChanges = this.modifiedChecker.getValueUpdates(this.cycle, [], cycleResult.valueChanges, initialValues);
+
+    return { valueChanges: finalChanges, props: cycleResult.props };
   }
+
 }
 
 interface PropsUpdate {
