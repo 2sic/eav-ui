@@ -35,7 +35,8 @@ export class FieldsSettingsService {
 
   // Transient services for this instance only
   // Note that it's not clear if we are going to use this...
-  #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
+  // TODO: ATM unused #settingChangeBroadcast
+  // #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
   #propsEngine = transient(FieldsPropsEngine);
 
   log = new EavLogger(nameOfThis, logThis);
@@ -88,7 +89,8 @@ export class FieldsSettingsService {
 
     const slotIsEmpty = this.#itemSvc.slotIsEmpty(entityGuid);
 
-    this.#changeBroadcastSvc.init(entityGuid, this.#reader);
+    // TODO: ATM unused #settingChangeBroadcast
+    // this.#changeBroadcastSvc.init(entityGuid, this.#reader);
 
     this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader);
 
@@ -111,8 +113,8 @@ export class FieldsSettingsService {
       // whose dependencies will be incorporated into this calculation
       const { props, valueChanges } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
           
-      // TODO: 2dm - not sure why but everything seems to work without this
-      // which I find very suspicious
+      // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
+      // TODO: ATM unused #settingChangeBroadcast
       // if (Object.keys(valueChanges).length > 0)
       //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
