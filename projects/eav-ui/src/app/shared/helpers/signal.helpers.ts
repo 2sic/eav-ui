@@ -40,13 +40,14 @@ export class SignalHelpers {
 // }
 
 
-/** Slightly unclean signal with previous value */
-// https://github.com/angular/angular/issues/54339
-export function computedWithPrev<T>(computation: (prev: T | undefined) => T, initial?: T): Signal<T> {
-	let previous = initial;
-	return computed(() => {
-		const newValue = computation(previous);
-		previous = newValue;
-		return newValue;
-	}, { equal: isEqual});
-}
+// wip atm unused
+// /** Slightly unclean signal with previous value */
+// // https://github.com/angular/angular/issues/54339
+// export function computedWithPrev<T>(computation: (prev: T | undefined) => T, initial?: T): Signal<T> {
+// 	let previous = initial;
+// 	return computed(() => {
+// 		const newValue = computation(previous);
+// 		previous = newValue;
+// 		return newValue;
+// 	}, { equal: isEqual});
+// }

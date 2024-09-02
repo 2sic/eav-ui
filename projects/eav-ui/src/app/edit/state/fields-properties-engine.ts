@@ -112,7 +112,7 @@ export class FieldsPropsEngine {
    * @return {*}  {PropsUpdate}
    * @memberof FieldsPropsEngine
    */
-  public getLatestSettingsAndValues(fieldProps: Record<string, FieldProps>): PropsUpdate {  
+  public getLatestSettingsAndValues(fieldProps: Record<string, FieldProps>): PropsUpdateResult {  
     const l = this.log.fn('getLatestSettingsAndValues');
 
     const reader = this.#reader();
@@ -120,12 +120,12 @@ export class FieldsPropsEngine {
     const initialValues = reader.currentValues(itmAttributes);
 
     this.cycle = new FieldsPropsEngineCycle(this, initialValues, fieldProps);
-    const cycleResult = this.cycle.getLatestSettingsAndValues();
+    const cycleResult = this.cycle.getCycleSettingsAndValues();
 
     // figure out the final changes to propagate
     const finalChanges = this.modifiedChecker.getValueUpdates(this.cycle, [], cycleResult.valueChanges, initialValues);
 
-    return { valueChanges: finalChanges, props: cycleResult.props };
+    return { valueChanges: finalChanges, props: cycleResult.props, values: this.cycle.values };
   }
 
   /**
@@ -163,4 +163,8 @@ export class FieldsPropsEngine {
 interface PropsUpdate {
   valueChanges: ItemValuesOfLanguage;
   props: Record<string, FieldProps>;
+}
+
+interface PropsUpdateResult extends PropsUpdate {
+  values: ItemValuesOfLanguage;
 }

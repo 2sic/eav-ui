@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Injector, signal, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
@@ -13,10 +13,14 @@ import { ContentTypeService } from '../shared/store/content-type.service';
 import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
-import { computedWithPrev } from '../../shared/helpers/signal.helpers';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import isEqual from 'lodash-es/isEqual';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FieldsSettingsService';
+
+const maxCyclesPerSecond = 5;
+const maxCyclesWarning = "Max cycles reached, stopping for this second";
 
 /**
  * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
@@ -32,6 +36,7 @@ export class FieldsSettingsService {
   #formConfig = inject(FormConfigService);
   #contentTypeSvc = inject(ContentTypeService);
   #itemSvc = inject(ItemService);
+  #injector = inject(Injector)
 
   // Transient services for this instance only
   // Note that it's not clear if we are going to use this...
@@ -51,7 +56,7 @@ export class FieldsSettingsService {
   //#endregion
 
   /** Released field properties after the cycles of change are done */
-  #fieldsProps: Signal<Record<string, FieldProps>>;
+  #fieldsProps: Signal<Record<string, FieldProps>>; //({}, { equal: isEqual });
 
   /** Signal to force a refresh. */
   #forceRefresh = signal(0);
@@ -94,16 +99,34 @@ export class FieldsSettingsService {
 
     this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader);
 
-    this.#fieldsProps = computedWithPrev(prevFieldProps => {
-      // If disabled, return the previous value
-      // This is just a safeguard as data will be missing when this is being cleaned up
-      if (this.#disabled())
-        return prevFieldProps;
+    // Protect against infinite loops
+    let protect = 0;
+    setInterval(() => {
+      if (protect > maxCyclesPerSecond)
+        this.log.a(`restarting max cycles; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
+      protect = 0;
+    }, 1000);
 
-      // Just watchers for change detection
-      slotIsEmpty();
+    let prevFieldProps: Record<string, FieldProps> = {};
+    let prevValues: ItemValuesOfLanguage = {};
+
+    this.#fieldsProps = computed(() => {
+      const l = this.log.fn('fieldsProps');
+      // If disabled, for any reason, return the previous value
+      // The #disabled is a safeguard as data will be missing when this is being cleaned up.
+      // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
+      if (this.#disabled() || slotIsEmpty())
+        return l.r(prevFieldProps, 'disabled or slotIsEmpty');
+
       // This is triggered by promise-completed messages + v1 formulas
       this.#forceRefresh();
+
+      // If we have reached the max cycles, we should stop
+      if (protect++ > maxCyclesPerSecond) {
+        this.log.a(`${maxCyclesWarning}; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
+        console.warn('Max cycles reached, stopping for this second');
+        return l.r(prevFieldProps);
+      }
 
       const latestFieldProps = (Object.keys(this.#fieldPropsMixins).length)
         ? this.#mergeMixins(prevFieldProps)
@@ -111,16 +134,17 @@ export class FieldsSettingsService {
       
       // Note that this will access a lot of source signals
       // whose dependencies will be incorporated into this calculation
-      const { props, valueChanges } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
+      const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
+      prevValues = values;
+      prevFieldProps = props;
           
       // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
       // TODO: ATM unused #settingChangeBroadcast
       // if (Object.keys(valueChanges).length > 0)
-      //   this.changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+      //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-      return props;
-    }, {} as Record<string, FieldProps>);
-
+      return l.r(props, 'normal update');
+    }, { equal: isEqual } );
   }
 
   /**
@@ -163,7 +187,8 @@ export class FieldsSettingsService {
   /**
    * Triggers a reevaluation of all formulas.
    */
-  retriggerFormulas(): void {
+  retriggerFormulas(source: string): void {
+    this.log.fn('retriggerFormulas', { source});
     this.#forceRefresh.update(v => v + 1);
   }
 
@@ -176,7 +201,7 @@ export class FieldsSettingsService {
   updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
     this.log.fn('updateSetting', { fieldName, update });
     this.#fieldPropsMixins[fieldName] = update;
-    this.retriggerFormulas();
+    this.retriggerFormulas('updateSetting');
   }
 
   #mergeMixins(before: Record<string, FieldProps>) {

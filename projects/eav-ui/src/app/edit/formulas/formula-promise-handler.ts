@@ -100,7 +100,7 @@ export class FormulaPromiseHandler {
         fieldsUpdates.push(...corrected.fields);
       queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
       formulaCache.stopFormula = corrected.stop ?? formulaCache.stopFormula;
-      this.#fieldsSettingsService.retriggerFormulas();
+      this.#fieldsSettingsService.retriggerFormulas('promise');
     });
   }
 

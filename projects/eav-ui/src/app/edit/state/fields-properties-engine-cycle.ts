@@ -6,8 +6,8 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropsEngine } from './fields-properties-engine';
 
-const logThis = true;
-const nameOfThis = 'FieldsPropsEngine';
+const logThis = false;
+const nameOfThis = 'FieldsPropsEngineCycle';
 
 const maxChangeCycles = 5;
 
@@ -43,7 +43,7 @@ export class FieldsPropsEngineCycle {
    */
   values: ItemValuesOfLanguage;
 
-  public getLatestSettingsAndValues(): PropsUpdate {
+  public getCycleSettingsAndValues(): PropsUpdate {
     const l = this.log.fn('getLatestSettingsAndValues');
 
     for (let i = 0; i < maxChangeCycles; i++) {
