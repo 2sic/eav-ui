@@ -1,7 +1,6 @@
-import { computed, effect, inject, Injectable, Injector, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, signal, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
-import { ItemFormulaBroadcastService } from '../formulas/form-item-formula.service';
 import { EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
@@ -15,9 +14,12 @@ import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import isEqual from 'lodash-es/isEqual';
+import { FieldsPropertiesUpdates } from './fields-properties-updates';
 
 const logThis = true;
 const nameOfThis = 'FieldsSettingsService';
+// Debug only on the following content type
+const debugOnlyThisContentType = '@String';
 
 const maxCyclesPerSecond = 5;
 const maxCyclesWarning = "Max cycles reached, stopping for this second";
@@ -36,7 +38,6 @@ export class FieldsSettingsService {
   #formConfig = inject(FormConfigService);
   #contentTypeSvc = inject(ContentTypeService);
   #itemSvc = inject(ItemService);
-  #injector = inject(Injector)
 
   // Transient services for this instance only
   // Note that it's not clear if we are going to use this...
@@ -64,7 +65,7 @@ export class FieldsSettingsService {
   /** Signal to disable everything. Mainly on clean-up, as the computed will still run when data is removed from cache */
   #disabled = signal(false);
 
-  #fieldPropsMixins: Record<string, Partial<FieldSettings>> = {};
+  #fieldsPropsUpdate: FieldsPropertiesUpdates;
 
   #reader = this.#languageSvc.getEntityReader(this.#formConfig.config.formId);
 
@@ -91,27 +92,34 @@ export class FieldsSettingsService {
 
     const item = this.#itemSvc.get(entityGuid);
     this.#item.set(item);
+    // Remember content-type, as it won't change and we don't need to listen to a signal
+    const contentType = this.#contentType();
+    const forceDebug = debugOnlyThisContentType === null ? null : contentType.Id === debugOnlyThisContentType;
+    if (forceDebug !== null) {
+      this.log.a(`Set debug for content type '${contentType.Id}' to ${forceDebug}, only debugging ${debugOnlyThisContentType}`);
+      this.log.enabled = forceDebug;
+    }
 
     const slotIsEmpty = this.#itemSvc.slotIsEmpty(entityGuid);
 
     // TODO: ATM unused #settingChangeBroadcast
     // this.#changeBroadcastSvc.init(entityGuid, this.#reader);
 
-    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader);
+    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, forceDebug);
 
     // Protect against infinite loops
-    let protect = 0;
+    let cycle = 0;
     setInterval(() => {
-      if (protect > maxCyclesPerSecond)
-        this.log.a(`restarting max cycles; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
-      protect = 0;
+      if (cycle > maxCyclesPerSecond)
+        this.log.a(`restarting max cycles from ${cycle}; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
+      cycle = 0;
     }, 1000);
 
     let prevFieldProps: Record<string, FieldProps> = {};
     let prevValues: ItemValuesOfLanguage = {};
 
     this.#fieldsProps = computed(() => {
-      const l = this.log.fn('fieldsProps');
+      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: contentType.Id });
       // If disabled, for any reason, return the previous value
       // The #disabled is a safeguard as data will be missing when this is being cleaned up.
       // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
@@ -122,14 +130,14 @@ export class FieldsSettingsService {
       this.#forceRefresh();
 
       // If we have reached the max cycles, we should stop
-      if (protect++ > maxCyclesPerSecond) {
-        this.log.a(`${maxCyclesWarning}; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
-        console.warn('Max cycles reached, stopping for this second');
-        return l.r(prevFieldProps);
+      if (cycle++ > maxCyclesPerSecond) {
+        const msg = `${maxCyclesWarning}; cycle: ${cycle} entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`;
+        console.warn(msg);
+        return l.r(prevFieldProps, msg);
       }
 
-      const latestFieldProps = (Object.keys(this.#fieldPropsMixins).length)
-        ? this.#mergeMixins(prevFieldProps)
+      const latestFieldProps = this.#fieldsPropsUpdate.hasChanges()
+        ? this.#fieldsPropsUpdate.mergeMixins(prevFieldProps)
         : prevFieldProps;
       
       // Note that this will access a lot of source signals
@@ -143,8 +151,10 @@ export class FieldsSettingsService {
       // if (Object.keys(valueChanges).length > 0)
       //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-      return l.r(props, 'normal update');
+      return l.r(props, `normal update`);
     }, { equal: isEqual } );
+
+    this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.#fieldsProps);
   }
 
   /**
@@ -198,33 +208,12 @@ export class FieldsSettingsService {
    * Modify a setting, ATM just to set collapsed / dialog-open states.
    * Note that this change won't fire the formulas - which may not be correct.
    */
-  updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
-    this.log.fn('updateSetting', { fieldName, update });
-    this.#fieldPropsMixins[fieldName] = update;
-    this.retriggerFormulas('updateSetting');
+  updateSetting(fieldName: string, update: Partial<FieldSettings>, source: string): void {
+    this.#fieldsPropsUpdate.updateSetting(fieldName, update, source);
+    
+    // Retrigger formulas if the queue was empty (otherwise it was already retriggered and will run soon)
+    // Put a very small delay into processing the queue, since startup can send single updates for many fields one at a time.
+    setTimeout(() => this.retriggerFormulas('updateSetting'), 10);
   }
 
-  #mergeMixins(before: Record<string, FieldProps>) {
-    const l = this.log.fn('mergeMixins', { before, mixins: this.#fieldPropsMixins });
-    const mixins = this.#fieldPropsMixins;
-    if (Object.keys(mixins).length === 0)
-      return before;
-
-    const final = Object.keys(mixins).reduce((acc, key) => {
-      const ofField = acc[key];
-      const update = mixins[key];
-      return {
-        ...acc,
-        [key]: {
-          ...ofField,
-          settings: { ...ofField.settings, ...update }
-        }
-      };
-    }, before);
-
-    this.#fieldPropsMixins = {};
-    return l.r(final);
-  }
-
-  //#endregion
 }

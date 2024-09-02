@@ -19,6 +19,8 @@ import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
 
+const logThis = false;
+const nameOfThis = 'PickerExpandableWrapper';
 @Component({
   selector: WrappersCatalog.PickerExpandableWrapper,
   templateUrl: './picker-expandable-wrapper.component.html',
@@ -59,10 +61,9 @@ export class PickerExpandableWrapperComponent extends BaseComponent implements O
 
   ngOnInit() {
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
-      .pipe(distinctUntilChanged())
       .subscribe(isOpen => {
         this.dialogIsOpen.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
+        this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen }, nameOfThis);
       });
   }
 

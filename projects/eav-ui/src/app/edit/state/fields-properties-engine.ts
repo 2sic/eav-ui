@@ -52,8 +52,19 @@ export class FieldsPropsEngine {
   constructor() {
   }
 
+  /** Setup everything which won't change throughout cycles */
+  init(
+    fss: FieldsSettingsService,
+    entityGuid: string,
+    item: EavItem,
+    contentType: Signal<EavContentType>,
+    reader: Signal<EntityReader>,
+    forceDebug: boolean | null = null
+  ): this {
+    this.log.rename(`${this.log.name}[${entityGuid.substring(0, 8)}]`);
+    this.log.fn('init', { entityGuid, item, contentType, reader, forceDebug });
+    if (forceDebug !== null) this.log.enabled = forceDebug;
 
-  init(fss: FieldsSettingsService, entityGuid: string, item: EavItem, contentType: Signal<EavContentType>, reader: Signal<EntityReader>): this {
     this.item = item;
     this.languages = reader();
     this.#reader = reader;

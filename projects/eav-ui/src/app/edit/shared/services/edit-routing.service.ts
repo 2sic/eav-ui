@@ -58,8 +58,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
   isExpanded$(fieldId: number, entityGuid: string) {
     const fieldIndex = fieldId.toString();
     return this.route.params.pipe(
-      map((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
-      mapUntilChanged(m => m),
+      mapUntilChanged((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
     );
   }
 
@@ -135,9 +134,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     this.subscriptions.add(
       this.route.params
         .pipe(
-          map((params: EditParams) => params.detailsEntityGuid != null && params.detailsFieldId != null),
-          mapUntilChanged(m => m),
-          // distinctUntilChanged(),
+          mapUntilChanged((params: EditParams) => params.detailsEntityGuid != null && params.detailsFieldId != null),
         )
         .subscribe(hasDetails => {
           this.languageInstanceService.updateHideHeader(this.formConfig.config.formId, hasDetails);

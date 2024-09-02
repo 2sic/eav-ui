@@ -15,7 +15,6 @@ import { WrappersCatalog } from '../wrappers.constants';
 
 const logThis = false;
 const nameOfThis = 'CollapsibleWrapperComponent'
-
 @Component({
   selector: WrappersCatalog.CollapsibleWrapper,
   templateUrl: './collapsible-wrapper.component.html',
@@ -54,6 +53,6 @@ export class CollapsibleWrapperComponent extends BaseComponent implements OnDest
   toggleCollapse(): void {
     const before = this.collapsed();
     this.log.a('toggleCollapse', { before })
-    this.fieldsSettingsService.updateSetting(this.fieldState.name, { Collapsed: !before });
+    this.fieldsSettingsService.updateSetting(this.fieldState.name, { Collapsed: !before }, nameOfThis);
   }
 }
