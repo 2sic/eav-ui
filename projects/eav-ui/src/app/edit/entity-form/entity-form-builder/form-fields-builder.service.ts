@@ -8,7 +8,7 @@ import { ServiceBase } from '../../../shared/services/service-base';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { FieldLogicManager } from '../../fields/logic/field-logic-manager';
 import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-init';
-import { ValidationHelpers } from '../../shared/validation/validation.helpers';
+import { ValidationHelpers, ValidationHelperSpecs } from '../../shared/validation/validation.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
 import { FieldValue } from '../../../../../../edit-types';
 import { ControlHelpers } from '../../shared/helpers/control.helpers';
@@ -68,7 +68,7 @@ export class FormFieldsBuilderService extends ServiceBase {
       this.createFields(entityGuid, form, allFields);
     });
 
-    this.keepFieldsAndStateInSync(entityGuid, form, fieldsToProcess);
+    this.#keepFieldsAndStateInSync(form, fieldsToProcess);
 
     l.end();
   }
@@ -101,7 +101,8 @@ export class FormFieldsBuilderService extends ServiceBase {
 
       // Build control in the Angular form with validators
       const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
-      const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
+      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsService.getFieldSettingsSignal(fieldName), this.fieldsSettingsService);
+      const validators = ValidationHelpers.getValidators(valSpecs, inputType);
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
       // TODO: build all fields at once. That should be faster
       form.addControl(fieldName, newControl);
@@ -112,7 +113,7 @@ export class FormFieldsBuilderService extends ServiceBase {
     l.end();
   }
 
-  keepFieldsAndStateInSync(entityGuid: string, form: UntypedFormGroup, fieldsToProcess: Observable<FieldToProcess[]>) {
+  #keepFieldsAndStateInSync(form: UntypedFormGroup, fieldsToProcess: Observable<FieldToProcess[]>) {
     const l = this.log.fn('keepFieldsAndStateInSync');
     // This has multiple features, possibly we should separate them
     // 2. Sync values between form and fieldProps - eg. on value changes which are from formulas

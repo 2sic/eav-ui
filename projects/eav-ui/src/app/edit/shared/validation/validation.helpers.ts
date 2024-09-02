@@ -6,6 +6,8 @@ import { ItemFieldVisibility } from '../../state/item-field-visibility';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { FieldProps } from '../../state/fields-configs.model';
+import { Signal } from '@angular/core';
 
 
 /** Slightly enhanced standard Abstract Control with additional warnings */
@@ -21,23 +23,22 @@ export class ValidationHelpers {
     return this.ignoreValidators(settings) ? false : settings.Required;
   }
 
-  static getValidators(fieldName: string, inputType: InputTypeStrict, fieldsSettingsService: FieldsSettingsService): ValidatorFn[] {
+  public static getValidators(specs: ValidationHelperSpecs, inputType: InputTypeStrict): ValidatorFn[] {
     // TODO: merge all validators in a single function? Should be faster
     const validators: ValidatorFn[] = [
       inputType !== InputTypeCatalog.HyperlinkLibrary
-        ? this.required(fieldName, fieldsSettingsService)
-        : this.requiredAdam(fieldName, fieldsSettingsService),
-      this.pattern(fieldName, fieldsSettingsService),
-      this.decimals(fieldName, fieldsSettingsService),
-      this.min(fieldName, fieldsSettingsService),
-      this.max(fieldName, fieldsSettingsService),
-      this.minNoItems(fieldName, fieldsSettingsService),
-      this.maxNoItems(fieldName, fieldsSettingsService),
-      this.formulaValidate(fieldName, fieldsSettingsService),
+        ? this.required(specs)
+        : this.requiredAdam(specs),
+      this.pattern(specs),
+      this.decimals(specs),
+      this.min(specs),
+      this.max(specs),
+      this.minNoItems(specs),
+      this.maxNoItems(specs),
+      this.formulaValidate(specs),
     ];
-    if (inputType === InputTypeCatalog.CustomJsonEditor) {
-      validators.push(this.validJson(fieldName, fieldsSettingsService));
-    }
+    if (inputType === InputTypeCatalog.CustomJsonEditor)
+      validators.push(this.validJson(specs));
     return validators;
   }
 
@@ -45,27 +46,25 @@ export class ValidationHelpers {
    * Validations run when controls are created, but only for fields which are not disabled,
    * and it can be too late to attach warning after field creation
    */
-  static ensureWarning(control: AbstractControlPro): void {
-    if (control._warning$ == null) {
+  public static ensureWarning(control: AbstractControlPro): void {
+    if (control._warning$ == null)
       control._warning$ = new BehaviorSubject<ValidationErrors>(null);
-    }
   }
 
-  private static required(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static required(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (!settings._currentRequired) return null;
-
       return Validators.required(control);
     };
   }
 
-  private static requiredAdam(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static requiredAdam(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (!settings._currentRequired) return null;
 
@@ -73,10 +72,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static pattern(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static pattern(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (!settings.ValidationRegExJavaScript) return null;
 
@@ -84,10 +83,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static decimals(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static decimals(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (settings.Decimals == null || settings.Decimals < 0) return null;
       if (control.value == null) return null;
@@ -98,10 +97,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static min(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static min(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (settings.Min == null) return null;
 
@@ -109,10 +108,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static max(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static max(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (settings.Max == null) return null;
 
@@ -120,10 +119,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static minNoItems(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static minNoItems(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) return null;
 
@@ -135,10 +134,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static maxNoItems(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static maxNoItems(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
       if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) return null;
 
@@ -150,10 +149,10 @@ export class ValidationHelpers {
     };
   }
 
-  private static validJson(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static validJson(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
-      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      const settings = specs.settings();
       let error: boolean;
       let warning: boolean;
 
@@ -181,16 +180,15 @@ export class ValidationHelpers {
     };
   }
 
-  private static formulaValidate(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
-      const fieldProps = fieldsSettingsService.getFieldsProps()[fieldName];
-      const settings = fieldProps.settings;
+      const fieldProps = specs.fieldsSettingsService.getFieldsProps()[specs.fieldName];
       const formulaValidation = fieldProps.formulaValidation;
       let error: boolean;
       let warning: boolean;
 
-      if (this.ignoreValidators(settings) || formulaValidation == null) {
+      if (this.ignoreValidators(specs.settings()) || formulaValidation == null) {
         error = false;
         warning = false;
       } else {
@@ -215,4 +213,18 @@ export class ValidationHelpers {
   private static ignoreValidators(settings: FieldSettings): boolean {
     return !ItemFieldVisibility.mergedVisible(settings);
   }
+}
+
+export class ValidationHelperSpecs {
+  constructor(
+    public fieldName: string,
+    public inputType: InputTypeStrict,
+    public settings: Signal<FieldSettings>,
+    // public properties: Signal<FieldProps>,
+    // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
+    public fieldsSettingsService: FieldsSettingsService
+  ) { }
+  // name: string;
+  // properties: Signal<FieldProps>;
+  // settings: Signal<FieldSettings>;
 }
