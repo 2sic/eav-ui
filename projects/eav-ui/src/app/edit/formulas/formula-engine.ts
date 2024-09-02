@@ -26,7 +26,6 @@ import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.mo
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ContentTypeSettings } from '../state/content-type-settings.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { FieldsSignalsHelper } from '../state/fields-signals.helper';
 import { ItemService } from '../shared/store/item.service';
 import { LanguageService } from '../shared/store/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
@@ -73,7 +72,6 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   private contentTypeSettings: Signal<ContentTypeSettings>;
   private settingsSvc: FieldsSettingsService;
   private promiseHandler: FormulaPromiseHandler;
-  private fieldSignals: FieldsSignalsHelper;
 
   // // TODO: 2dm -> Here we call all list item formulas on some picker for each item
   // /**
