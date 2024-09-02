@@ -27,6 +27,7 @@ export class EntityDefaultLogic extends FieldLogicBase {
     settings.EnableRemove ??= true;
     settings.EnableDelete ??= false;
     settings.Label ??= '';
+    settings._isDialog ??= false;
     return settings;
   }
 }
