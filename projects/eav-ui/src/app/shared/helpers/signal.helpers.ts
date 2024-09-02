@@ -1,6 +1,8 @@
 import { computed, CreateComputedOptions, Signal } from '@angular/core';
 import { RxHelpers } from '../rxJs/rx.helpers';
 import isEqual from 'lodash-es/isEqual';
+import transform from 'lodash-es/transform';
+import isObject from 'lodash-es/isObject';
 
 export class SignalHelpers {
   /** Options for number signal to ensure equality only on value difference */
@@ -51,3 +53,24 @@ export class SignalHelpers {
 // 		return newValue;
 // 	}, { equal: isEqual});
 // }
+
+
+// https://gist.github.com/Yimiprod/7ee176597fef230d1451?permalink_comment_id=2569085
+/**
+ * This code is licensed under the terms of the MIT license
+ *
+ * Deep diff between two object, using lodash
+ * @param  {Object} object Object compared
+ * @param  {Object} base   Object to compare with
+ * @return {Object}        Return a new object who represent the diff
+ */
+export function difference(object: any, base: any) {
+	function changes(object: any, base: any) {
+		return transform(object, function(result: Record<string, any>, value, key) {
+			if (!isEqual(value, base[key])) {
+				result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
+			}
+		});
+	}
+	return changes(object, base);
+}
