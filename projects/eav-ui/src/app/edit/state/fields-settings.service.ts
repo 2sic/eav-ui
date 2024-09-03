@@ -12,18 +12,20 @@ import { ContentTypeService } from '../shared/store/content-type.service';
 import { ItemService } from '../shared/store/item.service';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
-import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
 import { FieldsSignalsHelper } from './fields-signals.helper';
-import { difference } from '../../shared/helpers/difference';
 import { named } from '../../shared/signals/signal.utilities';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 
-const logThis = false;
-const nameOfThis = 'FieldsSettingsService';
-// Debug only on the following content type
-const debugOnlyThisContentType = ''; //'@String';
+const logSpecs = {
+  name: 'FieldsSettingsService',
+  enabled: false,
+  specs: {
+    // Debug only on the following content type
+    type: '', //'@String';
+  }
+}
 const activateAnalyzer = false;
 
 const maxCyclesMs = 250;
@@ -51,7 +53,7 @@ export class FieldsSettingsService {
   // #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
   #propsEngine = transient(FieldsPropsEngine);
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = new EavLogger(logSpecs);
 
   constructor() { }
 
@@ -100,9 +102,10 @@ export class FieldsSettingsService {
     this.#item.set(item);
     // Remember content-type, as it won't change and we don't need to listen to a signal
     const contentType = this.#contentType();
-    const forceDebug = debugOnlyThisContentType === null ? null : contentType.Id === debugOnlyThisContentType;
+    const debugOnlyCt = this.log.specs.type;
+    const forceDebug = debugOnlyCt === null ? null : contentType.Id === debugOnlyCt;
     if (forceDebug !== null) {
-      this.log.a(`Set debug for content type '${contentType.Id}' to ${forceDebug}, only debugging ${debugOnlyThisContentType}`);
+      this.log.a(`Set debug for content type '${contentType.Id}' to ${forceDebug}, only debugging ${debugOnlyCt}`);
       this.log.enabled = forceDebug;
     }
 

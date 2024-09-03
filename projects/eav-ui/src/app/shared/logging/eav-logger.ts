@@ -1,16 +1,40 @@
 import { logMain } from '../helpers/console-log-angular.helper';
 import { EavLoggerFn } from './eav-logger-fn';
+import { LogManager } from './log-manager';
+import { LogSpecs } from './log-specs';
 import { RxTapDebug } from './rx-debug-dbg';
 
-export class EavLogger {
+export class EavLogger<T = unknown> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(7);
 
+  name: string;
+  enabled: boolean;
   enableChildren: boolean;
+  specs: T;
 
-  constructor(public name: string, public enabled: boolean, enableChildren?: boolean) {
-    this.enableChildren = enableChildren ?? false;
-    this.nameWithSvcId = `${name}-${this.svcId}`;
+  constructor(name: LogSpecs<T>);
+  constructor(name: string, enabled: boolean, enableChildren?: boolean);
+  constructor(name: LogSpecs<T> | string, enabled?: boolean, enableChildren?: boolean) {
+    const initialSpecs: LogSpecs<T> = typeof name === 'object'
+      ? name
+      : {
+          name: name,
+          enabled: enabled,
+          enableChildren: enableChildren,
+        } satisfies LogSpecs<T>;
+
+    // if (name == 'FormulaEngine')
+    //   debugger;
+
+    const mainSpecs = LogManager.getSpecs(initialSpecs);
+
+    this.name = mainSpecs.name;
+    this.enabled = mainSpecs.enabled;
+    this.enableChildren = mainSpecs.enableChildren ?? false;
+    this.specs = mainSpecs.specs;
+
+    this.nameWithSvcId = `${mainSpecs.name}-${this.svcId}`;
   }
 
   public rename(name: string) {
@@ -20,7 +44,7 @@ export class EavLogger {
 
   public nameWithSvcId: string;
 
-  inherit(parent: EavLogger) {
+  inherit(parent: EavLogger<T>) {
     this.enabled = this.enabled || parent.enabled;
 
     // if this results in log enabled, inform the console.
