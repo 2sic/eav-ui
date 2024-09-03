@@ -1,4 +1,4 @@
-import { Connector } from 'projects/edit-types';
+import { Connector } from '../../../edit-types';
 import { InputTypeCatalog } from '../../../eav-ui/src/app/shared/fields/input-type-catalog';
 import { StringWysiwyg } from '../../../edit-types/src/FieldSettings';
 import * as DialogModes from '../constants/display-modes';

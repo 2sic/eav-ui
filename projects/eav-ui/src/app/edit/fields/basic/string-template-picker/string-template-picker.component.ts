@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
+import { Component, Injector, OnDestroy, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { templateTypes } from './string-template-picker.constants';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,7 +21,7 @@ import { transient } from '../../../../core/transient';
 import { SourceService } from '../../../../code-editor/services/source.service';
 import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog.component';
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
-import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EavLogger } from '../../../../../../../eav-ui/src/app/shared/logging/eav-logger';
 import { take } from 'rxjs';
 
 const logThis = true;

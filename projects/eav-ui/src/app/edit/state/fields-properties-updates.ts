@@ -1,4 +1,4 @@
-import { FieldSettings } from 'projects/edit-types/src/FieldSettings';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { Signal } from '@angular/core';

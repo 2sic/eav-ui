@@ -1,4 +1,4 @@
-import { FieldValue } from 'projects/edit-types';
+import { FieldValue } from '../../../../../../edit-types';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 

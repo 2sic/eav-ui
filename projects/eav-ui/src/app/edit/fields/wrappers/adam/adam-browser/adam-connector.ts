@@ -1,7 +1,7 @@
-import { Adam, AdamConfig, AdamItem } from 'projects/edit-types';
+import { Adam, AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { AdamBrowserComponent } from './adam-browser.component';
 import { computed, signal } from '@angular/core';
-import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EavLogger } from '../../../../../../../../eav-ui/src/app/shared/logging/eav-logger';
 
 const logThis = false;
 const nameOfThis = 'AdamConnector';

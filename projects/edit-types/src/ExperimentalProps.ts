@@ -6,7 +6,7 @@ import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
 import { FieldValue } from './FieldValue';
-import { FieldMask } from 'projects/eav-ui/src/app/edit/shared/helpers';
+import { FieldMask } from '../../eav-ui/src/app/edit/shared/helpers';
 
 export interface ExperimentalProps {
   entityGuid: string;

@@ -13,7 +13,7 @@ import { ItemHelper } from '../shared/helpers/item.helper';
 import { FormLanguage } from './form-languages.model';
 import { ItemService } from '../shared/store/item.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
-import { FieldSettings } from 'projects/edit-types';
+import { FieldSettings } from '../../../../../edit-types';
 import { FieldProps } from './fields-configs.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
