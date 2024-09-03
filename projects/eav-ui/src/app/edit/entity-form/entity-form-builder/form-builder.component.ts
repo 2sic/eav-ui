@@ -3,7 +3,6 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
-import { ControlHelpers } from '../../shared/helpers/control.helpers';
 import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';

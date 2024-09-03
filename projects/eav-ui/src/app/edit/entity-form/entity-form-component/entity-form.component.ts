@@ -178,7 +178,8 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     if (event.type === 'pointerenter' && this.noteTouched == false) this.openNote();
     else if (event.type === 'pointerleave' && this.noteTouched == false) this.noteRef?.close();
     else if (event.type === 'click' && isOpen) {
-      if (this.noteTouched == false) this.noteTouched = true;
+      if (this.noteTouched == false)
+        this.noteTouched = true;
       else {
         this.noteRef?.close();
         this.noteTouched = false;
