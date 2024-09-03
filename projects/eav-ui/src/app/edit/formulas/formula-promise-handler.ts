@@ -14,6 +14,7 @@ import { FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsValuesModifiedHelper } from '../state/fields-values-modified.helper';
+import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';
@@ -117,7 +118,7 @@ export class FormulaPromiseHandler {
    * @param formItemFormulaService
    * @returns true if values were updated, false otherwise and new field props
    */
-  changesFromQueue(engine: FieldsPropsEngine): QueuedChanges {
+  changesFromQueue(cycle: FieldsPropsEngineCycle): QueuedChanges {
     // Get data from change queue and then flush, as we'll process it next and in case of errors we don't want to reprocess it
     const toProcess = this.updateValueQueue[this.entityGuid];
     this.updateValueQueue[this.entityGuid] = null;
@@ -133,17 +134,17 @@ export class FormulaPromiseHandler {
 
     // Handle values (of this field) and fields (values of other fields)
     const modifiedValues = (Object.keys(values).length !== 0 || fields.length !== 0)
-      ? this.modifiedChecker.getValueUpdates(engine.cycle, fields, values)
+      ? this.modifiedChecker.getValueUpdates(cycle, fields, values)
       : {};
 
     // Handle settings
     const contentType = this.contentType();
     let newFieldProps: Record<string, FieldProps> = null;
     if (settings.length) {
-      newFieldProps = { ...engine.cycle.fieldProps };
+      newFieldProps = { ...cycle.fieldProps };
       const itemAttributes = this.itemService.getItemAttributes(this.entityGuid);
       settings.forEach(valueSet => {
-        const settingsCurrent = engine.cycle.fieldProps[valueSet.name]?.settings;
+        const settingsCurrent = cycle.fieldProps[valueSet.name]?.settings;
         
         let settingsNew: Record<string, any> = {};
         valueSet.settings.forEach(setting => {
@@ -151,14 +152,14 @@ export class FormulaPromiseHandler {
           ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(target, settingsCurrent, setting.value, settingsNew));
         });
 
-        const constantFieldPart = engine.getFieldConstants(valueSet.name);
+        const constantFieldPart = cycle.getFieldConstants(valueSet.name);
         const attribute = contentType.Attributes.find(a => a.Name === valueSet.name);
 
         // Prepare helper which the formula will need to verify if the field is visible
-        const setUpdHelper = engine.updateHelper.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
+        const setUpdHelper = cycle.updateHelper.create(attribute, constantFieldPart, itemAttributes[attribute.Name]);
 
         const mergedSettings = { ...settingsCurrent, ...settingsNew };
-        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(mergedSettings, engine.cycle.values[valueSet.name]);
+        const updatedSettings = setUpdHelper.correctSettingsAfterChanges(mergedSettings, cycle.values[valueSet.name]);
 
         newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };
       });

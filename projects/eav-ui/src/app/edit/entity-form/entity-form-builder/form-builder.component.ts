@@ -77,8 +77,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
     const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
     this.subscriptions.add(
       combineLatest([formValid$, itemHeader$]).pipe(
-        map(([formValid, itemHeader]) => itemHeader.IsEmpty || formValid),
-        mapUntilChanged(m => m),
+        mapUntilChanged(([formValid, itemHeader]) => itemHeader.IsEmpty || formValid),
       ).subscribe(isValid => {
         this.formsStateService.setFormValid(this.entityGuid, isValid);
       })

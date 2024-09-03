@@ -29,6 +29,7 @@ import { GlobalConfigService } from '../../shared/services/global-config.service
 import { ItemService } from '../shared/store/item.service';
 import { LanguageService } from '../shared/store/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
+import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 
 const logThis = true;
 const nameOfThis = 'FormulaEngine';
@@ -153,7 +154,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   }
 
 
-  runFormulasForAllFields(propsEngine: FieldsPropsEngine) {
+  runFormulasForAllFields(engine: FieldsPropsEngine, cycle: FieldsPropsEngineCycle) {
     const fieldsProps: Record<string, FieldProps> = {};
     const valueUpdates: ItemValuesOfLanguage = {};
     const fieldUpdates: FieldValuePair[] = [];
@@ -161,24 +162,24 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     // Many aspects of a field are re-usable across formulas, so we prepare them here
     // These are things explicit to the entity and either never change, or only rarely
     // so never between cycles
-    const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(propsEngine.item.Entity.Guid);
+    const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(engine.item.Entity.Guid);
 
     for (const attr of this.contentType.Attributes) {
-      const attrValues = propsEngine.cycle.allAttributes[attr.Name];
-      const valueBefore = propsEngine.cycle.values[attr.Name];
-      const constFieldPart = propsEngine.getFieldConstants(attr.Name);
+      const attrValues = cycle.allAttributes[attr.Name];
+      const valueBefore = cycle.values[attr.Name];
+      const constFieldPart = cycle.getFieldConstants(attr.Name);
 
-      const latestSettings: FieldSettings = propsEngine.cycle.getFieldSettingsInCycle(constFieldPart);
+      const latestSettings: FieldSettings = cycle.getFieldSettingsInCycle(constFieldPart);
 
-      const settingsUpdateHelper = propsEngine.updateHelper.create(attr, constFieldPart, attrValues);
+      const settingsUpdateHelper = cycle.updateHelper.create(attr, constFieldPart, attrValues);
 
       // run formulas
       const formulaResult = this.#runAllFormulasOfFieldOrInitSettings(
-        propsEngine,
+        cycle,
         attr.Name,
         constFieldPart,
         latestSettings,
-        propsEngine.item.Header,
+        engine.item.Header,
         valueBefore,
         reuseObjectsForFormulaDataAndContext,
         settingsUpdateHelper,
@@ -193,7 +194,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       if (formulaResult.fields)
         fieldUpdates.push(...formulaResult.fields);
 
-      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, propsEngine.languages);
+      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, engine.languages);
 
       fieldsProps[attr.Name] = {
         language: constFieldPart.language,
@@ -213,7 +214,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @returns Object with all changes that formulas should make
    */
   #runAllFormulasOfFieldOrInitSettings(
-    propsEngine: FieldsPropsEngine,
+    cycle: FieldsPropsEngineCycle,
     fieldName: string,
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
@@ -227,7 +228,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
     // Run all formulas IF we have any and work with the objects containing specific changes
     const { value, validation, fields, settings } = hasFormulas
-      ? this.#runFormulasOfField(propsEngine, formulas, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
+      ? this.#runFormulasOfField(cycle, formulas, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
       : { value: valueBefore, validation: null, fields: [], settings: {} };
 
     // Correct any settings necessary after
@@ -248,7 +249,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   }
 
   #runFormulasOfField(
-    propsEngine: FieldsPropsEngine,
+    cycle: FieldsPropsEngineCycle,
     formulas: FormulaCacheItem[],
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
@@ -266,7 +267,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     for (const formula of formulas) {
       const runParameters: FormulaRunParameters = {
         formula,
-        currentValues: propsEngine.cycle.values,
+        currentValues: cycle.values,
         inputTypeName: constFieldPart.inputTypeSpecs.inputType,
         settingsInitial: constFieldPart.settingsInitial,
         settingsCurrent: settingsBefore,

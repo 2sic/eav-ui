@@ -20,6 +20,8 @@ import { transient } from '../../core/transient';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
+import isEqual from 'lodash-es/isEqual';
+import { named } from '../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'FieldsPropsEngine';
@@ -47,7 +49,6 @@ export class FieldsPropsEngine {
   /** The item we're working on - needed by the formula engine */
   public item: EavItem;
 
-  public get updateHelper() { return this.#updateHelper(); }
   public modifiedChecker: FieldsValuesModifiedHelper;
   private fieldsValues: FieldsSignalsHelper;
 
@@ -99,10 +100,6 @@ export class FieldsPropsEngine {
    */
   #fieldLangConstants: Signal<FieldConstantsOfLanguage[]>;
 
-  public getFieldConstants(name: string) {
-    return this.#fieldLangConstants().find(f => f.fieldName === name);
-  }
-
   #itemAttributes: Signal<EavEntityAttributes>;
 
   /**
@@ -129,10 +126,13 @@ export class FieldsPropsEngine {
 
     const initialValues = this.fieldsValues.values();
 
-    // This should only be accessed here, so the signal is only depended on once!
+    // These should only be accessed here, so the signal is only depended on once!
+    // All this should never change during the cycle
     const attributes = this.#itemAttributes();
+    const updateHelper = this.#updateHelper();
+    const fieldLangConstants = this.#fieldLangConstants();
 
-    this.cycle = new FieldsPropsEngineCycle(this, initialValues, fieldProps, attributes);
+    this.cycle = new FieldsPropsEngineCycle(this, initialValues, fieldProps, attributes, updateHelper, fieldLangConstants);
     const cycleResult = this.cycle.getCycleSettingsAndValues();
 
     // figure out the final changes to propagate
@@ -146,7 +146,7 @@ export class FieldsPropsEngine {
    */
   #getPreparedParts(reader: EntityReader, contentType: EavContentType, slotIsEmpty: Signal<boolean>) {
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
-    const prepared = computed(() => {
+    const prepared = named('prepared-parts', computed(() => {
       const languages = reader;
       const isDebug = this.globalConfigService.isDebug();
       const isReadOnly = this.formsStateService.readOnly();
@@ -167,7 +167,7 @@ export class FieldsPropsEngine {
           slotIsEmpty,
         );
         return updHelperFactory;
-    });
+    }, { equal: isEqual }));
     return prepared;
   }
 

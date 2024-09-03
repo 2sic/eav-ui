@@ -6,6 +6,7 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { EavEntityAttributes } from '../shared/models/eav';
+import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 
 const logThis = false;
 const nameOfThis = 'FieldsPropsEngineCycle';
@@ -34,10 +35,17 @@ export class FieldsPropsEngineCycle {
     private readonly initialValues: ItemValuesOfLanguage,
     /** The field props at start and during the calculation cycles (may be updated until complete) */
     public fieldProps: Record<string, FieldProps>,
-    public allAttributes: EavEntityAttributes
+    public allAttributes: EavEntityAttributes,
+    public updateHelper: FieldSettingsUpdateHelperFactory,
+    private fieldConstants: FieldConstantsOfLanguage[],
   ) {
     this.values = { ...initialValues };
   }
+
+  public getFieldConstants(name: string) {
+    return this.fieldConstants.find(f => f.fieldName === name);
+  }
+
 
 
   /**
@@ -78,7 +86,7 @@ export class FieldsPropsEngineCycle {
     // 2. Process the queue of changes from promises if necessary
     // If things change, we will exit because then the observable will be retriggered
     if (!isFirstRound) {
-      const { valueChanges, newFieldProps } = this.engine.formulaPromises.changesFromQueue(this.engine);
+      const { valueChanges, newFieldProps } = this.engine.formulaPromises.changesFromQueue(this);
 
       // If we only updated values from promise (queue), don't trigger property regular updates
       if (newFieldProps) {
@@ -98,7 +106,7 @@ export class FieldsPropsEngineCycle {
     // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
     // Note that in the case of promises being executed, the whole process will need to run again
     // when the promises finish
-    const { fieldsProps, valueUpdates, fieldUpdates } = this.engine.formulaEngine.runFormulasForAllFields(this.engine);
+    const { fieldsProps, valueUpdates, fieldUpdates } = this.engine.formulaEngine.runFormulasForAllFields(this.engine, this);
 
     // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
     for (const [key, value] of Object.entries(fieldsProps))

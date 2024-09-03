@@ -25,7 +25,8 @@ const nameOfThis = 'FieldsSettingsService';
 // Debug only on the following content type
 const debugOnlyThisContentType = ''; //'@String';
 
-const maxCyclesPerSecond = 10;
+const maxCyclesMs = 250;
+const maxCyclesPerTime = 10;
 const maxCyclesWarning = "Max cycles reached, stopping for this second";
 
 /**
@@ -114,12 +115,15 @@ export class FieldsSettingsService {
     this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#fieldValues, forceDebug);
 
     // Protect against infinite loops
+    const watchRestart = signal(0);
     let cycle = 0;
     setInterval(() => {
-      if (cycle > maxCyclesPerSecond)
+      if (cycle > maxCyclesPerTime) {
         this.log.a(`restarting max cycles from ${cycle}; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
-      cycle = 0;
-    }, 1000);
+        cycle = 0;
+        watchRestart.update(v => v + 1);
+      }
+    }, maxCyclesMs);
 
     let prevFieldProps: Record<string, FieldProps> = {};
     let prevValues: ItemValuesOfLanguage = {};
@@ -140,9 +144,10 @@ export class FieldsSettingsService {
       this.#forceRefresh();
 
       // If we have reached the max cycles, we should stop
-      if (cycle++ > maxCyclesPerSecond) {
+      if (cycle++ > maxCyclesPerTime) {
         const msg = `${maxCyclesWarning}; cycle: ${cycle} entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`;
         console.warn(msg);
+        watchRestart(); // to ensure it can start again in a second, access this before we exit.
         return l.r(prevFieldProps, msg);
       }
 
@@ -173,31 +178,6 @@ export class FieldsSettingsService {
     analyzer = new ComputedAnalyzer(this.#fieldsProps);
 
     this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.#fieldsProps);
-  }
-
-  #testAnalyzers() {
-    // temp computed to analyze dependencies
-    const x = named('x', signal(27));
-    const y = named('y', signal(42)); // indirect dependency
-    const z = named('z', computed(() => x() + y()));
-    const tempFromDisabled = computed(() => {
-      return x() + " / " + z();
-    });
-    
-    const analyzerTemp = new ComputedAnalyzer(tempFromDisabled);
-    
-    let valSubscribe = tempFromDisabled();
-    console.log('snapshot before', {tempFromDisabled}, analyzerTemp.snapShotProducers());
-
-    // make a change
-    x.set(28);
-    console.log('snapshot in between', {tempFromDisabled}, analyzerTemp.snapShotProducers());
-    valSubscribe = tempFromDisabled();
-    
-    // console.log('analyzerTemp computed', tempFromDisabled);
-    // console.log('analyzerTemp producers', analyzerTemp.getDirtyProducers());
-    console.log('snapshot after', {tempFromDisabled}, analyzerTemp.snapShotProducers());
-
   }
 
   /**
