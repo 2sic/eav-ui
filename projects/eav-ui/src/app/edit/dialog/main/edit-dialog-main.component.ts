@@ -47,6 +47,7 @@ import { LanguageInstanceService } from '../../shared/store/language-instance.se
 import { PublishStatusService } from '../../shared/store/publish-status.service';
 import { AdamCacheService } from '../../shared/store/adam-cache.service';
 import { LinkCacheService } from '../../shared/store/link-cache.service';
+import { isCtrlS, isEscape } from './keyboard-shortcuts';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -317,13 +318,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   private activateCtrlSaveListener() {
     this.dialogRef.keydownEvents().subscribe(event => {
-      const ESCAPE = event.keyCode === 27;
-      if (ESCAPE) {
+      if (isEscape(event)) {
         this.closeDialog();
         return;
       }
-      const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
-      if (CTRL_S) {
+
+      if (isCtrlS(event)) {
         event.preventDefault();
         if (!this.formsStateService.readOnly().isReadOnly)
           this.saveAll(false);

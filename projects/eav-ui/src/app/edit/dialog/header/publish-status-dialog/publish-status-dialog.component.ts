@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FormConfigService } from '../../../state/form-config.service';
 import { PublishMode, PublishModes } from '../../main/edit-dialog-main.models';
 import { PublishStatusService } from '../../../shared/store/publish-status.service';
+import { isCtrlS } from '../../main/keyboard-shortcuts';
 
 @Component({
     selector: 'app-publish-status-dialog',
@@ -37,9 +38,8 @@ export class PublishStatusDialogComponent {
     private formConfig: FormConfigService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
-      const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
-      if (!CTRL_S) { return; }
-      event.preventDefault();
+      if (isCtrlS(event))
+        event.preventDefault();
     });
   }
 

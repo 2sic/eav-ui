@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
 import { FieldsTranslateService } from '../../../../state/fields-translate.service';
 import { TranslateHelperComponent } from '../../../../../shared/components/translate-helper.component';
+import { isCtrlS } from '../../../../dialog/main/keyboard-shortcuts';
 
 interface TranslationInfo {
   showLanguageSelection: boolean;
@@ -54,9 +55,8 @@ export class TranslateMenuDialogComponent extends TranslateHelperComponent {
   ) {
     super(dialogData); //
     this.dialogRef.keydownEvents().subscribe(event => {
-      const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
-      if (!CTRL_S) { return; }
-      event.preventDefault();
+      if (isCtrlS(event))
+        event.preventDefault();
     });
   }
 
