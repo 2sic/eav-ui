@@ -72,10 +72,11 @@ export class FieldInjectorService {
           tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
         );
 
-        // Settings to build the initial controlStatus
-        const s = settings();
+        // Build controlStatus observable.
+        // Should be changed to a pure signal without the observables probably in Angular 18
+        // which probably has a signal for this as well...
         controlStatusChangeSignal = toSignal(controlStatus$, {
-          initialValue: controlToControlStatus(control, s.uiDisabled)
+          initialValue: controlToControlStatus(control, settings().uiDisabled)
         });
       });
     } else {
