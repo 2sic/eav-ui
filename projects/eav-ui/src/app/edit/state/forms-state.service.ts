@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, Signal, signal } from '@angular/core';
 import { FormConfigService } from './form-config.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { SignalEquals } from '../../shared/signals/signal-equals';
@@ -20,7 +20,7 @@ export class FormsStateService {
   triggerTrySaveAndMaybeClose = signal({ tryToSave: false, close: false }, SignalEquals.ref);
   formsAreValid = signal(false);
   formsAreDirty = signal(false);
-  readOnly = signal<FormReadOnly>({ isReadOnly: true, reason: undefined }, { equal: isEqual });
+  readOnly: Signal<FormReadOnly>;
   formsValidTemp = signal<boolean>(false);
   saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
 
@@ -47,7 +47,7 @@ export class FormsStateService {
     );
     const language = this.languageService.getAllSignal();
 
-    const sig = computed<FormReadOnly>(() => {
+    this.readOnly = computed(() => {
       const itemsReadOnly = itemHeaders().some(itemHeader => itemHeader().EditInfo?.ReadOnly ?? false);
       const languageAllowed = language().find(l => l.NameId === this.formConfig.language().current)?.IsAllowed ?? true;
       const isReadOnly = itemsReadOnly || !languageAllowed;
@@ -56,32 +56,8 @@ export class FormsStateService {
       return {
         isReadOnly,
         reason,
-      };
-    });
-
-    // TODO: @2DM - this won't work, as it won't update the readOnly signal
-    this.readOnly.set(sig());
-
-    // TODO:: @2dg Old code to be removed after testing is done
-    //   this.subscriptions.add(
-    //     combineLatest([
-    //       combineLatest(this.formConfig.config.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
-    //         map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
-    //       ),
-    //       combineLatest([
-    //         this.formConfig.language$,
-    //         this.languageService.getLanguages$(), // TODO:: Remove later
-    //       ]).pipe(
-    //         map(([language, languages]) => languages.find(l => l.NameId === language.current)?.IsAllowed ?? true),
-    //       ),
-    //     ]).subscribe(([itemsReadOnly, languageAllowed]) => {
-    //       const readOnly: FormReadOnly = {
-    //         isReadOnly: itemsReadOnly || !languageAllowed,
-    //         reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
-    //       };
-    //       this.readOnly.set(readOnly);
-    //     })
-    //   );
+      } satisfies FormReadOnly;
+    }, { equal: isEqual });
   }
 
   getFormValid(entityGuid: string) {
