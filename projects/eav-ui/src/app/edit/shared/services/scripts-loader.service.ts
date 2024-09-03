@@ -4,6 +4,7 @@ import { UrlHelpers } from '../helpers';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../state/form-config.service';
+import { FormConfiguration } from '../../state/form-configuration.model';
 
 const logThis = false;
 const nameOfThis = 'ScriptsLoaderService';
@@ -47,7 +48,7 @@ export class ScriptsLoaderService extends ServiceBase {
     const jsFiles: LoadFile[] = [];
     scripts.forEach(script => {
       const file: LoadFile = {
-        path: this.resolveSpecialPaths(script),
+        path: ScriptsLoaderService.resolveUrlTokens(script, this.formConfig.config),
         type: null,
         loaded: false,
         domEl: null
@@ -111,10 +112,10 @@ export class ScriptsLoaderService extends ServiceBase {
     }
   }
 
-  private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.formConfig.config))
-      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.formConfig.config))
-      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.formConfig.config))
-      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.formConfig.config));
+  public static resolveUrlTokens(url: string, formConfig: FormConfiguration) {
+    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', formConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', formConfig))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', formConfig))
+      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', formConfig));
   }
 }

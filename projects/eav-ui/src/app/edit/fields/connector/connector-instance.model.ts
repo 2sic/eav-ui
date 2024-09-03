@@ -6,23 +6,27 @@ import { ConnectorData } from '../../../../../../edit-types/src/ConnectorData';
 import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
 import { ExperimentalProps } from '../../../../../../edit-types/src/ExperimentalProps';
 import { loadScripts } from '../../../shared/helpers/load-scripts.helper';
-import { UrlHelpers } from '../../shared/helpers';
 import { FormConfiguration } from '../../state/form-configuration.model';
-
-declare const window: EavWindow;
+import { Signal } from '@angular/core';
+import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 export class ConnectorInstance<T = any> implements Connector<T> {
   data: ConnectorData<T>;
   dialog: ConnectorDialog;
   loadScript: (...args: any[]) => void;
 
+  get field() { return this.fieldConfigSignal(); }
+
+  get field$() { return this.#field$ ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector }) }
+  #field$: Observable<FieldConfig>;
+
   constructor(
     _connectorHost: ConnectorHost<T>,
     value$: Observable<T>,
-    public field: FieldConfig,
-    public field$: Observable<FieldConfig>,
+    private fieldConfigSignal: Signal<FieldConfig>,
     public _experimental: ExperimentalProps,
-    eavConfig: FormConfiguration,
+    formConfig: FormConfiguration,
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
@@ -38,28 +42,19 @@ export class ConnectorInstance<T = any> implements Connector<T> {
         && typeof srcOrCallback === 'string'
         && typeof callback === 'function'
       ) {
-        srcOrCallback = this.resolveTokens(srcOrCallback, eavConfig);
+        srcOrCallback = ScriptsLoaderService.resolveUrlTokens(srcOrCallback, formConfig);
         loadScripts([{ test: testOrScripts, src: srcOrCallback }], callback);
         return;
       }
       // multiple scripts (2 parameters: scripts array and a callback)
       if (Array.isArray(testOrScripts) && typeof srcOrCallback === 'function') {
         for (const script of testOrScripts)
-          script.src = this.resolveTokens(script.src, eavConfig);
+          script.src = ScriptsLoaderService.resolveUrlTokens(script.src, formConfig);
         loadScripts(testOrScripts, srcOrCallback);
         return;
       }
       throw new Error('Unrecognized parameters. Please double check your input');
     };
-  }
-
-  resolveTokens(src: string, eavConfig: FormConfiguration) {
-    src = src.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', eavConfig));
-    if (!src.includes('?'))
-      src = `${src}?sxcver=${window.sxcVersion}`;
-    return src;
   }
 }
 
@@ -67,10 +62,7 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   value: T;
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
-  constructor(
-    private _connectorHost: ConnectorHost<T>,
-    public value$: Observable<T>,
-  ) {
+  constructor(private _connectorHost: ConnectorHost<T>, public value$: Observable<T>) {
     // Host will complete this observable. Therefore unsubscribe is not required
     this.value$.subscribe(newValue => {
       this.value = newValue;

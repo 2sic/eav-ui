@@ -1,8 +1,7 @@
 import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
-import { FieldConfig, toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
-import { FieldSettings } from './../../../../../../edit-types/src/FieldSettings';
+import { toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
 import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
-import { ChangeDetectorRef, ElementRef, Injectable, Injector, NgZone, OnDestroy, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, ElementRef, Injectable, Injector, NgZone, OnDestroy, ViewContainerRef, computed, effect, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,6 +25,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { AdamService } from '../../shared/services/adam.service';
 import { ContentTypeService } from '../../shared/store/content-type.service';
 import { InputTypeService } from '../../shared/store/input-type.service';
+import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;
 const nameOfThis = 'ConnectorHelper';
@@ -51,13 +51,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #control: AbstractControl;
   #customEl: EavCustomInputField;
   #value$: BehaviorSubject<FieldValue>;
-  #settings$ = this.#fieldState.settings$;
 
   #config = this.#fieldState.config;
   #group = this.#fieldState.group;
-
-  #customElContainerRef: ElementRef;
-  #customElName: string;
 
   #viewContainerRef: ViewContainerRef;
   #changeDetectorRef: ChangeDetectorRef;
@@ -74,9 +70,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     changeDetectorRef: ChangeDetectorRef,
   ): this {
     this.log.a('init');
-    this.#customElContainerRef = customElContainerRef;
-    this.#customElName = customElName;
-
     this.#viewContainerRef = viewContainerRef;
     this.#changeDetectorRef = changeDetectorRef;
 
@@ -88,9 +81,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       })
     );
 
-    this.#customEl = document.createElement(this.#customElName) as EavCustomInputField;
-    this.#customEl.connector = this.buildConnector();
-    this.#customElContainerRef.nativeElement.appendChild(this.#customEl);
+    this.#customEl = document.createElement(customElName) as EavCustomInputField;
+    this.#customEl.connector = this.#buildConnector();
+    customElContainerRef.nativeElement.appendChild(this.#customEl);
     return this;
   }
 
@@ -102,29 +95,31 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     super.destroy();
   }
 
-  private buildConnector() {
-    const connectorHost = this.calculateRegularProps();
-    const experimental = this.calculateExperimentalProps();
-    const settingsSnapshot = this.#fieldsSettingsService.getFieldSettings(this.#config.fieldName);
-    const fieldConfig = toFieldConfig(this.#config, settingsSnapshot);
-    const fieldConfig$ = this.#settings$.pipe(map(settings => toFieldConfig(this.#config, settings)));
+  #buildConnector() {
+    const connectorHost = this.#calculateRegularProps();
+    const experimental = this.#buildExperimentalProps();
+    const fieldConfigSignal = computed(() => {
+      const settings = this.#fieldState.settings();
+      return toFieldConfig(this.#config, settings);
+    }, { equal: isEqual});
     const value$ = this.#value$.asObservable();
-    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.#formConfig.config);
-    this.subscriptions.add(
-      this.#settings$.subscribe(settings => {
-        connector.field.settings = settings;
-        connector.field.label = settings.Name;
-        connector.field.placeholder = settings.Placeholder;
-        connector.field.required = settings.valueRequired;
-      })
-    );
+    const connector = new ConnectorInstance(connectorHost, value$, fieldConfigSignal, experimental, this.#formConfig.config);
+
+    effect(() => {
+      const s = this.#fieldState.settings();
+      const field = connector.field;
+      field.settings = s;
+      field.label = s.Name;
+      field.placeholder = s.Placeholder;
+      field.required = s.valueRequired;
+    }, { injector: this.#injector });
     return connector;
   }
 
-  private calculateRegularProps() {
+  #calculateRegularProps() {
     const connectorHost: ConnectorHost = {
       update: (value) => {
-        this.#zone.run(() => this.updateControl(this.#control, value));
+        this.#zone.run(() => this.#updateControl(this.#control, value));
       },
       expand: (expand, componentTag) => {
         this.#zone.run(() => {
@@ -135,7 +130,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     return connectorHost;
   }
 
-  private calculateExperimentalProps() {
+  #buildExperimentalProps() {
     const contentType = this.#contentTypeService.get(this.#config.contentTypeNameId);
     const allInputTypeNames = this.#inputTypeService.getAttributeInputTypes(contentType.Attributes);
 
@@ -148,7 +143,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       dropzone: this.#config.dropzone,
       adam: this.#config.adam,
       updateField: (name, value) => {
-        this.#zone.run(() => { this.updateControl(this.#group.controls[name], value); });
+        this.#zone.run(() => { this.#updateControl(this.#group.controls[name], value); });
       },
       isFeatureEnabled$: (nameId) => this.#featuresService.isEnabled$(nameId),
       setFocused: (focused) => {
@@ -161,23 +156,25 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       },
       featureDisabledWarning: (featureNameId) => {
         this.#zone.run(() => {
-          this.openFeatureDisabledWarning(featureNameId);
+          this.#openFeatureDisabledWarning(featureNameId);
         });
       },
       getUrlOfId: (value, callback) => {
-        this.#zone.run(() => { this.getUrlOfId(value, callback); });
+        this.#zone.run(() => { this.#getUrlOfId(value, callback); });
       },
       getSettings: (name) => this.#formConfig.config.settings?.Values[name],
 
       getFieldMask: (mask: string, name?: string) => {
         return transient(FieldMask, this.#injector).init(name, mask);
       },
+
+      injector: this.#injector,
     };
 
     return experimentalProps;
   }
 
-  private getUrlOfId(value: string, callback: (value: string) => void) {
+  #getUrlOfId(value: string, callback: (value: string) => void) {
     if (!value) { return; }
 
     // handle short-ID links like file:17
@@ -190,12 +187,12 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     });
   }
 
-  private updateControl(control: AbstractControl, value: FieldValue) {
+  #updateControl(control: AbstractControl, value: FieldValue) {
     if (control.disabled) { return; }
     ControlHelpers.patchControlValue(control, value);
   }
 
-  private openFeatureDisabledWarning(featureNameId: string) { 
+  #openFeatureDisabledWarning(featureNameId: string) { 
     if (featureNameId === FeatureNames.PasteImageFromClipboard) {
       this.#snackBar.open(this.#translateService.instant('Message.PastingFilesIsNotEnabled'), this.#translateService.instant('Message.FindOutMore'), { duration: 3000 })
         .onAction()

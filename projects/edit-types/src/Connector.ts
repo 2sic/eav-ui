@@ -5,6 +5,15 @@ import { ExperimentalProps } from './ExperimentalProps';
 import { ConnectorDialog } from './ConnectorDialog';
 
 export interface Connector<T> {
+  // /**
+  //  * Get the current field configuration.
+  //  * Internally uses a signal...
+  //  * @returns {FieldConfig}
+  //  * @memberof Connector
+  //  * Note: was modified in v18, previously the property `field` returned this data.
+  //  */
+  // fieldConfigSignal: Signal<FieldConfig>;
+
   /**
    * Current field configuration
    */

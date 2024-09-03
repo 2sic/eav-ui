@@ -40,6 +40,7 @@ import * as skinOverrides from './skin-overrides.scss';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
 import { DropzoneWysiwyg } from '../../../eav-ui/src/app/edit/fields/wrappers/dropzone/dropzone-wysiwyg';
+import { effect, runInInjectionContext } from '@angular/core';
 
 const logThis = false;
 const nameOfThis = 'FieldStringWysiwygEditor';
@@ -175,6 +176,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           this.editor.mode.set(disabled ? 'readonly' : 'design');
         }),
       );
+
+      // // new with effects
+      // // runInInjectionContext(this.connector._experimental.injector, () => {
+      //   effect(() => {
+      //     const disabled = this.connector.fieldConfigSignal().disabled;
+      //     this.log.a(`Field config disabled with effect`, { disabled, mode: editor.mode.get() });
+      //     this.classList.toggle('disabled', disabled);
+      //     this.editor.mode.set(disabled ? 'readonly' : 'design');
+      //   }, { injector: this.connector._experimental.injector });
+      // // });
 
       const delayFocus = () => setTimeout(() => editor.focus(false), 100);
 

@@ -24,8 +24,8 @@ export class FieldState<T extends FieldValue> {
     /** The control of the field in the form group */
     public control: AbstractControl,
 
-    /** The settings as an observable - where possible, try to use the signal instead */
-    public settings$: Observable<FieldSettings>,
+    // /** The settings as an observable - where possible, try to use the signal instead */
+    // public settings$: Observable<FieldSettings>,
 
     /** The settings as a signal - use this for most cases */
     public settings: Signal<FieldSettings>,
