@@ -41,7 +41,7 @@ export class EditDialogFooterComponent {
     this.tab.update(before => before !== type ? type : null);
     const tab = this.tab();
     if (tab == null) this.expanded.set(false);
-    this.resize.emit(tab != null ? 1 : 0);
+    this.resize.emit(tab == null ? 0 : this.expanded() ? 2 : 1);
   }
 
   toggleSize(): void {
