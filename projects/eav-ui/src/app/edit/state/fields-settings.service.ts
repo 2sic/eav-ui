@@ -24,6 +24,7 @@ const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
 // Debug only on the following content type
 const debugOnlyThisContentType = ''; //'@String';
+const activateAnalyzer = false;
 
 const maxCyclesMs = 250;
 const maxCyclesPerTime = 10;
@@ -126,7 +127,6 @@ export class FieldsSettingsService {
     }, maxCyclesMs);
 
     let prevFieldProps: Record<string, FieldProps> = {};
-    let prevValues: ItemValuesOfLanguage = {};
 
     let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
     this.#fieldsProps = computed(() => {
@@ -158,8 +158,6 @@ export class FieldsSettingsService {
       // Note that this will access a lot of source signals
       // whose dependencies will be incorporated into this calculation
       const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
-      const propsDiff = difference(props, prevFieldProps);
-      prevValues = values;
       prevFieldProps = props;
           
       // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
@@ -167,15 +165,18 @@ export class FieldsSettingsService {
       // if (Object.keys(valueChanges).length > 0)
       //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-      if (Object.keys(propsDiff).length > 0) {
-        l.a('Fields Props Diff', propsDiff);
-        return l.r(props, `props: normal update`);
-      } else {
-        return l.rSilent(prevFieldProps, 'props: no changes');
-      }
+      return l.rSilent(props, 'normal update');
+      // const propsDiff = difference(props, prevFieldProps);
+      // if (Object.keys(propsDiff).length > 0) {
+      //   l.a('Fields Props Diff', propsDiff);
+      //   return l.r(props, `props: normal update`);
+      // } else {
+      //   return l.rSilent(prevFieldProps, 'props: no changes');
+      // }
     }, { equal: isEqual } );
 
-    analyzer = new ComputedAnalyzer(this.#fieldsProps);
+    if (activateAnalyzer)
+      analyzer = new ComputedAnalyzer(this.#fieldsProps);
 
     this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.#fieldsProps);
   }
