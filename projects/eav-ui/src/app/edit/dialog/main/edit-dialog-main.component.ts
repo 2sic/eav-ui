@@ -7,7 +7,6 @@ import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, 
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/formula-designer.service';
-import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
@@ -48,6 +47,7 @@ import { PublishStatusService } from '../../shared/store/publish-status.service'
 import { AdamCacheService } from '../../shared/store/adam-cache.service';
 import { LinkCacheService } from '../../shared/store/link-cache.service';
 import { isCtrlS, isEscape } from './keyboard-shortcuts';
+import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -87,11 +87,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   viewModel$: Observable<EditDialogMainViewModel>;
 
-  private viewInitiated$ = new BehaviorSubject(false);
-  private saveResult: SaveResult;
+  #viewInitiated$ = new BehaviorSubject(false);
+  #saveResult: SaveResult;
 
-  private globalConfigService = inject(GlobalConfigService);
-  private formConfig = inject(FormConfigService);
+  #globalConfigService = inject(GlobalConfigService);
+  #formConfig = inject(FormConfigService);
 
   // TODO:: @2g Question Items bug, reopen not working
   // TODO: @2dg - what did you mean by this?
@@ -99,30 +99,37 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
-  protected hideHeader = this.languageStore.getHideHeaderSignal(this.formConfig.config.formId);
+  protected hideHeader = this.languageStore.getHideHeaderSignal(this.#formConfig.config.formId);
 
-  private loadIconsService = transient(LoadIconsService);
-  private formDataService = transient(FormDataService);
+  #loadIconsService = transient(LoadIconsService);
+  #formDataService = transient(FormDataService);
 
+  //#region Footer - Show once or more, hide again, and expand footer (extra large footer)
 
-  /** Signal to determine if we should show the footer */
-  protected showFooter = computed(() => {
+  /** Signal to determine if we should show the footer. Will affect style.display of the footer tag */
+  protected footerShow = computed(() => {
     // if debug is true, then it was set once using the magic shortcut
-    if (this.globalConfigService.isDebug()) {
+    if (this.#globalConfigService.isDebug()) {
       this.#debugWasModified = true;
       return true;
     }
 
     // If debug is false, and was never modified, show based on system admin status
-    return (!this.#debugWasModified && this.formConfig.config.dialogContext.User?.IsSystemAdmin);
+    return !this.#debugWasModified && this.#formConfig.config.dialogContext.User?.IsSystemAdmin;
   });
 
-  /** Special variable to check if debug was ever triggered, to allow super-users to hide the footer */
+  /** Show footer once or more - basically stays true if it was ever shown */
+  protected footerShowOnceOrMore = computedWithPrev(prev => prev || this.footerShow(), false);
+
+  /** Special variable to check if debug was ever triggered, to allow super-users to re-hide the footer */
   #debugWasModified = false;
 
   /** Signal to tell the UI that the footer needs more space (changes CSS) */
-  expandDebugFooter = signal(0);
+  footerSize = signal(0);
 
+  //#endregion
+
+  /** delay showing the form, but not quite sure why. maybe to prevent flickering? */
   protected delayForm = toSignal(
     of(false).pipe(
       delay(0),
@@ -158,36 +165,34 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     });
   }
 
-
-
   ngOnInit() {
     this.editRoutingService.init();
-    this.loadIconsService.load();
+    this.#loadIconsService.load();
     this.formsStateService.init();
     this.formulaDesignerService.init();
-    const items$ = this.itemService.getMany$(this.formConfig.config.itemGuids);
+    const items$ = this.itemService.getMany$(this.#formConfig.config.itemGuids);
 
     // TODO:: @2g Question viewInitiated
-    this.viewModel$ = combineLatest([items$, this.viewInitiated$]).pipe(
+    this.viewModel$ = combineLatest([items$, this.#viewInitiated$]).pipe(
       map(([items, viewInitiated]) => ({
         items,
         viewInitiated,
       } satisfies EditDialogMainViewModel)),
     );
-    this.startSubscriptions();
-    this.activateCtrlSaveListener();
+    this.#startSubscriptions();
+    this.#watchKeyboardShortcuts();
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.viewInitiated$.next(true));
+    setTimeout(() => this.#viewInitiated$.next(true));
   }
 
   ngOnDestroy() {
-    this.viewInitiated$.complete();
-    this.languageStore.remove(this.formConfig.config.formId);
-    this.publishStatusService.remove(this.formConfig.config.formId);
+    this.#viewInitiated$.complete();
+    this.languageStore.remove(this.#formConfig.config.formId);
+    this.publishStatusService.remove(this.#formConfig.config.formId);
 
-    if (this.formConfig.config.isParentDialog) {
+    if (this.#formConfig.config.isParentDialog) {
       // clear the rest of the store
       this.languageStore.clearCache();
       this.languageService.clearCache();
@@ -204,11 +209,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
-      this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
+      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
     } else if (!this.formsStateService.readOnly().isReadOnly && this.formsStateService.formsAreDirty()) {
-      this.snackBarYouHaveUnsavedChanges();
+      this.#snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(this.formConfig.config.createMode ? this.saveResult : undefined);
+      this.dialogRef.close(this.#formConfig.config.createMode ? this.#saveResult : undefined);
     }
   }
 
@@ -237,7 +242,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         })
         .filter(item => item != null);
 
-      const publishStatus = this.publishStatusService.get(this.formConfig.config.formId);
+      const publishStatus = this.publishStatusService.get(this.#formConfig.config.formId);
 
       const saveFormData: SaveEavFormData = {
         Items: items,
@@ -247,13 +252,13 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       l.a('SAVE FORM DATA:', { saveFormData });
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-      this.formDataService.saveFormData(saveFormData, this.formConfig.config.partOfPage).subscribe({
+      this.#formDataService.saveFormData(saveFormData, this.#formConfig.config.partOfPage).subscribe({
         next: result => {
           l.a('SAVED!, result:', { result, close });
           this.itemService.updater.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
           this.formsStateService.formsAreDirty.set(false);
-          this.saveResult = result;
+          this.#saveResult = result;
           if (close)
             this.closeDialog();
         },
@@ -292,18 +297,18 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     }
   }
 
-  debugInfoOpened(opened: number) {
-    this.log.fn('debugInfoOpened', { opened });
-    this.expandDebugFooter.set(opened);
+  footerResize(size: number) {
+    this.log.fn('footerExpand', { size });
+    this.footerSize.set(size);
   }
 
-  private startSubscriptions() {
+  #startSubscriptions() {
     this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
         if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty()) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
-        this.snackBarYouHaveUnsavedChanges();
+        this.#snackBarYouHaveUnsavedChanges();
       })
     );
 
@@ -312,7 +317,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     );
   }
 
-  private activateCtrlSaveListener() {
+  #watchKeyboardShortcuts() {
     this.dialogRef.keydownEvents().subscribe(event => {
       if (isEscape(event)) {
         this.closeDialog();
@@ -328,7 +333,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     });
   }
 
-  private snackBarYouHaveUnsavedChanges() {
+  #snackBarYouHaveUnsavedChanges() {
     const snackBarData: UnsavedChangesSnackBarData = {
       save: false,
     };

@@ -58,4 +58,8 @@
   box-sizing: border-box;
   position: relative;
   overflow: auto;
+
+  &.size-xl {
+    height: calc(2 * var(--edit-footer-container-height));
+  }
 }

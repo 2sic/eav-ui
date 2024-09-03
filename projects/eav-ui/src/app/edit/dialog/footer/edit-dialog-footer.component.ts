@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 import { LogsDumpComponent } from './logs-dump/logs-dump.component';
@@ -29,14 +29,23 @@ declare const window: EavWindow;
   ],
 })
 export class EditDialogFooterComponent {
-  @Output() private debugInfoOpened = new EventEmitter<number>();
+  @Output() private resize = new EventEmitter<number>();
 
   DebugTypes = DebugTypes;
-  activeDebug: DebugType;
+  tab = signal<DebugType>(null);
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
 
+  expanded = signal(false);
+
   toggleDialog(type: DebugType): void {
-    this.activeDebug = type !== this.activeDebug ? type : null;
-    this.debugInfoOpened.emit(this.activeDebug != null ? 1 : 0);
+    this.tab.update(before => before !== type ? type : null);
+    const tab = this.tab();
+    if (tab == null) this.expanded.set(false);
+    this.resize.emit(tab != null ? 1 : 0);
+  }
+
+  toggleSize(): void {
+    this.expanded.update(x => !x);
+    this.resize.emit(this.expanded() ? 2 : 1);
   }
 }

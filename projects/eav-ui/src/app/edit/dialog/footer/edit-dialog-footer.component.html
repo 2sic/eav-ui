@@ -1,4 +1,4 @@
-<mat-card appearance="raised" class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': activeDebug != null }">
+<mat-card appearance="raised" class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': tab() != null }">
 
   <div class="debug-buttons-container">
     <button mat-button tippy="Show Data JSON" (click)="toggleDialog(DebugTypes.Data)">
@@ -14,20 +14,34 @@
       <span>Logs</span>
     </button>
     <div class="spacer"></div>
-    <div class="sxc-version">2sxc {{ sxcVer }}</div>
+
+    <!-- Special expand button when working with formulas, to get more space -->
+    @if (tab() != null)
+    {
+      <button mat-icon-button tippy="Save" (click)="toggleSize()">
+        <mat-icon>{{ expanded() ? 'unfold_less' : 'expand' }}</mat-icon>
+      </button>
+    }
+
+
+    <div class="sxc-version">
+      2sxc {{ sxcVer }}
+    </div>
   </div>
 
-  @if (activeDebug != null) {
-    <div class="debug-info-container">
-      @if (activeDebug === DebugTypes.Data) {
-        <app-data-dump></app-data-dump>
-      }
-      @if (activeDebug === DebugTypes.Formulas) {
-        <app-formula-designer>
-        </app-formula-designer>
-      }
-      @if (activeDebug === DebugTypes.Logs) {
-        <app-logs-dump></app-logs-dump>
+  @if (tab() != null)
+  {
+    <div class="debug-info-container" [ngClass]="'size' + (expanded() ? '-xl' : '')">
+      @switch (tab()) {
+        @case (DebugTypes.Data) {
+          <app-data-dump></app-data-dump>
+        }
+        @case (DebugTypes.Formulas) {
+          <app-formula-designer></app-formula-designer>
+        }
+        @case (DebugTypes.Logs) {
+          <app-logs-dump></app-logs-dump>
+        }
       }
     </div>
   }

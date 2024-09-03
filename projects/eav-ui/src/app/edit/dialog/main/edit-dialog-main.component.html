@@ -10,8 +10,9 @@
     <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
     <!-- TODO_(mdc-migration) -->
     <div mat-mdc-dialog-content cdkScrollable class="eav-dialog-content u-hide-scrollbar" [ngClass]="{
-        'debug-enabled': showFooter(),
-        'debug-info-is-open': showFooter() && expandDebugFooter(),
+        'debug-enabled': footerShow(),
+        'debug-info-is-open': footerShow() && footerSize(),
+        'footer-xl': footerShow() && (footerSize() == 2),
         'hide-header-height-fix': hideHeader()
         }">
       <div class="eav-layout-grid">
@@ -32,27 +33,28 @@
         </div>
       </div>
     </div>
-    @if (vm.viewInitiated) {
-    <extended-fab-speed-dial [disabled]="saveButtonDisabled()">
-      <ng-template extendedFabSpeedDialTriggerContent>
-        <button extended-fab-speed-dial-trigger matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(true)">
-          <mat-icon (click)="saveButtonDisabled() && saveAll(false)">done</mat-icon>
-          <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
-        </button>
-      </ng-template>
-      <ng-template extendedFabSpeedDialActionsContent>
-        <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(false)">
-          <span>{{ 'Form.Buttons.Save' | translate }}</span>
-          <mat-icon>save</mat-icon>
-        </button>
-      </ng-template>
-    </extended-fab-speed-dial>
+    @if (vm.viewInitiated)
+    {
+      <extended-fab-speed-dial [disabled]="saveButtonDisabled()">
+        <ng-template extendedFabSpeedDialTriggerContent>
+          <button extended-fab-speed-dial-trigger matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(true)">
+            <mat-icon (click)="saveButtonDisabled() && saveAll(false)">done</mat-icon>
+            <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+          </button>
+        </ng-template>
+        <ng-template extendedFabSpeedDialActionsContent>
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(false)">
+            <span>{{ 'Form.Buttons.Save' | translate }}</span>
+            <mat-icon>save</mat-icon>
+          </button>
+        </ng-template>
+      </extended-fab-speed-dial>
     }
   </div>
-  @if (showFooter())
+  @if (footerShowOnceOrMore())
   {
     @defer {
-      <app-edit-dialog-footer mat-dialog-actions (debugInfoOpened)="debugInfoOpened($event)">
+      <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions (resize)="footerResize($event)">
       </app-edit-dialog-footer>
     }
   }

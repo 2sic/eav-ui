@@ -80,14 +80,20 @@
   &.hide-header-height-fix {
     --edit-safari-fix: var(--edit-dialog-header-height);
   }
-}
 
-.eav-dialog-content.debug-enabled {
-  --edit-footer-height: var(--edit-footer-bar-height);
-}
+  // Debug footer is on
+  &.debug-enabled {
+    --edit-footer-height: var(--edit-footer-bar-height);
 
-.eav-dialog-content.debug-enabled.debug-info-is-open {
-  --edit-footer-height: calc(var(--edit-footer-bar-height) + var(--edit-footer-container-height-total));
+    // Debug info is open
+    &.debug-info-is-open {
+      --edit-footer-height: calc(var(--edit-footer-bar-height) + var(--edit-footer-container-height-total));
+
+      &.footer-xl {
+        --edit-footer-height: calc(var(--edit-footer-bar-height) + var(--edit-footer-container-height-total) + var(--edit-footer-container-height));
+      }
+    }
+  }
 }
 
 .mat-mdc-dialog-actions {

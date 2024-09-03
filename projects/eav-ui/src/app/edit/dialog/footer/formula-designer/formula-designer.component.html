@@ -3,7 +3,7 @@
     <mat-form-field color="accent" class="eav-mat-form-field">
       <mat-label>Entity</mat-label>
       <mat-select [ngModel]="state().entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
-        @for (entityOption of entityOptions(); track trackEntityOptions($index, entityOption))
+        @for (entityOption of entityOptions(); track entityOption.entityGuid)
         {
           <mat-option
             [value]="entityOption.entityGuid">
@@ -18,7 +18,7 @@
       <mat-label>Attribute</mat-label>
       <mat-select [ngModel]="state().fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
         [disabled]="state().entityGuid == null">
-        @for (fieldOption of fieldsOptions(); track trackFieldOptions($index, fieldOption))
+        @for (fieldOption of fieldsOptions(); track fieldOption.fieldName)
         {
           <mat-option
             [value]="fieldOption.fieldName">
@@ -73,7 +73,7 @@
       </app-monaco-editor>
     </div>
     <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !state().editMode }">
-      @for (snippet of v1DataSnippets(); track trackSnippets($index, snippet))
+      @for (snippet of v1DataSnippets(); track snippet.code)
       {
         <div class="snippet" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
@@ -84,7 +84,7 @@
       {
         <div class="separator"></div>
       }
-      @for (snippet of v1ContextSnippets(); track trackSnippets($index, snippet))
+      @for (snippet of v1ContextSnippets(); track snippet.code)
       {
         <div class="snippet" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
@@ -119,10 +119,10 @@
       }
     </div>
     <div class="formula-actions-box">
-      <button mat-icon-button tippy="Edit" class="eav-formula-action-button" (click)="toggleEdit()">
+      <button mat-icon-button tippy="Edit" (click)="toggleEdit()">
         <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button tippy="Menu" class="eav-formula-action-button" [matMenuTriggerFor]="menu">
+      <button mat-icon-button tippy="Menu" [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -138,13 +138,13 @@
       </mat-menu>
       @if (allowSaveFormula)
       {
-        <button mat-icon-button tippy="Save" class="eav-formula-action-button"
+        <button mat-icon-button tippy="Save"
           [tippyDisabled]="!state().editMode || !currentFormula()?.source"
           [disabled]="!state().editMode || !currentFormula()?.source || saving()" (click)="save()">
           <mat-icon>save</mat-icon>
         </button>
       }
-      <button mat-icon-button class="eav-formula-action-button" tippy="Run"
+      <button mat-icon-button tippy="Run"
         [disabled]="!state().editMode || !currentFormula()?.source" (click)="run()">
         <mat-icon>play_arrow</mat-icon>
       </button>

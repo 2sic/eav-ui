@@ -129,18 +129,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.#designerSvc.setDesignerOpen(false);
   }
 
-  trackEntityOptions(index: number, entityOption: EntityOption): string {
-    return entityOption.entityGuid;
-  }
-
-  trackFieldOptions(index: number, fieldOption: FieldOption): string {
-    return fieldOption.fieldName;
-  }
-
-  trackSnippets(index: number, snippet: DesignerSnippet): string {
-    return snippet.code;
-  }
-
   selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
     const newState: DesignerState = {
       ...this.#designerSvc.designerState(),
