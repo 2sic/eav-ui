@@ -1,5 +1,5 @@
 import { FieldValue } from './../../../../../../edit-types/src/FieldValue';
-import { FieldConfig } from './../../../../../../edit-types/src/FieldConfig';
+import { FieldConfig, toFieldConfig } from './../../../../../../edit-types/src/FieldConfig';
 import { FieldSettings } from './../../../../../../edit-types/src/FieldSettings';
 import { ExperimentalProps } from './../../../../../../edit-types/src/ExperimentalProps';
 import { ChangeDetectorRef, ElementRef, Injectable, Injector, NgZone, OnDestroy, ViewContainerRef, inject } from '@angular/core';
@@ -33,35 +33,34 @@ const nameOfThis = 'ConnectorHelper';
 @Injectable()
 export class ConnectorHelper extends ServiceBase implements OnDestroy {
   
-  private injector = inject(Injector);
-  private fieldState = inject(FieldState);
+  #injector = inject(Injector);
+  #fieldState = inject(FieldState);
+  #formConfig = inject(FormConfigService);
+  #translateService = inject(TranslateService);
+  #contentTypeService = inject(ContentTypeService);
+  #inputTypeService = inject(InputTypeService);
+  #featuresService = inject(FeaturesService);
+  #editRoutingService = inject(EditRoutingService);
+  #dialog = inject(MatDialog);
+  #fieldsSettingsService = inject(FieldsSettingsService);
+  #snackBar = inject(MatSnackBar);
+  #zone = inject(NgZone);
+  
+  #adamService = transient(AdamService);
 
-  private control: AbstractControl;
-  private customEl: EavCustomInputField;
-  private value$: BehaviorSubject<FieldValue>;
-  private settings$ = this.fieldState.settings$;
+  #control: AbstractControl;
+  #customEl: EavCustomInputField;
+  #value$: BehaviorSubject<FieldValue>;
+  #settings$ = this.#fieldState.settings$;
 
-  private config = this.fieldState.config;
-  private group = this.fieldState.group;
+  #config = this.#fieldState.config;
+  #group = this.#fieldState.group;
 
-  private customElContainerRef: ElementRef;
-  private customElName: string;
+  #customElContainerRef: ElementRef;
+  #customElName: string;
 
-  private formConfig = inject(FormConfigService);
-  private translateService = inject(TranslateService);
-  private contentTypeService = inject(ContentTypeService);
-
-  private inputTypeService = inject(InputTypeService);
-  private featuresService = inject(FeaturesService);
-  private editRoutingService = inject(EditRoutingService);
-  private adamService = transient(AdamService);
-  private dialog = inject(MatDialog);
-
-  private viewContainerRef: ViewContainerRef;
-  private changeDetectorRef: ChangeDetectorRef;
-  private fieldsSettingsService = inject(FieldsSettingsService);
-  private snackBar = inject(MatSnackBar);
-  private zone = inject(NgZone);
+  #viewContainerRef: ViewContainerRef;
+  #changeDetectorRef: ChangeDetectorRef;
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -75,44 +74,44 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     changeDetectorRef: ChangeDetectorRef,
   ): this {
     this.log.a('init');
-    this.customElContainerRef = customElContainerRef;
-    this.customElName = customElName;
+    this.#customElContainerRef = customElContainerRef;
+    this.#customElName = customElName;
 
-    this.viewContainerRef = viewContainerRef;
-    this.changeDetectorRef = changeDetectorRef;
+    this.#viewContainerRef = viewContainerRef;
+    this.#changeDetectorRef = changeDetectorRef;
 
-    this.control = this.group.controls[this.config.fieldName];
-    this.value$ = new BehaviorSubject(this.control.value);
+    this.#control = this.#group.controls[this.#config.fieldName];
+    this.#value$ = new BehaviorSubject(this.#control.value);
     this.subscriptions.add(
-      this.control.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
-        this.value$.next(value);
+      this.#control.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
+        this.#value$.next(value);
       })
     );
 
-    this.customEl = document.createElement(this.customElName) as EavCustomInputField;
-    this.customEl.connector = this.buildConnector();
-    this.customElContainerRef.nativeElement.appendChild(this.customEl);
+    this.#customEl = document.createElement(this.#customElName) as EavCustomInputField;
+    this.#customEl.connector = this.buildConnector();
+    this.#customElContainerRef.nativeElement.appendChild(this.#customEl);
     return this;
   }
 
   ngOnDestroy() {
     this.log.a('ngOnDestroy');
-    this.value$.complete();
-    this.customEl?.parentNode.removeChild(this.customEl);
-    this.customEl = null;
+    this.#value$.complete();
+    this.#customEl?.parentNode.removeChild(this.#customEl);
+    this.#customEl = null;
     super.destroy();
   }
 
   private buildConnector() {
     const connectorHost = this.calculateRegularProps();
     const experimental = this.calculateExperimentalProps();
-    const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
-    const fieldConfig = this.getFieldConfig(settingsSnapshot);
-    const fieldConfig$ = this.settings$.pipe(map(settings => this.getFieldConfig(settings)));
-    const value$ = this.value$.asObservable();
-    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.formConfig.config);
+    const settingsSnapshot = this.#fieldsSettingsService.getFieldSettings(this.#config.fieldName);
+    const fieldConfig = toFieldConfig(this.#config, settingsSnapshot);
+    const fieldConfig$ = this.#settings$.pipe(map(settings => toFieldConfig(this.#config, settings)));
+    const value$ = this.#value$.asObservable();
+    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.#formConfig.config);
     this.subscriptions.add(
-      this.settings$.subscribe(settings => {
+      this.#settings$.subscribe(settings => {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
         connector.field.placeholder = settings.Placeholder;
@@ -125,11 +124,11 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   private calculateRegularProps() {
     const connectorHost: ConnectorHost = {
       update: (value) => {
-        this.zone.run(() => this.updateControl(this.control, value));
+        this.#zone.run(() => this.updateControl(this.#control, value));
       },
       expand: (expand, componentTag) => {
-        this.zone.run(() => {
-          this.editRoutingService.expand(expand, this.config.index, this.config.entityGuid, componentTag);
+        this.#zone.run(() => {
+          this.#editRoutingService.expand(expand, this.#config.index, this.#config.entityGuid, componentTag);
         });
       },
     };
@@ -137,70 +136,55 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   }
 
   private calculateExperimentalProps() {
-    const contentType = this.contentTypeService.get(this.config.contentTypeNameId);
-    const allInputTypeNames = this.inputTypeService.getAttributeInputTypes(contentType.Attributes);
+    const contentType = this.#contentTypeService.get(this.#config.contentTypeNameId);
+    const allInputTypeNames = this.#inputTypeService.getAttributeInputTypes(contentType.Attributes);
 
     const experimentalProps: ExperimentalProps = {
-      entityGuid: this.config.entityGuid,
+      entityGuid: this.#config.entityGuid,
       allInputTypeNames,
-      formGroup: this.group,
-      translateService: this.translateService,
-      isExpanded$: this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid),
-      dropzone: this.config.dropzone,
-      adam: this.config.adam,
+      formGroup: this.#group,
+      translateService: this.#translateService,
+      isExpanded$: this.#editRoutingService.isExpanded$(this.#config.index, this.#config.entityGuid),
+      dropzone: this.#config.dropzone,
+      adam: this.#config.adam,
       updateField: (name, value) => {
-        this.zone.run(() => { this.updateControl(this.group.controls[name], value); });
+        this.#zone.run(() => { this.updateControl(this.#group.controls[name], value); });
       },
-      isFeatureEnabled$: (nameId) => this.featuresService.isEnabled$(nameId),
+      isFeatureEnabled$: (nameId) => this.#featuresService.isEnabled$(nameId),
       setFocused: (focused) => {
-        this.zone.run(() => { this.config.focused$.next(focused); });
+        this.#zone.run(() => { this.#config.focused$.next(focused); });
       },
       openPagePicker: (callback) => {
-        this.zone.run(() => {
-          PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, callback);
+        this.#zone.run(() => {
+          PagePicker.open(this.#config, this.#group, this.#dialog, this.#viewContainerRef, this.#changeDetectorRef, callback);
         });
       },
       featureDisabledWarning: (featureNameId) => {
-        this.zone.run(() => {
+        this.#zone.run(() => {
           this.openFeatureDisabledWarning(featureNameId);
         });
       },
       getUrlOfId: (value, callback) => {
-        this.zone.run(() => { this.getUrlOfId(value, callback); });
+        this.#zone.run(() => { this.getUrlOfId(value, callback); });
       },
-      getSettings: (name) => this.formConfig.config.settings?.Values[name],
+      getSettings: (name) => this.#formConfig.config.settings?.Values[name],
 
       getFieldMask: (mask: string, name?: string) => {
-        return transient(FieldMask, this.injector).init(name, mask);
+        return transient(FieldMask, this.#injector).init(name, mask);
       },
     };
 
     return experimentalProps;
   }
 
-  private getFieldConfig(settings: FieldSettings): FieldConfig {
-    const fieldConfig: FieldConfig = {
-      name: this.config.fieldName,
-      index: this.config.index,
-      label: settings.Name,
-      placeholder: settings.Placeholder,
-      inputType: this.config.inputTypeSpecs.inputType,
-      type: this.config.type,
-      required: settings._currentRequired,
-      disabled: this.config.initialDisabled,
-      settings,
-    };
-    return fieldConfig;
-  }
-
   private getUrlOfId(value: string, callback: (value: string) => void) {
     if (!value) { return; }
 
     // handle short-ID links like file:17
-    const contentType = this.config.contentTypeNameId;
-    const entityGuid = this.config.entityGuid;
-    const field = this.config.fieldName;
-    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    const contentType = this.#config.contentTypeNameId;
+    const entityGuid = this.#config.entityGuid;
+    const field = this.#config.fieldName;
+    this.#adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) { return; }
       callback(linkInfo.Value);
     });
@@ -213,9 +197,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
   private openFeatureDisabledWarning(featureNameId: string) { 
     if (featureNameId === FeatureNames.PasteImageFromClipboard) {
-      this.snackBar.open(this.translateService.instant('Message.PastingFilesIsNotEnabled'), this.translateService.instant('Message.FindOutMore'), { duration: 3000 })
+      this.#snackBar.open(this.#translateService.instant('Message.PastingFilesIsNotEnabled'), this.#translateService.instant('Message.FindOutMore'), { duration: 3000 })
         .onAction()
-        .subscribe(() => openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef));
+        .subscribe(() => openFeatureDialog(this.#dialog, FeatureNames.PasteImageFromClipboard, this.#viewContainerRef, this.#changeDetectorRef));
     }
   }
 }

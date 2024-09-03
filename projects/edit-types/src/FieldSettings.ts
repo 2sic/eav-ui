@@ -13,11 +13,19 @@ interface All {
   Placeholder: string;
   Notes: string;
   Visible: boolean;
+
   /** new v16.01 2dm - WIP */
   VisibleDisabled: boolean;
+
+  /** Required info from configuration */
   Required: boolean;
+
+  /** Disabled info from configuration */
   Disabled: boolean;
+
+  /** This is set by calculations and does not come from the back end */
   ForcedDisabled: boolean;
+
   DisableTranslation: boolean;
   DisableAutoTranslation: boolean;
   ValidationRegExJavaScript: string;

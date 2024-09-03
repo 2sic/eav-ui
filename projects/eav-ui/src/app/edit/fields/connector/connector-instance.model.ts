@@ -44,9 +44,8 @@ export class ConnectorInstance<T = any> implements Connector<T> {
       }
       // multiple scripts (2 parameters: scripts array and a callback)
       if (Array.isArray(testOrScripts) && typeof srcOrCallback === 'function') {
-        for (const script of testOrScripts) {
+        for (const script of testOrScripts)
           script.src = this.resolveTokens(script.src, eavConfig);
-        }
         loadScripts(testOrScripts, srcOrCallback);
         return;
       }
@@ -58,9 +57,8 @@ export class ConnectorInstance<T = any> implements Connector<T> {
     src = src.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', eavConfig))
       .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', eavConfig))
       .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', eavConfig));
-    if (!src.includes('?')) {
+    if (!src.includes('?'))
       src = `${src}?sxcver=${window.sxcVersion}`;
-    }
     return src;
   }
 }

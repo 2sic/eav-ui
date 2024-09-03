@@ -1,6 +1,5 @@
 import { computed, Injectable, Signal } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
-import { Entity, FieldSettings } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
@@ -8,7 +7,6 @@ import { EavItem, EavContentType } from '../shared/models/eav';
 import { FormConfigService } from './form-config.service';
 import { ItemFieldVisibility } from './item-field-visibility';
 import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
-import { FormLanguageComplete } from './form-languages.model';
 import { InputTypeService } from '../shared/store/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 
@@ -22,7 +20,6 @@ const nameOfThis = 'FieldsSettingsConstantsService';
 export class FieldsSettingsConstantsService {
   private item: EavItem;
   private itemFieldVisibility: ItemFieldVisibility;
-  // private entityReaderCurrent$: Observable<EntityReader>;
   private entityReaderCurrent: Signal<EntityReader>;
   private contentType: EavContentType;
 
@@ -37,13 +34,11 @@ export class FieldsSettingsConstantsService {
     itemForIds: EavItem,
     contentType: EavContentType,
     entityReaderCurrent: Signal<EntityReader>,
-    // entityReaderCurrent$: Observable<EntityReader>,
   ): this {
     this.item = itemForIds;
     this.contentType = contentType;
     this.itemFieldVisibility = new ItemFieldVisibility(itemForIds.Header);
     this.entityReaderCurrent = entityReaderCurrent;
-    // this.entityReaderCurrent$ = entityReaderCurrent$;
     return this;
   }
 
@@ -58,20 +53,6 @@ export class FieldsSettingsConstantsService {
   private getConstantFieldPartsOfLanguage(fieldConstants: FieldConstants[]): Signal<FieldConstantsOfLanguage[]> {
     return computed(() => this.getConstantPartsOfLanguage(this.entityReaderCurrent(), fieldConstants), { equal: isEqual });
   }
-
-  // getUnchangingDataOfLanguage$() {
-  //   const entityGuid = this.item.Entity.Guid;
-  //   const entityId = this.item.Entity.Id;
-  //   const contentTypeNameId = this.contentType.Id;
-  //   const unchangingPartsAllLanguages = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
-  //   return this.getConstantFieldPartsOfLanguage$(unchangingPartsAllLanguages);
-  // }
-
-  // private getConstantFieldPartsOfLanguage$(fieldConstants: FieldConstants[]): Observable<FieldConstantsOfLanguage[]> {
-  //   return this.entityReaderCurrent$.pipe(
-  //     map((entityReader) => this.getConstantPartsOfLanguage(entityReader, fieldConstants))
-  //   );
-  // }
 
   private getConstantPartsOfLanguage(entityReader: EntityReader, fieldConstants: FieldConstants[]) {
     const contentType = this.contentType;
