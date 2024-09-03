@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 import { Connector } from '../../../../../../edit-types/src/Connector';
-import { EavWindow } from '../../../shared/models/eav-window.model';
 import { ConnectorDialog } from '../../../../../../edit-types/src/ConnectorDialog';
 import { ConnectorData } from '../../../../../../edit-types/src/ConnectorData';
 import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
@@ -10,6 +9,10 @@ import { FormConfiguration } from '../../state/form-configuration.model';
 import { Signal } from '@angular/core';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'ConnectorInstance';
 
 export class ConnectorInstance<T = any> implements Connector<T> {
   data: ConnectorData<T>;
@@ -20,6 +23,8 @@ export class ConnectorInstance<T = any> implements Connector<T> {
 
   get field$() { return this.#field$ ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector }) }
   #field$: Observable<FieldConfig>;
+
+  log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     _connectorHost: ConnectorHost<T>,
@@ -37,12 +42,11 @@ export class ConnectorInstance<T = any> implements Connector<T> {
       callback?: () => void,
     ) => {
       // one script (3 parameters: global or test, script url and a callback)
-      if (
-        (typeof testOrScripts === 'string' || typeof testOrScripts === 'function')
+      const isMainSignature = (typeof testOrScripts === 'string' || typeof testOrScripts === 'function')
         && typeof srcOrCallback === 'string'
-        && typeof callback === 'function'
-      ) {
-        srcOrCallback = ScriptsLoaderService.resolveUrlTokens(srcOrCallback, formConfig);
+        && typeof callback === 'function';
+      if (isMainSignature) {
+        srcOrCallback = ScriptsLoaderService.resolveUrlTokens(srcOrCallback as string, formConfig);
         loadScripts([{ test: testOrScripts, src: srcOrCallback }], callback);
         return;
       }
@@ -58,7 +62,7 @@ export class ConnectorInstance<T = any> implements Connector<T> {
   }
 }
 
-export class ConnectorDataInstance<T> implements ConnectorData<T> {
+class ConnectorDataInstance<T> implements ConnectorData<T> {
   value: T;
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
@@ -66,7 +70,7 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
     // Host will complete this observable. Therefore unsubscribe is not required
     this.value$.subscribe(newValue => {
       this.value = newValue;
-      this.clientValueChangeListeners.forEach(clientListener => clientListener(newValue));
+      this.clientValueChangeListeners.forEach(callback => callback(newValue));
     });
   }
 
@@ -79,13 +83,15 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   }
 }
 
-export class ConnectorDialogInstance<T> implements ConnectorDialog {
-  open: (componentTag?: string) => void;
-  close: () => void;
+class ConnectorDialogInstance<T> implements ConnectorDialog {
+  constructor(private _connectorHost: ConnectorHost<T>) { }
 
-  constructor(_connectorHost: ConnectorHost<T>) {
-    this.open = (componentTag?) => _connectorHost.expand(true, componentTag);
-    this.close = () => _connectorHost.expand(false);
+  open(componentTag?: string) {
+    return this._connectorHost.expand(true, componentTag);
+  }
+
+  close() {
+    this._connectorHost.expand(false);
   }
 }
 

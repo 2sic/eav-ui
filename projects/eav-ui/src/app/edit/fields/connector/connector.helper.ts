@@ -30,6 +30,9 @@ import isEqual from 'lodash-es/isEqual';
 const logThis = false;
 const nameOfThis = 'ConnectorHelper';
 
+const logExperimental = true;
+const nameOfExperimental = 'ConnectorHelperExperimental';
+
 @Injectable()
 export class ConnectorHelper extends ServiceBase implements OnDestroy {
   
@@ -96,7 +99,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   }
 
   #buildConnector() {
-    const connectorHost = this.#calculateRegularProps();
+    const connectorHost = this.#getCallbacks();
     const experimental = this.#buildExperimentalProps();
     const fieldConfigSignal = computed(() => {
       const settings = this.#fieldState.settings();
@@ -116,15 +119,13 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     return connector;
   }
 
-  #calculateRegularProps() {
+  #getCallbacks() {
     const connectorHost: ConnectorHost = {
       update: (value) => {
         this.#zone.run(() => this.#updateControl(this.#control, value));
       },
       expand: (expand, componentTag) => {
-        this.#zone.run(() => {
-          this.#editRoutingService.expand(expand, this.#config.index, this.#config.entityGuid, componentTag);
-        });
+        this.#zone.run(() => this.#editRoutingService.expand(expand, this.#config.index, this.#config.entityGuid, componentTag));
       },
     };
     return connectorHost;
@@ -133,6 +134,8 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #buildExperimentalProps() {
     const contentType = this.#contentTypeService.get(this.#config.contentTypeNameId);
     const allInputTypeNames = this.#inputTypeService.getAttributeInputTypes(contentType.Attributes);
+
+    const lEx = new EavLogger(nameOfExperimental, logExperimental);
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.#config.entityGuid,
@@ -143,23 +146,28 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       dropzone: this.#config.dropzone,
       adam: this.#config.adam,
       updateField: (name, value) => {
+        lEx.fn('updateField', { name, value });
         this.#zone.run(() => { this.#updateControl(this.#group.controls[name], value); });
       },
       isFeatureEnabled$: (nameId) => this.#featuresService.isEnabled$(nameId),
       setFocused: (focused) => {
+        lEx.fn('setFocused', { focused });
         this.#zone.run(() => { this.#config.focused$.next(focused); });
       },
       openPagePicker: (callback) => {
+        lEx.fn('openPagePicker');
         this.#zone.run(() => {
           PagePicker.open(this.#config, this.#group, this.#dialog, this.#viewContainerRef, this.#changeDetectorRef, callback);
         });
       },
       featureDisabledWarning: (featureNameId) => {
+        lEx.fn('featureDisabledWarning', { featureNameId });
         this.#zone.run(() => {
           this.#openFeatureDisabledWarning(featureNameId);
         });
       },
       getUrlOfId: (value, callback) => {
+        lEx.fn('getUrlOfId', { value });
         this.#zone.run(() => { this.#getUrlOfId(value, callback); });
       },
       getSettings: (name) => this.#formConfig.config.settings?.Values[name],

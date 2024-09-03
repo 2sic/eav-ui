@@ -139,10 +139,6 @@ export class ExpandableWrapperComponent {
     this.dropzoneDraggingHelper.detach();
   }
 
-  expandDialog() {
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
-  }
-
   closeDialog() {
     this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }

@@ -5,35 +5,32 @@ import { ExperimentalProps } from './ExperimentalProps';
 import { ConnectorDialog } from './ConnectorDialog';
 
 export interface Connector<T> {
-  // /**
-  //  * Get the current field configuration.
-  //  * Internally uses a signal...
-  //  * @returns {FieldConfig}
-  //  * @memberof Connector
-  //  * Note: was modified in v18, previously the property `field` returned this data.
-  //  */
-  // fieldConfigSignal: Signal<FieldConfig>;
 
   /**
    * Current field configuration
    */
   field: FieldConfig;
+
   /**
    * Observable on field configuration
    */
   field$: Observable<FieldConfig>;
+
   /**
    * Current field data, read/write or get other languages
    */
   data: ConnectorData<T>;
+
   /**
    * Communicates with the dialog
    */
   dialog: ConnectorDialog;
+  
   /**
    * Data not yet standardized
    */
   _experimental: ExperimentalProps;
+
   /**
    * Load a script into the browser - but only once.
    * Makes sure that script with the same source is loaded only once and executes callback.
@@ -44,6 +41,7 @@ export interface Connector<T> {
    * @memberof Connector
    */
   loadScript(test: string | (() => boolean), src: string, callback: () => void): void;
+
   /**
    * Load multiple scripts into the browser - but only once.
    * Makes sure that script with the same source is loaded only once and executes callback.
