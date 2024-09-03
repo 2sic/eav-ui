@@ -1,6 +1,6 @@
 import { computed, Signal, CreateComputedOptions } from '@angular/core';
 import isEqual from 'lodash-es/isEqual';
-import { named } from './signal.helpers';
+import { named } from './signal.utilities';
 
 export type ComputedCache<TKey extends string, TValue> = Record<TKey, Signal<TValue>>;
 

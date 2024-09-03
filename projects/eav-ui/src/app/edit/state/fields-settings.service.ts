@@ -10,14 +10,15 @@ import { TranslationState } from './translate-state.model';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { ItemService } from '../shared/store/item.service';
-import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
 import { FieldsSignalsHelper } from './fields-signals.helper';
-import { named, difference } from '../../shared/helpers/signal.helpers';
-import { ComputedAnalyzer } from '../../shared/helpers/computed-analyzer';
+import { difference } from '../../shared/helpers/difference';
+import { named } from '../../shared/signals/signal.utilities';
+import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 
 const logThis = false;
 const nameOfThis = 'FieldsSettingsService';

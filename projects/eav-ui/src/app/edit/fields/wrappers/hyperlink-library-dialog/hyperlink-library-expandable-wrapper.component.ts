@@ -15,7 +15,7 @@ import { NgClass } from '@angular/common';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { FieldState } from '../../field-state';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FeatureNames } from '../../../../features/feature-names';
 import { FeaturesService } from '../../../../features/features.service';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
@@ -60,7 +60,7 @@ export class HyperlinkLibraryExpandableWrapperComponent {
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   protected items = computed(() => this.config.adam.items().slice(0, 9));
-  protected itemsNumber = computed(() => this.config.adam.items().length, SignalHelpers.numberEquals);
+  protected itemsNumber = computed(() => this.config.adam.items().length, SignalEquals.number);
 
   protected hideAdamSponsor = this.featuresService.isEnabled(FeatureNames.NoSponsoredByToSic);
   adamSponsorI18nKey = computed(() => this.hideAdamSponsor()

@@ -17,7 +17,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 
 @Component({
   selector: InputTypeCatalog.NumberDropdown,
@@ -52,7 +52,7 @@ export class NumberDropdownComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected enableTextEntry = computed(() => this.settings().EnableTextEntry, SignalHelpers.boolEquals);
+  protected enableTextEntry = computed(() => this.settings().EnableTextEntry, SignalEquals.bool);
 
   dropdownOptions = computed(() => this.settings()._options, { equal: RxHelpers.arraysEqual });
 

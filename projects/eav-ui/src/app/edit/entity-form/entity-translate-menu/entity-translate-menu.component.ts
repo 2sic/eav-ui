@@ -14,7 +14,7 @@ import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { FormsStateService } from '../../state/forms-state.service';
-import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { ItemService } from '../../shared/store/item.service';
 
 @Component({
@@ -61,7 +61,7 @@ export class EntityTranslateMenuComponent {
 
   protected slotIsEmpty = computed(() => {
     return this.itemService.slotIsEmpty(this.entityGuid())();
-  }, SignalHelpers.boolEquals);
+  }, SignalEquals.bool);
 
   language = this.eavService.language;
 

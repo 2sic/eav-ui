@@ -5,7 +5,7 @@ import { DialogContext } from '../shared/models/dialog-settings.model';
 import { ServiceBase } from '../shared/services/service-base';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { FeatureSummary } from './models/feature-summary.model';
-import { SignalHelpers } from '../shared/helpers/signal.helpers';
+import { SignalEquals } from '../shared/signals/signal-equals';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
@@ -76,7 +76,7 @@ export class FeaturesService extends ServiceBase {
   isEnabled(nameId: string): Signal<boolean> {
     return computed(
       () => this.dialogContextSignal()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false,
-      SignalHelpers.boolEquals
+      SignalEquals.bool
     );
   }
 }

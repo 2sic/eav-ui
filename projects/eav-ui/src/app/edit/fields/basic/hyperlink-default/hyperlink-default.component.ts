@@ -18,7 +18,7 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
@@ -57,14 +57,14 @@ import isEqual from 'lodash-es/isEqual';
   ],
 })
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
-  protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
-  protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
-  protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalHelpers.boolEquals);
-  protected showAdam = computed(() => this.settings().ShowAdam, SignalHelpers.boolEquals);
-  protected showPagePicker = computed(() => this.settings().ShowPagePicker, SignalHelpers.boolEquals);
-  protected showImageManager = computed(() => this.settings().ShowImageManager, SignalHelpers.boolEquals);
-  protected showFileManager = computed(() => this.settings().ShowFileManager, SignalHelpers.boolEquals);
-  protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
+  protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalEquals.bool);
+  protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalEquals.bool);
+  protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalEquals.bool);
+  protected showAdam = computed(() => this.settings().ShowAdam, SignalEquals.bool);
+  protected showPagePicker = computed(() => this.settings().ShowPagePicker, SignalEquals.bool);
+  protected showImageManager = computed(() => this.settings().ShowImageManager, SignalEquals.bool);
+  protected showFileManager = computed(() => this.settings().ShowFileManager, SignalEquals.bool);
+  protected enableImageConfiguration = computed(() => this.settings().EnableImageConfiguration, SignalEquals.bool);
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 

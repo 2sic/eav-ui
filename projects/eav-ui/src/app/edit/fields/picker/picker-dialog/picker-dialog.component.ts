@@ -11,7 +11,7 @@ import { PickerSearchComponent } from '../picker-search/picker-search.component'
 import { PickerListComponent } from '../picker-list/picker-list.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -34,7 +34,7 @@ import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
 })
 export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode(), SignalHelpers.boolEquals);
+  protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode(), SignalEquals.bool);
 
   protected showAddNewEntityButtonInDialog = computed(() => {
     const settings = this.fieldState.settings();
@@ -43,7 +43,7 @@ export class PickerDialogComponent extends PickerPartBaseComponent implements On
       && settings.CreateTypes
       && settings.AllowMultiValue;
     return showAddNew;
-  }, SignalHelpers.boolEquals);
+  }, SignalEquals.bool);
 
   constructor() {
     super();

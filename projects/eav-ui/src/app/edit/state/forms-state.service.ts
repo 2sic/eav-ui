@@ -4,7 +4,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { FormConfigService } from './form-config.service';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { SignalHelpers } from '../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../shared/signals/signal-equals';
 import { ItemService } from '../shared/store/item.service';
 import { LanguageService } from '../shared/store/language.service';
 
@@ -21,7 +21,7 @@ export class FormsStateService extends ServiceBase implements OnDestroy {
   // new with Signal
 
   /** Signal which is filled by sub-dialogs to trigger save (other saves like ctrl+s don't go through this) */
-  triggerTrySaveAndMaybeClose = signal({ tryToSave: false, close: false }, SignalHelpers.refEquals);
+  triggerTrySaveAndMaybeClose = signal({ tryToSave: false, close: false }, SignalEquals.ref);
   formsAreValid = signal(false);
   formsAreDirty = signal(false);
   readOnly = signal<FormReadOnly>({ isReadOnly: true, reason: undefined }, { equal: RxHelpers.objectsEqual });

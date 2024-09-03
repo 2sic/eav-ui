@@ -1,3 +1,4 @@
+import { SignalEquals } from '../../../../../app/shared/signals/signal-equals';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { StringUrlPathLogic } from './string-url-path-logic';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +13,6 @@ import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 
 const logThis = false;
 const nameOfThis = 'StringUrlPathComponent';
@@ -43,7 +43,7 @@ export class StringUrlPathComponent {
   public control = this.fieldState.control;
 
   /** The mask to use comes from the field settings */
-  #maskFromSettings = computed(() => this.fieldState.settings().AutoGenerateMask, SignalHelpers.stringEquals);
+  #maskFromSettings = computed(() => this.fieldState.settings().AutoGenerateMask, SignalEquals.string);
 
   /**
    * Blocks external update if field was changed manually and doesn't match external updates.

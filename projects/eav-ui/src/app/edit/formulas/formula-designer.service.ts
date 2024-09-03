@@ -11,7 +11,7 @@ import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
 import { FormulaCacheService } from './formula-cache.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { ItemService } from '../shared/store/item.service';
-import { named } from '../../shared/helpers/signal.helpers';
+import { named } from '../../shared/signals/signal.utilities';
 import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;

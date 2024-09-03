@@ -6,7 +6,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { PickerItem } from '../models/picker-item.model';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
@@ -26,9 +26,9 @@ import { EditRoutingService } from '../../../shared/services/edit-routing.servic
 })
 export class PickerPillsComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  enableTextEntry = computed(() => this.fieldState.settings().EnableTextEntry, SignalHelpers.boolEquals);
+  enableTextEntry = computed(() => this.fieldState.settings().EnableTextEntry, SignalEquals.bool);
 
-  itemCount = computed(() => this.selectedItems().length, SignalHelpers.numberEquals);
+  itemCount = computed(() => this.selectedItems().length, SignalEquals.number);
 
   constructor(private editRoutingService: EditRoutingService) {
     super();

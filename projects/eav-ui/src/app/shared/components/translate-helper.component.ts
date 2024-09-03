@@ -4,7 +4,7 @@ import { I18nKeys } from '../../edit/fields/wrappers/localization/translate-menu
 import { FormConfigService } from '../../edit/state/form-config.service';
 import { TranslateMenuDialogData } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SignalHelpers } from '../helpers/signal.helpers';
+import { SignalEquals } from '../signals/signal-equals';
 import { findI18nKey } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
 import { TranslationStateCore } from '../../edit/state/translate-state.model';
 import { LanguageService } from '../../edit/shared/store/language.service';
@@ -42,7 +42,7 @@ export abstract class TranslateHelperComponent {
       i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
       submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
     };
-  }, SignalHelpers.objectEquals);
+  }, SignalEquals.object);
 
   protected languages = this.languageService.getAllSignal();
   protected itemAttributes = this.itemService.itemAttributesSignal(this.dialogData.config.entityGuid);

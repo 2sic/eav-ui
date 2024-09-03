@@ -1,4 +1,4 @@
-import { SignalHelpers } from './../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { Component, computed, inject, Signal } from '@angular/core';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { FieldMetadata } from '../../field-metadata.decorator';
@@ -40,12 +40,12 @@ export class BooleanDefaultComponent {
   #settings = this.#fieldState.settings;
   basics = this.#fieldState.basics;
 
-  changedLabel = computed(() => this.#settings()._label, SignalHelpers.stringEquals);
+  changedLabel = computed(() => this.#settings()._label, SignalEquals.string);
   checkedState = computed(() => {
     const value = this.uiValue();
     const reverseToggle = this.#settings().ReverseToggle;
     return reverseToggle ? !value : value;
-  }, SignalHelpers.boolEquals);
+  }, SignalEquals.bool);
 
   constructor() {
     BooleanDefaultLogic.importMe();

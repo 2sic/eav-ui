@@ -1,6 +1,6 @@
 import { computed, Signal, signal } from '@angular/core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ComputedCacheHelper } from '../../../shared/helpers/computed-cache';
+import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;

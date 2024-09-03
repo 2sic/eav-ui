@@ -13,7 +13,7 @@ import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
 import { InputTypeSpecs } from '../../state/fields-configs.model';
-import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { FieldValue } from 'projects/edit-types';
 
 const logThis = false;
@@ -94,7 +94,7 @@ export class FieldInjectorService {
     //
 
     /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
-    const uiValue: Signal<FieldValue> = computed(() => controlStatusChangeSignal().value, SignalHelpers.objectEquals);
+    const uiValue: Signal<FieldValue> = computed(() => controlStatusChangeSignal().value, SignalEquals.object);
 
     const fieldState = new FieldState(
       fieldName,

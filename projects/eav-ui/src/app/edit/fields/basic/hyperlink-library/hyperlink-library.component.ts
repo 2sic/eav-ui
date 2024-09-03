@@ -7,7 +7,7 @@ import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { AdamConfig } from '../../../../../../../edit-types/src/AdamConfig';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
 
 @Component({
@@ -62,7 +62,7 @@ export class HyperlinkLibraryComponent implements OnInit {
         folderDepth: settings.FolderDepth || 0,
         metadataContentTypes: settings.MetadataContentTypes,
       } as AdamConfig;
-    }, SignalHelpers.objectEquals);
+    }, SignalEquals.object);
 
     effect(() => {
       const config = adamConfig();

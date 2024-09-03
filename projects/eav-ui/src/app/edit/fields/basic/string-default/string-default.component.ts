@@ -10,7 +10,7 @@ import { FieldHelperTextComponent } from '../../help-text/field-help-text.compon
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 
 @Component({
   selector: InputTypeCatalog.StringDefault,
@@ -39,8 +39,8 @@ export class StringDefaultComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected rowCount = computed(() => this.settings().RowCount, SignalHelpers.numberEquals);
-  protected inputFontFamily = computed(() => this.settings().InputFontFamily, SignalHelpers.stringEquals);
+  protected rowCount = computed(() => this.settings().RowCount, SignalEquals.number);
+  protected inputFontFamily = computed(() => this.settings().InputFontFamily, SignalEquals.string);
 
   constructor() {
     StringDefaultLogic.importMe();

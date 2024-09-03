@@ -5,7 +5,7 @@ import { placeholderPickerItem } from '../models/picker-item.model';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -19,7 +19,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   }
 
   /** Url Parameters - often mask - from settings; debounced */
-  private urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalHelpers.stringEquals);
+  private urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalEquals.string);
 
   /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
   private queryParamsMask = computed(() => {

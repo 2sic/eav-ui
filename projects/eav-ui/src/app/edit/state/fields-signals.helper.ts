@@ -1,12 +1,13 @@
 import { computed, effect, Injectable, signal, Signal } from '@angular/core';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { EntityReader } from '../shared/helpers';
-import { ComputedCacheHelper } from '../../shared/helpers/computed-cache';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldValue } from '../../../../../edit-types';
 import { ItemService } from '../shared/store/item.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
-import { difference, named } from '../../shared/helpers/signal.helpers';
+import { difference } from '../../shared/helpers/difference';
+import { named } from '../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'FieldsSignalsHelper';

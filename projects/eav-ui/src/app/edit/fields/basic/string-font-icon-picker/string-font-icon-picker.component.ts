@@ -13,7 +13,7 @@ import { FieldHelperTextComponent } from '../../help-text/field-help-text.compon
 import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { ControlStatus } from '../../../shared/models/control-status.model';
@@ -48,7 +48,7 @@ export class StringFontIconPickerComponent {
   #settings = this.#fieldState.settings;
   protected basics = this.#fieldState.basics;
 
-  protected previewCss = computed(() => this.#settings().PreviewCss, SignalHelpers.stringEquals);
+  protected previewCss = computed(() => this.#settings().PreviewCss, SignalEquals.string);
 
   #iconOptions = signal<IconOption[]>([], { equal: RxHelpers.arraysEqual });
 

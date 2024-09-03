@@ -9,7 +9,7 @@ import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 
 @Component({
   selector: InputTypeCatalog.NumberDefault,
@@ -36,8 +36,8 @@ export class NumberDefaultComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected min = computed(() => this.settings().Min, SignalHelpers.numberEquals);
-  protected max = computed(() => this.settings().Max, SignalHelpers.numberEquals);
+  protected min = computed(() => this.settings().Min, SignalEquals.number);
+  protected max = computed(() => this.settings().Max, SignalEquals.number);
 
   constructor() {
     NumberDefaultLogic.importMe();

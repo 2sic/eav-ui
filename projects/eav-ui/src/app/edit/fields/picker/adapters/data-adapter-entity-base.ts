@@ -14,7 +14,7 @@ import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-qu
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FieldState } from '../../field-state';
 import { FieldMask } from '../../../shared/helpers';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
@@ -35,7 +35,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected group = inject(EntityFormStateService).formGroup();
 
   /** Content Type Mask */
-  private typeMaskFromSettings = computed(() => this.fieldState.settings().EntityType, SignalHelpers.stringEquals);
+  private typeMaskFromSettings = computed(() => this.fieldState.settings().EntityType, SignalEquals.string);
 
   /**
    * This is a text or mask containing all query parameters.
@@ -52,9 +52,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   });
 
 
-  protected contentType = computed(() => this.contentTypeMaskLazy()?.result() ?? '', SignalHelpers.stringEquals);
+  protected contentType = computed(() => this.contentTypeMaskLazy()?.result() ?? '', SignalEquals.string);
 
-  private createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalHelpers.stringEquals);
+  private createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalEquals.string);
 
   /** The features depend on contentType names being available to support create */
   public features = computed<Partial<PickerFeatures>>(

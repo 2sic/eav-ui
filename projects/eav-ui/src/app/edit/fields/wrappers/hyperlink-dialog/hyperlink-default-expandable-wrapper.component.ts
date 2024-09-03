@@ -19,7 +19,7 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldState } from '../../field-state';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FeaturesService } from '../../../../features/features.service';
 import { FeatureNames } from '../../../../features/feature-names';
 import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyperlink-default-base.component';
@@ -68,9 +68,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   protected basics = this.fieldState.basics;
 
-  protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalHelpers.boolEquals);
-  protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalHelpers.boolEquals);
-  protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalHelpers.boolEquals);
+  protected buttonAdam = computed(() => this.fieldState.settings().Buttons.includes('adam'), SignalEquals.bool);
+  protected buttonPage = computed(() => this.fieldState.settings().Buttons.includes('page'), SignalEquals.bool);
+  protected enableImageConfiguration = computed(() => this.fieldState.settings().EnableImageConfiguration, SignalEquals.bool);
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 

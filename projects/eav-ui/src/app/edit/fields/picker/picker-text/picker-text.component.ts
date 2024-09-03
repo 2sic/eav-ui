@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerItem } from '../models/picker-item.model';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logThis = false;
@@ -34,7 +34,7 @@ export class PickerTextComponent extends PickerPartBaseComponent implements OnDe
     const separator = settings.Separator;
     const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
     return isSeparatorNewLine;
-  }, SignalHelpers.boolEquals);
+  }, SignalEquals.bool);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));

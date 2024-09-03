@@ -4,7 +4,7 @@ import { EntityReader } from '../helpers';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormLanguage, FormLanguageComplete } from '../../state/form-languages.model';
 import { SignalStoreObservableBase } from './signal-store-observable-base';
-import { ComputedCacheHelper } from '../../../shared/helpers/computed-cache';
+import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 
 const logThis = false;
 const nameOfThis = 'LanguageInstanceService';

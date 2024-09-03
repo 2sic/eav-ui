@@ -8,7 +8,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { FieldState } from '../field-state';
 import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { SignalHelpers } from '../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../shared/signals/signal-equals';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -44,7 +44,7 @@ export class FieldHelperTextComponent {
 
   protected settings = this.fieldState.settings;
 
-  protected notes = computed(() => this.settings().Notes, SignalHelpers.stringEquals);
+  protected notes = computed(() => this.settings().Notes, SignalEquals.string);
 
   isFullText = false;
 

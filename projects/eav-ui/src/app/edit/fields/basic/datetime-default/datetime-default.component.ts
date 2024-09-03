@@ -1,4 +1,4 @@
-import { SignalHelpers } from './../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { EavLogger } from './../../../../shared/logging/eav-logger';
 import { Component, computed, inject, Signal } from '@angular/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
@@ -59,12 +59,12 @@ export class DatetimeDefaultComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected useTimePicker = computed(() => this.settings().UseTimePicker, SignalHelpers.boolEquals);
+  protected useTimePicker = computed(() => this.settings().UseTimePicker, SignalEquals.bool);
 
   log = new EavLogger(nameOfThis, logThis);
 
   /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
-  valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalHelpers.stringEquals);
+  valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);
 
   private matDayjsDateAdapter = transient(MatDayjsDateAdapter);
   constructor(

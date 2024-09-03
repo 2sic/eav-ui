@@ -16,7 +16,7 @@ import { LoggingService, LogSeverities } from '../shared/services/logging.servic
 import { ItemService } from '../shared/store/item.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { ContentTypeItemService } from '../shared/store/content-type-item.service';
-import { named } from '../../shared/helpers/signal.helpers';
+import { named } from '../../shared/signals/signal.utilities';
 import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;

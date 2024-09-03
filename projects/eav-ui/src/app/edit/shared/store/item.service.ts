@@ -6,7 +6,7 @@ import { EavEntityBundleDto } from '../models/json-format-v1';
 import { ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { mapUntilChanged, mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { ItemUpdateHelper } from './item-updater.helper';
-import { ComputedCacheHelper } from '../../../shared/helpers/computed-cache';
+import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 import { EavEntityAttributes } from '../models/eav/eav-entity-attributes';
 import { SignalStoreObservableBase } from './signal-store-observable-base';
 

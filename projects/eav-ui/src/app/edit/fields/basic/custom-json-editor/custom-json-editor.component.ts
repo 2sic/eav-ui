@@ -11,7 +11,7 @@ import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
 import { FormConfigService } from '../../../state/form-config.service';
 import { ControlStatus } from '../../../shared/models/control-status.model';
@@ -40,7 +40,7 @@ export class CustomJsonEditorComponent {
   protected basics = this.fieldState.basics;
   protected settings = this.fieldState.settings;
 
-  protected rows = computed(() => this.settings().Rows, SignalHelpers.numberEquals);
+  protected rows = computed(() => this.settings().Rows, SignalEquals.number);
   protected focused = computed(() => this.config.focused$);
 
   editorHeight = computed(() => {

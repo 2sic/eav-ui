@@ -30,8 +30,8 @@ import { AdamCacheService } from '../../../../shared/store/adam-cache.service';
 import { LinkCacheService } from '../../../../shared/store/link-cache.service';
 import isEqual from 'lodash-es/isEqual';
 import { AdamConnector } from './adam-connector';
-import { SignalHelpers } from 'projects/eav-ui/src/app/shared/helpers/signal.helpers';
 import { transient } from '../../../../../core/transient';
+import { SignalEquals } from '../../../../../shared/signals/signal-equals';
 
 const logThis = false;
 const nameOfThis = 'AdamBrowserComponent';
@@ -82,7 +82,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   value = computed(() => this.fieldState.uiValue());
   
-  public adamConfig = signal<AdamConfig>(null, SignalHelpers.objectEquals); // here the change detection is critical
+  public adamConfig = signal<AdamConfig>(null, SignalEquals.object); // here the change detection is critical
   items = signal<AdamItem[]>([]);
 
   #url: string;

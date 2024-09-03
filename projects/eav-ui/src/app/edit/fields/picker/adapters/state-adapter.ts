@@ -7,7 +7,7 @@ import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { ServiceBase } from '../../../../shared/services/service-base';
-import { SignalHelpers } from '../../../../shared/helpers/signal.helpers';
+import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
@@ -21,7 +21,7 @@ export class StateAdapter extends ServiceBase {
   public formConfigSvc = inject(FormConfigService);
   private fieldState = inject(FieldState) as FieldState<string | string[]>;
 
-  public isInFreeTextMode = signal(false, SignalHelpers.boolEquals);
+  public isInFreeTextMode = signal(false, SignalEquals.bool);
 
   public features = signal({} as Partial<PickerFeatures>);
 
