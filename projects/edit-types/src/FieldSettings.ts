@@ -1,5 +1,32 @@
 import { DropdownOption } from './DropdownOption';
 
+/** */
+interface InternalSettings {
+  /** Ui is disabled for translation reasons - detected at runtime */
+  uiDisabledInThisLanguage?: boolean;
+
+  /**
+   * This is set by calculations and does not come from the back end.
+   * Reasons typically:
+   * - Form is read-only
+   * - Field is disabled because of translation
+   * - Slot is empty (eg. not activate presentation)
+   */
+  uiDisabledForced: boolean;
+
+  /** This is the combined calculation of forced disabled and configured disabled */
+  uiDisabled: boolean;
+
+  /** Ui is currently in a popup dialog */
+  isDialog?: boolean;
+
+  /**
+   * The value is currently required.
+   * This is calculated at runtime, often based on visibility etc.
+   */
+  valueRequired?: boolean;
+}
+
 /**
  * @All
  */
@@ -22,9 +49,6 @@ interface All {
 
   /** Disabled info from configuration */
   Disabled: boolean;
-
-  /** This is set by calculations and does not come from the back end */
-  ForcedDisabled: boolean;
 
   DisableTranslation: boolean;
   DisableAutoTranslation: boolean;
@@ -77,11 +101,6 @@ export interface StringTemplatePicker extends String {
   /** Contains the extension for which the file picker should filter. If not set, use preset mechanisms */
   FileType: string;
 }
-
-// export const WysiwygDisplayModeDialogOnly = 'dialog';
-// export const WysiwygDisplayModeInlineOnly = 'inline';
-// export const WysiwygDisplayModeInlineWithDialog = '';
-// export type WysiwygDisplayModes = typeof WysiwygDisplayModeDialogOnly | typeof WysiwygDisplayModeInlineOnly | typeof WysiwygDisplayModeInlineWithDialog; 
 
 /**
  * @string-wysiwyg
@@ -292,12 +311,6 @@ export interface StringPicker extends StringDropdown {
   PickerTreeConfiguration: UiPickerModeTree;
 
   DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
-}
-
-interface InternalSettings {
-  _disabledBecauseOfTranslation?: boolean;
-  _isDialog?: boolean;
-  _currentRequired?: boolean;
 }
 
 export interface FieldSettings extends

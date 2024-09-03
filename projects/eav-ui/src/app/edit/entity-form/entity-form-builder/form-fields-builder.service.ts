@@ -100,7 +100,7 @@ export class FormFieldsBuilderService extends ServiceBase {
       }
 
       // Build control in the Angular form with validators
-      const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
+      const disabled = fieldProps.settings.uiDisabled;
       const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsService.getFieldSettingsSignal(fieldName), this.fieldsSettingsService);
       const validators = ValidationHelpers.getValidators(valSpecs, inputType);
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
@@ -145,9 +145,8 @@ export class FormFieldsBuilderService extends ServiceBase {
         // 3. sync disabled if state not matching
         this.log.a('sync "disabled" state');
         for (const { control, fieldProps } of fieldsOnForm) {
-          const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
-          ControlHelpers.disableControl(control, disabled);
+          ControlHelpers.disableControl(control, fieldProps.settings.uiDisabled);
         }
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run

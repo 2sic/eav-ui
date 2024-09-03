@@ -51,9 +51,8 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   showPreview = computed(() => {
     const settings = this.fieldState.settings();
     const allowMultiValue = settings.AllowMultiValue;
-    const isDialog = settings._isDialog;
+    const isDialog = settings.isDialog;
     const showPreview = !allowMultiValue || (allowMultiValue && !isDialog);
-    // console.log(this.log.svcId + '; computed - settings: ' + showPreview, settings._isDialog, allowMultiValue, isDialog, showPreview, settings);
     return showPreview;
   });
 

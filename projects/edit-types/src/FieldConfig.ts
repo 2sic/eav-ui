@@ -51,7 +51,7 @@ export function toFieldConfig(config: FieldConfigSet, settings: FieldSettings): 
     placeholder: settings.Placeholder,
     inputType: config.inputTypeSpecs.inputType,
     type: config.type,
-    required: settings._currentRequired,
+    required: settings.valueRequired,
     disabled: config.initialDisabled,
     settings,
   } satisfies FieldConfig;

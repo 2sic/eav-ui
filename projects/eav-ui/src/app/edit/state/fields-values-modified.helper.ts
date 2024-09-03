@@ -41,10 +41,8 @@ export class FieldsValuesModifiedHelper {
         name: attr.Name,
         original: originalValues[attr.Name],
       }))
-      .filter(p =>
-        p.original !== undefined
-        && !fieldsProps[p.name]?.settings._disabledBecauseOfTranslation
-      )
+      // Only skip force disabled, not all disabled. If it's only disabled because the user shouldn't interact with it, we still want to update it.
+      .filter(p => p.original !== undefined && !fieldsProps[p.name]?.settings.uiDisabledForced)
       .map(p => ({
         ...p,
         value: this.#findBestValue(p.name, valueUpdatesFromSideEffects, valueUpdates)

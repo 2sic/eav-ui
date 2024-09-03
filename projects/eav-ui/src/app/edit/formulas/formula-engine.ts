@@ -222,7 +222,6 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
-    //TODO: @2dm -> Here for target I send all targets except listItem targets, used to be "null" before
     const formulas = this.#activeFieldFormulas(this.entityGuid, fieldName);
     const hasFormulas = formulas.length > 0;
 

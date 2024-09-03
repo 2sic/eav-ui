@@ -115,7 +115,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
         connector.field.placeholder = settings.Placeholder;
-        connector.field.required = settings._currentRequired;
+        connector.field.required = settings.valueRequired;
       })
     );
     return connector;

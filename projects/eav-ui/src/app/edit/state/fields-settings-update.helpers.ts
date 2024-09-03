@@ -69,23 +69,22 @@ export class FieldSettingsUpdateHelper {
    * @param fieldValue
    * @returns Corrected settings
    */
-  correctSettingsAfterChanges(
-    settings: FieldSettings,
-    fieldValue: FieldValue,
-  ): FieldSettings {
+  correctSettingsAfterChanges(settings: FieldSettings, fieldValue: FieldValue): FieldSettings {
     const constantFieldPart = this.constantFieldPart;
     const slotIsEmpty = this.formSlotIsEmpty();
 
     // Why are we doing this?
     settings.Name = settings.Name || this.attribute.Name;
 
-    settings._currentRequired = ValidationHelpers.isRequired(settings);
+    settings.valueRequired = ValidationHelpers.isRequired(settings);
     const disableTranslation = this.#schemaDisablesTranslation();
 
     settings.DisableTranslation = slotIsEmpty || disableTranslation;
-    settings._disabledBecauseOfTranslation = this.#getDisabledBecauseTranslations(settings.DisableTranslation);
+    settings.uiDisabledInThisLanguage = this.#getDisabledBecauseTranslations(settings.DisableTranslation);
 
-    settings.ForcedDisabled = slotIsEmpty || settings._disabledBecauseOfTranslation || this.formReadOnly;
+    settings.uiDisabledForced = slotIsEmpty || settings.uiDisabledInThisLanguage || this.formReadOnly;
+
+    settings.uiDisabled = settings.uiDisabledForced || settings.Disabled;
 
     settings.DisableAutoTranslation = constantFieldPart.settingsInitial.DisableAutoTranslation
       || settings.DisableTranslation;

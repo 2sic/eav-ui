@@ -56,7 +56,7 @@ export class ValidationHelpers {
       this.ensureWarning(control);
       const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
-      if (!settings._currentRequired) return null;
+      if (!settings.valueRequired) return null;
       return Validators.required(control);
     };
   }
@@ -66,7 +66,7 @@ export class ValidationHelpers {
       this.ensureWarning(control);
       const settings = specs.settings();
       if (this.ignoreValidators(settings)) return null;
-      if (!settings._currentRequired) return null;
+      if (!settings.valueRequired) return null;
 
       return (control as AdamControl).adamItems === 0 ? { required: true } : null;
     };

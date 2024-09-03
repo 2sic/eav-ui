@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 export function connectorToDisabled$(connector: Connector<string>): Observable<boolean> {
   return connector.field$.pipe(
-    mapUntilChanged(fc => fc.settings.Disabled || fc.settings.ForcedDisabled),
+    mapUntilChanged(fc => fc.settings.uiDisabled),
   );
 }
 

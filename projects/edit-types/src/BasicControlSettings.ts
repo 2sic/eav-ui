@@ -38,7 +38,7 @@ export class BasicControlSettings {
   static fromSettings(s: FieldSettings): BasicControlSettings {
     const label = s?.Name ?? 'loading...';
     const notes = s?.Notes ?? '';
-    const required = s?._currentRequired ?? true;
+    const required = s?.valueRequired ?? true;
     const visibilityRaw = s?.Visible ?? true;
     const visibilityDisabled = s?.VisibleDisabled ?? false;
     const visible = visibilityRaw && !visibilityDisabled;
