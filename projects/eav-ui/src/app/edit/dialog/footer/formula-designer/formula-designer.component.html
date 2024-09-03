@@ -3,7 +3,8 @@
     <mat-form-field color="accent" class="eav-mat-form-field">
       <mat-label>Entity</mat-label>
       <mat-select [ngModel]="state().entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
-        @for (entityOption of entityOptions(); track trackEntityOptions($index, entityOption)) {
+        @for (entityOption of entityOptions(); track trackEntityOptions($index, entityOption))
+        {
           <mat-option
             [value]="entityOption.entityGuid">
             <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
@@ -17,7 +18,8 @@
       <mat-label>Attribute</mat-label>
       <mat-select [ngModel]="state().fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
         [disabled]="state().entityGuid == null">
-        @for (fieldOption of fieldsOptions(); track trackFieldOptions($index, fieldOption)) {
+        @for (fieldOption of fieldsOptions(); track trackFieldOptions($index, fieldOption))
+        {
           <mat-option
             [value]="fieldOption.fieldName">
             <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
@@ -29,7 +31,8 @@
     </mat-form-field>
     <mat-form-field color="accent" class="eav-mat-form-field">
       <mat-label>Target</mat-label>
-      @if (!freeTextTarget) {
+      @if (!freeTextTarget)
+      {
         <mat-select [ngModel]="state().target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
           [disabled]="state().entityGuid == null || state().fieldName == null">
@@ -42,7 +45,8 @@
           }
         </mat-select>
       }
-      @if (freeTextTarget) {
+      @else
+      {
         <input matInput [ngModel]="state().target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
           [disabled]="state().entityGuid == null || state().fieldName == null">
@@ -65,20 +69,23 @@
       <mat-label class="label">Function</mat-label>
       <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.source ?? template()"
         [jsTypings]="v2JsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
-        (focused)="onFocused()" (blurred)="onBlurred()">
+        (focused)="onFocused(true)" (blurred)="onFocused(false)">
       </app-monaco-editor>
     </div>
     <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !state().editMode }">
-      @for (snippet of v1DataSnippets(); track trackSnippets($index, snippet)) {
+      @for (snippet of v1DataSnippets(); track trackSnippets($index, snippet))
+      {
         <div class="snippet" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
         </div>
       }
-      @if (v1DataSnippets()?.length && v1ContextSnippets().length) {
+      @if (v1DataSnippets()?.length && v1ContextSnippets().length)
+      {
         <div class="separator"></div>
       }
-      @for (snippet of v1ContextSnippets(); track trackSnippets($index, snippet)) {
+      @for (snippet of v1ContextSnippets(); track trackSnippets($index, snippet))
+      {
         <div class="snippet" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
@@ -89,9 +96,10 @@
   <div class="formula-footer-box">
     <div class="formula-result-box hide-scrollbar">
       <span class="label">Result:&nbsp;</span>
-      {{ 'hello' + result2() }}
-      @if (result() != null && !isDeleted()) {
-        @if (!result().isError) {
+      @if (result() != null && !isDeleted())
+      {
+        @if (!result().isError)
+        {
           @if (result().value !== undefined) {
             <span>{{ result().value | json }}</span>
           }
@@ -102,9 +110,10 @@
             <span>promise(🤞🏽)</span>
           }
         }
-        @else {
+        @else
+        {
           <span class="result-error">
-            Calculation failed. Please check logs for more info
+            Calculation failed. Please check console for more info
           </span>
         }
       }
@@ -127,7 +136,8 @@
           <span>Reset</span>
         </button>
       </mat-menu>
-      @if (allowSaveFormula) {
+      @if (allowSaveFormula)
+      {
         <button mat-icon-button tippy="Save" class="eav-formula-action-button"
           [tippyDisabled]="!state().editMode || !currentFormula()?.source"
           [disabled]="!state().editMode || !currentFormula()?.source || saving()" (click)="save()">

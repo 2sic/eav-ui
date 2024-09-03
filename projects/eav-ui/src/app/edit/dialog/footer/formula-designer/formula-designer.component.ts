@@ -7,7 +7,7 @@ import { EntityEditService } from '../../../../shared/services/entity-edit.servi
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
-import { defaultFormulaNow, listItemFormulaNow } from '../../../formulas/formula.constants';
+import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula.constants';
 import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/models/formula.models';
 import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
@@ -18,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { NgClass, JsonPipe } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -50,7 +50,6 @@ const nameOfThis = 'FormulaDesignerComponent';
     MatIconModule,
     MonacoEditorComponent,
     MatMenuModule,
-    AsyncPipe,
     JsonPipe,
     SnippetLabelSizePipe,
     TippyDirective,
@@ -97,10 +96,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   protected state = this.#designerSvc.designerState;
   protected result = this.#designerSvc.formulaResult;
   protected targetOptions = this.#designerSvc.currentTargetOptions;
-
-  protected result2 = computed(() => {
-    return this.#designerSvc.formulaResult();
-  });
   
   protected entityOptions = this.#designerSvc.entityOptions;
   protected fieldsOptions = this.#designerSvc.fieldsOptions;
@@ -111,14 +106,15 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   protected v1ContextSnippets = this.#designerSvc.v1ContextSnippets;
   protected v1DataSnippets = this.#designerSvc.v1DataSnippets;
 
-  protected template = computed(() => {
-    return Object.values(FormulaListItemTargets).includes(this.state().target)
-    ? listItemFormulaNow
-    : defaultFormulaNow;
-  });
+  protected template = computed(() => Object.values(FormulaListItemTargets).includes(this.state().target)
+    ? defaultListItemFormula
+    : defaultFormula
+  );
 
 
   ngOnInit(): void {
+    // Make sure all necessary services have what they need, otherwise flag & exit
+    // 1. Make sure the designer has access to all itemSettingsServices
     this.loadError = false;
     if (Object.keys(this.#designerSvc.itemSettingsServices).length < 1) {
       this.loadError = true;
@@ -176,12 +172,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.#designerSvc.cache.updateFormulaFromEditor(designer, formula, false);
   }
 
-  onFocused(): void {
-    this.focused = true;
-  }
-
-  onBlurred(): void {
-    this.focused = false;
+  onFocused(focused: boolean): void {
+    this.focused = focused;
   }
 
   copyToClipboard(text: string): void {
@@ -196,12 +188,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       editMode: !oldState.editMode,
     };
     this.#designerSvc.designerState.set(designer);
-    if (designer.editMode) {
-      const formula = this.#designerSvc.currentFormula();
-      if (formula == null) {
-        this.#designerSvc.cache.updateFormulaFromEditor(designer, Object.values(FormulaListItemTargets).includes(designer.target) ? listItemFormulaNow : defaultFormulaNow, false);
-      }
-    }
+    if (designer.editMode && this.#designerSvc.currentFormula() == null)
+      this.#designerSvc.cache.updateFormulaFromEditor(designer, this.template(), false);
   }
 
   reset(): void {
@@ -222,6 +210,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.isDeleted.set(false);
     this.#designerSvc.retrieveFormulaResult.update(x => x + 1);
   }
+
+  //#region Save/Delete
 
   save(): void {
     this.saving.set(true);
@@ -278,19 +268,21 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (!confirmed)
       return;
 
-    this.#entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
-      next: () => {
-        this.#designerSvc.cache.delete(formula);
-        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.isDeleted.set(true);
-        if (designer.editMode)
-          this.toggleEdit();
-      },
-      error: (_: HttpErrorResponse) => {
-        this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
-      }
-    });
+    this.#entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true)
+      .subscribe({
+        next: () => {
+          this.#designerSvc.cache.delete(formula);
+          this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+          this.isDeleted.set(true);
+          if (designer.editMode)
+            this.toggleEdit();
+        },
+        error: (_: HttpErrorResponse) => {
+          this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
+        }
+      });
   }
 
-  
+  //#endregion
+
 }

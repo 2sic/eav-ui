@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Signal, inject } from '@angular/core';
+import { Injectable, OnDestroy, Signal, inject, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
 import { EavContentType } from '../shared/models/eav';
@@ -30,8 +30,15 @@ import { ItemService } from '../shared/store/item.service';
 import { LanguageService } from '../shared/store/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 
-const logThis = false;
+const logThis = true;
 const nameOfThis = 'FormulaEngine';
+
+const logFields = ['UiGroup'];
+
+function logDetailsFor(field: string) {
+  return logFields?.includes(field) || logFields?.includes('*');
+}
+
 /**
  * Formula engine is responsible for running formulas and returning the result.
  *
@@ -249,7 +256,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     itemHeader: ItemIdentifierShared,
     reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
-    const l = this.log.fn('runFormulasOfField');
+    const l = this.log.fnCond(logDetailsFor(formulas[0]?.fieldName), 'runFormulasOfField');
     // Target variables to fill using formula result
     let value: FieldValue;                   // The new value
     let validation: FormulaFieldValidation;  // The new validation
@@ -341,13 +348,17 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    */
   #runFormula(allObjectsForDataAndContext: FormulaObjectsInternalData): FormulaResultRaw {
     const { formula, item, inputTypeName } = allObjectsForDataAndContext.runParameters;
+    
+    const l = this.log.fnCond(logDetailsFor(formula.fieldName), `runFormula`, { fieldName: formula.fieldName });
 
     const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
 
     const isOpenInDesigner = this.#isDesignerOpen(formula);
     const ctTitle = this.contentTypeSettings()._itemTitle;
+    l.a(`formula version: ${formula.version}, entity: ${ctTitle}, field: ${formula.fieldName}, target: ${formula.target}`, {formula});
     try {
       switch (formula.version) {
+        // Formula V1
         case FormulaVersions.V1:
           if (isOpenInDesigner)
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
@@ -356,23 +367,21 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
           const isArray = v1Result && Array.isArray(v1Result) && (v1Result as any).every((r: any) => typeof r === 'string');
           const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date || isArray || !v1Result;
           if (resultIsPure) {
-            if (formula.target === FormulaTargets.Value) {
-              const valueV1: FormulaResultRaw = {
-                value: FormulaValueCorrections.valueCorrection(v1Result as FieldValue, inputTypeName),
-                fields: [], stop: null, openInDesigner: isOpenInDesigner
-              };
-              this.designerSvc.cache.cacheResults(formula, valueV1.value, false, false);
-              if (isOpenInDesigner)
-                console.log('Formula result:', valueV1);
-              return valueV1;
-            }
+            l.a('V1 formula result is pure', { v1Result });
+            const v1Value = (formula.target === FormulaTargets.Value)
+              ? FormulaValueCorrections.valueCorrection(v1Result as FieldValue, inputTypeName)
+              : v1Result as FieldValue;
+            this.designerSvc.cache.cacheResults(formula, v1Value, false, false);
+            if (isOpenInDesigner)
+              console.log('Formula result:', v1Value);
             return {
-              value: v1Result,
+              value: v1Value,
               fields: [],
               stop: null,
               openInDesigner: isOpenInDesigner
-            } as FormulaResultRaw;
+            } satisfies FormulaResultRaw;
           }
+          l.a('V1 formula result is not pure', { v1Result });
           console.error('V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.');
           return {
             value: undefined,
@@ -381,6 +390,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
             openInDesigner: isOpenInDesigner
           } satisfies FormulaResultRaw;
 
+        // Formula V2
         case FormulaVersions.V2:
           if (isOpenInDesigner)
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
@@ -390,10 +400,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
           const valueV2 = FormulaValueCorrections.correctAllValues(formula.target, v2Result, inputTypeName);
           valueV2.openInDesigner = isOpenInDesigner;
-          if (valueV2.value === undefined && valueV2.promise)
-            this.designerSvc.cache.cacheResults(formula, undefined, false, true);
-          else
-            this.designerSvc.cache.cacheResults(formula, valueV2.value, false, false);
+          this.designerSvc.cache.cacheResults(formula, valueV2.value, false, !!valueV2.promise);
           if (isOpenInDesigner)
             console.log('Formula result:', valueV2.value);
           return valueV2;
@@ -432,9 +439,11 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * @returns True if formula is open in designer, otherwise false
    */
   #isDesignerOpen(f: FormulaCacheItem): boolean {
-    const ds = this.designerSvc.designerState();
-    const isOpenInDesigner = ds.isOpen && ds.entityGuid === f.entityGuid && ds.fieldName === f.fieldName && ds.target === f.target;
-    return isOpenInDesigner;
+    return untracked(() => {
+      const ds = this.designerSvc.designerState();
+      const isOpenInDesigner = ds.isOpen && ds.entityGuid === f.entityGuid && ds.fieldName === f.fieldName && ds.target === f.target;
+      return isOpenInDesigner;
+    });
   }
 }
 

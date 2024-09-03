@@ -9,8 +9,11 @@ export interface RunFormulasResult {
 }
 
 export interface FormulaIdentifier {
+  /** The entity it's for */
   entityGuid: string;
+  /** The field it's for */
   fieldName: string;
+  /** ?? */
   target: FormulaTarget;
 }
 

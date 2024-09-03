@@ -49,12 +49,12 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
 
   /** Formula result of the formula which is currently open in the editor */
   formulaResult = computed<FormulaResult>(() => {
-    console.log('formulaResult');
+    // console.log('formulaResult');
     this.retrieveFormulaResult();
     const state = this.designerState();
-    console.log('formulaResult2', state, this.cache.results());
-    const { old } = this.cache.resultListIndexAndOriginal(state);
-    console.log('formulaResult3', old);
+    // console.log('formulaResult2', state, this.cache.results());
+    const { list, old, index } = this.cache.resultListIndexAndOriginal(state);
+    console.log('formulaResult3', { state, old, list, index });
     return old as FormulaResult;
     // const results = this.cache.results();
     // return results.find(r => r.entityGuid === state.entityGuid && r.fieldName === state.fieldName && r.target === state.target);

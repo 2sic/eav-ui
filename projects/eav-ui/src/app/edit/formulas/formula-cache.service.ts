@@ -34,9 +34,6 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
   /** All the formula results */
   results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
 
-  /** Parent service for call backs */
-  private designerSvc: FormulaDesignerService;
-
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -49,10 +46,14 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
   }
 
   init(designerSvc: FormulaDesignerService) {
-    this.designerSvc = designerSvc;
+    this.#designerSvc = designerSvc;
     const formulaCache = this.buildFormulaCache();
     this.formulas.set(formulaCache);
   }
+
+  /** Parent service for call backs */
+  #designerSvc: FormulaDesignerService;
+
 
   ngOnDestroy() {
     super.destroy();
@@ -333,7 +334,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
 
         // TODO: PROBABLY UNNECESSARY CHECK AS IT'S PROBABLY ALWAYS THIS ONE
-        const designerState = this.designerSvc.designerState();
+        const designerState = this.#designerSvc.designerState();
         const isOpenInDesigner = designerState.isOpen
           && designerState.entityGuid === entityGuid
           && designerState.fieldName === fieldName
@@ -394,8 +395,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param isError
    * @param isOnlyPromise
    */
-  cacheResults(formulaItem: FormulaIdentifier, value: FieldValue, isError: boolean, isOnlyPromise: boolean
-  ): void {
+  cacheResults(formulaItem: FormulaIdentifier, value: FieldValue, isError: boolean, isOnlyPromise: boolean): void {
     const newResult: FormulaResult = {
       entityGuid: formulaItem.entityGuid,
       fieldName: formulaItem.fieldName,
@@ -404,6 +404,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
       isError,
       isOnlyPromise,
     };
+    const l = this.log.fn('cacheResults', { newResult });
 
     // We should not track reading the list during formula execution
     // since we don't depend on it!
@@ -419,6 +420,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
       // side effect within props calculations
       // setTimeout(() => {
+        l.a('set results', { list, index, newResults});
         this.results.set(newResults);
       // }, 0);
     });
