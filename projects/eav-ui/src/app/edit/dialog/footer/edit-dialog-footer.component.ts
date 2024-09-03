@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { TippyDirective } from '../../../shared/directives/tippy.directive';
 
 declare const window: EavWindow;
 
@@ -26,6 +27,7 @@ declare const window: EavWindow;
     DataDumpComponent,
     FormulaDesignerComponent,
     LogsDumpComponent,
+    TippyDirective,
   ],
 })
 export class EditDialogFooterComponent {

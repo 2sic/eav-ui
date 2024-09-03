@@ -18,8 +18,14 @@
     <!-- Special expand button when working with formulas, to get more space -->
     @if (tab() != null)
     {
-      <button mat-icon-button tippy="Save" (click)="toggleSize()">
+      <button mat-icon-button tippy="expand/shrink" (click)="toggleSize()">
         <mat-icon>{{ expanded() ? 'unfold_less' : 'expand' }}</mat-icon>
+      </button>
+    }
+    @else
+    {
+      <button mat-icon-button tippy="Developer tools are only visible to developers.">
+        <mat-icon>info</mat-icon>
       </button>
     }
 
