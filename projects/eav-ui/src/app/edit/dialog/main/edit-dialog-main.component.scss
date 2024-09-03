@@ -82,33 +82,33 @@
 }
 
 .eav-dialog-content.debug-enabled {
-  max-height: $edit-ui-dialog-max-height-with-debug;
+  max-height: var(--edit-ui-dialog-max-height-with-debug);
 
   @media (max-width: 600px) {
-    max-height: $edit-ui-dialog-max-height-with-debug-mobile;
+    max-height: var(--edit-ui-dialog-max-height-with-debug-mobile);
   }
 
   &.hide-header-height-fix {
-    max-height: calc(#{$edit-ui-dialog-max-height-with-debug} + #{$edit-ui-dialog-header-max-height}) !important;
+    max-height: calc(var(--edit-ui-dialog-max-height-with-debug) + var(--edit-ui-dialog-header-max-height)) !important;
 
     @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} + #{$edit-ui-dialog-header-max-height}) !important;
+      max-height: calc(var(--edit-ui-dialog-max-height-with-debug-mobile) + var(--edit-ui-dialog-header-max-height)) !important;
     }
   }
 }
 
 .eav-dialog-content.debug-enabled.debug-info-is-open {
-  max-height: calc(#{$edit-ui-dialog-max-height-with-debug} - #{$debug-info-container-total-height});
+  max-height: calc(var(--edit-ui-dialog-max-height-with-debug) - var(--debug-info-container-total-height));
 
   @media (max-width: 600px) {
-    max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} - #{$debug-info-container-total-height});
+    max-height: calc(var(--edit-ui-dialog-max-height-with-debug-mobile) - var(--debug-info-container-total-height));
   }
 
   &.hide-header-height-fix {
-    max-height: calc(#{$edit-ui-dialog-max-height-with-debug} - #{$debug-info-container-total-height} + #{$edit-ui-dialog-header-max-height}) !important;
+    max-height: calc(var(--edit-ui-dialog-max-height-with-debug) - var(--debug-info-container-total-height) + var(--edit-ui-dialog-header-max-height)) !important;
 
     @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} - #{$debug-info-container-total-height} + #{$edit-ui-dialog-header-max-height}) !important;
+      max-height: calc(var(--edit-ui-dialog-max-height-with-debug-mobile) - var(--debug-info-container-total-height) + var(--edit-ui-dialog-header-max-height)) !important;
     }
   }
 }

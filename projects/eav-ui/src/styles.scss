@@ -47,3 +47,20 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
 }
+
+
+// Create CSS variables for the dialog max height
+:root {
+  --edit-ui-dialog-top-padding: #{$edit-ui-dialog-top-padding};
+  --edit-ui-dialog-header-max-height: #{$edit-ui-dialog-header-max-height};
+  --edit-ui-dialog-top-padding: #{$edit-ui-dialog-top-padding};
+
+  // Debug Views on main edit
+  --edit-ui-dialog-debug-max-height: 52px;
+  --debug-info-container-height: 300px;
+  --debug-info-container-margin: 16px;
+
+  --debug-info-container-total-height: calc(var(--debug-info-container-height) + var(--debug-info-container-margin));
+  --edit-ui-dialog-max-height-with-debug: calc(100vh - var(--edit-ui-dialog-top-padding) - var(--edit-ui-dialog-header-max-height) - var(--edit-ui-dialog-debug-max-height) - var(--edit-ui-dialog-top-padding));
+  --edit-ui-dialog-max-height-with-debug-mobile: calc(100vh - var(--edit-ui-dialog-header-max-height) - var(--edit-ui-dialog-debug-max-height));
+}

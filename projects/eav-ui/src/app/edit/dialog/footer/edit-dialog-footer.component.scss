@@ -10,7 +10,7 @@
     border-radius: 0;
   }
 
-  height: $edit-ui-dialog-debug-max-height;
+  height: var(--edit-ui-dialog-debug-max-height);
   z-index: 1;
   width: 100%;
   display: flex;
@@ -24,7 +24,7 @@
 
 .debug-buttons-container {
   padding: 17px 16px 15px;
-  height: $edit-ui-dialog-debug-max-height;
+  height: var(--edit-ui-dialog-debug-max-height);
   width: 100%;
   display: flex;
   box-sizing: border-box;
@@ -51,10 +51,10 @@
 }
 
 .debug-info-container {
-  margin: $debug-info-container-margin !important;
+  margin: var(--debug-info-container-margin) !important;
   margin-top: 0 !important;
-  width: calc(100% - 2 * #{$debug-info-container-margin});
-  height: $debug-info-container-height;
+  width: calc(100% - 2 * var(--debug-info-container-margin));
+  height: var(--debug-info-container-height);
   box-sizing: border-box;
   position: relative;
   overflow: auto;
