@@ -224,7 +224,4 @@ export class ValidationHelperSpecs {
     // TODO: GET RID OF THIS as soon as we have a signal for the fieldProps
     public fieldsSettingsService: FieldsSettingsService
   ) { }
-  // name: string;
-  // properties: Signal<FieldProps>;
-  // settings: Signal<FieldSettings>;
 }

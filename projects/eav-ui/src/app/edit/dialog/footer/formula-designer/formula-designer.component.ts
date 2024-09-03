@@ -57,6 +57,21 @@ const nameOfThis = 'FormulaDesignerComponent';
   ],
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
+
+  #designerSvc = inject(FormulaDesignerService);
+
+  #entitiesService = transient(EntityEditService);
+
+  private log = new EavLogger(nameOfThis, logThis);
+  
+  constructor(
+    private snackBar: MatSnackBar,
+    private formConfig: FormConfigService,
+    private itemService: ItemService,
+    private contentTypeService: ContentTypeService,
+    private translate: TranslateService,
+  ) { }
+
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
@@ -78,12 +93,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   filename = `formula${this.formConfig.config.formId}.js`;
   focused = false;
 
-  private entitiesService = transient(EntityEditService);
 
-  #designerSvc = inject(FormulaDesignerService);
   protected state = this.#designerSvc.designerState;
   protected result = this.#designerSvc.formulaResult;
   protected targetOptions = this.#designerSvc.currentTargetOptions;
+
+  protected result2 = computed(() => {
+    return this.#designerSvc.formulaResult();
+  });
   
   protected entityOptions = this.#designerSvc.entityOptions;
   protected fieldsOptions = this.#designerSvc.fieldsOptions;
@@ -100,15 +117,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     : defaultFormulaNow;
   });
 
-  private log = new EavLogger(nameOfThis, logThis);
-  
-  constructor(
-    private snackBar: MatSnackBar,
-    private formConfig: FormConfigService,
-    private itemService: ItemService,
-    private contentTypeService: ContentTypeService,
-    private translate: TranslateService,
-  ) { }
 
   ngOnInit(): void {
     this.loadError = false;
@@ -212,6 +220,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.#designerSvc.cache.updateFormulaFromEditor(designer, formula.source, true);
     this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas('designer-run');
     this.isDeleted.set(false);
+    this.#designerSvc.retrieveFormulaResult.update(x => x + 1);
   }
 
   save(): void {
@@ -228,7 +237,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         this.saving.set(false);
         return;
       }
-      this.entitiesService.create(
+      this.#entitiesService.create(
         eavConstants.contentTypes.formulas,
         {
           Title: formula.target,
@@ -251,7 +260,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceId, { Formula: formula.source }).subscribe(() => {
+    this.#entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceId, { Formula: formula.source }).subscribe(() => {
       this.#designerSvc.cache.updateSaved(formula, formula.sourceGuid, formula.sourceId);
       this.snackBar.open('Formula saved', null, { duration: 2000 });
       this.saving.set(false);
@@ -269,7 +278,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (!confirmed)
       return;
 
-    this.entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
+    this.#entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
       next: () => {
         this.#designerSvc.cache.delete(formula);
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });

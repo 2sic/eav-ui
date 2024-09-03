@@ -32,7 +32,7 @@ export class PublishStatusService extends SignalStoreBase<number, PublishStatus>
   getPublishMode(formId: number): Signal<PublishMode> {
     return this.#signalsPublishModeCache.getOrCreate(formId, () => this.toPublishMode(this.get(formId)));
   }
-  #signalsPublishModeCache = new ComputedCacheHelper<number, PublishMode>();
+  #signalsPublishModeCache = new ComputedCacheHelper<number, PublishMode>('publishMode');
 
   
   /** Convert the booleans to the appropriate "verb" */

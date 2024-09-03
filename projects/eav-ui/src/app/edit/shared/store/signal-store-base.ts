@@ -141,7 +141,7 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
     this.log.a(`getSignal(${id})`, { isNew: result.isNew });
     return result.signal;
   }
-  #itemSignalsCache = new ComputedCacheHelper<TKey, TValue>();
+  #itemSignalsCache = new ComputedCacheHelper<TKey, TValue>('item');
 
 
   getManySignal(ids: TKey[]): Signal<TValue[]> {

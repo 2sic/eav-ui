@@ -39,10 +39,6 @@ export class FieldsPropertiesUpdates {
     const prev = this.fieldPropsMixins[fieldName] ?? {};
     this.fieldPropsMixins[fieldName] = { ...prev, ...update };
     
-    // Retrigger formulas if the queue was empty (otherwise it was already retriggered and will run soon)
-    // Put a very small delay into processing the queue, since startup can send single updates for many fields one at a time.
-    // setTimeout(() => this.retriggerFormulas('updateSetting'), 10);
-
     l.end('added to queue', { before, after, update });
   }
 

@@ -1,8 +1,9 @@
-import { computed, CreateComputedOptions, Signal } from '@angular/core';
+import { computed, CreateComputedOptions, signal, Signal, WritableSignal } from '@angular/core';
 import { RxHelpers } from '../rxJs/rx.helpers';
 import isEqual from 'lodash-es/isEqual';
 import transform from 'lodash-es/transform';
 import isObject from 'lodash-es/isObject';
+import { SIGNAL } from '@angular/core/primitives/signals';
 
 export class SignalHelpers {
   /** Options for number signal to ensure equality only on value difference */
@@ -36,6 +37,33 @@ export class SignalHelpers {
    */
   static refEquals = {  };
 }
+
+// export function computedNamed<T>(name: string, computation: () => T, options?: CreateComputedOptions<T>): Signal<T> {
+//   const comp =  computed(computation, options) as Signal<T>;
+//   return named(comp, name);
+// }
+
+// export function signalNamed<T>(name: string, initialValue: T): WritableSignal<T> {
+//   const sig = signal(initialValue) as WritableSignal<T>;
+//   return named(name, sig);
+// }
+
+export function named<TSig, TVal extends Signal<TVal> | WritableSignal<TVal>>(name: string, signal: TSig): TSig {
+  if (!signal) return signal;
+  const sigAny = signal as any;
+  sigAny.debugName = name;
+  if (!sigAny[SIGNAL]) return signal;
+  (sigAny[SIGNAL]).debugName = name;
+  return signal;
+}
+
+// export interface ComputedNamed<T> extends Signal<T> {
+//   debugName: string;
+// }
+
+// export interface WritableSignalNamed<T> extends WritableSignal<T> {
+//   debugName: string;
+// }
 
 // export class SignalEquals<T>: CreateComputedOptions<T> {
 //   equal: RxHelpers.objectsEqual<T>;

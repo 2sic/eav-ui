@@ -157,7 +157,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(propsEngine.item.Entity.Guid);
 
     for (const attr of this.contentType.Attributes) {
-      const attrValues = propsEngine.itemAttributes()[attr.Name];
+      const attrValues = propsEngine.cycle.allAttributes[attr.Name];
       const valueBefore = propsEngine.cycle.values[attr.Name];
       const constFieldPart = propsEngine.getFieldConstants(attr.Name);
 

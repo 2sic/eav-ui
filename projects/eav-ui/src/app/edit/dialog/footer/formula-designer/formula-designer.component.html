@@ -89,6 +89,7 @@
   <div class="formula-footer-box">
     <div class="formula-result-box hide-scrollbar">
       <span class="label">Result:&nbsp;</span>
+      {{ 'hello' + result2() }}
       @if (result() != null && !isDeleted()) {
         @if (!result().isError) {
           @if (result().value !== undefined) {

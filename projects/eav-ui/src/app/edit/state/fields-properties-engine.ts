@@ -19,8 +19,9 @@ import { FieldLogicTools } from '../fields/logic/field-logic-tools';
 import { transient } from '../../core/transient';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
 import { FieldsSettingsService } from './fields-settings.service';
+import { FieldsSignalsHelper } from './fields-signals.helper';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsPropsEngine';
 
 /**
@@ -48,6 +49,7 @@ export class FieldsPropsEngine {
 
   public get updateHelper() { return this.#updateHelper(); }
   public modifiedChecker: FieldsValuesModifiedHelper;
+  private fieldsValues: FieldsSignalsHelper;
 
   constructor() {
   }
@@ -59,6 +61,7 @@ export class FieldsPropsEngine {
     item: EavItem,
     contentType: Signal<EavContentType>,
     reader: Signal<EntityReader>,
+    fieldsValues: FieldsSignalsHelper,
     forceDebug: boolean | null = null
   ): this {
     this.log.rename(`${this.log.name}[${entityGuid.substring(0, 8)}]`);
@@ -67,7 +70,7 @@ export class FieldsPropsEngine {
 
     this.item = item;
     this.languages = reader();
-    this.#reader = reader;
+    this.fieldsValues = fieldsValues;
 
     const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
     const ct = contentType();
@@ -84,11 +87,9 @@ export class FieldsPropsEngine {
     this.formulaPromises.init(entityGuid, contentType, fss, this.modifiedChecker);
     this.formulaEngine.init(entityGuid, fss, this.formulaPromises, ct, fss.contentTypeSettings);
 
-    this.itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
+    this.#itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
     return this;
   }
-
-  #reader: Signal<EntityReader>;
 
   #updateHelper: Signal<FieldSettingsUpdateHelperFactory>;
 
@@ -102,7 +103,7 @@ export class FieldsPropsEngine {
     return this.#fieldLangConstants().find(f => f.fieldName === name);
   }
 
-  public itemAttributes: Signal<EavEntityAttributes>;
+  #itemAttributes: Signal<EavEntityAttributes>;
 
   /**
    * The languages used in the form, for retrieving various things during the calculation.
@@ -126,11 +127,12 @@ export class FieldsPropsEngine {
   public getLatestSettingsAndValues(fieldProps: Record<string, FieldProps>): PropsUpdateResult {  
     const l = this.log.fn('getLatestSettingsAndValues');
 
-    const reader = this.#reader();
-    const itmAttributes = this.itemAttributes();
-    const initialValues = reader.currentValues(itmAttributes);
+    const initialValues = this.fieldsValues.values();
 
-    this.cycle = new FieldsPropsEngineCycle(this, initialValues, fieldProps);
+    // This should only be accessed here, so the signal is only depended on once!
+    const attributes = this.#itemAttributes();
+
+    this.cycle = new FieldsPropsEngineCycle(this, initialValues, fieldProps, attributes);
     const cycleResult = this.cycle.getCycleSettingsAndValues();
 
     // figure out the final changes to propagate

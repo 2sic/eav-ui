@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Injector, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav';
@@ -15,13 +15,16 @@ import { FieldsPropsEngine } from './fields-properties-engine';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
+import { FieldsSignalsHelper } from './fields-signals.helper';
+import { named, difference } from '../../shared/helpers/signal.helpers';
+import { ComputedAnalyzer } from '../../shared/helpers/computed-analyzer';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldsSettingsService';
 // Debug only on the following content type
-const debugOnlyThisContentType = '@String';
+const debugOnlyThisContentType = ''; //'@String';
 
-const maxCyclesPerSecond = 5;
+const maxCyclesPerSecond = 10;
 const maxCyclesWarning = "Max cycles reached, stopping for this second";
 
 /**
@@ -60,10 +63,10 @@ export class FieldsSettingsService {
   #fieldsProps: Signal<Record<string, FieldProps>>; //({}, { equal: isEqual });
 
   /** Signal to force a refresh. */
-  #forceRefresh = signal(0);
+  #forceRefresh = named('forceRefresh', signal(0));
 
   /** Signal to disable everything. Mainly on clean-up, as the computed will still run when data is removed from cache */
-  #disabled = signal(false);
+  #disabled = named('disabled', signal(false));
 
   #fieldsPropsUpdate: FieldsPropertiesUpdates;
 
@@ -85,7 +88,7 @@ export class FieldsSettingsService {
   //#endregion
 
   /** Signals for each field value */
-  // #fieldValues = new FieldsSignalsHelper(this.itemService, this.entityReader);
+  #fieldValues = transient(FieldsSignalsHelper);
 
   /** Start the observables etc. to monitor changes */
   init(entityGuid: string): void {
@@ -100,12 +103,14 @@ export class FieldsSettingsService {
       this.log.enabled = forceDebug;
     }
 
+    this.#fieldValues.init(entityGuid, this.#reader);
+
     const slotIsEmpty = this.#itemSvc.slotIsEmpty(entityGuid);
 
     // TODO: ATM unused #settingChangeBroadcast
     // this.#changeBroadcastSvc.init(entityGuid, this.#reader);
 
-    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, forceDebug);
+    this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#fieldValues, forceDebug);
 
     // Protect against infinite loops
     let cycle = 0;
@@ -118,8 +123,12 @@ export class FieldsSettingsService {
     let prevFieldProps: Record<string, FieldProps> = {};
     let prevValues: ItemValuesOfLanguage = {};
 
+    let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
     this.#fieldsProps = computed(() => {
-      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: contentType.Id });
+      if (analyzer)
+        console.log('analyzer', { fieldProps: this.#fieldsProps }, analyzer.snapShotProducers(true));
+
+      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: contentType.Id, props: this.#fieldsProps });
       // If disabled, for any reason, return the previous value
       // The #disabled is a safeguard as data will be missing when this is being cleaned up.
       // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
@@ -143,6 +152,7 @@ export class FieldsSettingsService {
       // Note that this will access a lot of source signals
       // whose dependencies will be incorporated into this calculation
       const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
+      const propsDiff = difference(props, prevFieldProps);
       prevValues = values;
       prevFieldProps = props;
           
@@ -151,10 +161,42 @@ export class FieldsSettingsService {
       // if (Object.keys(valueChanges).length > 0)
       //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-      return l.r(props, `normal update`);
+      if (Object.keys(propsDiff).length > 0) {
+        l.a('Fields Props Diff', propsDiff);
+        return l.r(props, `props: normal update`);
+      } else {
+        return l.rSilent(prevFieldProps, 'props: no changes');
+      }
     }, { equal: isEqual } );
 
+    analyzer = new ComputedAnalyzer(this.#fieldsProps);
+
     this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.#fieldsProps);
+  }
+
+  #testAnalyzers() {
+    // temp computed to analyze dependencies
+    const x = named('x', signal(27));
+    const y = named('y', signal(42)); // indirect dependency
+    const z = named('z', computed(() => x() + y()));
+    const tempFromDisabled = computed(() => {
+      return x() + " / " + z();
+    });
+    
+    const analyzerTemp = new ComputedAnalyzer(tempFromDisabled);
+    
+    let valSubscribe = tempFromDisabled();
+    console.log('snapshot before', {tempFromDisabled}, analyzerTemp.snapShotProducers());
+
+    // make a change
+    x.set(28);
+    console.log('snapshot in between', {tempFromDisabled}, analyzerTemp.snapShotProducers());
+    valSubscribe = tempFromDisabled();
+    
+    // console.log('analyzerTemp computed', tempFromDisabled);
+    // console.log('analyzerTemp producers', analyzerTemp.getDirtyProducers());
+    console.log('snapshot after', {tempFromDisabled}, analyzerTemp.snapShotProducers());
+
   }
 
   /**
@@ -182,7 +224,7 @@ export class FieldsSettingsService {
     /* will access the signal internally, so it's "hot" */
     return this.#fieldSignalsCache.getOrCreate(fieldName, () => this.getFieldSettings(fieldName));
   }
-  #fieldSignalsCache = new ComputedCacheHelper<string, FieldSettings>();
+  #fieldSignalsCache = new ComputedCacheHelper<string, FieldSettings>('fields');
 
   /**
    * Used for translation state stream for a specific field.
@@ -192,7 +234,7 @@ export class FieldsSettingsService {
   getTranslationState(fieldName: string): Signal<TranslationState> {
     return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.#fieldsProps()[fieldName].translationState);
   }
-  #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>();
+  #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>('transl-state');
 
   /**
    * Triggers a reevaluation of all formulas.

@@ -39,26 +39,20 @@ export class LanguageInstanceService extends SignalStoreObservableBase<number, F
   }
 
   /**
-   * Get an EntityReader for the current form
-   * use in fields settings service
+   * Get an EntityReader for the current form.
+   * ATM used in fields settings service.
+   * 
+   * If the form doesn't exist, the reader returned will not have the correct languages specified.
+   * This is to avoid errors when the form is not yet loaded or is being unloaded.
    */
-  getEntityReader$(formId: number) {
-    return this.getLanguage$(formId)  // This is already distinctUntilChanged
-      .pipe(
-        map((language) => new EntityReader(language.current, language.primary)),
-        // Ensure the EntityReader is reused and not recreated every time
-        shareReplay(1)
-      );
-  }
-
   getEntityReader(formId: number): Signal<EntityReader> {
     // Place creation of the language signal here to avoid creating it multiple times
     return this.#entityReaderCache.getOrCreate(formId, () => {
-      const language = this.getSignal(formId);
-      return new EntityReader(language().current, language().primary);
+      const language = this.getSignal(formId)() ?? FormLanguage.empty();
+      return new EntityReader(language.current, language.primary);
     });
   }
-  #entityReaderCache = new ComputedCacheHelper<number, EntityReader>();
+  #entityReaderCache = new ComputedCacheHelper<number, EntityReader>('entityReader');
 
   // use in form config service for language$()
   getLanguage$(formId: number): Observable<FormLanguageComplete> {
@@ -73,7 +67,7 @@ export class LanguageInstanceService extends SignalStoreObservableBase<number, F
   getHideHeaderSignal(formId: number): Signal<boolean> {
     return this.#signalsHideHeaderCache.getOrCreate(formId, () => this.cache()[formId]?.hideHeader ?? false);
   }
-  #signalsHideHeaderCache = new ComputedCacheHelper<number, boolean>();
+  #signalsHideHeaderCache = new ComputedCacheHelper<number, boolean>('hideHeader');
 
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */

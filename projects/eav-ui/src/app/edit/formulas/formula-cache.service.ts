@@ -5,7 +5,6 @@ import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { FormulaHelpers } from './helpers/formula.helpers';
-// tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
 import { FormulaResult, DesignerState, FormulaResultRaw, FormulaIdentifier } from './models/formula-results.models';
 import { ServiceBase } from '../../shared/services/service-base';
@@ -13,11 +12,12 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaDesignerService } from './formula-designer.service';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { FormConfigService } from '../state/form-config.service';
-import { ItemHelper } from '../shared/helpers/item.helper';
 import { LoggingService, LogSeverities } from '../shared/services/logging.service';
 import { ItemService } from '../shared/store/item.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { ContentTypeItemService } from '../shared/store/content-type-item.service';
+import { named } from '../../shared/helpers/signal.helpers';
+import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;
 const nameOfThis = 'FormulaCacheService';
@@ -29,10 +29,10 @@ const nameOfThis = 'FormulaCacheService';
 export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
   /** All the formulas with various additional info to enable execution and editing */
-  formulas = signal<FormulaCacheItem[]>([]);
+  formulas = named('formulas', signal<FormulaCacheItem[]>([], { equal: isEqual }));
 
   /** All the formula results */
-  results = signal<FormulaResult[]>([]);
+  results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
 
   /** Parent service for call backs */
   private designerSvc: FormulaDesignerService;
@@ -257,7 +257,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     this.formulas.set(newCache);
   }
 
-  private formulaListIndexAndOriginal(fOrDs: FormulaCacheItem | DesignerState) {
+  public formulaListIndexAndOriginal(fOrDs: FormulaCacheItem | DesignerState) {
     const list = this.formulas();
     const index = list.findIndex(f => f.entityGuid === fOrDs.entityGuid && f.fieldName === fOrDs.fieldName && f.target === fOrDs.target);
     const old = list[index];
@@ -405,14 +405,28 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
       isOnlyPromise,
     };
 
-    const {list, index, old} = this.resultListIndexAndOriginal(formulaItem);
-    const newResults = index >= 0
-      ? [...list.slice(0, index), newResult, ...list.slice(index + 1)]
-      : [newResult, ...list];
+    // We should not track reading the list during formula execution
+    // since we don't depend on it!
+    untracked(() => {
+      const { list, index } = this.resultListIndexAndOriginal(formulaItem);
+      const newResults = index >= 0
+        ? [...list.slice(0, index), newResult, ...list.slice(index + 1)]
+        : [newResult, ...list];
 
-    // TODO: REACTIVATE IF POSSIBLE
-    untracked(() => this.results.set(newResults));
-    // this.results.set(newResults);
+      // TODO: REACTIVATE IF POSSIBLE
+      // untracked(() => this.results.set(newResults));
+      // this.results.set(newResults);
+
+      // side effect within props calculations
+      // setTimeout(() => {
+        this.results.set(newResults);
+      // }, 0);
+    });
+
+    // side effect within props calculations
+    // setTimeout(() => {
+    //   this.results.set(newResults)
+    // }, 0);
   }
 
   resultListIndexAndOriginal(r: FormulaIdentifier) {

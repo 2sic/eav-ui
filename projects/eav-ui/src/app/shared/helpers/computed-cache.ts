@@ -1,5 +1,6 @@
 import { computed, Signal, CreateComputedOptions } from '@angular/core';
 import isEqual from 'lodash-es/isEqual';
+import { named } from './signal.helpers';
 
 export type ComputedCache<TKey extends string, TValue> = Record<TKey, Signal<TValue>>;
 
@@ -7,9 +8,11 @@ export type ComputedCache<TKey extends string, TValue> = Record<TKey, Signal<TVa
  * Special helper with Signals to cache computed signals.
  */
 export class ComputedCacheHelper<TKey extends string | number, TValue> {
-  // private cache: ComputedCache<TKey, TValue> = {};// as any;
 
-  private cache: Record<TKey, Signal<TValue>> = {} as Record<TKey, Signal<TValue>>;// as any;
+  constructor(private name: string = 'cache-name?', private named: boolean = true) {
+  }
+
+  private cache: Record<TKey, Signal<TValue>> = {} as Record<TKey, Signal<TValue>>;
 
   get(key: TKey): Signal<TValue> {
     return this.cache[key];
@@ -26,7 +29,10 @@ export class ComputedCacheHelper<TKey extends string | number, TValue> {
     if (this.cache[key])
       return { signal: this.cache[key], isNew: false };
     const sig = computed(() => factory(), options ?? { equal: isEqual });
-    return { signal: this.set(key, sig), isNew: true };
+    const final = this.named
+      ? named(`${this.name}-${key}`, sig)
+      : sig;
+    return { signal: this.set(key, final), isNew: true };
   }
 
 

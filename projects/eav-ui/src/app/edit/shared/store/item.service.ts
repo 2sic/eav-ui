@@ -45,7 +45,7 @@ export class ItemService extends SignalStoreObservableBase<string, EavItem> {
     const result = this.#itemAttributesCache.getOrCreate(entityGuid, () => this.getSignal(entityGuid)()?.Entity.Attributes);
     return l.r(result);
   }
-  #itemAttributesCache = new ComputedCacheHelper<string, EavEntityAttributes>();
+  #itemAttributesCache = new ComputedCacheHelper<string, EavEntityAttributes>('itemAttributes');
 
   getItemAttributes(entityGuid: string): EavEntityAttributes {
     const l = this.log.fn('getItemAttributes', { entityGuid });
@@ -78,7 +78,7 @@ export class ItemService extends SignalStoreObservableBase<string, EavItem> {
   getItemHeaderSignal(entityGuid: string): Signal<ItemIdentifierHeader> {
     return this.#itemHeaderCache.getOrCreate(entityGuid, () => this.getSignal(entityGuid)()?.Header);
   }
-  #itemHeaderCache = new ComputedCacheHelper<string, ItemIdentifierHeader>();
+  #itemHeaderCache = new ComputedCacheHelper<string, ItemIdentifierHeader>('itemHeader');
 
   //#endregion
 
@@ -90,7 +90,7 @@ export class ItemService extends SignalStoreObservableBase<string, EavItem> {
       return header == null ? true : header.IsEmptyAllowed && header.IsEmpty;
     });
   }
-  #slotIsEmptyCache = new ComputedCacheHelper<string, boolean>();
+  #slotIsEmptyCache = new ComputedCacheHelper<string, boolean>('slotIsEmpty');
 
   //#endregion
 

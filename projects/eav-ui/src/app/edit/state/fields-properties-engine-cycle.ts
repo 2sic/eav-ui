@@ -5,6 +5,7 @@ import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropsEngine } from './fields-properties-engine';
+import { EavEntityAttributes } from '../shared/models/eav';
 
 const logThis = false;
 const nameOfThis = 'FieldsPropsEngineCycle';
@@ -33,6 +34,7 @@ export class FieldsPropsEngineCycle {
     private readonly initialValues: ItemValuesOfLanguage,
     /** The field props at start and during the calculation cycles (may be updated until complete) */
     public fieldProps: Record<string, FieldProps>,
+    public allAttributes: EavEntityAttributes
   ) {
     this.values = { ...initialValues };
   }
