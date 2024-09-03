@@ -51,16 +51,21 @@ body {
 
 // Create CSS variables for the dialog max height
 :root {
-  --edit-ui-dialog-top-padding: #{$edit-ui-dialog-top-padding};
-  --edit-ui-dialog-header-max-height: #{$edit-ui-dialog-header-max-height};
-  --edit-ui-dialog-top-padding: #{$edit-ui-dialog-top-padding};
+  --edit-dialog-margin-top: 24px;
+  --edit-dialog-margins-vertical: calc(var(--edit-dialog-margin-top) * 2);
+  --edit-dialog-header-height: 52px;
+  --edit-content-max-height-no-margins: calc(100vh - var(--edit-dialog-header-height));
+
 
   // Debug Views on main edit
-  --edit-ui-dialog-debug-max-height: 52px;
-  --debug-info-container-height: 300px;
-  --debug-info-container-margin: 16px;
+  --edit-footer-bar-height: 52px;
+  --edit-footer-container-height: 300px;
+  --edit-footer-container-margin: 16px;
+  --edit-footer-container-height-total: calc(var(--edit-footer-container-height) + var(--edit-footer-container-margin));
 
-  --debug-info-container-total-height: calc(var(--debug-info-container-height) + var(--debug-info-container-margin));
-  --edit-ui-dialog-max-height-with-debug: calc(100vh - var(--edit-ui-dialog-top-padding) - var(--edit-ui-dialog-header-max-height) - var(--edit-ui-dialog-debug-max-height) - var(--edit-ui-dialog-top-padding));
-  --edit-ui-dialog-max-height-with-debug-mobile: calc(100vh - var(--edit-ui-dialog-header-max-height) - var(--edit-ui-dialog-debug-max-height));
+
+  // TODO: this must be deprecated but still used in popup dialog
+  --edit-ui-dialog-max-height-mobile: calc(100vh - var(--edit-dialog-header-height));
+  --edit-content-max-height-default: calc(100vh - var(--edit-dialog-header-height) - var(--edit-dialog-margins-vertical));
+
 }

@@ -99,7 +99,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
-  protected hideHeader = this.languageStore.getHideHeaderSignal(this.formConfig.config.formId);;
+  protected hideHeader = this.languageStore.getHideHeaderSignal(this.formConfig.config.formId);
 
   private loadIconsService = transient(LoadIconsService);
   private formDataService = transient(FormDataService);
@@ -121,7 +121,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #debugWasModified = false;
 
   /** Signal to tell the UI that the footer needs more space (changes CSS) */
-  expandDebugFooter = signal(false);
+  expandDebugFooter = signal(0);
 
   protected delayForm = toSignal(
     of(false).pipe(
@@ -212,10 +212,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     }
   }
 
-  trackByFn(index: number, item: EavItem) {
-    return item.Entity.Guid;
-  }
-
   /** Save all forms */
   saveAll(close: boolean) {
     const l = this.log.fn('saveAll', { close });
@@ -296,7 +292,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     }
   }
 
-  debugInfoOpened(opened: boolean) {
+  debugInfoOpened(opened: number) {
     this.log.fn('debugInfoOpened', { opened });
     this.expandDebugFooter.set(opened);
   }

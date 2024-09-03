@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output, QueryList } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
-import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 import { LogsDumpComponent } from './logs-dump/logs-dump.component';
 import { FormulaDesignerComponent } from './formula-designer/formula-designer.component';
@@ -30,7 +29,7 @@ declare const window: EavWindow;
   ],
 })
 export class EditDialogFooterComponent {
-  @Output() private debugInfoOpened = new EventEmitter<boolean>();
+  @Output() private debugInfoOpened = new EventEmitter<number>();
 
   DebugTypes = DebugTypes;
   activeDebug: DebugType;
@@ -38,6 +37,6 @@ export class EditDialogFooterComponent {
 
   toggleDialog(type: DebugType): void {
     this.activeDebug = type !== this.activeDebug ? type : null;
-    this.debugInfoOpened.emit(this.activeDebug != null);
+    this.debugInfoOpened.emit(this.activeDebug != null ? 1 : 0);
   }
 }

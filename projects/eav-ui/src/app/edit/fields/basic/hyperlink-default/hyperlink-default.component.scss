@@ -54,7 +54,7 @@
 
 .preview-image {
   width: 100%;
-  max-height: calc(100vh - 219px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding});
+  max-height: calc(100vh - 219px - var(--edit-dialog-header-height) - var(--edit-dialog-margin-top));
   height: auto;
 }
 

@@ -61,56 +61,33 @@
 }
 
 .eav-dialog-content {
+  // Default parameters: max height, no footer
+  --edit-content-max-height: var(--edit-content-max-height-no-margins);
+  --edit-footer-height: 0px;
+  --edit-margins-vertical: var(--edit-dialog-margins-vertical);
+  --edit-safari-fix: 0px;
   margin: 0;
   padding: 0;
-  max-height: $edit-ui-dialog-max-height;
+  max-height: calc(var(--edit-content-max-height) - var(--edit-footer-height) - var(--edit-margins-vertical) + var(--edit-safari-fix));
   background-color: rgba(0, 0, 0, 0.06);
 
   @media (max-width: 600px) {
-    max-height: $edit-ui-dialog-max-height-mobile;
+    --edit-margins-vertical: 0px;
   }
 
   // override for expandable field header to be visible on safari
   // as main dialog header was above it otherwise
   &.hide-header-height-fix {
-    max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height}) !important;
-
-    @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-mobile} + #{$edit-ui-dialog-header-max-height}) !important;
-    }
+    --edit-safari-fix: var(--edit-dialog-header-height);
   }
 }
 
 .eav-dialog-content.debug-enabled {
-  max-height: var(--edit-ui-dialog-max-height-with-debug);
-
-  @media (max-width: 600px) {
-    max-height: var(--edit-ui-dialog-max-height-with-debug-mobile);
-  }
-
-  &.hide-header-height-fix {
-    max-height: calc(var(--edit-ui-dialog-max-height-with-debug) + var(--edit-ui-dialog-header-max-height)) !important;
-
-    @media (max-width: 600px) {
-      max-height: calc(var(--edit-ui-dialog-max-height-with-debug-mobile) + var(--edit-ui-dialog-header-max-height)) !important;
-    }
-  }
+  --edit-footer-height: var(--edit-footer-bar-height);
 }
 
 .eav-dialog-content.debug-enabled.debug-info-is-open {
-  max-height: calc(var(--edit-ui-dialog-max-height-with-debug) - var(--debug-info-container-total-height));
-
-  @media (max-width: 600px) {
-    max-height: calc(var(--edit-ui-dialog-max-height-with-debug-mobile) - var(--debug-info-container-total-height));
-  }
-
-  &.hide-header-height-fix {
-    max-height: calc(var(--edit-ui-dialog-max-height-with-debug) - var(--debug-info-container-total-height) + var(--edit-ui-dialog-header-max-height)) !important;
-
-    @media (max-width: 600px) {
-      max-height: calc(var(--edit-ui-dialog-max-height-with-debug-mobile) - var(--debug-info-container-total-height) + var(--edit-ui-dialog-header-max-height)) !important;
-    }
-  }
+  --edit-footer-height: calc(var(--edit-footer-bar-height) + var(--edit-footer-container-height-total));
 }
 
 .mat-mdc-dialog-actions {

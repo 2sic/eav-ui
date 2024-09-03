@@ -16,16 +16,18 @@
         }">
       <div class="eav-layout-grid">
         <div class="eav-layout-grid__inner">
-          @if (!delayForm()) {
-          <div class="eav-layout-grid__cell--span-12" appFormSlide>
-            @for (item of vm.items; track trackByFn($index, item)) {
-            <!-- TODO:: Items as Signal bug -->
-            <!-- @for (item of items(); track trackByFn($index, item)) { -->
-            <div>
-              <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
+          @if (!delayForm())
+          {
+            <div class="eav-layout-grid__cell--span-12" appFormSlide>
+              @for (item of vm.items; track item.Entity.Guid)
+              {
+                <!-- TODO:: Items as Signal bug -->
+                <!-- @for (item of items(); track trackByFn($index, item)) { -->
+                <div>
+                  <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
+                </div>
+              }
             </div>
-            }
-          </div>
           }
         </div>
       </div>
@@ -47,11 +49,12 @@
     </extended-fab-speed-dial>
     }
   </div>
-  @if (showFooter()) {
-  @defer {
-  <app-edit-dialog-footer mat-dialog-actions (debugInfoOpened)="debugInfoOpened($event)">
-  </app-edit-dialog-footer>
-  }
+  @if (showFooter())
+  {
+    @defer {
+      <app-edit-dialog-footer mat-dialog-actions (debugInfoOpened)="debugInfoOpened($event)">
+      </app-edit-dialog-footer>
+    }
   }
 </div>
 }
