@@ -3,7 +3,7 @@ import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { EntityReader } from '../shared/helpers';
 import { FormLanguage } from './form-languages.model';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
-import { FormulaPromiseHandler } from '../formulas/formula-promise-handler';
+import { FormulaPromiseHandler } from '../formulas/promise/formula-promise-handler';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';

@@ -1,13 +1,14 @@
 import { Injectable, signal, untracked } from '@angular/core';
-import { FieldValue } from '../../../../../edit-types';
-import { FormulaTarget } from './models/formula.models';
-import { FormulaCacheItem } from './models/formula-cache.model';
-import { FormulaResult, DesignerState, FormulaIdentifier } from './models/formula-results.models';
-import { EavLogger } from '../../shared/logging/eav-logger';
-import { named } from '../../shared/signals/signal.utilities';
+import { FieldValue } from '../../../../../../edit-types';
+import { FormulaTarget } from '../targets/formula-targets';
+import { FormulaCacheItem } from './formula-cache.model';
+import { FormulaIdentifier } from '../results/formula-results.models';
+import { FormulaResultCacheItem } from './formula-cache.model';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+import { named } from '../../../shared/signals/signal.utilities';
 import isEqual from 'lodash-es/isEqual';
 import { FormulaCacheBuilder } from './formula-cache.builder';
-import { transient } from '../../core';
+import { transient } from '../../../core';
 
 const logThis = false;
 const nameOfThis = 'FormulaCacheService';
@@ -22,7 +23,7 @@ export class FormulaCacheService {
   public formulas = named('formulas', signal<FormulaCacheItem[]>([], { equal: isEqual }));
 
   /** All the formula results */
-  #results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
+  #results = named('formula-results', signal<FormulaResultCacheItem[]>([], { equal: isEqual }));
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 
@@ -68,9 +69,9 @@ export class FormulaCacheService {
 
     const updated: FormulaCacheItem = {
       ...value,
-      sourceFromSettings: formulaItem.source,
-      sourceGuid,
-      sourceId,
+      sourceCodeSaved: formulaItem.sourceCode,
+      sourceCodeGuid: sourceGuid,
+      sourceCodeId: sourceId,
     };
 
     const newCache = [...list.slice(0, index), updated, ...list.slice(index + 1)];
@@ -102,16 +103,16 @@ export class FormulaCacheService {
    * @param fieldName
    * @param target
    */
-  public resetFormula(designer: DesignerState): void {
-    const { list: resList, index: resIndex } = this.resultListIndexAndOriginal(designer);
+  public resetFormula(id: FormulaIdentifier): void {
+    const { list: resList, index: resIndex } = this.resultListIndexAndOriginal(id);
     if (resIndex >= 0) {
       const newResults = [...resList.slice(0, resIndex), ...resList.slice(resIndex + 1)];
       this.#results.set(newResults);
     }
 
-    const { list, index, value: formValue } = this.formulaListIndexAndOriginal(designer);
-    if (formValue?.sourceFromSettings != null) {
-      this.updateFormulaFromEditor(designer, formValue.sourceFromSettings, true);
+    const { list, index, value: formValue } = this.formulaListIndexAndOriginal(id);
+    if (formValue?.sourceCodeSaved != null) {
+      this.updateFormulaFromEditor(id, formValue.sourceCodeSaved, true);
     } else if (index >= 0) {
       const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
       this.formulas.set(newCache);
@@ -126,8 +127,8 @@ export class FormulaCacheService {
    * @param formula
    * @param run
    */
-  public updateFormulaFromEditor(designer: DesignerState, formula: string, run: boolean): void {
-    const newCache = this.#cacheBuilder.updateFormulaFromEditor(this, designer, formula, run);
+  public updateFormulaFromEditor(id: FormulaIdentifier, formula: string, run: boolean): void {
+    const newCache = this.#cacheBuilder.updateFormulaFromEditor(this, id, formula, run);
     this.formulas.set(newCache);
   }
 
@@ -141,7 +142,7 @@ export class FormulaCacheService {
    * @param isOnlyPromise
    */
   public cacheResults(formulaItem: FormulaIdentifier, value: FieldValue, isError: boolean, isOnlyPromise: boolean): void {
-    const newResult: FormulaResult = {
+    const newResult: FormulaResultCacheItem = {
       entityGuid: formulaItem.entityGuid,
       fieldName: formulaItem.fieldName,
       target: formulaItem.target,

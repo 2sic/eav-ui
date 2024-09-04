@@ -1,18 +1,17 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { FormulaHelpers } from './helpers/formula.helpers';
-import { FormulaTargets } from './models/formula.models';
-import { DesignerState, FormulaResult } from './models/formula-results.models';
-import { ServiceBase } from '../../shared/services/service-base';
-import { EavLogger } from '../../shared/logging/eav-logger';
-import { transient } from '../../core';
-import { FormulaTargetsService } from './formula-targets.service';
-import { EntityOption, FieldOption, TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { FormulaV1Helpers } from './helpers/formula-v1-snippets';
-import { FormulaCacheService } from './formula-cache.service';
-import { FieldsSettingsService } from '../state/fields-settings.service';
-import { ItemService } from '../shared/store/item.service';
-import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
-import { FormulaCacheItem } from './models/formula-cache.model';
+import { Injectable } from '@angular/core';
+import { FormulaTargets } from '../targets/formula-targets';
+import { DesignerState } from './designer-state.model';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+import { transient } from '../../../core';
+import { FormulaTargetsService } from '../targets/formula-targets.service';
+import { EntityOption, FieldOption, TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
+import { FormulaV1Helpers } from './formula-v1-snippets';
+import { FormulaCacheService } from '../cache/formula-cache.service';
+import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { ItemService } from '../../shared/store/item.service';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { FormulaCacheItem } from '../cache/formula-cache.model';
+import { IntellisenseV2 } from './intellisense-v2';
 
 const logThis = false;
 const nameOfThis = 'FormulaDesignerService';
@@ -41,10 +40,10 @@ export class FormulaDesignerService {
   } satisfies DesignerState);
 
   /** Formula result of the formula which is currently open in the editor */
-  formulaResult = computedObj<FormulaResult>('formulaResult', () => {
+  formulaResult = computedObj('formulaResult', () => {
     const state = this.designerState();
     const { value } = this.cache.resultListIndexAndOriginal(state);
-    return value as FormulaResult;
+    return value;
   });
 
   #targetsService = transient(FormulaTargetsService);
@@ -148,7 +147,7 @@ export class FormulaDesignerService {
     const formula = this.currentFormula();
     const itemHeader = this.#currentItemHeader();
     return formula != null && itemHeader != null
-      ? FormulaHelpers.buildFormulaTypings(formula, this.fieldsOptions(), itemHeader.Prefill)
+      ? IntellisenseV2.buildFormulaTypingsV2(formula, this.fieldsOptions(), itemHeader.Prefill)
       : ''
   });
 

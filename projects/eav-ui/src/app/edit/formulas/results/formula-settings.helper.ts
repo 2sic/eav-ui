@@ -1,5 +1,5 @@
 import { FieldSettings, FieldValue } from "projects/edit-types";
-import { SettingsFormulaPrefix } from "../models/formula.models";
+import { SettingsFormulaPrefix } from '../targets/formula-targets';
 
 /**
  * Contains methods for updating settings from formulas.

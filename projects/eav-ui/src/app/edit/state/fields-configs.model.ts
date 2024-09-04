@@ -3,7 +3,7 @@ import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
 import { TranslationState } from './translate-state.model';
-import { FormulaFieldValidation } from '../formulas/models/formula.models';
+import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
 
 export interface FieldProps {
   /** The language which applied to these field props as added to cache */

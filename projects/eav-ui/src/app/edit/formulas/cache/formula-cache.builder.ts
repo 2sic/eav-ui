@@ -1,23 +1,24 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../shared/helpers';
-import { EavItem } from '../shared/models/eav/eav-item';
-import { FormulaHelpers } from './helpers/formula.helpers';
-import { FormulaFunction, FormulaTarget } from './models/formula.models';
-import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula-run-context.model';
-import { FormulaCacheItem } from './models/formula-cache.model';
-import { FormulaCacheItemConstants } from './models/formula-cache.model';
-import { FormulaResultRaw, FormulaIdentifier } from './models/formula-results.models';
-import { ServiceBase } from '../../shared/services/service-base';
-import { EavLogger } from '../../shared/logging/eav-logger';
-import { LocalizationHelpers } from '../localization/localization.helpers';
-import { FormConfigService } from '../state/form-config.service';
-import { LoggingService, LogSeverities } from '../shared/services/logging.service';
-import { ItemService } from '../shared/store/item.service';
-import { ContentTypeService } from '../shared/store/content-type.service';
-import { ContentTypeItemService } from '../shared/store/content-type-item.service';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../../shared/helpers';
+import { EavItem } from '../../shared/models/eav/eav-item';
+import { FormulaSourceCodeHelper } from './source-code-helper';
+import { FormulaFunction } from '../formula-definitions';
+import { FormulaTarget } from '../targets/formula-targets';
+import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
+import { FormulaCacheItem } from './formula-cache.model';
+import { FormulaCacheItemConstants } from './formula-cache.model';
+import { FormulaResultRaw, FormulaIdentifier } from '../results/formula-results.models';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { FormConfigService } from '../../state/form-config.service';
+import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
+import { ItemService } from '../../shared/store/item.service';
+import { ContentTypeService } from '../../shared/store/content-type.service';
+import { ContentTypeItemService } from '../../shared/store/content-type-item.service';
 import { FormulaCacheService } from './formula-cache.service';
 import { Sxc } from '@2sic.com/2sxc-typings';
 
@@ -78,7 +79,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
           // create cleaned formula function, or if this fails, add info to log & results
           let formulaFunction: FormulaFunction;
           try {
-            formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
+            formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(formula);
           } catch (error) {
             cacheSvc.cacheResults({ entityGuid, fieldName: attribute.Name, target } satisfies FormulaIdentifier, undefined, true, false);
             const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
@@ -94,12 +95,12 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
             fieldName: attribute.Name,
             fn: formulaFunction?.bind({}),
             isDraft: formulaFunction == null,
-            source: formula,
-            sourceFromSettings: formula,
-            sourceGuid: formulaItem.Guid,
-            sourceId: formulaItem.Id,
+            sourceCode: formula,
+            sourceCodeSaved: formula,
+            sourceCodeGuid: formulaItem.Guid,
+            sourceCodeId: formulaItem.Id,
             target,
-            version: FormulaHelpers.findFormulaVersion(formula),
+            version: FormulaSourceCodeHelper.findFormulaVersion(formula),
             targetEntity: sharedParts.targetEntity, // new v14.07.05
             user: sharedParts.user,   // new in v14.07.05
             app: sharedParts.app,   // new in v14.07.05
@@ -210,14 +211,13 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
    * @param formula
    * @param run
    */
-  public updateFormulaFromEditor(cacheSvc: FormulaCacheService, designer: FormulaIdentifier, formula: string, run: boolean) {
+  public updateFormulaFromEditor(cacheSvc: FormulaCacheService, id: FormulaIdentifier, formula: string, run: boolean) {
     // important: the designer contains too much info, so we need to extract the essentials
     // to not have it in the cache - which would trigger loads of changes to that signal later on.
-    const id: FormulaIdentifier = { entityGuid: designer.entityGuid, fieldName: designer.fieldName, target: designer.target };
     let formulaFunction: FormulaFunction;
     if (run) {
       try {
-        formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
+        formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(formula);
       } catch (error) {
         cacheSvc.cacheResults(id, undefined, true, false);
         const item = this.itemService.get(id.entityGuid);
@@ -231,7 +231,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       }
     }
 
-    const { list, index, value } = cacheSvc.formulaListIndexAndOriginal(designer);
+    const { list, index, value } = cacheSvc.formulaListIndexAndOriginal(id);
 
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
     const shared = this.#buildItemFormulaCacheSharedParts(null, id.entityGuid);
@@ -245,11 +245,11 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       cache: value?.cache ?? {},
       fn: formulaFunction?.bind({}),
       isDraft: run ? formulaFunction == null : true,
-      source: formula,
-      sourceFromSettings: value?.sourceFromSettings,
-      sourceGuid: value?.sourceGuid,
-      sourceId: value?.sourceId,
-      version: FormulaHelpers.findFormulaVersion(formula),
+      sourceCode: formula,
+      sourceCodeSaved: value?.sourceCodeSaved,
+      sourceCodeGuid: value?.sourceCodeGuid,
+      sourceCodeId: value?.sourceCodeId,
+      version: FormulaSourceCodeHelper.findFormulaVersion(formula),
       targetEntity: value?.targetEntity ?? shared.targetEntity,
       user: value?.user ?? shared.user,
       app: value?.app ?? shared.app,

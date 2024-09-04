@@ -1,5 +1,6 @@
+import { FieldValue } from 'projects/edit-types';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FieldValuePair, FieldSettingPair } from "./formula-results.models";
+import { FieldValuePair } from "../results/formula-results.models";
 
 /**
  * The result of a formula promise.
@@ -13,3 +14,14 @@ export class FormulaPromiseResult {
   ) {
   }
 }
+
+export interface FieldSettingPair {
+  name: string;
+  settings: SettingPair[];
+}
+
+interface SettingPair {
+  settingName: string;
+  value: FieldValue;
+}
+

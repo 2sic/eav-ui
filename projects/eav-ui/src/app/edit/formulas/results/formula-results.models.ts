@@ -1,5 +1,5 @@
 import { FieldSettings, FieldValue } from "projects/edit-types";
-import { FormulaFieldValidation, FormulaTarget } from "./formula.models";
+import { FormulaFieldValidation, FormulaTarget } from '../targets/formula-targets';
 
 export interface RunFormulasResult {
   settings: FieldSettings;
@@ -17,17 +17,6 @@ export interface FormulaIdentifier {
   target: FormulaTarget;
 }
 
-export interface FormulaResult extends FormulaIdentifier {
-  value: FieldValue;
-  isError: boolean;
-  isOnlyPromise: boolean;
-}
-
-export interface DesignerState extends FormulaIdentifier {
-  editMode: boolean;
-  isOpen: boolean;
-}
-
 export interface FormulaResultRaw {
   value?: FieldValue;
   promise?: Promise<FormulaResultRaw>;
@@ -43,12 +32,4 @@ export interface FieldValuePair {
   value: FieldValue;
 }
 
-export interface FieldSettingPair {
-  name: string;
-  settings: SettingPair[];
-}
 
-export interface SettingPair {
-  settingName: string;
-  value: FieldValue;
-}

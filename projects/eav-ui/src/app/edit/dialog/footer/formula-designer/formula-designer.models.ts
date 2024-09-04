@@ -1,5 +1,5 @@
-import { FormulaTarget } from '../../../formulas/models/formula.models';
-import { FormulaCacheItem } from '../../../formulas/models/formula-cache.model';
+import { FormulaTarget } from '../../../formulas/targets/formula-targets';
+import { FormulaCacheItem } from '../../../formulas/cache/formula-cache.model';
 
 export interface EntityOption {
   entityGuid: string;

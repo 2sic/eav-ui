@@ -1,6 +1,7 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
-import { FormulaTargets, FormulaVersions } from '../models/formula.models';
-import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../models/formula-run-context.model';
+import { FormulaVersions } from '../formula-definitions';
+import { FormulaTargets } from '../targets/formula-targets';
+import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 
 /**

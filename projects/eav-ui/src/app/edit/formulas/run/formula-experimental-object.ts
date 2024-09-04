@@ -1,5 +1,5 @@
-import { FormulaV1ExperimentalEntity } from '../models/formula-run-experimental.model';
-import { FormulaV1Experimental } from '../models/formula-run-experimental.model';
+import { FormulaV1ExperimentalEntity } from './formula-run-experimental.model';
+import { FormulaV1Experimental } from './formula-run-experimental.model';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';

@@ -6,11 +6,12 @@ import type * as Monaco from 'monaco-editor';
 import { EntityEditService } from '../../../../shared/services/entity-edit.service';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
-import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
-import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula.constants';
-import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/models/formula.models';
+import { FormulaDesignerService } from '../../../formulas/designer/formula-designer.service';
+import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula-definitions';
+import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/targets/formula-targets';
 import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
-import { DesignerState } from '../../../formulas/models/formula-results.models';
+import { FormulaIdentifier } from '../../../formulas/results/formula-results.models';
+import { DesignerState } from '../../../formulas/designer/designer-state.model';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
@@ -156,8 +157,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   formulaChanged(formula: string): void {
-    const designer = this.#designerSvc.designerState();
-    this.#designerSvc.cache.updateFormulaFromEditor(designer, formula, false);
+    this.#designerSvc.cache.updateFormulaFromEditor(this.#designerIdentifier, formula, false);
   }
 
   onFocused(focused: boolean): void {
@@ -177,7 +177,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     };
     this.#designerSvc.designerState.set(designer);
     if (designer.editMode && this.#designerSvc.currentFormula() == null)
-      this.#designerSvc.cache.updateFormulaFromEditor(designer, this.template(), false);
+      this.#designerSvc.cache.updateFormulaFromEditor(this.#designerIdentifier, this.template(), false);
   }
 
   reset(): void {
@@ -185,17 +185,24 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ...this.#designerSvc.designerState(),
       editMode: false,
     };
+    const identifier = this.#designerIdentifier;
     this.#designerSvc.designerState.set(designer);
-    this.#designerSvc.cache.resetFormula(designer);
-    this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas('designer-reset');
+    this.#designerSvc.cache.resetFormula(identifier);
+    this.#designerSvc.itemSettingsServices[identifier.entityGuid].retriggerFormulas('designer-reset');
   }
 
   run(): void {
-    const designer = this.#designerSvc.designerState();
+    const identifier = this.#designerIdentifier;
     const formula = this.#designerSvc.currentFormula();
-    this.#designerSvc.cache.updateFormulaFromEditor(designer, formula.source, true);
-    this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas('designer-run');
+    this.#designerSvc.cache.updateFormulaFromEditor(identifier, formula.sourceCode, true);
+    this.#designerSvc.itemSettingsServices[identifier.entityGuid].retriggerFormulas('designer-run');
     this.isDeleted.set(false);
+  }
+
+  get #designerIdentifier(): FormulaIdentifier {
+    const designer = this.#designerSvc.designerState();
+    const id: FormulaIdentifier = { entityGuid: designer.entityGuid, fieldName: designer.fieldName, target: designer.target };
+    return id;
   }
 
   //#region Save/Delete
@@ -204,7 +211,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.saving.set(true);
     const formula = this.#designerSvc.currentFormula();
 
-    if (formula.sourceId == null) {
+    if (formula.sourceCodeId == null) {
       const item = this.itemService.get(formula.entityGuid);
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       const attributeDef = contentType.Attributes.find(a => a.Name === formula.fieldName);
@@ -219,7 +226,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         {
           Title: formula.target,
           Target: formula.target,
-          Formula: formula.source,
+          Formula: formula.sourceCode,
           Enabled: true,
           ParentRelationship: {
             Add: null,
@@ -237,8 +244,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.#entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceId, { Formula: formula.source }).subscribe(() => {
-      this.#designerSvc.cache.updateSaved(formula, formula.sourceGuid, formula.sourceId);
+    this.#entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceCodeId, { Formula: formula.sourceCode }).subscribe(() => {
+      this.#designerSvc.cache.updateSaved(formula, formula.sourceCodeGuid, formula.sourceCodeId);
       this.snackBar.open('Formula saved', null, { duration: 2000 });
       this.saving.set(false);
     });
@@ -248,14 +255,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     const designer = this.#designerSvc.designerState();
     const formula = this.#designerSvc.currentFormula();
 
-    const id = formula.sourceId;
+    const id = formula.sourceCodeId;
     const title = formula.fieldName + ' - ' + formula.target;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed)
       return;
 
-    this.#entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true)
+    this.#entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceCodeId, true)
       .subscribe({
         next: () => {
           this.#designerSvc.cache.delete(formula);

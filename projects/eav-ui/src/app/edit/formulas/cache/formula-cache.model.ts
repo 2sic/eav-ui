@@ -1,9 +1,9 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
-import { FormulaFunction, FormulaVersion } from './formula.models';
-import { FormulaV1CtxTargetEntity, FormulaV1CtxUser, FormulaV1CtxApp } from './formula-run-context.model';
+import { FormulaFunction, FormulaVersion } from '../formula-definitions';
+import { FormulaV1CtxTargetEntity, FormulaV1CtxUser, FormulaV1CtxApp } from '../run/formula-run-context.model';
 import { FieldValue } from 'projects/edit-types';
 import { BehaviorSubject } from 'rxjs';
-import { FormulaIdentifier, FormulaResultRaw } from './formula-results.models';
+import { FormulaIdentifier, FormulaResultRaw } from '../results/formula-results.models';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity.
@@ -29,14 +29,17 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   /** Is formula currently being edited (not yet saved) */
   isDraft: boolean;
 
-  /** Current formula string */
-  source: string;
+  /** Current formula string - including changes from the designer */
+  sourceCode: string;
 
-  /** Formula string in field settings */
-  sourceFromSettings: string;
+  /** Formula string as it is saved, and loaded from field settings */
+  sourceCodeSaved: string;
 
-  sourceGuid: string;
-  sourceId: number;
+  /** Guid for saving / updating the current source code */
+  sourceCodeGuid: string;
+
+  /** Id for saving / updating the current source code */
+  sourceCodeId: number;
 
   /** Formula version - v1 or v2 */
   version: FormulaVersion;
@@ -45,5 +48,11 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   stopFormula: boolean;
   promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;
   updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
+}
+
+export interface FormulaResultCacheItem extends FormulaIdentifier {
+  value: FieldValue;
+  isError: boolean;
+  isOnlyPromise: boolean;
 }
 

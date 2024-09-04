@@ -5,7 +5,7 @@ import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
 import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { EntityFormStateService } from '../entity-form-state.service';
-import { FormulaDesignerService } from '../../formulas/formula-designer.service';
+import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';

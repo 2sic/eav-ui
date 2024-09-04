@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
-import { TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { DesignerState } from './models/formula-results.models';
-import { FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './models/formula.models';
-import { FormulaCacheItem } from './models/formula-cache.model';
-import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { ItemService } from '../shared/store/item.service';
-import { ContentTypeService } from '../shared/store/content-type.service';
+import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
+import { TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
+import { FormulaIdentifier } from '../results/formula-results.models';
+import { FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './formula-targets';
+import { FormulaCacheItem } from '../cache/formula-cache.model';
+import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
+import { ItemService } from '../../shared/store/item.service';
+import { ContentTypeService } from '../../shared/store/content-type.service';
 
 /**
  * Small helper service to get the target options for the formula designer.
@@ -22,13 +22,13 @@ export class FormulaTargetsService {
     private contentTypeService: ContentTypeService,
   ) { }
 
-  getTargetOptions(designer: DesignerState, formulas: FormulaCacheItem[]): TargetOption[] {
+  getTargetOptions(id: FormulaIdentifier, formulas: FormulaCacheItem[]): TargetOption[] {
     // Create a list of formula targets for the selected field - eg. Value, Tooltip, ListItem.Label, ListItem.Tooltip etc.
     const targetOptions: TargetOption[] = [];
-    if (designer.entityGuid == null || designer.fieldName == null)
+    if (id.entityGuid == null || id.fieldName == null)
       return targetOptions;
 
-    const fieldFormulas = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
+    const fieldFormulas = formulas.filter(f => f.entityGuid === id.entityGuid && f.fieldName === id.fieldName);
 
     // default targets
     for (const target of Object.values(FormulaDefaultTargets)) {
@@ -41,9 +41,9 @@ export class FormulaTargetsService {
     }
 
     // optional targets
-    const item = this.itemService.get(designer.entityGuid);
+    const item = this.itemService.get(id.entityGuid);
     const contentType = this.contentTypeService.getContentTypeOfItem(item);
-    const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
+    const attribute = contentType.Attributes.find(a => a.Name === id.fieldName);
     const inputType = attribute.InputType;
     if (InputTypeHelpers.isGroupStart(inputType)) {
       for (const target of [FormulaOptionalTargets.Collapsed]) {
@@ -110,12 +110,12 @@ export class FormulaTargetsService {
     }
 
     // currently selected target
-    const selectedExists = targetOptions.some(t => t.target === designer.target);
+    const selectedExists = targetOptions.some(t => t.target === id.target);
     if (!selectedExists) {
       const targetOption: TargetOption = {
-        hasFormula: fieldFormulas.some(f => f.target === designer.target),
-        label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
-        target: designer.target,
+        hasFormula: fieldFormulas.some(f => f.target === id.target),
+        label: id.target.substring(id.target.lastIndexOf('.') + 1),
+        target: id.target,
       };
       targetOptions.push(targetOption);
     }

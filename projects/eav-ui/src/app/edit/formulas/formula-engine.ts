@@ -2,19 +2,21 @@ import { Injectable, OnDestroy, Signal, inject, untracked } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
 import { EavContentType } from '../shared/models/eav';
-import { FormulaDesignerService } from './formula-designer.service';
-import { FormulaHelpers } from './helpers/formula.helpers';
+import { FormulaDesignerService } from './designer/formula-designer.service';
+import { FormulaHelpers } from './formula.helpers';
+import { FormulaSourceCodeHelper } from './cache/source-code-helper';
 // tslint:disable-next-line: max-line-length
-import { FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
-import { FormulaCacheItem } from './models/formula-cache.model';
-import { FormulaSettingsHelper } from './helpers/formula-settings.helper';
-import { FormulaValueCorrections } from './helpers/formula-value-corrections.helper';
-import { FormulaPromiseHandler } from './formula-promise-handler';
-import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
+import { FormulaFunctionDefault, FormulaFunctionV1, FormulaVersions } from './formula-definitions';
+import { FormulaFieldValidation, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaOptionalTargets } from './targets/formula-targets';
+import { FormulaCacheItem } from './cache/formula-cache.model';
+import { FormulaSettingsHelper } from './results/formula-settings.helper';
+import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
+import { FormulaPromiseHandler } from './promise/formula-promise-handler';
+import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FormulaObjectsInternalData, FormulaObjectsInternalWithoutFormulaItself, FormulaRunParameters } from './helpers/formula-objects-internal-data';
+import { FormulaObjectsInternalData, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
 import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
@@ -221,7 +223,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     settingsBefore: FieldSettings,
     itemHeader: ItemIdentifierShared,
     valueBefore: FieldValue,
-    reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
+    reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
     const formulas = this.#activeFieldFormulas(this.entityGuid, fieldName);
@@ -255,7 +257,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemHeader: ItemIdentifierShared,
-    reuseObjectsForFormulaDataAndContext: FormulaObjectsInternalWithoutFormulaItself,
+    reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
     const l = this.log.fnCond(logDetailsFor(formulas[0]?.fieldName), 'runFormulasOfField');
     // Target variables to fill using formula result
@@ -319,7 +321,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
    * Can be reused for a short time, as the data doesn't change in a normal cycle,
    * but it will need to be regenerated after things such as language or feature change.
    */
-  #prepareDataForFormulaObjects(entityGuid: string): FormulaObjectsInternalWithoutFormulaItself {
+  #prepareDataForFormulaObjects(entityGuid: string): FormulaExecutionSpecs {
     const language = this.formConfig.language();
     const languages = this.languageService.getAll();
     const debugEnabled = this.globalConfigService.isDebug();
@@ -333,7 +335,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       formConfig: this.formConfig,
       fieldsSettingsService: this.settingsSvc,
       features: this.features,
-    } satisfies FormulaObjectsInternalWithoutFormulaItself;
+    } satisfies FormulaExecutionSpecs;
   }
 
   /**

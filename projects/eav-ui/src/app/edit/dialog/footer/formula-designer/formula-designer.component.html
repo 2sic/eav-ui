@@ -67,7 +67,7 @@
       'focused': focused
       }">
       <mat-label class="label">Function</mat-label>
-      <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.source ?? template()"
+      <app-monaco-editor class="editor" [filename]="filename" [value]="currentFormula()?.sourceCode ?? template()"
         [jsTypings]="v2JsTypings()" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
         (focused)="onFocused(true)" (blurred)="onFocused(false)">
       </app-monaco-editor>
@@ -127,7 +127,7 @@
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="deleteFormula()"
-          [disabled]="!currentFormula()?.sourceId">
+          [disabled]="!currentFormula()?.sourceCodeId">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
@@ -139,13 +139,13 @@
       @if (allowSaveFormula)
       {
         <button mat-icon-button tippy="Save"
-          [tippyDisabled]="!state().editMode || !currentFormula()?.source"
-          [disabled]="!state().editMode || !currentFormula()?.source || saving()" (click)="save()">
+          [tippyDisabled]="!state().editMode || !currentFormula()?.sourceCode"
+          [disabled]="!state().editMode || !currentFormula()?.sourceCode || saving()" (click)="save()">
           <mat-icon>save</mat-icon>
         </button>
       }
       <button mat-icon-button tippy="Run"
-        [disabled]="!state().editMode || !currentFormula()?.source" (click)="run()">
+        [disabled]="!state().editMode || !currentFormula()?.sourceCode" (click)="run()">
         <mat-icon>play_arrow</mat-icon>
       </button>
     </div>

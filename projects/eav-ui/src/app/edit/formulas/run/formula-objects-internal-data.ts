@@ -1,6 +1,6 @@
 import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
-import { FormulaCacheItem } from '../models/formula-cache.model';
+import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
@@ -25,7 +25,7 @@ export interface FormulaRunParameters {
   item?: PickerItem;
 }
 
-export interface FormulaObjectsInternalWithoutFormulaItself {
+export interface FormulaExecutionSpecs {
   /** Initial values so formulas can ask for .initial */
   initialFormValues: ItemValuesOfLanguage;
 
@@ -45,6 +45,6 @@ export interface FormulaObjectsInternalWithoutFormulaItself {
   features: Signal<FeatureSummary[]>;
 }
 
-export interface FormulaObjectsInternalData extends FormulaObjectsInternalWithoutFormulaItself {
+export interface FormulaObjectsInternalData extends FormulaExecutionSpecs {
   runParameters: FormulaRunParameters;
 }

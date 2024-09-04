@@ -1,6 +1,6 @@
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { FieldValuePair } from '../formulas/models/formula-results.models';
+import { FieldValuePair } from '../formulas/results/formula-results.models';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { Signal } from '@angular/core';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
