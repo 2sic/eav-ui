@@ -42,10 +42,10 @@ export class FormulaContextObject implements FormulaV1Context {
     this.form = {
       runFormulas(): void {
         if (definition.version === FormulaVersions.V1) {
-          console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
+          console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
           propsData.fieldsSettingsService.retriggerFormulas('form.runFormulas()');
         } else if (definition.version === FormulaVersions.V2) {
-          console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
+          console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise.');
         }
       },
     };
