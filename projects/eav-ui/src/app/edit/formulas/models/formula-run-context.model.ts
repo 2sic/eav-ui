@@ -62,13 +62,12 @@ export interface FormulaV1CtxMetadataFor {
   string?: string;
   guid?: string;
 }
-// WIP
+
 interface FormulaV1CtxTargetEntityType {
   guid: string;
   name: string;
-  // Future: the int-id; ATM not available
-  id?: number;
 }
+
 export interface FormulaV1CtxUser {
   email: string;
   guid: string;

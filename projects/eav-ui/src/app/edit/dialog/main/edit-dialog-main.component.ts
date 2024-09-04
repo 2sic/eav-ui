@@ -76,6 +76,7 @@ const nameOfThis = 'EditDialogMainComponent';
   providers: [
     EditRoutingService,
     FormsStateService,
+    // This is shared across all entities on this form
     FormulaDesignerService,
 
     // TODO: probably move to each picker component (Errors)

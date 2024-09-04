@@ -102,7 +102,7 @@ export class FormulaDesignerService {
   }
 
   init(): void {
-    this.cache.init(this);
+    this.cache.init();
   }
 
   initAfterItemSettingsAreReady(): void {
