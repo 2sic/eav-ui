@@ -11,7 +11,7 @@ import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
-import { InputTypeSpecs } from '../../state/fields-configs.model';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { FieldValue } from '../../../../../../edit-types';
 

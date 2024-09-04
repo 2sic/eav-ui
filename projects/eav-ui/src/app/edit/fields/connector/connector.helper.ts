@@ -24,7 +24,7 @@ import { FormConfigService } from '../../state/form-config.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { AdamService } from '../../shared/services/adam.service';
 import { ContentTypeService } from '../../shared/store/content-type.service';
-import { InputTypeService } from '../../shared/store/input-type.service';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;

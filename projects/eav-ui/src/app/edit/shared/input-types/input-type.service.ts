@@ -3,8 +3,8 @@ import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.mo
 import { EavContentTypeAttribute } from '../models/eav';
 import { AttributeInputType } from '../../../../../../edit-types/src/InputTypeName';
 import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
-import { InputTypeSpecs } from '../../state/fields-configs.model';
-import { SignalStoreBase } from './signal-store-base';
+import { InputTypeSpecs } from './input-type-specs.model';
+import { SignalStoreBase } from '../store/signal-store-base';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 
 const logThis = false;

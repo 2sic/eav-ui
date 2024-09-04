@@ -1,9 +1,9 @@
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { InputTypeStrict } from '../../shared/fields/input-type-catalog';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
 import { TranslationState } from './translate-state.model';
 import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
+import { InputTypeSpecs } from '../shared/input-types/input-type-specs.model';
 
 export interface FieldProps {
   /** The language which applied to these field props as added to cache */
@@ -43,6 +43,7 @@ export interface FieldConstants {
 export interface FieldConstantsOfLanguage extends FieldConstants {
   /** The language used for the current "constants" */
   language: string,
+
   /** The initial field settings in this language */
   settingsInitial: FieldSettings,
 
@@ -51,23 +52,4 @@ export interface FieldConstantsOfLanguage extends FieldConstants {
 }
 
 
-/** Information about the InputType */
-export interface InputTypeSpecs {
-  inputType: InputTypeStrict;
-  isExternal: boolean;
 
-  /** Is the input type a string? */
-  isString: boolean;
-
-  /** Is the input type a new picker - eg. to modify Formula behavior */
-  isNewPicker: boolean;
-
-  /** The tag name of the component to use */
-  componentTagName: string;
-
-  componentTagDialogName: string;
-
-  /** Additional information about the input type such as Angular Assets */
-  metadata: InputTypeMetadata;
-
-}

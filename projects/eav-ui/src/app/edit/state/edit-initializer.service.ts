@@ -27,7 +27,7 @@ import { transient } from '../../core';
 import { AdamCacheService } from '../shared/store/adam-cache.service';
 import { ContentTypeService } from '../shared/store/content-type.service';
 import { ItemService } from '../shared/store/item.service';
-import { InputTypeService } from '../shared/store/input-type.service';
+import { InputTypeService } from '../shared/input-types/input-type.service';
 import { PublishStatusService } from '../shared/store/publish-status.service';
 import { LanguageService } from '../shared/store/language.service';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';

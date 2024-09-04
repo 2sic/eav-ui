@@ -1,6 +1,6 @@
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { InputTypeSpecs } from '../../state/fields-configs.model';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { Wrapper, WrappersCatalog } from './wrappers.constants';
 

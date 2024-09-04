@@ -7,7 +7,7 @@ import { EavItem, EavContentType } from '../shared/models/eav';
 import { FormConfigService } from './form-config.service';
 import { ItemFieldVisibility } from './item-field-visibility';
 import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
-import { InputTypeService } from '../shared/store/input-type.service';
+import { InputTypeService } from '../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;
