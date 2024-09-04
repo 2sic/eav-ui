@@ -22,17 +22,17 @@ export class FormulaValueCorrections {
       return { value: result as FieldValue, fields: [], stop };
     if (typeof result === 'object') {
       if (result instanceof Date && target === FormulaTargets.Value)
-        return { value: this.valueCorrection(result as FieldValue, inputTypeName), fields: [], stop };
+        return { value: this.correctOneValue(result as FieldValue, inputTypeName), fields: [], stop };
       if (result instanceof Promise)
         return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop };
       const corrected: FormulaResultRaw = (result as FormulaResultRaw);
       corrected.stop = stop;
       if ((result as FormulaResultRaw).value && target === FormulaTargets.Value) {
-        corrected.value = this.valueCorrection((result as FormulaResultRaw).value, inputTypeName);
+        corrected.value = this.correctOneValue((result as FormulaResultRaw).value, inputTypeName);
       }
       if ((result as FormulaResultRaw).fields) {
         corrected.fields = (result as FormulaResultRaw).fields?.map((fields) => {
-          fields.value = this.valueCorrection(fields.value, inputTypeName);
+          fields.value = this.correctOneValue(fields.value, inputTypeName);
           return fields;
         });
         return corrected;
@@ -43,7 +43,7 @@ export class FormulaValueCorrections {
 
     // atm we are only correcting Value formulas
     if (target === FormulaTargets.Value) {
-      return { value: this.valueCorrection(value.value, inputTypeName), fields: [], stop };
+      return { value: this.correctOneValue(value.value, inputTypeName), fields: [], stop };
     }
     return value;
   }
@@ -54,7 +54,7 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Corrected field value
    */
-  static valueCorrection(value: FieldValue, inputTypeName: InputTypeStrict): FieldValue {
+  static correctOneValue(value: FieldValue, inputTypeName: InputTypeStrict): FieldValue {
     if (value == null)
       return value;
     

@@ -1,6 +1,6 @@
 import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
-import { FormulaCacheItem } from '../models/formula.models';
+import { FormulaCacheItem } from '../models/formula-cache.model';
 import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';

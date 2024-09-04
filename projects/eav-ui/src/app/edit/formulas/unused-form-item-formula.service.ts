@@ -11,6 +11,10 @@ const nameOfThis = 'FormItemFormulaService';
  * Contains methods for updating value changes from formulas to the global state.
  * 
  * It's created in the field-settings-service and specific to one item.
+ * 
+ * AT THE MOMENT IT'S NOT USED, since value propagation seems to happen magically,
+ * probably because the form builder has a watcher to update things.
+ * BUT WE THINK something isn't quite right, so we keep this till EOY 2024.
  */
 @Injectable()
 export class ItemFormulaBroadcastService {

@@ -5,7 +5,10 @@ import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { FormulaHelpers } from './helpers/formula.helpers';
-import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
+import { FormulaFunction, FormulaTarget } from './models/formula.models';
+import { FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula-run-context.model';
+import { FormulaCacheItem } from './models/formula-cache.model';
+import { FormulaCacheItemConstants } from './models/formula-cache.model';
 import { FormulaResult, DesignerState, FormulaResultRaw, FormulaIdentifier } from './models/formula-results.models';
 import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
@@ -29,10 +32,10 @@ const nameOfThis = 'FormulaCacheService';
 export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
   /** All the formulas with various additional info to enable execution and editing */
-  formulas = named('formulas', signal<FormulaCacheItem[]>([], { equal: isEqual }));
+  public formulas = named('formulas', signal<FormulaCacheItem[]>([], { equal: isEqual }));
 
   /** All the formula results */
-  results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
+  public results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
 
   constructor(
     private formConfig: FormConfigService,
@@ -47,7 +50,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
 
   init(designerSvc: FormulaDesignerService) {
     this.#designerSvc = designerSvc;
-    const formulaCache = this.buildFormulaCache();
+    const formulaCache = this.#buildFormulaCache();
     this.formulas.set(formulaCache);
   }
 
@@ -63,7 +66,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * Used for building formula cache.
    * @returns
    */
-  private buildFormulaCache(): FormulaCacheItem[] {
+  #buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
     const language = this.formConfig.language();
     const entityReader = new EntityReader(language.current, language.primary);
@@ -71,7 +74,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.get(entityGuid);
 
-      const sharedParts = this.buildItemFormulaCacheSharedParts(item, entityGuid);
+      const sharedParts = this.#buildItemFormulaCacheSharedParts(item, entityGuid);
 
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
@@ -99,7 +102,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }
 
-          const streams = this.createPromisedParts();
+          const streams = this.#createPromisedParts();
 
           const formulaCacheItem: FormulaCacheItem = {
             cache: {},
@@ -138,7 +141,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param entityGuid
    * @returns
    */
-  buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemShared {
+  #buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemConstants {
     item = item ?? this.itemService.get(entityGuid);
     const entity = item.Entity;
     const mdFor = entity.For;
@@ -189,7 +192,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         _noContextInHttpHeaders: true,  // disable pageid etc. headers in http headers, because it would make debugging very hard
         _autoAppIdsInUrl: true,         // auto-add appid and zoneid to url so formula developer can see what's happening
       } as any),
-    } satisfies FormulaCacheItemShared;
+    } satisfies FormulaCacheItemConstants;
   }
 
 
@@ -197,7 +200,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * Used for pacing promises$ and callback$ triggers. Callback$ triggers for the first time when the last promise is resolved.
    * @returns
    */
-  private createPromisedParts() {
+  #createPromisedParts() {
     const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
     const callback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
     const lastPromise = promises$.pipe(
@@ -223,7 +226,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param allowDraft
    * @returns Filtered formula array
    */
-  getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
+  public getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
     return this.formulas().filter(f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
@@ -242,7 +245,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param sourceId
    * @returns
    */
-  updateSaved(formulaItem: FormulaCacheItem, sourceGuid: string, sourceId: number): void {
+  public updateSaved(formulaItem: FormulaCacheItem, sourceGuid: string, sourceId: number): void {
     const { list, index, old } = this.formulaListIndexAndOriginal(formulaItem);
     if (old == null)
       return;
@@ -271,8 +274,8 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param fieldName
    * @param target
    */
-  delete(formulaItem: FormulaCacheItem): void {
-    const { list, index, old } = this.formulaListIndexAndOriginal(formulaItem);
+  public delete(formulaItem: FormulaCacheItem): void {
+    const { list, index } = this.formulaListIndexAndOriginal(formulaItem);
     const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
     this.formulas.set(newCache);
   }
@@ -283,23 +286,14 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param fieldName
    * @param target
    */
-  resetFormula(designer: DesignerState): void {
-    const entityGuid = designer.entityGuid;
-    const fieldName = designer.fieldName;
-    const target = designer.target;
-
-    const x = this.resultListIndexAndOriginal(designer);
-    const oldResults = this.results();
-    const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
+  public resetFormula(designer: DesignerState): void {
+    const { list: oldResults, index: oldResultIndex } = this.resultListIndexAndOriginal(designer);
     if (oldResultIndex >= 0) {
       const newResults = [...oldResults.slice(0, oldResultIndex), ...oldResults.slice(oldResultIndex + 1)];
       this.results.set(newResults);
     }
 
-    const list = this.formulas();
-    const index = list.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
-    const oldFormulaItem = list[index];
-
+    const { list, index, old: oldFormulaItem } = this.formulaListIndexAndOriginal(designer);
     if (oldFormulaItem?.sourceFromSettings != null) {
       this.updateFormulaFromEditor(designer, oldFormulaItem.sourceFromSettings, true);
     } else if (index >= 0) {
@@ -316,7 +310,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param formula
    * @param run
    */
-  updateFormulaFromEditor(designer: DesignerState, formula: string, run: boolean): void {
+  public updateFormulaFromEditor(designer: DesignerState, formula: string, run: boolean): void {
     const entityGuid = designer.entityGuid;
     const fieldName = designer.fieldName;
     const target = designer.target;
@@ -353,11 +347,11 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
     // const old = list[index];
 
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
-    const shared = this.buildItemFormulaCacheSharedParts(null, entityGuid);
+    const shared = this.#buildItemFormulaCacheSharedParts(null, entityGuid);
 
     const streams = (old?.promises$ && old?.updateCallback$)
       ? { promises$: old.promises$, callback$: old.updateCallback$ }
-      : this.createPromisedParts();
+      : this.#createPromisedParts();
 
     const newFormulaItem: FormulaCacheItem = {
       cache: old?.cache ?? {},
@@ -395,7 +389,7 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
    * @param isError
    * @param isOnlyPromise
    */
-  cacheResults(formulaItem: FormulaIdentifier, value: FieldValue, isError: boolean, isOnlyPromise: boolean): void {
+  public cacheResults(formulaItem: FormulaIdentifier, value: FieldValue, isError: boolean, isOnlyPromise: boolean): void {
     const newResult: FormulaResult = {
       entityGuid: formulaItem.entityGuid,
       fieldName: formulaItem.fieldName,
@@ -414,26 +408,15 @@ export class FormulaCacheService extends ServiceBase implements OnDestroy {
         ? [...list.slice(0, index), newResult, ...list.slice(index + 1)]
         : [newResult, ...list];
 
-      // TODO: REACTIVATE IF POSSIBLE
-      // untracked(() => this.results.set(newResults));
-      // this.results.set(newResults);
-
       // side effect within props calculations
-      // setTimeout(() => {
         l.a('set results', { list, index, newResults});
         this.results.set(newResults);
-      // }, 0);
     });
-
-    // side effect within props calculations
-    // setTimeout(() => {
-    //   this.results.set(newResults)
-    // }, 0);
   }
 
-  resultListIndexAndOriginal(r: FormulaIdentifier) {
+  public resultListIndexAndOriginal(id: FormulaIdentifier) {
     const list = this.results();
-    const index = list.findIndex(result => result.entityGuid === r.entityGuid && result.fieldName === r.fieldName && result.target === r.target);
+    const index = list.findIndex(r => r.entityGuid === id.entityGuid && r.fieldName === id.fieldName && r.target === id.target);
     const old = list[index];
     return { list, index, old };
   }

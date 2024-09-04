@@ -5,7 +5,8 @@ import { EavContentType } from '../shared/models/eav';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
+import { FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaVersions, FormulaOptionalTargets } from './models/formula.models';
+import { FormulaCacheItem } from './models/formula-cache.model';
 import { FormulaSettingsHelper } from './helpers/formula-settings.helper';
 import { FormulaValueCorrections } from './helpers/formula-value-corrections.helper';
 import { FormulaPromiseHandler } from './formula-promise-handler';
@@ -369,7 +370,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
           if (resultIsPure) {
             l.a('V1 formula result is pure', { v1Result });
             const v1Value = (formula.target === FormulaTargets.Value)
-              ? FormulaValueCorrections.valueCorrection(v1Result as FieldValue, inputTypeName)
+              ? FormulaValueCorrections.correctOneValue(v1Result as FieldValue, inputTypeName)
               : v1Result as FieldValue;
             this.designerSvc.cache.cacheResults(formula, v1Value, false, false);
             if (isOpenInDesigner)

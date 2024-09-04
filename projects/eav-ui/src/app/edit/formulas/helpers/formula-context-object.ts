@@ -1,7 +1,13 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
-import { FormulaTargets, FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser, FormulaVersions } from '../models/formula.models';
+import { FormulaTargets, FormulaVersions } from '../models/formula.models';
+import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../models/formula-run-context.model';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 
+/**
+ * The object containing context information.
+ * Usually given to a formula on the second parameter.
+ * eg v2((data, CTX) => { ... })
+ */
 export class FormulaContextObject implements FormulaV1Context {
 
   /** Private variable containing the data used in the getters */
@@ -56,6 +62,10 @@ export class FormulaContextObject implements FormulaV1Context {
   target: FormulaV1CtxTarget;
 }
 
+/**
+ * The object containing app context information.
+ * Usually on the context.app property.
+ */
 class FormulaContextApp implements FormulaV1CtxApp {
   /** Private variable containing the data used in the getters */
   #propsData: FormulaObjectsInternalData;
@@ -85,6 +95,11 @@ class FormulaContextApp implements FormulaV1CtxApp {
   }
 }
 
+/**
+ * The object containing formula target information.
+ * So it says what the formula is for, which entity, field, setting/value etc.
+ * Usually on the context.target property.
+ */
 class FormulaContextTarget implements FormulaV1CtxTarget {
 
   entity: FormulaV1CtxTargetEntity;
@@ -96,14 +111,17 @@ class FormulaContextTarget implements FormulaV1CtxTarget {
 
   constructor(propsData: FormulaObjectsInternalData) {
     this.#propsData = propsData;
-    const definition = propsData.runParameters.formula;
-    this.entity = definition.targetEntity;
-    this.name = definition.target === FormulaTargets.Value || definition.target === FormulaTargets.Validation
-      ? definition.fieldName
-      : definition.target.substring(definition.target.lastIndexOf('.') + 1);
-    this.type = definition.target === FormulaTargets.Value || definition.target === FormulaTargets.Validation
-      ? definition.target
-      : definition.target.substring(0, definition.target.lastIndexOf('.'))
+    const def = propsData.runParameters.formula;
+    this.entity = def.targetEntity;
+
+    // Name and type are truncated from the original target string if it's a setting
+    const isValueOrValidation = def.target === FormulaTargets.Value || def.target === FormulaTargets.Validation;
+    this.name = isValueOrValidation
+      ? def.fieldName
+      : def.target.substring(def.target.lastIndexOf('.') + 1);
+    this.type = isValueOrValidation
+      ? def.target
+      : def.target.substring(0, def.target.lastIndexOf('.'))
   }
 
 }

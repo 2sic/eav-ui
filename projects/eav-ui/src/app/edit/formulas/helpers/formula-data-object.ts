@@ -1,9 +1,15 @@
 import { FieldHelper } from '../../shared/helpers';
-import { FormulaV1Data, FormulaTargets, SettingsFormulaPrefix, FormulaFieldValidation } from '../models/formula.models';
+import { FormulaTargets, SettingsFormulaPrefix, FormulaFieldValidation } from '../models/formula.models';
+import { FormulaV1Data } from '../models/formula-run-data.model';
 import { FormulaHelpers } from './formula.helpers';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
+/**
+ * The object containing data information.
+ * Usually given to a formula on the first parameter.
+ * eg v2((DATA, ctx) => { ... })
+ */
 export class FormulaDataObject implements FormulaV1Data {
   /** Private variable containing the data used in the getters */
   #propsData: FormulaObjectsInternalData;

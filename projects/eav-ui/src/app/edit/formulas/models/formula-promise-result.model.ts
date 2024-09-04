@@ -1,18 +1,15 @@
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FieldValuePair, FieldSettingPair } from "./formula-results.models";
 
+/**
+ * The result of a formula promise.
+ * Contains queues of things to broadcast on the next processing cycle.
+ */
 export class FormulaPromiseResult {
   constructor(
-    valueUpdates: ItemValuesOfLanguage,
-    fieldUpdates: FieldValuePair[],
-    settingUpdates: FieldSettingPair[]
+    public valueUpdates: ItemValuesOfLanguage,
+    public fieldUpdates: FieldValuePair[],
+    public settingUpdates: FieldSettingPair[]
   ) {
-    this.valueUpdates = valueUpdates;
-    this.fieldUpdates = fieldUpdates;
-    this.settingUpdates = settingUpdates;
   }
-
-  valueUpdates: ItemValuesOfLanguage;
-  fieldUpdates: FieldValuePair[];
-  settingUpdates: FieldSettingPair[];
 }

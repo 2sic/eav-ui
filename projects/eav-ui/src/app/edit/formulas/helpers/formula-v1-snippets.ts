@@ -1,5 +1,6 @@
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { FormulaCacheItem, FormulaVersions } from '../models/formula.models';
+import { FormulaVersions } from '../models/formula.models';
+import { FormulaCacheItem } from '../models/formula-cache.model';
 import { FormulaHelpers } from './formula.helpers';
 
 export class FormulaV1Helpers {

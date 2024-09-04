@@ -1,16 +1,24 @@
-import { computed, Signal, WritableSignal } from '@angular/core';
+import { computed, signal, Signal, WritableSignal } from '@angular/core';
 import { SIGNAL } from '@angular/core/primitives/signals';
 import isEqual from 'lodash-es/isEqual';
 
 
-// export function computedNamed<T>(name: string, computation: () => T, options?: CreateComputedOptions<T>): Signal<T> {
-//   const comp =  computed(computation, options) as Signal<T>;
-//   return named(comp, name);
-// }
-// export function signalNamed<T>(name: string, initialValue: T): WritableSignal<T> {
-//   const sig = signal(initialValue) as WritableSignal<T>;
-//   return named(name, sig);
-// }
+/**
+ * Named signal with object equality check
+ * @param name name for debugging
+ * @param initialValue initial value to start the signal
+ * @returns 
+ */
+export function signalObj<T>(name: string, initialValue: T): WritableSignal<T> {
+  const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;
+  return named(name, sig);
+}
+
+export function computedObj<T>(name: string, computation: () => T): Signal<T> {
+  const comp =  computed(computation, { equal: isEqual }) as Signal<T>; // needs recast, because isEqual changes it to Signal<any>
+  return named(name, comp);
+}
+
 
 export function named<TSig, TVal extends Signal<TVal> | WritableSignal<TVal>>(name: string, signal: TSig): TSig {
   if (!signal) return signal;

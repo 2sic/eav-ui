@@ -1,4 +1,4 @@
-import { computed, Injectable, OnDestroy, signal } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { FormulaHelpers } from './helpers/formula.helpers';
 import { FormulaTargets } from './models/formula.models';
 import { DesignerState, FormulaResult } from './models/formula-results.models';
@@ -6,13 +6,13 @@ import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
 import { FormulaTargetsService } from './formula-targets.service';
-import { EntityOption, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { FormulaV1Helpers } from './helpers/formula-v1.helpers';
+import { EntityOption, FieldOption, TargetOption } from '../dialog/footer/formula-designer/formula-designer.models';
+import { FormulaV1Helpers } from './helpers/formula-v1-snippets';
 import { FormulaCacheService } from './formula-cache.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { ItemService } from '../shared/store/item.service';
-import { named } from '../../shared/signals/signal.utilities';
-import isEqual from 'lodash-es/isEqual';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { FormulaCacheItem } from './models/formula-cache.model';
 
 const logThis = false;
 const nameOfThis = 'FormulaDesignerService';
@@ -21,50 +21,42 @@ const nameOfThis = 'FormulaDesignerService';
  * Contains methods for extended CRUD operations for formulas.
  */
 @Injectable()
-export class FormulaDesignerService extends ServiceBase implements OnDestroy {
+export class FormulaDesignerService {
 
   /**
    * Contain all the settings to all items/settings in this form
    * for rare cases (formulas) which need to access settings of all items
    */
-  itemSettingsServices: Record<string, FieldsSettingsService> = {};
+  public itemSettingsServices: Record<string, FieldsSettingsService> = {};
 
-  cache = transient(FormulaCacheService);
+  public cache = transient(FormulaCacheService);
 
   /** The current state of the UI, what field is being edited etc. */
-  public designerState = named('designerState', signal<DesignerState>({
+  public designerState = signalObj<DesignerState>('designerState', {
     editMode: false,
     entityGuid: undefined,
     fieldName: undefined,
     isOpen: false,
     target: undefined,
-  } satisfies DesignerState, { equal: isEqual }));
-
-  /**
-   * Special helper to update the formula result.
-   * It's a hack, because the formula-result can't be notified
-   * of formula updates, so we need to manually update it.
-   */
-  retrieveFormulaResult = signal(0);
+  } satisfies DesignerState);
 
   /** Formula result of the formula which is currently open in the editor */
-  formulaResult = computed<FormulaResult>(() => {
-    this.retrieveFormulaResult();
+  formulaResult = computedObj<FormulaResult>('formulaResult', () => {
     const state = this.designerState();
     const { old } = this.cache.resultListIndexAndOriginal(state);
     return old as FormulaResult;
-  }, { equal: isEqual });
+  });
 
   #targetsService = transient(FormulaTargetsService);
 
-  currentTargetOptions = computed(() => {
+  currentTargetOptions = computedObj<TargetOption[]>('currentTargetOptions',() => {
     const state = this.designerState();
     const formulas = this.cache.formulas();
     return this.#targetsService.getTargetOptions(state, formulas);
-  }, { equal: isEqual });
+  });
 
   /** Possible entities incl. state if they have formulas */
-  entityOptions = computed<EntityOption[]>(() => {
+  entityOptions = computedObj<EntityOption[]>('entityOptions', () => {
     // this is a signal, so this will change when the data is loaded...
     const formulas = this.cache.formulas();
     return Object.entries(this.itemSettingsServices).map(([entityGuid, settingsSvc]) => {
@@ -79,7 +71,7 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
   });
 
   /** possible fields of the current entity incl. state such as if it has formulas */
-  fieldsOptions = computed(() => {
+  fieldsOptions = computedObj<FieldOption[]>('fieldsOptions', () => {
     const guid = this.designerState().entityGuid;
     if (guid == null)
       return [];
@@ -101,10 +93,11 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     return fieldOptions;
   });
 
+  log = new EavLogger(nameOfThis, logThis);
+
   constructor(
     private itemService: ItemService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
     this.log.a('constructor');
   }
 
@@ -129,42 +122,38 @@ export class FormulaDesignerService extends ServiceBase implements OnDestroy {
     this.designerState.set(newState);
   }
 
-  ngOnDestroy(): void {
-    super.destroy();
-  }
-
   /** The currently selected formula or null */
-  currentFormula = computed(() => {
+  currentFormula = computedObj<FormulaCacheItem>('currentFormula', () => {
     const s = this.designerState();
     const { old } = this.cache.formulaListIndexAndOriginal(s);
     return old;
-  }, { equal: isEqual });
+  });
 
   /** Snippets for the current formula based on it's version */
-  v1ContextSnippets = computed(() => {
+  v1ContextSnippets = computedObj('v1ContextSnippets', () => {
     const current = this.currentFormula();
     return current != null
     ? FormulaV1Helpers.buildDesignerSnippetsContext(current)
     : [];
-  }, { equal: isEqual });
+  });
 
   /** Snippets for the current item header based on the current formulas target guid */
-  #currentItemHeader = computed(() => {
+  #currentItemHeader = computedObj('currentItemHeader', () => {
     const guid = this.designerState().entityGuid;
     return guid == null ? null : this.itemService.getItemHeader(guid);
-  }, { equal: isEqual });
+  });
 
   /** JS Typings for V2 formulas - all the properties and type names */
-  v2JsTypings = computed(() => {
+  v2JsTypings = computedObj('v2JsTypings', () => {
     const formula = this.currentFormula();
     const itemHeader = this.#currentItemHeader();
     return formula != null && itemHeader != null
       ? FormulaHelpers.buildFormulaTypings(formula, this.fieldsOptions(), itemHeader.Prefill)
       : ''
-  }, { equal: isEqual });
+  });
 
   /** Data snippets for the current formula V1 - all the data that can be used in formulas */
-  v1DataSnippets = computed(() => {
+  v1DataSnippets = computedObj('v1DataSnippets', () => {
     const formula = this.currentFormula();
     const itemHeader = this.#currentItemHeader();
     return formula != null && itemHeader != null

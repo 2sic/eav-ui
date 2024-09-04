@@ -4,11 +4,16 @@ import { FieldOption } from '../../dialog/footer/formula-designer/formula-design
 import editorTypesForIntellisense from '!raw-loader!../editor-intellisense-function-v2.rawts';
 import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaVersion, FormulaVersions } from '../models/formula.models';
+import { FormulaFunction, FormulaVersion, FormulaVersions } from '../models/formula.models';
+import { FormulaCacheItem } from '../models/formula-cache.model';
 import { FormulaDataObject } from './formula-data-object';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 import { FormulaContextObject } from './formula-context-object';
 import { FormulaExperimentalObject } from './formula-experimental-object';
+import { FormulaV1Data } from '../models/formula-run-data.model';
+import { FormulaV1Context } from '../models/formula-run-context.model';
+import { FormulaV1Experimental } from '../models/formula-run-experimental.model';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
 
 /**
  * Contains methods for building formulas.
@@ -20,7 +25,7 @@ export class FormulaHelpers {
    * @param formula Formula text to clean
    * @returns Cleaned formula text
    */
-  private static cleanFormula(formula: string): string {
+  static #cleanFormula(formula: string): string {
     if (!formula)
       return formula;
 
@@ -63,7 +68,7 @@ export class FormulaHelpers {
    * @returns If formula is V1 or V2
    */
   static findFormulaVersion(formula: string): FormulaVersion {
-    const cleanFormula = this.cleanFormula(formula);
+    const cleanFormula = this.#cleanFormula(formula);
     const versionPart = cleanFormula.substring(requiredFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
     const validVersions = Object.values(FormulaVersions);
 
@@ -78,7 +83,7 @@ export class FormulaHelpers {
    * @returns Executable formula function
    */
   static buildFormulaFunction(formula: string): FormulaFunction {
-    const cleanFormula = this.cleanFormula(formula);
+    const cleanFormula = this.#cleanFormula(formula);
     const fn: FormulaFunction = new Function(`return ${cleanFormula}`)();
     return fn;
   }
@@ -87,7 +92,7 @@ export class FormulaHelpers {
    * Used to build formula props parameters.
    * @returns Formula properties
    */
-  static buildFormulaProps(propsData: FormulaObjectsInternalData,): FormulaProps {
+  static buildFormulaProps(propsData: FormulaObjectsInternalData,): FormulaPropsV1 {
     const { formula, currentValues: formValues } = propsData.runParameters;
     
     switch (formula.version) {
@@ -135,7 +140,7 @@ export class FormulaHelpers {
 
         // debugger;
 
-        const allFields = fieldOptions.map(f => `${f.fieldName}: ${this.inputTypeToDataType(f.inputType)};`).join('\n');
+        const allFields = fieldOptions.map(f => `${f.fieldName}: ${this.#inputTypeToDataType(f.inputType)};`).join('\n');
         const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');
         const final = editorTypesForIntellisense
           .replace('/* [inject:AllFields] */', allFields)
@@ -150,7 +155,8 @@ export class FormulaHelpers {
         return;
     }
   }
-  private static inputTypeToDataType(inputType: string) {
+
+  static #inputTypeToDataType(inputType: string) {
     const lower = inputType.toLowerCase();
     if (lower.startsWith('string')) return 'string';
     if (lower.startsWith('number')) return 'number';
@@ -158,6 +164,14 @@ export class FormulaHelpers {
     if (lower.startsWith('boolean')) return 'boolean';
     return "any";
   }
+}
+
+
+interface FormulaPropsV1 {
+  data: FormulaV1Data;
+  context: FormulaV1Context;
+  experimental: FormulaV1Experimental;
+  item?: PickerItem; //@SDV possibly add PickerTreeItem also
 }
 
 

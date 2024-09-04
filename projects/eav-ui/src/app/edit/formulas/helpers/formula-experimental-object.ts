@@ -1,9 +1,15 @@
-import { FormulaV1Experimental, FormulaV1ExperimentalEntity } from '../models/formula.models';
+import { FormulaV1ExperimentalEntity } from '../models/formula-run-experimental.model';
+import { FormulaV1Experimental } from '../models/formula-run-experimental.model';
 import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 
+/**
+ * The object containing experimental information which can change at any time.
+ * Usually given to a formula on the third parameter, but not officially documented.
+ * eg v2((data, ctx, experimental) => { ... })
+ */
 export class FormulaExperimentalObject implements FormulaV1Experimental {
 
   /** Private variable containing the data used in the getters */

@@ -196,7 +196,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.#designerSvc.cache.updateFormulaFromEditor(designer, formula.source, true);
     this.#designerSvc.itemSettingsServices[designer.entityGuid].retriggerFormulas('designer-run');
     this.isDeleted.set(false);
-    this.#designerSvc.retrieveFormulaResult.update(x => x + 1);
   }
 
   //#region Save/Delete
