@@ -13,7 +13,7 @@ import { LanguageInstanceService } from '../../../shared/store/language-instance
 import { LanguageService } from '../../../shared/store/language.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'LanguageSwitcherComponent';
 
 @Component({

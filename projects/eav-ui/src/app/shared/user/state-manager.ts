@@ -1,6 +1,6 @@
 import { LogSpecs } from '../logging/log-specs';
 
-const logThis = true;
+const logThis = false;
 const separator = ":";
 export class StateManager<T> {
 

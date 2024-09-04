@@ -11,7 +11,7 @@ import { ScriptsLoaderService } from '../../shared/services/scripts-loader.servi
 import { toObservable } from '@angular/core/rxjs-interop';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'ConnectorInstance';
 
 export class ConnectorInstance<T = any> implements Connector<T> {

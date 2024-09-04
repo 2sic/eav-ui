@@ -24,7 +24,7 @@ import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create
 import { EavLogger } from '../../../../../../../eav-ui/src/app/shared/logging/eav-logger';
 import { take } from 'rxjs';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'StringTemplatePickerComponent';
 
 @Component({

@@ -34,7 +34,7 @@ import { LanguageService } from '../shared/store/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FormulaEngine';
 
 const logFields = ['UiGroup'];

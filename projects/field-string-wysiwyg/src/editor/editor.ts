@@ -41,7 +41,7 @@ import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/ea
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
 import { DropzoneWysiwyg } from '../../../eav-ui/src/app/edit/fields/wrappers/dropzone/dropzone-wysiwyg';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'FieldStringWysiwygEditor';
 
 declare const window: EavWindow;
