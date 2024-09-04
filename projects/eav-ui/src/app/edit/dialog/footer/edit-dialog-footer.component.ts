@@ -13,7 +13,7 @@ import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { UserSettings } from '../../../shared/user/user-settings.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'EditDialogFooterComponent';
 
 declare const window: EavWindow;
@@ -43,16 +43,19 @@ export class EditDialogFooterComponent {
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
   
   // Persisted user settings
-  static readonly userSettingsKey = 'edit-dialog-footer';
-  static readonly userSettingsDefault = { tab: null as DebugType, expanded: false, size: 0 };
-  #userSettings = inject(UserSettings).partLocal(EditDialogFooterComponent.userSettingsKey, EditDialogFooterComponent.userSettingsDefault);
+  static readonly userSettings = {
+    key: 'edit-dialog-footer',
+    data: { tab: null as DebugType, expanded: false, size: 0 }
+  };
+  #userSettings = inject(UserSettings).part(EditDialogFooterComponent.userSettings);
   userSettings = this.#userSettings.data;
 
   toggleDialog(type: DebugType): void {
     const s = this.userSettings();
-    const tab = s.tab !== type ? type : null;
-    const expanded = tab == null ? false : s.expanded;
-    const size = tab == null ? 0 : expanded ? 2 : 1;
+    const hideTab = s.tab === type;
+    const tab = hideTab ? null :  type;
+    const expanded = hideTab ? false : s.expanded;
+    const size = hideTab ? 0 : expanded ? 2 : 1;
     this.#userSettings.setAll({ tab, expanded, size });
   }
 

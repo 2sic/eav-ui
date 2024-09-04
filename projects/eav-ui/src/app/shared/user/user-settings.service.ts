@@ -2,7 +2,7 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { StateManagerLocal, StateManagerSession } from './state-manager';
 import { EavLogger } from '../logging/eav-logger';
 
-const logThis = true;
+const logThis = false;
 const nameOfThis = 'UserSettings';
 
 const storeKey = 'user-settings';
@@ -28,7 +28,11 @@ export class UserSettings {
     (longTerm ? this.local : this.session).add(key, value);
   }
 
-  part<T extends Record<string, unknown>>(key: string, data: T, longTerm = false): UserSettingsPart<T> {
+  part<T extends Record<string, unknown>>({ key, data }: { key: string; data: T; }): UserSettingsPart<T> {
+    return this.#getPart(key, data, true);
+  }
+
+  #getPart<T extends Record<string, unknown>>(key: string, data: T, longTerm = false): UserSettingsPart<T> {
     if (this.#partCache[key]) return this.#partCache[key] as unknown as UserSettingsPart<T>;
     const created = new UserSettingsPart(this, key, data, longTerm);
     this.#partCache[key] = created;
@@ -36,13 +40,13 @@ export class UserSettings {
   }
   #partCache: Record<string, UserSettingsPart<Record<string, unknown>>> = {};
 
-  partSession<T extends Record<string, unknown>>(key: string, data: T) {
-    return this.part(key, data, false);
-  }
+  // partSession<T extends Record<string, unknown>>(key: string, data: T) {
+  //   return this.part(key, data, false);
+  // }
 
-  partLocal<T extends Record<string, unknown>>(key: string, data: T) {
-    return this.part(key, data, true);
-  }
+  // partLocal<T extends Record<string, unknown>>(key: string, data: T) {
+  //   return this.part(key, data, true);
+  // }
 }
 
 export class UserSettingsPart<T extends Record<string, unknown>> {

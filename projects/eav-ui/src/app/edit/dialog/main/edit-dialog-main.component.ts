@@ -127,7 +127,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #debugWasModified = false;
 
   /** Signal to tell the UI that the footer needs more space (changes CSS) */
-  #footerUserSettings = inject(UserSettings).partLocal(EditDialogFooterComponent.userSettingsKey, EditDialogFooterComponent.userSettingsDefault);
+  #footerUserSettings = inject(UserSettings).part(EditDialogFooterComponent.userSettings)
   footerSize = computed(() => this.#footerUserSettings.data().size);
 
   //#endregion
