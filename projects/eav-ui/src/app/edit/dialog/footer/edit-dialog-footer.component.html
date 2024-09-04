@@ -1,4 +1,4 @@
-<mat-card appearance="raised" class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': tab() != null }">
+<mat-card appearance="raised" class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': userSettings().tab != null }">
 
   <div class="debug-buttons-container">
     <button mat-button tippy="Show Data JSON" (click)="toggleDialog(DebugTypes.Data)">
@@ -16,10 +16,10 @@
     <div class="spacer"></div>
 
     <!-- Special expand button when working with formulas, to get more space -->
-    @if (tab() != null)
+    @if (userSettings().tab != null)
     {
       <button mat-icon-button tippy="expand/shrink" (click)="toggleSize()">
-        <mat-icon>{{ expanded() ? 'unfold_less' : 'expand' }}</mat-icon>
+        <mat-icon>{{ userSettings().expanded ? 'unfold_less' : 'expand' }}</mat-icon>
       </button>
     }
     @else
@@ -35,10 +35,10 @@
     </div>
   </div>
 
-  @if (tab() != null)
+  @if (userSettings().tab != null)
   {
-    <div class="debug-info-container" [ngClass]="'size' + (expanded() ? '-xl' : '')">
-      @switch (tab()) {
+    <div class="debug-info-container" [ngClass]="'size' + (userSettings().expanded ? '-xl' : '')">
+      @switch (userSettings().tab) {
         @case (DebugTypes.Data) {
           <app-data-dump></app-data-dump>
         }

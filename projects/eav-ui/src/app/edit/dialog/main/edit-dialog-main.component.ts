@@ -48,6 +48,7 @@ import { AdamCacheService } from '../../shared/store/adam-cache.service';
 import { LinkCacheService } from '../../shared/store/link-cache.service';
 import { isCtrlS, isEscape } from './keyboard-shortcuts';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
+import { UserSettings } from '../../../shared/user/user-settings.service';
 
 const logThis = false;
 const nameOfThis = 'EditDialogMainComponent';
@@ -126,7 +127,8 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #debugWasModified = false;
 
   /** Signal to tell the UI that the footer needs more space (changes CSS) */
-  footerSize = signal(0);
+  #footerUserSettings = inject(UserSettings).partLocal(EditDialogFooterComponent.userSettingsKey, EditDialogFooterComponent.userSettingsDefault);
+  footerSize = computed(() => this.#footerUserSettings.data().size);
 
   //#endregion
 
@@ -296,11 +298,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
         duration: 5000,
       });
     }
-  }
-
-  footerResize(size: number) {
-    this.log.fn('footerExpand', { size });
-    this.footerSize.set(size);
   }
 
   #startSubscriptions() {

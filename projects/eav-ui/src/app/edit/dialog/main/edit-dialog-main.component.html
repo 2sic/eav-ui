@@ -54,7 +54,7 @@
   @if (footerShowOnceOrMore())
   {
     @defer {
-      <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions (resize)="footerResize($event)">
+      <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions>
       </app-edit-dialog-footer>
     }
   }

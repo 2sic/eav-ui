@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 import { LogsDumpComponent } from './logs-dump/logs-dump.component';
@@ -10,6 +10,11 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
+import { UserSettings } from '../../../shared/user/user-settings.service';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logThis = true;
+const nameOfThis = 'EditDialogFooterComponent';
 
 declare const window: EavWindow;
 
@@ -31,23 +36,29 @@ declare const window: EavWindow;
   ],
 })
 export class EditDialogFooterComponent {
-  @Output() private resize = new EventEmitter<number>();
 
+  log = new EavLogger(nameOfThis, logThis);
+  
   DebugTypes = DebugTypes;
-  tab = signal<DebugType>(null);
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
-
-  expanded = signal(false);
+  
+  // Persisted user settings
+  static readonly userSettingsKey = 'edit-dialog-footer';
+  static readonly userSettingsDefault = { tab: null as DebugType, expanded: false, size: 0 };
+  #userSettings = inject(UserSettings).partLocal(EditDialogFooterComponent.userSettingsKey, EditDialogFooterComponent.userSettingsDefault);
+  userSettings = this.#userSettings.data;
 
   toggleDialog(type: DebugType): void {
-    this.tab.update(before => before !== type ? type : null);
-    const tab = this.tab();
-    if (tab == null) this.expanded.set(false);
-    this.resize.emit(tab == null ? 0 : this.expanded() ? 2 : 1);
+    const s = this.userSettings();
+    const tab = s.tab !== type ? type : null;
+    const expanded = tab == null ? false : s.expanded;
+    const size = tab == null ? 0 : expanded ? 2 : 1;
+    this.#userSettings.setAll({ tab, expanded, size });
   }
 
   toggleSize(): void {
-    this.expanded.update(x => !x);
-    this.resize.emit(this.expanded() ? 2 : 1);
+    const expanded = !this.userSettings().expanded;
+    const size = expanded ? 2 : 1;
+    this.#userSettings.setMany({ expanded, size });
   }
 }
