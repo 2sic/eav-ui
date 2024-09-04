@@ -43,8 +43,8 @@ export class FormulaDesignerService {
   /** Formula result of the formula which is currently open in the editor */
   formulaResult = computedObj<FormulaResult>('formulaResult', () => {
     const state = this.designerState();
-    const { old } = this.cache.resultListIndexAndOriginal(state);
-    return old as FormulaResult;
+    const { value } = this.cache.resultListIndexAndOriginal(state);
+    return value as FormulaResult;
   });
 
   #targetsService = transient(FormulaTargetsService);
@@ -125,8 +125,8 @@ export class FormulaDesignerService {
   /** The currently selected formula or null */
   currentFormula = computedObj<FormulaCacheItem>('currentFormula', () => {
     const s = this.designerState();
-    const { old } = this.cache.formulaListIndexAndOriginal(s);
-    return old;
+    const { value } = this.cache.formulaListIndexAndOriginal(s);
+    return value;
   });
 
   /** Snippets for the current formula based on it's version */

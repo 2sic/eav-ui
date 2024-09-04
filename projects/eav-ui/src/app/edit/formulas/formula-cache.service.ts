@@ -22,11 +22,11 @@ export class FormulaCacheService {
   public formulas = named('formulas', signal<FormulaCacheItem[]>([], { equal: isEqual }));
 
   /** All the formula results */
-  public results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
+  #results = named('formula-results', signal<FormulaResult[]>([], { equal: isEqual }));
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 
-  log = new EavLogger(nameOfThis, logThis);
+  #log = new EavLogger(nameOfThis, logThis);
   constructor() { }
 
   init() {
@@ -62,12 +62,12 @@ export class FormulaCacheService {
    * @returns
    */
   public updateSaved(formulaItem: FormulaCacheItem, sourceGuid: string, sourceId: number): void {
-    const { list, index, old } = this.formulaListIndexAndOriginal(formulaItem);
-    if (old == null)
+    const { list, index, value } = this.formulaListIndexAndOriginal(formulaItem);
+    if (value == null)
       return;
 
     const updated: FormulaCacheItem = {
-      ...old,
+      ...value,
       sourceFromSettings: formulaItem.source,
       sourceGuid,
       sourceId,
@@ -80,8 +80,8 @@ export class FormulaCacheService {
   public formulaListIndexAndOriginal(fOrDs: FormulaIdentifier) {
     const list = this.formulas();
     const index = list.findIndex(f => f.entityGuid === fOrDs.entityGuid && f.fieldName === fOrDs.fieldName && f.target === fOrDs.target);
-    const old = list[index];
-    return { list, index, old };
+    const value = list[index];
+    return { list, index, value };
   }
 
   /**
@@ -103,15 +103,15 @@ export class FormulaCacheService {
    * @param target
    */
   public resetFormula(designer: DesignerState): void {
-    const { list: oldResults, index: oldResultIndex } = this.resultListIndexAndOriginal(designer);
-    if (oldResultIndex >= 0) {
-      const newResults = [...oldResults.slice(0, oldResultIndex), ...oldResults.slice(oldResultIndex + 1)];
-      this.results.set(newResults);
+    const { list: resList, index: resIndex } = this.resultListIndexAndOriginal(designer);
+    if (resIndex >= 0) {
+      const newResults = [...resList.slice(0, resIndex), ...resList.slice(resIndex + 1)];
+      this.#results.set(newResults);
     }
 
-    const { list, index, old: oldFormulaItem } = this.formulaListIndexAndOriginal(designer);
-    if (oldFormulaItem?.sourceFromSettings != null) {
-      this.updateFormulaFromEditor(designer, oldFormulaItem.sourceFromSettings, true);
+    const { list, index, value: formValue } = this.formulaListIndexAndOriginal(designer);
+    if (formValue?.sourceFromSettings != null) {
+      this.updateFormulaFromEditor(designer, formValue.sourceFromSettings, true);
     } else if (index >= 0) {
       const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
       this.formulas.set(newCache);
@@ -149,7 +149,7 @@ export class FormulaCacheService {
       isError,
       isOnlyPromise,
     };
-    const l = this.log.fn('cacheResults', { newResult });
+    const l = this.#log.fn('cacheResults', { newResult });
 
     // We should not track reading the list during formula execution
     // since we don't depend on it!
@@ -161,14 +161,14 @@ export class FormulaCacheService {
 
       // side effect within props calculations
         l.a('set results', { list, index, newResults});
-        this.results.set(newResults);
+        this.#results.set(newResults);
     });
   }
 
   public resultListIndexAndOriginal(id: FormulaIdentifier) {
-    const list = this.results();
+    const list = this.#results();
     const index = list.findIndex(r => r.entityGuid === id.entityGuid && r.fieldName === id.fieldName && r.target === id.target);
-    const old = list[index];
-    return { list, index, old };
+    const value = list[index];
+    return { list, index, value };
   }
 }

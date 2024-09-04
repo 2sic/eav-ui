@@ -231,32 +231,32 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       }
     }
 
-    const { list, index, old } = cacheSvc.formulaListIndexAndOriginal(designer);
+    const { list, index, value } = cacheSvc.formulaListIndexAndOriginal(designer);
 
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
     const shared = this.#buildItemFormulaCacheSharedParts(null, id.entityGuid);
 
-    const streams = (old?.promises$ && old?.updateCallback$)
-      ? { promises$: old.promises$, callback$: old.updateCallback$ }
+    const streams = (value?.promises$ && value?.updateCallback$)
+      ? { promises$: value.promises$, callback$: value.updateCallback$ }
       : this.#createPromisedParts();
 
     const newFormulaItem: FormulaCacheItem = {
       ...id,
-      cache: old?.cache ?? {},
+      cache: value?.cache ?? {},
       fn: formulaFunction?.bind({}),
       isDraft: run ? formulaFunction == null : true,
       source: formula,
-      sourceFromSettings: old?.sourceFromSettings,
-      sourceGuid: old?.sourceGuid,
-      sourceId: old?.sourceId,
+      sourceFromSettings: value?.sourceFromSettings,
+      sourceGuid: value?.sourceGuid,
+      sourceId: value?.sourceId,
       version: FormulaHelpers.findFormulaVersion(formula),
-      targetEntity: old?.targetEntity ?? shared.targetEntity,
-      user: old?.user ?? shared.user,
-      app: old?.app ?? shared.app,
-      sxc: old?.sxc ?? shared.sxc,
+      targetEntity: value?.targetEntity ?? shared.targetEntity,
+      user: value?.user ?? shared.user,
+      app: value?.app ?? shared.app,
+      sxc: value?.sxc ?? shared.sxc,
       stopFormula: false,
-      promises$: old?.promises$ ?? streams.promises$,
-      updateCallback$: old?.updateCallback$ ?? streams.callback$,
+      promises$: value?.promises$ ?? streams.promises$,
+      updateCallback$: value?.updateCallback$ ?? streams.callback$,
     };
 
     const newCache = index >= 0
