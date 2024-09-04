@@ -6,14 +6,14 @@ import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from 
 import { EavItem } from '../../shared/models/eav/eav-item';
 import { FormulaSourceCodeHelper } from './source-code-helper';
 import { FormulaFunction } from '../formula-definitions';
-import { FormulaTarget } from '../targets/formula-targets';
+import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaTarget } from '../targets/formula-targets';
 import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaCacheItemConstants } from './formula-cache.model';
 import { FormulaResultRaw, FormulaIdentifier } from '../results/formula-results.models';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
+import { LocalizationHelpers as LocHelper } from '../../localization/localization.helpers';
 import { FormConfigService } from '../../state/form-config.service';
 import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
 import { ItemService } from '../../shared/store/item.service';
@@ -21,6 +21,8 @@ import { ContentTypeService } from '../../shared/store/content-type.service';
 import { ContentTypeItemService } from '../../shared/store/content-type-item.service';
 import { FormulaCacheService } from './formula-cache.service';
 import { Sxc } from '@2sic.com/2sxc-typings';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 
 const logThis = false;
 const nameOfThis = 'FormulaCacheService';
@@ -37,6 +39,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     private contentTypeItemService: ContentTypeItemService,
     private loggingService: LoggingService,
     private translate: TranslateService,
+    private inputTypes: InputTypeService,
   ) {
     super(new EavLogger(nameOfThis, logThis));
   }
@@ -53,7 +56,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
   public buildFormulaCache(cacheSvc: FormulaCacheService): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
     const language = this.formConfig.language();
-    const entityReader = new EntityReader(language.current, language.primary);
+    const reader = new EntityReader(language.current, language.primary);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.get(entityGuid);
@@ -62,27 +65,31 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
 
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
-        const settings = FieldsSettingsHelpers.getDefaultFieldSettings(
-          entityReader.flattenAll<FieldSettings>(attribute.Metadata),
-        );
-        const formulaItems = this.contentTypeItemService.getMany(settings.Formulas).filter(formulaItem => {
-          const enabled: boolean = LocalizationHelpers.translate<boolean>(language, formulaItem.Attributes.Enabled, null);
-          return enabled;
-        });
-        for (const formulaItem of formulaItems) {
-          const formula: string = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Formula, null);
-          if (formula == null) 
+        // Get field settings
+        const settings = FieldsSettingsHelpers.getDefaultSettings(reader.flattenAll<FieldSettings>(attribute.Metadata));
+
+        // get input type specs
+        const inputType = this.inputTypes.getSpecs(attribute);
+
+        // Get all formulas for the field
+        const formula = this.contentTypeItemService
+          .getMany(settings.Formulas)
+          .filter(f => LocHelper.translate<boolean>(language, f.Attributes.Enabled, null));
+
+        for (const formulaItem of formula) {
+          const sourceCode: string = LocHelper.translate<string>(language, formulaItem.Attributes.Formula, null);
+          if (sourceCode == null) 
             continue;
 
-          const target: FormulaTarget = LocalizationHelpers.translate<string>(language, formulaItem.Attributes.Target, null);
+          const target: FormulaTarget = LocHelper.translate<string>(language, formulaItem.Attributes.Target, null);
 
           // create cleaned formula function, or if this fails, add info to log & results
           let formulaFunction: FormulaFunction;
           try {
-            formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(formula);
+            formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(sourceCode);
           } catch (error) {
             cacheSvc.cacheResults({ entityGuid, fieldName: attribute.Name, target } satisfies FormulaIdentifier, undefined, true, false);
-            const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
+            const itemTitle = ContentTypeSettingsHelpers.getTitle(contentType, language);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }
@@ -95,12 +102,13 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
             fieldName: attribute.Name,
             fn: formulaFunction?.bind({}),
             isDraft: formulaFunction == null,
-            sourceCode: formula,
-            sourceCodeSaved: formula,
+            sourceCode,
+            sourceCodeSaved: sourceCode,
             sourceCodeGuid: formulaItem.Guid,
             sourceCodeId: formulaItem.Id,
             target,
-            version: FormulaSourceCodeHelper.findFormulaVersion(formula),
+            ...this.#inputTypeSpecsForCacheItem(target, inputType),
+            version: FormulaSourceCodeHelper.findFormulaVersion(sourceCode),
             targetEntity: sharedParts.targetEntity, // new v14.07.05
             user: sharedParts.user,   // new in v14.07.05
             app: sharedParts.app,   // new in v14.07.05
@@ -116,6 +124,12 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     }
 
     return formulaCache;
+  }
+
+  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs) {
+    return inputType.isNewPicker && [FormulaDefaultTargets.Value, FormulaNewPickerTargets.Options].includes(target)
+      ? { inputType, disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
+      : { inputType, disabled: false, disabledReason: '' };
   }
 
 
@@ -215,22 +229,28 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     // important: the designer contains too much info, so we need to extract the essentials
     // to not have it in the cache - which would trigger loads of changes to that signal later on.
     let formulaFunction: FormulaFunction;
-    if (run) {
+
+    // If we should also run it, push it to the formulas cache so it will be executed
+    if (run)
       try {
         formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(formula);
       } catch (error) {
-        cacheSvc.cacheResults(id, undefined, true, false);
+        cacheSvc.cacheResults(id, /* value: */ undefined, /* isError: */ true, /* isPromise */ false);
         const item = this.itemService.get(id.entityGuid);
         const contentType = this.contentTypeService.getContentTypeOfItem(item);
         const language = this.formConfig.language();
-        const itemTitle = ContentTypeSettingsHelpers.getContentTypeTitle(contentType, language);
+        const itemTitle = ContentTypeSettingsHelpers.getTitle(contentType, language);
         const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${id.fieldName}", Target: "${id.target}"`;
         this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
 
         console.error(errorLabel, error);
       }
-    }
 
+    // find input type
+    const attribute = this.contentTypeService.getAttribute(id.entityGuid, id.fieldName);
+    const inputType = this.inputTypes.getSpecs(attribute);
+
+    // Find original in case we had it already (as we would then update it)
     const { list, index, value } = cacheSvc.formulaListIndexAndOriginal(id);
 
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
@@ -250,6 +270,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       sourceCodeGuid: value?.sourceCodeGuid,
       sourceCodeId: value?.sourceCodeId,
       version: FormulaSourceCodeHelper.findFormulaVersion(formula),
+      ...this.#inputTypeSpecsForCacheItem(id.target, inputType),
       targetEntity: value?.targetEntity ?? shared.targetEntity,
       user: value?.user ?? shared.user,
       app: value?.app ?? shared.app,

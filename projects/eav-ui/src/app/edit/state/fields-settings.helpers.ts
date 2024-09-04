@@ -20,7 +20,7 @@ export class ContentTypeSettingsHelpers {
    * Initialize the default settings of a ContentType to ensure everything is set or empty-string etc.
    * @returns 
    */
-  static initDefaultSettings(reader: EntityReader, contentType: EavContentType, itemHeader: ItemIdentifierEditConfig): ContentTypeSettings {
+  static getDefaultSettings(reader: EntityReader, contentType: EavContentType, itemHeader: ItemIdentifierEditConfig): ContentTypeSettings {
     const metadata = reader.flattenAll<ContentTypeSettings>(contentType.Metadata);
     const defaultSettings = { ...metadata };
     defaultSettings.Description ??= '';
@@ -31,13 +31,13 @@ export class ContentTypeSettingsHelpers {
     defaultSettings.Notes ??= '';
     defaultSettings.Icon ??= '';
     defaultSettings.Link ??= '';
-    defaultSettings._itemTitle = this.getContentTypeTitle(contentType, reader);
+    defaultSettings._itemTitle = this.getTitle(contentType, reader);
     defaultSettings._slotCanBeEmpty = itemHeader.IsEmptyAllowed ?? false;
     defaultSettings._slotIsEmpty = itemHeader.IsEmpty ?? false;
     return defaultSettings;
   }
 
-  static getContentTypeTitle(contentType: EavContentType, language: FormLanguage): string {
+  static getTitle(contentType: EavContentType, language: FormLanguage): string {
     try {
       // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
       const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
@@ -55,7 +55,7 @@ export class ContentTypeSettingsHelpers {
 
 export class FieldsSettingsHelpers {
 
-  static getDefaultFieldSettings(settings: FieldSettings): FieldSettings {
+  static getDefaultSettings(settings: FieldSettings): FieldSettings {
     const defSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
     // update @All settings
     defSettings.Name ??= '';

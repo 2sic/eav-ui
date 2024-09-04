@@ -87,7 +87,7 @@ export class FieldsSettingsService {
   /** The settings of the content-type of this item */
   public contentTypeSettings = computed(() => !this.#item()
     ? null
-    : ContentTypeSettingsHelpers.initDefaultSettings(this.#reader(), this.#contentType(), this.#item().Header)
+    : ContentTypeSettingsHelpers.getDefaultSettings(this.#reader(), this.#contentType(), this.#item().Header)
   );
 
   //#endregion

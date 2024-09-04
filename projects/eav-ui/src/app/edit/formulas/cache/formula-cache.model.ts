@@ -4,6 +4,7 @@ import { FormulaV1CtxTargetEntity, FormulaV1CtxUser, FormulaV1CtxApp } from '../
 import { FieldValue } from 'projects/edit-types';
 import { BehaviorSubject } from 'rxjs';
 import { FormulaIdentifier, FormulaResultRaw } from '../results/formula-results.models';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity.
@@ -43,6 +44,12 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
 
   /** Formula version - v1 or v2 */
   version: FormulaVersion;
+
+  /** Information about the input type, so the formula can adjust to it new v18.01 */
+  inputType: InputTypeSpecs;
+
+  disabled: boolean;
+  disabledReason: string;
 
   /** if the formula is stopped at the moment */
   stopFormula: boolean;

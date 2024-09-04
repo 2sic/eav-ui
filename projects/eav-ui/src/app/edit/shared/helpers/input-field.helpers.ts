@@ -12,7 +12,7 @@ export class FieldHelper {
     name: string,
     inputType: InputTypeStrict,
     settings: FieldSettings,
-    itemHeader?: ItemIdentifierShared,
+    itemHeader?: Pick<ItemIdentifierShared, "Prefill">,
     onlyPrefill?: boolean,
   ): FieldValue {
     const log = new EavLogger('InputFieldHelpers', logThis);

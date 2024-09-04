@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
 import { TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { FormulaIdentifier } from '../results/formula-results.models';
-import { FormulaDefaultTargets, FormulaListItemTargets, FormulaOptionalTargets, FormulaTarget } from './formula-targets';
+import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaOptionalTargets, FormulaTarget } from './formula-targets';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { ItemService } from '../../shared/store/item.service';
@@ -42,8 +42,7 @@ export class FormulaTargetsService {
 
     // optional targets
     const item = this.itemService.get(id.entityGuid);
-    const contentType = this.contentTypeService.getContentTypeOfItem(item);
-    const attribute = contentType.Attributes.find(a => a.Name === id.fieldName);
+    const attribute = this.contentTypeService.getAttributeOfItem(item, id.fieldName);
     const inputType = attribute.InputType;
     if (InputTypeHelpers.isGroupStart(inputType)) {
       for (const target of [FormulaOptionalTargets.Collapsed]) {
@@ -55,7 +54,7 @@ export class FormulaTargetsService {
         targetOptions.push(targetOption);
       }
     }
-    if (inputType === InputTypeCatalog.StringDropdown || inputType === InputTypeCatalog.NumberDropdown) {
+    if (InputTypeHelpers.isOldDropdown(inputType)) {
       for (const target of [FormulaOptionalTargets.DropdownValues]) {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
@@ -65,13 +64,13 @@ export class FormulaTargetsService {
         targetOptions.push(targetOption);
       }
     }
-    if (inputType === InputTypeCatalog.EntityPicker
-      || inputType === InputTypeCatalog.StringPicker
-      || inputType === InputTypeCatalog.NumberPicker) {
-      for (const target of Object.values(FormulaListItemTargets)) {
+
+    // TODO: HERE
+    if (InputTypeHelpers.isNewPicker(inputType)) {
+      for (const target of Object.values(FormulaNewPickerTargets)) {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),
-          label: "List Item " + target.substring(target.lastIndexOf('.') + 1),
+          label: "Picker " + target.substring(target.lastIndexOf('.') + 1),
           target: target as FormulaTarget,
         };
         targetOptions.push(targetOption);

@@ -43,9 +43,9 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get prefill(): FieldValue {
-    const { formula, settingsInitial, itemHeader: itemIdWithPrefill, inputTypeName } = this.#propsData.runParameters;
+    const { formula, settingsInitial, itemHeader, inputTypeName } = this.#propsData.runParameters;
     if (formula.target !== FormulaTargets.Value) return;
-    return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial, itemIdWithPrefill, true);
+    return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial, itemHeader, true);
   }
 
   get value(): FieldValue {

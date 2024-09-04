@@ -226,7 +226,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         const logic = FieldLogicManager.singleton().getOrUnknown(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const fieldSettings = FieldsSettingsHelpers.getDefaultFieldSettings(
+        const fieldSettings = FieldsSettingsHelpers.getDefaultSettings(
           new EntityReader(language.primary, language.primary).flattenAll(ctAttribute.Metadata)
         );
 

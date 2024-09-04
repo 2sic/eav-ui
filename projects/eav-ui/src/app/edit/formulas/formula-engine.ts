@@ -4,10 +4,8 @@ import { FeaturesService } from '../../features/features.service';
 import { EavContentType } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaHelpers } from './formula.helpers';
-import { FormulaSourceCodeHelper } from './cache/source-code-helper';
-// tslint:disable-next-line: max-line-length
 import { FormulaFunctionDefault, FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation, FormulaListItemTargets, FormulaDefaultTargets, FormulaTargets, FormulaOptionalTargets } from './targets/formula-targets';
+import { FormulaFieldValidation, FormulaNewPickerTargets, FormulaDefaultTargets, FormulaTargets, FormulaOptionalTargets } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
@@ -84,72 +82,13 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
   private settingsSvc: FieldsSettingsService;
   private promiseHandler: FormulaPromiseHandler;
 
-  // // TODO: 2dm -> Here we call all list item formulas on some picker for each item
-  // /**
-  //  * Used for running all list item formulas for a given attribute/field.
-  //  * @param entityGuid
-  //  * @param entityId
-  //  * @param attribute
-  //  * @param formValues
-  //  * @param inputTypeName
-  //  * @param settingsInitial
-  //  * @param settingsCurrent
-  //  * @param itemHeader
-  //  * @param availableItems
-  //  * @returns List of processed picker items
-  //  */
-  // runAllListItemsFormulas(
-  //   fieldName: string,
-  //   formValues: ItemValuesOfLanguage,
-  //   inputTypeName: InputTypeStrict,
-  //   settingsInitial: FieldSettings,
-  //   settingsCurrent: FieldSettings,
-  //   itemHeader: ItemIdentifierShared,
-  //   availableItems: PickerItem[],
-  // ): PickerItem[] {
-  //   const formulas = this.activeFieldFormulas(this.entityGuid, fieldName, true);
-
-  //   if (formulas.length === 0)
-  //     return availableItems;
-
-  //   const reuseParameters: Omit<FormulaRunParameters, 'formula'> = { currentValues: formValues, settingsInitial, inputTypeName, settingsCurrent, itemHeader };
-
-  //   const reuseObjectsForDataAndContext = this.prepareDataForFormulaObjects(this.entityGuid);
-
-  //   for (const formula of formulas)
-  //     for (const item of availableItems) {
-  //       const runParameters: FormulaRunParameters = { formula, ...reuseParameters };
-  //       const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForDataAndContext };
-  //       const result = this.runFormula(allObjectParameters);
-
-  //       switch (formula.target) {
-  //         case FormulaTargets.ListItemLabel:
-  //           item.label = result.value as string;
-  //           break;
-  //         case FormulaTargets.ListItemDisabled:
-  //           item.notSelectable = result.value as boolean;
-  //           break;
-  //         case FormulaTargets.ListItemTooltip:
-  //           item.tooltip = result.value as string;
-  //           break;
-  //         case FormulaTargets.ListItemInformation:
-  //           item.infoBox = result.value as string;
-  //           break;
-  //         case FormulaTargets.ListItemHelpLink:
-  //           item.helpLink = result.value as string;
-  //           break;
-  //       }
-  //     }
-  //   return availableItems;
-  // }
-
   /**
    * Find formulas of the current field which are still running.
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
   #activeFieldFormulas(entityGuid: string, name: string, forListItems: boolean = false): FormulaCacheItem[] {
     const targets = forListItems
-      ? Object.values(FormulaListItemTargets)
+      ? Object.values(FormulaNewPickerTargets)
       : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
     return this.designerSvc.cache
       .getFormulas(entityGuid, name, targets, false)
@@ -221,7 +160,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     fieldName: string,
     constFieldPart: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
-    itemHeader: ItemIdentifierShared,
+    itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     valueBefore: FieldValue,
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
@@ -255,8 +194,8 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     cycle: FieldsPropsEngineCycle,
     formulas: FormulaCacheItem[],
     constFieldPart: FieldConstantsOfLanguage,
-    settingsBefore: FieldSettings,
-    itemHeader: ItemIdentifierShared,
+    settingsCurrent: FieldSettings,
+    itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
     const l = this.log.fnCond(logDetailsFor(formulas[0]?.fieldName), 'runFormulasOfField');
@@ -268,12 +207,17 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
 
     const start = performance.now();
     for (const formula of formulas) {
+      if (formula.disabled) {
+        console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
+        continue;
+      }
+
       const runParameters: FormulaRunParameters = {
         formula,
         currentValues: cycle.values,
         inputTypeName: constFieldPart.inputTypeSpecs.inputType,
         settingsInitial: constFieldPart.settingsInitial,
-        settingsCurrent: settingsBefore,
+        settingsCurrent,
         itemHeader
       };
       const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForFormulaDataAndContext };
@@ -310,7 +254,7 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
       }
 
       // Target is a setting. Check validity and merge with other settings
-      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, settingsBefore, formulaResult.value, settingsNew));
+      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, settingsCurrent, formulaResult.value, settingsNew));
     }
     const afterRun = performance.now();
     return l.r({ value, validation, fields, settings: settingsNew }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);

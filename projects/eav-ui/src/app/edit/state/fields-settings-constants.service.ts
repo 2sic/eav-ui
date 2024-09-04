@@ -69,7 +69,7 @@ export class FieldsSettingsConstantsService {
       // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
       mergeRaw.InputType = ctAttrib.InputType;
       mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
-      const settingsInitial = FieldsSettingsHelpers.getDefaultFieldSettings(mergeRaw);
+      const settingsInitial = FieldsSettingsHelpers.getDefaultSettings(mergeRaw);
       const constantFieldParts: FieldConstantsOfLanguage = {
         ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
         settingsInitial,
@@ -98,7 +98,7 @@ export class FieldsSettingsConstantsService {
     const constFieldParts = contentType.Attributes.map((attribute, index) => {
       // metadata in the initial language with all the core settings
       const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
-      const initialSettings = FieldsSettingsHelpers.getDefaultFieldSettings(metadata);
+      const initialSettings = FieldsSettingsHelpers.getDefaultSettings(metadata);
 
       const inputTypeSpecs = this.inputTypeSvc.getSpecs(attribute);
 

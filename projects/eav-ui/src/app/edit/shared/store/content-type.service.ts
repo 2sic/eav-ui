@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EavContentType, EavItem } from '../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavItem } from '../models/eav';
 import { EavContentTypeDto } from '../models/json-format-v1';
 import { ItemHelper } from '../helpers/item.helper';
 import { SignalStoreBase } from './signal-store-base';
@@ -26,4 +26,11 @@ export class ContentTypeService extends SignalStoreBase<string, EavContentType> 
     return this.get(nameId);
   }
 
+  getAttribute(guid: string, name: string): EavContentTypeAttribute {
+    return this.get(guid).Attributes.find(a => a.Name === name);
+  }
+
+  getAttributeOfItem(item: EavItem, name: string): EavContentTypeAttribute {
+    return this.getContentTypeOfItem(item).Attributes.find(a => a.Name === name);
+  }
 }

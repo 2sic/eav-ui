@@ -1,13 +1,14 @@
-const ListItemFormulaPrefix = 'Field.ListItem.';
+// const ListItemFormulaPrefix = 'Field.ListItem.';
 
 export const SettingsFormulaPrefix = 'Field.Settings.';
 
-export const FormulaListItemTargets = {
-  ListItemLabel: `${ListItemFormulaPrefix}Label`,
-  ListItemDisabled: `${ListItemFormulaPrefix}Disabled`,
-  ListItemTooltip: `${ListItemFormulaPrefix}Tooltip`,
-  ListItemInformation: `${ListItemFormulaPrefix}Information`,
-  ListItemHelpLink: `${ListItemFormulaPrefix}HelpLink`,
+export const FormulaNewPickerTargets = {
+  // ListItemLabel: `${ListItemFormulaPrefix}Label`,
+  // ListItemDisabled: `${ListItemFormulaPrefix}Disabled`,
+  // ListItemTooltip: `${ListItemFormulaPrefix}Tooltip`,
+  // ListItemInformation: `${ListItemFormulaPrefix}Information`,
+  // ListItemHelpLink: `${ListItemFormulaPrefix}HelpLink`,
+  Options: `Field.Options`,
 };
 
 export const FormulaOptionalTargets = {
@@ -28,7 +29,7 @@ export const FormulaDefaultTargets = {
 export const FormulaTargets = {
   ...FormulaDefaultTargets,
   ...FormulaOptionalTargets,
-  ...FormulaListItemTargets,
+  ...FormulaNewPickerTargets,
 } as const;
 
 export interface FormulaFieldValidation {

@@ -8,7 +8,7 @@ import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormulaDesignerService } from '../../../formulas/designer/formula-designer.service';
 import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula-definitions';
-import { FormulaListItemTargets, FormulaTarget } from '../../../formulas/targets/formula-targets';
+import { FormulaNewPickerTargets, FormulaTarget } from '../../../formulas/targets/formula-targets';
 import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
 import { FormulaIdentifier } from '../../../formulas/results/formula-results.models';
 import { DesignerState } from '../../../formulas/designer/designer-state.model';
@@ -107,7 +107,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   protected v1ContextSnippets = this.#designerSvc.v1ContextSnippets;
   protected v1DataSnippets = this.#designerSvc.v1DataSnippets;
 
-  protected template = computed(() => Object.values(FormulaListItemTargets).includes(this.state().target)
+  protected template = computed(() => Object.values(FormulaNewPickerTargets).includes(this.state().target)
     ? defaultListItemFormula
     : defaultFormula
   );
@@ -213,8 +213,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
     if (formula.sourceCodeId == null) {
       const item = this.itemService.get(formula.entityGuid);
-      const contentType = this.contentTypeService.getContentTypeOfItem(item);
-      const attributeDef = contentType.Attributes.find(a => a.Name === formula.fieldName);
+      const attributeDef = this.contentTypeService.getAttributeOfItem(item, formula.fieldName);
       const atAllFieldSettings = attributeDef.Metadata.find(m => m.Type.Id === '@All');
       if (!atAllFieldSettings) {
         this.snackBar.open('Field configuration is missing. Please create formula in Administration', undefined, { duration: 3000 });

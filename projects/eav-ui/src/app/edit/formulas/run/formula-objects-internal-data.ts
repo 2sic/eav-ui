@@ -21,7 +21,7 @@ export interface FormulaRunParameters {
   inputTypeName: InputTypeStrict;
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
-  itemHeader: ItemIdentifierShared;
+  itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;
   item?: PickerItem;
 }
 

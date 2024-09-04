@@ -20,14 +20,16 @@ export class FormulaValueCorrections {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
       return { value: result as FieldValue, fields: [], stop };
+    
+    const targetIsValue = target === FormulaTargets.Value;
     if (typeof result === 'object') {
-      if (result instanceof Date && target === FormulaTargets.Value)
+      if (result instanceof Date && targetIsValue)
         return { value: this.correctOneValue(result as FieldValue, inputTypeName), fields: [], stop };
       if (result instanceof Promise)
         return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop };
       const corrected: FormulaResultRaw = (result as FormulaResultRaw);
       corrected.stop = stop;
-      if ((result as FormulaResultRaw).value && target === FormulaTargets.Value) {
+      if ((result as FormulaResultRaw).value && targetIsValue) {
         corrected.value = this.correctOneValue((result as FormulaResultRaw).value, inputTypeName);
       }
       if ((result as FormulaResultRaw).fields) {
@@ -42,7 +44,7 @@ export class FormulaValueCorrections {
     const value: FormulaResultRaw = { value: result as FieldValue };
 
     // atm we are only correcting Value formulas
-    if (target === FormulaTargets.Value) {
+    if (targetIsValue) {
       return { value: this.correctOneValue(value.value, inputTypeName), fields: [], stop };
     }
     return value;
