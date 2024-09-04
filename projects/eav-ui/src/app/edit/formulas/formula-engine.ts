@@ -209,6 +209,8 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     for (const formula of formulas) {
       if (formula.disabled) {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
+        if (formula.target === FormulaTargets.Value)
+          console.log('value', { value: cycle.values[formula.fieldName] });
         continue;
       }
 
