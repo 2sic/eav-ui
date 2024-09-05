@@ -12,8 +12,10 @@ import { PickerComponent } from '../../picker/picker.component';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 
-const logThis = false;
-const nameOfThis = 'StringPickerComponent';
+const logSpecs = {
+  name: 'StringPickerComponent',
+  enabled: true,
+};
 
 @Component({
   selector: InputTypeCatalog.StringPicker,
@@ -27,9 +29,17 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   private stateString = transient(StateAdapterString);
 
   constructor() {
-    super(new EavLogger(nameOfThis, logThis));
+    super(new EavLogger(logSpecs));
     StringPickerLogic.importMe();
+
+    // this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
   }
+
+  // public override ngOnInit(): void {
+  //   this.log.a('ngOnInit');
+  //   // this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
+  //   super.ngOnInit();
+  // }
 
   protected override createPickerAdapters(): void {
     this.log.a('createPickerAdapters');
@@ -53,6 +63,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       source = transient(DataAdapterEntity, this.injector).linkLog(this.log).connectState(state, false);
 
 
-    this.pickerData.setup(nameOfThis, state, source);
+    this.pickerData.setup(logSpecs.name, state, source);
   }
 }

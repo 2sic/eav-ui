@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject, computed, Injector } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { PickerImports } from './picker-providers.constant';
@@ -6,9 +6,13 @@ import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { computedObj } from '../../../shared/signals/signal.utilities';
+import { PickerDataFactory } from './picker-data.factory';
 
-const logThis = false;
-const nameOfThis = 'PickerComponent';
+const logSpecs = {
+  name: 'PickerComponent',
+  enabled: true,
+};
 
 @Component({
   // selector: none since it's a base class
@@ -20,7 +24,7 @@ const nameOfThis = 'PickerComponent';
 export class PickerComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(log?: EavLogger) {
-    super(log ?? new EavLogger(nameOfThis, logThis));
+    super(log ?? new EavLogger(logSpecs));
     this.log.a('constructor');
   }
 
@@ -31,6 +35,9 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   public editRoutingService = inject(EditRoutingService);
   public fieldState = inject(FieldState);
 
+  // wip
+  protected pickerDataFactory = new PickerDataFactory(this.injector);
+
   pickerData: PickerData = this.fieldState.pickerData;
 
   /**
@@ -39,13 +46,13 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
    * This is to indicate if it's the primary,
    * because the primary should also attach certain inits/events.
    */
-  pickerNotYetInitialized = false;
+  mustInitializePicker = false;
 
   /**
    * Whether to show the preview or not,
    * since this control is used both for preview and dialog.
    */
-  showPreview = computed(() => {
+  showPreview = computedObj('showPreview', () => {
     const settings = this.fieldState.settings();
     const allowMultiValue = settings.AllowMultiValue;
     const isDialog = settings.isDialog;
@@ -54,11 +61,13 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   });
 
   ngOnInit(): void {
-    this.log.a('ngOnInit');
-    this.pickerNotYetInitialized = !this.pickerData.isInitialized;
+    this.mustInitializePicker = !this.pickerData.isInitialized;
+    this.log.a('ngOnInit', { mustInitializePicker: this.mustInitializePicker });
     this.initAdaptersAndViewModel();
-    if (this.pickerNotYetInitialized)
+    if (!this.pickerData.closeWatcherAttachedWIP) {
       this.#refreshOnChildClosed();
+      this.pickerData.closeWatcherAttachedWIP = true;
+    }
   }
 
   /**
@@ -71,7 +80,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
-    if (!this.pickerNotYetInitialized) {
+    if (!this.mustInitializePicker) {
       this.log.a('createPickerAdapters: pickerData already exists, will reuse');
     } else {
       // this method is overridden in each variant as of now
@@ -83,8 +92,9 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
 
   ngAfterViewInit(): void {
     this.log.a('ngAfterViewInit');
-    if (this.pickerNotYetInitialized)
+    if (this.mustInitializePicker) {
       this.pickerData.source.onAfterViewInit();
+    }
   }
 
   /** Create the Picker Adapter - MUST be overridden in each inheriting class */
@@ -106,14 +116,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.subscriptions.add(
       // TODO: 2dm 2024-09-05 I believe this doesn't work as expected
       this.editRoutingService.childFormResult(config.index, config.entityGuid)
-        .subscribe(result => {
-          const newItemGuid = Object.keys(result)[0];
-          this.log.a('childFormResult', { result, newItemGuid });
-          if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
-            this.pickerData.state.addSelected(newItemGuid);
-            this.pickerData.source.forceReloadData([newItemGuid]);
-          }
-        })
+        .subscribe(result => this.pickerData.addNewlyCreatedItem(result))
     );
     l.end();
   }

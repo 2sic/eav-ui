@@ -39,9 +39,11 @@ export class PickerData {
   public state: StateAdapter;
 
   /** Temp info if it was already initialized, can probably be removed once we have the PickerDataFactory complete */
-  get isInitialized(): boolean {
+  public get isInitialized(): boolean {
     return !!this.source && !!this.state;
   }
+
+  public closeWatcherAttachedWIP = false;
 
   /** Signal containing the currently selected items */
   public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.source.optionsOrHints()));
@@ -69,6 +71,16 @@ export class PickerData {
     this.log.a('setup', { initiallySelected })
     source.initPrefetch(initiallySelected.map(item => item.value));
     return this;
+  }
+
+  public addNewlyCreatedItem(result: Record<string, number>) {
+    const newItemGuid = Object.keys(result)[0];
+    this.log.a('childFormResult', { result, newItemGuid });
+    if (!this.state.createValueArray().includes(newItemGuid)) {
+      this.state.addSelected(newItemGuid);
+      this.source.forceReloadData([newItemGuid]);
+    }
+
   }
 
   #createUIModel(selected: PickerItem[], data: PickerItem[]): PickerItem[] {
