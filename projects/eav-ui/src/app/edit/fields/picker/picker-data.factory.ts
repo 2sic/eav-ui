@@ -1,4 +1,4 @@
-import { Injector } from '@angular/core';
+import { Injector, ProviderToken } from '@angular/core';
 import { transient } from '../../../core';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
@@ -11,6 +11,7 @@ import { DataAdapterEntity } from './adapters/data-adapter-entity';
 import { PickerConfigModels } from './constants/picker-config-model.constants';
 import { DeleteEntityProps } from './models/picker.models';
 import { StateAdapterString } from './adapters/state-adapter-string';
+import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 
 const logSpecs = {
   name: 'PickerDataFactory',
@@ -38,9 +39,9 @@ export class PickerDataFactory {
   // 1. Final control (eg. StringPickerComponent) gets services which it will use using transient(...)
   // ... and also importMe on the logic
   // 2. PickerComponent.ngOnInit() will
-  // ... check if already initialized (because of dual-use)
+  // ... not relevant: check if already initialized (because of dual-use)
   // ... call initAdaptersAndViewModel() in the control (eg. StringPickerComponent)
-  // ... optionally attach dialog-close watchers
+  // ... todo: optionally attach dialog-close watchers
   // 3. The control will override initAdaptersAndViewModel()
   // 3.1 init state with
   // ... log
@@ -73,36 +74,19 @@ export class PickerDataFactory {
     return pickerData;
   }
 
-  // /**
-  //  * Initialize the Picker Adapter and View Model
-  //  * If the PickerData already exists, it will be reused
-  //  */
-  // private initAdaptersAndViewModel(): void {
-  //   this.log.a('initAdaptersAndViewModel');
-  //   // const config = this.fieldState.config;
-  //   // First, create the Picker Adapter or reuse
-  //   // The reuse is a bit messy - reason is that there are two components (preview/dialog)
-  //   // which have the same services, and if one is created first, the pickerData should be shared
-  //   // if (!this.mustInitializePicker) {
-  //   //   this.log.a('createPickerAdapters: pickerData already exists, will reuse');
-  //   // } else {
-  //     // this method is overridden in each variant as of now
-  //     this.createPickerAdapters();
-  //     this.log.a('createPickerAdapters: config', /* { config } */);
-  //   // }
-  // }
-
   private createPickerAdapters(pickerData: PickerData, fieldState: FieldState<any>): void {
     this.log.a('createPickerAdapters');
 
     let source: DataAdapterString | DataAdapterQuery | DataAdapterEntity;
 
-    const state = this.getBestStateAdapter(null).linkLog(this.log);
+    // First get the state, since the sources will depend on it.
+    const state = this.#getBestStateAdapter(fieldState.config.inputTypeSpecs).linkLog(this.log);
     // TODO:
     // .attachCallback(this.focusOnSearchComponent);
 
     const dataSourceType = fieldState.settings().DataSourceType;
     const isEmpty = !dataSourceType;
+
 
     if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || isEmpty) {
       source = transient(DataAdapterString, this.#injector).setupString(
@@ -119,8 +103,34 @@ export class PickerDataFactory {
     pickerData.setup(logSpecs.name, state, source);
   }
 
-  private getBestStateAdapter(inputTypeSpecs: InputTypeSpecs): StateAdapterString {
-    return transient(StateAdapterString, this.#injector);
+  #getBestStateAdapter(inputTypeSpecs: InputTypeSpecs): StateAdapterString {
+    const type = partsMap[inputTypeSpecs.inputType]?.states?.[0];
+    if (!type)
+      throw new Error(`No State Adapter found for inputTypeSpecs: ${inputTypeSpecs.inputType}`);
+
+    return transient(type, this.#injector) as StateAdapterString;
+    
+    // if (stringInputTypes.includes(inputTypeSpecs.inputType as string))
+    //   return transient(StateAdapterString, this.#injector);
+    // throw new Error(`No State Adapter found for inputTypeSpecs: ${inputTypeSpecs.inputType}`);
   }
 
+}
+
+const stringInputTypes: string[] = [InputTypeCatalog.StringPicker]; //, InputTypeCatalog.StringDropdown];
+
+const partsMap: Record<string, PartMap> = {
+  [InputTypeCatalog.StringPicker]: {
+    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
+    states: [StateAdapterString],
+  },
+  [InputTypeCatalog.StringDropdown]: {
+    sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],
+    states: [StateAdapterString],
+  },
+};
+
+interface PartMap {
+  sources: ProviderToken<unknown>[],
+  states: ProviderToken<unknown>[],
 }
