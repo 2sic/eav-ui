@@ -8,7 +8,7 @@ import { FieldState } from '../field-state';
 import { DataAdapterString } from './adapters/data-adapter-string';
 import { DataAdapterQuery } from './adapters/data-adapter-query';
 import { DataAdapterEntity } from './adapters/data-adapter-entity';
-import { PickerConfigModels } from './constants/picker-config-model.constants';
+import { OfPickerConfig, PickerConfigs } from './constants/picker-config-model.constants';
 import { DeleteEntityProps } from './models/picker.models';
 import { StateAdapterString } from './adapters/state-adapter-string';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
@@ -100,29 +100,38 @@ export class PickerDataFactory {
   }
 
   #getSourceAdapter(inputType: InputTypeStrict, dataSourceType: string, state: StateAdapter): DataAdapterString | DataAdapterQuery | DataAdapterEntity {
-    const dataSourceTypeUnknown = !dataSourceType;
 
-    if (dataSourceType === PickerConfigModels.UiPickerSourceCustomList || dataSourceTypeUnknown) {
+    // Get config for allowed sources / adapters for the current inputType
+    const parts = partsMap[inputType];
+
+    // The config type is either the forced type (from defaults for old pickers) or the specified type
+    const dsType = parts.forcePickerConfig ?? dataSourceType;
+
+    if (dsType === PickerConfigs.UiPickerSourceCustomList) {
       this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterString);
       return transient(DataAdapterString, this.#injector).setupString(
         (props: DeleteEntityProps) => state.doAfterDelete(props),
-        partsMap[inputType]?.forceIsEmpty ?? dataSourceTypeUnknown,
+        false,
       );
     }
     
-    if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
+    if (dsType === PickerConfigs.UiPickerSourceQuery) {
       this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterQuery);
       return transient(DataAdapterQuery, this.#injector).linkLog(this.log).connectState(state, false);
     }
     
-    if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
+    if (dsType === PickerConfigs.UiPickerSourceEntity) {
       this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterEntity);
       return transient(DataAdapterEntity, this.#injector).linkLog(this.log).connectState(state, false);
     }
+
+    // If we still don't know the type, add a no-configured-yet data-source
+    if (!dsType)
+      return transient(DataAdapterString, this.#injector).setupString(null, true);
   }
 
   #throwIfSourceAdapterNotAllowed(inputType: InputTypeStrict, dataSourceType: ProviderToken<unknown>): boolean {
-    if (partsMap[inputType]?.sources?.includes(dataSourceType)) return;
+    if (partsMap[inputType]?.sources?.includes(dataSourceType)) return false;
     throw new Error(`Specified SourceAdapter not allowed for inputTypeSpecs: ${inputType}: ${DataAdapterString}`);
   }
 
@@ -136,7 +145,12 @@ const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringDropdown]: {
     sources: [DataAdapterString],
     states: [StateAdapterString],
-    forceIsEmpty: false, // The StringDropdown never expects to have a configuration on the string source
+    forcePickerConfig: PickerConfigs.UiPickerSourceCustomList,
+  },
+  [InputTypeCatalog.StringDropdownQuery]: {
+    sources: [DataAdapterQuery],
+    states: [StateAdapterString],
+    forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
   },
 };
 
@@ -144,5 +158,5 @@ interface PartMap {
   sources: ProviderToken<unknown>[],
   states: ProviderToken<unknown>[],
   /** Force some string-sources to assume no-configuration, since the config is in the classic metadata, not in a DataSource config */
-  forceIsEmpty?: boolean,
+  forcePickerConfig?: OfPickerConfig,
 }

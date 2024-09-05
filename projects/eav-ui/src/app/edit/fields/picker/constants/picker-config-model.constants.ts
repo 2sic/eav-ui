@@ -1,8 +1,10 @@
-export const PickerConfigModels = {
+export const PickerConfigs = {
   UiPickerSourceQuery: 'UiPickerSourceQuery',
   UiPickerSourceEntity: 'UiPickerSourceEntity',
   UiPickerSourceCustomList: 'UiPickerSourceCustomList',
+
+  // TODO: this looks out of place here
   UiPickerModeTree: 'UiPickerModeTree',
 } as const;
 
-export type PickerConfigModel = typeof PickerConfigModels[keyof typeof PickerConfigModels];
+export type OfPickerConfig = typeof PickerConfigs[keyof typeof PickerConfigs];

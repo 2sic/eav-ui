@@ -1,5 +1,5 @@
 import { calculateDropdownOptions } from './string-picker.helpers';
-import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
+import { PickerConfigs } from '../../picker/constants/picker-config-model.constants';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
 import { EavEntity } from '../../../shared/models/eav';
@@ -29,9 +29,9 @@ export class StringPickerLogic extends FieldLogicBase {
       dataSources = tools.contentTypeItemService.getMany(fs.DataSources);
 
     /** Dropdown data source aka custom-list picker */
-    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceCustomList) {
+    if (dataSources[0]?.Type.Name === PickerConfigs.UiPickerSourceCustomList) {
       log.a('type: UiPickerSourceCustomList', { dataSource0: dataSources[0] })
-      fs.DataSourceType = PickerConfigModels.UiPickerSourceCustomList;
+      fs.DataSourceType = PickerConfigs.UiPickerSourceCustomList;
       const uiPickerSourceCustomList = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList;
 
       fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config

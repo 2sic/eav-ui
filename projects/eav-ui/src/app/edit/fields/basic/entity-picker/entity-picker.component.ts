@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EntityPickerLogic } from './entity-picker-logic';
-import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
+import { PickerConfigs } from '../../picker/constants/picker-config-model.constants';
 import { DataAdapterEntity } from '../../picker/adapters/data-adapter-entity';
 import { DataAdapterQuery } from '../../picker/adapters/data-adapter-query';
 import { StateAdapterEntity } from '../../picker/adapters/state-adapter-entity';
@@ -38,10 +38,10 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     const dataSourceType = this.fieldState.settings().DataSourceType;
     this.log.a(`${nameOfMethod}: dataSourceType: '${dataSourceType}'`);
 
-    if (dataSourceType === PickerConfigModels.UiPickerSourceEntity) {
+    if (dataSourceType === PickerConfigs.UiPickerSourceEntity) {
       this.log.a(`${nameOfMethod}: UiPickerSourceEntity`);
       source = transient(DataAdapterEntity, this.injector).linkLog(this.log).connectState(state, false);
-    } else if (dataSourceType === PickerConfigModels.UiPickerSourceQuery) {
+    } else if (dataSourceType === PickerConfigs.UiPickerSourceQuery) {
       this.log.a(`${nameOfMethod}: UiPickerSourceQuery`);
       source = transient(DataAdapterQuery, this.injector).linkLog(this.log).connectState(state, false);
     } else {

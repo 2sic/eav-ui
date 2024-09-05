@@ -1,4 +1,4 @@
-import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
+import { PickerConfigs } from '../../picker/constants/picker-config-model.constants';
 import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicTools } from '../../logic/field-logic-tools';
 import { EavEntity } from '../../../shared/models/eav';
@@ -34,8 +34,8 @@ export class EntityPickerLogic extends FieldLogicBase {
 
     // Transfer configuration
     const dataSource = dataSources[0];
-    const sourceIsQuery = dataSource?.Type.Name === PickerConfigModels.UiPickerSourceQuery;
-    const sourceIsEntity = dataSource?.Type.Name === PickerConfigModels.UiPickerSourceEntity;
+    const sourceIsQuery = dataSource?.Type.Name === PickerConfigs.UiPickerSourceQuery;
+    const sourceIsEntity = dataSource?.Type.Name === PickerConfigs.UiPickerSourceEntity;
     // DataSource may not be configured yet, in which case the object is just {}
     const specs = tools.entityReader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
     
@@ -51,7 +51,7 @@ export class EntityPickerLogic extends FieldLogicBase {
 
     /** Query datasource */
     if (sourceIsQuery) {
-      fs.DataSourceType = PickerConfigModels.UiPickerSourceQuery;
+      fs.DataSourceType = PickerConfigs.UiPickerSourceQuery;
 
       const specsQuery = specs as UiPickerSourceQuery;
       fs.Query = specsQuery.Query ?? '';
@@ -64,7 +64,7 @@ export class EntityPickerLogic extends FieldLogicBase {
 
     /** Entity datasource */
     if (sourceIsEntity) {
-      fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
+      fs.DataSourceType = PickerConfigs.UiPickerSourceEntity;
 
       const specsEntity = specs as UiPickerSourceEntity;
       fs.EntityType = specsEntity.ContentTypeNames ?? '';// possible multiple types
@@ -88,11 +88,11 @@ export class EntityPickerLogic extends FieldLogicBase {
     if (fs.PickerDisplayConfiguration?.length > 0)
       pickerDisplayConfigurations = tools.contentTypeItemService.getMany(fs.PickerDisplayConfiguration);
 
-    if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigModels.UiPickerModeTree) {
+    if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigs.UiPickerModeTree) {
       const specsTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
       const pickerTreeConfiguration: UiPickerModeTree = {
         Title: specsTree.Title ?? '',
-        ConfigModel: PickerConfigModels.UiPickerModeTree,
+        ConfigModel: PickerConfigs.UiPickerModeTree,
         TreeRelationship: specsTree.TreeRelationship ?? RelationshipParentChild,
         TreeBranchesStream: specsTree.TreeBranchesStream ?? 'Default',
         TreeLeavesStream: specsTree.TreeLeavesStream ?? 'Default',
