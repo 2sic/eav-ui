@@ -1,18 +1,17 @@
 import { map } from "rxjs";
 import { Injectable } from '@angular/core';
-import { DataSourceEntityQueryBase, LogSpecsDataSourceEntity } from './data-source-entity-query-base';
+import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { DataWithLoading } from '../models/data-with-loading';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
-import { LogSpecs } from '../../../../shared/logging/log-specs';
 
-const logSpecs: LogSpecs<Partial<LogSpecsDataSourceEntity>> = {
+const logSpecs = {
   enabled: true,
   name: 'DataSourceEntity',
   specs: {
+    ...DataSourceEntityQueryBase.logSpecs,
     all: true,
     getFromBackend: true,
-    
   }
 };
 

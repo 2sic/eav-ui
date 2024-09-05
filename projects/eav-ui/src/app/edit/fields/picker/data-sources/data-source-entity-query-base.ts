@@ -1,7 +1,7 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { Optional, WritableSignal } from '@angular/core';
+import { WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
@@ -19,9 +19,17 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   //#region Inject and blank constructor
 
+  static logSpecs = {
+    all: true,
+    initPrefetch: false,
+    getFromBackend: false,
+    addToRefresh: false,
+    loadMoreIntoSignal: false,
+  }
+
   protected querySvc = transient(QueryService);
 
-  log: EavLogger<LogSpecsDataSourceEntity>;
+  log: EavLogger<typeof DataSourceEntityQueryBase.logSpecs>;
   constructor(log: EavLogger) {
     super(log);
   }
@@ -166,12 +174,4 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
       });
     l.end();
   }
-}
-
-export interface LogSpecsDataSourceEntity {
-  all: boolean;
-  initPrefetch: boolean;
-  getFromBackend: boolean;
-  addToRefresh: boolean;
-  loadMoreIntoSignal: boolean;
 }

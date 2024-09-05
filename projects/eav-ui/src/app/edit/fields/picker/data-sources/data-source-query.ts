@@ -12,6 +12,9 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 const logSpecs = {
   enabled: true,
   name: 'DataSourceQuery',
+  specs: {
+    ...DataSourceEntityQueryBase.logSpecs,
+  }
 };
 
 // TODO: NEXT STEPS
