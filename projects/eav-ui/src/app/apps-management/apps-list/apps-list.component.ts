@@ -4,7 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -35,9 +34,12 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
-const logThis = false;
-
+const logSpecs = {
+  enabled: true,
+  name: 'AppsListComponent',
+}
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
@@ -59,22 +61,24 @@ const logThis = false;
     // WIP 2dm - needed for the lightspeed buttons to work
   ],
 })
-export class AppsListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppsListComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
 
-  private refreshApps$ = new Subject<void>();
+  #refreshApps$ = new Subject<void>();
 
   viewModel$: Observable<AppsListViewModel>;
   public features: FeaturesService = inject(FeaturesService);
   public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
-  private appsListService = transient(AppsListService);
+  #appsListSvc = transient(AppsListService);
+  #dialogClose = transient(DialogRoutingService);
 
+  log = new EavLogger(logSpecs);
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
@@ -82,21 +86,21 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route, new EavLogger('AppsListComponent', logThis));
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
     const appsLog = this.log.rxTap('apps$');
-    this.apps$ = this.refreshApps$.pipe(
+    this.apps$ = this.#refreshApps$.pipe(
       appsLog.pipe(),
       startWith(undefined),
-      switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
+      switchMap(() => this.#appsListSvc.getAll().pipe(catchError(() => of(undefined)))),
       shareReplay(1),
       appsLog.shareReplay(),
     );
 
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshApps$.next(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.#refreshApps$.next());
+
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
       map(([apps, fabOpen]) => {
         return { apps, fabOpen };
@@ -106,8 +110,7 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
 
   ngOnDestroy(): void {
     this.fabOpen$.complete();
-    this.refreshApps$.complete();
-    super.ngOnDestroy();
+    this.#refreshApps$.complete();
   }
 
   openChange(open: boolean): void {
@@ -140,14 +143,14 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
     if (result === null) { return; }
     if (result === app.Name || result === 'yes!') {
       this.snackBar.open('Deleting...');
-      this.appsListService.delete(app.Id).subscribe({
+      this.#appsListSvc.delete(app.Id).subscribe({
         error: () => {
           this.snackBar.open('Delete failed. Please check console for more information', undefined, { duration: 3000 });
-          this.refreshApps$.next();
+          this.#refreshApps$.next();
         },
         next: () => {
           this.snackBar.open('Deleted', undefined, { duration: 2000 });
-          this.refreshApps$.next();
+          this.#refreshApps$.next();
         },
       });
     } else {
@@ -158,7 +161,7 @@ export class AppsListComponent extends BaseWithChildDialogComponent implements O
   private flushApp(app: App): void {
     if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
     this.snackBar.open('Flushing cache...');
-    this.appsListService.flushCache(app.Id).subscribe({
+    this.#appsListSvc.flushCache(app.Id).subscribe({
       error: () => {
         this.snackBar.open('Cache flush failed. Please check console for more information', undefined, { duration: 3000 });
       },

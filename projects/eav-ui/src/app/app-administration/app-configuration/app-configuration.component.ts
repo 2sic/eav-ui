@@ -3,7 +3,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -17,7 +16,7 @@ import { ContentTypeEdit } from '../models';
 import { ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
-import { Subject, Observable, combineLatest, map } from 'rxjs';
+import { Subject, Observable, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
@@ -32,6 +31,7 @@ import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-app-configuration',
@@ -51,10 +51,10 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
     TippyDirective,
   ],
 })
-export class AppConfigurationComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppConfigurationComponent implements OnInit, OnDestroy {
 
-  private dialogService = transient(DialogService);
-  private contentTypesService = transient(ContentTypesService);
+  #dialogSvc = transient(DialogService);
+  #contentTypesSvc = transient(ContentTypesService);
 
   dialogSettings: DialogSettings;
 
@@ -77,11 +77,12 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
   protected langPermsEnabled = this.features.isEnabled(FeatureNames.PermissionsByLanguage);
 
-  private appInternalsService = transient(AppInternalsService);
+  #appInternalsService = transient(AppInternalsService);
 
-  private contentItemsService = transient(ContentItemsService);
+  #contentItemsService = transient(ContentItemsService);
 
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogClose = transient(DialogRoutingService);
 
   constructor(
     protected router: Router,
@@ -92,22 +93,22 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route);
-
     // New with proper ViewModel
     this.viewModel$ = this.appSettingsInternal$.pipe(
       map(s => {
+        const props = s.EntityLists;
+        const lsTypeName = eavConstants.appMetadata.LightSpeed.ContentTypeName;
         const result: AppConfigurationViewModel = {
-          appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+          appLightSpeedCount: s.MetadataList.Items.filter(i => i._Type.Name == lsTypeName).length,
           systemSettingsCount: this.isPrimary
-            ? s.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-            : s.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
-          customSettingsCount: s.EntityLists.AppSettings?.length,
+            ? props.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+            : props.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
+          customSettingsCount: props.AppSettings?.length,
           customSettingsFieldsCount: s.FieldAll.AppSettings?.length,
           systemResourcesCount: this.isPrimary
-            ? s.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-            : s.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
-          customResourcesCount: s.EntityLists.AppResources?.length,
+            ? props.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+            : props.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
+          customResourcesCount: props.AppResources?.length,
           customResourcesFieldsCount: s.FieldAll.AppResources?.length,
         }
         return result;
@@ -117,9 +118,9 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.fetchSettings());
 
-    this.dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
+    this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
       const appScope = dialogSettings.Context.App.SettingsScope;
       this.isGlobal = appScope === AppScopes.Global;
@@ -130,11 +131,10 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   ngOnDestroy() {
     this.snackBar.dismiss();
-    super.ngOnDestroy();
   }
 
   edit(staticName: string, systemSettingsScope?: SystemSettingsScope) {
-    this.contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
       switch (staticName) {
@@ -195,12 +195,12 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
 
   openSiteSettings() {
     const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
-    this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+    this.#dialogSvc.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
   }
 
   openGlobalSettings() {
     const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
-    this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+    this.#dialogSvc.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
   }
 
   config(staticName: string) {
@@ -223,7 +223,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   }
 
   private fetchSettings() {
-    const getObservable = this.appInternalsService.getAppInternals();
+    const getObservable = this.#appInternalsService.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
@@ -231,7 +231,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
   }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {
-    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+    this.#contentTypesSvc.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
       const contentTypeExists = contentTypes.some(ct => ct.Name === staticName);
       if (contentTypeExists) {
         if (action === 'edit') {
@@ -248,7 +248,7 @@ export class AppConfigurationComponent extends BaseWithChildDialogComponent impl
           ChangeStaticName: false,
           NewStaticName: '',
         } as ContentTypeEdit;
-        this.contentTypesService.save(newContentType).subscribe(success => {
+        this.#contentTypesSvc.save(newContentType).subscribe(success => {
           if (!success) { return; }
 
           if (action === 'edit') {

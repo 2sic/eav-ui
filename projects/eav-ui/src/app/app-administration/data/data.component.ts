@@ -8,7 +8,6 @@ import { ContentImportDialogData } from '../../content-import/content-import-dia
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -42,6 +41,8 @@ import { transient } from '../../core';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { BaseComponentSubscriptions } from '../../shared/components/base.component';
 
 @Component({
   selector: 'app-data',
@@ -62,7 +63,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
     DragAndDropDirective,
   ],
 })
-export class DataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class DataComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
 
   private contentTypesService = transient(ContentTypesService);
   private contentExportService = transient(ContentExportService);
@@ -83,23 +84,23 @@ export class DataComponent extends BaseWithChildDialogComponent implements OnIni
 
   isDebug = inject(GlobalConfigService).isDebug;
 
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogClose = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
-
+    super();
   }
 
   ngOnInit() {
     this.fetchScopes();
     this.refreshScopeOnRouteChange();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchContentTypes(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.fetchContentTypes());
 
-    this.dialogConfigSvc.getCurrent$().subscribe(data => {
+    this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
     });
   }

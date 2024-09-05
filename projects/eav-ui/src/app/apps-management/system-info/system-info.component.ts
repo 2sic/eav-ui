@@ -4,7 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -25,6 +24,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
 import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 declare const window: EavWindow;
 
@@ -49,20 +49,21 @@ declare const window: EavWindow;
     TippyDirective,
   ],
 })
-export class SystemInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class SystemInfoComponent implements OnInit, OnDestroy {
 
-  private dialogSettings = transient(AppDialogConfigService);
-  private sxcInsightsService = transient(SxcInsightsService);
-  private zoneService = transient(ZoneService);
-  private dialogService = transient(DialogService);
+  #dialogSettings = transient(AppDialogConfigService);
+  #sxcInsightsService = transient(SxcInsightsService);
+  #zoneSvc = transient(ZoneService);
+  #dialogSvc = transient(DialogService);
+  #dialogClose = transient(DialogRoutingService);
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
   viewModel$: Observable<SystemInfoViewModel>;
 
-  private systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
-  private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
-  private loading$: BehaviorSubject<boolean>;
+  #systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
+  #languages$: BehaviorSubject<SiteLanguage[] | undefined>;
+  #loading$: BehaviorSubject<boolean>;
 
   public features: FeaturesService = inject(FeaturesService);
   protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
@@ -73,27 +74,26 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
   }
+
   ngOnInit(): void {
-    this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
-    this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
-    this.loading$ = new BehaviorSubject<boolean>(false);
+    this.#systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
+    this.#languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
+    this.#loading$ = new BehaviorSubject<boolean>(false);
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
+    this.#dialogClose.doOnDialogClosed(() => {
       this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();
-    }));
+    });
   }
 
   ngOnDestroy(): void {
-    this.systemInfoSet$.complete();
-    this.languages$.complete();
-    this.loading$.complete();
-    super.ngOnDestroy();
+    this.#systemInfoSet$.complete();
+    this.#languages$.complete();
+    this.#loading$.complete();
   }
 
   copyToClipboard(text: string): void {
@@ -110,10 +110,10 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   openParentAppSettings(partName: "System" | "Site"): void {
-    this.dialogSettings.getCurrent$()
+    this.#dialogSettings.getCurrent$()
       .pipe(map(dc => dc?.Context[partName].PrimaryApp), take(1))
       .subscribe(appIdentity => {
-        this.dialogService.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
+        this.#dialogSvc.openAppAdministration(appIdentity.ZoneId, appIdentity.AppId, 'app');
       })
   }
 
@@ -132,10 +132,10 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   activatePageLog(form: NgForm) {
-    this.loading$.next(true);
+    this.#loading$.next(true);
     this.snackBar.open('Activating...');
-    this.sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
-      this.loading$.next(false);
+    this.#sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
+      this.#loading$.next(false);
       this.snackBar.open(res, null, { duration: 4000 });
     });
     if (document.activeElement instanceof HTMLElement) {
@@ -145,29 +145,29 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
   }
 
   private getSystemInfo(): void {
-    this.zoneService.getSystemInfo().subscribe({
+    this.#zoneSvc.getSystemInfo().subscribe({
       error: () => {
-        this.systemInfoSet$.next(undefined);
+        this.#systemInfoSet$.next(undefined);
       },
       next: (systemInfoSet) => {
-        this.systemInfoSet$.next(systemInfoSet);
+        this.#systemInfoSet$.next(systemInfoSet);
       },
     });
   }
 
   private getLanguages(): void {
-    this.zoneService.getLanguages().subscribe({
+    this.#zoneSvc.getLanguages().subscribe({
       error: () => {
-        this.languages$.next(undefined);
+        this.#languages$.next(undefined);
       },
       next: (languages) => {
-        this.languages$.next(languages);
+        this.#languages$.next(languages);
       },
     });
   }
 
   private buildViewModel(): void {
-    const systemInfos$ = this.systemInfoSet$.pipe(
+    const systemInfos$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) { return; }
         const info: InfoTemplate[] = [
@@ -194,7 +194,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
         return info;
       })
     );
-    const siteInfos$ = combineLatest([this.systemInfoSet$, this.languages$]).pipe(
+    const siteInfos$ = combineLatest([this.#systemInfoSet$, this.#languages$]).pipe(
       map(([systemInfoSet, languages]) => {
         if (systemInfoSet == null || languages == null) { return; }
         const allLanguages = languages.length;
@@ -224,7 +224,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
         return info;
       })
     );
-    const warningIcon$ = this.systemInfoSet$.pipe(
+    const warningIcon$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) { return; }
         if (systemInfoSet.Messages.WarningsObsolete || systemInfoSet.Messages.WarningsOther) {
@@ -233,7 +233,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
         return 'check';
       }),
     );
-    const warningInfos$ = this.systemInfoSet$.pipe(
+    const warningInfos$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) { return; }
         const info: InfoTemplate[] = [
@@ -263,7 +263,7 @@ export class SystemInfoComponent extends BaseWithChildDialogComponent implements
         return info;
       }),
     );
-    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
+    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.#loading$, warningIcon$, warningInfos$]).pipe(
       map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
         const viewModel: SystemInfoViewModel = {
           systemInfos,

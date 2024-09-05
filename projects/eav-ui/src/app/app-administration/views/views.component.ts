@@ -6,7 +6,6 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -35,6 +34,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-views',
@@ -51,8 +51,8 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
     DragAndDropDirective,
   ],
 })
-export class ViewsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
-  private dialogService = transient(DialogService);
+export class ViewsComponent implements OnInit, OnDestroy {
+  #dialogSvc = transient(DialogService);
   enableCode: boolean;
   enablePermissions: boolean;
   appIsGlobal: boolean;
@@ -63,38 +63,39 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   polymorphLogo = polymorphLogo;
   gridOptions = this.buildGridOptions();
 
-  private polymorphism: Polymorphism;
+  #polymorphism: Polymorphism;
 
   viewModel$: Observable<ViewsViewModel>;
 
-  private viewsService = transient(ViewsService);
+  #viewsSvc = transient(ViewsService);
 
-  private dialogConfigSvc = transient(AppDialogConfigService);
-
+  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogClose = transient(DialogRoutingService);
+  
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchTemplates();
     this.fetchPolymorphism();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
+    this.#dialogClose.doOnDialogClosed(() => {
       this.fetchTemplates();
       this.fetchPolymorphism();
-    }));
+    });
+
     this.viewModel$ = combineLatest([this.views$, this.polymorphStatus$]).pipe(
       map(([views, polymorphStatus]) => ({ views, polymorphStatus }))
     );
 
-    this.dialogConfigSvc.getCurrent$().subscribe(data => {
+    this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       var ctx = data.Context;
       this.enableCode = ctx.Enable.CodeEditor
       this.enablePermissions = ctx.Enable.AppPermissions
@@ -106,7 +107,6 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   ngOnDestroy() {
     this.views$.complete();
     this.polymorphStatus$.complete();
-    super.ngOnDestroy();
   }
 
   importView(files?: File[]) {
@@ -115,14 +115,14 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   }
 
   private fetchTemplates() {
-    this.viewsService.getAll().subscribe(views => {
+    this.#viewsSvc.getAll().subscribe(views => {
       this.views$.next(views);
     });
   }
 
   private fetchPolymorphism() {
-    this.viewsService.getPolymorphism().subscribe(polymorphism => {
-      this.polymorphism = polymorphism;
+    this.#viewsSvc.getPolymorphism().subscribe(polymorphism => {
+      this.#polymorphism = polymorphism;
       const polymorphStatus = (polymorphism.Id === null)
         ? 'not configured'
         : (polymorphism.Resolver === null ? 'disabled' : 'using ' + polymorphism.Resolver);
@@ -155,13 +155,13 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   }
 
   editPolymorphisms() {
-    if (!this.polymorphism) { return; }
+    if (!this.#polymorphism) { return; }
 
     const form: EditForm = {
       items: [
-        !this.polymorphism.Id
-          ? { ContentTypeName: this.polymorphism.TypeName }
-          : { EntityId: this.polymorphism.Id }
+        !this.#polymorphism.Id
+          ? { ContentTypeName: this.#polymorphism.TypeName }
+          : { EntityId: this.#polymorphism.Id }
       ],
     };
     this.openEdit(form);
@@ -180,7 +180,7 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   }
 
   private openCode(view: View) {
-    this.dialogService.openCodeFile(view.TemplatePath, view.IsShared, view.Id);
+    this.#dialogSvc.openCodeFile(view.TemplatePath, view.IsShared, view.Id);
   }
 
   private openPermissions(view: View) {
@@ -203,13 +203,13 @@ export class ViewsComponent extends BaseWithChildDialogComponent implements OnIn
   }
 
   private exportView(view: View) {
-    this.viewsService.export(view.Id);
+    this.#viewsSvc.export(view.Id);
   }
 
   private deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
-    this.viewsService.delete(view.Id).subscribe(res => {
+    this.#viewsSvc.delete(view.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchTemplates();
     });

@@ -3,7 +3,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
-import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
@@ -20,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -36,29 +36,28 @@ import { transient } from '../../../core';
     TippyDirective,
   ],
 })
-export class AppConfigurationCardComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
   viewModel$: Observable<ViewModel>;
 
-  private appInternalsService = transient(AppInternalsService);
+  #appInternalsSvc = transient(AppInternalsService);
 
-  private contentItemsService = transient(ContentItemsService);
-
+  #contentItemsSvc = transient(ContentItemsService);
+  #dialogClose = transient(DialogRoutingService);
+  
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private context: Context,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
-
     // New with proper ViewModel
     this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
-      this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
+      this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration),
     ]).pipe(map(([settings, contentItems]) => {
       const contentItem = contentItems[0];
       const result: ViewModel = {
@@ -77,12 +76,11 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
 
   ngOnInit() {
     this.fetchSettings();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchSettings(); }));
+    this.#dialogClose.doOnDialogClosed(() => { this.fetchSettings(); });
   }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
-    super.ngOnDestroy();
   }
 
   copyToClipboard(text: string): void {
@@ -92,7 +90,7 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
 
   edit() {
     const staticName = eavConstants.contentTypes.appConfiguration;
-    this.contentItemsService.getAll(staticName).subscribe(contentItems => {
+    this.#contentItemsSvc.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
       if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
@@ -115,7 +113,7 @@ export class AppConfigurationCardComponent extends BaseWithChildDialogComponent 
   }
 
   private fetchSettings() {
-    const getObservable = this.appInternalsService.getAppInternals();
+    const getObservable = this.#appInternalsSvc.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);

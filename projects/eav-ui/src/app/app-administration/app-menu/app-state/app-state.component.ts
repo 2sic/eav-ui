@@ -2,7 +2,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BaseWithChildDialogComponent } from '../../../shared/components/base-with-child-dialog.component';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
@@ -32,38 +31,36 @@ import { AppDialogConfigService } from '../../services/app-dialog-config.service
     MatDialogActions,
   ],
 })
-export class AppStateComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppStateComponent implements OnInit, OnDestroy {
   dialogSettings: DialogSettings;
 
-  private importAppPartsService = transient(ImportAppPartsService);
-  private exportAppService = transient(ExportAppService);
+  #importAppPartsSvc = transient(ImportAppPartsService);
+  #exportAppSvc = transient(ExportAppService);
 
   public appStateAdvanced = false;
 
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
-    this.dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
+    this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
     });
   }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
-    super.ngOnDestroy();
   }
 
   exportAppXml(withFiles: boolean) {
     this.snackBar.open('Exporting...');
-    this.exportAppService.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles }).subscribe({
+    this.#exportAppSvc.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles }).subscribe({
       next: result => {
         this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
       },
@@ -76,7 +73,7 @@ export class AppStateComponent extends BaseWithChildDialogComponent implements O
   resetApp(withFiles: boolean) {
     if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
     this.snackBar.open('Resetting...');
-    this.importAppPartsService.resetApp(withFiles).subscribe({
+    this.#importAppPartsSvc.resetApp(withFiles).subscribe({
       next: result => {
         this.snackBar.open(
           'Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct',

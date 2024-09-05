@@ -4,7 +4,6 @@ import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -21,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../core';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-permissions',
@@ -36,7 +36,7 @@ import { transient } from '../core';
     SxcGridModule,
   ],
 })
-export class PermissionsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class PermissionsComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
   gridOptions = this.buildGridOptions();
 
@@ -53,18 +53,19 @@ export class PermissionsComponent extends BaseWithChildDialogComponent implement
 
   private permissionsService = transient(PermissionsService);
 
+  #dialogClose = transient(DialogRoutingService);
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<PermissionsComponent>,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchPermissions();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchPermissions(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.fetchPermissions());
     this.viewModel$ = combineLatest([
       this.permissions$
     ]).pipe(map(([permissions]) => ({ permissions })));
@@ -72,7 +73,6 @@ export class PermissionsComponent extends BaseWithChildDialogComponent implement
 
   ngOnDestroy() {
     this.permissions$.complete();
-    super.ngOnDestroy();
   }
 
   closeDialog() {

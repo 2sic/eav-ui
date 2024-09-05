@@ -1,7 +1,6 @@
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -13,6 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
+import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -30,10 +31,10 @@ import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.direc
     ToggleDebugDirective,
   ],
 })
-export class AppsManagementNavComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppsManagementNavComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  private globalDialogConfigSvc = inject(GlobalDialogConfigService);
+  #globalDialogConfigSvc = inject(GlobalDialogConfigService);
 
   zoneId = this.context.zoneId;
 
@@ -41,24 +42,20 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
   sideNavOpened = !this.smallScreen.matches;
 
   navItems = AppsManagementNavItems;
+  #dialogClose = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     private context: Context,
     private media: MediaMatcher,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchDialogSettings();
 
     // Trigger settings load? not sure why, because it's cached in the service... on dialog close?
-    this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => this.fetchDialogSettings())
-    );
+    this.#dialogClose.doOnDialogClosed(() => this.fetchDialogSettings());
 
     this.smallScreen.addEventListener('change', c => (
       this.sidenav.opened = !c.matches,
@@ -71,7 +68,7 @@ export class AppsManagementNavComponent extends BaseWithChildDialogComponent imp
   }
 
   private fetchDialogSettings() {
-    this.globalDialogConfigSvc.getShared$(0).subscribe();
+    this.#globalDialogConfigSvc.getShared$(0).subscribe();
   }
 
 }

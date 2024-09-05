@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
@@ -19,9 +18,12 @@ import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
-const logThis = false;
-
+const logSpecs = {
+  enabled: false,
+  name: 'AppAdminMainComponent',
+}
 @Component({
   selector: 'app-app-admin-main',
   templateUrl: './app-admin-main.component.html',
@@ -39,17 +41,18 @@ const logThis = false;
     ToggleDebugDirective,
   ],
 })
-export class AppAdminMainComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class AppAdminMainComponent implements OnInit, OnDestroy {
 
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogClose = transient(DialogRoutingService);
 
+  log = new EavLogger(logSpecs);
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppAdminMainComponent>,
     private media: MediaMatcher
   ) {
-    super(router, route, new EavLogger('AppAdminMainComponent', logThis));
     this.log.a('constructor');
   }
 
@@ -93,11 +96,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => {
-        this.fetchDialogSettings();
-      })
-    );
+    this.#dialogClose.doOnDialogClosed(() => this.fetchDialogSettings());
 
     this.smallScreen.addEventListener(
       'change',
@@ -111,7 +110,6 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
   ngOnDestroy() {
     this.dialogSettings$.complete();
     this.pathsArray$.complete();
-    super.ngOnDestroy();
   }
 
 
@@ -120,7 +118,7 @@ export class AppAdminMainComponent extends BaseWithChildDialogComponent implemen
   }
 
   private fetchDialogSettings() {
-    this.dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
+    this.#dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

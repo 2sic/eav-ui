@@ -10,7 +10,6 @@ import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,6 +18,7 @@ import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { transient } from '../core';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -40,8 +40,10 @@ import { AppDialogConfigService } from '../app-administration/services/app-dialo
     MousedownStopPropagationDirective,
   ],
 })
-export class ManageContentListComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  #dialogClose = transient(DialogRoutingService);
 
   private items$ = new BehaviorSubject<GroupHeader[]>(null);
   private header$ = new BehaviorSubject<GroupHeader>(null);
@@ -61,29 +63,27 @@ export class ManageContentListComponent extends BaseWithChildDialogComponent imp
   private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ManageContentListComponent>,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchList();
     this.fetchHeader();
     this.fetchDialogSettings();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => {
+    this.#dialogClose.doOnDialogClosed(() => {
       this.fetchList(true);
       this.fetchHeader();
-    }));
+    });
   }
 
   ngOnDestroy() {
     this.items$.complete();
     this.header$.complete();
-    super.ngOnDestroy();
   }
 
   private fetchDialogSettings() {

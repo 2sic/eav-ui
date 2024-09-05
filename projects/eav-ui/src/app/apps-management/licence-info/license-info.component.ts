@@ -2,11 +2,9 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-// tslint:disable-next-line:max-line-length
+import { Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -34,6 +32,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-license-info',
@@ -55,35 +54,34 @@ import { transient } from '../../core';
     TippyDirective,
   ],
 })
-export class LicenseInfoComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   disabled$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
 
-  private refreshLicenses$ = new Subject<void>();
+  #refreshLicenses$ = new Subject<void>();
 
   viewModel$: Observable<LicenseInfoViewModel>;
 
-  private featuresConfigService = transient(FeaturesConfigService);
+  #featuresConfigSvc = transient(FeaturesConfigService);
+  #dialogClose = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route);
     ModuleRegistry.registerModules([ClientSideRowModelModule]);
   }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.refreshLicenses$.next(); }));
-    this.viewModel$ = //combineLatest([
-      this.refreshLicenses$.pipe(
+    this.#dialogClose.doOnDialogClosed(() => this.#refreshLicenses$.next());
+    this.viewModel$ = 
+      this.#refreshLicenses$.pipe(
         startWith(undefined),
-        switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
+        switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))),
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests
@@ -115,7 +113,6 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
 
   ngOnDestroy(): void {
     this.disabled$.complete();
-    super.ngOnDestroy();
   }
 
   trackLicenses(index: number, license: License): string {
@@ -146,12 +143,12 @@ export class LicenseInfoComponent extends BaseWithChildDialogComponent implement
       FeatureGuid: feature.guid,
       Enabled: enabled,
     };
-    forkJoin([this.featuresConfigService.saveFeatures([state]), timer(100)]).subscribe({
+    forkJoin([this.#featuresConfigSvc.saveFeatures([state]), timer(100)]).subscribe({
       error: () => {
-        this.refreshLicenses$.next();
+        this.#refreshLicenses$.next();
       },
       next: () => {
-        this.refreshLicenses$.next();
+        this.#refreshLicenses$.next();
       },
     });
   }

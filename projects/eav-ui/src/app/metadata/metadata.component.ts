@@ -8,7 +8,6 @@ import { ContentItemsService } from '../content-items/services/content-items.ser
 import { EntityEditService } from '../shared/services/entity-edit.service';
 import { EavFor } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -33,8 +32,13 @@ import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { transient } from '../core';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
-const logThis = false;
+const logSpecs = {
+  enabled: true,
+  name: 'MetadataComponent',
+};
+
 @Component({
   selector: 'app-metadata',
   templateUrl: './metadata.component.html',
@@ -55,23 +59,25 @@ const logThis = false;
     SafeHtmlPipe,
   ],
 })
-export class MetadataComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class MetadataComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
-  private entitiesService = transient(EntityEditService);
-  private metadataService = transient(MetadataService);
-  private contentItemsService = transient(ContentItemsService);
+  #entitiesSvc = transient(EntityEditService);
+  #metadataSvc = transient(MetadataService);
+  #contentItemSvc = transient(ContentItemsService);
+  #dialogClose = transient(DialogRoutingService);
 
-  private metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
-  private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
-  private fabOpen$ = new BehaviorSubject(false);
-  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
-  private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  private key = this.route.snapshot.paramMap.get('key');
+  #metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
+  #itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
+  #fabOpen$ = new BehaviorSubject(false);
+  #targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
+  #keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
+  #key = this.route.snapshot.paramMap.get('key');
   title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  #contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   viewModel$: Observable<MetadataViewModel>;
 
+  log = new EavLogger(logSpecs);
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -81,29 +87,26 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route, new EavLogger('MetadataComponent', logThis));
   }
 
   ngOnInit() {
     this.fetchFor();
     this.fetchMetadata();
-    this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => { this.fetchMetadata(); })
-    );
+    this.#dialogClose.doOnDialogClosed(() => this.fetchMetadata());
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');
-    this.metadataSet$.subscribe((set) => {
+    this.#metadataSet$.subscribe((set) => {
       this.log.a('test 2dm', { set });
     });
 
-    const filteredRecs$ = this.metadataSet$.pipe(
+    const filteredRecs$ = this.#metadataSet$.pipe(
       logFilteredRecs.pipe(),
       map((set) => set.Recommendations.filter(r => set.Items.filter(i => i._Type.Id === r.Id).length < r.Count)),
       logFilteredRecs.map(),
     );
 
     const logViewModel = this.log.rxTap('viewModel$');
-    this.viewModel$ = combineLatest([this.metadataSet$, filteredRecs$, this.itemFor$, this.fabOpen$]).pipe(
+    this.viewModel$ = combineLatest([this.#metadataSet$, filteredRecs$, this.#itemFor$, this.#fabOpen$]).pipe(
       logViewModel.pipe(),
       map(([metadata, recommendations, itemFor, fabOpen]) => {
         const viewModel: MetadataViewModel = {
@@ -120,10 +123,9 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
 
   ngOnDestroy() {
     this.log.a('destroying');
-    this.metadataSet$.complete();
-    this.itemFor$.complete();
-    this.fabOpen$.complete();
-    super.ngOnDestroy();
+    this.#metadataSet$.complete();
+    this.#itemFor$.complete();
+    this.#fabOpen$.complete();
   }
 
   closeDialog() {
@@ -131,7 +133,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
   }
 
   openChange(open: boolean) {
-    this.fabOpen$.next(open);
+    this.#fabOpen$.next(open);
   }
 
   createMetadata(recommendation?: MetadataRecommendation) {
@@ -144,7 +146,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
       // Feature is enabled, check if it's an empty metadata
       if (recommendation.CreateEmpty) {
         this.snackBar.open(`Creating ${recommendation.Name}...`);
-        this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
+        this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
             this.fetchMetadata();
@@ -185,29 +187,29 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
 
   private calculateItemFor(): EavFor {
     const itemFor: EavFor = {
-      Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
-      TargetType: this.targetType,
-      ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
-      ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
-      ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
+      Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.#targetType)?.target ?? this.#targetType.toString(),
+      TargetType: this.#targetType,
+      ...(this.#keyType === eavConstants.keyTypes.guid && { Guid: this.#key }),
+      ...(this.#keyType === eavConstants.keyTypes.number && { Number: parseInt(this.#key, 10) }),
+      ...(this.#keyType === eavConstants.keyTypes.string && { String: this.#key }),
     };
     return itemFor;
   }
 
   private fetchFor() {
-    if (!this.contentTypeStaticName) { return; }
+    if (!this.#contentTypeStaticName) { return; }
 
-    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
-      const item = items.find(i => i.Guid === this.key);
+    this.#contentItemSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
+      const item = items.find(i => i.Guid === this.#key);
       if (item?.For) {
-        this.itemFor$.next(item.For);
+        this.#itemFor$.next(item.For);
       }
     });
   }
 
   private fetchMetadata() {
     const logGetMetadata = this.log.rxTap('getMetadata');
-    this.metadataService.getMetadata(this.targetType, this.keyType, this.key)
+    this.#metadataSvc.getMetadata(this.#targetType, this.#keyType, this.#key)
       .pipe(
         logGetMetadata.pipe(),
         take(1),
@@ -228,7 +230,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
       // for reasons unknown to me. I've replaced it with the longhand
       // The problem occurs when the metadataSet$ is updated after the initial load.
       // .subscribe(this.metadataSet$);
-      .subscribe(data => this.metadataSet$.next(data));
+      .subscribe(data => this.#metadataSet$.next(data));
   }
 
   private editMetadata(metadata: MetadataItem) {
@@ -244,7 +246,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
         entityTitle: metadata.Title,
-        message: this.metadataSet$.value.Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
+        message: this.#metadataSet$.value.Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
       const confirmationDialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
         autoFocus: false,
@@ -260,7 +262,7 @@ export class MetadataComponent extends BaseWithChildDialogComponent implements O
     }
 
     this.snackBar.open('Deleting...');
-    this.entitiesService.delete(metadata._Type.Id, metadata.Id, false).subscribe({
+    this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchMetadata();

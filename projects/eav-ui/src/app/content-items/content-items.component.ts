@@ -12,7 +12,6 @@ import { ContentImportDialogData } from '../content-import/content-import-dialog
 import { DataTypeCatalog } from '../shared/fields/data-type-catalog';
 import { Field } from '../shared/fields/field.model';
 import { GoToMetadata } from '../metadata';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
@@ -49,9 +48,12 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
 import { transient } from '../core';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { GlobalConfigService } from '../shared/services/global-config.service';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
-const logThis = false;
-const nameOfThis = 'ContentItemsComponent';
+const logSpecs = {
+  enabled: false,
+  name: 'ContentItemsComponent',
+}
 
 @Component({
   selector: 'app-content-items',
@@ -70,7 +72,7 @@ const nameOfThis = 'ContentItemsComponent';
     SxcGridModule,
   ],
 })
-export class ContentItemsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new Subject<ContentType>();
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   gridOptions: GridOptions = {
@@ -90,24 +92,25 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
   private contentItemsService = transient(ContentItemsService);
 
   private contentTypesService = transient(ContentTypesService);
+  #dialogClose = transient(DialogRoutingService);
 
+  log = new EavLogger(logSpecs);
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentItemsComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(router, route, new EavLogger(nameOfThis, logThis));
   }
 
   ngOnInit() {
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchItems(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.fetchItems());
 
     this.viewModel$ = combineLatest([
       this.contentType$, this.items$
@@ -120,7 +123,6 @@ export class ContentItemsComponent extends BaseWithChildDialogComponent implemen
     this.contentType$.complete();
     this.items$.complete();
     this.gridApi$.complete();
-    super.ngOnDestroy();
   }
 
   closeDialog() {

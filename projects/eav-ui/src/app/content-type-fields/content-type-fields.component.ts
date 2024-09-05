@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
@@ -9,7 +8,6 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../shared/components/base-with-child-dialog.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -17,7 +15,6 @@ import { ItemAddIdentifier, EditForm, ItemEditIdentifier, ItemIdentifier, EditPr
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
-// tslint:disable-next-line:max-line-length
 import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type/content-type-fields-input-type.models';
 import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
@@ -34,6 +31,7 @@ import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directiv
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../core';
 import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -50,7 +48,10 @@ import { InputTypeHelpers } from '../shared/fields/input-type-helpers';
     SxcGridModule,
   ],
 })
-export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
+
+  #dialogClose = transient(DialogRoutingService);
+  
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -68,18 +69,17 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
   private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchFields();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchFields(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.fetchFields());
     this.viewModel$ = combineLatest([
       this.contentType$, this.fields$
     ]).pipe(
@@ -90,7 +90,6 @@ export class ContentTypeFieldsComponent extends BaseWithChildDialogComponent imp
   ngOnDestroy() {
     this.contentType$.complete();
     this.fields$.complete();
-    super.ngOnDestroy();
   }
 
   closeDialog() {

@@ -1,5 +1,5 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
@@ -7,7 +7,6 @@ import { ContentExportService } from '../../content-export/services/content-expo
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseWithChildDialogComponent } from '../../shared/components/base-with-child-dialog.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -29,6 +28,7 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-queries',
@@ -45,15 +45,17 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
     DragAndDropDirective,
   ],
 })
-export class QueriesComponent extends BaseWithChildDialogComponent implements OnInit, OnDestroy {
+export class QueriesComponent implements OnInit, OnDestroy {
 
   private pipelinesService = transient(PipelinesService);
   private contentExportService = transient(ContentExportService);
   private dialogService = transient(DialogService);
-
+  #dialogClose = transient(DialogRoutingService);
+  
   enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
+
 
   viewModel$ = combineLatest([this.queries$]).pipe(
     map(([queries]) => ({ queries }))
@@ -62,16 +64,15 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
   private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
-    super(router, route);
   }
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscriptions.add(this.childDialogClosed$().subscribe(() => { this.fetchQueries(); }));
+    this.#dialogClose.doOnDialogClosed(() => this.fetchQueries());
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
@@ -79,7 +80,6 @@ export class QueriesComponent extends BaseWithChildDialogComponent implements On
 
   ngOnDestroy() {
     this.queries$.complete();
-    super.ngOnDestroy();
   }
 
   private fetchQueries() {
