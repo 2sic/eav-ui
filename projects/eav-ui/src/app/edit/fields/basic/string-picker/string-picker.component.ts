@@ -22,8 +22,6 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   constructor() {
     super(new EavLogger(logSpecs));
     StringPickerLogic.importMe();
-
-    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
   }
 
 }

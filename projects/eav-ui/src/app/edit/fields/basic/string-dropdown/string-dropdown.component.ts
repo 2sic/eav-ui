@@ -22,7 +22,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   constructor() {
     super(new EavLogger(logSpecs));
     EntityDefaultLogic.importMe();
-    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
   }
 
 }

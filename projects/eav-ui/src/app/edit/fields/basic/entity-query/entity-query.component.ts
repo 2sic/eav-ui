@@ -22,6 +22,5 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   constructor() {
     super(new EavLogger(logSpecs));
     EntityQueryLogic.importMe();
-    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
   }
 }

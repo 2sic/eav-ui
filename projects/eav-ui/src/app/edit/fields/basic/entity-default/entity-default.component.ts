@@ -22,6 +22,5 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   constructor() {
     super(new EavLogger(logSpecs));
     EntityDefaultLogic.importMe();
-    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
   }
 }

@@ -22,6 +22,5 @@ export class StringDropdownQueryComponent extends PickerComponent implements OnI
   constructor() {
     super(new EavLogger(logSpecs));
     StringDropdownQueryLogic.importMe();
-    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
   }
 }

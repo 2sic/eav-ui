@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerData } from './picker-data';
 import { PickerImports } from './picker-providers.constant';
@@ -21,12 +21,7 @@ const logSpecs = {
   standalone: true,
   imports: PickerImports,
 })
-export class PickerComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-
-  constructor(log?: EavLogger) {
-    super(log ?? new EavLogger(logSpecs));
-    this.log.a('constructor');
-  }
+export class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
 
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
@@ -35,18 +30,16 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   public editRoutingService = inject(EditRoutingService);
   public fieldState = inject(FieldState);
 
+  constructor(log?: EavLogger) {
+    super(log ?? new EavLogger(logSpecs));
+    this.log.a('constructor');
+    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
+  }
+
   // wip
   protected pickerDataFactory = new PickerDataFactory(this.injector);
 
   pickerData: PickerData = this.fieldState.pickerData;
-
-  /**
-   * This control will always be created 2x
-   * once for preview, and optional for dialog.
-   * This is to indicate if it's the primary,
-   * because the primary should also attach certain inits/events.
-   */
-  mustInitializePicker = false;
 
   /**
    * Whether to show the preview or not,
@@ -61,48 +54,12 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
   });
 
   ngOnInit(): void {
-    this.mustInitializePicker = !this.pickerData.isInitialized;
-    this.log.a('ngOnInit', { mustInitializePicker: this.mustInitializePicker });
-    this.initAdaptersAndViewModel();
-    if (!this.pickerData.closeWatcherAttachedWIP) {
-      this.#refreshOnChildClosed();
-      this.pickerData.state.attachCallback(this.focusOnSearchComponent);
-      this.pickerData.closeWatcherAttachedWIP = true;
-    }
+    if (this.pickerData.closeWatcherAttachedWIP)
+      return;
+    this.#refreshOnChildClosed();
+    this.pickerData.state.attachCallback(this.focusOnSearchComponent);
+    this.pickerData.closeWatcherAttachedWIP = true;
   }
-
-  /**
-   * Initialize the Picker Adapter and View Model
-   * If the PickerData already exists, it will be reused
-   */
-  private initAdaptersAndViewModel(): void {
-    this.log.a('initAdaptersAndViewModel');
-    const config = this.fieldState.config;
-    // First, create the Picker Adapter or reuse
-    // The reuse is a bit messy - reason is that there are two components (preview/dialog)
-    // which have the same services, and if one is created first, the pickerData should be shared
-    if (!this.mustInitializePicker) {
-      this.log.a('createPickerAdapters: pickerData already exists, will reuse');
-    } else {
-      // this method is overridden in each variant as of now
-      this.createPickerAdapters();
-      this.log.a('createPickerAdapters: config', { config });
-    }
-  }
-
-
-  ngAfterViewInit(): void {
-    this.log.a('ngAfterViewInit');
-    if (this.mustInitializePicker) {
-      this.pickerData.source.onAfterViewInit();
-    }
-  }
-
-  /** Create the Picker Adapter - MUST be overridden in each inheriting class */
-  protected createPickerAdapters(): void {
-    throw new Error('Method not implemented. Must be overridden by inheriting class.');
-  }
-
 
   focusOnSearchComponent(): void {
     // TODO: I don't think this actually works, since I can't see where it would be set
