@@ -6,6 +6,7 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logSpecs = {
+  ...PickerComponent.logSpecs,
   enabled: false,
   name: 'EntityQueryComponent',
 };

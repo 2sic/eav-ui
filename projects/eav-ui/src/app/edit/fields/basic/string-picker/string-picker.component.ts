@@ -6,8 +6,9 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logSpecs = {
-  name: 'StringPickerComponent',
+  ...PickerComponent.logSpecs,
   enabled: true,
+  name: 'StringPickerComponent',
 };
 
 @Component({

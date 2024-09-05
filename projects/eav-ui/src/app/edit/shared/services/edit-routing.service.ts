@@ -58,8 +58,8 @@ export class EditRoutingService extends BaseComponentSubscriptions implements On
 
   init() {
     this.#initHideHeader();
-    this.#initChildFormResult();
-    this.#refreshOnVersionsClosed();
+    this.#watchChildFormResult();
+    this.#watchToRefreshOnVersionsClosed();
   }
 
   #childFormResult$ = new Subject<ChildFormResult>();
@@ -173,7 +173,7 @@ export class EditRoutingService extends BaseComponentSubscriptions implements On
     );
   }
 
-  #initChildFormResult() {
+  #watchChildFormResult() {
     this.subscriptions.add(
       this.#routerEventsChildDialog$().pipe(
         map(() => {
@@ -202,7 +202,7 @@ export class EditRoutingService extends BaseComponentSubscriptions implements On
     );
   }
 
-  #refreshOnVersionsClosed() {
+  #watchToRefreshOnVersionsClosed() {
     this.subscriptions.add(
       this.#routerEventsChildDialog$().pipe(
         map(() => this.router.getCurrentNavigation().extras?.state as ItemHistoryResult),

@@ -16,8 +16,8 @@ import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
 
 const logSpecs = {
+  enabled: false,
   name: 'PickerDataFactory',
-  enabled: true,
 };
 
 /**

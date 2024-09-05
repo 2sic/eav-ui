@@ -6,6 +6,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logSpecs = {
+  ...PickerComponent.logSpecs,
   enabled: false,
   name: 'EntityPickerComponent',
 };

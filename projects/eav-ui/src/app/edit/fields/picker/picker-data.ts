@@ -75,11 +75,12 @@ export class PickerData {
 
   public addNewlyCreatedItem(result: Record<string, number>) {
     const newItemGuid = Object.keys(result)[0];
-    this.log.a('childFormResult', { result, newItemGuid });
+    const l = this.log.fn('addNewlyCreatedItem', { result, newItemGuid });
     if (!this.state.createValueArray().includes(newItemGuid)) {
       this.state.addSelected(newItemGuid);
       this.source.forceReloadData([newItemGuid]);
     }
+    l.end();
   }
 
   #createUIModel(selected: PickerItem[], data: PickerItem[]): PickerItem[] {

@@ -9,6 +9,7 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { dataSrcIdPrefix } from '../../../../visual-query/plumb-editor/plumber.helper';
 
 /**
  * This is the base class for data-sources providing data from
@@ -27,6 +28,13 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     super(log);
   }
 
+  destroy(): void {
+    this.#typeOrParams$.complete();
+    this.getAll$.complete();
+    super.destroy();
+  }
+
+
   //#endregion
 
   /**
@@ -37,6 +45,10 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   #typeOrParams = signalObj<string>('typeOrParams', null);
   #typeOrParams$ = new Subject<string>();
   #paramsDebounced$ = this.#typeOrParams$.pipe(distinctUntilChanged());
+
+  /** Get the data from a query - all or only the ones listed in the guids */
+  abstract getFromBackend(params: string, guids: string[], purposeForLog: string) : Observable<DataWithLoading<PickerItem[]>>;
+
 
   // /**
   //  * Guids of items which _should_ be in the prefetched cache.
@@ -117,40 +129,10 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   /** Signal with loading-status */
   public override loading = computedObj('loading', () => this.#all().loading || this.#modified().loading) as any;
 
-
-  // protected getPrefetchStream(): Observable<DataWithLoading<PickerItem[]>> {
-  //   // older notes - not sure if they apply...
-  //   // Figure out the prefetch
-  //   // Note that if we're using a string-data based query, there will be no prefetch
-  //   // So it just needs to return an empty list
-
-  //   if (this.prefetchStream)
-  //     return this.prefetchStream;
-
-  //   // const logPrefetchInCache = this.log.rxTap('prefetchInCache$', { enabled: false });
-  //   return this.prefetchStream = this.prefetchEntityGuids$.pipe(
-  //       distinctUntilChanged(),
-  //       // only retrieve things if there are entity-guids
-  //       filter(entityGuids => entityGuids?.length > 0),
-  //       // get and keep the latest retrieved entities
-  //       mergeMap(entityGuids => this.entityCacheSvc.getEntities$(entityGuids).pipe(
-  //         map(data => ({ data, loading: false } as DataWithLoading<PickerItem[]>))
-  //       )),
-  //       shareReplay(1),
-  //     );
-  // }
-  // private prefetchStream: Observable<DataWithLoading<PickerItem[]>>;
-
   initPrefetch(entityGuids: string[]): void {
     const guids = entityGuids.filter(RxHelpers.distinct);
-    // this.prefetchEntityGuids$.next(guids);
-    // this.addToRefresh(guids);
     this.#loadMoreIntoSignal(this.#prefetchNew, guids, 'initPrefetch');
   }
-
-  /** Get the data from a query - all or only the ones listed in the guids */
-  abstract getFromBackend(params: string, guids: string[], purposeForLog: string)
-    : Observable<DataWithLoading<PickerItem[]>>;
 
   /** Set parameters for retrieval - either contentTypeName or query url parameters */
   setParams(params: string): void {
@@ -159,13 +141,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   }
 
 
-  destroy(): void {
-    this.#typeOrParams$.complete();
-    this.getAll$.complete();
-    super.destroy();
-  }
-
-  override addToRefresh(additionalGuids: string[]): void {
+  public override addToRefresh(additionalGuids: string[]): void {
     const l = this.log.fnIf('addToRefresh', { additionalGuids });
     this.#loadMoreIntoSignal(this.#modified, additionalGuids, 'addToRefresh');
     l.end();
@@ -177,14 +153,18 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
       return l.end('no additional guids to load/refresh');
 
     // get existing value and set loading to true
-    const before = cache();
-    cache.set({ data: before.data, loading: true });
+    cache.update(before => ({ data: before.data, loading: true }));
 
     this.getFromBackend(this.#typeOrParams(), additionalGuids, message)
       .subscribe(additions => {
-        const merged = [...new Map([...before.data, ...additions.data].map(item => [item.value, item])).values()];
-        l.values({ before, data: additions, merged });
-        cache.set({ data: merged, loading: false });
+        const before = cache();
+        cache.update(before => ({
+          data: [...new Map([...before.data, ...additions.data].map(item => [item.value, item])).values()],
+          loading: false
+        }));
+        l.values({ before, additions: additions, merged: cache().data });
+        // const merged = [...new Map([...before.data, ...additions.data].map(item => [item.value, item])).values()];
+        // cache.set({ data: merged, loading: false });
       });
     l.end();
   }

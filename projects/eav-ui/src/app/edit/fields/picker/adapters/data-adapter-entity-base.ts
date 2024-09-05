@@ -20,6 +20,7 @@ import { FormConfigService } from '../../../state/form-config.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { EntityService } from "../../../../../app/shared/services/entity.service";
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { take } from 'rxjs';
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
@@ -140,6 +141,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
     // Monitor for close to reload data
     this.#editRoutingService.childFormClosed()
+      .pipe(take(1))
       .subscribe(data => {
         const l2 = this.log.fn('childFormClosed', { editGuid, data });
         if (editGuid) {
@@ -147,7 +149,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
           return l2.end('forceReloadData', { editGuid });
         }
         l2.end("no guid, won't reload data");
-
       })
     l.end();
   }
