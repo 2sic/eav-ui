@@ -20,7 +20,7 @@ import { StreamErrorResultDialogData } from '../stream-error-result/stream-error
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { ServiceWithSubscriptions } from '../../shared/services/service-base';
+import { ServiceBase } from '../../shared/services/service-base';
 import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
 
 /**
@@ -28,7 +28,7 @@ import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
  * It's shared, so should not be used with transient(...);
  */
 @Injectable()
-export class VisualQueryStateService extends ServiceWithSubscriptions implements OnDestroy {
+export class VisualQueryStateService extends ServiceBase implements OnDestroy {
 
   #contentTypesSvc = transient(ContentTypesService);
   #metadataSvc = transient(MetadataService);

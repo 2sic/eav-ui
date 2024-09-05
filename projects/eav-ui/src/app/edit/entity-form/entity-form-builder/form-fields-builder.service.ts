@@ -18,12 +18,15 @@ import { EntityFormStateService } from '../entity-form-state.service';
 import { AdamCacheService } from '../../shared/store/adam-cache.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 
-const logThis = false;
-const nameOfThis = 'FormFieldsBuilderService';
+const logSpecs = {
+  enabled: false,
+  name: 'FormFieldsBuilderService',
+};
 
 @Injectable()
 export class FormFieldsBuilderService extends ServiceBase {
 
+  log = new EavLogger(logSpecs);
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private adamCacheService: AdamCacheService,
@@ -31,7 +34,7 @@ export class FormFieldsBuilderService extends ServiceBase {
     private entityFormConfigSvc: EntityFormStateService,
     private injector: Injector,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   start(entityGuid: string, form: UntypedFormGroup) {

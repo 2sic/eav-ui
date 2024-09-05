@@ -1,8 +1,6 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
-import { map, Observable, ReplaySubject } from 'rxjs';
-import { GlobalDialogConfigService } from '../app-administration/services';
+import { map, Observable } from 'rxjs';
 import { DialogContext } from '../shared/models/dialog-settings.model';
-import { ServiceBase } from '../shared/services/service-base';
 import { EavLogger } from '../shared/logging/eav-logger';
 import { FeatureSummary } from './models/feature-summary.model';
 import { SignalEquals } from '../shared/signals/signal-equals';
@@ -11,7 +9,10 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { transient } from '../core';
 
-const logThis = false;
+const logSpecs = {
+  enabled: false,
+  name: 'FeaturesService',
+}
 
 // TODO: @2dg - try to refactor the observables away so it only provides signals
 
@@ -26,7 +27,7 @@ const logThis = false;
  * ATM it would still load the dialog-settings by itself, even if the form service would provide it. on .load(...)
  */
 @Injectable({ providedIn: 'root' })
-export class FeaturesService extends ServiceBase {
+export class FeaturesService {
   // new 2dm WIP
   // Provide context information and ensure that previously added data is always available
   private dialogContextSignal = signal<DialogContext>(null);
@@ -34,9 +35,8 @@ export class FeaturesService extends ServiceBase {
 
   private dialogConfigSvc = transient(AppDialogConfigService);
 
+  log = new EavLogger(logSpecs);
   constructor() {
-    super(new EavLogger('FeaturesService', logThis));
-
     this.dialogConfigSvc.getCurrent$().subscribe(ds => this.load(ds.Context));
   }
 

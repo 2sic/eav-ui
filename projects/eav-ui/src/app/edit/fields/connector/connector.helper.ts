@@ -6,7 +6,7 @@ import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
 import { FieldMask } from '../../shared/helpers';
@@ -19,7 +19,6 @@ import { openFeatureDialog } from '../../../features/shared/base-feature.compone
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FeaturesService } from '../../../features/features.service';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FormConfigService } from '../../state/form-config.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { AdamService } from '../../shared/services/adam.service';
@@ -27,8 +26,17 @@ import { ContentTypeService } from '../../shared/store/content-type.service';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 
-const logThis = false;
-const nameOfThis = 'ConnectorHelper';
+const logSpecs = {
+  enabled: false,
+  name: 'ConnectorHelper',
+  specs: {
+    all: false,
+    init: true,
+    getUrlOfId: false,
+    updateControl: false,
+    openFeatureDisabledWarning: false,
+  }
+};
 
 const logExperimental = true;
 const nameOfExperimental = 'ConnectorHelperExperimental';
@@ -45,7 +53,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #featuresService = inject(FeaturesService);
   #editRoutingService = inject(EditRoutingService);
   #dialog = inject(MatDialog);
-  #fieldsSettingsService = inject(FieldsSettingsService);
   #snackBar = inject(MatSnackBar);
   #zone = inject(NgZone);
   
@@ -61,8 +68,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #viewContainerRef: ViewContainerRef;
   #changeDetectorRef: ChangeDetectorRef;
 
+  log = new EavLogger(logSpecs);
   constructor() {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
     this.log.a('constructor')
   }
 

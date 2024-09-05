@@ -2,21 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EavLogger } from '../logging/eav-logger';
-import { ServiceBase } from './service-base';
 import { Context } from './context';
 import { QueryStreams } from '../models/query-stream.model';
 
-const logThis = false;
+const logSpecs = {
+  enabled: true,
+  name: 'QueryService',
+  specs: {
+    all: false,
+    getAvailableEntities: false,
+    getEntities: false,
+  }
+};
 
 @Injectable()
-export class QueryService extends ServiceBase {
+export class QueryService {
 
-  constructor(private http: HttpClient, private context: Context) {
-    super(new EavLogger('QueryService', logThis));
-  }
+  log = new EavLogger(logSpecs);
+  constructor(private http: HttpClient, private context: Context) { }
 
   getAvailableEntities(queryUrl: string, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {
-    this.log.a('getAvailableEntities', { queryUrl, params, fields, entitiesFilter });
+    this.log.fnIf('getAvailableEntities', { queryUrl, params, fields, entitiesFilter });
     // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
     const hasParams = !!params;
     const paramsLower = params?.toLocaleLowerCase() ?? '';
@@ -35,7 +41,7 @@ export class QueryService extends ServiceBase {
   }
 
   getEntities({ contentTypes, itemIds, fields, log }: { contentTypes: string[]; itemIds: string[]; fields: string; log: string }): Observable<QueryStreams> {
-    this.log.a(`getEntities(${log})`, { contentTypes, itemIds, fields });
+    this.log.fnIf(`getEntities`, { log, contentTypes, itemIds, fields });
     const allParams =
       '&typeNames=' + (contentTypes?.join(',') ?? '')
       + `&appId=${this.context.appId}`

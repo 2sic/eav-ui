@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Signal, inject, untracked } from '@angular/core';
+import { Injectable, Signal, inject, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
 import { EavContentType } from '../shared/models/eav';
@@ -12,7 +12,6 @@ import { FormulaValueCorrections } from './results/formula-value-corrections.hel
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
@@ -32,13 +31,16 @@ import { LanguageService } from '../shared/store/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 
-const logThis = false;
-const nameOfThis = 'FormulaEngine';
-
-const logFields = ['UiGroup'];
+const logSpecs = {
+  enabled: false,
+  name: 'FormulaEngine',
+  specs: {
+    fields: ['UiGroup'],
+  }
+};
 
 function logDetailsFor(field: string) {
-  return logFields?.includes(field) || logFields?.includes('*');
+  return logSpecs.specs.fields?.includes(field) || logSpecs.specs.fields?.includes('*');
 }
 
 /**
@@ -47,9 +49,10 @@ function logDetailsFor(field: string) {
  * Each instance of the engine is responsible for a _single_ entity.
  */
 @Injectable()
-export class FormulaEngine extends ServiceBase implements OnDestroy {
+export class FormulaEngine {
   private features = inject(FeaturesService).getAll();
 
+  log = new EavLogger(logSpecs);
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -60,11 +63,6 @@ export class FormulaEngine extends ServiceBase implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
-  }
-
-  ngOnDestroy(): void {
-    super.destroy();
   }
 
   init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctSettings: Signal<ContentTypeSettings>) {

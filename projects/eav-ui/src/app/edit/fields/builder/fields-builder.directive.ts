@@ -10,7 +10,6 @@ import { FieldInjectorService } from './field-injector.service';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { transient } from '../../../core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ServiceBase } from '../../../shared/services/service-base';
 import { FieldConfigSet } from '../field-config-set.model';
 import { FieldMetadataKey, FieldMetadataModel } from '../field-metadata.decorator';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -18,8 +17,11 @@ import { FieldProps } from '../../state/fields-configs.model';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { AdamConnector } from '../wrappers/adam/adam-browser/adam-connector';
 
-const logThis = false;
-const nameOfThis = 'FieldsBuilderDirective';
+const logSpecs = {
+  enabled: false,
+  name: 'EditControlsBuilderDirective',
+};
+
 
 /**
  * This directive is responsible for creating the dynamic fields based on the field settings.
@@ -29,7 +31,7 @@ const nameOfThis = 'FieldsBuilderDirective';
   selector: '[appEditControlsBuilder]',
   standalone: true,
 })
-export class EditControlsBuilderDirective extends ServiceBase implements OnInit, OnDestroy {
+export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
   /** Service to create custom injectors for each field */
   #fieldInjector = transient(FieldInjectorService);
@@ -40,9 +42,8 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
   /** Service to get all settings for each field */
   #fieldsSettingsService = inject(FieldsSettingsService);
 
+  log = new EavLogger(logSpecs);
   constructor(private formConfigService: EntityFormStateService) {
-    super(new EavLogger(nameOfThis, logThis));
-
     effect(() => {
       const onInitReady = this.onInitReady();
       const controlsCreated = this.formConfigService.controlsCreated();
@@ -102,7 +103,6 @@ export class EditControlsBuilderDirective extends ServiceBase implements OnInit,
   ngOnDestroy(): void {
     for (const fieldConfig of this.#fieldConfigSets)
       fieldConfig.focused$.complete();
-    this.destroy();
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {

@@ -1,5 +1,5 @@
 import { ContentTypeItemService } from '../shared/store/content-type-item.service';
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,7 +14,6 @@ import { EavEntity } from '../shared/models/eav/eav-entity';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
-import { ServiceBase } from '../../shared/services/service-base';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormDataService } from '../shared/services/form-data.service';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
@@ -33,8 +32,17 @@ import { LanguageService } from '../shared/store/language.service';
 import { LanguageInstanceService } from '../shared/store/language-instance.service';
 import { LinkCacheService } from '../shared/store/link-cache.service';
 
-const logThis = false;
-const nameOfThis = 'EditInitializerService';
+const logSpecs = {
+  enabled: false,
+  name: 'EditInitializerService',
+  specs: {
+    all: false,
+    fetchFormData: false,
+    importLoadedData: false,
+    keepInitialValues: false,
+    initMissingValues: false,
+  }
+};
 
 /**
  * Service to initialize an edit form. Will:
@@ -43,7 +51,7 @@ const nameOfThis = 'EditInitializerService';
  * - Load initial values for formulas
  */
 @Injectable()
-export class EditInitializerService extends ServiceBase implements OnDestroy {
+export class EditInitializerService {
 
   public loaded = signal(false);
 
@@ -51,6 +59,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
 
   private initialFormValues: Record<string, ItemValuesOfLanguage> = {};
 
+  log = new EavLogger(logSpecs);
   constructor(
     private route: ActivatedRoute,
     private formConfig: FormConfigService,
@@ -66,15 +75,10 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private featuresService: FeaturesService,
-  ) {
-    super(new EavLogger(nameOfThis, logThis));
-  }
-
-  ngOnDestroy(): void {
-    super.destroy();
-  }
+  ) { }
 
   fetchFormData(): void {
+    const l = this.log.fnIf('fetchFormData');
     const inbound = convertUrlToForm((this.route.snapshot.params as EditParams).items);
     // 2024-06-01 2dm adding index to round trip
     const form = {
@@ -86,7 +90,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         };
       }),
     }
-    this.log.a('fetchFormData', form);
+    l.a('fetchFormData', form);
 
     const editItems = JSON.stringify(form.items);
     this.formDataService.fetchFormData(editItems).subscribe(dataFromBackend => {
@@ -97,7 +101,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
         Items: dataFromBackend.Items.map(item => {
           // try to find original item
           const originalItem = form.items.find(i => i.clientId === item.Header.clientId);
-          this.log.a('fetchFormData - remix', {item, originalItem});
+          l.a('fetchFormData - remix', {item, originalItem});
 
           return originalItem == null
             ? item
@@ -111,21 +115,22 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
               };
         }),
       };
-      this.log.a('fetchFormData - after remix', {formData});
+      l.a('fetchFormData - after remix', {formData});
 
 
       // SDV: document what's happening here
       this.featuresService.load(formData.Context);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
-      this.importLoadedData(formData);
-      this.keepInitialValues();
+      this.#importLoadedData(formData);
+      this.#keepInitialValues();
       this.initMissingValues();
 
       this.loaded.set(true);
     });
   }
 
-  private importLoadedData(loadDto: EavEditLoadDto): void {
+  #importLoadedData(loadDto: EavEditLoadDto): void {
+    const l = this.log.fnIf('importLoadedData');
     const formId = Math.floor(Math.random() * 99999);
     const isParentDialog = calculateIsParentDialog(this.route);
     const itemGuids = loadDto.Items.map(item => item.Entity.Guid);
@@ -171,7 +176,8 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   /**
    * Preserve initial values for future use in formulas which may need to know the initial value
    */
-  private keepInitialValues(): void {
+  #keepInitialValues(): void {
+    const l = this.log.fnIf('keepInitialValues');
     const items = this.itemService.getMany(this.formConfig.config.itemGuids);
     const allLangs = this.languageService.getAll().map(language => language.NameId);
     const language = this.formConfig.language();
@@ -198,7 +204,7 @@ export class EditInitializerService extends ServiceBase implements OnDestroy {
   //#endregion
 
   private initMissingValues(): void {
-    const l = this.log.fn('initMissingValues');
+    const l = this.log.fnIf('initMissingValues');
 
     const updater = this.itemService.updater;
     const eavConfig = this.formConfig.config;

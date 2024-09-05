@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
-import { ServiceBase } from '../../shared/services/service-base';
 import { HttpClient } from '@angular/common/http';
 import { Context } from '../../shared/services/context';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { EditionData, EditionDataDto } from './edition-data';
 import { map, shareReplay } from 'rxjs';
 import { Edition, EditionDto } from './edition';
-import { Observable } from 'tinymce';
 
-const logThis = false;
+const logSpecs = {
+  enabled: false,
+  name: 'CopilotService',
+}
 
 @Injectable()
-export class CopilotService extends ServiceBase {
+export class CopilotService {
   static webApiEditions: string = 'admin/code/getEditions';
   static webApiGeneratedCode: string = 'admin/code/generateDataModels';
 
-  public specs = this.getCopilotSpecs();
+  public specs = this.#getCopilotSpecs();
 
-  constructor(private http: HttpClient, private context: Context) {
-    super(new EavLogger('CopilotService', logThis));
-  }
+  log = new EavLogger(logSpecs);
+  constructor(private http: HttpClient, private context: Context) { }
 
   getEditions() {
     return this.specs.pipe(map(data => data.editions));
@@ -33,14 +33,14 @@ export class CopilotService extends ServiceBase {
     return this.specs.pipe(map(data => data.generators));
   }
 
-  private getCopilotSpecs() {
+  #getCopilotSpecs() {
     return this.http.get<EditionDataDto>(CopilotService.webApiEditions, {
       params: {
         appId: this.context.appId.toString()
       }
     }).pipe(
       map((data) => {
-        const defaultOrFirst = this.findDefaultEdition(data.editions);
+        const defaultOrFirst = this.#findDefaultEdition(data.editions);
         const editions = data.editions.map(d => {
           const isDefault = d == defaultOrFirst;
           return {
@@ -57,7 +57,7 @@ export class CopilotService extends ServiceBase {
     );
   }
 
-  private findDefaultEdition(editions: EditionDto[]): EditionDto {
+  #findDefaultEdition(editions: EditionDto[]): EditionDto {
     return editions.find(d => d.isDefault) ?? editions.find(d => d.name === '') ?? editions[0];
   }
 

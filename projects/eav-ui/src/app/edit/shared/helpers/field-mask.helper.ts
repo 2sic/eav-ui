@@ -5,8 +5,10 @@ import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../state/form-config.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 
-const logThis = false;
-const nameOfThis = 'FieldMask';
+const logSpecs = {
+  enabled: false,
+  name: 'FieldMask',
+};
 
 const FieldsFind = /\[.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
@@ -23,15 +25,26 @@ const FieldUnwrap = /[\[\]]/ig;
 @Injectable()
 export class FieldMask extends ServiceBase /* for field-change subscription */ implements OnDestroy {
 
+  #fieldState = inject(FieldState);
+  #formConfig = inject(FormConfigService);
+
+  log = new EavLogger(logSpecs);
+  constructor(private injector: Injector) {
+    super();
+    this.log.a('constructor');
+  }
+
+  ngOnDestroy() {
+    this.destroy();
+  }
+
   /**
    * The result of the mask as a signal, for external use/subscribing.
    */
   public result = signal<string>('');
 
-  #fieldState = inject(FieldState);
   #controls = this.#fieldState.group.controls;
   #fieldConfig = this.#fieldState.config;
-  #formConfig = inject(FormConfigService);
 
   /**
    * The mask as a signal.
@@ -59,14 +72,6 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   //   });
   // });
 
-  constructor(private injector: Injector) {
-    super(new EavLogger(nameOfThis, logThis));
-    this.log.a('constructor');
-  }
-
-  ngOnDestroy() {
-    this.destroy();
-  }
 
   /**
    * Attach any processing events before the mask is resolved the first time
@@ -95,7 +100,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
    */
   public logChanges(): this {
     // use logger, but if not enabled, create new just for this
-    const l = this.log.enabled ? this.log : new EavLogger(nameOfThis, true);
+    const l = this.log.enabled ? this.log : new EavLogger(logSpecs);
     effect(() => l.a(`Mask '${this.#mask()}' value changed to: ${this.result()}`), { injector: this.injector });
     return this;
   }

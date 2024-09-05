@@ -4,18 +4,27 @@ import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { Context } from '../../../shared/services/context';
 import { EavEditLoadDto, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
-import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { SaveResult } from '../../state/save-result.model';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 
-const logThis = false;
-const nameOfThis = 'FormDataService';
+
+const logSpecs = {
+  enabled: false,
+  name: 'FormDataService',
+  specs: {
+    all: false,
+    fetchFormData: false,
+    saveFormData: false,
+  }
+};
 
 export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
-export class FormDataService extends ServiceBase {
+export class FormDataService {
+
+  log = new EavLogger(logSpecs);
   constructor(
     private http: HttpClient,
     private dnnContext: DnnContext,
@@ -23,11 +32,10 @@ export class FormDataService extends ServiceBase {
     private context: Context,
     private globalConfigService: GlobalConfigService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
   }
 
   fetchFormData(items: string) {
-    this.log.a('fetchFormData', { items, context: this.context });
+    this.log.fnIf('fetchFormData', { items, context: this.context });
     return this.http.post<EavEditLoadDto>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
       params: { appId: this.context.appId }
     }).pipe(
@@ -42,6 +50,7 @@ export class FormDataService extends ServiceBase {
   }
 
   saveFormData(result: SaveEavFormData, partOfPage: string) {
+    this.log.fnIf('saveFormData', { result, partOfPage });
     return this.http.post<SaveResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), result, {
       params: { appId: this.context.appId, partOfPage }
     });

@@ -6,13 +6,13 @@ import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
 import { Signal, inject } from '@angular/core';
 import { FieldState } from '../../field-state';
-import { ServiceWithSubscriptions } from '../../../../shared/services/service-base';
+import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 
-export abstract class DataSourceBase extends ServiceWithSubscriptions {
+export abstract class DataSourceBase extends ServiceBase {
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);

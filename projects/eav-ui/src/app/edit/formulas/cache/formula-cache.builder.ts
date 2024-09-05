@@ -24,14 +24,25 @@ import { Sxc } from '@2sic.com/2sxc-typings';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 
-const logThis = false;
-const nameOfThis = 'FormulaCacheService';
+const logSpecs = {
+  enabled: false,
+  name: 'FormulaCacheBuilder',
+  specs: {
+    all: false,
+    buildFormulaCache: false,
+    updateFormulaFromEditor: false,
+    createPromisedParts: false,
+    buildItemFormulaCacheSharedParts: false,
+  }
+};
+
 
 /**
  * Service just to cache formulas for execution and use in the designer.
  */
 @Injectable()
 export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
+  log = new EavLogger(logSpecs);
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -41,7 +52,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     private translate: TranslateService,
     private inputTypes: InputTypeService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   ngOnDestroy() {
@@ -54,6 +65,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
    * @returns
    */
   public buildFormulaCache(cacheSvc: FormulaCacheService): FormulaCacheItem[] {
+    const l = this.log.fnIf('buildFormulaCache');
     const formulaCache: FormulaCacheItem[] = [];
     const language = this.formConfig.language();
     const reader = new EntityReader(language.current, language.primary);
@@ -141,6 +153,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
    * @returns
    */
   #buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemConstants {
+    this.log.fnIf('buildItemFormulaCacheSharedParts', { item, entityGuid });
     item = item ?? this.itemService.get(entityGuid);
     const entity = item.Entity;
     const mdFor = entity.For;
@@ -199,6 +212,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
    * @returns
    */
   #createPromisedParts() {
+    this.log.fnIf('createPromisedParts');
     const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
     const callback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
     const lastPromise = promises$.pipe(
@@ -226,6 +240,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
    * @param run
    */
   public updateFormulaFromEditor(cacheSvc: FormulaCacheService, id: FormulaIdentifier, formula: string, run: boolean) {
+    this.log.fnIf('updateFormulaFromEditor', { id, formula, run });
     // important: the designer contains too much info, so we need to extract the essentials
     // to not have it in the cache - which would trigger loads of changes to that signal later on.
     let formulaFunction: FormulaFunction;
