@@ -219,12 +219,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   importContent(files?: File[]) {
     const dialogData: ContentImportDialogData = { files };
-    this.#dialogRouter.router.navigate([`${this.#contentTypeStaticName}/import`], { relativeTo: this.#dialogRouter.route, state: dialogData });
+    this.#dialogRouter.navRelative([`${this.#contentTypeStaticName}/import`], { state: dialogData });
   }
 
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.#dialogRouter.router.navigate(['import'], { relativeTo: this.#dialogRouter.route, state: dialogData });
+    this.#dialogRouter.navRelative(['import'], { state: dialogData });
   }
 
   createMetadata() {

@@ -35,6 +35,8 @@ export class DialogRoutingService extends ServiceWithSubscriptions implements On
 
   get snapshot() { return this.route.snapshot; }
 
+  get url() { return this.router.url; }
+
   /**
    * Preferred way to register a callback, since the caller doesn't need to worry about subscriptions.
    */
@@ -49,8 +51,8 @@ export class DialogRoutingService extends ServiceWithSubscriptions implements On
   /**
    * Navigate relative to the current route.
    */
-  public navRelative(commands: any[]): Promise<boolean> {
-    return this.router.navigate(commands, { relativeTo: this.route });
+  public navRelative(commands: any[], extras?: Omit<NavigationExtras, 'relativeTo'>): Promise<boolean> {
+    return this.router.navigate(commands, { ...extras, relativeTo: this.route });
   }
 
   public navParentFirstChild(commands: any[], extras?: Omit<NavigationExtras, 'relativeTo'>): Promise<boolean> {

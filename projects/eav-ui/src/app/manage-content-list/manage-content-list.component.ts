@@ -143,10 +143,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   addFromExisting(index: number) {
     const queryParams = { add: true };
-    this.#dialogRoutes.router.navigate(
-      [`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`],
-      { relativeTo: this.#dialogRoutes.route, queryParams }
-    );
+    this.#dialogRoutes.navRelative([`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`], { queryParams });
   }
 
   addBelow(index: number) {

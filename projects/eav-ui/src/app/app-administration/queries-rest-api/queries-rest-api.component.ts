@@ -10,9 +10,10 @@ import { BehaviorSubject } from 'rxjs';
 import { DevRestQueryComponent } from '../../dev-rest/query/query.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Query } from '../models';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { transient } from '../../core';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-web-api-rest-api',
@@ -32,15 +33,15 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
   styleUrl: './queries-rest-api.component.scss'
 })
 export class QueriesRestApiComponent {
-  private pipelinesService = transient(PipelinesService);
+  #pipelinesSvc = transient(PipelinesService);
+  #dialogRouter = transient(DialogRoutingService);
 
   queryTypes$ = new BehaviorSubject<Query[]>(undefined);
   queryTypeForm: FormGroup;
 
+
   constructor(
     private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -51,11 +52,11 @@ export class QueriesRestApiComponent {
   }
 
   fetchQueries() {
-    this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
+    this.#pipelinesSvc.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
       this.queryTypes$.next(queries);
 
       // When Route are reload and have some Guid in the Route
-      const urlSegments = this.router.url.split('/');
+      const urlSegments = this.#dialogRouter.url.split('/');
       const urlGuidName = urlSegments[urlSegments.length - 1]
 
       const selectedContentType = queries.find(query => query.Guid === urlGuidName);
@@ -66,6 +67,6 @@ export class QueriesRestApiComponent {
 
   openRestApi(event: string): void {
     if (!event) return;
-    this.router.navigate([`${event}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`${event}`]);
   }
 }

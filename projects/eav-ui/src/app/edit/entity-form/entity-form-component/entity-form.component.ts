@@ -1,6 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, computed, input, signal } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
@@ -32,6 +31,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { EntityService } from '../../../shared/services/entity.service';
 import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 const logSpecs = {
   enabled: false,
@@ -69,24 +69,24 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   entityGuid = input<string>();
 
-  public formConfig = inject(FormConfigService);
-  private fieldsSettingsService = inject(FieldsSettingsService);
-  private formsStateService = inject(FormsStateService);
-  private translate = inject(TranslateService);
+  protected formConfig = inject(FormConfigService);
+  #fieldsSettingsSvc = inject(FieldsSettingsService);
+  #formsStateSvc = inject(FormsStateService);
+  #translate = inject(TranslateService);
 
   collapse = false;
   noteTouched: boolean = false;
 
-  public features: FeaturesService = inject(FeaturesService);
-  private editUiShowNotes = this.features.isEnabled(FeatureNames.EditUiShowNotes);
-  private editUiShowMetadataFor = this.features.isEnabled(FeatureNames.EditUiShowMetadataFor);
+  #features = inject(FeaturesService);
+  #editUiShowNotes = this.#features.isEnabled(FeatureNames.EditUiShowNotes);
+  #editUiShowMetadataFor = this.#features.isEnabled(FeatureNames.EditUiShowMetadataFor);
 
   /** Languages */
   languages = this.formConfig.language;
 
   /** Content-Type Settings */
   ctSettings = computed(() => {
-    const s = this.fieldsSettingsService.contentTypeSettings();
+    const s = this.#fieldsSettingsSvc.contentTypeSettings();
     const features = s.Features;
     const ctFeatures = buildContentTypeFeatures(s.Features);
 
@@ -96,17 +96,17 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
       slotIsEmpty: s._slotIsEmpty,
       editInstructions: s.EditInstructions,
       features,
-      showNotes: ctFeatures[FeatureNames.EditUiShowNotes] ?? this.editUiShowNotes(),
-      showMdFor: ctFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.editUiShowMetadataFor(),
+      showNotes: ctFeatures[FeatureNames.EditUiShowNotes] ?? this.#editUiShowNotes(),
+      showMdFor: ctFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.#editUiShowMetadataFor(),
     };
   }, { equal: RxHelpers.objectsEqual });
 
-  readOnly = computed(() => this.formsStateService.readOnly().isReadOnly);
+  readOnly = computed(() => this.#formsStateSvc.readOnly().isReadOnly);
 
   /** Item-For (Target) Tooltip */
   itemForTooltip = computed(() => {
-    const item = this.itemService.getItemFor(this.entityGuid());
-    return getItemForTooltip(item, this.translate);
+    const item = this.itemSvc.getItemFor(this.entityGuid());
+    return getItemForTooltip(item, this.#translate);
   });
 
   #retriggerNoteProps = signal<boolean>(false);
@@ -114,23 +114,21 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     this.#retriggerNoteProps(); // dependency to retrigger when #retriggerNoteProps changes
     const entityGuid = this.entityGuid();
     const languages = this.formConfig.language();
-    const note = this.itemService.getItemNote(entityGuid);
-    const notCreatedYet = this.itemService.get(entityGuid).Entity.Id === 0;
+    const note = this.itemSvc.getItemNote(entityGuid);
+    const notCreatedYet = this.itemSvc.get(entityGuid).Entity.Id === 0;
     return getNoteProps(note, languages, notCreatedYet);
   });
 
   private noteRef?: MatDialogRef<undefined, any>;
 
-  private formDataService = transient(FormDataService);
-  private entityService = transient(EntityService);
+  #formDataSvc = transient(FormDataService);
+  #entitySvc = transient(EntityService);
+  #dialogRouter = transient(DialogRoutingService);
 
   log = new EavLogger(logSpecs);
   constructor(
-    private itemService: ItemService,
-    private router: Router,
-    private route: ActivatedRoute,
-
-    private editRoutingService: EditRoutingService,
+    private itemSvc: ItemService,
+    private editRoutingSvc: EditRoutingService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
@@ -146,7 +144,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   ngOnInit() {
     // Update the notes whenever a child form is closed
     this.subscriptions.add(
-      this.editRoutingService.childFormClosed().subscribe(() => this.fetchNote())
+      this.editRoutingSvc.childFormClosed().subscribe(() => this.fetchNote())
     );
   }
 
@@ -161,19 +159,19 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   toggleSlotIsEmpty() {
     const entityGuid = this.entityGuid();
-    const oldHeader = this.itemService.getItemHeader(entityGuid);
+    const oldHeader = this.itemSvc.getItemHeader(entityGuid);
     const newHeader: ItemIdentifierHeader = {
       ...oldHeader,
       IsEmpty: !oldHeader.IsEmpty,
     };
     const l = this.log.fn('toggleSlotIsEmpty', { oldHeader, newHeader });
-    this.itemService.updater.updateItemHeader(entityGuid, newHeader);
+    this.itemSvc.updater.updateItemHeader(entityGuid, newHeader);
     l.end();
   }
 
   openHistory() {
-    const item = this.itemService.get(this.entityGuid());
-    this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
+    const item = this.itemSvc.get(this.entityGuid());
+    this.#dialogRouter.navRelative([`versions/${item.Entity.Id}`]);
   }
 
   toggleNote(event: Event) {
@@ -210,7 +208,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   editNote(note?: EavEntity) {
     const entityGuid = this.entityGuid();
     const l = this.log.fn('editNote', { note });
-    const item = this.itemService.get(entityGuid);
+    const item = this.itemSvc.get(entityGuid);
     if (item.Entity.Id === 0) {
       l.end('Item not saved yet, ID = 0');
       return;
@@ -231,16 +229,16 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
           : { EntityId: note.Id }
       ],
     };
-    this.editRoutingService.open(null, null, form);
+    this.editRoutingSvc.open(null, null, form);
   }
 
   deleteNote(note: EavEntity) {
     const language = this.formConfig.language();
     const title = LocalizationHelpers.translate(language, note.Attributes.Title, null);
     const id = note.Id;
-    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id })))
+    if (!confirm(this.#translate.instant('Data.Delete.Question', { title, id })))
       return;
-    this.entityService.delete(this.formConfig.config.appId, eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
+    this.#entitySvc.delete(this.formConfig.config.appId, eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.noteRef?.close();
       this.fetchNote();
     });
@@ -248,14 +246,14 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   private fetchNote() {
     const entityGuid = this.entityGuid();
-    const item = this.itemService.get(entityGuid);
+    const item = this.itemSvc.get(entityGuid);
     if (item.Entity.Id === 0)
       return;
 
     const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
-    this.formDataService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
+    this.#formDataSvc.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
-      this.itemService.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
+      this.itemSvc.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
       this.#retriggerNoteProps.set(true);
     });
   }
