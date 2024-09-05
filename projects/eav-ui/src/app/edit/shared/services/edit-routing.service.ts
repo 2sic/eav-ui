@@ -13,6 +13,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../state/form-config.service';
 import { LanguageInstanceService } from '../store/language-instance.service';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+
+const logSpecs = {
+  name: 'EditRoutingService',
+  enabled: false,
+}
 
 /**
  * Special helper to handle opening / closing field-specific popups.
@@ -31,7 +37,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private formConfig: FormConfigService
   ) {
-    super();
+    super(new EavLogger(logSpecs));
   }
 
   ngOnDestroy() {

@@ -38,6 +38,11 @@ export class PickerData {
   */
   public state: StateAdapter;
 
+  /** Temp info if it was already initialized, can probably be removed once we have the PickerDataFactory complete */
+  get isInitialized(): boolean {
+    return !!this.source && !!this.state;
+  }
+
   /** Signal containing the currently selected items */
   public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.source.optionsOrHints()));
 

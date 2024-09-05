@@ -23,8 +23,6 @@ export abstract class DataAdapterBase extends ServiceBase {
   protected useDataSourceStream = signal(false);
   public optionsOrHints = computed(() => (this.dataSource().data()) ?? []);
 
-  public editEntityGuid = signal<string>(null);
-
   public deleteCallback: (props: DeleteEntityProps) => void;
 
   constructor(logSpecs: EavLogger) {

@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
 import { StringPickerLogic } from './string-picker-logic';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';

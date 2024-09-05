@@ -10,6 +10,13 @@ export class EditPrep {
     return { EntityId: id } satisfies ItemEditIdentifier;
   }
 
+  static newFromType(contentType: string, prefill?: Record<string, unknown>): ItemAddIdentifier {
+    return {
+      ContentTypeName: contentType,
+      Prefill: prefill
+    } satisfies ItemAddIdentifier;
+  }
+
   // TODO: @2dg - TO FIND where this should be used, look for "For:" in the code
   static newMetadata<T>(key: T, typeName: string, keyDef: MetadataKeyDefinition): ItemAddIdentifier {
     return {
@@ -46,6 +53,8 @@ export type ItemIdentifier = ItemAddIdentifier | ItemEditIdentifier | ItemInList
 
 export type ItemIdentifierHeader = ItemIdentifier & ItemIdentifierEditConfig;
 
+// TODO: leave these comments in till we've checked the backend to ensure we've removed
+// TODO: unused properties
 // export interface ItemIdentifierHeader extends ItemIdentifierShared, ItemIdentifierEditConfig {
 //   // 2023-05-15 seems unused - TODO: probably remove from backend as well
 //   // Add?: boolean;

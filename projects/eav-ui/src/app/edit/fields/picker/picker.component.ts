@@ -39,7 +39,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
    * This is to indicate if it's the primary,
    * because the primary should also attach certain inits/events.
    */
-  isPrimary = false;
+  pickerNotYetInitialized = false;
 
   /**
    * Whether to show the preview or not,
@@ -55,10 +55,10 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
 
   ngOnInit(): void {
     this.log.a('ngOnInit');
-    this.isPrimary = this.fieldState.config.pickerData == null;
+    this.pickerNotYetInitialized = !this.pickerData.isInitialized;
     this.initAdaptersAndViewModel();
-    if (this.isPrimary)
-      this.refreshOnChildClosed();
+    if (this.pickerNotYetInitialized)
+      this.#refreshOnChildClosed();
   }
 
   /**
@@ -71,21 +71,19 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     // First, create the Picker Adapter or reuse
     // The reuse is a bit messy - reason is that there are two components (preview/dialog)
     // which have the same services, and if one is created first, the pickerData should be shared
-    if (!this.isPrimary) {
+    if (!this.pickerNotYetInitialized) {
       this.log.a('createPickerAdapters: pickerData already exists, will reuse');
-      this.pickerData = config.pickerData;
     } else {
       // this method is overridden in each variant as of now
       this.createPickerAdapters();
       this.log.a('createPickerAdapters: config', { config });
-      config.pickerData = this.pickerData;
     }
   }
 
 
   ngAfterViewInit(): void {
     this.log.a('ngAfterViewInit');
-    if (this.isPrimary)
+    if (this.pickerNotYetInitialized)
       this.pickerData.source.onAfterViewInit();
   }
 
@@ -100,29 +98,22 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.entitySearchComponent?.autocomplete()?.nativeElement.focus();
   }
 
-  private refreshOnChildClosed(): void {
+  #refreshOnChildClosed(): void {
     const l = this.log.fn('refreshOnChildClosed');
 
     // this is used when new entity is created in child form it automatically adds it to the picker as selected item
     const config = this.fieldState.config;
     this.subscriptions.add(
-      this.editRoutingService.childFormResult(config.index, config.entityGuid).subscribe(result => {
-        const newItemGuid = Object.keys(result)[0];
-        this.log.a('childFormResult', { result, newItemGuid });
-        if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
-          this.pickerData.state.addSelected(newItemGuid);
-          this.pickerData.source.forceReloadData([newItemGuid]);
-        }
-      })
-    );
-    // this is used when new entity is created/changed in child form it automatically fetched again
-    this.subscriptions.add(
-      this.editRoutingService.childFormClosed().subscribe(() => {
-        const childGuid = this.pickerData.source.editEntityGuid();
-        this.log.a('childFormClosed', { childGuid });
-        if (childGuid)
-          this.pickerData.source.forceReloadData([childGuid]);
-      })
+      // TODO: 2dm 2024-09-05 I believe this doesn't work as expected
+      this.editRoutingService.childFormResult(config.index, config.entityGuid)
+        .subscribe(result => {
+          const newItemGuid = Object.keys(result)[0];
+          this.log.a('childFormResult', { result, newItemGuid });
+          if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
+            this.pickerData.state.addSelected(newItemGuid);
+            this.pickerData.source.forceReloadData([newItemGuid]);
+          }
+        })
     );
     l.end();
   }

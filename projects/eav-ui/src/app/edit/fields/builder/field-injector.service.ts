@@ -18,7 +18,7 @@ import { LogSpecs } from '../../../shared/logging/log-specs';
 
 const logSpecs: LogSpecs<string[]> = {
   name: 'FieldInjectorService',
-  enabled: true,
+  enabled: false,
   specs: [], //['Boolean'],
 };
 

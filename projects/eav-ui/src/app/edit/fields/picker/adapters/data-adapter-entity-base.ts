@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { EditForm } from "../../../../../app/shared/models/edit-form.model";
+import { EditForm, EditPrep } from "../../../../../app/shared/models/edit-form.model";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -25,7 +25,6 @@ import { EntityService } from "../../../../../app/shared/services/entity.service
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
-  private entityService = transient(EntityService);
   protected formConfig = inject(FormConfigService);
   private editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
@@ -33,16 +32,17 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected injector = inject(Injector);
   protected fieldState = inject(FieldState);
   protected group = inject(EntityFormStateService).formGroup();
+  private entityService = transient(EntityService);
 
   /** Content Type Mask */
-  private typeMaskFromSettings = computed(() => this.fieldState.settings().EntityType, SignalEquals.string);
+  #typeMaskFromSettings = computed(() => this.fieldState.settings().EntityType, SignalEquals.string);
 
   /**
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  private contentTypeMaskLazy = computed(() => {
-    const typeMask = this.typeMaskFromSettings();
+  #contentTypeMaskLazy = computed(() => {
+    const typeMask = this.#typeMaskFromSettings();
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
@@ -52,15 +52,15 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   });
 
 
-  protected contentType = computed(() => this.contentTypeMaskLazy()?.result() ?? '', SignalEquals.string);
+  protected contentType = computed(() => this.#contentTypeMaskLazy()?.result() ?? '', SignalEquals.string);
 
-  private createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalEquals.string);
+  #createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalEquals.string);
 
   /** The features depend on contentType names being available to support create */
   public features = computed<Partial<PickerFeatures>>(
     () => {
       // if we don't know the content-type, we can't create new entities
-      const disableCreate = !this.contentType() && !this.createEntityTypes();
+      const disableCreate = !this.contentType() && !this.#createEntityTypes();
       return { create: !disableCreate } satisfies Partial<PickerFeatures>;
     },
     { equal: RxHelpers.objectsEqual }
@@ -118,18 +118,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   forceReloadData(missingData: string[]): void {
     const l = this.log.fn('forceReloadData', { missingData });
     this.dataSource().addToRefresh(missingData);
-
-
     l.end();
   }
-
-
-  // private updateAddNew(): void {
-  //   this.log.add('updateAddNew');
-  //   // const contentTypeName = this.contentTypeMask.resolve();
-  //   const disableCreate = !this.contentType() && !this.createEntityTypes();
-  //   this.features.update(p => ({ ...p, create: !disableCreate } satisfies Partial<PickerFeatures>));
-  // }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
   // not even sure if the guid would still be needed, as I assume the entityId
@@ -137,32 +127,24 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
     this.log.a('editItem', { editParams });
-    if (editParams)
-      this.editEntityGuid.set(editParams.entityGuid);
-    let form: EditForm;
-    if (editParams?.entityGuid == null) {
-      const contentTypeName = entityType ?? this.contentType();
-      const prefill = this.getPrefill();
-      form = {
-        items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
-      };
-    } else {
-      const entity = this.optionsOrHints().find(item => item.value === editParams.entityGuid);
-      // if (entity != null) {
-      //   form = {
-      //     items: [{ EntityId: entity.id }],
-      //   };
-      // } else {
-      //   form = {
-      //     items: [{ EntityId: editParams.entityId }],
-      //   };
-      // }
-      form = {
-        items: [{ EntityId: entity?.id ?? editParams.entityId }],
-      };
-    }
+    const editGuid = editParams?.entityGuid;
+    const form: EditForm = {
+      items: (editGuid == null)
+        ? [EditPrep.newFromType(entityType ?? this.contentType(), this.getPrefill())]
+        : [EditPrep.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId)]
+    };
     const config = this.fieldState.config;
+    
+    // Open the form
     this.editRoutingService.open(config.index, config.entityGuid, form);
+
+    // Monitor for close to reload data
+    this.editRoutingService.childFormClosed()
+        .subscribe(() => {
+          this.log.a('childFormClosed', { editGuid });
+          if (editGuid)
+            this.forceReloadData([editGuid]);
+        })
   }
 
   deleteItem(props: DeleteEntityProps): void {
