@@ -8,19 +8,18 @@ import { StateAdapter } from './state-adapter';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
-import { Injector, computed, inject, signal, untracked } from '@angular/core';
+import { Injector, inject, untracked } from '@angular/core';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FieldState } from '../../field-state';
 import { FieldMask } from '../../../shared/helpers';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
 import { FormConfigService } from '../../../state/form-config.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { EntityService } from "../../../../../app/shared/services/entity.service";
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -35,13 +34,13 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   private entityService = transient(EntityService);
 
   /** Content Type Mask */
-  #typeMaskFromSettings = computed(() => this.fieldState.settings().EntityType, SignalEquals.string);
+  #typeMaskFromSettings = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
 
   /**
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  #contentTypeMaskLazy = computed(() => {
+  #contentTypeMaskLazy = computedObj('contentTypeMaskLazy', () => {
     const typeMask = this.#typeMaskFromSettings();
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
@@ -52,32 +51,29 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   });
 
 
-  protected contentType = computed(() => this.#contentTypeMaskLazy()?.result() ?? '', SignalEquals.string);
+  protected contentType = computedObj('contentType', () => this.#contentTypeMaskLazy()?.result() ?? '');
 
-  #createEntityTypes = computed(() => this.fieldState.settings().CreateTypes, SignalEquals.string);
+  #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 
   /** The features depend on contentType names being available to support create */
-  public features = computed<Partial<PickerFeatures>>(
-    () => {
-      // if we don't know the content-type, we can't create new entities
-      const disableCreate = !this.contentType() && !this.#createEntityTypes();
-      return { create: !disableCreate } satisfies Partial<PickerFeatures>;
-    },
-    { equal: RxHelpers.objectsEqual }
-  );
+  public features = computedObj<Partial<PickerFeatures>>('features', () => {
+    // if we don't know the content-type, we can't create new entities
+    const disableCreate = !this.contentType() && !this.#createEntityTypes();
+    return { create: !disableCreate } satisfies Partial<PickerFeatures>;
+  });
 
   // WIP
-  private deletedItemsGuids = signal<string[]>([]);
+  #deletedItemsGuids = signalObj<string[]>('deletedItemsGuids', []);
 
   /* Error handling to use in the final options - ATM never really used, since we can't really trigger the problem it was meant for */
-  protected errorOptions = signal<PickerItem[]>(null);
+  protected errorOptions = signalObj<PickerItem[]>('errorOptions', null);
 
   /** The options/hints to show in the UI */
-  override optionsOrHints = computed(() => {
+  override optionsOrHints = computedObj('optionsOrHints', () => {
     const errors = this.errorOptions();
     if (errors) return errors;
     const ds = this.dataSource();
-    const deleted = this.deletedItemsGuids();
+    const deleted = this.#deletedItemsGuids();
     const items = ds.data().filter(item => !deleted.some(guid => guid === item.value));
     this.log.a('computing optionsOrHints');
     return ds.loading()
@@ -165,7 +161,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.deleteCallback(props); // removes value from selected values
-        this.deletedItemsGuids.update(p => [...p, props.entityGuid]);
+        this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
@@ -175,7 +171,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.deleteCallback(props); // removes value from selected values
-            this.deletedItemsGuids.update(p => [...p, props.entityGuid]);
+            this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
           },
           error: (error2: HttpErrorResponse) => {
             this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });

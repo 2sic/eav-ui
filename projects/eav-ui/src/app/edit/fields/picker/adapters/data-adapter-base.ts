@@ -1,9 +1,10 @@
 import { DeleteEntityProps } from '../models/picker.models';
-import { Signal, computed, signal } from '@angular/core';
+import { Signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
 export abstract class DataAdapterBase extends ServiceBase {
 
@@ -11,7 +12,7 @@ export abstract class DataAdapterBase extends ServiceBase {
   public abstract features: Signal<Partial<PickerFeatures>>;
 
   /** a signal for data-sources - may not need a signal, if it's unchanging... */
-  public dataSource = signal<DataSourceBase>(null satisfies DataSourceBase);
+  public dataSource = signalObj<DataSourceBase>('dataSource', null satisfies DataSourceBase);
 
   /**
    * The options to show.
@@ -20,8 +21,8 @@ export abstract class DataAdapterBase extends ServiceBase {
    *
    * WIP: Currently based on the observable
    */
-  protected useDataSourceStream = signal(false);
-  public optionsOrHints = computed(() => (this.dataSource().data()) ?? []);
+  protected useDataSourceStream = signalObj('useDataSourceStream', false);
+  public optionsOrHints = computedObj('optionsOrHints', () => (this.dataSource().data()) ?? []);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
 

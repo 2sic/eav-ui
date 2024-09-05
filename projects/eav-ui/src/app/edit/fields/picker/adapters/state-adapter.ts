@@ -2,15 +2,14 @@ import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, Optional, computed, inject, signal } from '@angular/core';
+import { Injectable, Optional, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { ServiceBase } from '../../../../shared/services/service-base';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
+import { computedObj, signalObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'StateAdapter';
@@ -21,35 +20,35 @@ export class StateAdapter extends ServiceBase {
   public formConfigSvc = inject(FormConfigService);
   private fieldState = inject(FieldState) as FieldState<string | string[]>;
 
-  public isInFreeTextMode = signal(false, SignalEquals.bool);
+  public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
-  public features = signal({} as Partial<PickerFeatures>);
+  public features = signalObj('features', {} as Partial<PickerFeatures>);
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
-  public createEntityTypes = computed(() => {
+  public createEntityTypes = computedObj('createEntityTypes', () => {
     const types = this.fieldState.settings().CreateTypes;
     return types
       ? types
         .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
         .map((guid: string) => ({ label: null, guid }))
       : []
-  }, { equal: RxHelpers.arraysEqual });
+  });
 
   protected readonly settings = this.fieldState.settings;
   public controlStatus = this.fieldState.controlStatus;
   public basics = this.fieldState.basics;
 
 
-  private _value = computed(() => this.controlStatus().value, { equal: RxHelpers.manyEquals });
-  private _sepAndOpts = computed(() => {
+  #value = computedObj('value', () => this.controlStatus().value);
+  #sepAndOpts = computedObj('sepAndOpts', () => {
     const settings = this.fieldState.settings();
     return { separator: settings.Separator, options: settings._options };
-  }, { equal: RxHelpers.objectsEqual });
+  });
 
-  public selectedItems = computed(() => {
-    const sAndO = this._sepAndOpts();
-    return correctStringEmptyValue(this._value(), sAndO.separator, sAndO.options);
-  }, { equal: RxHelpers.objectsEqual });
+  public selectedItems = computedObj('selectedItems', () => {
+    const sAndO = this.#sepAndOpts();
+    return correctStringEmptyValue(this.#value(), sAndO.separator, sAndO.options);
+  });
 
 
   constructor(@Optional() logger: EavLogger = null) {
@@ -63,7 +62,7 @@ export class StateAdapter extends ServiceBase {
   // todo: make signal, if useful
   // private isExpanded$: Observable<boolean>;
 
-  private focusOnSearchComponent: () => void;
+  #focusOnSearchComponent: () => void;
 
   public linkLog(log: EavLogger): this {
     if (!this.log.enabled)
@@ -73,11 +72,11 @@ export class StateAdapter extends ServiceBase {
 
   public attachCallback(focusCallback: () => void): this {
     this.log.a('attachCallback');
-    this.focusOnSearchComponent = focusCallback;
+    this.#focusOnSearchComponent = focusCallback;
     return this;
   }
 
-  private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
+  #updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
     const l = this.log.fn('updateValue', { action, value });
     let valueArray: string[] = this.createValueArray();
 
@@ -106,7 +105,7 @@ export class StateAdapter extends ServiceBase {
       // move back to component
       setTimeout(() => {
         console.log('trying to call focus');
-        this.focusOnSearchComponent();
+        this.#focusOnSearchComponent();
       });
     }
   }
@@ -117,20 +116,20 @@ export class StateAdapter extends ServiceBase {
       : valueArray;
   }
 
-  createValueArray(): string[] {
+  public createValueArray(): string[] {
     const fs = this.fieldState;
     if (typeof fs.control.value === 'string')
       return convertValueToArray(fs.control.value, fs.settings().Separator);
     return [...fs.control.value];
   }
 
-  doAfterDelete(props: DeleteEntityProps) {
-    this.updateValue('delete', props.index);
+  public doAfterDelete(props: DeleteEntityProps) {
+    this.#updateValue('delete', props.index);
   }
 
-  addSelected(guid: string) { this.updateValue('add', guid); }
-  removeSelected(index: number) { this.updateValue('delete', index); }
-  reorder(reorderIndexes: ReorderIndexes) { this.updateValue('reorder', reorderIndexes); }
+  addSelected(guid: string) { this.#updateValue('add', guid); }
+  removeSelected(index: number) { this.#updateValue('delete', index); }
+  reorder(reorderIndexes: ReorderIndexes) { this.#updateValue('reorder', reorderIndexes); }
 
   toggleFreeTextMode(): void {
     this.isInFreeTextMode.update(p => !p);

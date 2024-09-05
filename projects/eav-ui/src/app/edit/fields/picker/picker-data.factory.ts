@@ -24,8 +24,6 @@ const logSpecs = {
  * Factory for creating PickerData instances.
  * Goal is to move all the logic for which combination of input types
  * result in what states etc. to here.
- * 
- * WIP
  */
 export class PickerDataFactory {
 
@@ -41,26 +39,10 @@ export class PickerDataFactory {
   // 1. Final control (eg. StringPickerComponent) gets services which it will use using transient(...)
   // ... and also importMe on the logic
   // 2. PickerComponent.ngOnInit() will
-  // ... not relevant: check if already initialized (because of dual-use)
-  // ... call initAdaptersAndViewModel() in the control (eg. StringPickerComponent)
-  // ... todo: optionally attach dialog-close watchers
+  // ... 
   // 3. The control will override initAdaptersAndViewModel()
   // 3.1 init state with
-  // ... log
   // ... it will also attach a CALLBACK! for focused?
-  // 3.2 to chose which sources are possible
-  // ... create the correct one
-  // ... connect logs
-  // ... connect state
-  // 3.3 pickerData.setup(nameOfThis, state, source);
-  // 4. PickerData.setup(name: string, state: StateAdapter, source: DataAdapterBase) does it's magic
-  // 5. The PickerComponent.ngAfterViewInit will trigger the source.onAfterViewInit to setup query/template parameters (using a mask)
-
-
-  // Plan
-  // 1. Create factory setup method here for String
-  // 2. Trigger that instead of the current setupString in StringPickerComponent
-  // 3. once it works start moving the other setups here
 
 
   createPickerData(inputType: InputTypeSpecs): PickerData {
@@ -70,13 +52,12 @@ export class PickerDataFactory {
   }
 
   setupPickerData(pickerData: PickerData, fieldState: FieldState<any>): PickerData {
-    // Steps from the StringPickerComponent.initAdaptersAndViewModel
-    this.createPickerAdapters(pickerData, fieldState);
+    this.#setupPickerAdapters(pickerData, fieldState);
     pickerData.source.onAfterViewInit()
     return pickerData;
   }
 
-  private createPickerAdapters(pickerData: PickerData, fieldState: FieldState<any>): void {
+  #setupPickerAdapters(pickerData: PickerData, fieldState: FieldState<any>): void {
     const inputType = fieldState.config.inputTypeSpecs.inputType;
     const l = this.log.fn('createPickerAdapters', { pickerData, fieldState, inputType });
 
@@ -136,6 +117,11 @@ export class PickerDataFactory {
 
 }
 
+/**
+ * Catalog of the parts to be used for each picker type.
+ * This includes what data-sources and state-adapters to use.
+ * For older pickers, a predefined source is used.
+ */
 const partsMap: Record<string, PartMap> = {
   [InputTypeCatalog.StringPicker]: {
     sources: [DataAdapterString, DataAdapterQuery, DataAdapterEntity],

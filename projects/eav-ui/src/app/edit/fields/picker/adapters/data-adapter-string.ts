@@ -1,11 +1,12 @@
 import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataSourceString } from "../data-sources/data-source-string";
-import { Injectable, Injector, inject, signal } from '@angular/core';
+import { Injectable, Injector, inject } from '@angular/core';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
+import { signalObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'DataAdapterString';
@@ -13,7 +14,7 @@ const nameOfThis = 'DataAdapterString';
 @Injectable()
 export class DataAdapterString extends DataAdapterBase {
 
-  public features = signal({ edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
+  public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
   private injector = inject(Injector);
 

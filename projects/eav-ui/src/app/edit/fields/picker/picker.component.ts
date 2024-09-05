@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerData } from './picker-data';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';

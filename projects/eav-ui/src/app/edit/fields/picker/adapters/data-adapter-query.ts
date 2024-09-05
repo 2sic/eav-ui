@@ -1,11 +1,11 @@
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
-import { Injectable, computed, untracked } from '@angular/core';
+import { Injectable, untracked } from '@angular/core';
 import { PickerItemFactory } from '../models/picker-item.model';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const logName = 'PickerQuerySourceAdapter';
@@ -19,11 +19,11 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
   }
 
   /** Url Parameters - often mask - from settings; debounced */
-  private urlParametersSettings = computed(() => this.fieldState.settings().UrlParameters, SignalEquals.string);
+  #urlParametersSettings = computedObj('urlParametersSettings', () => this.fieldState.settings().UrlParameters);
 
   /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
-  private queryParamsMask = computed(() => {
-    const urlParameters = this.urlParametersSettings();
+  #queryParamsMask = computedObj('queryParamsMask', () => {
+    const urlParameters = this.#urlParametersSettings();
     // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
     let fieldMask: FieldMask;
     untracked(() => {
@@ -32,20 +32,14 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     return fieldMask;
   });
 
-  init(callerName: string): void {
-    super.init(callerName);
-    // #cleanUpCaAugust2024
-    // this.setupFlushOnSettingsChange();
-  }
-
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dataSourceEntityOrQuery.setParams(this.queryParamsMask()?.result());
+    this.dataSourceEntityOrQuery.setParams(this.#queryParamsMask()?.result());
   }
 
   fetchItems(): void {
     this.log.a('fetchItems');
-    this.dataSourceEntityOrQuery.setParams(this.queryParamsMask()?.result());
+    this.dataSourceEntityOrQuery.setParams(this.#queryParamsMask()?.result());
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
       const errors = [PickerItemFactory.placeholder(this.translate, 'Fields.Picker.QueryNotDefined')];
