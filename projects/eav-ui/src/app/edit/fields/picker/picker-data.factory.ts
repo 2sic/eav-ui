@@ -13,6 +13,7 @@ import { DeleteEntityProps } from './models/picker.models';
 import { StateAdapterString } from './adapters/state-adapter-string';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { StateAdapter } from './adapters/state-adapter';
+import { StateAdapterEntity } from './adapters/state-adapter-entity';
 
 const logSpecs = {
   name: 'PickerDataFactory',
@@ -151,6 +152,11 @@ const partsMap: Record<string, PartMap> = {
     sources: [DataAdapterQuery],
     states: [StateAdapterString],
     forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
+  },
+  [InputTypeCatalog.EntityDefault]: {
+    sources: [DataAdapterEntity],
+    states: [StateAdapterEntity],
+    forcePickerConfig: PickerConfigs.UiPickerSourceEntity,
   },
 };
 
