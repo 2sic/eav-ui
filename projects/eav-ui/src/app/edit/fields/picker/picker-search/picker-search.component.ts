@@ -25,10 +25,14 @@ import { transient } from '../../../../core/transient';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
-const nameOfThis = 'PickerSearchComponent';
+
+const logSpecs = {
+  enabled: false,
+  name: 'PickerSearchComponent',
+};
+
 
 @Component({
   selector: 'app-picker-search',
@@ -124,11 +128,12 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   #treeDataService = transient(PickerTreeDataService);
   public treeHelper = transient(PickerTreeDataHelper);
 
+  log = new EavLogger(logSpecs);
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   ngOnInit(): void {

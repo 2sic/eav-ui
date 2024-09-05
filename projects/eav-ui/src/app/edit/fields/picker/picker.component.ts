@@ -37,16 +37,15 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
   #editRoutingService = inject(EditRoutingService);
   #fieldState = inject(FieldState);
 
-  #pickerDataFactory = new PickerDataFactory(this.#injector);
-
-  #pickerData = this.#fieldState.pickerData;
+    #pickerData = this.#fieldState.pickerData;
 
   log: EavLogger<typeof PickerComponent.logSpecs.specs>;
   constructor(@Optional()log?: EavLogger) {
     super();
     this.log = log ?? new EavLogger(PickerComponent.logSpecs);
     this.log.a('constructor');
-    this.#pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
+    const pickerDataFactory = new PickerDataFactory(this.#injector);
+    pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
   }
 
   /**

@@ -1,5 +1,5 @@
 import { DeleteEntityProps } from '../models/picker.models';
-import { Signal } from '@angular/core';
+import { Optional, Signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';

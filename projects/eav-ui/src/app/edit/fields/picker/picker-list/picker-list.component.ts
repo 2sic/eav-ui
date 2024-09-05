@@ -14,8 +14,10 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
-const nameOfThis = 'PickerListComponent';
+const logSpecs = {
+  enabled: false,
+  name: 'PickerListComponent',
+}
 
 @Component({
   selector: 'app-picker-list',
@@ -47,9 +49,9 @@ export class PickerListComponent extends PickerPartBaseComponent {
       enableRemove: settings.EnableRemove,
     };
   });
-
+  log = new EavLogger(logSpecs);
   constructor() {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   trackByFn(_: number, item: PickerItem): string {

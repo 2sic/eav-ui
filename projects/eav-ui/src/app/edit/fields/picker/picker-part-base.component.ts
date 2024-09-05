@@ -35,7 +35,7 @@ export class PickerPartBaseComponent {
   features = this.pickerData.features;
 
   log: EavLogger;
-  constructor(log?: EavLogger) {
-    this.log = log ?? new EavLogger(nameOfThis, logThis);
+  constructor() {
+    this.log ??= new EavLogger(nameOfThis, logThis);
   }
 }

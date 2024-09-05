@@ -20,7 +20,7 @@ export abstract class DataSourceBase extends ServiceWithSubscriptions {
   log: EavLogger;
   constructor(log: EavLogger) {
     super();
-    this.log = log;
+    this.log ??= log ?? new EavLogger('DataSourceBase', false);
     this.log.a('constructor', { forField: this.fieldState.name });
   }
 

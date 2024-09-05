@@ -16,8 +16,10 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
-const nameOfThis = 'PickerPreviewComponent';
+const logSpecs = {
+  enabled: false,
+  name: 'PickerPreviewComponent',
+};
 
 @Component({
   selector: 'app-picker-preview',
@@ -59,10 +61,11 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
     };
   });
 
+  log = new EavLogger(logSpecs);
   constructor(
     private editRoutingService: EditRoutingService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   openNewEntityDialog(entityType: string): void {

@@ -1,7 +1,7 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { Injectable, WritableSignal } from '@angular/core';
+import { Optional, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
@@ -9,14 +9,12 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { dataSrcIdPrefix } from '../../../../visual-query/plumb-editor/plumber.helper';
 
 /**
  * This is the base class for data-sources providing data from
  * - entities
  * - queries
  */
-@Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   //#region Inject and blank constructor

@@ -9,8 +9,10 @@ import { PickerItem } from '../models/picker-item.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
-const nameOfThis = 'PickerTextComponent';
+const logSpecs = {
+  enabled: false,
+  name: 'PickerTextComponent',
+};
 
 @Component({
   selector: 'app-picker-text',
@@ -37,8 +39,9 @@ export class PickerTextComponent extends PickerPartBaseComponent {
     return isSeparatorNewLine;
   });
 
+  log = new EavLogger(logSpecs);
   constructor() {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   toggleFreeText(disabled: boolean): void {
