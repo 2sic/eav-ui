@@ -5,6 +5,7 @@ import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
 import { ControlStatus } from '../shared/models/control-status.model';
+import { PickerData } from './picker/picker-data';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -38,6 +39,18 @@ export class FieldState<T extends FieldValue> {
      */
     public controlStatus: Signal<ControlStatus<T>>,
 
+    /** The value of the field in the UI control as a signal */
     public uiValue: Signal<T>,
-  ) { }
+
+    pickerData: PickerData,
+  ) {
+    this.#pickerData = pickerData;
+  }
+
+  get pickerData(): PickerData {
+    if (this.#pickerData)
+      return this.#pickerData;
+    throw new Error('PickerData was not initialized for this field');
+  }
+  #pickerData: PickerData;
 }

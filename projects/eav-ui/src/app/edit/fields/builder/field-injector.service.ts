@@ -1,5 +1,5 @@
 import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
-import { EnvironmentInjector, Injectable, Injector, Signal, computed, createEnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
+import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
@@ -8,16 +8,20 @@ import { combineLatest, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
-import { SignalEquals } from '../../../shared/signals/signal-equals';
 import { FieldValue } from '../../../../../../edit-types';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { PickerDataFactory } from '../picker/picker-data.factory';
+import { LogSpecs } from '../../../shared/logging/log-specs';
 
-const logThis = false;
-const nameOfThis = 'FieldInjectorService';
-const logDetailsOnFields = ['Boolean'];
+const logSpecs: LogSpecs<string[]> = {
+  name: 'FieldInjectorService',
+  enabled: true,
+  specs: [], //['Boolean'],
+};
+
 /**
  * This service creates custom injectors for each field.
  * It's used in the fields-builder to initialize dynamic controls.
@@ -32,7 +36,7 @@ export class FieldInjectorService {
   #entityForm = inject(EntityFormStateService);
   #group = this.#entityForm.formGroup();
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = new EavLogger(logSpecs);
 
   constructor() { }
 
@@ -41,15 +45,14 @@ export class FieldInjectorService {
     const fieldName = fieldConfig.fieldName;
 
     // Conditional logger for detailed logging
-    const lDetailed = this.log.fnCond(logDetailsOnFields.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
+    const lDetailed = this.log.fnCond(this.log.specs.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
 
     // Create settings() and basics() signal for further use
-    // const settings$ = this.fieldsSettingsService.getFieldSettings$(fieldName);
     const settings = this.#fieldsSettingsService.getFieldSettingsSignal(fieldName);
 
     const settings$ = toObservable(settings, { injector: this.#injector });
 
-    const basics = computed(() => BasicControlSettings.fromSettings(settings()), { equal: RxHelpers.objectsEqual });
+    const basics = computedObj('basics', () => BasicControlSettings.fromSettings(settings()));
 
     // Control and Control Status
     const control = this.#group.controls[fieldName];
@@ -85,27 +88,26 @@ export class FieldInjectorService {
       if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
         console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
         // try to have a temporary result, so that in most cases it won't just fail
-        controlStatusChangeSignal = signal(emptyControlStatus);
+        controlStatusChangeSignal = signalObj('control-status-empty', emptyControlStatus);
       }
     }
 
-    //
-    // TODO: this is probably better solved using a toSignal(control.valueChanges)
-    //
-
     /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
-    const uiValue: Signal<FieldValue> = computed(() => controlStatusChangeSignal().value, SignalEquals.object);
+    // TODO: this is probably better solved using a toSignal(control.valueChanges)
+    const uiValue: Signal<FieldValue> = computedObj('uiValue', () => controlStatusChangeSignal().value);
+
+    const pdf = new PickerDataFactory(this.#injector);
 
     const fieldState = new FieldState(
       fieldName,
       fieldConfig,
       this.#group,
       control,
-      // settings$,
       settings,
       basics,
       controlStatusChangeSignal,
       uiValue,
+      pdf.createPickerData(inputType),
     );
 
     const providers = [

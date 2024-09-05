@@ -1,22 +1,40 @@
 export const InputTypeCatalog = {
+  // Boolean
   BooleanDefault: 'boolean-default',
   BooleanTristate: 'boolean-tristate',
+
+  // Custom
   CustomDefault: 'custom-default',
   CustomGps: 'custom-gps',
   CustomJsonEditor: 'custom-json-editor',
+
+  // Date / Time
   DateTimeDefault: 'datetime-default',
+
   DefaultSuffix: '-default',
+
+  // Empty
   EmptyDefault: 'empty-default',
   EmptyEnd: 'empty-end',
   EmptyMessage: 'empty-message',
-  EntityContentBlocks: 'entity-content-blocks', // picker
-  EntityDefault: 'entity-default',  // picker
-  EntityQuery: 'entity-query',  // picker
+
+  // Entity - all pickers
+  EntityContentBlocks: 'entity-content-blocks',
+  EntityDefault: 'entity-default',
+  EntityQuery: 'entity-query',
+
+  // External
   ExternalWebComponent: 'external-web-component',
+
+  // Hyperlink / File
   HyperlinkDefault: 'hyperlink-default',
   HyperlinkLibrary: 'hyperlink-library',
+
+  // Numbers
   NumberDefault: 'number-default',
   NumberDropdown: 'number-dropdown', // picker
+
+  // String
   StringDefault: 'string-default',
   StringDropdown: 'string-dropdown', // picker
   StringDropdownQuery: 'string-dropdown-query', // picker

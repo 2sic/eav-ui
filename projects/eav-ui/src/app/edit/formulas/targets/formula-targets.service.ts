@@ -54,7 +54,7 @@ export class FormulaTargetsService {
         targetOptions.push(targetOption);
       }
     }
-    if (InputTypeHelpers.isOldDropdown(inputType)) {
+    if (InputTypeHelpers.isOldValuePicker(inputType)) {
       for (const target of [FormulaOptionalTargets.DropdownValues]) {
         const targetOption: TargetOption = {
           hasFormula: fieldFormulas.some(f => f.target === target),

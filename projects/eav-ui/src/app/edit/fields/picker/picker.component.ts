@@ -4,7 +4,6 @@ import { PickerData } from './picker-data';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { transient } from '../../../core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 
@@ -12,7 +11,7 @@ const logThis = false;
 const nameOfThis = 'PickerComponent';
 
 @Component({
-  // selector: InputTypeConstants.EntityDefault,
+  // selector: none since it's a base class
   templateUrl: './picker.component.html',
   styleUrls: ['./picker.component.scss'],
   standalone: true,
@@ -29,12 +28,10 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
 
   /** The injector is used by most children to get transient one-time objects */
   protected injector = inject(Injector);
-
+  public editRoutingService = inject(EditRoutingService);
   public fieldState = inject(FieldState);
 
-  public editRoutingService = inject(EditRoutingService);
-
-  pickerData = transient(PickerData);
+  pickerData: PickerData = this.fieldState.pickerData;
 
   /**
    * This control will always be created 2x

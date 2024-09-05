@@ -4,9 +4,27 @@ const empty: InputTypeStrict[] = [InputTypeCatalog.EmptyDefault, InputTypeCatalo
 
 const ends: InputTypeStrict[] = [InputTypeCatalog.EmptyDefault, InputTypeCatalog.EmptyEnd];
 
-const oldDropdowns: InputTypeStrict[] = [InputTypeCatalog.StringDropdown, InputTypeCatalog.NumberDropdown];
+const oldValuePickers: InputTypeStrict[] = [
+  InputTypeCatalog.StringDropdown,
+  InputTypeCatalog.NumberDropdown,
+];
 
-const newPicker: InputTypeStrict[] = [InputTypeCatalog.EntityPicker, InputTypeCatalog.StringPicker, InputTypeCatalog.NumberPicker];
+const oldEntityPickers: InputTypeStrict[] = [
+  InputTypeCatalog.EntityContentBlocks,
+  InputTypeCatalog.EntityDefault,
+  InputTypeCatalog.EntityQuery,
+];
+
+const oldOtherPickers: InputTypeStrict[] = [
+  InputTypeCatalog.StringDropdownQuery,
+  InputTypeCatalog.StringTemplatePicker,
+];
+
+const newPicker: InputTypeStrict[] = [
+  InputTypeCatalog.EntityPicker,
+  InputTypeCatalog.StringPicker,
+  InputTypeCatalog.NumberPicker,
+];
 
 export class InputTypeHelpers {
   static isEmpty(inputType: InputTypeStrict): boolean {
@@ -34,8 +52,14 @@ export class InputTypeHelpers {
     return newPicker.includes(inputType);
   }
 
-  static isOldDropdown(inputType: InputTypeStrict): boolean {
-    return oldDropdowns.includes(inputType);
+  static isOldValuePicker(inputType: InputTypeStrict): boolean {
+    return oldValuePickers.includes(inputType);
   }
 
+  static isAnyPicker(inputType: InputTypeStrict): boolean {
+    return newPicker.includes(inputType)
+      || oldValuePickers.includes(inputType)
+      || oldEntityPickers.includes(inputType)
+      || oldOtherPickers.includes(inputType);
+  }
 }
