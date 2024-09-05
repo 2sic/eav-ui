@@ -9,7 +9,7 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
@@ -21,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { MetadataInfo } from '../content-items/create-metadata-dialog/create-metadata-dialog.models';
 
 @Component({
   selector: 'app-permissions',
@@ -82,25 +83,22 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
+
   editPermission(permission?: Permission) {
     let form: EditForm;
     if (permission == null) {
       form = {
         items: [{
-          ContentTypeName: eavConstants.contentTypes.permissions,
-          For: {
-            Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
-            TargetType: this.targetType,
-            ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
-            ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
-            ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-          },
+          ...EditPrep.newMetadataFromInfo(
+            eavConstants.contentTypes.permissions,
+            EditPrep.constructMetadataInfo(this.targetType, this.keyType, this.key)
+          ),
           ...(this.prefills[this.targetType] && { Prefill: this.prefills[this.targetType] }),
         }],
       };
     } else {
       form = {
-        items: [{ EntityId: permission.Id }],
+        items: [EditPrep.editId(permission.Id)],
       };
     }
     const formUrl = convertFormToUrl(form);

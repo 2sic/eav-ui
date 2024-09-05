@@ -16,7 +16,7 @@ import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-valu
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { DataActionsComponent } from './data-actions/data-actions.component';
@@ -208,7 +208,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private addItem(contentType: ContentType) {
     const form: EditForm = {
-      items: [{ ContentTypeName: contentType.StaticName }],
+      items: [EditPrep.newFromType(contentType.StaticName)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
@@ -223,18 +223,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [
         !contentType.Properties
           ? {
-            ContentTypeName: eavConstants.contentTypes.contentType,
-            For: {
-              Target: eavConstants.metadata.contentType.target,
-              TargetType: eavConstants.metadata.contentType.targetType,
-              String: contentType.StaticName,
-            },
-            Prefill: {
-              Label: contentType.Name,
-              Description: contentType.Description
-            },
-          }
-          : { EntityId: contentType.Properties.Id }
+              ...EditPrep.newMetadata(contentType.StaticName, eavConstants.contentTypes.contentType, eavConstants.metadata.contentType),
+              Prefill: {
+                Label: contentType.Name,
+                Description: contentType.Description
+              },
+            }
+          : EditPrep.editId(contentType.Properties.Id),
       ],
     };
     const formUrl = convertFormToUrl(form);

@@ -30,6 +30,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
 import { ItemService } from '../../../shared/store/item.service';
 import { ContentTypeService } from '../../../shared/store/content-type.service';
+import { EditPrep } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 
 const logThis = false;
 const nameOfThis = 'FormulaDesignerComponent';
@@ -227,13 +228,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           Target: formula.target,
           Formula: formula.sourceCode,
           Enabled: true,
-          ParentRelationship: {
-            Add: null,
-            EntityId: null,
-            Field: 'Formulas',
-            Index: 0,
-            Parent: atAllFieldSettings.Guid,
-          },
+          ParentRelationship: EditPrep.relationship(atAllFieldSettings.Guid, 'Formulas'),
         },
       ).subscribe(savedFormula => {
         this.#designerSvc.cache.updateSaved(formula, savedFormula.Guid, savedFormula.Id);

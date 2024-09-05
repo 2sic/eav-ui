@@ -7,7 +7,7 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { PagePicker } from '../../page-picker/page-picker.helper';
 import { BaseComponent } from '../../../../shared/components/base.component';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { EditForm } from '../../../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { FormConfigService } from '../../../state/form-config.service';
@@ -88,15 +88,8 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     const form: EditForm = {
       items: [
         adamItem._imageConfigurationId > 0
-          ? { EntityId: adamItem._imageConfigurationId }
-          : {
-            ContentTypeName: adamItem._imageConfigurationContentType,
-            For: {
-              Target: eavConstants.metadata.cmsObject.target,
-              TargetType: eavConstants.metadata.cmsObject.targetType,
-              String: adamItem.ReferenceId,
-            },
-          },
+          ? EditPrep.editId(adamItem._imageConfigurationId)
+          : EditPrep.newMetadata(adamItem.ReferenceId, adamItem._imageConfigurationContentType, eavConstants.metadata.cmsObject),
       ],
     };
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);

@@ -262,7 +262,8 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       }
 
     // find input type
-    const attribute = this.contentTypeService.getAttribute(id.entityGuid, id.fieldName);
+    const item = this.itemService.get(id.entityGuid);
+    const attribute = this.contentTypeService.getAttributeOfItem(item, id.fieldName);
     const inputType = this.inputTypes.getSpecs(attribute);
 
     // Find original in case we had it already (as we would then update it)

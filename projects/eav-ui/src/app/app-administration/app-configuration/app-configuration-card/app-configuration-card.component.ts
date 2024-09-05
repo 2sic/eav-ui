@@ -5,7 +5,7 @@ import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
-import { EditForm } from '../../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { Context } from '../../../shared/services/context';
 import { AppInternalsService } from '../../services/app-internals.service';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
@@ -93,7 +93,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
       if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
       form = {
-        items: [{ EntityId: contentItems[0].Id }],
+        items: [EditPrep.editId(contentItems[0].Id)],
       };
 
       const formUrl = convertFormToUrl(form);

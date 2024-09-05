@@ -1,5 +1,6 @@
+import { MetadataInfo } from '../../content-items/create-metadata-dialog/create-metadata-dialog.models';
 import { EavFor } from '../../edit/shared/models/eav';
-import { MetadataKeyDefinition } from '../constants/eav.constants';
+import { eavConstants, MetadataKeyDefinition, MetadataKeyType } from '../constants/eav.constants';
 import { EditInfo } from './edit-info';
 
 // 2dm - new helper to reduce code when creating item identifiers
@@ -13,19 +14,32 @@ export class EditPrep {
   static newFromType(contentType: string, prefill?: Record<string, unknown>): ItemAddIdentifier {
     return {
       ContentTypeName: contentType,
-      Prefill: prefill
+      ...(prefill && { Prefill: prefill })
     } satisfies ItemAddIdentifier;
+  }
+
+  static newMetadataFromInfo(contentTypeName: string, itemFor: MetadataInfo): ItemAddIdentifier {
+    return {
+      ContentTypeName: contentTypeName,
+      For: {
+        Target: itemFor.target ?? itemFor.targetType.toString(),
+        TargetType: itemFor.targetType,
+        ...(itemFor.keyType === eavConstants.keyTypes.guid && { Guid: itemFor.key }),
+        ...(itemFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(itemFor.key, 10) }),
+        ...(itemFor.keyType === eavConstants.keyTypes.string && { String: itemFor.key }),
+      },
+    }
   }
 
   // TODO: @2dg - TO FIND where this should be used, look for "For:" in the code
-  static newMetadata<T>(key: T, typeName: string, keyDef: MetadataKeyDefinition): ItemAddIdentifier {
+  static newMetadata<T>(key: T, typeName: string, keyDef: MetadataKeyDefinition, singleton?: boolean): ItemAddIdentifier {
     return {
       ContentTypeName: typeName,
-      For: EditPrep.createFor(keyDef, key)
+      For: EditPrep.createFor(keyDef, key, singleton),
     } satisfies ItemAddIdentifier;
   }
 
-  static createFor<T>(keyDef: MetadataKeyDefinition, key: T): EavFor {
+  static createFor<T>(keyDef: MetadataKeyDefinition, key: T, singleton?: boolean): EavFor {
     return {
       Target: keyDef.target,
       TargetType: keyDef.targetType,
@@ -35,9 +49,35 @@ export class EditPrep {
           : keyDef.keyType == 'guid'
             ? { Guid: key as string }
             : { String: key as string }
-      )
+      ),
+      ...(singleton && { Singleton: true })
     } satisfies EavFor;
+  }
 
+  static constructMetadataInfo(targetType: number, keyType: MetadataKeyType, key: string): MetadataInfo {
+    const specs = Object.values(eavConstants.metadata).find(m => m.targetType === targetType);
+    return {
+      target: specs?.target ?? targetType.toString(),
+      targetType: targetType,
+      key: key,
+      keyType: keyType,
+    } satisfies MetadataInfo;
+  }
+
+  static relationship(parent: string, field: string, index: number = 0, add: boolean = null) :ItemInListIdentifier {
+    return {
+      Parent: parent,
+      Field: field,
+      Index: index,
+      Add: add,
+    } satisfies ItemInListIdentifier;
+  }
+
+  static copy(contentType: string, id: number): ItemAddIdentifier {
+    return {
+      ContentTypeName: contentType,
+      DuplicateEntity: id,
+    } satisfies ItemAddIdentifier;
   }
 }
 

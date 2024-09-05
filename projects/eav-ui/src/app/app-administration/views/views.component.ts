@@ -12,7 +12,7 @@ import { IdFieldParams } from '../../shared/components/id-field/id-field.models'
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
 import { View, ViewEntity } from '../models/view.model';
@@ -132,13 +132,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         view == null
-          ? {
-            ContentTypeName: eavConstants.contentTypes.template,
-            Prefill: {
-              ...(this.appIsGlobal && { Location: 'Global' }),
-            },
-          }
-          : { EntityId: view.Id }
+          ? EditPrep.newFromType(eavConstants.contentTypes.template, { ...(this.appIsGlobal && { Location: 'Global' }) })
+          : EditPrep.editId(view.Id),
       ],
     };
     this.openEdit(form);
@@ -158,8 +153,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         !this.#polymorphism.Id
-          ? { ContentTypeName: this.#polymorphism.TypeName }
-          : { EntityId: this.#polymorphism.Id }
+          ? EditPrep.newFromType(this.#polymorphism.TypeName)
+          : EditPrep.editId(this.#polymorphism.Id),
       ],
     };
     this.openEdit(form);
@@ -195,7 +190,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   private cloneView(view: View) {
     const form: EditForm = {
-      items: [{ ContentTypeName: eavConstants.contentTypes.template, DuplicateEntity: view.Id }],
+      items: [EditPrep.copy(eavConstants.contentTypes.template,view.Id)],
     };
     this.openEdit(form);
   }
@@ -228,16 +223,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
         (view.lightSpeed != null)
           ? {
             ...shared,
-            EntityId: view.lightSpeed.Id,
+            ...EditPrep.editId(view.lightSpeed.Id),
           }
           : {
             ...shared,
-            ContentTypeName: eavConstants.appMetadata.LightSpeed.ContentTypeName,
-            For: {
-              Target: eavConstants.metadata.entity.target,
-              TargetType: eavConstants.metadata.entity.targetType,
-              Guid: view.Guid,
-            },
+            ...EditPrep.newMetadata(view.Guid, eavConstants.appMetadata.LightSpeed.ContentTypeName, eavConstants.metadata.entity),
           },
       ],
     };

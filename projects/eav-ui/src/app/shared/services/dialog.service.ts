@@ -3,7 +3,7 @@ import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
 import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
-import { EditForm, ViewOrFileIdentifier } from '../models/edit-form.model';
+import { EditForm, EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
 import { Context } from './context';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class DialogService {
     const form = {
       items: [{
         Path: path,
-        ...(templateId != null && { EntityId: templateId }),
+        ...(templateId != null && EditPrep.editId(templateId)),
       }] as ViewOrFileIdentifier[]
     };
 
@@ -31,7 +31,7 @@ export class DialogService {
   openQueryDesigner(queryId: number) {
     const dialog = DialogTypeConstants.PipelineDesigner;
     const form: EditForm = {
-      items: [{ EntityId: queryId }],
+      items: [EditPrep.editId(queryId)],
     };
 
     const hashParams: DialogHashParams = {

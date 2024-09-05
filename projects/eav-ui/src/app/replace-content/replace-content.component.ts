@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { ReplaceOption } from './models/replace-option.model';
 import { ReplaceContentViewModel } from './replace-content.models';
 import { AsyncPipe } from '@angular/common';
@@ -121,7 +121,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   copySelected() {
     const contentGroup = this.buildContentGroup();
     const form: EditForm = {
-      items: [{ ContentTypeName: this.#contentTypeName, DuplicateEntity: contentGroup.id }],
+      items: [EditPrep.copy(this.#contentTypeName, contentGroup.id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);

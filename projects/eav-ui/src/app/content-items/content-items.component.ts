@@ -21,7 +21,7 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
@@ -183,8 +183,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         item == null
-          ? { ContentTypeName: this.#contentTypeStaticName }
-          : { EntityId: item.Id }
+          ? EditPrep.newFromType(this.#contentTypeStaticName)
+          : EditPrep.editId(item.Id)
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -237,16 +237,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       if (itemFor == null) { return; }
 
       const form: EditForm = {
-        items: [{
-          ContentTypeName: this.#contentTypeStaticName,
-          For: {
-            Target: itemFor.target ?? itemFor.targetType.toString(),
-            TargetType: itemFor.targetType,
-            ...(itemFor.keyType === eavConstants.keyTypes.guid && { Guid: itemFor.key }),
-            ...(itemFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(itemFor.key, 10) }),
-            ...(itemFor.keyType === eavConstants.keyTypes.string && { String: itemFor.key }),
-          },
-        }],
+        items: [ EditPrep.newMetadataFromInfo(this.#contentTypeStaticName, itemFor) ],
       };
       const formUrl = convertFormToUrl(form);
       this.#dialogRouter.navRelative([`edit/${formUrl}`]);
@@ -381,7 +372,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private clone(item: ContentItem) {
     const form: EditForm = {
-      items: [{ ContentTypeName: this.#contentTypeStaticName, DuplicateEntity: item.Id }],
+      items: [EditPrep.copy(this.#contentTypeStaticName, item.Id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRouter.navRelative([`edit/${formUrl}`]);

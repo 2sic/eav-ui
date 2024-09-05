@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, Tem
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { eavConstants } from '../../../shared/constants/eav.constants';
-import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { EditForm, EditPrep, ItemEditIdentifier, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { EavEntity, EavItem } from '../../shared/models/eav';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from '../entity-form.helpers';
 import { ChangeAnchorTargetDirective } from '../../fields/directives/change-anchor-target.directive';
@@ -217,16 +217,8 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     const form: EditForm = {
       items: [
         note == null
-          ? {
-            ContentTypeName: eavConstants.contentTypes.notes,
-            For: {
-              Target: eavConstants.metadata.entity.target,
-              TargetType: eavConstants.metadata.entity.targetType,
-              Guid: entityGuid,
-              Singleton: true,
-            }
-          }
-          : { EntityId: note.Id }
+          ? EditPrep.newMetadata(entityGuid, eavConstants.contentTypes.notes, eavConstants.metadata.entity, true)
+          : EditPrep.editId(note.Id),
       ],
     };
     this.editRoutingSvc.open(null, null, form);
@@ -250,7 +242,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     if (item.Entity.Id === 0)
       return;
 
-    const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
+    const editItems = [EditPrep.editId(item.Entity.Id)];
     this.#formDataSvc.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
       this.itemSvc.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);

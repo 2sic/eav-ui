@@ -7,7 +7,7 @@ import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../s
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
 import { FeaturesService } from '../../features/features.service';
@@ -148,13 +148,10 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           form = {
             items: [
               systemSettingsEntity == null
-                ? {
-                  ContentTypeName: staticName,
-                  Prefill: {
+                ? EditPrep.newFromType(staticName, {
                     ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
-                  }
-                }
-                : { EntityId: systemSettingsEntity.Id }
+                  })
+                : EditPrep.editId(systemSettingsEntity.Id)
             ],
           };
           break;
@@ -167,8 +164,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           form = {
             items: [
               customSettingsEntity == null
-                ? { ContentTypeName: staticName }
-                : { EntityId: customSettingsEntity.Id }
+                ? EditPrep.newFromType(staticName)
+                : EditPrep.editId(customSettingsEntity.Id)
             ],
           };
           break;
@@ -176,7 +173,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
           if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
           form = {
-            items: [{ EntityId: contentItems[0].Id }],
+            items: [EditPrep.editId(contentItems[0].Id)],
           };
       }
 

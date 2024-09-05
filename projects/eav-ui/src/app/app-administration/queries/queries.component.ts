@@ -13,7 +13,7 @@ import { IdFieldParams } from '../../shared/components/id-field/id-field.models'
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
@@ -119,13 +119,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         query == null
-          ? {
-            ContentTypeName: eavConstants.contentTypes.query,
-            Prefill: {
-              TestParameters: eavConstants.pipelineDesigner.testParameters
-            }
-          }
-          : { EntityId: query.Id },
+          ? EditPrep.newFromType(eavConstants.contentTypes.query, { TestParameters: eavConstants.pipelineDesigner.testParameters })
+          : EditPrep.editId(query.Id),
       ],
     };
     const formUrl = convertFormToUrl(form);

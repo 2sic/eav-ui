@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
@@ -115,18 +115,8 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   editHeader() {
     const form: EditForm = {
       items: [
-        {
-          Add: this.header$.value.Id === 0,
-          Index: 0,
-          Parent: this.contentGroup.guid,
-          Field: 'listcontent',
-        },
-        {
-          Add: this.header$.value.Id === 0,
-          Index: 0,
-          Parent: this.contentGroup.guid,
-          Field: 'listpresentation',
-        },
+        EditPrep.relationship(this.contentGroup.guid, 'listcontent', 0, this.header$.value.Id === 0),
+        EditPrep.relationship(this.contentGroup.guid, 'listpresentation', 0, this.header$.value.Id === 0),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -135,7 +125,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   editItem(id: number) {
     const form: EditForm = {
-      items: [{ EntityId: id }],
+      items: [EditPrep.editId(id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
@@ -148,7 +138,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   addBelow(index: number) {
     const form: EditForm = {
-      items: [{ Add: true, Index: index + 1, Parent: this.contentGroup.guid, Field: this.contentGroup.part }],
+      items: [ EditPrep.relationship(this.contentGroup.guid, this.contentGroup.part, index + 1, true) ],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);

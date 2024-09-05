@@ -10,7 +10,7 @@ import { MetadataService } from '../../permissions/services/metadata.service';
 import { QueryDefinitionService } from './query-definition.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 // tslint:disable-next-line:max-line-length
 import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { QueryResultComponent } from '../query-result/query-result.component';
@@ -79,7 +79,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     // save Pipeline, then open Edit Dialog
     this.savePipeline(() => {
       const form: EditForm = {
-        items: [{ EntityId: this.pipelineModel$.value.Pipeline.EntityId }],
+        items: [EditPrep.editId(this.pipelineModel$.value.Pipeline.EntityId)],
       };
       const formUrl = convertFormToUrl(form);
       this.#dialogRoute.navRelative([`edit/${formUrl}`]);
@@ -196,7 +196,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
       // edit existing Entity
       if (metadata.Items.length) {
         const form: EditForm = {
-          items: [{ EntityId: metadata.Items[0].Id }],
+          items: [EditPrep.editId(metadata.Items[0].Id)],
         };
         const formUrl = convertFormToUrl(form);
         this.#dialogRoute.navRelative([`edit/${formUrl}`]);
@@ -212,14 +212,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
             return;
           }
           const form: EditForm = {
-            items: [{
-              ContentTypeName: contentTypeName,
-              For: {
-                Target: eavConstants.metadata.entity.target,
-                TargetType: eavConstants.metadata.entity.targetType,
-                Guid: key,
-              },
-            }],
+            items: [ EditPrep.newMetadata(key, contentTypeName, eavConstants.metadata.entity) ],
           };
           const formUrl = convertFormToUrl(form);
           this.#dialogRoute.navRelative([`edit/${formUrl}`]);

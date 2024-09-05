@@ -13,7 +13,7 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog/confirm-delete-dialog.models';
 import { MetadataActionsComponent } from './metadata-actions/metadata-actions.component';
@@ -144,7 +144,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       // Feature is enabled, check if it's an empty metadata
       if (recommendation.CreateEmpty) {
         this.snackBar.open(`Creating ${recommendation.Name}...`);
-        this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
+        this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor('dummy').For }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
             this.fetchMetadata();
@@ -173,25 +173,16 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private createMetadataForm(contentType: string) {
     const form: EditForm = {
-      items: [{
-        ContentTypeName: contentType,
-        For: this.calculateItemFor(),
-      }],
+      items: [this.calculateItemFor(contentType)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
     this.changeDetectorRef.markForCheck();
   }
 
-  private calculateItemFor(): EavFor {
-    const itemFor: EavFor = {
-      Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.#targetType)?.target ?? this.#targetType.toString(),
-      TargetType: this.#targetType,
-      ...(this.#keyType === eavConstants.keyTypes.guid && { Guid: this.#key }),
-      ...(this.#keyType === eavConstants.keyTypes.number && { Number: parseInt(this.#key, 10) }),
-      ...(this.#keyType === eavConstants.keyTypes.string && { String: this.#key }),
-    };
-    return itemFor;
+  private calculateItemFor(contentType: string): ItemAddIdentifier {
+    const x = EditPrep.constructMetadataInfo(this.#targetType, this.#keyType, this.#key);
+    return EditPrep.newMetadataFromInfo(contentType, x);
   }
 
   private fetchFor() {
@@ -233,7 +224,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private editMetadata(metadata: MetadataItem) {
     const form: EditForm = {
-      items: [{ EntityId: metadata.Id }],
+      items: [EditPrep.editId(metadata.Id)],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);

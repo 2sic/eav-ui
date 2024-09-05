@@ -1,7 +1,7 @@
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
 import { EavLogger } from '../logging/eav-logger';
-import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 
 const logThis = false;
 const nameOfThis = "UrlPrepHelper";
@@ -204,7 +204,7 @@ export function convertUrlToForm(formUrl: string) {
     } else if (isNumber((item ?? '').split(VAL_SEPARATOR)[0])) {
       // Edit Item
       const parts = item.split(VAL_SEPARATOR);
-      const editItem: ItemEditIdentifier = { EntityId: parseInt(parts[0], 10) };
+      const editItem: ItemEditIdentifier = EditPrep.editId(parseInt(parts[0], 10));
       for (const part of parts)
         addParamToItemIdentifier(editItem, part);
       form.items.push(editItem);
