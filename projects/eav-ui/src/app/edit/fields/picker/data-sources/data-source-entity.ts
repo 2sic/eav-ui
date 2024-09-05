@@ -1,9 +1,9 @@
-import { PickerItem } from "projects/edit-types";
 import { map } from "rxjs";
 import { Injectable } from '@angular/core';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { DataWithLoading } from '../models/data-with-loading';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { PickerItem } from '../models/picker-item.model';
 
 const logThis = false;
 const nameOfThis = 'DataSourceEntity';

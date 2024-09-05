@@ -19,7 +19,7 @@ import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { messagePickerItem, PickerItem } from '../models/picker-item.model';
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { transient } from '../../../../core/transient';
@@ -90,7 +90,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     // If the list is empty, show a message about this.
     return result.length > 0
       ? result
-      : [messagePickerItem(this.translate, 'Fields.Picker.FilterNoResults', { search: filterInDom })];
+      : [PickerItemFactory.message(this.translate, 'Fields.Picker.FilterNoResults', { search: filterInDom })];
   });
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */

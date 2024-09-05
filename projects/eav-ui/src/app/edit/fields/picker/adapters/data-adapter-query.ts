@@ -1,7 +1,7 @@
 import { DataSourceQuery } from "../data-sources/data-source-query";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { Injectable, computed, untracked } from '@angular/core';
-import { placeholderPickerItem } from '../models/picker-item.model';
+import { PickerItemFactory } from '../models/picker-item.model';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
@@ -48,7 +48,7 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     this.dataSourceEntityOrQuery.setParams(this.queryParamsMask()?.result());
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
-      const errors = [placeholderPickerItem(this.translate, 'Fields.Picker.QueryNotDefined')];
+      const errors = [PickerItemFactory.placeholder(this.translate, 'Fields.Picker.QueryNotDefined')];
       this.errorOptions.set(errors);
       return;
     }

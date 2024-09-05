@@ -70,28 +70,41 @@ export interface PickerItem {
   data?: EntityBasicWithFields;
 }
 
+export class PickerItemFactory {
+  static create(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem {
+    return {
+      id: id,
+      value: value,
+      label: text,
+      tooltip: tooltip,
+      infoBox: information,
+      noEdit: disableEdit,
+      noDelete: disableDelete,
+      notSelectable: disableSelect,
+    } as PickerItem;
+  }
 
-/** Generate a placeholder item to show in the list to show during loading or in case of error */
-export function placeholderPickerItem(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
-  return {
-    label: translate.instant(i18nLabel) + (suffix ?? ''),
-    value: null,
-    notSelectable: true,
-    isMessage: true,
-    noDelete: true,
-    noEdit: true,
-  } satisfies PickerItem;
-}
+  /** Generate a placeholder item to show in the list to show during loading or in case of error */
+  static placeholder(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
+    return {
+      label: translate.instant(i18nLabel) + (suffix ?? ''),
+      value: null,
+      notSelectable: true,
+      isMessage: true,
+      noDelete: true,
+      noEdit: true,
+    } satisfies PickerItem;
+  }
 
-
-/** Generate a placeholder item to show in the list to show during loading or in case of error */
-export function messagePickerItem(translate: TranslateService, i18nLabel: string, params?: object): PickerItem {
-  return {
-    label: translate.instant(i18nLabel, params),
-    value: null,
-    notSelectable: true,
-    isMessage: true,
-    noDelete: true,
-    noEdit: true,
-  } satisfies PickerItem;
+  /** Generate a placeholder item to show in the list to show during loading or in case of error */
+  static message(translate: TranslateService, i18nLabel: string, params?: object): PickerItem {
+    return {
+      label: translate.instant(i18nLabel, params),
+      value: null,
+      notSelectable: true,
+      isMessage: true,
+      noDelete: true,
+      noEdit: true,
+    } satisfies PickerItem;
+  }
 }

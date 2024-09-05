@@ -1,4 +1,3 @@
-import { PickerItem, messagePickerItem, placeholderPickerItem } from "projects/edit-types";
 import { Observable, map, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { Injectable, computed, inject } from '@angular/core';
@@ -6,7 +5,8 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
-import { QueryStreams } from "projects/eav-ui/src/app/shared/models/query-stream.model";
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
+import { QueryStreams } from '../../../../shared/models/query-stream.model';
 
 const logThis = false;
 const nameOfThis = 'DataSourceQuery';
@@ -88,13 +88,13 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
     const valueMustBeGuid = !this.isForStringField;
     const l = this.log.fn('transformData', { data, streamName, isForStringField: this.isForStringField });
     if (!data)
-      return [messagePickerItem(this.translate, 'Fields.Picker.QueryErrorNoData')];
+      return [PickerItemFactory.message(this.translate, 'Fields.Picker.QueryErrorNoData')];
 
     let items: PickerItem[] = [];
     let errors: PickerItem[] = [];
     streamName.split(',').forEach(stream => {
       if (!data[stream]) {
-        errors.push(placeholderPickerItem(this.translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
+        errors.push(PickerItemFactory.placeholder(this.translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
         return; // TODO: @SDV test if this acts like continue or break
       }
 

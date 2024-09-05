@@ -9,20 +9,20 @@ export const InputTypeCatalog = {
   EmptyDefault: 'empty-default',
   EmptyEnd: 'empty-end',
   EmptyMessage: 'empty-message',
-  EntityContentBlocks: 'entity-content-blocks',
-  EntityDefault: 'entity-default',
-  EntityQuery: 'entity-query',
+  EntityContentBlocks: 'entity-content-blocks', // picker
+  EntityDefault: 'entity-default',  // picker
+  EntityQuery: 'entity-query',  // picker
   ExternalWebComponent: 'external-web-component',
   HyperlinkDefault: 'hyperlink-default',
   HyperlinkLibrary: 'hyperlink-library',
   NumberDefault: 'number-default',
-  NumberDropdown: 'number-dropdown',
+  NumberDropdown: 'number-dropdown', // picker
   StringDefault: 'string-default',
-  StringDropdown: 'string-dropdown',
-  StringDropdownQuery: 'string-dropdown-query',
+  StringDropdown: 'string-dropdown', // picker
+  StringDropdownQuery: 'string-dropdown-query', // picker
   StringFontIconPicker: 'string-font-icon-picker',
   StringJson: 'string-json',
-  StringTemplatePicker: 'string-template-picker',
+  StringTemplatePicker: 'string-template-picker', // picker
   StringUrlPath: 'string-url-path',
   StringWysiwyg: 'string-wysiwyg',
 

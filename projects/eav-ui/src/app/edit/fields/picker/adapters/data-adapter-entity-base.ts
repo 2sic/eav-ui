@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model";
+import { EditForm } from "../../../../../app/shared/models/edit-form.model";
 import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -9,7 +9,7 @@ import { DataSourceBase } from '../data-sources/data-source-base';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { Injector, computed, inject, signal, untracked } from '@angular/core';
-import { PickerItem, messagePickerItem } from '../models/picker-item.model';
+import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-query-base';
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FieldState } from '../../field-state';
@@ -20,7 +20,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
 import { FormConfigService } from '../../../state/form-config.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { EntityService } from "projects/eav-ui/src/app/shared/services/entity.service";
+import { EntityService } from "../../../../../app/shared/services/entity.service";
 
 
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
@@ -81,7 +81,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const items = ds.data().filter(item => !deleted.some(guid => guid === item.value));
     this.log.a('computing optionsOrHints');
     return ds.loading()
-      ? [messagePickerItem(this.translate, 'Fields.Picker.Loading'), ...items]
+      ? [PickerItemFactory.message(this.translate, 'Fields.Picker.Loading'), ...items]
       : items;
   });
 

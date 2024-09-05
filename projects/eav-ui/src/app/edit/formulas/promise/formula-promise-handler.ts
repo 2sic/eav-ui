@@ -1,4 +1,3 @@
-import { FieldValue } from "projects/edit-types";
 import { EavContentType } from "../../shared/models/eav";
 import { FormulaPromiseResult } from "./formula-promise-result.model";
 import { FormulaSettingsHelper } from "../results/formula-settings.helper";
@@ -17,6 +16,7 @@ import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model'
 import { FieldsPropsEngine } from '../../state/fields-properties-engine';
 import { FieldsValuesModifiedHelper } from '../../state/fields-values-modified.helper';
 import { FieldsPropsEngineCycle } from '../../state/fields-properties-engine-cycle';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 const logThis = false;
 const nameOfThis = 'FormulaPromiseHandler';

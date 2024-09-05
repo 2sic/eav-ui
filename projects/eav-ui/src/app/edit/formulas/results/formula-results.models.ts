@@ -1,5 +1,6 @@
-import { FieldSettings, FieldValue } from "projects/edit-types";
 import { FormulaFieldValidation, FormulaTarget } from '../targets/formula-targets';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 export interface RunFormulasResult {
   settings: FieldSettings;

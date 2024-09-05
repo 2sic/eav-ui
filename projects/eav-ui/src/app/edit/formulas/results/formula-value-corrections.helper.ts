@@ -1,8 +1,8 @@
-import { FieldValue } from "projects/edit-types";
 import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
 import { InputTypeCatalog, InputTypeStrict } from "../../../shared/fields/input-type-catalog";
 import { FormulaTarget, FormulaTargets } from '../targets/formula-targets';
 import { FormulaResultRaw } from "./formula-results.models";
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 /**
  * Contains methods for correcting formula results.
