@@ -80,7 +80,6 @@ export class PickerData {
       this.state.addSelected(newItemGuid);
       this.source.forceReloadData([newItemGuid]);
     }
-
   }
 
   #createUIModel(selected: PickerItem[], data: PickerItem[]): PickerItem[] {

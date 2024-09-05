@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject, Injector, Optional } from '@angular/core';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
@@ -9,8 +9,8 @@ import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from './picker-data.factory';
 
 const logSpecs = {
+  enabled: false,
   name: 'PickerComponent',
-  enabled: true,
 };
 
 @Component({
@@ -29,16 +29,15 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
   #editRoutingService = inject(EditRoutingService);
   #fieldState = inject(FieldState);
 
-  constructor(log?: EavLogger) {
+  #pickerDataFactory = new PickerDataFactory(this.#injector);
+
+  #pickerData = this.#fieldState.pickerData;
+
+  constructor(@Optional()log?: EavLogger) {
     super(log ?? new EavLogger(logSpecs));
     this.log.a('constructor');
     this.#pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
   }
-
-  // wip
-  #pickerDataFactory = new PickerDataFactory(this.#injector);
-
-  #pickerData = this.#fieldState.pickerData;
 
   /**
    * Whether to show the preview or not,
@@ -73,7 +72,10 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
     this.subscriptions.add(
       // TODO: 2dm 2024-09-05 I believe this doesn't work as expected
       this.#editRoutingService.childFormResult(config.index, config.entityGuid)
-        .subscribe(result => this.#pickerData.addNewlyCreatedItem(result))
+        .subscribe(result => {
+          this.log.a('childFormResult', { result });
+          return this.#pickerData.addNewlyCreatedItem(result);
+        })
     );
     l.end();
   }

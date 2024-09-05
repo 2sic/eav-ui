@@ -21,8 +21,9 @@ import { EditRoutingService } from '../../../shared/services/edit-routing.servic
 import { EntityService } from "../../../../../app/shared/services/entity.service";
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
-
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
+
+  //#region Services, constructor, log
 
   protected formConfig = inject(FormConfigService);
   #editRoutingService = inject(EditRoutingService);
@@ -32,6 +33,19 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected fieldState = inject(FieldState);
   protected group = inject(EntityFormStateService).formGroup();
   #entityService = transient(EntityService);
+
+  constructor(logSpecs: EavLogger) {
+    super(logSpecs);
+    this.log.a('constructor');
+  }
+
+  public linkLog(log: EavLogger): this {
+    if (!this.log.enabled)
+      this.log.inherit(log);
+    return this;
+  };
+
+  //#endregion
 
   /** Content Type Mask */
   #typeMaskFromSettings = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
@@ -75,23 +89,13 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const ds = this.dataSource();
     const deleted = this.#deletedItemsGuids();
     const items = ds.data().filter(item => !deleted.some(guid => guid === item.value));
-    this.log.a('computing optionsOrHints');
+    // this.log.a('computing optionsOrHints');
     return ds.loading()
       ? [PickerItemFactory.message(this.translate, 'Fields.Picker.Loading'), ...items]
       : items;
   });
 
   protected abstract dataSourceEntityOrQuery: DataSourceBase;
-  constructor(logSpecs: EavLogger) {
-    super(logSpecs);
-    this.log.a('constructor');
-  }
-
-  public linkLog(log: EavLogger): this {
-    if (!this.log.enabled)
-      this.log.inherit(log);
-    return this;
-  };
 
   public connectState(state: StateAdapter, useEmpty: boolean): this {
     this.log.a('setupFromComponent');

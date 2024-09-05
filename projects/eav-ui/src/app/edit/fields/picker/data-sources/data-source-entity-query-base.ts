@@ -105,8 +105,6 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   #modified = signalObj<DataWithLoading<PickerItem[]>>('modified', this.noItemsLoadingFalse);
 
   public override data = computedObj('data', () => {
-    // const prefetch = this._prefetch().data;
-    // const overrides = this._overrides().data;
     const prefetch = this.#prefetchNew().data;
     const all = this.#all().data;
     const modified = this.#modified().data;
@@ -146,7 +144,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     const guids = entityGuids.filter(RxHelpers.distinct);
     // this.prefetchEntityGuids$.next(guids);
     // this.addToRefresh(guids);
-    this.loadMoreIntoSignal(this.#prefetchNew, guids, 'initPrefetch');
+    this.#loadMoreIntoSignal(this.#prefetchNew, guids, 'initPrefetch');
   }
 
   /** Get the data from a query - all or only the ones listed in the guids */
@@ -162,18 +160,17 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   destroy(): void {
     this.#typeOrParams$.complete();
-    // this.prefetchEntityGuids$.complete();
     this.getAll$.complete();
     super.destroy();
   }
 
   override addToRefresh(additionalGuids: string[]): void {
     const l = this.log.fn('addToRefresh', { additionalGuids });
-    this.loadMoreIntoSignal(this.#modified, additionalGuids, 'addToRefresh');
+    this.#loadMoreIntoSignal(this.#modified, additionalGuids, 'addToRefresh');
     l.end();
   }
 
-  loadMoreIntoSignal(cache: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], message: string): void {
+  #loadMoreIntoSignal(cache: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], message: string): void {
     const l = this.log.fn('loadMoreIntoSignal', { additionalGuids });
     if (additionalGuids == null || additionalGuids.length === 0)
       return l.end('no additional guids to load/refresh');

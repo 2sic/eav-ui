@@ -4,14 +4,12 @@ import { Injectable } from '@angular/core';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
 
-const logThis = false;
-
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
   protected dataSourceEntityOrQuery = transient(DataSourceEntity);
 
   constructor() {
-    super(new EavLogger('PickerEntitySourceAdapter', logThis));
+    super(new EavLogger('DataAdapterEntity'));
   }
 
   onAfterViewInit(): void {

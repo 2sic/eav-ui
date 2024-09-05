@@ -51,6 +51,11 @@ export class PickerDataFactory {
       : null;
   }
 
+  /**
+   * Setup / initialize a Picker Data.
+   * Note that it can't be called when fields are being created, but must be called from inside each field.
+   * Reason is that objects created later on through DI will need the FieldState and other context objects to be injected.
+   */
   setupPickerData(pickerData: PickerData, fieldState: FieldState<any>): PickerData {
     this.#setupPickerAdapters(pickerData, fieldState);
     pickerData.source.onAfterViewInit()

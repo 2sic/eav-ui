@@ -10,8 +10,10 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
-const nameOfThis = 'StateAdapter';
+const logSpecs = {
+  enabled: false,
+  name: 'StateAdapter',
+};
 
 @Injectable()
 export class StateAdapter {
@@ -22,7 +24,7 @@ export class StateAdapter {
   log: EavLogger
 
   constructor(@Optional() logger: EavLogger = null) {
-    this.log = logger ?? new EavLogger(nameOfThis, logThis);
+    this.log = logger ?? new EavLogger(logSpecs);
   }
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);

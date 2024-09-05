@@ -13,14 +13,14 @@ export class EavLogger<T = unknown> {
   enableChildren: boolean;
   specs: T;
 
-  constructor(name: LogSpecs<T>);
-  constructor(name: string, enabled: boolean, enableChildren?: boolean);
+  constructor(logSpecs: LogSpecs<T>);
+  constructor(name: string, enabled?: boolean, enableChildren?: boolean);
   constructor(name: LogSpecs<T> | string, enabled?: boolean, enableChildren?: boolean) {
     const initialSpecs: LogSpecs<T> = typeof name === 'object'
       ? name
       : {
           name: name,
-          enabled: enabled,
+          enabled: enabled ?? false,
           enableChildren: enableChildren,
         } satisfies LogSpecs<T>;
 

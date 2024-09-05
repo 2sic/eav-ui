@@ -3,7 +3,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'DataSourceMoreFieldsHelper',
 };
 
