@@ -42,6 +42,6 @@ export class PickerTextComponent extends PickerPartBaseComponent implements OnDe
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) return;
-    this.pickerData().state.toggleFreeTextMode();
+    this.pickerData.state.toggleFreeTextMode();
   }
 }

@@ -41,7 +41,7 @@ const nameOfThis = 'PickerPreviewComponent';
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode());
+  isInFreeTextMode = computed(() => this.pickerData.state.isInFreeTextMode());
 
   mySettings = computed(() => {
     const settings = this.fieldState.settings();
@@ -67,7 +67,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent implements O
 
   openNewEntityDialog(entityType: string): void {
     this.log.a(`openNewEntityDialog: '${entityType}'`);
-    this.pickerData().source.editItem(null, entityType);
+    this.pickerData.source.editItem(null, entityType);
   }
 
   expandDialog() {
@@ -77,6 +77,6 @@ export class PickerPreviewComponent extends PickerPartBaseComponent implements O
   }
 
   getEntityTypesData(): void {
-    this.pickerData().state.getEntityTypesData();
+    this.pickerData.state.getEntityTypesData();
   }
 }

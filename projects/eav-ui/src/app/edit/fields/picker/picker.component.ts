@@ -26,27 +26,27 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   /** The injector is used by most children to get transient one-time objects */
-  protected injector = inject(Injector);
-  public editRoutingService = inject(EditRoutingService);
-  public fieldState = inject(FieldState);
+  #injector = inject(Injector);
+  #editRoutingService = inject(EditRoutingService);
+  #fieldState = inject(FieldState);
 
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger(logSpecs));
     this.log.a('constructor');
-    this.pickerDataFactory.setupPickerData(this.pickerData, this.fieldState);
+    this.#pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
   }
 
   // wip
-  protected pickerDataFactory = new PickerDataFactory(this.injector);
+  #pickerDataFactory = new PickerDataFactory(this.#injector);
 
-  pickerData: PickerData = this.fieldState.pickerData;
+  #pickerData = this.#fieldState.pickerData;
 
   /**
    * Whether to show the preview or not,
    * since this control is used both for preview and dialog.
    */
   showPreview = computedObj('showPreview', () => {
-    const settings = this.fieldState.settings();
+    const settings = this.#fieldState.settings();
     const allowMultiValue = settings.AllowMultiValue;
     const isDialog = settings.isDialog;
     const showPreview = !allowMultiValue || (allowMultiValue && !isDialog);
@@ -54,11 +54,11 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
   });
 
   ngOnInit(): void {
-    if (this.pickerData.closeWatcherAttachedWIP)
+    if (this.#pickerData.closeWatcherAttachedWIP)
       return;
     this.#refreshOnChildClosed();
-    this.pickerData.state.attachCallback(this.focusOnSearchComponent);
-    this.pickerData.closeWatcherAttachedWIP = true;
+    this.#pickerData.state.attachCallback(this.focusOnSearchComponent);
+    this.#pickerData.closeWatcherAttachedWIP = true;
   }
 
   focusOnSearchComponent(): void {
@@ -70,11 +70,11 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
     const l = this.log.fn('refreshOnChildClosed');
 
     // this is used when new entity is created in child form it automatically adds it to the picker as selected item
-    const config = this.fieldState.config;
+    const config = this.#fieldState.config;
     this.subscriptions.add(
       // TODO: 2dm 2024-09-05 I believe this doesn't work as expected
-      this.editRoutingService.childFormResult(config.index, config.entityGuid)
-        .subscribe(result => this.pickerData.addNewlyCreatedItem(result))
+      this.#editRoutingService.childFormResult(config.index, config.entityGuid)
+        .subscribe(result => this.#pickerData.addNewlyCreatedItem(result))
     );
     l.end();
   }

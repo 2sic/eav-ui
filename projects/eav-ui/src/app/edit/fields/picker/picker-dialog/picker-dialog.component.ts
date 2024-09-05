@@ -34,7 +34,7 @@ import { SignalEquals } from '../../../../shared/signals/signal-equals';
 })
 export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  protected isInFreeTextMode = computed(() => this.pickerData().state.isInFreeTextMode(), SignalEquals.bool);
+  protected isInFreeTextMode = computed(() => this.pickerData.state.isInFreeTextMode(), SignalEquals.bool);
 
   protected showAddNewEntityButtonInDialog = computed(() => {
     const settings = this.fieldState.settings();
@@ -50,10 +50,10 @@ export class PickerDialogComponent extends PickerPartBaseComponent implements On
   }
 
   openNewEntityDialog(entityType: string): void {
-    this.pickerData().source.editItem(null, entityType);
+    this.pickerData.source.editItem(null, entityType);
   }
 
   getEntityTypesData(): void {
-    this.pickerData().state.getEntityTypesData();
+    this.pickerData.state.getEntityTypesData();
   }
 }

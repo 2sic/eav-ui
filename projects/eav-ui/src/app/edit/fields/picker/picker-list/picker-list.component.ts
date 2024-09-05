@@ -57,24 +57,24 @@ export class PickerListComponent extends PickerPartBaseComponent implements OnDe
   }
 
   drop(event: CdkDragDrop<PickerItem[]>): void {
-    const selectedEntities = this.pickerData().selectedAll();
+    const selectedEntities = this.pickerData.selectedAll();
     moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex,
     };
-    this.pickerData().state.reorder(reorderIndexes);
+    this.pickerData.state.reorder(reorderIndexes);
   }
 
   edit(entityGuid: string, entityId: number): void {
-    this.pickerData().source.editItem({ entityGuid, entityId }, null);
+    this.pickerData.source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
-    this.pickerData().state.removeSelected(index);
+    this.pickerData.state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
-    this.pickerData().source.deleteItem({ index, entityGuid });
+    this.pickerData.source.deleteItem({ index, entityGuid });
   }
 }

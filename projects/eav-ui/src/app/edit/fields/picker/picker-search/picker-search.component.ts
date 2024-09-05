@@ -72,14 +72,14 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   private newValue: string = null;
 
   /** Currently selected 1 item, as this input will only ever show 1 and it needs to know if certain edit buttons should be shown. */
-  public selectedItem = computed(() => this.pickerData().selectedOne(), { equal: RxHelpers.objectsEqual });
+  public selectedItem = computed(() => this.pickerData.selectedOne(), { equal: RxHelpers.objectsEqual });
 
   /** special trigger to recalculate filtered items; not ideal, should happen automatically */
   private reFilter = signal(false);
 
   public filteredItems = computed(() => {
     const _ = this.reFilter(); // just make a dependency
-    const all = this.pickerData().source.optionsOrHints();
+    const all = this.pickerData.source.optionsOrHints();
     const filterInDom = this.autocomplete()?.nativeElement.value;
     const filter = filterInDom?.toLocaleLowerCase();
 
@@ -143,7 +143,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     if (fieldSettings().PickerDisplayMode === 'tree') {
       // Setup Tree Helper - but should only happen, if we're really doing trees
       // Only doing this the first time, as these settings are not expected to change
-      this.treeDataService.init(fieldSettings, this.pickerData().source.optionsOrHints);
+      this.treeDataService.init(fieldSettings, this.pickerData.source.optionsOrHints);
       this.treeHelper = this.treeDataService.treeHelper;
     }
   }
@@ -158,7 +158,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     this.logItemChecks.a(`displayFn: value: '${value}'`, { selectedItem });
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
-    let returnValue = this.pickerData().source.optionsOrHints().find(ae => ae.value == value)?.label;
+    let returnValue = this.pickerData.source.optionsOrHints().find(ae => ae.value == value)?.label;
 
     // If nothing yet, try to return label of selected or fallback to return the value
     // note: not quite sure, but I believe this is for scenarios where a manual entry was done
@@ -176,7 +176,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   fetchEntities(): void {
-    this.pickerData().source.fetchItems();
+    this.pickerData.source.fetchItems();
   }
 
   filterSelectionList(): void {
@@ -220,7 +220,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     this.newValue = event.option.value;
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
-    this.pickerData().state.addSelected(selected);
+    this.pickerData.state.addSelected(selected);
     // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
       this.autocomplete().nativeElement.blur();
@@ -228,7 +228,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   getPlaceholder(): string {
-    const allOptions = this.pickerData().source.optionsOrHints();
+    const allOptions = this.pickerData.source.optionsOrHints();
     var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');
@@ -239,12 +239,12 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   toggleFreeText(disabled: boolean): void {
     this.log.a(`toggleFreeText ${disabled}`);
     if (disabled) return;
-    this.pickerData().state.toggleFreeTextMode();
+    this.pickerData.state.toggleFreeTextMode();
   }
 
   insertNull(): void {
     this.log.a('insertNull');
-    this.pickerData().state.addSelected(null);
+    this.pickerData.state.addSelected(null);
   }
 
   isOptionDisabled(value: string): boolean {
@@ -256,17 +256,17 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   edit(entityGuid: string, entityId: number): void {
     this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
-    this.pickerData().source.editItem({ entityGuid, entityId }, null);
+    this.pickerData.source.editItem({ entityGuid, entityId }, null);
   }
 
   removeItem(index: number): void {
     this.log.a(`removeItem index: '${index}'`);
-    this.pickerData().state.removeSelected(index);
+    this.pickerData.state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
     this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
-    this.pickerData().source.deleteItem({ index, entityGuid });
+    this.pickerData.source.deleteItem({ index, entityGuid });
   }
 
   goToLink(helpLink: string): void {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { PickerData } from '../picker-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { FieldState } from '../../field-state';
 
 // 2024-04-30 2dm Note: not going standalone yet, as the styling is then off
 // must find out how to import the styles correctly to continue
@@ -28,10 +29,11 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
   ],
 })
 export class PickerTextToggleComponent implements OnInit {
-  @Input() pickerData: PickerData;
   @Input() csDisabled: boolean;
   @Input() allowText: boolean;
   @Input() freeTextMode: boolean;
+  
+  pickerData = inject(FieldState).pickerData as PickerData;
 
   constructor() { }
 

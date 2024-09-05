@@ -21,21 +21,21 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy 
   fieldState = inject(FieldState);
 
   /** Picker Data Bundle with Source and state etc. */
-  pickerData = input.required<PickerData>();
+  pickerData = this.fieldState.pickerData; // input.required<PickerData>();
 
-  public controlStatus = computed(() => this.pickerData().state.controlStatus());
+  public controlStatus = computed(() => this.pickerData.state.controlStatus());
 
   /** All Selected Items */
-  public selectedItems = computed(() => this.pickerData().selectedAll());
+  public selectedItems = computed(() => this.pickerData.selectedAll());
 
   /** Field Configuration - from field state */
   config = this.fieldState.config;
 
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = computed(() => this.pickerData().state.basics(), { equal: RxHelpers.objectsEqual });
+  basics = computed(() => this.pickerData.state.basics(), { equal: RxHelpers.objectsEqual });
 
   /** Features */
-  features = computed(() => this.pickerData().features());
+  features = computed(() => this.pickerData.features());
 
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger(nameOfThis, logThis));

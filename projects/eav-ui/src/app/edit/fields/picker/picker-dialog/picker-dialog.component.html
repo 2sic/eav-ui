@@ -1,19 +1,22 @@
 
-<app-picker-list [pickerData]="pickerData()"></app-picker-list>
-@if (!isInFreeTextMode()) {
+<app-picker-list></app-picker-list>
+@if (!isInFreeTextMode())
+{
   <app-picker-search
-    [pickerData]="pickerData()"
     [showSelectedItem]="false"
     [showItemEditButtons]="false">
   </app-picker-search>
 } 
-@else {
-  <app-picker-text [pickerData]="pickerData()"></app-picker-text>
+@else
+{
+  <app-picker-text></app-picker-text>
 }
 <app-field-helper-text></app-field-helper-text>
 <!-- add new entity -->
-@if (showAddNewEntityButtonInDialog()) {
-  @if (pickerData().state.createEntityTypes().length > 1) {
+@if (showAddNewEntityButtonInDialog())
+{
+  @if (pickerData.state.createEntityTypes().length > 1)
+  {
     <div fxLayout="row" fxLayoutAlign="end center">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
         [disabled]="controlStatus().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu"
@@ -21,14 +24,16 @@
         <mat-icon>add</mat-icon>
       </button>
       <mat-menu #entityTypesMenu="matMenu">
-        @for (entityType of pickerData().state.createEntityTypes(); track entityType) {
+        @for (entityType of pickerData.state.createEntityTypes(); track entityType) {
           <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
             <span>{{ entityType.label }}</span>
           </button>
         }
       </mat-menu>
     </div>
-  } @else {
+  }
+  @else
+  {
     <div fxLayout="row" fxLayoutAlign="end center">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
         [disabled]="controlStatus().disabled || !features().create" (click)="openNewEntityDialog(null)">
