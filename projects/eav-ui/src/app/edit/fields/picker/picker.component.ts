@@ -73,8 +73,8 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
       // TODO: 2dm 2024-09-05 I believe this doesn't work as expected
       this.#editRoutingService.childFormResult(config.index, config.entityGuid)
         .subscribe(result => {
-          this.log.a('childFormResult', { result });
-          return this.#pickerData.addNewlyCreatedItem(result);
+          const l2 = this.log.fn('childFormResult', { result });
+          return l2.r(this.#pickerData.addNewlyCreatedItem(result));
         })
     );
     l.end();

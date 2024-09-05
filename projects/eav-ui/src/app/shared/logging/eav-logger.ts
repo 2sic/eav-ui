@@ -4,7 +4,7 @@ import { LogManager } from './log-manager';
 import { LogSpecs } from './log-specs';
 import { RxTapDebug } from './rx-debug-dbg';
 
-export class EavLogger<T = unknown> {
+export class EavLogger<T extends unknown = any> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(7);
 
@@ -63,7 +63,7 @@ export class EavLogger<T = unknown> {
 
   /** Create a special logger for rx logging */
   rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }) {
-    return new RxTapDebug(this, name, enabled, jsonify);
+    return new RxTapDebug(this as EavLogger<unknown>, name, enabled, jsonify);
   }
 
   val(name: string, value: unknown) {
@@ -77,7 +77,7 @@ export class EavLogger<T = unknown> {
   }
 
   fn(name: string, data?: Record<string, unknown>, message?: string): EavLoggerFn {
-    return new EavLoggerFn(this, name, message, data);
+    return new EavLoggerFn(this as EavLogger, name, message, data);
   }
 
   /**
@@ -87,6 +87,24 @@ export class EavLogger<T = unknown> {
     // create real logger if condition is true, or if this logger is disabled anyhow
     return condition || !this.enabled
       ? this.fn(name, data, message)
-      : new EavLogger('noop', false).fn('noop', { condition });
+      : new EavLogger<T>('noop', false).fn('noop', { condition });
+  }
+
+  /**
+   * Create a logger function that will only log if the condition is true.
+   * The condition must come from the specs object.
+   */
+  fnIf(key: BooleanKeys<T> & string, data?: Record<string, unknown>, message?: string): EavLoggerFn {
+    // create real logger if condition is true, or if this logger is disabled anyhow
+    return !this.enabled || !!this.specs[key] || !!(this.specs as { all: boolean})['all']
+      ? this.fn(key, data, message)
+      : new EavLogger<T>('noop', false).fn('noop', { key, condition: this.specs[key] });
   }
 }
+
+/** 
+ * Helper to only allow boolean keys in the specs object.
+ * https://stackoverflow.com/questions/50851263/how-do-i-require-a-keyof-to-be-for-a-property-of-a-specific-type
+*/
+type BooleanKeys<T> = { [k in keyof T]: T[k] extends boolean ? k : never }[keyof T];
+type BooleanSpecs<T> = { [k in BooleanKeys<T>]: boolean };

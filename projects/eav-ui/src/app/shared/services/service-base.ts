@@ -1,12 +1,9 @@
 import { Subscription } from 'rxjs';
 import { EavLogger } from '../logging/eav-logger';
 
-/** Base class for services, with logging */
-export class ServiceBase {
+/** Base class for services, withOUT logging */
+export class ServiceWithSubscriptions {
   protected subscriptions = new Subscription();
-
-  constructor(public log: EavLogger) {
-  }
 
   destroy() {
     this.subscriptions.unsubscribe();
@@ -18,4 +15,12 @@ export class ServiceBase {
   //   this.destroy();
   // }
 
+}
+
+/** Base class for services, with logging */
+export class ServiceBase extends ServiceWithSubscriptions {
+
+  constructor(public log: EavLogger) {
+    super();
+  }
 }

@@ -1,5 +1,5 @@
-import { FieldSettings } from 'projects/edit-types';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 
 export interface FormulaV1Experimental {

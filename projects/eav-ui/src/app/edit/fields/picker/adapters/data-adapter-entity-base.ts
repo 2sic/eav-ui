@@ -98,7 +98,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected abstract dataSourceEntityOrQuery: DataSourceBase;
 
   public connectState(state: StateAdapter, useEmpty: boolean): this {
-    this.log.a('setupFromComponent');
+    const l = this.log.fn('connectState');
 
     this.dataSource.set(useEmpty
       ? transient(DataSourceEmpty, this.injector).preSetup("Error: configuration missing")
@@ -108,7 +108,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       this.useDataSourceStream.set(true);
 
     super.setup(state.doAfterDelete);
-    return this;
+    return l.rSilent(this);
   }
 
   initPrefetch(prefetchGuids: string[]): void {
@@ -126,7 +126,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }, entityType: string): void {
-    this.log.a('editItem', { editParams });
+    const l = this.log.fn('editItem', { editParams });
     const editGuid = editParams?.entityGuid;
     const form: EditForm = {
       items: (editGuid == null)
@@ -140,11 +140,16 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
     // Monitor for close to reload data
     this.#editRoutingService.childFormClosed()
-        .subscribe(() => {
-          this.log.a('childFormClosed', { editGuid });
-          if (editGuid)
-            this.forceReloadData([editGuid]);
-        })
+      .subscribe(data => {
+        const l2 = this.log.fn('childFormClosed', { editGuid, data });
+        if (editGuid) {
+          this.forceReloadData([editGuid]);
+          return l2.end('forceReloadData', { editGuid });
+        }
+        l2.end("no guid, won't reload data");
+
+      })
+    l.end();
   }
 
   deleteItem(props: DeleteEntityProps): void {
@@ -214,4 +219,9 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       return null;
     }
   }
+}
+
+export interface LogSpecsDataAdapterEntityBase {
+  all: boolean;
+  connectState: boolean;
 }

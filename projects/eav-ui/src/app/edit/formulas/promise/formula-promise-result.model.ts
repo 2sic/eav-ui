@@ -1,6 +1,6 @@
-import { FieldValue } from 'projects/edit-types';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FieldValuePair } from "../results/formula-results.models";
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 /**
  * The result of a formula promise.

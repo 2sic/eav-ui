@@ -4,11 +4,11 @@ import { DataSourceBase } from './data-source-base';
 import { Injectable, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 /**
  * This is the base class for data-sources providing data from
@@ -22,8 +22,9 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   protected querySvc = transient(QueryService);
 
-  constructor(logger: EavLogger) {
-    super(logger);
+  log: EavLogger<LogSpecsDataSourceEntity>;
+  constructor(log: EavLogger) {
+    super(log);
   }
 
   //#endregion
@@ -165,13 +166,13 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   }
 
   override addToRefresh(additionalGuids: string[]): void {
-    const l = this.log.fn('addToRefresh', { additionalGuids });
+    const l = this.log.fnIf('addToRefresh', { additionalGuids });
     this.#loadMoreIntoSignal(this.#modified, additionalGuids, 'addToRefresh');
     l.end();
   }
 
   #loadMoreIntoSignal(cache: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], message: string): void {
-    const l = this.log.fn('loadMoreIntoSignal', { additionalGuids });
+    const l = this.log.fnIf('loadMoreIntoSignal', { additionalGuids });
     if (additionalGuids == null || additionalGuids.length === 0)
       return l.end('no additional guids to load/refresh');
 
@@ -187,4 +188,12 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
       });
     l.end();
   }
+}
+
+export interface LogSpecsDataSourceEntity {
+  all: boolean;
+  initPrefetch: boolean;
+  getFromBackend: boolean;
+  addToRefresh: boolean;
+  loadMoreIntoSignal: boolean;
 }

@@ -6,19 +6,21 @@ import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
 import { Signal, inject } from '@angular/core';
 import { FieldState } from '../../field-state';
-import { ServiceBase } from '../../../../shared/services/service-base';
+import { ServiceWithSubscriptions } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 
-export abstract class DataSourceBase extends ServiceBase {
+export abstract class DataSourceBase extends ServiceWithSubscriptions {
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
-  constructor(logSpecs: EavLogger) {
-    super(logSpecs);
+  log: EavLogger;
+  constructor(log: EavLogger) {
+    super();
+    this.log = log;
     this.log.a('constructor', { forField: this.fieldState.name });
   }
 

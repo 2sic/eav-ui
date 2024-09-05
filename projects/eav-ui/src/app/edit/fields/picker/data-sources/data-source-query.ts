@@ -9,8 +9,10 @@ import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
-const nameOfThis = 'DataSourceQuery';
+const logSpecs = {
+  enabled: true,
+  name: 'DataSourceQuery',
+};
 
 // TODO: NEXT STEPS
 // 5. afterwards check all edge cases.
@@ -24,7 +26,9 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
   #translate = inject(TranslateService);
 
-  constructor() { super(new EavLogger(nameOfThis, logThis)); }
+  constructor() {
+    super(new EavLogger(logSpecs));
+  }
 
   protected formState = inject(FormConfigService);
   #appId = Number(this.formState.config.appId);

@@ -5,9 +5,12 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
-const logThis = false;
-const nameOfThis = 'DataSourceString';
-const logChildren = false;
+
+const logSpecs = {
+  enabled: false,
+  name: 'DataSourceString',
+  logChildren: false,
+};
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
@@ -15,7 +18,7 @@ export class DataSourceString extends DataSourceBase {
   loading = signalObj('loading', false);
 
   constructor() {
-    super(new EavLogger(nameOfThis, logThis, logChildren));
+    super(new EavLogger(logSpecs));
   }
 
   #dataMaskHelper = (() => {

@@ -1,5 +1,5 @@
 
-export interface LogSpecs<T> {
+export interface LogSpecs<T extends unknown = unknown> {
   name: string;
   enabled: boolean;
   enableChildren?: boolean;

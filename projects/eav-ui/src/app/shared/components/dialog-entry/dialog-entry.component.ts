@@ -24,8 +24,8 @@ const nameOfThis = 'DialogEntryComponent';
   ],
 })
 export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {
-  private dialogData: Record<string, any>;
-  private dialogRef: MatDialogRef<any>;
+  #dialogData: Record<string, any>;
+  #dialogRef: MatDialogRef<any>;
 
   constructor(
     private dialog: MatDialog,
@@ -37,7 +37,7 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
   ) {
     super(new EavLogger(nameOfThis, logThis));
     const navigation = this.router.getCurrentNavigation();
-    this.dialogData = navigation?.extras?.state || {};
+    this.#dialogData = navigation?.extras?.state || {};
   }
 
   ngOnInit() {
@@ -61,7 +61,7 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
   }
 
   ngOnDestroy() {
-    this.dialogRef.close();
+    this.#dialogRef.close();
     super.ngOnDestroy();
   }
 
@@ -70,11 +70,11 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
     if (dialogConfig.initContext)
       this.context.init(this.route);
 
-    this.dialogRef = this.dialog.open(component, {
+    this.#dialogRef = this.dialog.open(component, {
       autoFocus: false,
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
-      data: this.dialogData,
+      data: this.#dialogData,
       panelClass: [
         'dialog-panel',
         `dialog-panel-${dialogConfig.panelSize}`,
@@ -87,7 +87,7 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
       viewContainerRef: this.viewContainerRef,
     });
 
-    this.dialogRef.afterClosed().subscribe((data: any) => {
+    this.#dialogRef.afterClosed().subscribe((data: any) => {
       this.log.a('Dialog was closed - name:' + dialogConfig.name, { data });
 
       const navRes = data as NavigateFormResult;

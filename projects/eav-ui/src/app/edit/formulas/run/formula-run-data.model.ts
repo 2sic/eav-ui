@@ -1,4 +1,4 @@
-import { FieldValue } from 'projects/edit-types';
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 
 export interface FormulaV1Data {
