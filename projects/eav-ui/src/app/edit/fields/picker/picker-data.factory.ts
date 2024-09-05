@@ -82,8 +82,6 @@ export class PickerDataFactory {
 
     // First get the state, since the sources will depend on it.
     const state = this.#getStateAdapter(inputType).linkLog(this.log);
-    // TODO:
-    // .attachCallback(this.focusOnSearchComponent);
 
     const dataSourceType = fieldState.settings().DataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
@@ -162,6 +160,10 @@ const partsMap: Record<string, PartMap> = {
     sources: [DataAdapterQuery],
     states: [StateAdapterEntity],
     forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
+  },
+  [InputTypeCatalog.EntityPicker]: {
+    sources: [DataAdapterEntity, DataAdapterQuery],
+    states: [StateAdapterEntity],
   },
 };
 
