@@ -9,7 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { InstallPackage, InstallSettings, CrossWindowMessage, SpecsForInstaller } from '../../../shared/models/installer-models';
 import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
 import { InstallerService } from '../../../shared/services/installer.service';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { Context } from '../../../shared/services/context';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
   ],
 })
-export class ImportAppPartsComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class ImportAppPartsComponent extends BaseComponent implements OnInit, OnDestroy {
   // Code are copied from file-upload-dialog
 
   private importAppPartsService = transient(ImportAppPartsService);

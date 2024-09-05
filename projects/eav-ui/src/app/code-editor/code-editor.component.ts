@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, o
 // tslint:disable-next-line:max-line-length
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
-import { BaseComponentSubscriptions } from '../shared/components/base.component';
+import { BaseComponent } from '../shared/components/base.component';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
@@ -52,7 +52,7 @@ import { transient } from '../core';
     ToggleDebugDirective,
   ],
 })
-export class CodeEditorComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class CodeEditorComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
   Explorers = Explorers;

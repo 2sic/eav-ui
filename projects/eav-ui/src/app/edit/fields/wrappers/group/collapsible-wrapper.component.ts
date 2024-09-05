@@ -8,7 +8,7 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
-import { BaseComponentSubscriptions } from '../../../../shared/components/base.component';
+import { BaseComponent } from '../../../../shared/components/base.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { WrappersCatalog } from '../wrappers.constants';
@@ -34,7 +34,7 @@ const logSpecs = {
     SafeHtmlPipe,
   ],
 })
-export class CollapsibleWrapperComponent extends BaseComponentSubscriptions implements OnDestroy {
+export class CollapsibleWrapperComponent extends BaseComponent implements OnDestroy {
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 

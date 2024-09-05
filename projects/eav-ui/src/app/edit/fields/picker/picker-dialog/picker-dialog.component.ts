@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,7 +32,7 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
     TippyDirective,
   ],
 })
-export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy {
+export class PickerDialogComponent extends PickerPartBaseComponent {
 
   protected isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
 

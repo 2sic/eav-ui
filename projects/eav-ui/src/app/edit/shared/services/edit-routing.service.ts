@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, Subject } from 'rxjs';
 import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../../shared/models/edit-form.model';
 import { EditEntryComponent } from '../../dialog/entry/edit-entry.component';
@@ -36,7 +36,7 @@ const logSpecs = {
  * Note that it seems to be "Scoped" to the EditDialogMain Component
  */
 @Injectable()
-export class EditRoutingService extends BaseComponentSubscriptions implements OnDestroy {
+export class EditRoutingService extends BaseComponent implements OnDestroy {
 
   log = new EavLogger(logSpecs);
 

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -39,7 +39,7 @@ const nameOfThis = 'PickerPreviewComponent';
     TippyDirective,
   ],
 })
-export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy {
+export class PickerPreviewComponent extends PickerPartBaseComponent {
 
   isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
 

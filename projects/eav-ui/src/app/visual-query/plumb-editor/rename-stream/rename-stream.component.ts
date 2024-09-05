@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/materi
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { VisualQueryStateService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
@@ -40,7 +40,7 @@ import { transient } from '../../../core';
     ClickStopPropagationDirective,
   ],
 })
-export class RenameStreamComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class RenameStreamComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;

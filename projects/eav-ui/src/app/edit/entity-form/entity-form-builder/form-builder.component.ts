@@ -6,7 +6,7 @@ import { EntityFormComponent } from '../entity-form-component/entity-form.compon
 import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -40,7 +40,7 @@ const logSpecs = {
     EntityFormStateService, // used for sharing information about this entity form
   ],
 })
-export class EntityFormBuilderComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class EntityFormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   form = new UntypedFormGroup({});

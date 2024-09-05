@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild, ViewContainerRef, inject } from '@angular/core';
-import { BaseComponentSubscriptions } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { Field } from '../../shared/fields/field.model';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
@@ -42,7 +42,7 @@ import { FieldHintComponent } from '../../shared/components/field-hint/field-hin
     FieldHintComponent,
   ],
 })
-export class AddSharingFieldsComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class AddSharingFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 

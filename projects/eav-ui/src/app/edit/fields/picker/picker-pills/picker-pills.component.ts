@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatRippleModule } from '@angular/material/core';
@@ -24,7 +24,7 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
     MatListModule,
   ],
 })
-export class PickerPillsComponent extends PickerPartBaseComponent implements OnDestroy {
+export class PickerPillsComponent extends PickerPartBaseComponent {
 
   enableTextEntry = computedObj('enableTextEntry', () => this.fieldState.settings().EnableTextEntry);
 

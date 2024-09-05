@@ -15,7 +15,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { BaseComponentSubscriptions } from '../../../../../shared/components/base.component';
+import { BaseComponent } from '../../../../../shared/components/base.component';
 import { FeaturesService } from '../../../../../features/features.service';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { EavLogger } from '../../../../../shared/logging/eav-logger';
@@ -71,7 +71,7 @@ const logSpecs = {
     TippyDirective,
   ],
 })
-export class AdamBrowserComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
   @Output() openUpload = new EventEmitter<null>();
 
   protected fieldState = inject(FieldState);

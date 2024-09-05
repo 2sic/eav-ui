@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
@@ -26,7 +26,7 @@ const nameOfThis = 'PickerTextComponent';
     AsyncPipe,
   ],
 })
-export class PickerTextComponent extends PickerPartBaseComponent implements OnDestroy {
+export class PickerTextComponent extends PickerPartBaseComponent {
 
   filteredEntities: PickerItem[] = [];
 

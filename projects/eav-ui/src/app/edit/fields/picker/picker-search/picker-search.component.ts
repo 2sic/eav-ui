@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, input, viewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, input, viewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -55,7 +55,7 @@ const nameOfThis = 'PickerSearchComponent';
     TippyDirective,
   ]
 })
-export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit, OnDestroy {
+export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
   //#region Inputs
 
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */

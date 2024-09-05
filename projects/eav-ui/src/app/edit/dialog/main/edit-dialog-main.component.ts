@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith } from 'rxjs';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
@@ -86,7 +86,7 @@ const logSpecs = {
     PickerTreeDataHelper,
   ],
 })
-export class EditDialogMainComponent extends BaseComponentSubscriptions implements OnInit, AfterViewInit, OnDestroy {
+export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
   viewModel$: Observable<EditDialogMainViewModel>;

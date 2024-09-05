@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild, inject, Injector, Optional } f
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
@@ -16,7 +16,7 @@ import { PickerDataFactory } from './picker-data.factory';
   standalone: true,
   imports: PickerImports,
 })
-export class PickerComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
 
   /** Typed Log Specs for inheriting classes to reuse */
   static logSpecs = {

@@ -2,7 +2,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { BaseComponentSubscriptions } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
@@ -40,7 +40,7 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
     MousedownStopPropagationDirective,
   ],
 })
-export class PlumbEditorComponent extends BaseComponentSubscriptions implements OnInit, AfterViewInit, OnDestroy {
+export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
 

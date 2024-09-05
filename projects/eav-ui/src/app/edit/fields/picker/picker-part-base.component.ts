@@ -1,6 +1,5 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
-import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
 const logThis = false;
@@ -13,7 +12,7 @@ const nameOfThis = 'PickerPartBaseComponent';
   selector: 'app-picker-part-base',
   template: '',
 })
-export class PickerPartBaseComponent extends BaseComponent implements OnDestroy {
+export class PickerPartBaseComponent {
 
   /** Entire Field State */
   fieldState = inject(FieldState);
@@ -35,7 +34,8 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy 
   /** Features */
   features = this.pickerData.features;
 
+  log: EavLogger;
   constructor(log?: EavLogger) {
-    super(log ?? new EavLogger(nameOfThis, logThis));
+    this.log = log ?? new EavLogger(nameOfThis, logThis);
   }
 }

@@ -5,7 +5,7 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
-import { BaseComponentSubscriptions } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
@@ -52,7 +52,7 @@ import { transient } from '../../core';
     TippyDirective,
   ]
 })
-export class CreateMetadataDialogComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class CreateMetadataDialogComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   eavConstants = eavConstants;

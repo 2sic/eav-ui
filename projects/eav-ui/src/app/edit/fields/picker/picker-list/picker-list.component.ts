@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { ReorderIndexes } from './reorder-index.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +10,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../../../../shared/directives/mousedown-stop-propagation.directive';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
@@ -37,7 +36,7 @@ const nameOfThis = 'PickerListComponent';
     MousedownStopPropagationDirective,
   ],
 })
-export class PickerListComponent extends PickerPartBaseComponent implements OnDestroy {
+export class PickerListComponent extends PickerPartBaseComponent {
 
   mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();

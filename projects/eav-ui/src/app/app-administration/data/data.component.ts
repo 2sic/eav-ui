@@ -42,7 +42,7 @@ import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
-import { BaseComponentSubscriptions } from '../../shared/components/base.component';
+import { BaseComponent } from '../../shared/components/base.component';
 
 @Component({
   selector: 'app-data',
@@ -63,7 +63,7 @@ import { BaseComponentSubscriptions } from '../../shared/components/base.compone
     DragAndDropDirective,
   ],
 })
-export class DataComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
+export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private contentTypesService = transient(ContentTypesService);
   private contentExportService = transient(ContentExportService);

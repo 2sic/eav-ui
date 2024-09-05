@@ -18,7 +18,7 @@ import { FormDataService } from '../../shared/services/form-data.service';
 import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FeatureNames } from '../../../features/feature-names';
-import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
+import { BaseComponent } from '../../../shared/components/base.component';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -63,7 +63,7 @@ const logSpecs = {
     MousedownStopPropagationDirective,
   ],
 })
-export class EntityFormComponent extends BaseComponentSubscriptions implements OnInit, AfterViewChecked, OnDestroy {
+export class EntityFormComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
