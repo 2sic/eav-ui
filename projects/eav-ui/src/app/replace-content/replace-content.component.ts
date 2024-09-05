@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
@@ -56,21 +56,20 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   #contentTypeName: string;
 
   #contentGroupSvc = transient(ContentGroupService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRoutes = transient(DialogRoutingService);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
     private snackBar: MatSnackBar,
   ) {
   }
 
   ngOnInit() {
-    this.#guid = this.route.snapshot.paramMap.get('guid');
-    this.#part = this.route.snapshot.paramMap.get('part');
-    this.#index = parseInt(this.route.snapshot.paramMap.get('index'), 10);
-    this.#add = !!this.route.snapshot.queryParamMap.get('add');
+    const snapshot = this.#dialogRoutes.snapshot;
+    this.#guid = snapshot.paramMap.get('guid');
+    this.#part = snapshot.paramMap.get('part');
+    this.#index = parseInt(snapshot.paramMap.get('index'), 10);
+    this.#add = !!snapshot.queryParamMap.get('add');
 
     this.#filterText$ = new BehaviorSubject('');
     this.#options$ = new BehaviorSubject([]);
@@ -94,8 +93,8 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
 
     this.fetchConfig(false, null);
 
-    this.#dialogClose.doOnDialogClosed(() => {
-      const navigation = this.router.getCurrentNavigation();
+    this.#dialogRoutes.doOnDialogClosed(() => {
+      const navigation = this.#dialogRoutes.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
       this.fetchConfig(true, cloneId);
@@ -125,7 +124,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
       items: [{ ContentTypeName: this.#contentTypeName, DuplicateEntity: contentGroup.id }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   save() {

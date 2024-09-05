@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } fr
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
@@ -30,25 +29,25 @@ import { isCtrlS } from '../../edit/dialog/main/keyboard-shortcuts';
  */
 @Injectable()
 export class VisualQueryStateService extends ServiceWithSubscriptions implements OnDestroy {
+
+  #contentTypesSvc = transient(ContentTypesService);
+  #metadataSvc = transient(MetadataService);
+  #queryDefSvc = transient(QueryDefinitionService);
+  #dialogRoute = transient(DialogRoutingService);
+  #titleSvc = transient(Title);
+
+
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
   dataSourceConfigs$ = new BehaviorSubject<DataSourceConfigs>({});
   pipelineResult?: PipelineResult;
 
-  #pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
+  #pipelineId = parseInt(this.#dialogRoute.snapshot.paramMap.get('pipelineId'), 10);
   #refreshPipeline = false;
   #refreshDataSourceConfigs = false;
 
-  #contentTypesSvc = transient(ContentTypesService);
-  #metadataSvc = transient(MetadataService);
-  #queryDefSvc = transient(QueryDefinitionService);
-  #dialogClose = transient(DialogRoutingService);
-  #titleSvc = transient(Title);
-  
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
@@ -68,7 +67,7 @@ export class VisualQueryStateService extends ServiceWithSubscriptions implements
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.#dialogClose.doOnDialogClosed(() => {
+    this.#dialogRoute.doOnDialogClosed(() => {
       if (this.#refreshPipeline || this.#refreshDataSourceConfigs)
         this.fetchPipeline(this.#refreshPipeline, this.#refreshDataSourceConfigs, this.#refreshPipeline);
       this.#refreshPipeline = false;
@@ -83,7 +82,7 @@ export class VisualQueryStateService extends ServiceWithSubscriptions implements
         items: [{ EntityId: this.pipelineModel$.value.Pipeline.EntityId }],
       };
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      this.#dialogRoute.navRelative([`edit/${formUrl}`]);
       this.#refreshPipeline = true;
     });
   }
@@ -200,7 +199,7 @@ export class VisualQueryStateService extends ServiceWithSubscriptions implements
           items: [{ EntityId: metadata.Items[0].Id }],
         };
         const formUrl = convertFormToUrl(form);
-        this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+        this.#dialogRoute.navRelative([`edit/${formUrl}`]);
         this.#refreshDataSourceConfigs = true;
         return;
       }
@@ -223,7 +222,7 @@ export class VisualQueryStateService extends ServiceWithSubscriptions implements
             }],
           };
           const formUrl = convertFormToUrl(form);
-          this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+          this.#dialogRoute.navRelative([`edit/${formUrl}`]);
           this.#refreshDataSourceConfigs = true;
         },
         error: (error: HttpErrorResponse) => {
@@ -362,7 +361,7 @@ export class VisualQueryStateService extends ServiceWithSubscriptions implements
     this.zone.runOutsideAngular(() => {
       this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown').pipe(
-          filter(() => !this.route.snapshot.firstChild),
+          filter(() => !this.#dialogRoute.snapshot.firstChild),
           filter(event => isCtrlS(event)),
         ).subscribe(event => {
           event.preventDefault();

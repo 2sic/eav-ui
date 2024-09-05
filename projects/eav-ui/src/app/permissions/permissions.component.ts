@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
@@ -40,9 +40,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
   gridOptions = this.buildGridOptions();
 
-  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
-  private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  private key = this.route.snapshot.paramMap.get('key');
+  #permissionsService = transient(PermissionsService);
+  #dialogRoutes = transient(DialogRoutingService);
+
+  private targetType = parseInt(this.#dialogRoutes.snapshot.paramMap.get('targetType'), 10);
+  private keyType = this.#dialogRoutes.snapshot.paramMap.get('keyType') as MetadataKeyType;
+  private key = this.#dialogRoutes.snapshot.paramMap.get('key');
   private prefills: Record<string, Record<string, string>> = {
     [eavConstants.metadata.language.targetType]: {
       PermissionType: 'language',
@@ -51,13 +54,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<PermissionsViewModel>;
 
-  private permissionsService = transient(PermissionsService);
-
-  #dialogClose = transient(DialogRoutingService);
-
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<PermissionsComponent>,
     private snackBar: MatSnackBar,
   ) {
@@ -65,7 +62,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchPermissions();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchPermissions());
+    this.#dialogRoutes.doOnDialogClosed(() => this.fetchPermissions());
     this.viewModel$ = combineLatest([
       this.permissions$
     ]).pipe(map(([permissions]) => ({ permissions })));
@@ -80,7 +77,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   private fetchPermissions() {
-    this.permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
+    this.#permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
       this.permissions$.next(permissions);
     });
   }
@@ -107,13 +104,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       };
     }
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   private deletePermission(permission: Permission) {
     if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
-    this.permissionsService.delete(permission.Id).subscribe(() => {
+    this.#permissionsService.delete(permission.Id).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchPermissions();
     });

@@ -1,4 +1,4 @@
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith } from 'rxjs';
 import { EavLogger } from '../logging/eav-logger';
 import { Injectable, OnDestroy } from '@angular/core';
@@ -13,7 +13,9 @@ const logSpecs = {
 };
 
 /**
- * Helper to handle opening / closing field-specific popups.
+ * Helper to handle dialog routings, especially:
+ * 1. handling on-child-closed events (it also takes care of subscriptions)
+ * 2. accessing the router and route - a very common task when you have dialogs
  */
 @Injectable()
 export class DialogRoutingService extends ServiceWithSubscriptions implements OnDestroy {
@@ -21,8 +23,8 @@ export class DialogRoutingService extends ServiceWithSubscriptions implements On
   log = new EavLogger(logSpecs);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute
+    public router: Router,
+    public route: ActivatedRoute
   ) {
     super();
   }
@@ -31,18 +33,31 @@ export class DialogRoutingService extends ServiceWithSubscriptions implements On
     super.destroy();
   }
 
+  get snapshot() { return this.route.snapshot; }
+
   /**
    * Preferred way to register a callback, since the caller doesn't need to worry about subscriptions.
    */
   public doOnDialogClosed(callback: () => void) {
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => { callback(); })
+      this.#childDialogClosed$().subscribe(() => { callback(); })
     );
     l.end();
   }
+
+  /**
+   * Navigate relative to the current route.
+   */
+  public navRelative(commands: any[]): Promise<boolean> {
+    return this.router.navigate(commands, { relativeTo: this.route });
+  }
+
+  public navParentFirstChild(commands: any[], extras?: Omit<NavigationExtras, 'relativeTo'>): Promise<boolean> {
+    return this.router.navigate(commands, { ...extras, relativeTo: this.route.parent.firstChild });
+  }
   
-  public childDialogClosed$() {
+  #childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       startWith(!!this.route.snapshot.firstChild),

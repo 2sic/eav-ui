@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -46,11 +45,9 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   #appInternalsSvc = transient(AppInternalsService);
 
   #contentItemsSvc = transient(ContentItemsService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
   
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private context: Context,
     private snackBar: MatSnackBar,
   ) {
@@ -76,7 +73,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchSettings();
-    this.#dialogClose.doOnDialogClosed(() => { this.fetchSettings(); });
+    this.#dialogRouter.doOnDialogClosed(() => { this.fetchSettings(); });
   }
 
   ngOnDestroy() {
@@ -100,7 +97,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       };
 
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+      this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
     });
   }
 
@@ -109,7 +106,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
       this.context.appId,
       `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   private fetchSettings() {

@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
@@ -65,22 +65,20 @@ export class MetadataComponent implements OnInit, OnDestroy {
   #entitiesSvc = transient(EntityEditService);
   #metadataSvc = transient(MetadataService);
   #contentItemSvc = transient(ContentItemsService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRoutes = transient(DialogRoutingService);
 
   #metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
   #itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
   #fabOpen$ = new BehaviorSubject(false);
-  #targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
-  #keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  #key = this.route.snapshot.paramMap.get('key');
-  title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
-  #contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  #targetType = parseInt(this.#dialogRoutes.snapshot.paramMap.get('targetType'), 10);
+  #keyType = this.#dialogRoutes.snapshot.paramMap.get('keyType') as MetadataKeyType;
+  #key = this.#dialogRoutes.snapshot.paramMap.get('key');
+  title = decodeURIComponent(this.#dialogRoutes.snapshot.paramMap.get('title') ?? '');
+  #contentTypeStaticName = this.#dialogRoutes.snapshot.paramMap.get('contentTypeStaticName');
   viewModel$: Observable<MetadataViewModel>;
 
   log = new EavLogger(logSpecs);
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<MetadataComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -92,7 +90,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchFor();
     this.fetchMetadata();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchMetadata());
+    this.#dialogRoutes.doOnDialogClosed(() => this.fetchMetadata());
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');
     this.#metadataSet$.subscribe((set) => {
@@ -181,7 +179,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -238,7 +236,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       items: [{ EntityId: metadata.Id }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   private deleteMetadata(metadata: MetadataItem, confirmed = false) {

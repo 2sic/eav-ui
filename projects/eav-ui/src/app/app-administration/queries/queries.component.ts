@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -50,7 +50,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private pipelinesService = transient(PipelinesService);
   private contentExportService = transient(ContentExportService);
   private dialogService = transient(DialogService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
   
   enablePermissions!: boolean;
   queries$ = new BehaviorSubject<Query[]>(undefined);
@@ -64,15 +64,13 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
   }
 
   ngOnInit() {
     this.fetchQueries();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchQueries());
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchQueries());
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
@@ -90,7 +88,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   importQuery(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
+    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
   /**
@@ -105,7 +103,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       case QueryActions.Metadata:
         return this.openMetadata(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.getUrlQueryInAdmin(query.Guid)], { relativeTo: this.route.parent.firstChild });
+        return this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlQueryInAdmin(query.Guid)]);
       case QueryActions.Clone:
         return this.cloneQuery(query);
       case QueryActions.Permissions:
@@ -131,7 +129,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   private enablePermissionsGetter() {
@@ -148,7 +146,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       query.Guid,
       `Metadata for Query: ${query.Name} (${query.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   private cloneQuery(query: Query) {
@@ -160,7 +158,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate([GoToPermissions.getUrlEntity(query.Guid)], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlEntity(query.Guid)]);
   }
 
   private exportQuery(query: Query) {

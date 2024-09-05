@@ -2,7 +2,7 @@ import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, IC
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -50,7 +50,7 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
   
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
@@ -61,7 +61,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private gridApi: GridApi;
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  private contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
 
   viewModel$: Observable<ContentTypeFieldsViewModel>;
 
@@ -69,8 +69,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -79,7 +77,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchFields();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchFields());
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchFields());
     this.viewModel$ = combineLatest([
       this.contentType$, this.fields$
     ]).pipe(
@@ -164,7 +162,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   add() {
-    this.router.navigate([`add/${this.contentTypeStaticName}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`add/${this.contentTypeStaticName}`]);
   }
 
   private nameCellRenderer(params: ICellRendererParams) {
@@ -236,7 +234,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     };
     // console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
@@ -264,11 +262,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private changeInputType(field: Field) {
-    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/inputType`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/inputType`]);
   }
 
   private rename(field: Field) {
-    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/name`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`update/${this.contentTypeStaticName}/${field.Id}/name`]);
   }
 
   private delete(field: Field) {
@@ -281,7 +279,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(field: Field) {
-    this.router.navigate([GoToPermissions.getUrlAttribute(field.Id)], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([GoToPermissions.getUrlAttribute(field.Id)]);
   }
 
   private openImageConfiguration(field: Field) {
@@ -294,7 +292,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       ? EditPrep.editId(imgConfig.entityId)
       : EditPrep.newMetadata(field.Id, imgConfig.typeName, eavConstants.metadata.attribute);
     const formUrl = convertFormToUrl({ items: [itemIdentifier] });
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   private openMetadata(field: Field) {
@@ -302,7 +300,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       field.Id,
       `Metadata for Field: ${field.StaticName} (${field.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([url]);
   }
 
   private shareOrInherit(field: Field) {

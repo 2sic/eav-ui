@@ -2,7 +2,7 @@ import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
@@ -43,7 +43,7 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRoutes = transient(DialogRoutingService);
 
   private items$ = new BehaviorSubject<GroupHeader[]>(null);
   private header$ = new BehaviorSubject<GroupHeader>(null);
@@ -53,9 +53,9 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   private contentGroup: ContentGroup = {
     id: null,
-    guid: this.route.snapshot.paramMap.get('guid'),
-    part: this.route.snapshot.paramMap.get('part'),
-    index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
+    guid: this.#dialogRoutes.snapshot.paramMap.get('guid'),
+    part: this.#dialogRoutes.snapshot.paramMap.get('part'),
+    index: parseInt(this.#dialogRoutes.snapshot.paramMap.get('index'), 10),
   };
   reordered = false;
 
@@ -63,8 +63,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   private dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ManageContentListComponent>,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
@@ -75,7 +73,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     this.fetchList();
     this.fetchHeader();
     this.fetchDialogSettings();
-    this.#dialogClose.doOnDialogClosed(() => {
+    this.#dialogRoutes.doOnDialogClosed(() => {
       this.fetchList(true);
       this.fetchHeader();
     });
@@ -132,7 +130,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   editItem(id: number) {
@@ -140,12 +138,15 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
       items: [{ EntityId: id }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   addFromExisting(index: number) {
     const queryParams = { add: true };
-    this.router.navigate([`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`], { relativeTo: this.route, queryParams });
+    this.#dialogRoutes.router.navigate(
+      [`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`],
+      { relativeTo: this.#dialogRoutes.route, queryParams }
+    );
   }
 
   addBelow(index: number) {
@@ -153,7 +154,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
       items: [{ Add: true, Index: index + 1, Parent: this.contentGroup.guid, Field: this.contentGroup.part }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
   remove(item: GroupHeader) {

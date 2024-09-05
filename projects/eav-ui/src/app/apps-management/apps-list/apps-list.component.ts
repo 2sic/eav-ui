@@ -1,7 +1,7 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -73,12 +73,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
   public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
   #appsListSvc = transient(AppsListService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
 
   log = new EavLogger(logSpecs);
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private context: Context,
     // Services for showing features in the menu
@@ -99,7 +97,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
       appsLog.shareReplay(),
     );
 
-    this.#dialogClose.doOnDialogClosed(() => this.#refreshApps$.next());
+    this.#dialogRouter.doOnDialogClosed(() => this.#refreshApps$.next());
 
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
       map(([apps, fabOpen]) => {
@@ -122,20 +120,20 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   createApp(): void {
-    this.router.navigate(['create'], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild(['create']);
   }
 
   createInheritedApp(): void {
-    this.router.navigate(['create-inherited'], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild(['create-inherited']);
   }
 
   addFromFolder(): void {
-    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild(['add-app-from-folder']);
   }
 
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
+    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
   private deleteApp(app: App): void {
@@ -173,11 +171,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
-    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`]);
   }
 
   private openApp(app: App): void {
-    this.router.navigate([app.Id.toString()], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([app.Id.toString()]);
   }
 
   openLightSpeedFeatInfo() {

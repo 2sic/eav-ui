@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
@@ -85,11 +85,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   isDebug = inject(GlobalConfigService).isDebug;
 
   #dialogConfigSvc = transient(AppDialogConfigService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
     super();
@@ -98,7 +96,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchScopes();
     this.refreshScopeOnRouteChange();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchContentTypes());
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchContentTypes());
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
@@ -136,19 +134,19 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   importType(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
+    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
   private showContentItems(contentType: ContentType) {
-    this.router.navigate([`items/${contentType.StaticName}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`items/${contentType.StaticName}`]);
   }
 
   editContentType(contentType: ContentType) {
     if (!contentType) {
-      this.router.navigate(['add'], { relativeTo: this.route.parent.firstChild });
+      this.#dialogRouter.navParentFirstChild(['add']);
     } else {
       if (contentType.EditInfo.ReadOnly) { return; }
-      this.router.navigate([`${contentType.StaticName}/edit`], { relativeTo: this.route.parent.firstChild });
+      this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/edit`]);
     }
   }
 
@@ -201,7 +199,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     if (newScope === dropdownInsertValue) {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
     }
-    this.router.navigate(['..', newScope], { relativeTo: this.route });
+    this.#dialogRouter.navRelative(['..', newScope]);
   }
 
   private enablePermissionsGetter() {
@@ -213,11 +211,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   private editFields(contentType: ContentType) {
-    this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`fields/${contentType.StaticName}`]);
   }
 
   private createOrEditMetadata(contentType: ContentType) {
@@ -240,7 +238,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   private openMetadata(contentType: ContentType) {
@@ -248,11 +246,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       contentType.StaticName,
       `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
     );
-    this.router.navigate([url], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([url]);
   }
 
   private openRestApi(contentType: ContentType) {
-    this.router.navigate([GoToDevRest.getUrlData(contentType)], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
   }
 
   private exportType(contentType: ContentType) {
@@ -260,16 +258,16 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   private openDataExport(contentType: ContentType) {
-    this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`export/${contentType.StaticName}`]);
   }
 
   private openDataImport(contentType: ContentType, files?: File[]) {
     const contentImportData: ContentImportDialogData = { files };
-    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.parent.firstChild, state: contentImportData });
+    this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/import`], { state: contentImportData });
   }
 
   private openPermissions(contentType: ContentType) {
-    this.router.navigate([GoToPermissions.getUrlContentType(contentType.StaticName)], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.StaticName)]);
   }
 
   private deleteContentType(contentType: ContentType) {
@@ -289,10 +287,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
    */
   private refreshScopeOnRouteChange() {
     this.subscriptions.add(
-      this.router.events.pipe(
+      this.#dialogRouter.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
-        map(() => this.route.snapshot.paramMap.get('scope')),
-        startWith(this.route.snapshot.paramMap.get('scope')),
+        map(() => this.#dialogRouter.route.snapshot.paramMap.get('scope')),
+        startWith(this.#dialogRouter.route.snapshot.paramMap.get('scope')),
         filter(scope => !!scope),
         mapUntilChanged(m => m),
         // distinctUntilChanged(),

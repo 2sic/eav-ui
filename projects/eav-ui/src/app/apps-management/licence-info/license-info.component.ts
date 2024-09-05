@@ -2,7 +2,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -65,10 +65,9 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   viewModel$: Observable<LicenseInfoViewModel>;
 
   #featuresConfigSvc = transient(FeaturesConfigService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    private router: Router,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -77,7 +76,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.#dialogClose.doOnDialogClosed(() => this.#refreshLicenses$.next());
+    this.#dialogRouter.doOnDialogClosed(() => this.#refreshLicenses$.next());
     this.viewModel$ = 
       this.#refreshLicenses$.pipe(
         startWith(undefined),
@@ -121,7 +120,8 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
 
   openRegistration(): void {
-    this.router.navigate([this.router.url.replace('license', '') + "/registration"]);
+    const router = this.#dialogRouter.router;
+    router.navigate([router.url.replace('license', '') + "/registration"]);
   }
 
   private showFeatureDetails(feature: Feature): void {

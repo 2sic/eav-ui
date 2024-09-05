@@ -2,7 +2,7 @@ import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
@@ -70,11 +70,9 @@ export class ViewsComponent implements OnInit, OnDestroy {
   #viewsSvc = transient(ViewsService);
 
   #dialogConfigSvc = transient(AppDialogConfigService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
   
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
     private dialog: MatDialog,
@@ -86,7 +84,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchTemplates();
     this.fetchPolymorphism();
-    this.#dialogClose.doOnDialogClosed(() => {
+    this.#dialogRouter.doOnDialogClosed(() => {
       this.fetchTemplates();
       this.fetchPolymorphism();
     });
@@ -111,7 +109,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   importView(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.parent.firstChild, state: dialogData });
+    this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
   private fetchTemplates() {
@@ -151,7 +149,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openChildDialog(subPath: string) {
-    this.router.navigate([subPath], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([subPath]);
   }
 
   editPolymorphisms() {

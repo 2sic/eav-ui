@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
@@ -51,11 +51,13 @@ declare const window: EavWindow;
 })
 export class SystemInfoComponent implements OnInit, OnDestroy {
 
+  public features: FeaturesService = inject(FeaturesService);
+
   #dialogSettings = transient(AppDialogConfigService);
   #sxcInsightsService = transient(SxcInsightsService);
   #zoneSvc = transient(ZoneService);
   #dialogSvc = transient(DialogService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
@@ -65,13 +67,10 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
   #languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   #loading$: BehaviorSubject<boolean>;
 
-  public features: FeaturesService = inject(FeaturesService);
   protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
   }
@@ -83,7 +82,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
-    this.#dialogClose.doOnDialogClosed(() => {
+    this.#dialogRouter.doOnDialogClosed(() => {
       this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();
@@ -128,7 +127,8 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     if (sideNavPath.includes('registration'))
       sideNavPath = 'registration';
 
-    this.router.navigate([this.router.url.replace('system', '') + sideNavPath]);
+    const router = this.#dialogRouter.router;
+    router.navigate([router.url.replace('system', '') + sideNavPath]);
   }
 
   activatePageLog(form: NgForm) {
@@ -169,7 +169,8 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
   private buildViewModel(): void {
     const systemInfos$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
-        if (systemInfoSet == null) { return; }
+        if (systemInfoSet == null) return;
+        const url = this.#dialogRouter.router.url + '/' + "registration";
         const info: InfoTemplate[] = [
           { label: 'CMS', value: `2sxc v.${systemInfoSet.System.EavVersion}` },
           { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
@@ -180,12 +181,12 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
               ? {
-                url: this.router.url + '/' + "registration",
+                url,
                 label: 'manage',
                 target: 'angular',
               }
               : {
-                url: this.router.url + '/' + "registration",
+                url,
                 label: 'register',
                 target: 'angular',
               },

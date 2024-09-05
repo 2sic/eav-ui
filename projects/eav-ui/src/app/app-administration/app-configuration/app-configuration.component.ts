@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
@@ -82,11 +82,9 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   #contentItemsService = transient(ContentItemsService);
 
   #dialogConfigSvc = transient(AppDialogConfigService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private context: Context,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -118,7 +116,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchSettings();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchSettings());
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchSettings());
 
     this.#dialogConfigSvc.getCurrent$().subscribe((dialogSettings) => {
       this.dialogSettings = dialogSettings;
@@ -183,14 +181,14 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       }
 
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+      this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
     });
   }
 
   openLightSpeed() {
     const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
   openSiteSettings() {
@@ -204,22 +202,22 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   config(staticName: string) {
-    this.router.navigate([`fields/${staticName}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`fields/${staticName}`]);
   }
 
   openPermissions() {
-    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlApp(this.context.appId)]);
   }
 
   openLanguagePermissions(enabled: boolean) {
     if (enabled)
-      this.router.navigate(['language-permissions'], { relativeTo: this.route.parent.firstChild });
+      this.#dialogRouter.navParentFirstChild(['language-permissions']);
     else
       openFeatureDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   analyze(part: AnalyzePart) {
-    this.router.navigate([`analyze/${part}`], { relativeTo: this.route.parent.firstChild });
+    this.#dialogRouter.navParentFirstChild([`analyze/${part}`]);
   }
 
   private fetchSettings() {

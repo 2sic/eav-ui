@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, Observable, Subject, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -79,25 +79,23 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
   };
 
-  private gridApi$ = new BehaviorSubject<GridApi>(null);
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-
+  isDebug = inject(GlobalConfigService).isDebug;
   private entitiesService = transient(EntityEditService);
   private contentExportService = transient(ContentExportService);
+  private contentItemsService = transient(ContentItemsService);
+  private contentTypesService = transient(ContentTypesService);
+  #dialogRouter = transient(DialogRoutingService);
+
+  private gridApi$ = new BehaviorSubject<GridApi>(null);
+  #contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
+
 
   viewModel$: Observable<ContentItemsViewModel>;
 
-  isDebug = inject(GlobalConfigService).isDebug;
 
-  private contentItemsService = transient(ContentItemsService);
-
-  private contentTypesService = transient(ContentTypesService);
-  #dialogClose = transient(DialogRoutingService);
 
   log = new EavLogger(logSpecs);
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentItemsComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -110,7 +108,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchItems());
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
 
     this.viewModel$ = combineLatest([
       this.contentType$, this.items$
@@ -134,19 +132,19 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   private fetchContentType() {
-    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
+    this.contentTypesService.retrieveContentType(this.#contentTypeStaticName).subscribe(contentType => {
       this.contentType$.next(contentType);
     });
   }
 
   private fetchItems() {
-    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
+    this.contentItemsService.getAll(this.#contentTypeStaticName).subscribe(items => {
       this.items$.next(items);
     });
   }
 
   private fetchColumns() {
-    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
+    this.contentItemsService.getColumns(this.#contentTypeStaticName).subscribe(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.buildColumnDefs(columnsWithoutEphemeral);
@@ -176,21 +174,21 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const url = GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
-      this.contentTypeStaticName,
+      this.#contentTypeStaticName,
     );
-    this.router.navigate([url], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([url]);
   }
 
   editItem(item?: ContentItem) {
     const form: EditForm = {
       items: [
         item == null
-          ? { ContentTypeName: this.contentTypeStaticName }
+          ? { ContentTypeName: this.#contentTypeStaticName }
           : { EntityId: item.Id }
       ],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   exportContent() {
@@ -203,7 +201,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         ids.push(contentItem.Id);
       });
     }
-    this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`export/${this.#contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`]);
   }
 
   filesDropped(files: File[]) {
@@ -221,12 +219,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   importContent(files?: File[]) {
     const dialogData: ContentImportDialogData = { files };
-    this.router.navigate([`${this.contentTypeStaticName}/import`], { relativeTo: this.route, state: dialogData });
+    this.#dialogRouter.router.navigate([`${this.#contentTypeStaticName}/import`], { relativeTo: this.#dialogRouter.route, state: dialogData });
   }
 
   importItem(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
+    this.#dialogRouter.router.navigate(['import'], { relativeTo: this.#dialogRouter.route, state: dialogData });
   }
 
   createMetadata() {
@@ -240,7 +238,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
       const form: EditForm = {
         items: [{
-          ContentTypeName: this.contentTypeStaticName,
+          ContentTypeName: this.#contentTypeStaticName,
           For: {
             Target: itemFor.target ?? itemFor.targetType.toString(),
             TargetType: itemFor.targetType,
@@ -251,7 +249,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         }],
       };
       const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      this.#dialogRouter.navRelative([`edit/${formUrl}`]);
       this.changeDetectorRef.markForCheck();
     });
   }
@@ -383,20 +381,20 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private clone(item: ContentItem) {
     const form: EditForm = {
-      items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
+      items: [{ ContentTypeName: this.#contentTypeStaticName, DuplicateEntity: item.Id }],
     };
     const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.#dialogRouter.navRelative([`edit/${formUrl}`]);
   }
 
   private export(item: ContentItem) {
-    this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
+    this.contentExportService.exportEntity(item.Id, this.#contentTypeStaticName, true);
   }
 
   private delete(item: ContentItem) {
     if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { return; }
     this.snackBar.open('Deleting...');
-    this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, false).subscribe({
+    this.entitiesService.delete(this.#contentTypeStaticName, item._RepositoryId, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchItems();
@@ -407,7 +405,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           return;
         }
         this.snackBar.open('Deleting...');
-        this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
+        this.entitiesService.delete(this.#contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
           this.snackBar.open('Deleted', null, { duration: 2000 });
           this.fetchItems();
         });

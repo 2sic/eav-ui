@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, RouterOutlet } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -44,12 +44,10 @@ const logSpecs = {
 export class AppAdminMainComponent implements OnInit, OnDestroy {
 
   #dialogConfigSvc = transient(AppDialogConfigService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouter = transient(DialogRoutingService);
 
   log = new EavLogger(logSpecs);
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppAdminMainComponent>,
     private media: MediaMatcher
   ) {
@@ -62,10 +60,10 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
   private pathsArray$ = new BehaviorSubject<string[]>(undefined);
   private currentPath$ = combineLatest([
     this.pathsArray$,
-    this.router.events.pipe(
+    this.#dialogRouter.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
-      map(() => this.route.snapshot.firstChild.url[0].path),
-      startWith(this.route.snapshot.firstChild.url[0].path)
+      map(() => this.#dialogRouter.snapshot.firstChild.url[0].path),
+      startWith(this.#dialogRouter.snapshot.firstChild.url[0].path)
     ),
   ]).pipe(
     map(([paths, currentPath]) => {
@@ -96,7 +94,7 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.#dialogClose.doOnDialogClosed(() => this.fetchDialogSettings());
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchDialogSettings());
 
     this.smallScreen.addEventListener(
       'change',

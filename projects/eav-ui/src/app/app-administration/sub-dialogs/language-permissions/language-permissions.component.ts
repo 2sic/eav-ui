@@ -40,11 +40,9 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
   viewModel$: Observable<LanguagePermissionsViewModel>;
 
   #zoneService = transient(ZoneService);
-  #dialogClose = transient(DialogRoutingService);
+  #dialogRouting = transient(DialogRoutingService);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
   ) {
     this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
@@ -53,7 +51,7 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getLanguages();
-    this.#dialogClose.doOnDialogClosed(() => { this.getLanguages(); });
+    this.#dialogRouting.doOnDialogClosed(() => { this.getLanguages(); });
     this.viewModel$ = combineLatest([this.languages$]).pipe(
       map(([languages]) => ({ languages }))
     );
@@ -68,7 +66,7 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
   }
 
   openPermissions(language: SiteLanguagePermissions): void {
-    this.router.navigate([GoToPermissions.getUrlLanguage(language.NameId)], { relativeTo: this.route });
+    this.#dialogRouting.navRelative([GoToPermissions.getUrlLanguage(language.NameId)]);
   }
 
   private getLanguages(): void {
