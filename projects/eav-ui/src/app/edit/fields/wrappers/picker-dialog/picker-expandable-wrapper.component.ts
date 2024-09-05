@@ -16,7 +16,7 @@ import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
-import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
+import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logSpecs = {
   enabled: false,
