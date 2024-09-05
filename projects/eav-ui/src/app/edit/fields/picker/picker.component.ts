@@ -66,6 +66,7 @@ export class PickerComponent extends BaseComponent implements OnInit, AfterViewI
     this.initAdaptersAndViewModel();
     if (!this.pickerData.closeWatcherAttachedWIP) {
       this.#refreshOnChildClosed();
+      this.pickerData.state.attachCallback(this.focusOnSearchComponent);
       this.pickerData.closeWatcherAttachedWIP = true;
     }
   }

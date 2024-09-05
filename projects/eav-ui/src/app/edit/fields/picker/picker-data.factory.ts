@@ -158,6 +158,11 @@ const partsMap: Record<string, PartMap> = {
     states: [StateAdapterEntity],
     forcePickerConfig: PickerConfigs.UiPickerSourceEntity,
   },
+  [InputTypeCatalog.EntityQuery]: {
+    sources: [DataAdapterQuery],
+    states: [StateAdapterEntity],
+    forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
+  },
 };
 
 interface PartMap {
