@@ -18,7 +18,7 @@ import { FormDataService } from '../../shared/services/form-data.service';
 import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FeatureNames } from '../../../features/feature-names';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
@@ -33,8 +33,10 @@ import { EntityService } from '../../../shared/services/entity.service';
 import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
 
-const logThis = false;
-const nameOfThis = 'EntityWrapperComponent';
+const logSpecs = {
+  enabled: false,
+  name: 'EntityFormComponent',
+};
 
 /**
  * This wraps a single entity in the multi-entities-form.
@@ -61,7 +63,7 @@ const nameOfThis = 'EntityWrapperComponent';
     MousedownStopPropagationDirective,
   ],
 })
-export class EntityFormComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class EntityFormComponent extends BaseComponentSubscriptions implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
@@ -122,6 +124,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   private formDataService = transient(FormDataService);
   private entityService = transient(EntityService);
 
+  log = new EavLogger(logSpecs);
   constructor(
     private itemService: ItemService,
     private router: Router,
@@ -131,7 +134,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   ngAfterViewChecked() {

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
-import { BaseComponent } from '../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../shared/components/base.component';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { Field } from '../../shared/fields/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -33,7 +33,7 @@ import { transient } from '../../core/transient';
     FeatureIconIndicatorComponent
   ],
 })
-export class ShareOrInheritDialogComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ShareOrInheritDialogComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];
   title: string;
   message: string;

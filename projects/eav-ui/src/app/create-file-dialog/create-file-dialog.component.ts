@@ -2,13 +2,13 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
-import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, switchMap, tap, throttleTime, timer } from 'rxjs';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileViewModel } from '.';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 import { SanitizeHelper } from '../edit/shared/helpers';
-import { BaseComponent } from '../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../shared/components/base.component';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -40,7 +40,7 @@ import { transient } from '../core';
     MatInputAutofocusDirective,
   ],
 })
-export class CreateFileDialogComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CreateFileDialogComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: UntypedFormGroup;

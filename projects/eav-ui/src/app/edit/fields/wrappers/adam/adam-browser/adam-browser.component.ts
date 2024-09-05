@@ -15,7 +15,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { BaseComponent } from '../../../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../../../shared/components/base.component';
 import { FeaturesService } from '../../../../../features/features.service';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { EavLogger } from '../../../../../shared/logging/eav-logger';
@@ -33,8 +33,10 @@ import { AdamConnector } from './adam-connector';
 import { transient } from '../../../../../core/transient';
 import { SignalEquals } from '../../../../../shared/signals/signal-equals';
 
-const logThis = false;
-const nameOfThis = 'AdamBrowserComponent';
+const logSpecs = {
+  enabled: false,
+  name: 'AdamBrowserComponent',
+};
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -69,7 +71,7 @@ const nameOfThis = 'AdamBrowserComponent';
     TippyDirective,
   ],
 })
-export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AdamBrowserComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
   @Output() openUpload = new EventEmitter<null>();
 
   protected fieldState = inject(FieldState);
@@ -100,6 +102,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   private adamService = transient(AdamService);
 
+  log = new EavLogger(logSpecs);
   constructor(
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
@@ -111,7 +114,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
 
     // Ensure that we fetch items when we have the configuration
     effect(() => {

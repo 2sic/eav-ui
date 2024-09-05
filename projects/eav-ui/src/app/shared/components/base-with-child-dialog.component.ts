@@ -1,36 +1,24 @@
-import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, pairwise, startWith, tap } from 'rxjs';
-import { BaseComponent } from './base.component';
+import { filter, map, pairwise, startWith } from 'rxjs';
+import { BaseComponentSubscriptions } from './base.component';
 import { EavLogger } from '../logging/eav-logger';
 
-const logThis = false;
+const logSpecs = {
+  enabled: true,
+  name: 'BaseWithChildDialogComponent',
+};
 
-// 2024-06-12 2dm experimental - remove comments if all is good mid of June
-// - previously had
-// @Directive()   // Needs the @Directive() so the compiler allows OnDestroy to be implemented
-// ...then tried this
-// @Component({
-//   selector: 'app-base-component-with-child',
-//   template: ''
-// })
-// ...but then added abstract, so I think it doesn't actually need all that
-// tslint:disable-next-line:directive-class-suffix
-export abstract class BaseWithChildDialogComponent extends BaseComponent implements OnDestroy {
+export abstract class BaseWithChildDialogComponent extends BaseComponentSubscriptions {
 
+  log = new EavLogger(logSpecs);
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    public log?: EavLogger
+    log?: EavLogger
   ) {
     super();
-    this.log ??= new EavLogger('BaseComponent', logThis);
+    this.log = log ?? this.log;
   }
-
-  // 2024-06-12 2dm - don't think this is needed since it's already on the base class
-  // ngOnDestroy() {
-  //   super.ngOnDestroy();
-  // }
 
   protected childDialogClosed$() {
     return this.router.events.pipe(

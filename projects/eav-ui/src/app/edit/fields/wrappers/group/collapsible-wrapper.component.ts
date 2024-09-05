@@ -8,13 +8,16 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
-import { BaseComponent } from '../../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../../shared/components/base.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { WrappersCatalog } from '../wrappers.constants';
 
-const logThis = false;
-const nameOfThis = 'CollapsibleWrapperComponent'
+const logSpecs = {
+  enabled: false,
+  name: 'CollapsibleWrapperComponent',
+};
+
 @Component({
   selector: WrappersCatalog.CollapsibleWrapper,
   templateUrl: './collapsible-wrapper.component.html',
@@ -31,7 +34,7 @@ const nameOfThis = 'CollapsibleWrapperComponent'
     SafeHtmlPipe,
   ],
 })
-export class CollapsibleWrapperComponent extends BaseComponent implements OnDestroy {
+export class CollapsibleWrapperComponent extends BaseComponentSubscriptions implements OnDestroy {
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
@@ -45,14 +48,15 @@ export class CollapsibleWrapperComponent extends BaseComponent implements OnDest
 
   private fieldsSettingsService = inject(FieldsSettingsService);
 
+  log = new EavLogger(logSpecs);
   constructor() {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
     EmptyDefaultLogic.importMe();
   }
 
   toggleCollapse(): void {
     const before = this.collapsed();
     this.log.a('toggleCollapse', { before })
-    this.fieldsSettingsService.updateSetting(this.fieldState.name, { Collapsed: !before }, nameOfThis);
+    this.fieldsSettingsService.updateSetting(this.fieldState.name, { Collapsed: !before }, logSpecs.name);
   }
 }

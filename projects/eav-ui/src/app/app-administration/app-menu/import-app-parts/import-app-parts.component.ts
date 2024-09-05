@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FileUploadDialogComponent, FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 import { transient } from '../../../core';
@@ -9,7 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { InstallPackage, InstallSettings, CrossWindowMessage, SpecsForInstaller } from '../../../shared/models/installer-models';
 import { AppInstallSettingsService } from '../../../shared/services/getting-started.service';
 import { InstallerService } from '../../../shared/services/installer.service';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
 import { Context } from '../../../shared/services/context';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-import-app-parts',
   templateUrl: './import-app-parts.component.html',
@@ -34,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
   ],
 })
-export class ImportAppPartsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ImportAppPartsComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
   // Code are copied from file-upload-dialog
 
   private importAppPartsService = transient(ImportAppPartsService);

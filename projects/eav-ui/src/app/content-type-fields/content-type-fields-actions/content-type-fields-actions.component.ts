@@ -1,11 +1,10 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { Field } from '../../shared/fields/field.model';
 import { ContentTypeFieldsActions, ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { BaseComponent } from '../../shared/components/base.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +24,7 @@ import { TippyDirective } from '../../shared/directives/tippy.directive';
     TippyDirective,
   ],
 })
-export class ContentTypeFieldsActionsComponent extends BaseComponent implements ICellRendererAngularComp, OnDestroy {
+export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
   field: Field;
   metadataCount: number;
   enablePermissions: boolean;
@@ -35,9 +34,6 @@ export class ContentTypeFieldsActionsComponent extends BaseComponent implements 
   imgConfigCount: number;
   private params: ICellRendererParams & ContentTypeFieldsActionsParams;
 
-  constructor() {
-    super();
-  }
 
   agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
     this.params = params;

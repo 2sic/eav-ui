@@ -6,7 +6,6 @@ import { BehaviorSubject, combineLatest, map, Observable, share, switchMap } fro
 import { AllScenarios, DevRestBaseViewModel, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
 import { DialogSettings } from '../app-administration/models';
 import { Permission, PermissionsService } from '../permissions';
-import { BaseComponent } from '../shared/components/base.component';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
 import { transient } from '../core';
@@ -17,7 +16,7 @@ import { AppDialogConfigService } from '../app-administration/services/app-dialo
   template: ''
 })
 // tslint:disable-next-line:component-class-suffix
-export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestroy {
+export class DevRestBase<ViewModelType> implements OnDestroy {
 
   /** Template variables for the HTML template */
   public viewModel$: Observable<ViewModelType>;
@@ -44,8 +43,6 @@ export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestr
     protected route: ActivatedRoute,
     private permissionsService: PermissionsService,
   ) {
-    super();
-
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
     this.dialogSettings$ = this.dialogConfigSvc.getCurrent$();
@@ -100,7 +97,6 @@ export class DevRestBase<ViewModelType> extends BaseComponent implements OnDestr
 
   ngOnDestroy() {
     this.scenario$.complete();
-    super.ngOnDestroy();
   }
 
   closeDialog() {

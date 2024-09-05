@@ -1,5 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
-import { distinctUntilChanged } from 'rxjs';
+import { Component, inject, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { ContentExpandAnimation } from '../expand-dialog/content-expand.animation';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatRippleModule } from '@angular/material/core';
@@ -13,14 +12,17 @@ import { NgClass } from '@angular/common';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { FieldState } from '../../field-state';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { BaseComponent } from '../../../../shared/components/base.component';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
+import { EavLogger } from 'projects/eav-ui/src/app/shared/logging/eav-logger';
 
-const logThis = false;
-const nameOfThis = 'PickerExpandableWrapper';
+const logSpecs = {
+  enabled: false,
+  name: 'PickerExpandableWrapper',
+};
+
 @Component({
   selector: WrappersCatalog.PickerExpandableWrapper,
   templateUrl: './picker-expandable-wrapper.component.html',
@@ -41,7 +43,7 @@ const nameOfThis = 'PickerExpandableWrapper';
     TippyDirective,
   ],
 })
-export class PickerExpandableWrapperComponent extends BaseComponent implements OnInit, OnDestroy {
+export class PickerExpandableWrapperComponent implements OnInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
@@ -51,19 +53,20 @@ export class PickerExpandableWrapperComponent extends BaseComponent implements O
   protected basics = this.fieldState.basics;
   private config = this.fieldState.config;
 
+  log = new EavLogger(logSpecs);
+  
   constructor(
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
     private fieldsSettingsService: FieldsSettingsService,
   ) {
-    super();
   }
 
   ngOnInit() {
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
       .subscribe(isOpen => {
         this.dialogIsOpen.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { isDialog: isOpen }, nameOfThis);
+        this.fieldsSettingsService.updateSetting(this.config.fieldName, { isDialog: isOpen }, logSpecs.name);
       });
   }
 

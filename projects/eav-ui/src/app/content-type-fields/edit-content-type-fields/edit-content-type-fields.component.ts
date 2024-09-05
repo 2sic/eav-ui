@@ -7,7 +7,7 @@ import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, shar
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { BaseComponent } from '../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../shared/components/base.component';
 import { DataTypeCatalog } from '../../shared/fields/data-type-catalog';
 import { InputTypeStrict, InputTypeCatalog } from '../../shared/fields/input-type-catalog';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
@@ -51,7 +51,7 @@ import { GlobalConfigService } from '../../shared/services/global-config.service
     ToggleDebugDirective,
   ],
 })
-export class EditContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class EditContentTypeFieldsComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 

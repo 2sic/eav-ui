@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith } from 'rxjs';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
@@ -50,8 +50,10 @@ import { isCtrlS, isEscape } from './keyboard-shortcuts';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserSettings } from '../../../shared/user/user-settings.service';
 
-const logThis = false;
-const nameOfThis = 'EditDialogMainComponent';
+const logSpecs = {
+  enabled: true,
+  name: 'EditDialogMainComponent',
+};
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -84,7 +86,7 @@ const nameOfThis = 'EditDialogMainComponent';
     PickerTreeDataHelper,
   ],
 })
-export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditDialogMainComponent extends BaseComponentSubscriptions implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
   viewModel$: Observable<EditDialogMainViewModel>;
@@ -139,7 +141,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       startWith(true)
     ));
 
-
+  log = new EavLogger(logSpecs);
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,
@@ -157,7 +159,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private linkCacheService: LinkCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
     this.dialogRef.disableClose = true;
 
     // Watch to save based on messages from sub-dialogs.

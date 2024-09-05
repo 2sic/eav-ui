@@ -5,13 +5,14 @@ import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
 import { EavLogger } from '../../logging/eav-logger';
-import { BaseComponent } from '../base.component';
 import { NavigateFormResult } from '../../../edit/shared/services/edit-routing.service';
 
 declare const window: EavWindow;
 
-const logThis = false;
-const nameOfThis = 'DialogEntryComponent';
+const logSpecs = {
+  enabled: true,
+  name: 'DialogEntryComponent',
+};
 
 @Component({
   selector: 'app-dialog-entry',
@@ -23,10 +24,11 @@ const nameOfThis = 'DialogEntryComponent';
     Context, // this is used in the dialog to get the correct App
   ],
 })
-export class DialogEntryComponent extends BaseComponent implements OnInit, OnDestroy {
+export class DialogEntryComponent implements OnInit, OnDestroy {
   #dialogData: Record<string, any>;
   #dialogRef: MatDialogRef<any>;
 
+  log = new EavLogger(logSpecs);
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
@@ -35,7 +37,6 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
     private context: Context,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
     const navigation = this.router.getCurrentNavigation();
     this.#dialogData = navigation?.extras?.state || {};
   }
@@ -62,7 +63,6 @@ export class DialogEntryComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnDestroy() {
     this.#dialogRef.close();
-    super.ngOnDestroy();
   }
 
   private openDialogComponent(dialogConfig: DialogConfig, component: Type<any>) {

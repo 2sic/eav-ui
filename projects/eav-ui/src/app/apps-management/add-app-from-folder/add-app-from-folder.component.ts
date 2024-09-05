@@ -4,7 +4,6 @@ import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
-import { BaseComponent } from '../../shared/components/base.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
 import { FeaturesService } from '../../features/features.service';
@@ -32,7 +31,7 @@ import { transient } from '../../core';
     SxcGridModule,
   ],
 })
-export class AddAppFromFolderComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();
@@ -51,7 +50,6 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
   ) {
-    super();
   }
 
   ngOnInit(): void {
@@ -68,7 +66,6 @@ export class AddAppFromFolderComponent extends BaseComponent implements OnInit, 
 
   ngOnDestroy(): void {
     this.refreshApps$.complete();
-    super.ngOnDestroy();
   }
 
   closeDialog(): void {

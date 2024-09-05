@@ -6,7 +6,7 @@ import { EntityFormComponent } from '../entity-form-component/entity-form.compon
 import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -18,8 +18,11 @@ import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
 
-const logThis = false;
-const nameOfThis = 'FormBuilderComponent';
+const logSpecs = {
+  enabled: true,
+  name: 'EntityFormBuilderComponent',
+};
+
 
 @Component({
   selector: 'app-edit-entity-form-builder',
@@ -37,7 +40,7 @@ const nameOfThis = 'FormBuilderComponent';
     EntityFormStateService, // used for sharing information about this entity form
   ],
 })
-export class EntityFormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
+export class EntityFormBuilderComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   form = new UntypedFormGroup({});
@@ -48,6 +51,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
   #formulaDesignerService = inject(FormulaDesignerService);
   #formFieldsBuilderService = transient(FormFieldsBuilderService);
 
+  log = new EavLogger(logSpecs);
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
@@ -55,7 +59,7 @@ export class EntityFormBuilderComponent extends BaseComponent implements OnInit,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   ngOnInit() {

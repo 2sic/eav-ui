@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, Signal, ViewContainerRef, effect, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Preview } from './hyperlink-default.models';
 import { FieldState } from '../../field-state';
 import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { PagePicker } from '../../page-picker/page-picker.helper';
-import { BaseComponent } from '../../../../shared/components/base.component';
+import { BaseComponentSubscriptions } from '../../../../shared/components/base.component';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { EditForm } from '../../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
@@ -14,19 +14,20 @@ import { FormConfigService } from '../../../state/form-config.service';
 import { FormsStateService } from '../../../state/forms-state.service';
 import { AdamService } from '../../../shared/services/adam.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { ControlStatus } from '../../../shared/models/control-status.model';
 import { LinkCacheService } from '../../../shared/store/link-cache.service';
 import { transient } from '../../../../core/transient';
 
-const logThis = false;
-const nameOfThis = 'HyperlinkDefaultBaseComponent';
+const logSpecs = {
+  enabled: true,
+  name: 'HyperlinkDefaultBaseComponent',
+};
 
 @Component({
   selector: 'app-base-field-hyperlink-component',
   template: ''
 })
 // tslint:disable-next-line:directive-class-suffix
-export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnInit, OnDestroy {
+export class HyperlinkDefaultBaseComponent extends BaseComponentSubscriptions implements OnInit, OnDestroy {
 
   preview = signal<Preview>({
     url: '',
@@ -51,6 +52,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
 
   public adamService = transient(AdamService);
 
+  log = new EavLogger(logSpecs);
   constructor(
     private formConfig: FormConfigService,
     public dialog: MatDialog,
@@ -60,7 +62,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) {
-    super(new EavLogger(nameOfThis, logThis));
+    super();
   }
 
   ngOnInit() {
