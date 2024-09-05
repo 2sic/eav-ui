@@ -1,6 +1,7 @@
 import { DataSourceBase } from './data-source-base';
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'DataSourceEmpty';
@@ -12,22 +13,22 @@ const nameOfThis = 'DataSourceEmpty';
 @Injectable()
 export class DataSourceEmpty extends DataSourceBase {
 
-  loading = signal(false);
+  loading = signalObj('loading', false);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
   }
 
-  private label = signal(`something is wrong - using ${nameOfThis}`);
+  #label = signalObj('label', `something is wrong - using ${nameOfThis}`);
 
   public preSetup(label: string): this {
-    this.label.set(label);
+    this.#label.set(label);
     return this;
   }
 
-  public override data = computed(() => [{
+  public override data = computedObj('data', () => [{
     value: '',
-    label: this.label() ?? 'No options available',
+    label: this.#label() ?? 'No options available',
     notSelectable: true,
     isMessage: true,
   }]);

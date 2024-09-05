@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +11,7 @@ import { PickerSearchComponent } from '../picker-search/picker-search.component'
 import { PickerListComponent } from '../picker-list/picker-list.component';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -34,20 +34,16 @@ import { SignalEquals } from '../../../../shared/signals/signal-equals';
 })
 export class PickerDialogComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  protected isInFreeTextMode = computed(() => this.pickerData.state.isInFreeTextMode(), SignalEquals.bool);
+  protected isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
 
-  protected showAddNewEntityButtonInDialog = computed(() => {
+  protected showAddNewEntityButtonInDialog = computedObj('showAddNewEntityButtonInDialog', () => {
     const settings = this.fieldState.settings();
     const showAddNew = !this.isInFreeTextMode()
       && settings.EnableCreate
       && settings.CreateTypes
       && settings.AllowMultiValue;
     return showAddNew;
-  }, SignalEquals.bool);
-
-  constructor() {
-    super();
-  }
+  });
 
   openNewEntityDialog(entityType: string): void {
     this.pickerData.source.editItem(null, entityType);

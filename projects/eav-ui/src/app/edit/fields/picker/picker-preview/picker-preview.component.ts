@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
@@ -12,9 +12,9 @@ import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'PickerPreviewComponent';
@@ -41,9 +41,9 @@ const nameOfThis = 'PickerPreviewComponent';
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  isInFreeTextMode = computed(() => this.pickerData.state.isInFreeTextMode());
+  isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
 
-  mySettings = computed(() => {
+  mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();
     // const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
     const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
@@ -57,7 +57,7 @@ export class PickerPreviewComponent extends PickerPartBaseComponent implements O
       showAddNewEntityButton,
       showGoToListDialogButton,
     };
-  }, { equal: RxHelpers.objectsEqual });
+  });
 
   constructor(
     private editRoutingService: EditRoutingService,

@@ -2,36 +2,37 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Injectable } from '@angular/core';
-import { ServiceBase } from '../../../../shared/services/service-base';
 import { RelationshipChildParent, RelationshipParentChild, UiPickerModeTree } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../models/picker-item.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 
-const logThis = false;
+const logSpecs = {
+  enabled: true,
+  name: 'PickerTreeHelper',
+};
 
 @Injectable()
-export class PickerTreeDataHelper extends ServiceBase {
+export class PickerTreeDataHelper {
 
-  private pickerTreeConfiguration: UiPickerModeTree;
-  private treeItems: PickerTreeItem[];
+  #pickerTreeConfiguration: UiPickerModeTree;
+  #treeItems: PickerTreeItem[];
 
   dataSource: MatTreeFlatDataSource<PickerItem, PickerTreeItem, PickerTreeItem>
 
+  log = new EavLogger(logSpecs);
   constructor() {
-    super(new EavLogger('PickerTreeHelper', logThis));
-
     this.build();
   }
 
   public updateConfig(pickerConfig: UiPickerModeTree) {
     this.log.a('updateConfigAndSelectedData');
     // set config, which will be accessed on 'this.' whenever it's needed
-    this.pickerTreeConfiguration = pickerConfig;
+    this.#pickerTreeConfiguration = pickerConfig;
   }
 
   public addTreeItems(treeItems: PickerTreeItem[]) {
     this.log.a('addTreeItems');
-    this.treeItems = treeItems;
+    this.#treeItems = treeItems;
   }
 
   public updateSelectedData(selectedData: PickerItem[]) {
@@ -41,12 +42,12 @@ export class PickerTreeDataHelper extends ServiceBase {
 
   public preConvertAllItems(treeConfig: UiPickerModeTree, items: PickerItem[]) {
     this.log.a('preConvertAllItemsToTreeItems', { treeConfig, items });
-    const convertedItems = items.map(x => this.preConvertItemToTreeItem(treeConfig, x, items));
+    const convertedItems = items.map(x => this.#preConvertItemToTreeItem(treeConfig, x, items));
 
     // todo: establish relationships
     const withChildren = convertedItems.map(x => {
       if (!x.expandable) return x;
-      const children = this.getChildren(treeConfig, x, convertedItems);
+      const children = this.#getChildren(treeConfig, x, convertedItems);
       // important: don't use spread, we really want to modify the object
       // so that all object correctly reference each other
       x.children = children;
@@ -58,7 +59,7 @@ export class PickerTreeDataHelper extends ServiceBase {
     return withChildren;
   }
 
-  private preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
+  #preConvertItemToTreeItem(treeConfig: UiPickerModeTree, item: PickerItem, allItems: PickerItem[]) {
     // Log and do some initial checks
     this.log.a(`preConvertItemToTreeItem for item ${item?.id}`, { treeConfig, item, allItems });
     if (!treeConfig) throw new Error('No tree configuration found');
@@ -129,7 +130,7 @@ export class PickerTreeDataHelper extends ServiceBase {
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, treeFlattener);
   }
 
-  private getChildren(treeConfig: UiPickerModeTree, item: PickerTreeItem, allItems: PickerTreeItem[]) {
+  #getChildren(treeConfig: UiPickerModeTree, item: PickerTreeItem, allItems: PickerTreeItem[]) {
     const isParentChild = treeConfig.TreeRelationship == RelationshipParentChild;
     const cpRef = treeConfig.TreeChildParentRefField;
     const pcRef = treeConfig.TreeParentChildRefField;
@@ -160,7 +161,7 @@ export class PickerTreeDataHelper extends ServiceBase {
 
 
   disableOption(item: PickerTreeItem, selected: PickerItem[], enableReselect: boolean): boolean {
-    const treeConfig = this.pickerTreeConfiguration;
+    const treeConfig = this.#pickerTreeConfiguration;
     const selectedButNoReselect = enableReselect
       ? false
       : selected.some(entity => entity.value === item.value);

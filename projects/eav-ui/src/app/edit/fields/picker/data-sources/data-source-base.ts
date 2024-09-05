@@ -4,12 +4,13 @@ import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
-import { Signal, inject, signal } from '@angular/core';
+import { Signal, inject } from '@angular/core';
 import { FieldState } from '../../field-state';
 import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { signalObj } from '../../../../shared/signals/signal.utilities';
 
 export abstract class DataSourceBase extends ServiceBase {
 
@@ -25,11 +26,11 @@ export abstract class DataSourceBase extends ServiceBase {
   public data: Signal<PickerItem[]>;
 
   /** Signal with loading-status */
-  public loading = signal(true);
+  public loading = signalObj('loading', true);
 
   /** Toggle to trigger a full refresh. */
   protected getAll$ = new BehaviorSubject<boolean>(false);
-  protected getAll = signal(false);
+  protected getAll = signalObj('getAll', false);
 
   /**
    * Force refresh of the entities with these guids.
@@ -39,7 +40,7 @@ export abstract class DataSourceBase extends ServiceBase {
    * for now we'll just keep on retrieving all on each backend access.
    * In future we may enhance this, but we must be sure that previous retrievals are preserved.
    */
-  protected guidsToRefresh = signal<string[]>([]);
+  protected guidsToRefresh = signalObj<string[]>('guidsToRefresh', []);
 
   protected settings = this.fieldState.settings;
 

@@ -1,13 +1,14 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { Injectable, WritableSignal, computed, signal } from '@angular/core';
+import { Injectable, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
 /**
  * This is the base class for data-sources providing data from
@@ -32,9 +33,9 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
    * Implemented as observable, since all requests depend on observables.
    * If there is ever an httpSignal service or something, then this should be migrated.
    */
-  private typeOrParams = signal<string>(null);
-  private typeOrParams$ = new Subject<string>();
-  private paramsDebounced$ = this.typeOrParams$.pipe(distinctUntilChanged());
+  #typeOrParams = signalObj<string>('typeOrParams', null);
+  #typeOrParams$ = new Subject<string>();
+  #paramsDebounced$ = this.#typeOrParams$.pipe(distinctUntilChanged());
 
   // /**
   //  * Guids of items which _should_ be in the prefetched cache.
@@ -91,32 +92,31 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
    * - the params change (in many cases just at start, but sometimes ongoing eg. view-data picker)
    * @memberof DataSourceEntityQueryBase
    */
-  private _all = toSignal(combineLatest([
-    this.paramsDebounced$,
+  #all = toSignal(combineLatest([
+    this.#paramsDebounced$,
     this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll), map(x => [])),
   ]).pipe(
     mergeMap(([typeName]) => this.getFromBackend(typeName, [], 'getAll')),
   ), { initialValue: this.noItemsLoadingFalse });
 
-  private prefetchNew = signal<DataWithLoading<PickerItem[]>>(this.noItemsLoadingFalse);
+  #prefetchNew = signalObj<DataWithLoading<PickerItem[]>>('prefetchNow', this.noItemsLoadingFalse);
 
   /** Additional items which were updated after sub-edits */
-  private modified = signal<DataWithLoading<PickerItem[]>>(this.noItemsLoadingFalse);
+  #modified = signalObj<DataWithLoading<PickerItem[]>>('modified', this.noItemsLoadingFalse);
 
-  public override data = computed(() => {
+  public override data = computedObj('data', () => {
     // const prefetch = this._prefetch().data;
     // const overrides = this._overrides().data;
-    const prefetch = this.prefetchNew().data;
-    const all = this._all().data;
-    const modified = this.modified().data;
+    const prefetch = this.#prefetchNew().data;
+    const all = this.#all().data;
+    const modified = this.#modified().data;
     const data = [...new Map([...prefetch, ...all, ...modified].map(item => [item.value, item])).values()];
     this.log.a('data', { prefetch, all, overrides: modified, data });
     return data;
-  }, { equal: RxHelpers.arraysEqual });
+  });
 
   /** Signal with loading-status */
-  // public override loading = computed(() => this._all().loading || this._overrides().loading) as any;
-  public override loading = computed(() => this._all().loading || this.modified().loading) as any;
+  public override loading = computedObj('loading', () => this.#all().loading || this.#modified().loading) as any;
 
 
   // protected getPrefetchStream(): Observable<DataWithLoading<PickerItem[]>> {
@@ -146,7 +146,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     const guids = entityGuids.filter(RxHelpers.distinct);
     // this.prefetchEntityGuids$.next(guids);
     // this.addToRefresh(guids);
-    this.loadMoreIntoSignal(this.prefetchNew, guids, 'initPrefetch');
+    this.loadMoreIntoSignal(this.#prefetchNew, guids, 'initPrefetch');
   }
 
   /** Get the data from a query - all or only the ones listed in the guids */
@@ -155,13 +155,13 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   /** Set parameters for retrieval - either contentTypeName or query url parameters */
   setParams(params: string): void {
-    this.typeOrParams.set(params);
-    this.typeOrParams$.next(params);
+    this.#typeOrParams.set(params);
+    this.#typeOrParams$.next(params);
   }
 
 
   destroy(): void {
-    this.typeOrParams$.complete();
+    this.#typeOrParams$.complete();
     // this.prefetchEntityGuids$.complete();
     this.getAll$.complete();
     super.destroy();
@@ -169,7 +169,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   override addToRefresh(additionalGuids: string[]): void {
     const l = this.log.fn('addToRefresh', { additionalGuids });
-    this.loadMoreIntoSignal(this.modified, additionalGuids, 'addToRefresh');
+    this.loadMoreIntoSignal(this.#modified, additionalGuids, 'addToRefresh');
     l.end();
   }
 
@@ -182,7 +182,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     const before = cache();
     cache.set({ data: before.data, loading: true });
 
-    this.getFromBackend(this.typeOrParams(), additionalGuids, message)
+    this.getFromBackend(this.#typeOrParams(), additionalGuids, message)
       .subscribe(additions => {
         const merged = [...new Map([...before.data, ...additions.data].map(item => [item.value, item])).values()];
         l.values({ before, data: additions, merged });

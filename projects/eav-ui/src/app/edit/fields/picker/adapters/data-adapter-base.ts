@@ -2,11 +2,10 @@ import { DeleteEntityProps } from '../models/picker.models';
 import { Signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
-import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
-export abstract class DataAdapterBase extends ServiceBase {
+export abstract class DataAdapterBase {
 
   /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
   public abstract features: Signal<Partial<PickerFeatures>>;
@@ -26,8 +25,9 @@ export abstract class DataAdapterBase extends ServiceBase {
 
   public deleteCallback: (props: DeleteEntityProps) => void;
 
+  log: EavLogger;
   constructor(logSpecs: EavLogger) {
-    super(logSpecs);
+    this.log = logSpecs;
   }
 
   protected setup(deleteCallback: (props: DeleteEntityProps) => void): void {

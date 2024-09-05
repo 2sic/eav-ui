@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatRippleModule } from '@angular/material/core';
@@ -6,9 +6,9 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { PickerItem } from '../models/picker-item.model';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-picker-pills',
@@ -26,9 +26,9 @@ import { EditRoutingService } from '../../../shared/services/edit-routing.servic
 })
 export class PickerPillsComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  enableTextEntry = computed(() => this.fieldState.settings().EnableTextEntry, SignalEquals.bool);
+  enableTextEntry = computedObj('enableTextEntry', () => this.fieldState.settings().EnableTextEntry);
 
-  itemCount = computed(() => this.selectedItems().length, SignalEquals.number);
+  itemCount = computedObj('itemCount', () => this.selectedItems().length);
 
   constructor(private editRoutingService: EditRoutingService) {
     super();

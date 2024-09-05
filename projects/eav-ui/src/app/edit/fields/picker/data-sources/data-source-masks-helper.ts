@@ -1,7 +1,6 @@
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataSourceMasks } from './data-source-masks.model';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
@@ -12,15 +11,17 @@ import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
  * Helper class to process masks for a DataSource.
  * Masks are strings with placeholders, vs. just the name of the field to show.
  */
-export class DataSourceMasksHelper extends ServiceBase {
+export class DataSourceMasksHelper {
+  
+  log: EavLogger;
   constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
-    super(new EavLogger('DataSourceMasksHelper', enableLog ?? parentLog.enableChildren));
+    this.log = new EavLogger('DataSourceMasksHelper', enableLog ?? parentLog.enableChildren);
     this.log.a('constructor - settings', { settings });
   }
 
-  private helpers = new DataSourceHelpers();
+  #helpers = new DataSourceHelpers();
 
-  private masks: DataSourceMasks;
+  #masks: DataSourceMasks;
 
   /** Convert an Entity data to Picker-Item, processing any masks */
   entity2PickerItem({ entity, streamName, mustUseGuid }
@@ -62,7 +63,7 @@ export class DataSourceMasksHelper extends ServiceBase {
     }
 
     // Prepare the masks
-    const { title, tooltip, information, helpLink } = this.parseMasks(masks, entity);
+    const { title, tooltip, information, helpLink } = this.#parseMasks(masks, entity);
 
     // If the original was not a mask, look up the field
     const finalTitle = masks.label.includes('[') ? title : titleFieldValue;
@@ -80,7 +81,7 @@ export class DataSourceMasksHelper extends ServiceBase {
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
-  private parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
+  #parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
     let tooltip = masks.tooltip;
     let information = masks.info;
     let helpLink = masks.link;
@@ -103,22 +104,22 @@ export class DataSourceMasksHelper extends ServiceBase {
 
   /** Get the mask - if possibly from current objects cache */
   public getMasks() {
-    if (!!this.masks) return this.masks;
-    this.masks = this.buildMasks(this.settings);
-    this.log.a('getMasks', { masks: this.masks });
-    return this.masks;
+    if (!!this.#masks) return this.#masks;
+    this.#masks = this.#buildMasks(this.settings);
+    this.log.a('getMasks', { masks: this.#masks });
+    return this.#masks;
   }
 
   /** modify/patch the current objects mask */
   public patchMasks(patch: Partial<DataSourceMasks>) {
-    this.masks = { ...this.getMasks(), ...patch };
-    this.log.a('patchMasks', { masks: this.masks });
+    this.#masks = { ...this.getMasks(), ...patch };
+    this.log.a('patchMasks', { masks: this.#masks });
   }
 
-  private buildMasks(settings: FieldSettings): DataSourceMasks {
+  #buildMasks(settings: FieldSettings): DataSourceMasks {
     this.log.a('buildMasks settings', { settings });
-    const tooltipMask = !!settings.ItemTooltip ? this.helpers.stripHtml(settings.ItemTooltip) : '';
-    const infoMask = !!settings.ItemInformation ? this.helpers.stripHtml(settings.ItemInformation) : '';
+    const tooltipMask = !!settings.ItemTooltip ? this.#helpers.stripHtml(settings.ItemTooltip) : '';
+    const infoMask = !!settings.ItemInformation ? this.#helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
     const labelMask = settings.Label ?? '';
     const valueMask = settings.Value ?? '';

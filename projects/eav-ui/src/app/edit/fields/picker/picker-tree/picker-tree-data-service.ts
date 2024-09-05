@@ -1,7 +1,6 @@
-import { Injectable, Injector, OnDestroy, Signal, effect, runInInjectionContext } from '@angular/core';
+import { Injectable, Injector, Signal, effect, runInInjectionContext } from '@angular/core';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
-import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldSettings, RelationshipParentChild } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../models/picker-item.model';
@@ -9,13 +8,10 @@ import { PickerItem } from '../models/picker-item.model';
 const logThis = false;
 
 @Injectable()
-export class PickerTreeDataService extends ServiceBase implements OnDestroy {
-  constructor(public treeHelper: PickerTreeDataHelper, private inject: Injector) {
-    super(new EavLogger('PickerTreeDataService', logThis));
-  }
+export class PickerTreeDataService {
+  log = new EavLogger('PickerTreeDataService', logThis);
 
-  ngOnDestroy(): void {
-    super.destroy();
+  constructor(public treeHelper: PickerTreeDataHelper, private inject: Injector) {
   }
 
   public init(fieldSettings: Signal<FieldSettings>, allItems: Signal<PickerItem[]>) {

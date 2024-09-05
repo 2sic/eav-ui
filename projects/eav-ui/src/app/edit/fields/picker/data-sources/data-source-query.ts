@@ -1,12 +1,13 @@
 import { Observable, map, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'DataSourceQuery';
@@ -21,19 +22,19 @@ const nameOfThis = 'DataSourceQuery';
 @Injectable()
 export class DataSourceQuery extends DataSourceEntityQueryBase {
 
-  private translate = inject(TranslateService);
+  #translate = inject(TranslateService);
 
   constructor() { super(new EavLogger(nameOfThis, logThis)); }
 
   protected formState = inject(FormConfigService);
-  private appId = Number(this.formState.config.appId);
-  private streamName = computed(() => this.settings().StreamName);
+  #appId = Number(this.formState.config.appId);
+  #streamName = computedObj('streamName', () => this.settings().StreamName);
 
   /**
    * Behavior changes a bit if the query is meant to supply data for string-inputs
    * ...mainly because the value is allowed to be any field, not just the Guid.
    */
-  private isForStringField = this.fieldState.config.inputTypeSpecs.isString;
+  #isForStringField = this.fieldState.config.inputTypeSpecs.isString;
 
   /** Get the data from a query - all or only the ones listed in the guids */
   public override getFromBackend(params: string, guids: string[], purposeForLog: string)
@@ -41,7 +42,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
     var l = this.log.fn('getFromBackend', { params, guids }, purposeForLog);
     // If the configuration isn't complete, the query can be empty
     const sett = this.settings();
-    const streamName = this.streamName();
+    const streamName = this.#streamName();
     const queryName = sett.Query;
     const queryUrl = !!queryName
       ? queryName.includes('/') ? sett.Query : `${sett.Query}/${streamName}`
@@ -58,7 +59,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
             {
               Id: -1,
               Guid: null,
-              Title: this.translate.instant('Fields.Picker.QueryNotConfigured'),
+              Title: this.#translate.instant('Fields.Picker.QueryNotConfigured'),
             },
           ],
         },
@@ -76,7 +77,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
 
     const result = source.pipe(
       map(set => ({
-        data: this.transformData(set.data, streamName),
+        data: this.#transformData(set.data, streamName),
         loading: set.loading,
       } as DataWithLoading<PickerItem[]>)),
     );
@@ -84,17 +85,17 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
   }
 
 
-  private transformData(data: QueryStreams, streamName: string | null): PickerItem[] {
-    const valueMustBeGuid = !this.isForStringField;
-    const l = this.log.fn('transformData', { data, streamName, isForStringField: this.isForStringField });
+  #transformData(data: QueryStreams, streamName: string | null): PickerItem[] {
+    const valueMustBeGuid = !this.#isForStringField;
+    const l = this.log.fn('transformData', { data, streamName, isForStringField: this.#isForStringField });
     if (!data)
-      return [PickerItemFactory.message(this.translate, 'Fields.Picker.QueryErrorNoData')];
+      return [PickerItemFactory.message(this.#translate, 'Fields.Picker.QueryErrorNoData')];
 
     let items: PickerItem[] = [];
     let errors: PickerItem[] = [];
     streamName.split(',').forEach(stream => {
       if (!data[stream]) {
-        errors.push(PickerItemFactory.placeholder(this.translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
+        errors.push(PickerItemFactory.placeholder(this.#translate, 'Fields.Picker.QueryStreamNotFound', ' ' + stream));
         return; // TODO: @SDV test if this acts like continue or break
       }
 
@@ -104,14 +105,14 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
         mustUseGuid: valueMustBeGuid
       })));
     });
-    return l.r([...errors, ...this.setDisableEdit(items)]);
+    return l.r([...errors, ...this.#setDisableEdit(items)]);
   }
 
-  private setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
+  #setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => {
         const appId = e.data?.AppId;
-        e.noEdit = appId != null && appId !== this.appId;
+        e.noEdit = appId != null && appId !== this.#appId;
         e.noDelete = e.noEdit;
       });
     return queryEntities;

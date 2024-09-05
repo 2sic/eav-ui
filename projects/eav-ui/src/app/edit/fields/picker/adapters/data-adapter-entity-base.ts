@@ -25,13 +25,13 @@ import { computedObj, signalObj } from '../../../../shared/signals/signal.utilit
 export abstract class DataAdapterEntityBase extends DataAdapterBase {
 
   protected formConfig = inject(FormConfigService);
-  private editRoutingService = inject(EditRoutingService);
+  #editRoutingService = inject(EditRoutingService);
   protected translate = inject(TranslateService);
-  private snackBar = inject(MatSnackBar);
+  #snackBar = inject(MatSnackBar);
   protected injector = inject(Injector);
   protected fieldState = inject(FieldState);
   protected group = inject(EntityFormStateService).formGroup();
-  private entityService = transient(EntityService);
+  #entityService = transient(EntityService);
 
   /** Content Type Mask */
   #typeMaskFromSettings = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
@@ -126,16 +126,16 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const editGuid = editParams?.entityGuid;
     const form: EditForm = {
       items: (editGuid == null)
-        ? [EditPrep.newFromType(entityType ?? this.contentType(), this.getPrefill())]
+        ? [EditPrep.newFromType(entityType ?? this.contentType(), this.#getPrefill())]
         : [EditPrep.editId(this.optionsOrHints().find(item => item.value === editGuid)?.id ?? editParams.entityId)]
     };
     const config = this.fieldState.config;
     
     // Open the form
-    this.editRoutingService.open(config.index, config.entityGuid, form);
+    this.#editRoutingService.open(config.index, config.entityGuid, form);
 
     // Monitor for close to reload data
-    this.editRoutingService.childFormClosed()
+    this.#editRoutingService.childFormClosed()
         .subscribe(() => {
           this.log.a('childFormClosed', { editGuid });
           if (editGuid)
@@ -156,25 +156,25 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) return;
 
-    this.snackBar.open(this.translate.instant('Message.Deleting'));
-    this.entityService.delete(this.formConfig.config.appId, contentType, id, false, parentId, parentField).subscribe({
+    this.#snackBar.open(this.translate.instant('Message.Deleting'));
+    this.#entityService.delete(this.formConfig.config.appId, contentType, id, false, parentId, parentField).subscribe({
       next: () => {
-        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+        this.#snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.deleteCallback(props); // removes value from selected values
         this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
       },
       error: (error1: HttpErrorResponse) => {
-        this.snackBar.dismiss();
+        this.#snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) return;
-        this.snackBar.open(this.translate.instant('Message.Deleting'));
-        this.entityService.delete(this.formConfig.config.appId, contentType, id, true, parentId, parentField).subscribe({
+        this.#snackBar.open(this.translate.instant('Message.Deleting'));
+        this.#entityService.delete(this.formConfig.config.appId, contentType, id, true, parentId, parentField).subscribe({
           next: () => {
-            this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+            this.#snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.deleteCallback(props); // removes value from selected values
             this.#deletedItemsGuids.update(p => [...p, props.entityGuid]);
           },
           error: (error2: HttpErrorResponse) => {
-            this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
+            this.#snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
           }
         });
       }
@@ -188,7 +188,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
    * In future we may add more features like dates etc.
    * new 11.11.03
    */
-  private getPrefill(): Record<string, string> {
+  #getPrefill(): Record<string, string> {
     this.log.a('getPrefill');
     // still very experimental, and to avoid errors try to catch any mistakes
     try {

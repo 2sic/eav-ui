@@ -1,9 +1,7 @@
-import { Component, OnDestroy, computed, inject, input } from '@angular/core';
-import { PickerData } from './picker-data';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 
 const logThis = false;
 const nameOfThis = 'PickerPartBaseComponent';
@@ -23,19 +21,19 @@ export class PickerPartBaseComponent extends BaseComponent implements OnDestroy 
   /** Picker Data Bundle with Source and state etc. */
   pickerData = this.fieldState.pickerData; // input.required<PickerData>();
 
-  public controlStatus = computed(() => this.pickerData.state.controlStatus());
+  public controlStatus = this.pickerData.state.controlStatus;
 
   /** All Selected Items */
-  public selectedItems = computed(() => this.pickerData.selectedAll());
+  public selectedItems = this.pickerData.selectedAll;
 
   /** Field Configuration - from field state */
   config = this.fieldState.config;
 
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = computed(() => this.pickerData.state.basics(), { equal: RxHelpers.objectsEqual });
+  basics = this.pickerData.state.basics;
 
   /** Features */
-  features = computed(() => this.pickerData.features());
+  features = this.pickerData.features;
 
   constructor(log?: EavLogger) {
     super(log ?? new EavLogger(nameOfThis, logThis));

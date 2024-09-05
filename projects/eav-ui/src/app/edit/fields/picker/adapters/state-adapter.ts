@@ -6,19 +6,24 @@ import { Injectable, Optional, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
-import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../state/form-config.service';
-import { computedObj, signalObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
+import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'StateAdapter';
 
 @Injectable()
-export class StateAdapter extends ServiceBase {
+export class StateAdapter {
 
   public formConfigSvc = inject(FormConfigService);
   private fieldState = inject(FieldState) as FieldState<string | string[]>;
+
+  log: EavLogger
+
+  constructor(@Optional() logger: EavLogger = null) {
+    this.log = logger ?? new EavLogger(nameOfThis, logThis);
+  }
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
@@ -49,18 +54,6 @@ export class StateAdapter extends ServiceBase {
     const sAndO = this.#sepAndOpts();
     return correctStringEmptyValue(this.#value(), sAndO.separator, sAndO.options);
   });
-
-
-  constructor(@Optional() logger: EavLogger = null) {
-    super(logger ?? new EavLogger(nameOfThis, logThis));
-  }
-
-  // todo: doesn't seem to be in use, but probably should?
-  // my guess is it should detect if the open-dialog is shown
-  // public shouldPickerListBeShown$: Observable<boolean>;
-
-  // todo: make signal, if useful
-  // private isExpanded$: Observable<boolean>;
 
   #focusOnSearchComponent: () => void;
 

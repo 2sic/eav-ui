@@ -6,7 +6,7 @@ import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
-import { signalObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
+import { signalObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'DataAdapterString';
@@ -16,7 +16,7 @@ export class DataAdapterString extends DataAdapterBase {
 
   public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
-  private injector = inject(Injector);
+  #injector = inject(Injector);
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
@@ -30,8 +30,8 @@ export class DataAdapterString extends DataAdapterBase {
     this.setup(deleteCallback);
 
     this.dataSource.set(useEmpty
-      ? transient(DataSourceEmpty, this.injector).preSetup("Error: configuration missing")
-      : transient(DataSourceString, this.injector)
+      ? transient(DataSourceEmpty, this.#injector).preSetup("Error: configuration missing")
+      : transient(DataSourceString, this.#injector)
     );
 
     this.useDataSourceStream.set(true);

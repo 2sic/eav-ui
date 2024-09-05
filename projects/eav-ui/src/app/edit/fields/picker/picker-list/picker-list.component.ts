@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
-import { Component, OnDestroy, computed } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ReorderIndexes } from './reorder-index.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { MousedownStopPropagationDirective } from '../../../../shared/directives
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'PickerListComponent';
@@ -38,7 +39,7 @@ const nameOfThis = 'PickerListComponent';
 })
 export class PickerListComponent extends PickerPartBaseComponent implements OnDestroy {
 
-  mySettings = computed(() => {
+  mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();
     return {
       allowMultiValue: settings.AllowMultiValue,
@@ -46,7 +47,7 @@ export class PickerListComponent extends PickerPartBaseComponent implements OnDe
       enableDelete: settings.EnableDelete,
       enableRemove: settings.EnableRemove,
     };
-  }, { equal: RxHelpers.objectsEqual });
+  });
 
   constructor() {
     super(new EavLogger(nameOfThis, logThis));
