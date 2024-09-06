@@ -5,7 +5,7 @@ import { signalObj, computedObj } from '../../../../shared/signals/signal.utilit
 import { LogSpecs } from '../../../../shared/logging/log-specs';
 
 const logSpecs: LogSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'DataSourceEmpty',
 };
 

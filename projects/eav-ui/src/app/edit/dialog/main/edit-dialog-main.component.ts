@@ -51,7 +51,7 @@ import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserSettings } from '../../../shared/user/user-settings.service';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'EditDialogMainComponent',
 };
 

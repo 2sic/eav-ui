@@ -19,7 +19,7 @@ import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'EntityFormBuilderComponent',
 };
 

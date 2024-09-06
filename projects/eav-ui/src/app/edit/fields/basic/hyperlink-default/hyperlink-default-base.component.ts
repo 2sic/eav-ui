@@ -18,7 +18,7 @@ import { LinkCacheService } from '../../../shared/store/link-cache.service';
 import { transient } from '../../../../core/transient';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'HyperlinkDefaultBaseComponent',
 };
 

@@ -35,7 +35,7 @@ import { transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'MetadataComponent',
 };
 

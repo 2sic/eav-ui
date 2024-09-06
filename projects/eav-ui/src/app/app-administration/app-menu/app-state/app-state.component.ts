@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { ExportAppService } from '../../services/export-app.service';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
@@ -42,8 +42,6 @@ export class AppStateComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
   }

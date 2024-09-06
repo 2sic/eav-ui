@@ -6,7 +6,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'DataSourceEntity',
   specs: {
     ...DataSourceEntityQueryBase.logSpecs,

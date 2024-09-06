@@ -7,7 +7,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 
 const logSpecs = {
   ...PickerComponent.logSpecs,
-  enabled: true,
+  enabled: false,
   name: 'StringPickerComponent',
 };
 

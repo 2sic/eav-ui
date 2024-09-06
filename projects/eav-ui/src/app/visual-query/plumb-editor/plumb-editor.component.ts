@@ -20,7 +20,7 @@ import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { transient } from '../../core';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'PlumbEditorComponent',
 }
 

@@ -10,7 +10,7 @@ import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'DataSourceQuery',
   specs: {
     ...DataSourceEntityQueryBase.logSpecs,

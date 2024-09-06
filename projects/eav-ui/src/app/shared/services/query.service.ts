@@ -6,7 +6,7 @@ import { Context } from './context';
 import { QueryStreams } from '../models/query-stream.model';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'QueryService',
   specs: {
     all: false,
