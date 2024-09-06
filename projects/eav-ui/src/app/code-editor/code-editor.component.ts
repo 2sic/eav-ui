@@ -109,10 +109,9 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     this.#attachListeners();
 
     // Load templates
-    this.#sourceSvc.getAll().subscribe(templates => {
-      this.#templates$.next(templates);
-    });
+    this.#sourceSvc.getAll().subscribe(templates => this.#templates$.next(templates));
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     // Update ViewInfo$ ongoing
     this.subscriptions.add(
       combineLatest([this.#templates$, this.#openViews$]).subscribe(([templates, openViews]) => {

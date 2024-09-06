@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, map, Observable, startWith } from 'rxjs';
+import { map, Observable, startWith } from 'rxjs';
 import { AutoTranslateDisabledWarningDialog } from '../../../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -79,16 +79,17 @@ export class TranslateMenuComponent implements OnInit {
   ngOnInit(): void {
 
     const control = this.group.controls[this.config.fieldName];
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
+    // @2dg note that disabled is already available on the FieldState
+    // const disabled = this.fieldState.controlStatus().disabled;
     const disabled$ = control.valueChanges.pipe(
       map(() => control.disabled),
       startWith(control.disabled),
       mapUntilChanged(m => m),
     );
 
-    this.viewModel$ = combineLatest([
-       disabled$,
-    ]).pipe(
-      map(([disabled]) => {
+    this.viewModel$ = disabled$.pipe(
+      map((disabled) => {
         const viewModel: TranslateMenuViewModel = {
           disabled,
         };

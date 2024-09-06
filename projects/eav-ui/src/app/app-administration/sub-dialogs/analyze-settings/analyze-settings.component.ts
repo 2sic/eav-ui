@@ -68,6 +68,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
     this.getViews();
     this.getStack();
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([this.#views$, this.#selectedView$, this.#stack$]).pipe(
       map(([views, selectedView, stack]) => {
         const viewModel: AnalyzeSettingsViewModel = {

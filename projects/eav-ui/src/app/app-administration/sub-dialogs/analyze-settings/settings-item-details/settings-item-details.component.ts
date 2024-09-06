@@ -48,6 +48,7 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.stack$ = new BehaviorSubject<SettingsStackItem[]>(undefined);
     this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
       this.stack$.next(stack);

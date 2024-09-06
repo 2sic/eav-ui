@@ -125,6 +125,7 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
       this.filesDropped(this.importData.files);
     }
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([
       this.uploading$, this.files$, this.result$, this.showAppCatalog$,
     ]).pipe(map(([uploading, files, result, showAppCatalog]) => ({ uploading, files, result, showAppCatalog })));

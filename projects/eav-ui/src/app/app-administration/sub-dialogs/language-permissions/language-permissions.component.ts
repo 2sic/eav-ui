@@ -1,12 +1,11 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, Subscription } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
-import { IdFieldComponent } from '../../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
@@ -34,7 +33,7 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
   ],
 })
 export class LanguagePermissionsComponent implements OnInit, OnDestroy {
-  languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
+  languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
   gridOptions: GridOptions;
 
   viewModel$: Observable<LanguagePermissionsViewModel>;
@@ -45,13 +44,14 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
   ) {
-    this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
-    this.gridOptions = this.buildGridOptions();
+    // @2dg proabably move this up to the definition of the variable...
+    this.gridOptions = this.#buildGridOptions();
   }
 
   ngOnInit(): void {
     this.getLanguages();
     this.#dialogRouting.doOnDialogClosed(() => { this.getLanguages(); });
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([this.languages$]).pipe(
       map(([languages]) => ({ languages }))
     );
@@ -80,7 +80,7 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [

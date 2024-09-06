@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, inject } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
@@ -21,7 +20,14 @@ import { FieldHintComponent } from '../../../shared/components/field-hint/field-
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
+import { awaitHttp, computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { EavLogger } from '../../../shared/logging/eav-logger';
 
+const logSpecs = {
+  enabled: true,
+  name: 'EditContentType',
+  specs: { }
+}
 @Component({
   selector: 'app-edit-content-type',
   templateUrl: './edit-content-type.component.html',
@@ -43,89 +49,93 @@ import { transient } from '../../../core';
     TippyDirective,
   ],
 })
-export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EditContentTypeComponent implements AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private contentTypesService = transient(ContentTypesService);
+  log = new EavLogger(logSpecs);
+  
+  #contentTypeSvc = transient(ContentTypesService);
 
-  contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-
-  /** RegEx property to use in HTML */
-  contentTypeNamePattern = contentTypeNamePattern;
-  contentTypeNameError = contentTypeNameError;
-  dropdownInsertValue = dropdownInsertValue;
-
-  private contentType$ = new BehaviorSubject<ContentTypeEdit>(null);
-  private lockScope$ = new BehaviorSubject(true);
-  private scopeOptions$ = new BehaviorSubject<ScopeOption[]>(null);
-  private disableAnimation$ = new BehaviorSubject(true);
-  private loading$ = new BehaviorSubject(false);
-  viewModel$ = combineLatest([this.contentType$, this.lockScope$, this.scopeOptions$, this.disableAnimation$, this.loading$]).pipe(
-    map(([contentType, lockScope, scopeOptions, disableAnimation, loading]) =>
-      ({ contentType, lockScope, scopeOptions, disableAnimation, loading })),
-  );
-  private scope = this.route.snapshot.parent.paramMap.get('scope');
+  /** Parameters in case of rename; scope should always be set as we want to always create in that scope*/
+  #scope = this.route.snapshot.parent.paramMap.get('scope');
+  #typeNameId = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-  ) { }
+  ) {
+    this.log.a('constructor');
+    this.#loadContentTypeOnEdit();
+  }
 
-  ngOnInit() {
-    const contentType$ = this.contentTypeStaticName
-      ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
-        .pipe(
-          map(contentType => {
-            const contentTypeEdit: ContentTypeEdit = {
-              ...contentType,
-              ChangeStaticName: false,
-              NewStaticName: contentType.StaticName,
-            };
-            return contentTypeEdit;
-          }),
-        )
-      : of({
-        StaticName: '',
-        Name: '',
-        Description: '',
-        Scope: this.scope,
+  #loadContentTypeOnEdit(): void {
+    // If we're in new mode, just keep empty values
+    if (!this.modeIsEdit) 
+      return;
+
+    // Preload infos about the current content type if we're in edit mode (not new)
+    this.#contentTypeSvc.retrieveContentType(this.#typeNameId).subscribe(fromHttp => {
+      this.contentType.set({
+        ...fromHttp,
         ChangeStaticName: false,
-        NewStaticName: '',
-      } as ContentTypeEdit);
-    const scopes$ = this.contentTypesService.getScopes();
-    combineLatest([contentType$, scopes$]).subscribe(([contentType, scopeOptions]) => {
-      this.contentType$.next(contentType);
-
-      const newScopes = [...(this.scopeOptions$.value ?? [])];
-      scopeOptions.forEach(scopeOption => {
-        if (!newScopes.some(scope => scope.value === scopeOption.value)) {
-          newScopes.push(scopeOption);
-        }
-      });
-      if (!newScopes.some(scope => scope.value === this.scope)) {
-        const newScopeOption: ScopeOption = {
-          name: this.scope,
-          value: this.scope,
-        };
-        newScopes.push(newScopeOption);
-      }
-      this.scopeOptions$.next(newScopes);
+        NewStaticName: fromHttp.StaticName,
+      } satisfies ContentTypeEdit);
     });
   }
 
-  ngOnDestroy() {
-    this.contentType$.complete();
-    this.lockScope$.complete();
-    this.scopeOptions$.complete();
-    this.disableAnimation$.complete();
-    this.loading$.complete();
+
+  /** RegEx property to use in HTML */
+  protected contentTypeNamePattern = contentTypeNamePattern;
+  protected contentTypeNameError = contentTypeNameError;
+  protected dropdownInsertValue = dropdownInsertValue;
+
+  protected modeIsEdit = !!this.#typeNameId;
+
+  protected lockScope = signalObj<boolean>('lockScope', true);
+  protected disableAnimation = signalObj<boolean>('disableAnimation', true);
+  protected loading = signalObj<boolean>('loading', false);
+  protected contentType = signalObj<ContentTypeEdit>('contentType', {
+    StaticName: '',
+    Name: '',
+    Description: '',
+    Scope: this.#scope,
+    ChangeStaticName: false,
+    NewStaticName: '',
+  } as ContentTypeEdit);
+  
+  // TODO: @2dg this is a suggestion how to handle http requests in a more signal-like way
+  // @2dg note that doing this in the constructor would often be better, but I wanted to prove this way work.
+  // Scope Options Http will fire once when data arrives
+  #scopeOptionsHttp = awaitHttp('scopeOptionsHttp', this.#contentTypeSvc.getScopes());
+  #scopeOptionsManual = signalObj<ScopeOption[]>('scopeOptionsManual', []);
+  protected scopeOptions = computedObj<ScopeOption[]>('scopeOptions', () => {
+    const fromHttp = this.#scopeOptionsHttp();
+    const manual = this.#scopeOptionsManual();
+    return (fromHttp) ? manual.concat(this.#convertScopeOptions(fromHttp)) : manual;
+  });
+
+
+
+  #convertScopeOptions(scopeOptions: ScopeOption[]) {
+    const newScopes: ScopeOption[] = [];
+    scopeOptions.forEach(scopeOption => {
+      if (!newScopes.some(scope => scope.value === scopeOption.value))
+        newScopes.push(scopeOption);
+    });
+    if (!newScopes.some(scope => scope.value === this.#scope))
+      newScopes.push({
+        name: this.#scope,
+        value: this.#scope,
+      } satisfies ScopeOption);
+    return newScopes;
   }
+
 
   // workaround for angular component issue #13870
   ngAfterViewInit() {
     // timeout required to avoid ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => this.disableAnimation$.next(false));
+    setTimeout(() => this.disableAnimation.set(false));
   }
 
   closeDialog() {
@@ -133,35 +143,36 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   changeContentTypeName(newName: string) {
-    this.contentType$.next({ ...this.contentType$.value, Name: newName });
+    this.contentType.set({ ...this.contentType(), Name: newName });
   }
 
   changeScope(newScope: string) {
     if (newScope === dropdownInsertValue) {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
-      if (!this.scopeOptions$.value.some(option => option.value === newScope)) {
-        const newScopeOption: ScopeOption = {
-          name: newScope,
-          value: newScope,
-        };
-        this.scopeOptions$.next([newScopeOption, ...this.scopeOptions$.value]);
+      if (!this.scopeOptions().some(o => o.value === newScope)) {
+        this.#scopeOptionsManual.set([
+          {
+            name: newScope,
+            value: newScope,
+          } satisfies ScopeOption,
+          ...this.scopeOptions()
+        ]);
       }
     }
-    this.contentType$.next({ ...this.contentType$.value, Scope: newScope });
+    this.contentType.set({ ...this.contentType(), Scope: newScope });
   }
 
   unlockScope() {
-    this.lockScope$.next(!this.lockScope$.value);
-    if (this.lockScope$.value) {
-      this.contentType$.next({ ...this.contentType$.value, Scope: this.scope });
-    }
+    this.lockScope.set(!this.lockScope());
+    if (this.lockScope())
+      this.contentType.set({ ...this.contentType(), Scope: this.#scope });
   }
 
   save() {
-    this.loading$.next(true);
+    this.loading.set(true);
     this.snackBar.open('Saving...');
-    this.contentTypesService.save(this.contentType$.value).subscribe(result => {
-      this.loading$.next(false);
+    this.#contentTypeSvc.save(this.contentType()).subscribe(result => {
+      this.loading.set(false);
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });

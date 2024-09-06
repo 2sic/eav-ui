@@ -43,8 +43,8 @@ import { transient } from '../../../core';
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private exportAppPartsService = transient(ExportAppPartsService);
-  private contentTypesService = transient(ContentTypesService);
+  #exportAppPartsSvc = transient(ExportAppPartsService);
+  #contentTypesSvc = transient(ContentTypesService);
 
   contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
@@ -52,6 +52,7 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   lockScope = true;
   dropdownInsertValue = dropdownInsertValue;
 
+  // TODO: @2dg - this should be easy to get rid of #remove-observables
   private loading$ = new BehaviorSubject(false);
   private isExporting$ = new BehaviorSubject(false);
   viewModel$ = combineLatest([this.loading$, this.isExporting$]).pipe(
@@ -61,8 +62,8 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit() {
-    this.fetchScopes();
-    this.fetchContentInfo();
+    this.#fetchScopes();
+    this.#fetchContentInfo();
   }
 
   ngOnDestroy() {
@@ -76,12 +77,12 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
     this.isExporting$.next(true);
     // spm TODO: maybe optimize these functions to not loop content types and entities multiple times for no reason
     // spm TODO: figure out how to capture window loading to disable export button
-    const contentTypeIds = this.selectedContentTypes().map(contentType => contentType.Id);
-    const templateIds = this.selectedTemplates().map(template => template.Id);
-    let entityIds = this.selectedEntities().map(entity => entity.Id);
+    const contentTypeIds = this.#selectedContentTypes().map(contentType => contentType.Id);
+    const templateIds = this.#selectedTemplates().map(template => template.Id);
+    let entityIds = this.#selectedEntities().map(entity => entity.Id);
     entityIds = entityIds.concat(templateIds);
 
-    this.exportAppPartsService.exportParts(contentTypeIds, entityIds, templateIds);
+    this.#exportAppPartsSvc.exportParts(contentTypeIds, entityIds, templateIds);
     this.isExporting$.next(false);
   }
 
@@ -97,38 +98,38 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
       }
     }
     this.exportScope = newScope;
-    this.fetchContentInfo();
+    this.#fetchContentInfo();
   }
 
   unlockScope() {
     this.lockScope = !this.lockScope;
     if (this.lockScope) {
       this.exportScope = eavConstants.scopes.default.value;
-      this.fetchContentInfo();
+      this.#fetchContentInfo();
     }
   }
 
-  private fetchScopes() {
+  #fetchScopes() {
     this.loading$.next(true);
-    this.contentTypesService.getScopes().subscribe(scopes => {
+    this.#contentTypesSvc.getScopes().subscribe(scopes => {
       this.scopeOptions = scopes;
       this.loading$.next(false);
     });
   }
 
-  private fetchContentInfo() {
+  #fetchContentInfo() {
     this.loading$.next(true);
-    this.exportAppPartsService.getContentInfo(this.exportScope).subscribe(contentInfo => {
+    this.#exportAppPartsSvc.getContentInfo(this.exportScope).subscribe(contentInfo => {
       this.contentInfo = contentInfo;
       this.loading$.next(false);
     });
   }
 
-  private selectedContentTypes() {
+  #selectedContentTypes() {
     return this.contentInfo.ContentTypes.filter(contentType => contentType._export);
   }
 
-  private selectedEntities() {
+  #selectedEntities() {
     let entities: ContentInfoEntity[] = [];
     for (const contentType of this.contentInfo.ContentTypes) {
       entities = entities.concat(contentType.Entities.filter(entity => entity._export));
@@ -136,12 +137,11 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
     return entities;
   }
 
-  private selectedTemplates() {
+  #selectedTemplates() {
     let templates: ContentInfoTemplate[] = [];
     // The ones with...
-    for (const contentType of this.contentInfo.ContentTypes) {
+    for (const contentType of this.contentInfo.ContentTypes)
       templates = templates.concat(contentType.Templates.filter(template => template._export));
-    }
     // ...and without content types
     templates = templates.concat(this.contentInfo.TemplatesWithoutContentTypes.filter(template => template._export));
     return templates;

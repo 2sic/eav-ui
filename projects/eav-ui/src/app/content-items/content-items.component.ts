@@ -89,10 +89,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private gridApi$ = new BehaviorSubject<GridApi>(null);
   #contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
 
-
   viewModel$: Observable<ContentItemsViewModel>;
-
-
 
   log = new EavLogger(logSpecs);
   constructor(
@@ -110,6 +107,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.fetchColumns();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([
       this.contentType$, this.items$
     ]).pipe(

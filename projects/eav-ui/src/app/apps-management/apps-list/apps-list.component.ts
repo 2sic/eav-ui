@@ -99,6 +99,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
     this.#dialogRouter.doOnDialogClosed(() => this.#refreshApps$.next());
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
       map(([apps, fabOpen]) => {
         return { apps, fabOpen };

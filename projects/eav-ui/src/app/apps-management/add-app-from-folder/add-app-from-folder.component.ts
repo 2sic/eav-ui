@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, HostBinding, OnDestroy, OnInit, inject } from "@angular/core";
 import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
+import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
@@ -53,14 +53,12 @@ export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.viewModel$ = combineLatest([
-      this.refreshApps$.pipe(
-        startWith(undefined),
-        switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
-        share()
-      )
-    ]).pipe(
-      map(([pendingApps]) => ({ pendingApps })),
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
+    this.viewModel$ =  this.refreshApps$.pipe(
+      startWith(undefined),
+      switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
+      share(),
+      map((pendingApps) => ({ pendingApps })),
     );
   }
 

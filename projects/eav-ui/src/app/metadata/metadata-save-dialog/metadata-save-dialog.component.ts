@@ -67,6 +67,7 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
     this.buildForm();
     this.fetchScopes();
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([this.contentTypes$, this.scopeOptions$]).pipe(
       map(([contentTypes, scopeOptions]) => {
         const viewModel: MetadataSaveDialogViewModel = {

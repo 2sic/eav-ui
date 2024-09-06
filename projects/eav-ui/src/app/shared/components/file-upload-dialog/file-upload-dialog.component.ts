@@ -100,16 +100,15 @@ export class FileUploadDialogComponent extends BaseComponent implements OnInit, 
   ngOnInit(): void {
     this.subscriptions.add(
       this.files$.subscribe(() => {
-        if (this.result$.value !== undefined) {
+        if (this.result$.value !== undefined)
           this.result$.next(undefined);
-        }
       }),
     );
 
-    if (this.dialogData.files != null) {
+    if (this.dialogData.files != null)
       this.filesDropped(this.dialogData.files);
-    }
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([
       this.uploading$, this.files$, this.result$, this.showAppCatalog$,
     ]).pipe(map(([uploading, files, result, showAppCatalog]) => ({ uploading, files, result, showAppCatalog })));

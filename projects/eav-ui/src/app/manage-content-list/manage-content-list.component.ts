@@ -45,13 +45,14 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   #dialogRoutes = transient(DialogRoutingService);
 
-  private items$ = new BehaviorSubject<GroupHeader[]>(null);
-  private header$ = new BehaviorSubject<GroupHeader>(null);
-  viewModel$ = combineLatest([this.items$, this.header$]).pipe(
+  #items$ = new BehaviorSubject<GroupHeader[]>(null);
+  #header$ = new BehaviorSubject<GroupHeader>(null);
+  // TODO: @2dg - this should be easy to get rid of #remove-observables
+  viewModel$ = combineLatest([this.#items$, this.#header$]).pipe(
     map(([items, header]) => ({ items, header })),
   );
 
-  private contentGroup: ContentGroup = {
+  #contentGroup: ContentGroup = {
     id: null,
     guid: this.#dialogRoutes.snapshot.paramMap.get('guid'),
     part: this.#dialogRoutes.snapshot.paramMap.get('part'),
@@ -59,8 +60,8 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   };
   reordered = false;
 
-  private contentGroupService = transient(ContentGroupService);
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  #contentGroupSvc = transient(ContentGroupService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
 
   constructor(
     private dialogRef: MatDialogRef<ManageContentListComponent>,
@@ -80,12 +81,12 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.items$.complete();
-    this.header$.complete();
+    this.#items$.complete();
+    this.#header$.complete();
   }
 
   private fetchDialogSettings() {
-    this.dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
+    this.#dialogConfigSvc.getCurrent$().subscribe(dialogSettings => {
       this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);
       this.translate.use(dialogSettings.Context.Language.Current.split('-')[0]);
     });
@@ -97,7 +98,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   saveList() {
     this.snackBar.open('Saving...');
-    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(() => {
+    this.#contentGroupSvc.saveList(this.#contentGroup, this.#items$.value).subscribe(() => {
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchList();
       this.fetchHeader();
@@ -106,7 +107,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   saveAndCloseList() {
     this.snackBar.open('Saving...');
-    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(() => {
+    this.#contentGroupSvc.saveList(this.#contentGroup, this.#items$.value).subscribe(() => {
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
@@ -115,8 +116,8 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   editHeader() {
     const form: EditForm = {
       items: [
-        EditPrep.relationship(this.contentGroup.guid, 'listcontent', 0, this.header$.value.Id === 0),
-        EditPrep.relationship(this.contentGroup.guid, 'listpresentation', 0, this.header$.value.Id === 0),
+        EditPrep.relationship(this.#contentGroup.guid, 'listcontent', 0, this.#header$.value.Id === 0),
+        EditPrep.relationship(this.#contentGroup.guid, 'listpresentation', 0, this.#header$.value.Id === 0),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -133,12 +134,12 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   addFromExisting(index: number) {
     const queryParams = { add: true };
-    this.#dialogRoutes.navRelative([`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`], { queryParams });
+    this.#dialogRoutes.navRelative([`${this.#contentGroup.guid}/${this.#contentGroup.part}/${index + 1}/replace`], { queryParams });
   }
 
   addBelow(index: number) {
     const form: EditForm = {
-      items: [ EditPrep.relationship(this.contentGroup.guid, this.contentGroup.part, index + 1, true) ],
+      items: [ EditPrep.relationship(this.#contentGroup.guid, this.#contentGroup.part, index + 1, true) ],
     };
     const formUrl = convertFormToUrl(form);
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
@@ -147,16 +148,16 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   remove(item: GroupHeader) {
     if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) return;
     this.snackBar.open('Removing...');
-    this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => {
+    this.#contentGroupSvc.removeItem(this.#contentGroup, item.Index).subscribe(() => {
       this.snackBar.open('Removed', null, { duration: 2000 });
       this.fetchList();
     });
   }
 
   drop(event: CdkDragDrop<GroupHeader[]>) {
-    const items = [...this.items$.value];
+    const items = [...this.#items$.value];
     moveItemInArray(items, event.previousIndex, event.currentIndex);
-    this.items$.next(items);
+    this.#items$.next(items);
     this.reordered = true;
   }
 
@@ -166,13 +167,13 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   private fetchList(keepOrder = false) {
-    this.contentGroupService.getList(this.contentGroup).subscribe(items => {
+    this.#contentGroupSvc.getList(this.#contentGroup).subscribe(items => {
       if (this.reordered) {
-        const oldIds = this.items$.value.map(item => item.Id);
-        const idsChanged = this.items$.value.length !== items.length || items.some(item => !oldIds.includes(item.Id));
+        const oldIds = this.#items$.value.map(item => item.Id);
+        const idsChanged = this.#items$.value.length !== items.length || items.some(item => !oldIds.includes(item.Id));
         // for usecase where list is fetched on child closed and wasn't changed in the meantime keeps the order before child was opened
         if (!idsChanged && keepOrder) {
-          const sortOrder = this.items$.value.map(item => item.Index);
+          const sortOrder = this.#items$.value.map(item => item.Index);
           items.sort((a, b) => {
             const aIndex = sortOrder.indexOf(a.Index);
             const bIndex = sortOrder.indexOf(b.Index);
@@ -183,14 +184,14 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
           this.snackBar.open('List was changed from somewhere else. Order of items is reset', null, { duration: 5000 });
         }
       }
-      this.items$.next(items);
+      this.#items$.next(items);
       this.reordered = false;
     });
   }
 
   private fetchHeader() {
-    this.contentGroupService.getHeader(this.contentGroup).subscribe(header => {
-      this.header$.next(header);
+    this.#contentGroupSvc.getHeader(this.#contentGroup).subscribe(header => {
+      this.#header$.next(header);
     });
   }
 }

@@ -59,6 +59,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
     this.searchItems$ = new BehaviorSubject([]);
     this.tree$ = new BehaviorSubject([]);
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     const filteredSearch$ = combineLatest([this.filterText$, this.searchItems$]).pipe(
       map(([filterText, searchItems]) =>
         searchItems.filter(item => item.name.toLocaleLowerCase().includes(filterText.toLocaleLowerCase()))

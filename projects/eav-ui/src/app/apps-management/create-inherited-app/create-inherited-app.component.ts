@@ -48,6 +48,7 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) {
     this.form = this.buildForm();
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.loading$ = new BehaviorSubject(false);
     this.inheritableApps$ = new BehaviorSubject<App[]>(undefined);
     this.viewModel$ = combineLatest([this.loading$, this.inheritableApps$]).pipe(

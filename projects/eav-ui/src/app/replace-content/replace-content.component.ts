@@ -74,6 +74,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     this.#filterText$ = new BehaviorSubject('');
     this.#options$ = new BehaviorSubject([]);
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     const filteredOptions$ = combineLatest([this.#filterText$, this.#options$]).pipe(
       map(([filterText, options]) =>
         options.filter(option => option.label.toLocaleLowerCase().includes(filterText.toLocaleLowerCase())).map(option => option.label)

@@ -9,8 +9,6 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -82,6 +80,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
+  // TODO: @2dg - this should be easy to get rid of #remove-observables
   viewModel$ = combineLatest([this.contentTypes$, this.scope$, this.scopeOptions$]).pipe(
     map(([contentTypes, scope, scopeOptions]) =>
       ({ contentTypes, scope, scopeOptions })),

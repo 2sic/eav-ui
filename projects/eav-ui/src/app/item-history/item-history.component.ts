@@ -47,9 +47,11 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   #page$ = new BehaviorSubject(1);
   #pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
   #compareWith$ = new BehaviorSubject<CompareWith>('live');
+  // TODO: @2dg - this should be easy to get rid of #remove-observables
   #historyItems$ = combineLatest([this.#versions$, this.#page$, this.#pageSize$, this.#compareWith$]).pipe(
     map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
   );
+  // TODO: @2dg - this should be easy to get rid of #remove-observables
   viewModel$ = combineLatest([this.#versions$, this.#historyItems$, this.#pageSize$, this.#compareWith$]).pipe(
     map(([versions, historyItems, pageSize, compareWith]) => ({
       length: versions?.length,

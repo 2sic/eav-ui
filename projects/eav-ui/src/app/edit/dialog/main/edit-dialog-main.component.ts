@@ -177,6 +177,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.formulaDesignerService.init();
     const items$ = this.itemService.getMany$(this.#formConfig.config.itemGuids);
 
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     // TODO:: @2g Question viewInitiated
     this.viewModel$ = combineLatest([items$, this.#viewInitiated$]).pipe(
       map(([items, viewInitiated]) => ({

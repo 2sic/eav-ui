@@ -59,7 +59,7 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
       const data = buildData(viewUsage);
       this.data$.next(data);
     });
-
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([this.viewUsage$, this.viewTooltip$, this.data$]).pipe(
       map(([viewUsage, viewTooltip, data]) => ({ viewUsage, viewTooltip, data }))
     );

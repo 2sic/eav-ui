@@ -64,9 +64,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchPermissions();
     this.#dialogRoutes.doOnDialogClosed(() => this.fetchPermissions());
-    this.viewModel$ = combineLatest([
-      this.permissions$
-    ]).pipe(map(([permissions]) => ({ permissions })));
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
+    this.viewModel$ = this.permissions$.pipe(map((permissions) => ({ permissions })));
   }
 
   ngOnDestroy() {

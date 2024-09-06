@@ -48,6 +48,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   private viewStateSelected$ = new BehaviorSubject<number>(this.viewStates.default);
   private evaluationResult$ = new BehaviorSubject<EvaluateContentResult>(null);
   private importResult$ = new BehaviorSubject<ImportContentResult>(null);
+  // TODO: @2dg - this should be easy to get rid of #remove-observables
   viewModel$ = combineLatest([
     this.contentType$, this.loading$, this.viewStateSelected$, this.evaluationResult$, this.importResult$,
   ]).pipe(

@@ -93,6 +93,8 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.#dialogRoutes.doOnDialogClosed(() => this.fetchMetadata());
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');
+
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.#metadataSet$.subscribe((set) => {
       this.log.a('test 2dm', { set });
     });

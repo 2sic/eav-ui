@@ -1,6 +1,7 @@
 import { computed, signal, Signal, WritableSignal } from '@angular/core';
 import { SIGNAL } from '@angular/core/primitives/signals';
 import isEqual from 'lodash-es/isEqual';
+import { Observable, take } from 'rxjs';
 
 
 /**
@@ -17,6 +18,24 @@ export function signalObj<T>(name: string, initialValue: T): WritableSignal<T> {
 export function computedObj<T>(name: string, computation: () => T): Signal<T> {
   const comp =  computed(computation, { equal: isEqual }) as Signal<T>; // needs recast, because isEqual changes it to Signal<any>
   return named(name, comp);
+}
+
+// TODO: 2dg use this for most http signals
+// Either in the place where it is called, or if the service is only used in one place, in the service itself to return a signal instead
+/**
+ * Convert a single http get into a simple signal.
+ * It will initialize with the optional initialValue and then update with the httpGet result.
+ * As such, it has a first value, and will only update once.
+ * @param name name of the signal for debugging
+ * @param httpRequest the http request
+ * @param initialValue optional initial value
+ * @returns 
+ */
+export function awaitHttp<T>(name: string, httpRequest: Observable<T>, initialValue: T = null): Signal<T> {
+  const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;
+  // take(1) to only get the first value, and close the subscription right afterwards - which is what happens to all normal http requests
+  httpRequest.pipe(take(1)).subscribe(value => sig.set(value));
+  return named(name, sig.asReadonly());
 }
 
 

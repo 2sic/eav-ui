@@ -88,7 +88,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
       this.fetchTemplates();
       this.fetchPolymorphism();
     });
-
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([this.views$, this.polymorphStatus$]).pipe(
       map(([views, polymorphStatus]) => ({ views, polymorphStatus }))
     );

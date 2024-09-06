@@ -167,6 +167,8 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
   }
 
   private buildViewModel(): void {
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
+    // ...but it will take a bit longer, as it's a bit more complex.
     const systemInfos$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) return;

@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -58,8 +58,9 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchWebApis();
-    this.viewModel$ = combineLatest([this.webApis$]).pipe(
-      map(([webApis]) => ({ webApis }))
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
+    this.viewModel$ = this.webApis$.pipe(
+      map(webApis => ({ webApis }))
     );
 
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {

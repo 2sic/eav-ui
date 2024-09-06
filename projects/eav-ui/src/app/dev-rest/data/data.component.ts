@@ -107,29 +107,21 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     );
 
     // Prepare everything for use in the template
-    // Note that we need to mix multiple combineLatest, because a combineLatest can only take 6 streams
     this.viewModel$ = combineLatest([
-      combineLatest([
         contentType$,
         this.scenario$,
-        this.permissions$
-      ]),
-      combineLatest([
+        this.permissions$,
         root$,
         itemOfThisType$,
         this.dialogSettings$
-      ]),
     ]).pipe(
-      map(([[contentType, scenario, permissions], [root, item, diag]]) => {
+      map(([contentType, scenario, permissions, root, item, diag]) => {
         var result: DevRestDataViewModel = {
-          // return ({
           ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
           contentType,
           itemId: item.Id,
-          // 2024-04-26 2dm - believe this is never used, so removed it #cleanup-picker
-          // itemGuid: item.Guid, //Value,
           apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),
-        };//);
+        };
         return result;
       }),
     );

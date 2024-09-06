@@ -78,6 +78,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchFields();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchFields());
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = combineLatest([
       this.contentType$, this.fields$
     ]).pipe(

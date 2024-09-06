@@ -51,6 +51,7 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     private context: Context,
     private snackBar: MatSnackBar,
   ) {
+    // TODO: @2dg - this should be easy to get rid of #remove-observables
     // New with proper ViewModel
     this.viewModel$ = combineLatest([
       this.appSettingsInternal$,

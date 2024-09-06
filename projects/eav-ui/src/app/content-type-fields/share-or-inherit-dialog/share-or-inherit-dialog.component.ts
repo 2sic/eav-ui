@@ -71,10 +71,10 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
     if (this.initialState === SharingOrInheriting.None) {
       this.title = 'SharingOrInheriting.TitleNone';
       const shareableFields$ = this.contentTypesFieldsService.getShareableFieldsFor(this.dialogData.AttributeId);
-      this.viewModel$ = combineLatest([
-        shareableFields$
-      ]).pipe(
-        map(([shareableFields]) => {
+
+      // TODO: @2dg - this should be easy to get rid of #remove-observables
+      this.viewModel$ = shareableFields$.pipe(
+        map((shareableFields) => {
           this.shareableFields$.next(shareableFields);
           return { shareableFields };
         })
