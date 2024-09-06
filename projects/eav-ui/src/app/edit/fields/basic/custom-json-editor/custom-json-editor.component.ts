@@ -8,13 +8,13 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
-import { FormConfigService } from '../../../state/form-config.service';
-import { ControlStatus } from '../../../shared/models/control-status.model';
+import { FormConfigService } from '../../../form/form-config.service';
+import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.CustomJsonEditor,

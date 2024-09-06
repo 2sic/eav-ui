@@ -1,5 +1,5 @@
 import { NgZone } from '@angular/core';
-import { ElementEventListener } from '../../../shared/models/element-event-listener.model';
+import { ElementEventListener } from '../../../shared/controls/element-event-listener.model';
 
 export class ShowShadowsHelper {
   private maxScrollLeft: number;

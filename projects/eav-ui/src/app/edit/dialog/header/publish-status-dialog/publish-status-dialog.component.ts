@@ -6,9 +6,9 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
-import { FormConfigService } from '../../../state/form-config.service';
+import { FormConfigService } from '../../../form/form-config.service';
 import { PublishMode, PublishModes } from '../../main/edit-dialog-main.models';
-import { PublishStatusService } from '../../../shared/store/publish-status.service';
+import { FormPublishingService } from '../../../form/form-publishing.service';
 import { isCtrlS } from '../../main/keyboard-shortcuts';
 
 @Component({
@@ -34,7 +34,7 @@ export class PublishStatusDialogComponent {
 
   constructor(
     private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
-    private publishStatusService: PublishStatusService,
+    private publishStatusService: FormPublishingService,
     private formConfig: FormConfigService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {

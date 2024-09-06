@@ -21,10 +21,10 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ConnectorHelper } from '../../connector/connector.helper';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
-import { FormsStateService } from '../../../state/forms-state.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FormsStateService } from '../../../form/forms-state.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
-import { ControlStatus } from '../../../shared/models/control-status.model';
+import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'ExpandableWrapperComponent';

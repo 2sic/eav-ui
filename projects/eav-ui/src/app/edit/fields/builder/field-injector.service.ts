@@ -9,7 +9,7 @@ import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
-import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/models/control-status.model';
+import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/controls/control-status.model';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';

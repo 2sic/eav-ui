@@ -3,11 +3,14 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 import isEqual from 'lodash-es/isEqual';
 
-const logThis = false;
 const logThisUndefined = true;
 const nameOfThis = 'SignalStoreBase';
+
 /**
- * temp
+ * Signal based store for any kind of data which is accessed by a key.
+ * - The data type is generic.
+ * - The key type can be customized.
+ * - Standard get/add/remove methods exist, and can be augmented by the inheriting store.
  */
 export class SignalStoreBase<TKey extends string | number, TValue> {
   /** Main Cache */

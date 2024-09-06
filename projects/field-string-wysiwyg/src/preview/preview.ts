@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models/element-event-listener.model';
+import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/controls/element-event-listener.model';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';

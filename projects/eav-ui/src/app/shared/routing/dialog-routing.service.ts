@@ -5,7 +5,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'DialogRoutingService',
   specs: {
     doOnDialogClosed: true,

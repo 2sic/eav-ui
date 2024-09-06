@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Language } from '../../../shared/models/language.model';
-import { SignalStoreBase } from './signal-store-base';
+import { Language } from '../../shared/models/language.model';
+import { SignalStoreBase } from '../shared/store/signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'LanguageService';

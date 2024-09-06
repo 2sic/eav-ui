@@ -13,17 +13,17 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
-import { FormConfigService } from '../../../state/form-config.service';
-import { FormsStateService } from '../../../state/forms-state.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { LinkCacheService } from '../../../shared/store/link-cache.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FormsStateService } from '../../../form/forms-state.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 import isEqual from 'lodash-es/isEqual';
 
 @Component({

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EavContentType, EavContentTypeAttribute, EavItem } from '../models/eav';
 import { EavContentTypeDto } from '../models/json-format-v1';
 import { ItemHelper } from '../helpers/item.helper';
-import { SignalStoreBase } from './signal-store-base';
+import { SignalStoreBase } from '../store/signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'ContentTypeService';

@@ -1,19 +1,19 @@
-import { ItemEditIdentifier, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
-import { SaveResult } from '../../state/save-result.model';
+import { ItemEditIdentifier, ItemIdentifierHeader } from '../../shared/models/edit-form.model';
+import { SaveResult } from './save-result.model';
 import { ItemService } from './item.service';
-import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../models/eav';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
-import { FormLanguage, Language } from '../../state/form-languages.model';
-import { BestValueModes } from '../../localization/localization.constants';
-import { FieldHelper } from '../helpers';
-import { InputTypeMetadata } from '../../../shared/fields/input-type-metadata.model';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FieldValueHelpers } from '../helpers/FieldValueHelpers';
+import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../shared/models/eav';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FormLanguage, Language } from '../form/form-languages.model';
+import { BestValueModes } from '../localization/localization.constants';
+import { FieldHelper } from '../shared/helpers';
+import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'ItemUpdateHelper',
   specs: {
     all: true,

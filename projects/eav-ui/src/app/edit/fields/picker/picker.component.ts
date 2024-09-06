@@ -4,7 +4,7 @@ import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from './picker-data.factory';
 

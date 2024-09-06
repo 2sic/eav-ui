@@ -1,4 +1,4 @@
-import { ContentTypeItemService } from '../shared/store/content-type-item.service';
+import { ContentTypeItemService } from '../shared/content-types/content-type-item.service';
 import { Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -15,22 +15,22 @@ import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FormDataService } from '../shared/services/form-data.service';
+import { FormDataService } from './form-data.service';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { BestValueModes } from '../localization/localization.constants';
 import { FormConfigService } from './form-config.service';
-import { ItemValuesOfLanguage } from './item-values-of-language.model';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FormLanguage } from './form-languages.model';
 import { transient } from '../../core';
-import { AdamCacheService } from '../shared/store/adam-cache.service';
-import { ContentTypeService } from '../shared/store/content-type.service';
-import { ItemService } from '../shared/store/item.service';
+import { AdamCacheService } from '../shared/adam/adam-cache.service';
+import { ContentTypeService } from '../shared/content-types/content-type.service';
+import { ItemService } from '../state/item.service';
 import { InputTypeService } from '../shared/input-types/input-type.service';
-import { PublishStatusService } from '../shared/store/publish-status.service';
-import { LanguageService } from '../shared/store/language.service';
-import { LanguageInstanceService } from '../shared/store/language-instance.service';
-import { LinkCacheService } from '../shared/store/link-cache.service';
+import { FormPublishingService } from './form-publishing.service';
+import { LanguageService } from '../localization/language.service';
+import { FormLanguageService } from './form-language.service';
+import { LinkCacheService } from '../shared/adam/link-cache.service';
 
 const logSpecs = {
   enabled: false,
@@ -47,7 +47,7 @@ const logSpecs = {
 /**
  * Service to initialize an edit form. Will:
  * - Load form data
- * - store it in various services, rxStore etc.
+ * - store it in various services, stores etc.
  * - Load initial values for formulas
  */
 @Injectable()
@@ -67,10 +67,10 @@ export class EditInitializerService {
     private inputTypeService: InputTypeService,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
-    private publishStatusService: PublishStatusService,
+    private publishStatusService: FormPublishingService,
     private translate: TranslateService,
     private languageService: LanguageService,
-    private languageStore: LanguageInstanceService,
+    private languageStore: FormLanguageService,
     private snackBar: MatSnackBar,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,

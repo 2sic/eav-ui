@@ -4,7 +4,7 @@ import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
-import { ControlStatus } from '../shared/models/control-status.model';
+import { ControlStatus } from '../shared/controls/control-status.model';
 import { PickerData } from './picker/picker-data';
 
 /**

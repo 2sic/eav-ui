@@ -3,7 +3,7 @@ import { EavEntityAttributes } from '../shared/models/eav';
 import { EntityReader } from '../shared/helpers';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldValue } from '../../../../../edit-types';
-import { ItemService } from '../shared/store/item.service';
+import { ItemService } from './item.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { difference } from '../../shared/helpers/difference';

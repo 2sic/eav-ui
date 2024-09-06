@@ -21,17 +21,17 @@ import { EavLogger } from '../../../../../shared/logging/eav-logger';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
 import { FieldsSettingsService } from '../../../../state/fields-settings.service';
-import { FormsStateService } from '../../../../state/forms-state.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { AdamService } from '../../../../shared/services/adam.service';
+import { FormsStateService } from '../../../../form/forms-state.service';
+import { EditRoutingService } from '../../../../routing/edit-routing.service';
+import { AdamService } from '../../../../shared/adam/adam.service';
 import { fixDropzone } from './dropzone-helper';
-import { AdamCacheService } from '../../../../shared/store/adam-cache.service';
-import { LinkCacheService } from '../../../../shared/store/link-cache.service';
+import { AdamCacheService } from '../../../../shared/adam/adam-cache.service';
+import { LinkCacheService } from '../../../../shared/adam/link-cache.service';
 import isEqual from 'lodash-es/isEqual';
 import { AdamConnector } from './adam-connector';
 import { transient } from '../../../../../core/transient';
 import { SignalEquals } from '../../../../../shared/signals/signal-equals';
-import { DialogRoutingService } from 'projects/eav-ui/src/app/shared/routing/dialog-routing.service';
+import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 
 const logSpecs = {
   enabled: false,

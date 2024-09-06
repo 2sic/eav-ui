@@ -1,4 +1,4 @@
-import { TranslationLink } from '../localization/translation-link.constants';
+import { TranslationLink } from './translation-link.constants';
 
 export interface TranslationStateCore {
   linkType: TranslationLink;

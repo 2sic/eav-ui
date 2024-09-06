@@ -9,7 +9,7 @@ import { FormulaResultRaw } from "../results/formula-results.models";
 import { FieldSettingPair } from './formula-promise-result.model';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
-import { ItemService } from '../../shared/store/item.service';
+import { ItemService } from '../../state/item.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';

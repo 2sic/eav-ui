@@ -15,13 +15,13 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { MatDayjsModule, MatDayjsDateAdapter } from '../../../shared/date-adapters/date-adapter-api';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
-import { ControlStatus } from '../../../shared/models/control-status.model';
+import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'DateTimeDefaultComponent';

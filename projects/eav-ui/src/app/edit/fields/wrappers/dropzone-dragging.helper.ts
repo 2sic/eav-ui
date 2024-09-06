@@ -1,6 +1,6 @@
 import { NgZone } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
-import { ElementEventListener } from '../../shared/models/element-event-listener.model';
+import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
 
 declare const window: EavWindow;
 

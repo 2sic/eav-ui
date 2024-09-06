@@ -6,7 +6,7 @@ import { LocalizationHelpers } from '../localization/localization.helpers';
 import { ValidationHelpers } from '../shared/validation/validation.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
 import { FieldConstantsOfLanguage } from './fields-configs.model';
-import { FormLanguage } from './form-languages.model';
+import { FormLanguage } from '../form/form-languages.model';
 
 export class FieldSettingsUpdateHelperFactory {
   constructor(

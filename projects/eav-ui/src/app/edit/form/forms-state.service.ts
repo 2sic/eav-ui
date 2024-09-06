@@ -2,8 +2,8 @@ import { computed, Injectable, Signal, signal } from '@angular/core';
 import { FormConfigService } from './form-config.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { SignalEquals } from '../../shared/signals/signal-equals';
-import { ItemService } from '../shared/store/item.service';
-import { LanguageService } from '../shared/store/language.service';
+import { ItemService } from '../state/item.service';
+import { LanguageService } from '../localization/language.service';
 import isEqual from 'lodash-es/isEqual';
 
 const logThis = false;

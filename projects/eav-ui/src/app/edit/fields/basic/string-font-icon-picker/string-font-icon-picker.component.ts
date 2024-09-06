@@ -16,7 +16,7 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
-import { ControlStatus } from '../../../shared/models/control-status.model';
+import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.StringFontIconPicker,

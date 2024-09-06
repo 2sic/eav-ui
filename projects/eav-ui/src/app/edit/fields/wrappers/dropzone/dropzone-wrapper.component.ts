@@ -7,7 +7,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../field-state';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../state/form-config.service';
+import { FormConfigService } from '../../../form/form-config.service';
 import { WrappersCatalog } from '../wrappers.constants';
 import { DropzoneWysiwyg } from './dropzone-wysiwyg';
 

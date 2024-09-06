@@ -22,30 +22,30 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { FormDataService } from '../../shared/services/form-data.service';
+import { FormDataService } from '../../form/form-data.service';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
 import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
-import { FormConfigService } from '../../state/form-config.service';
-import { FormsStateService } from '../../state/forms-state.service';
-import { EditRoutingService } from '../../shared/services/edit-routing.service';
-import { LoadIconsService } from '../../shared/services/load-icons.service';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormsStateService } from '../../form/forms-state.service';
+import { EditRoutingService } from '../../routing/edit-routing.service';
+import { LoadIconsService } from '../../assets/icons/load-icons.service';
 import { MetadataDecorators } from '../../state/metadata-decorators.constants';
 import { SaveResult } from '../../state/save-result.model';
 import { GlobalConfigService } from '../../../shared/services/global-config.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ContentTypeItemService } from '../../shared/store/content-type-item.service';
-import { ContentTypeService } from '../../shared/store/content-type.service';
+import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
-import { ItemService } from '../../shared/store/item.service';
-import { LanguageService } from '../../shared/store/language.service';
-import { LanguageInstanceService } from '../../shared/store/language-instance.service';
-import { PublishStatusService } from '../../shared/store/publish-status.service';
-import { AdamCacheService } from '../../shared/store/adam-cache.service';
-import { LinkCacheService } from '../../shared/store/link-cache.service';
+import { ItemService } from '../../state/item.service';
+import { LanguageService } from '../../localization/language.service';
+import { FormLanguageService } from '../../form/form-language.service';
+import { FormPublishingService } from '../../form/form-publishing.service';
+import { AdamCacheService } from '../../shared/adam/adam-cache.service';
+import { LinkCacheService } from '../../shared/adam/link-cache.service';
 import { isCtrlS, isEscape } from './keyboard-shortcuts';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserSettings } from '../../../shared/user/user-settings.service';
@@ -149,11 +149,11 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageStore: LanguageInstanceService,
+    private languageStore: FormLanguageService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private editRoutingService: EditRoutingService,
-    private publishStatusService: PublishStatusService,
+    private publishStatusService: FormPublishingService,
     private formsStateService: FormsStateService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,

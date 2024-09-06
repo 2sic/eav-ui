@@ -4,15 +4,15 @@ import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model
 import { ItemIdentifierEditConfig } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
-import { TranslationStateCore } from './translate-state.model';
+import { TranslationStateCore } from '../localization/translate-state.model';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { TranslationLinks } from '../localization/translation-link.constants';
 import { LocalizationHelpers } from '../localization/localization.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
 import { ContentTypeSettings } from './content-type-settings.model';
-import { TranslationState } from './translate-state.model';
-import { FormLanguage } from './form-languages.model';
+import { TranslationState } from '../localization/translate-state.model';
+import { FormLanguage } from '../form/form-languages.model';
 
 export class ContentTypeSettingsHelpers {
 

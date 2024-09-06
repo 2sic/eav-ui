@@ -4,7 +4,7 @@ import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
 import { EavItem, EavContentType } from '../shared/models/eav';
-import { FormConfigService } from './form-config.service';
+import { FormConfigService } from '../form/form-config.service';
 import { ItemFieldVisibility } from './item-field-visibility';
 import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
 import { InputTypeService } from '../shared/input-types/input-type.service';

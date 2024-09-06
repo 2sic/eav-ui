@@ -4,12 +4,12 @@ import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
-import { FormConfigService } from './form-config.service';
+import { FormConfigService } from '../form/form-config.service';
 import { FieldProps } from './fields-configs.model';
-import { TranslationState } from './translate-state.model';
-import { LanguageInstanceService } from '../shared/store/language-instance.service';
-import { ContentTypeService } from '../shared/store/content-type.service';
-import { ItemService } from '../shared/store/item.service';
+import { TranslationState } from '../localization/translate-state.model';
+import { FormLanguageService } from '../form/form-language.service';
+import { ContentTypeService } from '../shared/content-types/content-type.service';
+import { ItemService } from './item.service';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import isEqual from 'lodash-es/isEqual';
@@ -42,7 +42,7 @@ export class FieldsSettingsService {
   //#region injected services, constructor, clean-up
 
   // Shared / inherited services
-  #languageSvc = inject(LanguageInstanceService);
+  #languageSvc = inject(FormLanguageService);
   #formConfig = inject(FormConfigService);
   #contentTypeSvc = inject(ContentTypeService);
   #itemSvc = inject(ItemService);

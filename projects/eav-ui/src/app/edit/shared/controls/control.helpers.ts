@@ -1,6 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { FieldValueHelpers } from './FieldValueHelpers';
+import { FieldValueHelpers } from '../helpers/field-value.helpers';
 
 export class ControlHelpers {
 

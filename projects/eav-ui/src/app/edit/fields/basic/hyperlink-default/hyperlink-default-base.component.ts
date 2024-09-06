@@ -3,17 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { Preview } from './hyperlink-default.models';
 import { FieldState } from '../../field-state';
 import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { PagePicker } from '../../page-picker/page-picker.helper';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
-import { FormConfigService } from '../../../state/form-config.service';
-import { FormsStateService } from '../../../state/forms-state.service';
-import { AdamService } from '../../../shared/services/adam.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { LinkCacheService } from '../../../shared/store/link-cache.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FormsStateService } from '../../../form/forms-state.service';
+import { AdamService } from '../../../shared/adam/adam.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
+import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 import { transient } from '../../../../core/transient';
 
 const logSpecs = {

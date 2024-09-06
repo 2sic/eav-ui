@@ -4,7 +4,7 @@ import { FieldValuePair } from '../formulas/results/formula-results.models';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { Signal } from '@angular/core';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
-import { FieldValueHelpers } from '../shared/helpers/FieldValueHelpers';
+import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
 import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 
 const logThis = false;

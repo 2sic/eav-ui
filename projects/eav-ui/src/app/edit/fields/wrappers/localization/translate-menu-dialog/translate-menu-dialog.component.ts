@@ -1,6 +1,6 @@
 import { Component, computed, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslationStateCore } from '../../../../state/translate-state.model';
+import { TranslationStateCore } from '../../../../localization/translate-state.model';
 import { getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData } from './translate-menu-dialog.models';
 import { TranslateModule } from '@ngx-translate/core';

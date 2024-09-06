@@ -3,7 +3,7 @@ import { LocalizationHelpers } from '../../../../localization/localization.helpe
 import { EavEntityAttributes } from '../../../../shared/models/eav';
 import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
-import { FormLanguage, Language } from '../../../../state/form-languages.model';
+import { FormLanguage, Language } from '../../../../form/form-languages.model';
 
 export function getTemplateLanguages(
   config: { fieldName: string }, // FieldConfigSet,

@@ -1,7 +1,7 @@
 import { FieldValue } from '../../../../../edit-types';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { EavDimension, EavEntityAttributes, EavValue, EavField } from '../shared/models/eav';
-import { FormLanguage } from '../state/form-languages.model';
+import { FormLanguage } from '../form/form-languages.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { BestValueMode, BestValueModes } from './localization.constants';
 

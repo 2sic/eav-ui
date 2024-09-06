@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../state/form-config.service';
-import { FormConfiguration } from '../../state/form-configuration.model';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormConfiguration } from '../../form/form-configuration.model';
 
 const logSpecs = {
   enabled: false,

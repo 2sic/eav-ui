@@ -7,7 +7,7 @@ import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerItem } from '../models/picker-item.model';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({

@@ -1,4 +1,4 @@
-import { Language } from '../../../state/form-languages.model';
+import { Language } from '../../../form/form-languages.model';
 
 export interface LanguageButton extends Language {
   buttonText: string;

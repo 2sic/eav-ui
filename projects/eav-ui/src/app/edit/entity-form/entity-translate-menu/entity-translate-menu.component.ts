@@ -12,10 +12,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
-import { FormConfigService } from '../../state/form-config.service';
-import { FormsStateService } from '../../state/forms-state.service';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormsStateService } from '../../form/forms-state.service';
 import { SignalEquals } from '../../../shared/signals/signal-equals';
-import { ItemService } from '../../shared/store/item.service';
+import { ItemService } from '../../state/item.service';
 
 @Component({
   selector: 'app-entity-translate-menu',

@@ -4,7 +4,7 @@ import { Injectable, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../state/form-config.service';
+import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';

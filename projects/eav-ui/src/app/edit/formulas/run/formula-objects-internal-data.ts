@@ -6,11 +6,11 @@ import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FormConfigService } from '../../state/form-config.service';
+import { FormConfigService } from '../../form/form-config.service';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { Language } from '../../../shared/models/language.model';
-import { FormLanguage } from '../../state/form-languages.model';
-import { ItemService } from '../../shared/store/item.service';
+import { FormLanguage } from '../../form/form-languages.model';
+import { ItemService } from '../../state/item.service';
 
 /** Everything a formula needs to run */
 export interface FormulaRunParameters {

@@ -5,7 +5,7 @@ import { ConnectorData } from '../../../../../../edit-types/src/ConnectorData';
 import { FieldConfig } from '../../../../../../edit-types/src/FieldConfig';
 import { ExperimentalProps } from '../../../../../../edit-types/src/ExperimentalProps';
 import { loadScripts } from '../../../shared/helpers/load-scripts.helper';
-import { FormConfiguration } from '../../state/form-configuration.model';
+import { FormConfiguration } from '../../form/form-configuration.model';
 import { Signal } from '@angular/core';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { toObservable } from '@angular/core/rxjs-interop';

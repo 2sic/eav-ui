@@ -8,10 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { FormConfigService } from '../../state/form-config.service';
-import { FormsStateService } from '../../state/forms-state.service';
-import { LanguageService } from '../../shared/store/language.service';
-import { PublishStatusService } from '../../shared/store/publish-status.service';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormsStateService } from '../../form/forms-state.service';
+import { LanguageService } from '../../localization/language.service';
+import { FormPublishingService } from '../../form/form-publishing.service';
 
 @Component({
   selector: 'app-edit-dialog-header',
@@ -47,7 +47,7 @@ export class EditDialogHeaderComponent {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private languageService: LanguageService,
-    private publishStatusService: PublishStatusService,
+    private publishStatusService: FormPublishingService,
     public formConfig: FormConfigService,
   ) { }
 

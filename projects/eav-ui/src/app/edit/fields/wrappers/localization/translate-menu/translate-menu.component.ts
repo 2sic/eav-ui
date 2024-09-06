@@ -20,9 +20,9 @@ import { FieldState } from '../../../field-state';
 import { TranslationLinks } from '../../../../localization/translation-link.constants';
 import { FieldsSettingsService } from '../../../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../../../state/fields-translate.service';
-import { FormConfigService } from '../../../../state/form-config.service';
-import { FormsStateService } from '../../../../state/forms-state.service';
-import { TranslationState } from '../../../../state/translate-state.model';
+import { FormConfigService } from '../../../../form/form-config.service';
+import { FormsStateService } from '../../../../form/forms-state.service';
+import { TranslationState } from '../../../../localization/translate-state.model';
 
 @Component({
   selector: 'app-translate-menu',

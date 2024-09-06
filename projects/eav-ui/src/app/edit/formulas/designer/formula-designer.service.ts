@@ -8,7 +8,7 @@ import { EntityOption, FieldOption, TargetOption } from '../../dialog/footer/for
 import { FormulaV1Helpers } from './formula-v1-snippets';
 import { FormulaCacheService } from '../cache/formula-cache.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { ItemService } from '../../shared/store/item.service';
+import { ItemService } from '../../state/item.service';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { IntellisenseV2 } from './intellisense-v2';

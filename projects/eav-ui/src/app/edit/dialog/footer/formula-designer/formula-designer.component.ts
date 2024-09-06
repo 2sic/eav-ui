@@ -27,10 +27,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../state/form-config.service';
-import { ItemService } from '../../../shared/store/item.service';
-import { ContentTypeService } from '../../../shared/store/content-type.service';
-import { EditPrep } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
+import { FormConfigService } from '../../../form/form-config.service';
+import { ItemService } from '../../../state/item.service';
+import { ContentTypeService } from '../../../shared/content-types/content-type.service';
+import { EditPrep } from '../../../../shared/models/edit-form.model';
 
 const logThis = false;
 const nameOfThis = 'FormulaDesignerComponent';

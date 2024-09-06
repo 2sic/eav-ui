@@ -13,7 +13,7 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logSpecs = {

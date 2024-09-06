@@ -3,8 +3,8 @@ import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FormConfigService } from '../../state/form-config.service';
-import { LanguageService } from '../../shared/store/language.service';
+import { FormConfigService } from '../../form/form-config.service';
+import { LanguageService } from '../../localization/language.service';
 
 const logThis = false;
 const nameOfThis = 'FormSlideDirective';

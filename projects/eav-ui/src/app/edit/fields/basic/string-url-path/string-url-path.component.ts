@@ -8,7 +8,7 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMask, UrlHelpers } from '../../../shared/helpers';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { transient } from '../../../../core/transient';

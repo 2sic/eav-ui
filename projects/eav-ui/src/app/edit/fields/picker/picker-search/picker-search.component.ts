@@ -15,7 +15,7 @@ import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerIconHelpComponent } from "../picker-icon-help/picker-icon-help.component";
 import { PickerIconInfoComponent } from "../picker-icon-info/picker-icon-info.component";
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';

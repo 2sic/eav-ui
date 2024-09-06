@@ -22,7 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
-import { ControlHelpers } from '../../edit/shared/helpers/control.helpers';
+import { ControlHelpers } from '../../edit/shared/controls/control.helpers';
 import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';

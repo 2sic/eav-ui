@@ -7,10 +7,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../state/form-config.service';
-import { Language } from '../../../state/form-languages.model';
-import { LanguageInstanceService } from '../../../shared/store/language-instance.service';
-import { LanguageService } from '../../../shared/store/language.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { Language } from '../../../form/form-languages.model';
+import { FormLanguageService } from '../../../form/form-language.service';
+import { LanguageService } from '../../../localization/language.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 const logThis = false;
@@ -45,7 +45,7 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private languageService: LanguageService,
-    private languageInstanceService: LanguageInstanceService,
+    private languageInstanceService: FormLanguageService,
     private ngZone: NgZone,
     private formConfig: FormConfigService,
     private snackBar: MatSnackBar,

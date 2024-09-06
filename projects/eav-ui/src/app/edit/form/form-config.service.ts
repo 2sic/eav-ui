@@ -4,10 +4,10 @@ import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../shared/co
 import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { Observable } from 'rxjs';
-import { LanguageInstanceService } from '../shared/store/language-instance.service';
+import { FormLanguageService } from './form-language.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FormConfiguration, VersioningOptions } from './form-configuration.model';
 import { FormLanguageComplete, FormLanguagesConfig } from './form-languages.model';
+import { FormConfiguration, VersioningOptions } from './form-configuration.model';
 
 const logThis = false;
 const nameOfThis = 'FormConfigService';
@@ -55,7 +55,7 @@ export class FormConfigService {
 
   /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
   private context = inject(Context);
-  private languageService = inject(LanguageInstanceService);
+  private languageService = inject(FormLanguageService);
 
   /** Create EavConfiguration from sessionStorage */
   initFormConfig(

@@ -1,6 +1,6 @@
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SignalStoreBase, SignalStoreOptions } from './signal-store-base';
-import { map, Observable, filter } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 
 export class SignalStoreObservableBase<TKey extends string | number, TValue> extends SignalStoreBase<TKey, TValue> {

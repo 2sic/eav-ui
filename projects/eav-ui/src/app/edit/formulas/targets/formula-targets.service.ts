@@ -5,8 +5,8 @@ import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaOptionalTargets, FormulaTarget } from './formula-targets';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { ItemService } from '../../shared/store/item.service';
-import { ContentTypeService } from '../../shared/store/content-type.service';
+import { ItemService } from '../../state/item.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
 
 /**
  * Small helper service to get the target options for the formula designer.

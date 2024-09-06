@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { FormConfigService } from '../../../state/form-config.service';
-import { ItemService } from '../../../shared/store/item.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { ItemService } from '../../../state/item.service';
 
 @Component({
   selector: 'app-data-dump',

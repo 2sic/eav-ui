@@ -1,14 +1,14 @@
 import { Injectable, Signal } from '@angular/core';
-import { FormConfigService } from '../../state/form-config.service';
-import { PublishStatus, PublishMode, PublishModes, EavPublishStatus } from '../../dialog/main/edit-dialog-main.models';
-import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
-import { SignalStoreBase } from './signal-store-base';
+import { FormConfigService } from './form-config.service';
+import { PublishStatus, PublishMode, PublishModes, EavPublishStatus } from '../dialog/main/edit-dialog-main.models';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { SignalStoreBase } from '../shared/store/signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'PublishStatusService';
 
 @Injectable({ providedIn: 'root' })
-export class PublishStatusService extends SignalStoreBase<number, PublishStatus> {
+export class FormPublishingService extends SignalStoreBase<number, PublishStatus> {
   
   constructor() {
     super({ nameOfThis, logThis });

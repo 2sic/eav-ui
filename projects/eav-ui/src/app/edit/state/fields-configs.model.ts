@@ -1,7 +1,7 @@
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
-import { TranslationState } from './translate-state.model';
+import { TranslationState } from '../localization/translate-state.model';
 import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
 import { InputTypeSpecs } from '../shared/input-types/input-type-specs.model';
 

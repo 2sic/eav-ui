@@ -1,7 +1,7 @@
 import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FormLanguage } from '../../state/form-languages.model';
+import { FormLanguage } from '../../form/form-languages.model';
 
 export class EntityReader implements FormLanguage {
   constructor(public current: string, public primary: string) { }

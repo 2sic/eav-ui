@@ -6,7 +6,7 @@ import { EditEntryComponent } from '../dialog/entry/edit-entry.component';
 import { EditUrlParams } from './edit-url-params.model';
 import { UrlHelpers } from '../shared/helpers';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { NavigateFormResult } from '../shared/services/edit-routing.service';
+import { NavigateFormResult } from './edit-routing.service';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 

@@ -8,7 +8,7 @@ import { FeaturesService } from '../../../features/features.service';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldConfigSet } from '../field-config-set.model';
-import { ElementEventListener } from '../../shared/models/element-event-listener.model';
+import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
 
 const logThis = false;
 const nameOfThis = 'PasteClipboardImageDirective';

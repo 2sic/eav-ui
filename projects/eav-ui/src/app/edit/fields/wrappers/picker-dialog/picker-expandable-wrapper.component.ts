@@ -13,8 +13,8 @@ import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended
 import { FieldState } from '../../field-state';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
-import { FormsStateService } from '../../../state/forms-state.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FormsStateService } from '../../../form/forms-state.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 

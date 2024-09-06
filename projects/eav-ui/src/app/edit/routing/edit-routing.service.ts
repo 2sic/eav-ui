@@ -1,20 +1,20 @@
 import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { filter, map, Subject } from 'rxjs';
-import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../../shared/models/edit-form.model';
-import { EditUrlParams } from '../../routing/edit-url-params.model';
-import { UrlHelpers } from '../helpers';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { EditUrlParams } from './edit-url-params.model';
+import { UrlHelpers } from '../shared/helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FormConfigService } from '../../state/form-config.service';
-import { LanguageInstanceService } from '../store/language-instance.service';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { ServiceBase } from '../../../shared/services/service-base';
-import { transient } from '../../../core';
-import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
+import { FormConfigService } from '../form/form-config.service';
+import { FormLanguageService } from '../form/form-language.service';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { ServiceBase } from '../../shared/services/service-base';
+import { transient } from '../../core';
+import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'EditRoutingService',
   specs: {
     all: false,
@@ -22,7 +22,6 @@ const logSpecs = {
     expand: false,
     open: false,
     watchToRefreshOnVersionsClosed: true,
-    test: ['...'],
   }
 }
 
@@ -44,7 +43,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
   #router = this.#dialogRouter.router;
 
   constructor(
-    private langInstanceSvc: LanguageInstanceService,
+    private langInstanceSvc: FormLanguageService,
     private formConfig: FormConfigService
   ) {
     super();
@@ -156,7 +155,9 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
   #initHideHeader() {
     this.subscriptions.add(
       this.#route.params
-        .pipe(mapUntilChanged((p: EditUrlParams) => p.detailsEntityGuid != null && p.detailsFieldId != null))
+        .pipe(
+          mapUntilChanged((p: EditUrlParams) => p.detailsEntityGuid != null && p.detailsFieldId != null)
+        )
         .subscribe(hasDetails => this.langInstanceSvc.updateHideHeader(this.formConfig.config.formId, hasDetails))
     );
   }
@@ -164,7 +165,6 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
   #watchChildFormResult() {
     this.subscriptions.add(
       this.#dialogRouter.childDialogClosed$().pipe(
-      // this.#routerEventsChildDialog$().pipe(
         map(() => {
           const pInfo = this.#getParamsAndPayload();
           return {
@@ -174,7 +174,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
               updateFieldId: parseInt(pInfo.fieldId, 10),
               result: this.#router.getCurrentNavigation().extras?.state,
             } satisfies ChildFormResult
-        };
+          };
         }),
       ).subscribe(({ pInfo, result }) => {
         // alert subscribers that child form closed

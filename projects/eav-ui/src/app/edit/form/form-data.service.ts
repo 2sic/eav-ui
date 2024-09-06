@@ -2,11 +2,11 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
-import { Context } from '../../../shared/services/context';
-import { EavEditLoadDto, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { SaveResult } from '../../state/save-result.model';
-import { GlobalConfigService } from '../../../shared/services/global-config.service';
+import { Context } from '../../shared/services/context';
+import { EavEditLoadDto, SaveEavFormData } from '../dialog/main/edit-dialog-main.models';
+import { EavLogger } from '../../shared/logging/eav-logger';
+import { SaveResult } from '../state/save-result.model';
+import { GlobalConfigService } from '../../shared/services/global-config.service';
 
 
 const logSpecs = {

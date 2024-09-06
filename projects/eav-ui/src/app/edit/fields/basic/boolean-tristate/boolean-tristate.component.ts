@@ -8,9 +8,9 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldState } from '../../field-state';
-import { ControlStatus } from '../../../shared/models/control-status.model';
+import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.BooleanTristate,

@@ -3,7 +3,7 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
-import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
+import { FieldValueHelpers } from '../../shared/helpers/field-value.helpers';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { BaseComponent } from '../../../shared/components/base.component';
@@ -11,12 +11,12 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
-import { FormConfigService } from '../../state/form-config.service';
-import { FormsStateService } from '../../state/forms-state.service';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormsStateService } from '../../form/forms-state.service';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { transient } from '../../../core';
-import { ItemService } from '../../shared/store/item.service';
+import { ItemService } from '../../state/item.service';
 
 const logSpecs = {
   enabled: false,

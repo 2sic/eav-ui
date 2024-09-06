@@ -5,9 +5,9 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Optional, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
-import { FormConfigService } from '../../../state/form-config.service';
+import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 
 const logSpecs = {

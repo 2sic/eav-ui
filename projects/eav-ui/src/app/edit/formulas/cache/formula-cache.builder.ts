@@ -14,11 +14,11 @@ import { FormulaResultRaw, FormulaIdentifier } from '../results/formula-results.
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { LocalizationHelpers as LocHelper } from '../../localization/localization.helpers';
-import { FormConfigService } from '../../state/form-config.service';
+import { FormConfigService } from '../../form/form-config.service';
 import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
-import { ItemService } from '../../shared/store/item.service';
-import { ContentTypeService } from '../../shared/store/content-type.service';
-import { ContentTypeItemService } from '../../shared/store/content-type-item.service';
+import { ItemService } from '../../state/item.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
+import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
 import { FormulaCacheService } from './formula-cache.service';
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { InputTypeService } from '../../shared/input-types/input-type.service';

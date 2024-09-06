@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AdamItem } from '../../../../../../edit-types';
 import { LinkInfo, PrefetchAdams, PrefetchLinks } from '../../dialog/main/edit-dialog-main.models';
-import { SignalStoreBase } from './signal-store-base';
+import { SignalStoreBase } from '../store/signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'LinkCacheService';

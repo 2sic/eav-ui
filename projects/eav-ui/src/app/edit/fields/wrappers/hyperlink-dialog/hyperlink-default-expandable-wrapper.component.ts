@@ -15,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldState } from '../../field-state';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
@@ -24,11 +24,11 @@ import { FeaturesService } from '../../../../features/features.service';
 import { FeatureNames } from '../../../../features/feature-names';
 import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyperlink-default-base.component';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { FormConfigService } from '../../../state/form-config.service';
-import { FormsStateService } from '../../../state/forms-state.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FormConfigService } from '../../../form/form-config.service';
+import { FormsStateService } from '../../../form/forms-state.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
-import { LinkCacheService } from '../../../shared/store/link-cache.service';
+import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 
 @Component({
   selector: WrappersCatalog.HyperlinkDefaultExpandableWrapper,

@@ -9,9 +9,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
-import { ControlHelpers } from '../../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { ControlStatus } from '../../../shared/models/control-status.model';
+import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.BooleanDefault,

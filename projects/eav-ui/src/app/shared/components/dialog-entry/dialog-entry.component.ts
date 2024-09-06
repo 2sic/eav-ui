@@ -5,12 +5,12 @@ import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
 import { EavLogger } from '../../logging/eav-logger';
-import { NavigateFormResult } from '../../../edit/shared/services/edit-routing.service';
+import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
 
 declare const window: EavWindow;
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'DialogEntryComponent',
 };
 

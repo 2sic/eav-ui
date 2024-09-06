@@ -1,16 +1,16 @@
 import { Injectable, Signal } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { EntityReader } from '../helpers';
-import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
-import { FormLanguage, FormLanguageComplete } from '../../state/form-languages.model';
-import { SignalStoreObservableBase } from './signal-store-observable-base';
-import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
+import { EntityReader } from '../shared/helpers';
+import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
+import { FormLanguage, FormLanguageComplete } from './form-languages.model';
+import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
+import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 
 const logThis = false;
-const nameOfThis = 'LanguageInstanceService';
+const nameOfThis = 'FormLanguageService';
 
 @Injectable({ providedIn: 'root' })
-export class LanguageInstanceService extends SignalStoreObservableBase<number, FormLanguageInStore> {
+export class FormLanguageService extends SignalStoreObservableBase<number, FormLanguageInStore> {
 
   constructor() {
     super({ nameOfThis, logThis});

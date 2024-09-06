@@ -1,4 +1,4 @@
-import { TranslationStateCore } from '../../../../state/translate-state.model';
+import { TranslationStateCore } from '../../../../localization/translate-state.model';
 
 /** Reduced config set / info about a field */
 export interface TranslateMenuDialogConfig {

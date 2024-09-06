@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AdamItem } from '../../../../../../edit-types';
 import { PrefetchAdams } from '../../dialog/main/edit-dialog-main.models';
-import { SignalStoreBase } from './signal-store-base';
+import { SignalStoreBase } from '../store/signal-store-base';
 
 const logThis = false;
 const nameOfThis = 'AdamCacheService';
@@ -17,7 +17,7 @@ export class AdamCacheService extends SignalStoreBase<string, AdamSnapshot> {
 
   loadPrefetch(prefetchAdams: PrefetchAdams): void {
     if (prefetchAdams == null)
-      return;
+      return; 
 
     const snapshots = Object.entries(prefetchAdams)
       .map(([entityGuid, attributes]) => ({

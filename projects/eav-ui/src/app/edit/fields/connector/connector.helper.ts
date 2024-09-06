@@ -10,7 +10,7 @@ import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
 import { FieldMask } from '../../shared/helpers';
-import { ControlHelpers } from '../../shared/helpers/control.helpers';
+import { ControlHelpers } from '../../shared/controls/control.helpers';
 import { FieldState } from '../field-state';
 import { PagePicker } from '../page-picker/page-picker.helper';
 import { transient } from '../../../core';
@@ -19,10 +19,10 @@ import { openFeatureDialog } from '../../../features/shared/base-feature.compone
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FeaturesService } from '../../../features/features.service';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { FormConfigService } from '../../state/form-config.service';
-import { EditRoutingService } from '../../shared/services/edit-routing.service';
-import { AdamService } from '../../shared/services/adam.service';
-import { ContentTypeService } from '../../shared/store/content-type.service';
+import { FormConfigService } from '../../form/form-config.service';
+import { EditRoutingService } from '../../routing/edit-routing.service';
+import { AdamService } from '../../shared/adam/adam.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 

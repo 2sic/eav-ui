@@ -1,14 +1,14 @@
 import { Component, computed, inject, Inject, Signal, signal } from '@angular/core';
 import { TranslationLink, TranslationLinks } from '../../edit/localization/translation-link.constants';
 import { I18nKeys } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.constants';
-import { FormConfigService } from '../../edit/state/form-config.service';
+import { FormConfigService } from '../../edit/form/form-config.service';
 import { TranslateMenuDialogData } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SignalEquals } from '../signals/signal-equals';
 import { findI18nKey } from '../../edit/fields/wrappers/localization/translate-menu-dialog/translate-menu-dialog.helpers';
-import { TranslationStateCore } from '../../edit/state/translate-state.model';
-import { LanguageService } from '../../edit/shared/store/language.service';
-import { ItemService } from '../../edit/shared/store/item.service';
+import { TranslationStateCore } from '../../edit/localization/translate-state.model';
+import { LanguageService } from '../../edit/localization/language.service';
+import { ItemService } from '../../edit/state/item.service';
 
 interface TranslationInfo {
   showLanguageSelection: boolean;

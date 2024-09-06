@@ -11,11 +11,11 @@ import { FieldLogicWithValueInit } from '../../fields/logic/field-logic-with-ini
 import { ValidationHelpers, ValidationHelperSpecs } from '../../shared/validation/validation.helpers';
 import { FieldProps } from '../../state/fields-configs.model';
 import { FieldValue } from '../../../../../../edit-types';
-import { ControlHelpers } from '../../shared/helpers/control.helpers';
-import { FieldValueHelpers } from '../../shared/helpers/FieldValueHelpers';
+import { ControlHelpers } from '../../shared/controls/control.helpers';
+import { FieldValueHelpers } from '../../shared/helpers/field-value.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { EntityFormStateService } from '../entity-form-state.service';
-import { AdamCacheService } from '../../shared/store/adam-cache.service';
+import { AdamCacheService } from '../../shared/adam/adam-cache.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 const logSpecs = {

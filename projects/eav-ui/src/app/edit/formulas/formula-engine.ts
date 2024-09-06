@@ -18,16 +18,16 @@ import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpe
 import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { EditInitializerService } from '../state/edit-initializer.service';
+import { EditInitializerService } from '../form/edit-initializer.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
-import { FormConfigService } from '../state/form-config.service';
+import { FormConfigService } from '../form/form-config.service';
 import { LoggingService, LogSeverities } from '../shared/services/logging.service';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ContentTypeSettings } from '../state/content-type-settings.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { ItemService } from '../shared/store/item.service';
-import { LanguageService } from '../shared/store/language.service';
+import { ItemService } from '../state/item.service';
+import { LanguageService } from '../localization/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 

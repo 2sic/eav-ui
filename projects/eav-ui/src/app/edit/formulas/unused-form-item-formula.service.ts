@@ -2,7 +2,7 @@ import { inject, Injectable, Signal } from "@angular/core";
 import { EntityReader } from "../shared/helpers";
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { ItemService } from '../shared/store/item.service';
+import { ItemService } from '../state/item.service';
 
 const logThis = false;
 const nameOfThis = 'FormItemFormulaService';

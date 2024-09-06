@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { EditDialogMainComponent } from '../main/edit-dialog-main.component';
 import { RouterOutlet } from '@angular/router';
 import { Context } from '../../../shared/services/context';
-import { EditInitializerService } from '../../state/edit-initializer.service';
-import { FormConfigService } from '../../state/form-config.service';
+import { EditInitializerService } from '../../form/edit-initializer.service';
+import { FormConfigService } from '../../form/form-config.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { LoggingService } from '../../shared/services/logging.service';
 

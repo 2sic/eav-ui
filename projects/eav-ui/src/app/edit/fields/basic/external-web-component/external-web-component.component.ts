@@ -8,7 +8,7 @@ import { FieldState } from '../../field-state';
 import { ConnectorComponent } from '../../connector/connector.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { EditRoutingService } from '../../../routing/edit-routing.service';
 
 const logThis = false;
 const nameOfThis = 'ExternalWebComponentComponent';
