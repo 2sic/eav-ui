@@ -49,6 +49,14 @@ export class DialogRoutingService extends ServiceBase implements OnDestroy {
   }
 
   /**
+   * Navigate to a new route.
+   * Just looks a bit simpler than the internal array notation.
+   */
+  public navPath(url: string, extras?: NavigationExtras): Promise<boolean> {
+    return this.router.navigate([url], extras);
+  }
+
+  /**
    * Navigate relative to the current route.
    */
   public navRelative(commands: any[], extras?: Omit<NavigationExtras, 'relativeTo'>): Promise<boolean> {

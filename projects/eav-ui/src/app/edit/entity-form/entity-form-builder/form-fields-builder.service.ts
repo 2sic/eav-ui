@@ -37,7 +37,7 @@ export class FormFieldsBuilderService extends ServiceBase {
     super();
   }
 
-  start(entityGuid: string, form: UntypedFormGroup) {
+  public start(entityGuid: string, form: UntypedFormGroup) {
     const l = this.log.fn('start');
 
     const fieldProps = this.fieldsSettingsService.getFieldsPropsSignal();
@@ -68,7 +68,7 @@ export class FormFieldsBuilderService extends ServiceBase {
       filter(fields => fields != null && fields.length > 0),
       take(1)
     ).subscribe(allFields => {
-      this.createFields(entityGuid, form, allFields);
+      this.#createFields(entityGuid, form, allFields);
     });
 
     this.#keepFieldsAndStateInSync(form, fieldsToProcess);
@@ -76,7 +76,7 @@ export class FormFieldsBuilderService extends ServiceBase {
     l.end();
   }
 
-  createFields(entityGuid: string, form: UntypedFormGroup, allFields: FieldToProcess[]) {
+  #createFields(entityGuid: string, form: UntypedFormGroup, allFields: FieldToProcess[]) {
     const l = this.log.fn('createFields');
 
     // 1. create missing controls - usually just on first cycle

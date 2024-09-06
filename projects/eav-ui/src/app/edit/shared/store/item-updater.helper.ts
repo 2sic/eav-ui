@@ -12,17 +12,32 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FieldValueHelpers } from '../helpers/FieldValueHelpers';
 
-const logThis = false;
-const nameOfThis = 'ItemUpdateHelper';
+const logSpecs = {
+  enabled: true,
+  name: 'ItemUpdateHelper',
+  specs: {
+    all: true,
+    updateItemId: false,
+    updateItemHeader: false,
+    addItemAttributeValue: false,
+    updateItemAttributeValue: false,
+    setDefaultValue: false,
+    updateItemAttributesValues: false,
+    addItemAttributeDimension: false,
+    removeItemAttributeDimension: false,
+    updateItemMetadata: false,
+  }
+};
 
 export class ItemUpdateHelper {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = new EavLogger(logSpecs);
   
   constructor(private itemSvc: ItemService) {  
   }
 
   updateItemId(saveResult: SaveResult): void {
+    const l = this.log.fnIf('updateItemId', { saveResult });
     const entityGuid = Object.keys(saveResult)[0];
     const entityId = saveResult[entityGuid];
     const oldItem = this.itemSvc.get(entityGuid);
@@ -46,7 +61,7 @@ export class ItemUpdateHelper {
 
   /** Update parts of the header; ATM just to tell us about the slot being empty */
   updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
-    const l = this.log.fn('updateItemHeader', { entityGuid, header });
+    const l = this.log.fnIf('updateItemHeader', { entityGuid, header });
     const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return;
 
@@ -72,7 +87,7 @@ export class ItemUpdateHelper {
     isTransaction = false,
     transactionItem?: EavItem,
   ): EavItem {
-    const l = this.log.fn('addItemAttributeValue', { entityGuid, attributeKey, newValue, currentLanguage, isReadOnly, attributeType, isTransaction, transactionItem });
+    const l = this.log.fnIf('addItemAttributeValue', { entityGuid, attributeKey, newValue, currentLanguage, isReadOnly, attributeType, isTransaction, transactionItem });
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
     const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
     const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
@@ -99,7 +114,7 @@ export class ItemUpdateHelper {
     language: FormLanguage,
     isReadOnly: boolean,
   ): void {
-    const l = this.log.fn('updateItemAttributeValue', { entityGuid, attributeKey, newValue, language, isReadOnly });
+    const l = this.log.fnIf('updateItemAttributeValue', { entityGuid, attributeKey, newValue, language, isReadOnly });
     const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return;
 
@@ -123,7 +138,7 @@ export class ItemUpdateHelper {
     languages: Language[],
     defaultLanguage: string,
   ): FieldValue {
-    const l = this.log.fn('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
+    const l = this.log.fnIf('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
     const defaultValue = FieldHelper.getDefaultOrPrefillValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(
@@ -150,7 +165,7 @@ export class ItemUpdateHelper {
   //#region Item Attribute - Multi Value
 
   updateItemAttributesValues(entityGuid: string, newValues: ItemValuesOfLanguage, language: FormLanguage): void {
-    const l = this.log.fn('updateItemAttributesValues', { entityGuid, newValues, language });
+    const l = this.log.fnIf('updateItemAttributesValues', { entityGuid, newValues, language });
     const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return l.end('Item not found');
 
@@ -192,6 +207,7 @@ export class ItemUpdateHelper {
     isReadOnly: boolean,
     transactionItem?: EavItem,
   ): void {
+    const l = this.log.fnIf('addItemAttributeDimension', { entityGuid, attributeKey, currentLanguage, shareWithLanguage, defaultLanguage, isReadOnly, transactionItem });
     const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
 
     const newItem: EavItem = {
@@ -214,7 +230,7 @@ export class ItemUpdateHelper {
     delayUpsert = false,
     transactionItem?: EavItem,
   ): EavItem {
-    const l = this.log.fn('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
+    const l = this.log.fnIf('removeItemAttributeDimension', { entityGuid, attributeKey: fieldName, currentLanguage: current, isTransaction: delayUpsert, transactionItem });
     const oldItem = transactionItem ?? this.itemSvc.get(entityGuid);
 
     const newItem: EavItem = {
@@ -235,6 +251,7 @@ export class ItemUpdateHelper {
   //#region Metadata
 
   updateItemMetadata(entityGuid: string, metadata: EavEntity[]): void {
+    const l = this.log.fnIf('updateItemMetadata', { entityGuid, metadata });
     const oldItem = this.itemSvc.get(entityGuid);
     const newItem: EavItem = {
       ...oldItem,
@@ -244,6 +261,7 @@ export class ItemUpdateHelper {
       }
     };
     this.itemSvc.add(newItem);
+    l.end('ok', { newItem });
   }
 
   //#endregion

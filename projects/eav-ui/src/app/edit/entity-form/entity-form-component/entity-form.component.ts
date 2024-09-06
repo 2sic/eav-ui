@@ -34,8 +34,13 @@ import { ItemService } from '../../shared/store/item.service';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 const logSpecs = {
-  enabled: false,
+  enabled: true,
   name: 'EntityFormComponent',
+  specs: {
+    all: false,
+    fetchNote: true,
+    noteFormData: true,
+  }
 };
 
 /**
@@ -143,9 +148,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   ngOnInit() {
     // Update the notes whenever a child form is closed
-    this.subscriptions.add(
-      this.editRoutingSvc.childFormClosed().subscribe(() => this.fetchNote())
-    );
+    this.#dialogRouter.doOnDialogClosed(() => this.#fetchNote());
   }
 
   ngOnDestroy() {
@@ -232,21 +235,31 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
       return;
     this.#entitySvc.delete(this.formConfig.config.appId, eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.noteRef?.close();
-      this.fetchNote();
+      this.#fetchNote();
     });
   }
 
-  private fetchNote() {
+  #fetchNote() {
     const entityGuid = this.entityGuid();
     const item = this.itemSvc.get(entityGuid);
+    const l = this.log.fnIf('fetchNote', { entityGuid, item, id: item.Entity.Id });
     if (item.Entity.Id === 0)
-      return;
+      return l.end('no change');
 
     const editItems = [EditPrep.editId(item.Entity.Id)];
-    this.#formDataSvc.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
-      const items = formData.Items.map(item1 => EavItem.convert(item1));
-      this.itemSvc.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
-      this.#retriggerNoteProps.set(true);
-    });
+    this.#formDataSvc.fetchFormData(JSON.stringify(editItems))
+      .subscribe(formData => {
+        const l2 = this.log.fn('noteFormData', { formData });
+        // Check if the item is still in the service being edited, as it could have been flushed when this triggers on version-restore
+        if (!this.itemSvc.get(entityGuid))
+          return l2.end(`Item ${entityGuid} not found in service, was probably flushed for reload`);
+
+        // Parse and update the note metadata
+        const items = formData.Items.map(i => EavItem.convert(i));
+        this.itemSvc.updater.updateItemMetadata(entityGuid, items[0].Entity.Metadata);
+        this.#retriggerNoteProps.set(true);
+        l2.end('updated note');
+      });
+    l.end('started note-loading');
   }
 }

@@ -1,40 +1,33 @@
 import { NgModule } from '@angular/core';
-import { Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ActivatedRoute, Router } from '@angular/router';
-import { EditParams } from './edit-matcher.models';
-import { UrlHelpers } from './shared/helpers';
-
-@Component({
-  template: '',
-  standalone: true,
-})
-export class RefreshEditComponent {
-  constructor(router: Router, route: ActivatedRoute) {
-    const params = route.snapshot.params as EditParams;
-    const oldEditUrl = `edit/refresh/${params.items}`;
-    const newEditUrl = `edit/${params.items}`;
-
-    const currentUrl = UrlHelpers.calculatePathFromRoot(route);
-    const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
-    if (lastIndex <= 0) { return; }
-    const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
-    router.navigate([newUrl]);
-  }
-}
+import { EavLogger } from '../shared/logging/eav-logger';
+import { EditReloadComponent } from './routing/edit-reload.component';
 
 const editRefreshRoutes: Routes = [
   {
     path: '',
-    component: RefreshEditComponent,
-    data: { title: 'Refreshing Edit Dialog' }
+    component: EditReloadComponent,
+    data: { title: 'Reloading Edit Dialog' }
   },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forChild(editRefreshRoutes),
-    RefreshEditComponent,
+    EditReloadComponent,
   ],
 })
 export class RefreshEditModule { }
+
+// IMPORTANT:
+// Moved here from edit.routing.ts 2024-09-06 by 2dm
+// Because he thinks this refreshing mechanism is not needed anymore.
+// but if it is needed, it should possibly be moved back to be with the other similar functions.
+
+const editRouteMatcherSpecs = {
+  enabled: true,
+  name: 'EditRouteMatchers',
+  specs: {},
+};
+const logger = new EavLogger(editRouteMatcherSpecs);
+

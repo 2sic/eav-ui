@@ -8,7 +8,7 @@ import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
 import { FeaturesService } from '../../features/features.service';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
-import { EditParams } from '../edit-matcher.models';
+import { EditUrlParams } from '../routing/edit-url-params.model';
 import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
 import { EavEntity } from '../shared/models/eav/eav-entity';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
@@ -79,7 +79,7 @@ export class EditInitializerService {
 
   fetchFormData(): void {
     const l = this.log.fnIf('fetchFormData');
-    const inbound = convertUrlToForm((this.route.snapshot.params as EditParams).items);
+    const inbound = convertUrlToForm((this.route.snapshot.params as EditUrlParams).items);
     // 2024-06-01 2dm adding index to round trip
     const form = {
       ...inbound,
