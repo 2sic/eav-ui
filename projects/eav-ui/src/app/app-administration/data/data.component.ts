@@ -310,14 +310,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<ContentType> = {
-              tooltipGetter: (contentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
-            };
-            return params;
-          })(),
+          ...ColumnDefinitions.IdWithDefaultRenderer,
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<ContentType>('StaticName'),
         },
         {
           ...ColumnDefinitions.TextWideType,

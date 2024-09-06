@@ -85,10 +85,9 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
+          ...ColumnDefinitions.IdWithDefaultRenderer,
           field: 'Code',
           filter: 'agTextColumnFilter',
-          cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<SiteLanguagePermissions> = {
               tooltipGetter: (language) => `ID: ${language.Code}`,

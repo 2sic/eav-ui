@@ -167,19 +167,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
           headerName: 'Name',
           field: 'name',
         },
-        // {
-        //   field: 'Type',
-        //   flex: 1,
-        //   minWidth: 100,
-        //   cellClass: 'no-outline',
-        //   sortable: true,
-        //   filter: BooleanFilterComponent,
-        //   valueGetter: (params) => {
-        //     const api: WebApi = params.data;
-        //     return api.isShared;
-        //   },
-        //   cellRenderer: WebApiTypeComponent,
-        // },
         {
           headerName: 'Compiled',
           field: 'isCompiled',

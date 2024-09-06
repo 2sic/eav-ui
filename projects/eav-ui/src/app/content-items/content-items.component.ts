@@ -253,18 +253,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        ...ColumnDefinitions.Id,
+        ...ColumnDefinitions.IdWithDefaultRenderer,
         cellClass: (params) => {
           const contentItem: ContentItem = params.data;
           return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
         },
-        cellRenderer: IdFieldComponent,
-        cellRendererParams: (() => {
-          const params: IdFieldParams<ContentItem> = {
-            tooltipGetter: (item) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
-          };
-          return params;
-        })(),
+        cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<ContentItem>()
       },
       {
         field: 'Status',

@@ -120,13 +120,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       columnDefs: [
         {
           ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<Permission> = {
-              tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
-            };
-            return params;
-          })(),
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<Permission>()
         },
         {
           ...ColumnDefinitions.TextWide,

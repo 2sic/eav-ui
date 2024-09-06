@@ -4,41 +4,52 @@ import { App } from '../../apps-management/models/app.model';
 import { AgBoolIconRenderer } from './apps-list-show/ag-bool-icon-renderer.component';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
 import { TrueFalseParams } from '../../dev-rest/api/true-false/true-false.models';
+import { IdFieldComponent } from '../components/id-field/id-field.component';
+import { IdFieldParams } from '../components/id-field/id-field.models';
+
+const cellClassSecAction = 'secondary-action no-padding'.split(' ');
+
+const actionsRight: ColDef = {
+  cellClass: cellClassSecAction,
+  pinned: 'right',
+};
+
+const textSortFilter: ColDef = {
+  sortable: true,
+  filter: 'agTextColumnFilter',
+};
 
 export class ColumnDefinitions {
   static ActionsPinnedRight1: ColDef = {
     width: 42,
-    cellClass: 'secondary-action no-padding'.split(' '),
-    pinned: 'right',
+    ...actionsRight,
   };
 
   static ActionsPinnedRight3: ColDef = {
     width: 122,
-    cellClass: 'secondary-action no-padding'.split(' '),
-    pinned: 'right',
+    ...actionsRight,
   };
 
   static ActionsPinnedRight4: ColDef = {
     width: 162,
-    cellClass: 'secondary-action no-padding'.split(' '),
-    pinned: 'right',
+    ...actionsRight,
   };
 
   static ActionsPinnedRight5: ColDef = {
     width: 202,
-    cellClass: 'secondary-action no-padding'.split(' '),
-    pinned: 'right',
+    ...actionsRight,
   };
 
+  // TODO: the name here is wrong - 6 indicates 6 buttons, but the size wouldn't allow this
   static ActionsPinnedRight6: ColDef = {
     width: 82,
-    cellClass: 'secondary-action no-padding'.split(' '),
-    pinned: 'right',
+    ...actionsRight,
   };
 
+  // TODO: the name here is wrong - 7 indicates 6 buttons, but the size wouldn't allow this
   static ActionsPinnedRight7: ColDef = {
     width: 62,
-    cellClass: 'secondary-action no-outline no-padding'.split(' '),
+    cellClass: cellClassSecAction + ' no-outline',
     pinned: 'right',
   };
 
@@ -59,7 +70,7 @@ export class ColumnDefinitions {
   static Items: ColDef = {
     width: 102,
     headerClass: 'dense',
-    cellClass: 'secondary-action no-padding'.split(' '),
+    cellClass: cellClassSecAction,
     sortable: true,
     filter: 'agNumberColumnFilter',
   };
@@ -67,7 +78,7 @@ export class ColumnDefinitions {
   static Fields: ColDef = {
     width: 94,
     headerClass: 'dense',
-    cellClass: 'secondary-action no-padding'.split(' '),
+    cellClass: cellClassSecAction,
     sortable: true,
     filter: 'agNumberColumnFilter',
   };
@@ -79,8 +90,7 @@ export class ColumnDefinitions {
     width: 70,
     headerClass: 'dense',
     cellClass: 'no-outline',
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   };
 
   /**
@@ -95,6 +105,11 @@ export class ColumnDefinitions {
     sortable: true,
     filter: 'agNumberColumnFilter',
   };
+
+  static IdWithDefaultRenderer: ColDef = {
+    ...ColumnDefinitions.Id,
+    cellRenderer: IdFieldComponent,
+  }
 
   static Boolean: ColDef = {
     width: 70,
@@ -115,12 +130,9 @@ export class ColumnDefinitions {
     width: 80,
     cellClass: 'no-outline',
     cellRenderer: TrueFalseComponent,
-    cellRendererParams: (() => {
-      const params: TrueFalseParams = {
-        reverse: false,
-      };
-      return params;
-    })(),
+    cellRendererParams: (() => ({
+      reverse: false,
+    } satisfies TrueFalseParams))(),
   }
 
   /**
@@ -130,57 +142,54 @@ export class ColumnDefinitions {
     width: 70,
     headerClass: 'dense',
     cellClass: 'number-cell no-outline'.split(' '),
-    sortable: true,
-    filter: 'agNumberColumnFilter',
+    ...textSortFilter,
   };
 
   static TextWideType: ColDef = {
     flex: 3,
     minWidth: 250,
     cellClass: 'primary-action highlight'.split(' '),
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   };
 
   static TextWide: ColDef = {
     flex: 2,
     minWidth: 250,
     cellClass: 'no-outline',
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   };
 
   static TextWideMin100: ColDef = {
     flex: 1,
     minWidth: 100,
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   }
 
   static TextWideFlex3: ColDef = {
     flex: 3,
     minWidth: 250,
     cellClass: 'no-outline',
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   };
 
   static TextNarrow: ColDef = {
     flex: 1,
     minWidth: 150,
     cellClass: 'no-outline',
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   };
 
   static TextWideActionClass: ColDef = {
     flex: 2,
     minWidth: 250,
     cellClass: 'primary-action no-padding no-outline'.split(' '),
-    sortable: true,
-    filter: 'agTextColumnFilter',
+    ...textSortFilter,
   };
 
-
-
+  static idFieldParamsTooltipGetter<T extends { Id: string | number, Guid?: string }>(key?: keyof T): IdFieldParams<T> {
+    const objWithTooltipGetter: IdFieldParams<T> = {
+      tooltipGetter: (contentType: T) => `ID: ${contentType.Id}\nGUID: ${contentType[key || "Guid"]}`,
+    };
+    return objWithTooltipGetter;
+  }
 }

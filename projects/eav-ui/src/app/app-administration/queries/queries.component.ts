@@ -1,15 +1,12 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -29,6 +26,7 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { transient } from '../../core';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { signalObj } from '../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-queries',
@@ -45,23 +43,18 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
     DragAndDropDirective,
   ],
 })
-export class QueriesComponent implements OnInit, OnDestroy {
+export class QueriesComponent implements OnInit {
 
-  private pipelinesService = transient(PipelinesService);
-  private contentExportService = transient(ContentExportService);
-  private dialogService = transient(DialogService);
+  #pipelineSvc = transient(PipelinesService);
+  #contentExportSvc = transient(ContentExportService);
+  #dialogSvc = transient(DialogService);
   #dialogRouter = transient(DialogRoutingService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
   
   enablePermissions!: boolean;
-  queries$ = new BehaviorSubject<Query[]>(undefined);
-  gridOptions = this.buildGridOptions();
+  public gridOptions = this.buildGridOptions();
 
-
-  viewModel$ = combineLatest([this.queries$]).pipe(
-    map(([queries]) => ({ queries }))
-  );
-
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  public queries = signalObj<Query[]>('queries', []);
 
   constructor(
     private snackBar: MatSnackBar,
@@ -69,21 +62,16 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.fetchQueries();
-    this.#dialogRouter.doOnDialogClosed(() => this.fetchQueries());
-    this.dialogConfigSvc.getCurrent$().subscribe(settings => {
+    this.#fetchQueries();
+    this.#dialogRouter.doOnDialogClosed(() => this.#fetchQueries());
+    this.#dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enablePermissions = settings.Context.Enable.AppPermissions;
     });
   }
 
-  ngOnDestroy() {
-    this.queries$.complete();
-  }
-
-  private fetchQueries() {
-    this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
-      this.queries$.next(queries);
-    });
+  #fetchQueries() {
+    this.#pipelineSvc.getAll(eavConstants.contentTypes.query)
+      .subscribe((queries: Query[]) => this.queries.set(queries));
   }
 
   importQuery(files?: File[]) {
@@ -127,13 +115,9 @@ export class QueriesComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
-  private enablePermissionsGetter() {
-    return this.enablePermissions;
-  }
-
   private openVisualQueryDesigner(query: Query) {
     if (query._EditInfo.ReadOnly) { return; }
-    this.dialogService.openQueryDesigner(query.Id);
+    this.#dialogSvc.openQueryDesigner(query.Id);
   }
 
   private openMetadata(query: Query) {
@@ -146,9 +130,9 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private cloneQuery(query: Query) {
     this.snackBar.open('Copying...');
-    this.pipelinesService.clonePipeline(query.Id).subscribe(() => {
+    this.#pipelineSvc.clonePipeline(query.Id).subscribe(() => {
       this.snackBar.open('Copied', null, { duration: 2000 });
-      this.fetchQueries();
+      this.#fetchQueries();
     });
   }
 
@@ -157,15 +141,15 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private exportQuery(query: Query) {
-    this.contentExportService.exportEntity(query.Id, 'Query', true);
+    this.#contentExportSvc.exportEntity(query.Id, 'Query', true);
   }
 
   private deleteQuery(query: Query) {
     if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
-    this.pipelinesService.delete(query.Id).subscribe(res => {
+    this.#pipelineSvc.delete(query.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchQueries();
+      this.#fetchQueries();
     });
   }
 
@@ -174,18 +158,12 @@ export class QueriesComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
+          ...ColumnDefinitions.IdWithDefaultRenderer,
           cellClass: (params) => {
             const query: Query = params.data;
             return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
           },
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<Query> = {
-              tooltipGetter: (query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
-            };
-            return params;
-          })(),
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<Query>(),
         },
         {
           ...ColumnDefinitions.TextWide,
@@ -209,7 +187,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
           cellRenderer: QueriesActionsComponent,
           cellRendererParams: (() => {
             const params: QueriesActionsParams = {
-              getEnablePermissions: () => this.enablePermissionsGetter(),
+              getEnablePermissions: () => this.enablePermissions,
               do: (action, query) => this.doMenuAction(action, query),
             };
             return params;

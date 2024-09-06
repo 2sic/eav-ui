@@ -267,14 +267,8 @@ export class MetadataComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<MetadataItem> = {
-              tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
-            };
-            return params;
-          })(),
+          ...ColumnDefinitions.IdWithDefaultRenderer,
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<MetadataItem>()
         },
         {
           ...ColumnDefinitions.TextWide,

@@ -187,21 +187,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<App> = {
-              tooltipGetter: (app) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
-            };
-            return params;
-          })(),
+          ...ColumnDefinitions.IdWithDefaultRenderer,
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<App>(),
         },
         {
           ...ColumnDefinitions.IconShow,
-          // valueGetter: (params) => {
-          //   const app: App = params.data;
-          //   return !app.IsHidden;
-          // },
           cellRenderer: AgBoolIconRenderer,
           cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },

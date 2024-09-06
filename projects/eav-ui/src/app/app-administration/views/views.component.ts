@@ -249,18 +249,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
-          ...ColumnDefinitions.Id,
+          ...ColumnDefinitions.IdWithDefaultRenderer,
           cellClass: (params) => {
             const view: View = params.data;
             return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
           },
-          cellRenderer: IdFieldComponent,
-          cellRendererParams: (() => {
-            const params: IdFieldParams<View> = {
-              tooltipGetter: (view) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
-            };
-            return params;
-          })(),
+          cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<View>()
         },
         {
           ...ColumnDefinitions.IconShow,
