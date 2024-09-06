@@ -42,15 +42,15 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   expandedPanels: Record<string, boolean> = {};
   expandedAttributes: Record<string, boolean> = {};
 
-  private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
-  private versions$ = new BehaviorSubject<Version[]>(null);
-  private page$ = new BehaviorSubject(1);
-  private pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
-  private compareWith$ = new BehaviorSubject<CompareWith>('live');
-  private historyItems$ = combineLatest([this.versions$, this.page$, this.pageSize$, this.compareWith$]).pipe(
+  #itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
+  #versions$ = new BehaviorSubject<Version[]>(null);
+  #page$ = new BehaviorSubject(1);
+  #pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
+  #compareWith$ = new BehaviorSubject<CompareWith>('live');
+  #historyItems$ = combineLatest([this.#versions$, this.#page$, this.#pageSize$, this.#compareWith$]).pipe(
     map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
   );
-  viewModel$ = combineLatest([this.versions$, this.historyItems$, this.pageSize$, this.compareWith$]).pipe(
+  viewModel$ = combineLatest([this.#versions$, this.#historyItems$, this.#pageSize$, this.#compareWith$]).pipe(
     map(([versions, historyItems, pageSize, compareWith]) => ({
       length: versions?.length,
       historyItems,
@@ -68,16 +68,16 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.versionsService.fetchVersions(this.itemId).subscribe(versions => {
-      this.versions$.next(versions);
+    this.versionsService.fetchVersions(this.#itemId).subscribe(versions => {
+      this.#versions$.next(versions);
     });
   }
 
   ngOnDestroy() {
-    this.versions$.complete();
-    this.page$.complete();
-    this.pageSize$.complete();
-    this.compareWith$.complete();
+    this.#versions$.complete();
+    this.#page$.complete();
+    this.#pageSize$.complete();
+    this.#compareWith$.complete();
   }
 
   closeDialog() {
@@ -85,7 +85,7 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   }
 
   compareChange(newCompareWith: CompareWith) {
-    this.compareWith$.next(newCompareWith);
+    this.#compareWith$.next(newCompareWith);
   }
 
   panelExpandedChange(expand: boolean, versionNumber: number) {
@@ -98,20 +98,20 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   pageChange(event: PageEvent) {
     const newPage = event.pageIndex + 1;
-    if (newPage !== this.page$.value) {
+    if (newPage !== this.#page$.value) {
       this.expandedPanels = {};
       this.expandedAttributes = {};
-      this.page$.next(newPage);
+      this.#page$.next(newPage);
     }
     const newPageSize = event.pageSize;
-    if (newPageSize !== this.pageSize$.value) {
-      this.pageSize$.next(newPageSize);
+    if (newPageSize !== this.#pageSize$.value) {
+      this.#pageSize$.next(newPageSize);
     }
   }
 
   restore(changeId: number) {
     this.snackBar.open('Restoring previous version...');
-    this.versionsService.restore(this.itemId, changeId).subscribe(res => {
+    this.versionsService.restore(this.#itemId, changeId).subscribe(res => {
       this.snackBar.open('Previous version restored. Will reload edit dialog', null, { duration: 3000 });
       const result: ItemHistoryResult = {
         refreshEdit: true,

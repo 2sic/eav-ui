@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, Tem
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { eavConstants } from '../../../shared/constants/eav.constants';
-import { EditForm, EditPrep, ItemEditIdentifier, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
+import { EditForm, EditPrep, ItemIdentifierHeader } from '../../../shared/models/edit-form.model';
 import { EavEntity, EavItem } from '../../shared/models/eav';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from '../entity-form.helpers';
 import { ChangeAnchorTargetDirective } from '../../fields/directives/change-anchor-target.directive';
@@ -32,6 +32,7 @@ import { EntityService } from '../../../shared/services/entity.service';
 import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { EditForceReloadService } from '../../routing/edit-force-reload.service';
 
 const logSpecs = {
   enabled: true,
@@ -78,6 +79,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   #fieldsSettingsSvc = inject(FieldsSettingsService);
   #formsStateSvc = inject(FormsStateService);
   #translate = inject(TranslateService);
+  #versioningReloader = transient(EditForceReloadService);
 
   collapse = false;
   noteTouched: boolean = false;
@@ -174,6 +176,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   openHistory() {
     const item = this.itemSvc.get(this.entityGuid());
+    this.#versioningReloader.watchToRefreshOnVersionsClosed();
     this.#dialogRouter.navRelative([`versions/${item.Entity.Id}`]);
   }
 

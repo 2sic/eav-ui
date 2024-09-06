@@ -1,12 +1,7 @@
 import { Injectable, OnDestroy, Signal } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, pairwise, startWith, Subject } from 'rxjs';
-import { ItemHistoryResult } from '../../../item-history/models/item-history-result.model';
-import { BaseComponent } from '../../../shared/components/base.component';
+import { filter, map, Subject } from 'rxjs';
 import { convertFormToUrl } from '../../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../../shared/models/edit-form.model';
-import { EditEntryComponent } from '../../dialog/entry/edit-entry.component';
 import { EditUrlParams } from '../../routing/edit-url-params.model';
 import { UrlHelpers } from '../helpers';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -14,6 +9,9 @@ import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../state/form-config.service';
 import { LanguageInstanceService } from '../store/language-instance.service';
 import { EavLogger } from '../../../shared/logging/eav-logger';
+import { ServiceBase } from '../../../shared/services/service-base';
+import { transient } from '../../../core';
+import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 
 const logSpecs = {
   enabled: true,
@@ -37,14 +35,15 @@ const logSpecs = {
  * Note that it seems to be "Scoped" to the EditDialogMain Component
  */
 @Injectable()
-export class EditRoutingService extends BaseComponent implements OnDestroy {
+export class EditRoutingService extends ServiceBase implements OnDestroy {
 
   log = new EavLogger(logSpecs);
 
+  #dialogRouter = transient(DialogRoutingService);
+  #route = this.#dialogRouter.route;
+  #router = this.#dialogRouter.router;
+
   constructor(
-    private dialogRef: MatDialogRef<EditEntryComponent>,
-    private route: ActivatedRoute,
-    private router: Router,
     private langInstanceSvc: LanguageInstanceService,
     private formConfig: FormConfigService
   ) {
@@ -54,18 +53,17 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.#childFormResult$.complete();
-    super.ngOnDestroy();
+    super.destroy();
   }
 
   init() {
     this.#initHideHeader();
     this.#watchChildFormResult();
-    this.#watchToRefreshOnVersionsClosed();
   }
 
   #childFormResult$ = new Subject<ChildFormResult>();
 
-  #getParams() { return this.route.snapshot.params as EditUrlParams; }
+  #getParams() { return this.#route.snapshot.params as EditUrlParams; }
 
   #getParamsAndPayload() {
     const p = this.#getParams();
@@ -90,7 +88,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
   /** Tells if field with this index should be expanded */
   isExpanded$(fieldId: number, entityGuid: string) {
     const fieldIndex = fieldId.toString();
-    return this.route.params.pipe(
+    return this.#route.params.pipe(
       mapUntilChanged((p: EditUrlParams) => p.detailsEntityGuid === entityGuid && p.detailsFieldId === fieldIndex),
     );
   }
@@ -128,9 +126,9 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     const p = pInfo.params;
     const oldEditUrl = `edit/${p.items}` + (pInfo.hasDetails ? `/details/${pInfo.guid}/${pInfo.fieldId}` : '');
     const newEditUrl = `edit/${p.items}` + (expand ? `/details/${entityGuid}/${fieldId}` : '');
-    const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.route, oldEditUrl, newEditUrl);
+    const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.#route, oldEditUrl, newEditUrl);
     if (url == null) return l.end('no change');
-    this.router.navigate([url], { state: componentTag && { componentTag } });
+    this.#router.navigate([url], { state: componentTag && { componentTag } });
     l.end('routed away to ', { url});
   }
 
@@ -141,42 +139,32 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
     const pInfo = this.#getParamsAndPayload();
     // if field is expanded, just open child because that info will be used for field update
     if (pInfo.hasDetails) {
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      this.#router.navigate([`edit/${formUrl}`], { relativeTo: this.#route });
       return l.end('expanded, just open child');
     }
 
     // otherwise add /update/:entityGuid/:fieldId to the url
     const oldEditUrl = `edit/${pInfo.params.items}`;
     const newEditUrl = `edit/${pInfo.params.items}/update/${entityGuid}/${fieldId}/edit/${formUrl}`;
-    const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.route,oldEditUrl, newEditUrl);
+    const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.#route,oldEditUrl, newEditUrl);
     if (url == null) return l.end('no change');
-    this.router.navigate([url]);
+    this.#router.navigate([url]);
     l.end('routed away to ', { url });
   }
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
   #initHideHeader() {
     this.subscriptions.add(
-      this.route.params
+      this.#route.params
         .pipe(mapUntilChanged((p: EditUrlParams) => p.detailsEntityGuid != null && p.detailsFieldId != null))
         .subscribe(hasDetails => this.langInstanceSvc.updateHideHeader(this.formConfig.config.formId, hasDetails))
     );
   }
 
-  /** Believe this will trigger both on open and on close...? of a first-sub-dialog */
-  #routerEventsChildDialog$() {
-    return this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      startWith(!!this.route.snapshot.firstChild),
-      map(() => !!this.route.snapshot.firstChild),
-      pairwise(),
-      filter(([hadChild, hasChild]) => hadChild && !hasChild),
-    );
-  }
-
   #watchChildFormResult() {
     this.subscriptions.add(
-      this.#routerEventsChildDialog$().pipe(
+      this.#dialogRouter.childDialogClosed$().pipe(
+      // this.#routerEventsChildDialog$().pipe(
         map(() => {
           const pInfo = this.#getParamsAndPayload();
           return {
@@ -184,7 +172,7 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
             result: {
               updateEntityGuid: pInfo.guid,
               updateFieldId: parseInt(pInfo.fieldId, 10),
-              result: this.router.getCurrentNavigation().extras?.state,
+              result: this.#router.getCurrentNavigation().extras?.state,
             } satisfies ChildFormResult
         };
         }),
@@ -196,31 +184,13 @@ export class EditRoutingService extends BaseComponent implements OnDestroy {
         if (!pInfo.hasUpdate) return;
         
         const p = pInfo.params;
-        const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.route, `edit/${p.items}/update/${p.updateEntityGuid}/${p.updateFieldId}`, `edit/${p.items}`);
+        const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.#route, `edit/${p.items}/update/${p.updateEntityGuid}/${p.updateFieldId}`, `edit/${p.items}`);
         if (url == null) return;
-        this.router.navigate([url]);
+        this.#router.navigate([url]);
       })
     );
   }
 
-  #watchToRefreshOnVersionsClosed() {
-    const l = this.log.fnIf('watchToRefreshOnVersionsClosed');
-    this.subscriptions.add(
-      this.#routerEventsChildDialog$().pipe(
-        map(() => this.router.getCurrentNavigation().extras?.state as ItemHistoryResult),
-        filter(result => result?.refreshEdit === true),
-      ).subscribe(_ => {
-        const l2 = this.log.fnIf('watchToRefreshOnVersionsClosed', null, 'refreshEdit');
-        l.a('version closed, refreshing edit dialog');
-        const p = this.#getParams();
-        const newUrl = UrlHelpers.newUrlIfCurrentContainsOldUrl(this.route,`edit/${p.items}`, `edit/refresh/${p.items}`);
-        if (newUrl == null) return l2.end('no change');
-        this.dialogRef.close({ navigateUrl: newUrl } satisfies NavigateFormResult);
-        l2.end(`routed away to :${newUrl}`);
-      })
-    );
-    l.end();
-  }
 }
 
 export interface NavigateFormResult {

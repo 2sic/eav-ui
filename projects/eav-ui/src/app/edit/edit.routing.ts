@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { editDialog } from './edit-dialog.config';
-import { editRouteMatcherRoot, editRouteMatcherSubEdit, editRouteMatcherSubEditRefresh, editRouteMatcherRootRefresh } from './routing/edit-route-matchers';
+import { matchEditRoot, matchEditSub, matchEditSubRefresh, matchEditRootRefresh } from './routing/edit-route-matchers';
 import { EavLogger } from '../shared/logging/eav-logger';
 
 const logSpecs = {
@@ -53,7 +53,7 @@ const editRoutesDialogAndChildren: Routes = [
  */
 export const EditRoutes: Routes = [
   {
-    matcher: editRouteMatcherSubEdit,
+    matcher: matchEditSub,
     loadChildren: () => {
       // Recursively use these routes again.
       logger.a('loadChildren - matcher: sub-edit');
@@ -61,7 +61,7 @@ export const EditRoutes: Routes = [
     },
   },
   {
-    matcher: editRouteMatcherSubEditRefresh,
+    matcher: matchEditSubRefresh,
     children: reloadRoutes,
   },
 ];
@@ -74,7 +74,7 @@ export const EditRoutes: Routes = [
  */
 export const EditRoutesNoHistory: Routes = [
   {
-    matcher: editRouteMatcherSubEdit,
+    matcher: matchEditSub,
     loadChildren: () => editRoutesDialogAndChildren,
     data: { history: false }, // disable history in the edit dialog
   },
@@ -86,11 +86,11 @@ export const EditRoutesNoHistory: Routes = [
  */
 export const EditRoutesRoot: Routes = [
   {
-    matcher: editRouteMatcherRoot,
+    matcher: matchEditRoot,
     loadChildren: () => editRoutesDialogAndChildren,
   },
   {
-    matcher: editRouteMatcherRootRefresh,
+    matcher: matchEditRootRefresh,
     children: reloadRoutes,
   },
 ];

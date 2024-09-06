@@ -37,13 +37,15 @@ export class DialogRoutingService extends ServiceBase implements OnDestroy {
 
   get url() { return this.router.url; }
 
+  state<T = any>() { return this.router.getCurrentNavigation().extras?.state as T; }
+
   /**
    * Preferred way to register a callback, since the caller doesn't need to worry about subscriptions.
    */
   public doOnDialogClosed(callback: () => void) {
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
-      this.#childDialogClosed$().subscribe(() => { callback(); })
+      this.childDialogClosed$().subscribe(() => { callback(); })
     );
     l.end();
   }
@@ -67,7 +69,7 @@ export class DialogRoutingService extends ServiceBase implements OnDestroy {
     return this.router.navigate(commands, { ...extras, relativeTo: this.route.parent.firstChild });
   }
   
-  #childDialogClosed$() {
+  childDialogClosed$() {
     return this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       startWith(!!this.route.snapshot.firstChild),

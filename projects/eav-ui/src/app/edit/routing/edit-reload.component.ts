@@ -32,7 +32,8 @@ export class EditReloadComponent {
     const l = this.log.fn('constructor', null, '🔄️');
     const p = route.snapshot.params as EditUrlParams;
     const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(route, `edit/refresh/${p.items}`, `edit/${p.items}`);
-    if (url) return;
+    if (!url) return l.rNull('No URL to navigate to');
     router.navigate([url]);
+    l.r('✅ refresh complete');
   }
 }
