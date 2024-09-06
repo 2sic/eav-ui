@@ -14,12 +14,15 @@ import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model'
 import { FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from '../picker/picker-data.factory';
-import { LogSpecs } from '../../../shared/logging/log-specs';
 
-const logSpecs: LogSpecs<string[]> = {
-  name: 'FieldInjectorService',
+const logSpecs = {
   enabled: false,
-  specs: [], //['Boolean'],
+  name: 'FieldInjectorService',
+  specs: {
+    getInjectors: true,
+    fields: [] as string[],
+    // fields: ['Boolean'],
+  }
 };
 
 /**
@@ -41,14 +44,14 @@ export class FieldInjectorService {
   constructor() { }
 
   public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs) {
-    const l = this.log.fn('getInjectors');
+    const l = this.log.fnIf('getInjectors');
     const fieldName = fieldConfig.fieldName;
 
     // Conditional logger for detailed logging
-    const lDetailed = this.log.fnCond(this.log.specs.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
+    const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
 
     // Create settings() and basics() signal for further use
-    const settings = this.#fieldsSettingsService.getFieldSettingsSignal(fieldName);
+    const settings = this.#fieldsSettingsService.settings[fieldName];
 
     const settings$ = toObservable(settings, { injector: this.#injector });
 

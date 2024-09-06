@@ -55,7 +55,7 @@ export class TranslateMenuComponent implements OnInit {
   private formsStateService = inject(FormsStateService);
   protected readOnly = this.formsStateService.readOnly;
 
-  protected settings = this.fieldSettings.getFieldSettingsSignal(this.config.fieldName)
+  protected settings = this.fieldState.settings;
   protected translationState = this.fieldSettings.getTranslationState(this.config.fieldName)
   protected language = this.formConfig.language;
 
@@ -111,7 +111,7 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   openAutoTranslateMenuDialog(translationState: TranslationState): void {
-    if (this.fieldSettings.getFieldSettings(this.config.fieldName).DisableAutoTranslation) {
+    if (this.fieldSettings.settings[this.config.fieldName]().DisableAutoTranslation) {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: false },

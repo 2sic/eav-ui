@@ -140,7 +140,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       case SelectTargets.Entity:
         newState.entityGuid = value;
         const selectedSettingsSvc = this.#designerSvc.itemSettingsServices[newState.entityGuid];
-        newState.fieldName = Object.keys(selectedSettingsSvc.getFieldsProps())[0];
+        newState.fieldName = Object.keys(selectedSettingsSvc.allFieldProps())[0];
         break;
       case SelectTargets.Field:
         newState.fieldName = value;

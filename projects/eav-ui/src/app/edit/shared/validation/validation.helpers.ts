@@ -183,26 +183,18 @@ export class ValidationHelpers {
   private static formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
-      const fieldProps = specs.fieldsSettingsService.getFieldsProps()[specs.fieldName];
+      const fieldProps = specs.fieldsSettingsService.fieldPropsOf(specs.fieldName)();
       const formulaValidation = fieldProps.formulaValidation;
-      let error: boolean;
-      let warning: boolean;
 
-      if (this.ignoreValidators(specs.settings()) || formulaValidation == null) {
-        error = false;
-        warning = false;
-      } else {
-        if (formulaValidation.severity === 'error') {
-          error = true;
-          warning = false;
-        } else if (formulaValidation.severity === 'warning') {
-          error = false;
-          warning = true;
-        } else {
-          error = false;
-          warning = false;
-        }
-      }
+      const { error, warning } = (() => {
+        if (this.ignoreValidators(specs.settings()) || formulaValidation == null)
+          return {error: false, warning: false};
+        if (formulaValidation.severity === 'error')
+          return {error: true, warning: false};
+        if (formulaValidation.severity === 'warning')
+          return {error: false, warning: true};
+        return {error: false, warning: false};
+      })();
 
       control._warning$.next(warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null);
       return error ? { formulaError: true, formulaMessage: formulaValidation.message } : null;

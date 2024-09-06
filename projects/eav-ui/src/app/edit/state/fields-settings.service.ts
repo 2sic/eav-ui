@@ -185,31 +185,23 @@ export class FieldsSettingsService {
   }
 
   /**
-   * Used to get field properties for all fields.
-   * @returns Object that has attribute name as a key and all of its field properties as a value
+   * Get field properties for all fields.
+   * @returns Signal of object that has attribute name as a key and all of its field properties.
    */
-  getFieldsProps(): Record<string, FieldProps> {
-    return this.#fieldsProps();
-  }
+  public get allFieldProps(): Signal<Record<string, FieldProps>> { return this.#fieldsProps; }
 
-  getFieldsPropsSignal(): Signal<Record<string, FieldProps>> {
-    return this.#fieldsProps;
+  public fieldPropsOf(fieldName: string): Signal<FieldProps> {
+    return this.#fieldPropsCache.getOrCreate(fieldName, () => this.#fieldsProps()[fieldName]);
   }
-
+  #fieldPropsCache = new ComputedCacheHelper<string, FieldProps>('field-props');
+  
+  #fieldSignalsCache = new ComputedCacheHelper<string, FieldSettings>('fields');
   /**
    * Used for getting field settings for a specific field.
    * @param fieldName
    * @returns Field settings
    */
-  getFieldSettings(fieldName: string): FieldSettings {
-    return this.#fieldsProps()[fieldName].settings;
-  }
-
-  getFieldSettingsSignal(fieldName: string): Signal<FieldSettings> {
-    /* will access the signal internally, so it's "hot" */
-    return this.#fieldSignalsCache.getOrCreate(fieldName, () => this.getFieldSettings(fieldName));
-  }
-  #fieldSignalsCache = new ComputedCacheHelper<string, FieldSettings>('fields');
+  public settings = this.#fieldSignalsCache.buildProxy(f => () => this.#fieldsProps()[f].settings);
 
   /**
    * Used for translation state stream for a specific field.

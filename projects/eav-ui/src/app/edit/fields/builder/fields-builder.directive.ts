@@ -74,7 +74,7 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
     // When groups open/close, this will be set to that group,
     // so fields are then inside that container.
     let currentContainer = this.#thisContainerRef;
-    const fieldsProps = this.#fieldsSettingsService.getFieldsProps();
+    const fieldsProps = this.#fieldsSettingsService.allFieldProps();
 
     // Loop through each field and create the component
     // If we encounter a group, we create a new container and set it as the main one

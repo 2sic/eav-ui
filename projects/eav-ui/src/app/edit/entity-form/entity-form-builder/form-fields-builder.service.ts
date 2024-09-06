@@ -40,7 +40,7 @@ export class FormFieldsBuilderService extends ServiceBase {
   public start(entityGuid: string, form: UntypedFormGroup) {
     const l = this.log.fn('start');
 
-    const fieldProps = this.fieldsSettingsService.getFieldsPropsSignal();
+    const fieldProps = this.fieldsSettingsService.allFieldProps;
     const fieldProps$ = toObservable(fieldProps, { injector: this.injector });
 
     // 1. Prepare: Take field props and enrich initial values and input types
@@ -104,7 +104,7 @@ export class FormFieldsBuilderService extends ServiceBase {
 
       // Build control in the Angular form with validators
       const disabled = fieldProps.settings.uiDisabled;
-      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsService.getFieldSettingsSignal(fieldName), this.fieldsSettingsService);
+      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsService.settings[fieldName], this.fieldsSettingsService);
       const validators = ValidationHelpers.getValidators(valSpecs, inputType);
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
       // TODO: build all fields at once. That should be faster

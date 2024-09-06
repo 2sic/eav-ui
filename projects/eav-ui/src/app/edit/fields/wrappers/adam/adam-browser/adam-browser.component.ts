@@ -176,7 +176,7 @@ export class AdamBrowserComponent implements OnInit {
 
   private getImageConfigurationContentType(item: AdamItem) {
     // allow image configuration if file is type image and if image configuration is enabled in settings
-    const settings = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
+    const settings = this.fieldsSettingsService.settings[this.config.fieldName]();
     return settings.EnableImageConfiguration && item.Type === 'image'
       ? eavConstants.contentTypes.imageDecorator
       : null;

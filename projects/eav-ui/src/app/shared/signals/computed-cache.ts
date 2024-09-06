@@ -18,11 +18,21 @@ export class ComputedCacheHelper<TKey extends string | number, TValue> {
     return this.cache[key];
   }
 
+  buildProxy(factory: (name: string) => () => TValue, options: CreateComputedOptions<TValue> = null) {
+    if (this.#proxy) throw new Error(`Proxy already built; it can't be again, as the factory could be unexpectedly different.`);
+    this.#proxy = new Proxy(this.cache, {
+      get: (_, fieldName) => {
+        if (typeof fieldName === 'string')
+          return this.getOrCreate(fieldName as TKey, factory(fieldName), options);
+        throw new Error(`Invalid name: '${fieldName?.toString()}'`);
+      }
+    });
+    return this.#proxy;
+  }
+  #proxy: Record<TKey, Signal<TValue>>;
+
   getOrCreate(key: TKey, factory: () => TValue, options: CreateComputedOptions<TValue> = null): Signal<TValue> {
     return this.getOrCreateWithInfo(key, factory, options).signal;
-    // if (this.cache[key]) return this.cache[key];
-    // const sig = computed(() => factory(), options ?? { equal: isEqual });
-    // return this.set(key, sig);
   }
 
   getOrCreateWithInfo(key: TKey, factory: () => TValue, options: CreateComputedOptions<TValue> = null): { signal: Signal<TValue>, isNew: boolean } {

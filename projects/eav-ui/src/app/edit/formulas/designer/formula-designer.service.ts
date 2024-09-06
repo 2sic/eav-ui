@@ -77,15 +77,14 @@ export class FormulaDesignerService {
     const entityFormulas = this.entityOptions().find(e => e.entityGuid == guid).formulas;
     // find the current fieldSettingsService to get all properties
     const selectedSettings = this.itemSettingsServices[guid];
-    const fieldsProps = selectedSettings.getFieldsProps();
+    const fieldsProps = selectedSettings.allFieldProps();
     const fieldOptions: FieldOption[] = Object.keys(fieldsProps).map(fieldName => {
       const formulas = entityFormulas.filter(f => f.fieldName === fieldName);
-      const inputType = fieldsProps[fieldName].settings.InputType;
       return {
         fieldName,
         formulas,
         hasFormula: formulas.length > 0,
-        inputType,
+        inputType: fieldsProps[fieldName].settings.InputType,
         label: fieldName,
       } satisfies FieldOption;
     });
@@ -108,14 +107,14 @@ export class FormulaDesignerService {
     // Initialize the first designer state to contain the first item and field
     const oldState = this.designerState();
     const [entityGuid, settingsSvc] = Object.entries(this.itemSettingsServices)[0];
-    const fieldsProps = settingsSvc.getFieldsProps();
-    const fieldName = Object.keys(fieldsProps)[0];
-    const target = fieldName != null ? FormulaTargets.Value : null;
+    const fieldsProps = settingsSvc.allFieldProps();
+    const firstFieldName = Object.keys(fieldsProps)[0];
+    const target = firstFieldName != null ? FormulaTargets.Value : null;
 
     const newState: DesignerState = {
       ...oldState,
       entityGuid,
-      fieldName,
+      fieldName: firstFieldName,
       target,
     };
     this.designerState.set(newState);

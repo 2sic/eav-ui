@@ -36,7 +36,7 @@ export class FormulaExperimentalObject implements FormulaV1Experimental {
   }
 
   getSettings(fieldName: string): FieldSettings {
-    return this.#propsData.fieldsSettingsService.getFieldSettings(fieldName);
+    return this.#propsData.fieldsSettingsService.settings[fieldName]();
   }
 
   getValues(entityGuid: string): ItemValuesOfLanguage {
