@@ -20,6 +20,7 @@ const logThis = {
  * TODO: not sure if this is the best way to do this...
  */
 @Component({
+  selector: 'app-edit-reload',
   template: '',
   standalone: true,
 })
@@ -28,7 +29,7 @@ export class EditReloadComponent {
   log = new EavLogger(logThis);
 
   constructor(router: Router, route: ActivatedRoute) {
-    const l = this.log.fn('constructor', null, '⚠️');
+    const l = this.log.fn('constructor', null, '🔄️');
     const p = route.snapshot.params as EditUrlParams;
     const url = UrlHelpers.newUrlIfCurrentContainsOldUrl(route, `edit/refresh/${p.items}`, `edit/${p.items}`);
     if (url) return;

@@ -14,7 +14,7 @@ import { languagePermissionsDialog } from './sub-dialogs/language-permissions/la
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 import { GoToCopilot } from './copilot/go-to-copilot';
 import { CopilotSpecs } from './copilot/copilot-specs';
-import { EditRoutesSubItems, EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
+import { EditRoutes, EditRoutesNoHistory } from '../edit/edit.routing';
 import { ExportAppComponent } from './app-menu/export-app/export-app.component';
 import { ExportAppPartsComponent } from './app-menu/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from './app-menu/import-app-parts/import-app-parts.component';
@@ -51,7 +51,7 @@ export const appAdministrationRoutes: Routes = [
             path: 'items/:contentTypeStaticName',
             loadChildren: () => import('../content-items/content-items.routing').then(m => m.contentItemsRoutes)
           },
-          ...EditRoutesSubItems,
+          ...EditRoutes,
           {
             path: 'add',
             component: DialogEntryComponent,
@@ -118,7 +118,7 @@ export const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: importQueryDialog, title: 'Import Query' }
           },
-          ...EditRoutesSubItemsNoHistory,
+          ...EditRoutesNoHistory,
           ...GoToMetadata.getRoutes(),
           {
             ...GoToPermissions.route,
@@ -157,7 +157,7 @@ export const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: viewsUsageDialog }
           },
-          ...EditRoutesSubItems,
+          ...EditRoutes,
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
           ...GoToMetadata.getRoutes(),
         ],
@@ -208,7 +208,7 @@ export const appAdministrationRoutes: Routes = [
         children: [
           ...GoToMetadata.getRoutes(),
           // Edit App Properties / Settings / Resources
-          ...EditRoutesSubItems,
+          ...EditRoutes,
           {
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.routing').then(m => m.contentTypeFieldsRoutes),

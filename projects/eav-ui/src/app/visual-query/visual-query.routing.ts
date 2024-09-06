@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { GoToDevRest } from '../dev-rest';
-import { EditRoutesSubItemsNoHistory } from '../edit/edit.routing';
+import { EditRoutesNoHistory } from '../edit/edit.routing';
 
 export const visualQueryRoutes: Routes = [
   {
@@ -8,7 +8,7 @@ export const visualQueryRoutes: Routes = [
     loadComponent: () => import('./visual-query.component').then(m => m.VisualQueryComponent),
     children: [
       GoToDevRest.route,
-      ...EditRoutesSubItemsNoHistory,
+      ...EditRoutesNoHistory,
     ]
   },
 ];
