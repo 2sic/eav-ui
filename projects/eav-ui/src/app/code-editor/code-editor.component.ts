@@ -5,7 +5,6 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, switchMap } from 'rxjs';
-// tslint:disable-next-line:max-line-length
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { BaseComponent } from '../shared/components/base.component';
@@ -32,6 +31,7 @@ import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { transient } from '../core';
+import { isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
 
 @Component({
   selector: 'app-code-editor',
@@ -63,18 +63,18 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     fixedOverflowWidgets: true,
   };
 
-  private sourceService = transient(SourceService);
-  private snippetsService = transient(SnippetsService);
+  #sourceSvc = transient(SourceService);
+  #snippetSvc = transient(SnippetsService);
+  #titleSvc = transient(Title);
 
   viewModel$: Observable<CodeEditorViewModel>;
 
-  private templates$: BehaviorSubject<FileAsset[]>;
-  private activeView$: BehaviorSubject<ViewKey>;
-  private openViews$: BehaviorSubject<ViewKey[]>;
-  private viewInfos$: BehaviorSubject<ViewInfo[]>;
-  private urlItems: ViewOrFileIdentifier[];
+  #templates$ = new BehaviorSubject<FileAsset[]>([]);
+  #activeView$: BehaviorSubject<ViewKey>;
+  #openViews$: BehaviorSubject<ViewKey[]>;
+  #viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
+  #urlItems: ViewOrFileIdentifier[];
 
-  private titleService = transient(Title);
 
   constructor(
     private context: Context,
@@ -95,30 +95,30 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       }
       codeItem.IsShared ??= isShared;
     });
-    this.urlItems = codeItems;
+    this.#urlItems = codeItems;
   }
 
   ngOnInit(): void {
-    this.templates$ = new BehaviorSubject<FileAsset[]>([]);
-    const initialViews = this.urlItems.map(item => {
+    const initialViews = this.#urlItems.map(item => {
       const viewKey: ViewKey = { key: item.EntityId?.toString() ?? item.Path, shared: item.IsShared };
       return viewKey;
     });
-    this.activeView$ = new BehaviorSubject<ViewKey>(initialViews[0]);
-    this.openViews$ = new BehaviorSubject<ViewKey[]>(initialViews);
-    this.viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
+    this.#openViews$ = new BehaviorSubject<ViewKey[]>(initialViews);
+    this.#activeView$ = new BehaviorSubject<ViewKey>(initialViews[0]);
 
-    this.attachListeners();
+    this.#attachListeners();
 
-    this.sourceService.getAll().subscribe(templates => {
-      this.templates$.next(templates);
+    // Load templates
+    this.#sourceSvc.getAll().subscribe(templates => {
+      this.#templates$.next(templates);
     });
 
+    // Update ViewInfo$ ongoing
     this.subscriptions.add(
-      combineLatest([this.templates$, this.openViews$]).subscribe(([templates, openViews]) => {
+      combineLatest([this.#templates$, this.#openViews$]).subscribe(([templates, openViews]) => {
         if (templates.length === 0) return;
 
-        let viewInfos = this.viewInfos$.value;
+        let viewInfos = this.#viewInfos$.value;
         const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
         if (notLoaded.length === 0) return;
 
@@ -130,13 +130,13 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
             };
             viewInfos = [...viewInfos, newViewInfo];
 
-            const view$ = this.sourceService.get(viewKey.key, viewKey.shared, this.urlItems).pipe(share());
-            const snippets$ = view$.pipe(switchMap(view => this.snippetsService.getSnippets(view)));
-            const tooltips$ = view$.pipe(switchMap(view => this.snippetsService.getTooltips(view.Extension.substring(1))));
+            const view$ = this.#sourceSvc.get(viewKey.key, viewKey.shared, this.#urlItems).pipe(share());
+            const snippets$ = view$.pipe(switchMap(view => this.#snippetSvc.getSnippets(view)));
+            const tooltips$ = view$.pipe(switchMap(view => this.#snippetSvc.getTooltips(view.Extension.substring(1))));
             return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
           })
         ).subscribe(results => {
-          let viewInfos1 = this.viewInfos$.value;
+          let viewInfos1 = this.#viewInfos$.value;
 
           results.forEach(([viewKey, view, snippets, tooltips]) => {
             const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
@@ -151,29 +151,29 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
               savedCode: view.Code,
             };
             viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
-            this.showCodeAndEditionWarnings(viewKey, view, templates);
+            this.#showCodeAndEditionWarnings(viewKey, view, templates);
           });
 
-          this.viewInfos$.next(viewInfos1);
+          this.#viewInfos$.next(viewInfos1);
         });
 
-        this.viewInfos$.next(viewInfos);
+        this.#viewInfos$.next(viewInfos);
       })
     );
 
+    // Update title ongoing
     this.subscriptions.add(
-      combineLatest([this.activeView$, this.viewInfos$]).subscribe(([activeView, viewInfos]) => {
+      combineLatest([this.#activeView$, this.#viewInfos$]).subscribe(([activeView, viewInfos]) => {
         const active = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
         const defaultTitle = 'Code Editor';
         const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
-        const oldTitle = this.titleService.getTitle();
-        if (newTitle !== oldTitle) {
-          this.titleService.setTitle(newTitle);
-        }
+        const oldTitle = this.#titleSvc.getTitle();
+        if (newTitle !== oldTitle)
+          this.#titleSvc.setTitle(newTitle);
       })
     );
 
-    this.viewModel$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
+    this.viewModel$ = combineLatest([this.#templates$, this.#activeView$, this.#openViews$, this.#viewInfos$]).pipe(
       map(([templates, activeView, openViews, viewInfos]) => {
         const tabs = openViews.map(viewKey => {
           const viewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
@@ -188,7 +188,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
         });
         const activeViewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
 
-        const viewModel: CodeEditorViewModel = {
+        return {
           activeView,
           tabs,
           viewKey: activeViewInfo?.viewKey,
@@ -197,17 +197,16 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           explorerSnipps: activeViewInfo?.explorerSnipps,
           editorSnipps: activeViewInfo?.editorSnipps,
           tooltips: activeViewInfo?.tooltips,
-        };
-        return viewModel;
+        } satisfies CodeEditorViewModel;
       }),
     );
   }
 
   ngOnDestroy(): void {
-    this.templates$.complete();
-    this.activeView$.complete();
-    this.openViews$.complete();
-    this.viewInfos$.complete();
+    this.#templates$.complete();
+    this.#activeView$.complete();
+    this.#openViews$.complete();
+    this.#viewInfos$.complete();
     super.ngOnDestroy();
   }
 
@@ -250,9 +249,9 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) return;
 
-      this.sourceService.create(result.name, params.isShared, result.templateKey).subscribe(() => {
-        this.sourceService.getAll().subscribe(files => {
-          this.templates$.next(files);
+      this.#sourceSvc.create(result.name, params.isShared, result.templateKey).subscribe(() => {
+        this.#sourceSvc.getAll().subscribe(files => {
+          this.#templates$.next(files);
         });
       });
     });
@@ -263,7 +262,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   }
 
   codeChanged(code: string, viewKey: ViewKey): void {
-    let viewInfos = this.viewInfos$.value;
+    let viewInfos = this.#viewInfos$.value;
     const selectedIndex = viewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     const selectedViewInfo = viewInfos[selectedIndex];
     const newViewInfo: ViewInfo = {
@@ -274,54 +273,54 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       },
     };
     viewInfos = [...viewInfos.slice(0, selectedIndex), newViewInfo, ...viewInfos.slice(selectedIndex + 1)];
-    this.viewInfos$.next(viewInfos);
+    this.#viewInfos$.next(viewInfos);
   }
 
   openView(viewKey: ViewKey): void {
     // fix viewKey because it can be a templateId or a path, and file might already be open
-    viewKey = this.viewInfos$.value.find(
+    viewKey = this.#viewInfos$.value.find(
       v => !RxHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
     )?.viewKey ?? viewKey;
 
-    const oldActiveView = this.activeView$.value;
+    const oldActiveView = this.#activeView$.value;
     if (!RxHelpers.objectsEqual(oldActiveView, viewKey)) {
-      this.activeView$.next(viewKey);
+      this.#activeView$.next(viewKey);
     }
-    const oldOpenViews = this.openViews$.value;
+    const oldOpenViews = this.#openViews$.value;
     if (!oldOpenViews.some(v => RxHelpers.objectsEqual(v, viewKey))) {
       const newOpenViews = [...oldOpenViews, viewKey];
-      this.openViews$.next(newOpenViews);
+      this.#openViews$.next(newOpenViews);
     }
   }
 
   closeEditor(viewKey: ViewKey): void {
-    const oldOpenViews = this.openViews$.value;
+    const oldOpenViews = this.#openViews$.value;
     const newOpenViews = oldOpenViews.filter(key => !RxHelpers.objectsEqual(key, viewKey));
 
-    const oldActiveView = this.activeView$.value;
+    const oldActiveView = this.#activeView$.value;
     if (RxHelpers.objectsEqual(oldActiveView, viewKey)) {
       const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => RxHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
-      this.activeView$.next(newActiveView);
+      this.#activeView$.next(newActiveView);
     }
 
-    this.openViews$.next(newOpenViews);
+    this.#openViews$.next(newOpenViews);
   }
 
   save(viewKey?: ViewKey): void {
-    viewKey ??= this.activeView$.value;
-    const viewInfo = this.viewInfos$.value.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
+    viewKey ??= this.#activeView$.value;
+    const viewInfo = this.#viewInfos$.value.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     if (viewInfo?.view == null) return;
 
     this.snackBar.open('Saving...');
     const codeToSave = viewInfo.view.Code;
-    this.sourceService.save(viewKey.key, viewKey.shared, viewInfo.view, this.urlItems).subscribe({
+    this.#sourceSvc.save(viewKey.key, viewKey.shared, viewInfo.view, this.#urlItems).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
           return;
         }
 
-        let newViewInfos = [...this.viewInfos$.value];
+        let newViewInfos = [...this.#viewInfos$.value];
         const selectedIndex = newViewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
         if (selectedIndex < 0) return;
 
@@ -331,7 +330,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           savedCode: codeToSave,
         };
         newViewInfos = [...newViewInfos.slice(0, selectedIndex), newViewInfo, ...newViewInfos.slice(selectedIndex + 1)];
-        this.viewInfos$.next(newViewInfos);
+        this.#viewInfos$.next(newViewInfos);
         this.snackBar.open('Saved', null, { duration: 2000 });
       },
       error: () => this.snackBar.open('Failed', null, { duration: 2000 }),
@@ -339,7 +338,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   }
 
   /** Show info about editions if other files with the same name exist */
-  private showCodeAndEditionWarnings(viewKey: ViewKey, view: SourceView, files: FileAsset[]): void {
+  #showCodeAndEditionWarnings(viewKey: ViewKey, view: SourceView, files: FileAsset[]): void {
     const pathAndName = view.FileName;
     const pathSeparator = pathAndName.indexOf('/') > -1 ? pathAndName.lastIndexOf('/') + 1 : 0;
     const pathWithSlash = pathSeparator === 0 ? '' : pathAndName.substring(0, pathSeparator);
@@ -354,7 +353,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       const snackBarData: CodeAndEditionWarningsSnackBarData = {
         fileName: fullName,
         codeFile: codeFile?.Path,
-        edition: this.urlItems
+        edition: this.#urlItems
           .find(i => i.EntityId?.toString() === viewKey.key && i.IsShared === view.IsShared && i.Path === view.FileName)?.Edition,
         otherEditions,
         openCodeBehind: false,
@@ -373,12 +372,12 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     }
   }
 
-  private attachListeners(): void {
+  #attachListeners(): void {
     this.zone.runOutsideAngular(() => {
       this.subscriptions.add(
         fromEvent<BeforeUnloadEvent>(window, 'beforeunload')
           .subscribe(event => {
-            const allSaved = !this.viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
+            const allSaved = !this.#viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
             if (allSaved) return;
             event.preventDefault();
             event.returnValue = ''; // fix for Chrome
@@ -387,10 +386,9 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       this.subscriptions.add(
         fromEvent<KeyboardEvent>(window, 'keydown')
           .subscribe(event => {
-            const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
-            if (!CTRL_S) return;
+            if (!isCtrlS(event)) return;
             event.preventDefault();
-            this.zone.run(() => { this.save(); });
+            this.zone.run(() => this.save());
           })
       );
     });

@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, computed, input, signal } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, input } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { eavConstants } from '../../../shared/constants/eav.constants';
@@ -17,12 +17,10 @@ import { FormDataService } from '../../shared/services/form-data.service';
 import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FeatureNames } from '../../../features/feature-names';
-import { BaseComponent } from '../../../shared/components/base.component';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { RxHelpers } from '../../../shared/rxJs/rx.helpers';
 import { FeaturesService } from '../../../features/features.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FormConfigService } from '../../state/form-config.service';
@@ -33,6 +31,7 @@ import { transient } from '../../../core';
 import { ItemService } from '../../shared/store/item.service';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { EditForceReloadService } from '../../routing/edit-force-reload.service';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 
 const logSpecs = {
   enabled: true,
@@ -69,7 +68,7 @@ const logSpecs = {
     MousedownStopPropagationDirective,
   ],
 })
-export class EntityFormComponent extends BaseComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
@@ -92,7 +91,7 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
   languages = this.formConfig.language;
 
   /** Content-Type Settings */
-  ctSettings = computed(() => {
+  ctSettings = computedObj('ctSettings', () => {
     const s = this.#fieldsSettingsSvc.contentTypeSettings();
     const features = s.Features;
     const ctFeatures = buildContentTypeFeatures(s.Features);
@@ -106,18 +105,18 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
       showNotes: ctFeatures[FeatureNames.EditUiShowNotes] ?? this.#editUiShowNotes(),
       showMdFor: ctFeatures[FeatureNames.EditUiShowMetadataFor] ?? this.#editUiShowMetadataFor(),
     };
-  }, { equal: RxHelpers.objectsEqual });
+  });
 
-  readOnly = computed(() => this.#formsStateSvc.readOnly().isReadOnly);
+  readOnly = computedObj('readOnly', () => this.#formsStateSvc.readOnly().isReadOnly);
 
   /** Item-For (Target) Tooltip */
-  itemForTooltip = computed(() => {
+  itemForTooltip = computedObj('itemForTooltip', () => {
     const item = this.itemSvc.getItemFor(this.entityGuid());
     return getItemForTooltip(item, this.#translate);
   });
 
-  #retriggerNoteProps = signal<boolean>(false);
-  noteProps = computed(() => {
+  #retriggerNoteProps = signalObj<boolean>('retriggerNoteProps', false);
+  noteProps = computedObj('noteProps', () => {
     this.#retriggerNoteProps(); // dependency to retrigger when #retriggerNoteProps changes
     const entityGuid = this.entityGuid();
     const languages = this.formConfig.language();
@@ -139,7 +138,6 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
-    super();
   }
 
   ngAfterViewChecked() {
@@ -155,7 +153,6 @@ export class EntityFormComponent extends BaseComponent implements OnInit, AfterV
 
   ngOnDestroy() {
     this.noteRef?.close();
-    super.ngOnDestroy();
   }
 
   toggleCollapse() {

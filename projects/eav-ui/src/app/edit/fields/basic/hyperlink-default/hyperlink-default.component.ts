@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, effect, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
@@ -56,7 +56,7 @@ import isEqual from 'lodash-es/isEqual';
     WrappersCatalog.AdamWrapper,
   ],
 })
-export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
+export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit {
   protected buttonAdam = computed(() => this.settings().Buttons.includes('adam'), SignalEquals.bool);
   protected buttonPage = computed(() => this.settings().Buttons.includes('page'), SignalEquals.bool);
   protected buttonMore = computed(() => this.settings().Buttons.includes('more'), SignalEquals.bool);

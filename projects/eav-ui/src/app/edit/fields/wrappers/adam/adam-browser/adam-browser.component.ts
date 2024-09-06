@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnDestroy, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, EventEmitter, inject, OnInit, Output, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
@@ -15,7 +15,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { BaseComponent } from '../../../../../shared/components/base.component';
 import { FeaturesService } from '../../../../../features/features.service';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { EavLogger } from '../../../../../shared/logging/eav-logger';
@@ -32,6 +31,7 @@ import isEqual from 'lodash-es/isEqual';
 import { AdamConnector } from './adam-connector';
 import { transient } from '../../../../../core/transient';
 import { SignalEquals } from '../../../../../shared/signals/signal-equals';
+import { DialogRoutingService } from 'projects/eav-ui/src/app/shared/routing/dialog-routing.service';
 
 const logSpecs = {
   enabled: false,
@@ -71,7 +71,7 @@ const logSpecs = {
     TippyDirective,
   ],
 })
-export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AdamBrowserComponent implements OnInit {
   @Output() openUpload = new EventEmitter<null>();
 
   protected fieldState = inject(FieldState);
@@ -100,7 +100,8 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   protected expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid)
 
-  private adamService = transient(AdamService);
+  #adamService = transient(AdamService);
+  #dialogRouter = transient(DialogRoutingService);
 
   log = new EavLogger(logSpecs);
   constructor(
@@ -114,8 +115,6 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    super();
-
     // Ensure that we fetch items when we have the configuration
     effect(() => {
       const adamConfig = this.adamConfig();
@@ -129,16 +128,10 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnInit() {
     // Update data if a child-form closes
-    this.subscriptions.add(
-      this.editRoutingService.childFormClosed().subscribe(() => this.fetchItems())
-    );
+    this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
 
     // Attach this browser to the AdamConnector
     (this.config.adam as AdamConnector).setBrowser(this);
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
   }
 
   addFolder() {
@@ -147,7 +140,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (!folderName) return;
 
-    this.adamService.addFolder(folderName, this.#url, this.adamConfig())
+    this.#adamService.addFolder(folderName, this.#url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -157,7 +150,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (!ok) return;
 
-    this.adamService.deleteItem(item, this.#url, this.adamConfig())
+    this.#adamService.deleteItem(item, this.#url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -232,7 +225,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
     const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
     if (!newName) return;
 
-    this.adamService.rename(item, newName, this.#url, this.adamConfig())
+    this.#adamService.rename(item, newName, this.#url, this.adamConfig())
       .subscribe(() => this.fetchItems());
   }
 
@@ -260,7 +253,7 @@ export class AdamBrowserComponent extends BaseComponent implements OnInit, OnDes
       }
     }
 
-    this.adamService.getAll(this.#url, adamConfig)
+    this.#adamService.getAll(this.#url, adamConfig)
       .subscribe(items => this.processFetchedItems(items, adamConfig));
   }
 

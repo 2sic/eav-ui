@@ -127,7 +127,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   ngOnDestroy() {
     this.dropzoneDraggingHelper.detach();
-    super.ngOnDestroy();
   }
 
   calculateBottomPixels() {

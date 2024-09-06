@@ -1,11 +1,10 @@
-import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnInit, ViewContainerRef, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Preview } from './hyperlink-default.models';
 import { FieldState } from '../../field-state';
 import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
 import { ControlHelpers } from '../../../shared/helpers/control.helpers';
 import { PagePicker } from '../../page-picker/page-picker.helper';
-import { BaseComponent } from '../../../../shared/components/base.component';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
@@ -27,7 +26,7 @@ const logSpecs = {
   template: ''
 })
 // tslint:disable-next-line:directive-class-suffix
-export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnInit, OnDestroy {
+export class HyperlinkDefaultBaseComponent implements OnInit {
 
   preview = signal<Preview>({
     url: '',
@@ -62,7 +61,6 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent implements OnIn
     public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
   ) {
-    super();
   }
 
   ngOnInit() {

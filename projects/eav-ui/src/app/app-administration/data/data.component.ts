@@ -65,15 +65,20 @@ import { BaseComponent } from '../../shared/components/base.component';
 })
 export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
-  private contentTypesService = transient(ContentTypesService);
-  private contentExportService = transient(ContentExportService);
+  isDebug = inject(GlobalConfigService).isDebug;
+  #snackBar = inject(MatSnackBar);
+
+  #contentTypeSvc = transient(ContentTypesService);
+  #contentExportSvc = transient(ContentExportService);
+  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogRouter = transient(DialogRoutingService);
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
   scopeOptions$ = new BehaviorSubject<ScopeDetailsDto[]>([]);
-  gridOptions = this.buildGridOptions();
+  gridOptions = this.#buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
 
@@ -82,21 +87,14 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       ({ contentTypes, scope, scopeOptions })),
   );
 
-  isDebug = inject(GlobalConfigService).isDebug;
-
-  #dialogConfigSvc = transient(AppDialogConfigService);
-  #dialogRouter = transient(DialogRoutingService);
-
-  constructor(
-    private snackBar: MatSnackBar,
-  ) {
+  constructor() {
     super();
   }
 
   ngOnInit() {
-    this.fetchScopes();
-    this.refreshScopeOnRouteChange();
-    this.#dialogRouter.doOnDialogClosed(() => this.fetchContentTypes());
+    this.#fetchScopes();
+    this.#refreshScopeOnRouteChange();
+    this.#dialogRouter.doOnDialogClosed(() => this.#fetchContentTypes());
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       this.enablePermissions = data.Context.Enable.AppPermissions;
@@ -120,10 +118,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
           if (contentType == null) {
             const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
-            this.snackBar.open(message, null, { duration: 5000 });
+            this.#snackBar.open(message, null, { duration: 5000 });
             return;
           }
-          this.openDataImport(contentType, files);
+          this.#openDataImport(contentType, files);
         });
         break;
       case 'json':
@@ -137,7 +135,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
   }
 
-  private showContentItems(contentType: ContentType) {
+  #showContentItems(contentType: ContentType) {
     this.#dialogRouter.navParentFirstChild([`items/${contentType.StaticName}`]);
   }
 
@@ -150,21 +148,21 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fetchContentTypes() {
-    this.contentTypesService.retrieveContentTypes(this.scope$.value).subscribe(contentTypes => {
+  #fetchContentTypes() {
+    this.#contentTypeSvc.retrieveContentTypes(this.scope$.value).subscribe(contentTypes => {
       for (const contentType of contentTypes) {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes$.next(contentTypes);
       if (this.scope$.value !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
-        this.snackBar.open(message, null, { duration: 2000 });
+        this.#snackBar.open(message, null, { duration: 2000 });
       }
     });
   }
 
-  private fetchScopes() {
-    this.contentTypesService.getScopesV2().subscribe(scopeList => {
+  #fetchScopes() {
+    this.#contentTypeSvc.getScopesV2().subscribe(scopeList => {
       // Merge the new scopes with the existing ones - in case there were manual scopes added
       // If old scope list had a manual scope which the server didn't send, re-add it here
       const manual = this.scopeOptions$.value
@@ -187,10 +185,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   createGhost() {
     const sourceName = window.prompt('To create a ghost content-type enter source static name / id - this is a very advanced operation - read more about it on 2sxc.org/help?tag=ghost');
     if (!sourceName) { return; }
-    this.snackBar.open('Saving...');
-    this.contentTypesService.createGhost(sourceName).subscribe(res => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.fetchContentTypes();
+    this.#snackBar.open('Saving...');
+    this.#contentTypeSvc.createGhost(sourceName).subscribe(res => {
+      this.#snackBar.open('Saved', null, { duration: 2000 });
+      this.#fetchContentTypes();
     });
   }
 
@@ -202,11 +200,9 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative(['..', newScope]);
   }
 
-  private enablePermissionsGetter() {
-    return this.enablePermissions;
-  }
+  //#region Actions in the grid
 
-  private addItem(contentType: ContentType) {
+  #addItem(contentType: ContentType) {
     const form: EditForm = {
       items: [EditPrep.newFromType(contentType.StaticName)],
     };
@@ -214,11 +210,11 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
-  private editFields(contentType: ContentType) {
+  #editFields(contentType: ContentType) {
     this.#dialogRouter.navParentFirstChild([`fields/${contentType.StaticName}`]);
   }
 
-  private createOrEditMetadata(contentType: ContentType) {
+  #createOrEditMetadata(contentType: ContentType) {
     const form: EditForm = {
       items: [
         !contentType.Properties
@@ -236,7 +232,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([`edit/${formUrl}`]);
   }
 
-  private openMetadata(contentType: ContentType) {
+  #openMetadata(contentType: ContentType) {
     const url = GoToMetadata.getUrlContentType(
       contentType.StaticName,
       `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
@@ -244,35 +240,37 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navParentFirstChild([url]);
   }
 
-  private openRestApi(contentType: ContentType) {
+  #openRestApi(contentType: ContentType) {
     this.#dialogRouter.navParentFirstChild([GoToDevRest.getUrlData(contentType)]);
   }
 
-  private exportType(contentType: ContentType) {
-    this.contentExportService.exportJson(contentType.StaticName);
+  #exportType(contentType: ContentType) {
+    this.#contentExportSvc.exportJson(contentType.StaticName);
   }
 
-  private openDataExport(contentType: ContentType) {
+  #openDataExport(contentType: ContentType) {
     this.#dialogRouter.navParentFirstChild([`export/${contentType.StaticName}`]);
   }
 
-  private openDataImport(contentType: ContentType, files?: File[]) {
+  #openDataImport(contentType: ContentType, files?: File[]) {
     const contentImportData: ContentImportDialogData = { files };
     this.#dialogRouter.navParentFirstChild([`${contentType.StaticName}/import`], { state: contentImportData });
   }
 
-  private openPermissions(contentType: ContentType) {
+  #openPermissions(contentType: ContentType) {
     this.#dialogRouter.navParentFirstChild([GoToPermissions.getUrlContentType(contentType.StaticName)]);
   }
 
-  private deleteContentType(contentType: ContentType) {
+  #deleteContentType(contentType: ContentType) {
     if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) { return; }
-    this.snackBar.open('Deleting...');
-    this.contentTypesService.delete(contentType).subscribe(result => {
-      this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchContentTypes();
+    this.#snackBar.open('Deleting...');
+    this.#contentTypeSvc.delete(contentType).subscribe(result => {
+      this.#snackBar.open('Deleted', null, { duration: 2000 });
+      this.#fetchContentTypes();
     });
   }
+
+  //#endregion
 
   /**
    * Refreshes the scope when the route changes.
@@ -280,15 +278,14 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
    * This is to allow an admin to enter a custom scope.
    * Note 2024-03-04 2dm - not sure if this auto-add feature is still needed though...
    */
-  private refreshScopeOnRouteChange() {
+  #refreshScopeOnRouteChange() {
     this.subscriptions.add(
       this.#dialogRouter.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
-        map(() => this.#dialogRouter.route.snapshot.paramMap.get('scope')),
-        startWith(this.#dialogRouter.route.snapshot.paramMap.get('scope')),
+        map(() => this.#dialogRouter.snapshot.paramMap.get('scope')),
+        startWith(this.#dialogRouter.snapshot.paramMap.get('scope')),
         filter(scope => !!scope),
         mapUntilChanged(m => m),
-        // distinctUntilChanged(),
       ).subscribe(scope => {
         this.scope$.next(scope);
 
@@ -303,12 +300,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           };
           this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
         }
-        this.fetchContentTypes();
+        this.#fetchContentTypes();
       })
     );
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -329,7 +326,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           sort: 'asc',
           onCellClicked: (params) => {
             const contentType: ContentType = params.data;
-            this.showContentItems(contentType);
+            this.#showContentItems(contentType);
           },
           comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
             const contentTypeA: ContentType = nodeA.data;
@@ -343,8 +340,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: DataItemsComponent,
           cellRendererParams: (() => {
             const params: DataItemsParams = {
-              onShowItems: (contentType) => this.showContentItems(contentType),
-              onAddItem: (contentType) => this.addItem(contentType),
+              onShowItems: (contentType) => this.#showContentItems(contentType),
+              onAddItem: (contentType) => this.#addItem(contentType),
             };
             return params;
           })(),
@@ -355,7 +352,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: DataFieldsComponent,
           cellRendererParams: (() => {
             const params: DataFieldsParams = {
-              onEditFields: (contentType) => this.editFields(contentType),
+              onEditFields: (contentType) => this.#editFields(contentType),
             };
             return params;
           })(),
@@ -389,18 +386,18 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRenderer: DataActionsComponent,
           cellRendererParams: (() => {
             const params: DataActionsParams = {
-              enablePermissionsGetter: () => this.enablePermissionsGetter(),
+              enablePermissionsGetter: () => this.enablePermissions,
               do: (verb, contentType) => {
                 switch (verb) {
-                  case 'createUpdateMetaData': this.createOrEditMetadata(contentType); break;
-                  case 'openPermissions': this.openPermissions(contentType); break;
+                  case 'createUpdateMetaData': this.#createOrEditMetadata(contentType); break;
+                  case 'openPermissions': this.#openPermissions(contentType); break;
                   case 'editContentType': this.editContentType(contentType); break;
-                  case 'openMetadata': this.openMetadata(contentType); break;
-                  case 'openRestApi': this.openRestApi(contentType); break;
-                  case 'typeExport': this.exportType(contentType); break;
-                  case 'dataExport': this.openDataExport(contentType); break;
-                  case 'dataImport': this.openDataImport(contentType); break;
-                  case 'deleteContentType': this.deleteContentType(contentType); break;
+                  case 'openMetadata': this.#openMetadata(contentType); break;
+                  case 'openRestApi': this.#openRestApi(contentType); break;
+                  case 'typeExport': this.#exportType(contentType); break;
+                  case 'dataExport': this.#openDataExport(contentType); break;
+                  case 'dataImport': this.#openDataImport(contentType); break;
+                  case 'deleteContentType': this.#deleteContentType(contentType); break;
                 }
               }
             } satisfies DataActionsParams;

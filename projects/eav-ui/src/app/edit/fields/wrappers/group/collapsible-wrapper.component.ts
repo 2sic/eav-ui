@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef, computed, inject } from '@angular/core';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-target.directive';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,6 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
-import { BaseComponent } from '../../../../shared/components/base.component';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { WrappersCatalog } from '../wrappers.constants';
@@ -34,7 +33,7 @@ const logSpecs = {
     SafeHtmlPipe,
   ],
 })
-export class CollapsibleWrapperComponent extends BaseComponent implements OnDestroy {
+export class CollapsibleWrapperComponent {
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
@@ -50,7 +49,6 @@ export class CollapsibleWrapperComponent extends BaseComponent implements OnDest
 
   log = new EavLogger(logSpecs);
   constructor() {
-    super();
     EmptyDefaultLogic.importMe();
   }
 
