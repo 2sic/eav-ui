@@ -183,7 +183,7 @@ export class ValidationHelpers {
   private static formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
-      const fieldProps = specs.fieldsSettingsService.fieldPropsOf(specs.fieldName)();
+      const fieldProps = specs.fieldsSettingsService.fieldProps[specs.fieldName]();
       const formulaValidation = fieldProps.formulaValidation;
 
       const { error, warning } = (() => {

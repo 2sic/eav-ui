@@ -40,7 +40,7 @@ export class FormFieldsBuilderService extends ServiceBase {
   public start(entityGuid: string, form: UntypedFormGroup) {
     const l = this.log.fn('start');
 
-    const fieldProps = this.fieldsSettingsService.allFieldProps;
+    const fieldProps = this.fieldsSettingsService.allProps;
     const fieldProps$ = toObservable(fieldProps, { injector: this.injector });
 
     // 1. Prepare: Take field props and enrich initial values and input types

@@ -249,7 +249,7 @@ export class FieldsTranslateService {
   }
 
   #getInfo(fieldName: string): FieldTranslationInfo {
-    return new FieldTranslationInfo(() => this.fieldsSettingsService.fieldPropsOf(fieldName)());
+    return new FieldTranslationInfo(() => this.fieldsSettingsService.fieldProps[fieldName]());
   }
 
   /**

@@ -15,7 +15,7 @@ import { FieldsPropsEngine } from './fields-properties-engine';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
 import { FieldsSignalsHelper } from './fields-signals.helper';
-import { named } from '../../shared/signals/signal.utilities';
+import { computedObj, named } from '../../shared/signals/signal.utilities';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 
 const logSpecs = {
@@ -64,8 +64,11 @@ export class FieldsSettingsService {
 
   //#endregion
 
-  /** Released field properties after the cycles of change are done */
-  #fieldsProps: Signal<Record<string, FieldProps>>; //({}, { equal: isEqual });
+  /**
+   * Stable field properties of all fields.
+   * It is updated after change-cycles are complete and stable.
+   */
+  public allProps: Signal<Record<string, FieldProps>>;
 
   /** Signal to force a refresh. */
   #forceRefresh = named('forceRefresh', signal(0));
@@ -132,11 +135,11 @@ export class FieldsSettingsService {
     let prevFieldProps: Record<string, FieldProps> = {};
 
     let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
-    this.#fieldsProps = computed(() => {
+    this.allProps = computedObj('allFieldProps', () => {
       if (analyzer)
-        console.log('analyzer', { fieldProps: this.#fieldsProps }, analyzer.snapShotProducers(true));
+        console.log('analyzer', { fieldProps: this.allProps }, analyzer.snapShotProducers(true));
 
-      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: contentType.Id, props: this.#fieldsProps });
+      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: contentType.Id, props: this.allProps });
       // If disabled, for any reason, return the previous value
       // The #disabled is a safeguard as data will be missing when this is being cleaned up.
       // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
@@ -176,24 +179,22 @@ export class FieldsSettingsService {
       // } else {
       //   return l.rSilent(prevFieldProps, 'props: no changes');
       // }
-    }, { equal: isEqual } );
+    });
 
     if (activateAnalyzer)
-      analyzer = new ComputedAnalyzer(this.#fieldsProps);
+      analyzer = new ComputedAnalyzer(this.allProps);
 
-    this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.#fieldsProps);
+    this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.allProps);
   }
 
   /**
    * Get field properties for all fields.
    * @returns Signal of object that has attribute name as a key and all of its field properties.
    */
-  public get allFieldProps(): Signal<Record<string, FieldProps>> { return this.#fieldsProps; }
+  // public get allFieldProps(): Signal<Record<string, FieldProps>> { return this.allFieldsProps; }
 
-  public fieldPropsOf(fieldName: string): Signal<FieldProps> {
-    return this.#fieldPropsCache.getOrCreate(fieldName, () => this.#fieldsProps()[fieldName]);
-  }
   #fieldPropsCache = new ComputedCacheHelper<string, FieldProps>('field-props');
+  public fieldProps = this.#fieldPropsCache.buildProxy(f => () => this.allProps()[f]);
   
   #fieldSignalsCache = new ComputedCacheHelper<string, FieldSettings>('fields');
   /**
@@ -201,7 +202,7 @@ export class FieldsSettingsService {
    * @param fieldName
    * @returns Field settings
    */
-  public settings = this.#fieldSignalsCache.buildProxy(f => () => this.#fieldsProps()[f].settings);
+  public settings = this.#fieldSignalsCache.buildProxy(f => () => this.allProps()[f].settings);
 
   /**
    * Used for translation state stream for a specific field.
@@ -209,7 +210,7 @@ export class FieldsSettingsService {
    * @returns Translation state stream
    */
   getTranslationState(fieldName: string): Signal<TranslationState> {
-    return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.#fieldsProps()[fieldName].translationState);
+    return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.allProps()[fieldName].translationState);
   }
   #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>('transl-state');
 
