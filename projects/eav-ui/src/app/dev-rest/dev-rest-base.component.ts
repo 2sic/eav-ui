@@ -2,14 +2,15 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, share, switchMap } from 'rxjs';
-import { AllScenarios, DevRestBaseViewModel, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
+import { BehaviorSubject, combineLatest, map, Observable, share, startWith, switchMap } from 'rxjs';
+import { AllScenarios, DevRestBaseViewModel, Scenario } from '.';
 import { DialogSettings } from '../app-administration/models';
 import { Permission, PermissionsService } from '../permissions';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
 import { transient } from '../core';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
   selector: 'app-dev-rest-base',
@@ -18,8 +19,11 @@ import { AppDialogConfigService } from '../app-administration/services/app-dialo
 // tslint:disable-next-line:component-class-suffix
 export class DevRestBase<ViewModelType> implements OnDestroy {
 
+  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogRouter = transient(DialogRoutingService);
+
   /** Template variables for the HTML template */
-  public viewModel$: Observable<ViewModelType>;
+  protected viewModel$: Observable<ViewModelType>;
 
   /** List of scenarios */
   scenarios = AllScenarios;
@@ -29,8 +33,6 @@ export class DevRestBase<ViewModelType> implements OnDestroy {
 
   permissions$: Observable<Permission[]>;
   dialogSettings$: Observable<DialogSettings>;
-
-  private dialogConfigSvc = transient(AppDialogConfigService);
 
   // Shared Constructor for things all the Dev-REST things will need
   constructor(
@@ -45,14 +47,15 @@ export class DevRestBase<ViewModelType> implements OnDestroy {
   ) {
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
-    this.dialogSettings$ = this.dialogConfigSvc.getCurrent$();
+    this.dialogSettings$ = this.#dialogConfigSvc.getCurrent$();
   }
 
   buildPermissionStream(routeTargetName: string) {
     // Build Permissions Stream
     // This is triggered on start and everything a sub-dialog closes
     return combineLatest([
-      fireOnStartAndWhenSubDialogCloses(this.router, this.route),
+      // fire on Start and when sub-dialog closes
+      this.#dialogRouter.childDialogClosed$().pipe(startWith([])),
       this.route.paramMap.pipe(map(pm => pm.get(routeTargetName))),
     ]).pipe(
       switchMap(([_, permissionTarget]) => {
