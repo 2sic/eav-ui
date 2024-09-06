@@ -138,7 +138,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private deleteApp(app: App): void {
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
-    if (result === null) { return; }
+    if (result === null) return;
     if (result === app.Name || result === 'yes!') {
       this.snackBar.open('Deleting...');
       this.#appsListSvc.delete(app.Id).subscribe({
@@ -157,7 +157,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   private flushApp(app: App): void {
-    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
+    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) return;
     this.snackBar.open('Flushing cache...');
     this.#appsListSvc.flushCache(app.Id).subscribe({
       error: () => {

@@ -63,7 +63,7 @@ export class EntityFilterComponent implements IFilterAngularComp {
   }
 
   getModel(): EntityFilterModel {
-    if (!this.isFilterActive()) { return; }
+    if (!this.isFilterActive()) return;
     const model: EntityFilterModel = {
       filterType: 'entity',
       filter: this.filter,

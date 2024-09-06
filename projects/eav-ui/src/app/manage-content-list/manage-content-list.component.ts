@@ -145,7 +145,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   remove(item: GroupHeader) {
-    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) { return; }
+    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) return;
     this.snackBar.open('Removing...');
     this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => {
       this.snackBar.open('Removed', null, { duration: 2000 });

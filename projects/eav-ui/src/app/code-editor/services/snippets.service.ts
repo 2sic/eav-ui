@@ -273,7 +273,7 @@ export class SnippetsService {
       map(fields => {
         fields = fields.filter(field => field.Type !== DataTypeCatalog.Empty);
         for (const fld of fields) {
-          if (!fld.Metadata) { continue; }
+          if (!fld.Metadata) continue;
           const md = fld.Metadata;
           const allMd = md.All;
           const typeMd = md[fld.Type];
@@ -303,7 +303,7 @@ export class SnippetsService {
         }
       }
     }
-    if (!genericSnippet) { return; }
+    if (!genericSnippet) return;
 
     if (target[fieldname].more === undefined) {
       target[fieldname].more = {};

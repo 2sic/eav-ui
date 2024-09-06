@@ -305,7 +305,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
   #startSubscriptions() {
     this.subscriptions.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty()) { return; }
+        if (this.formsStateService.readOnly().isReadOnly || !this.formsStateService.formsAreDirty()) return;
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.#snackBarYouHaveUnsavedChanges();

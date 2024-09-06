@@ -95,7 +95,7 @@ export class RenameStreamComponent extends BaseComponent implements OnInit, OnDe
     });
     this.controls = this.form.controls as any;
 
-    if (!this.isSource || !this.pipelineResultExists) { return; }
+    if (!this.isSource || !this.pipelineResultExists) return;
 
     this.subscriptions.add(
       this.controls.scope.valueChanges.pipe(

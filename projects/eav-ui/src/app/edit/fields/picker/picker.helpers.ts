@@ -66,7 +66,7 @@ export function convertArrayToString(value: string | string[], separator: string
 }
 
 export function filterGuids(entityName: string, fieldName: string, guids: string[]): string[] {
-  if (guids == null) { return; }
+  if (guids == null) return;
 
   const validGuids: string[] = [];
   const invalidGuids: string[] = [];

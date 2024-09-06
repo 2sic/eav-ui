@@ -3,7 +3,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { DataSource, SortedDataSources } from '../models';
 
 export function filterAndSortDataSources(dataSources: DataSource[], maxDifficulty: number) {
-  if (!dataSources) { return; }
+  if (!dataSources) return;
 
   const cloned = cloneDeep(dataSources);
 

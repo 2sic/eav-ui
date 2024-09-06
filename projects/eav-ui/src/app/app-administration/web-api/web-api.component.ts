@@ -85,7 +85,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     //     width: '650px',
     //   });
     //   fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
-    //     if (isShared == null) { return; }
+    //     if (isShared == null) return;
     //     this.createController(isShared);
     //   });
     //   return;
@@ -104,7 +104,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     });
 
     createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
-      if (!result) { return; }
+      if (!result) return;
 
       if (result.name.endsWith('Controller.cs')) {
         const fileName = result.name.substring(result.name.lastIndexOf('/') + 1);

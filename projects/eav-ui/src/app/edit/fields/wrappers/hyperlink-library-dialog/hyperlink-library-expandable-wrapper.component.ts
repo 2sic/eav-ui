@@ -96,7 +96,7 @@ export class HyperlinkLibraryExpandableWrapperComponent {
   }
 
   expandDialog() {
-    if (this.config.initialDisabled) { return; }
+    if (this.config.initialDisabled) return;
     this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 

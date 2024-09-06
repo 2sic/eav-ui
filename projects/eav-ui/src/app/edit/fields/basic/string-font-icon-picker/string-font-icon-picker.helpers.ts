@@ -10,7 +10,7 @@ export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
   const truncateLabel = showPrefix ? 0 : classPrefix.length - 1;
 
   for (const sheet of Array.from(document.styleSheets)) {
-    if (!sheet) { continue; }
+    if (!sheet) continue;
 
     let rules: CSSRuleList;
     try {
@@ -21,14 +21,14 @@ export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
         rules = sheet.cssRules;
       } catch (error) { /* errors happens if browser denies access to css rules */ }
     }
-    if (!rules) { continue; }
+    if (!rules) continue;
 
     for (const rule of Array.from(rules) as CSSStyleRule[]) {
-      if (!(rule.selectorText && rule.selectorText.startsWith(classPrefix))) { continue; }
+      if (!(rule.selectorText && rule.selectorText.startsWith(classPrefix))) continue;
 
       const selector = rule.selectorText;
       const iconClass = selector.substring(0, selector.indexOf(':')).replace('.', '');
-      if (duplicateDetector[iconClass]) { continue; }
+      if (duplicateDetector[iconClass]) continue;
 
       foundList.push({
         rule,

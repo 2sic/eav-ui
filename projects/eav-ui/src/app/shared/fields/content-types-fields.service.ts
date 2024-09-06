@@ -65,7 +65,7 @@ export class ContentTypesFieldsService {
         map(fields => {
           if (fields) {
             for (const fld of fields) {
-              if (!fld.Metadata) { continue; }
+              if (!fld.Metadata) continue;
               const md = fld.Metadata;
               const allMd = md.All;
               const typeMd = md[fld.Type];

@@ -40,7 +40,7 @@ export class PickerTextToggleComponent implements OnInit {
   ngOnInit(): void { }
 
   toggleFreeText(disabled: boolean): void {
-    if (disabled) { return; }
+    if (disabled) return;
     this.pickerData.state.toggleFreeTextMode();
   }
 }

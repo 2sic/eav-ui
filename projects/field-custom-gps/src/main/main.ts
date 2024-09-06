@@ -40,7 +40,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) { return; }
+    if (this.fieldInitialized) return;
     this.fieldInitialized = true;
     this.log.a(`${gpsDialogTag} connectedCallback called`);
 

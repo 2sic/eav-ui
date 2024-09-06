@@ -89,7 +89,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
       this.visualQueryService.dataSourceConfigs$,
     ]).pipe(
       map(([pipelineModel, dataSources, pipelineDesignerData, dataSourceConfigs]) => {
-        if (pipelineModel == null || dataSources == null) { return; }
+        if (pipelineModel == null || dataSources == null) return;
 
         // workaround for jsPlumb not working with dom elements which it initialized on previously.
         // This wipes dom entirely and gives us new elements
@@ -176,7 +176,7 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   }
 
   remove(pipelineDataSource: PipelineDataSource) {
-    if (!confirm(`Delete ${pipelineDataSource.Name} data source?`)) { return; }
+    if (!confirm(`Delete ${pipelineDataSource.Name} data source?`)) return;
 
     this.plumber.removeEndpointsOnDataSource(pipelineDataSource.EntityGuid);
     const connections = this.plumber.getAllConnections();
@@ -190,14 +190,14 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
 
   editName(dataSource: PipelineDataSource) {
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
-    if (newName == null || newName === '') { return; }
+    if (newName == null || newName === '') return;
 
     this.visualQueryService.renameDataSource(dataSource.EntityGuid, newName);
   }
 
   editDescription(dataSource: PipelineDataSource) {
     const newDescription = prompt('Edit description', dataSource.Description)?.trim();
-    if (newDescription == null) { return; }
+    if (newDescription == null) return;
 
     this.visualQueryService.changeDataSourceDescription(dataSource.EntityGuid, newDescription);
   }

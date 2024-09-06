@@ -4,8 +4,8 @@ export function fixMenuPositions(fieldStringWysiwyg: FieldStringWysiwygEditor): 
   const observer = new MutationObserver((mutations: MutationRecord[]) => {
     for (const mutation of mutations) {
       for (const addedNode of Array.from(mutation.addedNodes) as HTMLElement[]) {
-        if (!addedNode.classList) { continue; }
-        if (!addedNode.classList.contains('tox-menu')) { continue; }
+        if (!addedNode.classList) continue;
+        if (!addedNode.classList.contains('tox-menu')) continue;
 
         const toxMenu = addedNode;
         const containerPaddingTopBottom = 10;

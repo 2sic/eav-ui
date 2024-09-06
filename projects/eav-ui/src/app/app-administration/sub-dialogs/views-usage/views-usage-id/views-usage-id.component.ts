@@ -26,7 +26,7 @@ export class ViewsUsageIdComponent implements ICellRendererAngularComp {
 
   agInit(params: ICellRendererParams) {
     this.tooltip = params.value;
-    if (this.tooltip == null) { return; }
+    if (this.tooltip == null) return;
     const idPart = this.tooltip.split('\n')[0];
     this.id = idPart.split(' ')[1];
   }

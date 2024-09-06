@@ -159,9 +159,9 @@ export class UrlHelpers {
     }
     let pathFromRoot = '';
     for (const path of lastChild.snapshot.pathFromRoot) {
-      if (path.url.length <= 0) { continue; }
+      if (path.url.length <= 0) continue;
       for (const urlSegment of path.url) {
-        if (!urlSegment.path) { continue; }
+        if (!urlSegment.path) continue;
         pathFromRoot += '/' + urlSegment.path;
       }
     }

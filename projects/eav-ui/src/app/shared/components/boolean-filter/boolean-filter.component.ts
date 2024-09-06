@@ -45,7 +45,7 @@ export class BooleanFilterComponent implements IFilterAngularComp {
   }
 
   getModel(): BooleanFilterModel {
-    if (!this.isFilterActive()) { return; }
+    if (!this.isFilterActive()) return;
     return {
       filterType: 'boolean',
       filter: this.filter,

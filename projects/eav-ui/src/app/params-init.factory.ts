@@ -30,7 +30,7 @@ export function paramsInitFactory(injector: Injector): () => void {
       const queryParametersFromUrl = UrlHelpers.readQueryStringParameters(urlHash);
 
       for (const [paramKey, paramValue] of Object.entries(queryParametersFromUrl)) {
-        if (paramValue == null) { continue; }
+        if (paramValue == null) continue;
         sessionStorage.setItem(prefix + paramKey, paramValue);
       }
 

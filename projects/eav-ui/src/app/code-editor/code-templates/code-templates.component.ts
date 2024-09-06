@@ -79,15 +79,15 @@ export class CodeTemplatesComponent implements OnChanges {
   }
 
   private showFileInTree(file: string, isShared: boolean): void {
-    if (file == null) { return; }
+    if (file == null) return;
     const toggledItems = isShared ? this.toggledItemsShared : this.toggledItemsApp;
-    if (toggledItems.includes(file)) { return; }
+    if (toggledItems.includes(file)) return;
 
     const paths = [appSharedRoot, ...file.split('/')];
     let pathFromRoot = '';
     for (const path of paths) {
       pathFromRoot = !pathFromRoot ? path : `${pathFromRoot}/${path}`;
-      if (toggledItems.includes(pathFromRoot)) { continue; }
+      if (toggledItems.includes(pathFromRoot)) continue;
       this.toggleItem(pathFromRoot, isShared);
     }
   }

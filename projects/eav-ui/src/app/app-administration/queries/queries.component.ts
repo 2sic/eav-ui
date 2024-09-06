@@ -116,7 +116,7 @@ export class QueriesComponent implements OnInit {
   }
 
   private openVisualQueryDesigner(query: Query) {
-    if (query._EditInfo.ReadOnly) { return; }
+    if (query._EditInfo.ReadOnly) return;
     this.#dialogSvc.openQueryDesigner(query.Id);
   }
 
@@ -145,7 +145,7 @@ export class QueriesComponent implements OnInit {
   }
 
   private deleteQuery(query: Query) {
-    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
+    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) return;
     this.snackBar.open('Deleting...');
     this.#pipelineSvc.delete(query.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });

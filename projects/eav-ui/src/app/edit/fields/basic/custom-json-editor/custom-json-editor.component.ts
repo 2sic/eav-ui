@@ -49,7 +49,7 @@ export class CustomJsonEditorComponent {
 
   jsonSchema = computed(() => {
     const settings = this.settings();
-    if (settings.JsonSchemaMode === 'none') { return; }
+    if (settings.JsonSchemaMode === 'none') return;
     const jsonSchema: JsonSchema = {
       type: settings.JsonSchemaSource,
       value: settings.JsonSchemaSource === 'link' ? settings.JsonSchemaUrl : settings.JsonSchemaRaw,

@@ -23,7 +23,7 @@ export class EntityReader implements FormLanguage {
     const merged: Record<string, any> = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
-      if (item.Type.Id === '@All') { continue; }
+      if (item.Type.Id === '@All') continue;
 
       for (const [name, values] of Object.entries(item.Attributes)) {
         const value = this.getBestValue(values);
@@ -33,14 +33,14 @@ export class EntityReader implements FormLanguage {
 
     // copy @All metadata settings, overwriting previous settings
     for (const item of metadataItems) {
-      if (item.Type.Id !== '@All') { continue; }
+      if (item.Type.Id !== '@All') continue;
 
       for (const [name, values] of Object.entries(item.Attributes)) {
         const value = this.getBestValue(values);
         // do not overwrite previous settings if @All is empty
         const exists = merged[name] != null;
         const emptyAll = value == null || value === '';
-        if (exists && emptyAll) { continue; }
+        if (exists && emptyAll) continue;
 
         merged[name] = value;
       }

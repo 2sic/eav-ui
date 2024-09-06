@@ -7,7 +7,7 @@ import { PubMetaFilterModel } from './pub-meta-filter/pub-meta-filter.model';
 import { JsonHelpers } from '../shared/helpers/json.helpers';
 
 export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
-  if (!urlFilters) { return; }
+  if (!urlFilters) return;
 
   // special decode if parameter was passed as base64 - this is necessary for strings containing the "+" character
   if (urlFilters.charAt(urlFilters.length - 1) === '=') {
@@ -20,7 +20,7 @@ export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
   } catch (error) {
     console.error('Can\'t parse JSON with filters from url:', urlFilters);
   }
-  if (!filters) { return; }
+  if (!filters) return;
 
   // handle IsPublished and IsMetadata
   const filterModel: AgGridFilterModel = {};

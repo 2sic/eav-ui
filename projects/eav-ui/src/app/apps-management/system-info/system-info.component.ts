@@ -197,7 +197,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     );
     const siteInfos$ = combineLatest([this.#systemInfoSet$, this.#languages$]).pipe(
       map(([systemInfoSet, languages]) => {
-        if (systemInfoSet == null || languages == null) { return; }
+        if (systemInfoSet == null || languages == null) return;
         const allLanguages = languages.length;
         const activeLanguages = languages.filter(l => l.IsEnabled).length;
         const info: InfoTemplate[] = [
@@ -227,7 +227,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     );
     const warningIcon$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
-        if (systemInfoSet == null) { return; }
+        if (systemInfoSet == null) return;
         if (systemInfoSet.Messages.WarningsObsolete || systemInfoSet.Messages.WarningsOther) {
           return 'warning';
         }
@@ -236,7 +236,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     );
     const warningInfos$ = this.#systemInfoSet$.pipe(
       map(systemInfoSet => {
-        if (systemInfoSet == null) { return; }
+        if (systemInfoSet == null) return;
         const info: InfoTemplate[] = [
           {
             label: 'Warnings Obsolete',

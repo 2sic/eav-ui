@@ -20,7 +20,7 @@ export class AddEverythingToRegistry extends AddToRegistryBase {
   register(): void {
     const instSettings = this.field.configurator.addOnSettings;
 
-    if (!instSettings.enabled) { return; }
+    if (!instSettings.enabled) return;
 
     const p = this.makerParams;
     new TinyButtonsImg(p).register();

@@ -13,7 +13,7 @@ export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
       const matFormField = this.elementRef.nativeElement;
       this.observer = new ResizeObserver(() => {
         const newResizeTime = Date.now();
-        if (newResizeTime - this.oldResizeTime < this.debounce) { return; }
+        if (newResizeTime - this.oldResizeTime < this.debounce) return;
         this.oldResizeTime = newResizeTime;
 
         const textarea = matFormField.querySelector('textarea');

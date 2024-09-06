@@ -191,20 +191,20 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   }
 
   #getUrlOfId(value: string, callback: (value: string) => void) {
-    if (!value) { return; }
+    if (!value) return;
 
     // handle short-ID links like file:17
     const contentType = this.#config.contentTypeNameId;
     const entityGuid = this.#config.entityGuid;
     const field = this.#config.fieldName;
     this.#adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
-      if (!linkInfo) { return; }
+      if (!linkInfo) return;
       callback(linkInfo.Value);
     });
   }
 
   #updateControl(control: AbstractControl, value: FieldValue) {
-    if (control.disabled) { return; }
+    if (control.disabled) return;
     ControlHelpers.patchControlValue(control, value);
   }
 

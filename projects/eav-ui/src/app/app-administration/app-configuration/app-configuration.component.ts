@@ -244,7 +244,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           NewStaticName: '',
         } as ContentTypeEdit;
         this.#contentTypesSvc.save(newContentType).subscribe(success => {
-          if (!success) { return; }
+          if (!success) return;
 
           if (action === 'edit') {
             this.edit(staticName);

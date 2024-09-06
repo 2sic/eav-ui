@@ -106,7 +106,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   private deletePermission(permission: Permission) {
-    if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) { return; }
+    if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) return;
     this.snackBar.open('Deleting...');
     this.#permissionsService.delete(permission.Id).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });

@@ -186,7 +186,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private fetchFor() {
-    if (!this.#contentTypeStaticName) { return; }
+    if (!this.#contentTypeStaticName) return;
 
     this.#contentItemSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
       const item = items.find(i => i.Guid === this.#key);

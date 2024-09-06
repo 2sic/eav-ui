@@ -58,7 +58,7 @@ export class QueryResultComponent implements OnInit {
   }
 
   show(top: number) {
-    if (top === this.top) { return; }
+    if (top === this.top) return;
 
     if (this.debugStream) {
       this.visualQueryService.debugStream(this.debugStream.original, top);

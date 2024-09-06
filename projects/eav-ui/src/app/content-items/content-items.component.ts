@@ -234,7 +234,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       width: '650px',
     });
     metadataDialogRef.afterClosed().subscribe((itemFor: MetadataInfo) => {
-      if (itemFor == null) { return; }
+      if (itemFor == null) return;
 
       const form: EditForm = {
         items: [ EditPrep.newMetadataFromInfo(this.#contentTypeStaticName, itemFor) ],
@@ -377,7 +377,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   private delete(item: ContentItem) {
-    if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { return; }
+    if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) return;
     this.snackBar.open('Deleting...');
     this.entitiesService.delete(this.#contentTypeStaticName, item._RepositoryId, false).subscribe({
       next: () => {

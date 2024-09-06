@@ -35,7 +35,7 @@ export class MouseScrollHelper {
 
   private registerScroll(event: MouseEvent) {
     const disabled = this.areButtonsDisabled();
-    if (disabled || event.button !== 0) { return; }
+    if (disabled || event.button !== 0) return;
 
     window.getSelection().removeAllRanges();
     this.oldScrollBehavior = getComputedStyle(this.header).getPropertyValue('scroll-behavior');

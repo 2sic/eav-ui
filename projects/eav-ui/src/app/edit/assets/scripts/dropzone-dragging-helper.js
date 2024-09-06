@@ -47,7 +47,7 @@ window.addEventListener('drop', function (event) {
   }, { passive: true });
 
   function initDropzones() {
-    if (dropzones) { return; }
+    if (dropzones) return;
     const dropzonesSelector = '.' + dropzoneClass + ':not(.' + dropzoneDisabledClass + ')';
     dropzones = document.querySelectorAll(dropzonesSelector);
 
@@ -85,7 +85,7 @@ window.addEventListener('drop', function (event) {
   }
 
   function clearAllDropzonesAndListeners() {
-    if (!dropzones) { return; }
+    if (!dropzones) return;
     document.body.classList.remove(draggingClass);
     clearListeners(dropzonesListeners);
     clearClassFromElements(draggingClass, dropzones);

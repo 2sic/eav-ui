@@ -117,7 +117,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   onRowDragMove(event: RowDragEvent) {
     const movingNode = event.node;
     const overNode = event.overNode;
-    if (!overNode) { return; }
+    if (!overNode) return;
     const rowNeedsToMove = movingNode !== overNode;
     if (rowNeedsToMove) {
       const movingData: Field = movingNode.data;
@@ -270,7 +270,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private delete(field: Field) {
-    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { return; }
+    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
     this.snackBar.open('Deleting...');
     this.contentTypesFieldsService.delete(field, this.contentType$.value).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });

@@ -67,7 +67,7 @@ export class ExtendedFabSpeedDialComponent extends BaseComponent implements Afte
   }
 
   setOpen(event: PointerEvent, open: boolean): void {
-    if (event.pointerType === 'touch') { return; }
+    if (event.pointerType === 'touch') return;
     this.open$.next(open);
   }
 }

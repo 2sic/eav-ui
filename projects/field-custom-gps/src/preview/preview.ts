@@ -29,7 +29,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   connectedCallback(): void {
-    if (this.fieldInitialized) { return; }
+    if (this.fieldInitialized) return;
     this.fieldInitialized = true;
     this.log.a(`${gpsTag} connectedCallback called`);
 

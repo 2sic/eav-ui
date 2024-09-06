@@ -148,7 +148,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   editPolymorphisms() {
-    if (!this.#polymorphism) { return; }
+    if (!this.#polymorphism) return;
 
     const form: EditForm = {
       items: [
@@ -200,7 +200,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private deleteView(view: View) {
-    if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) { return; }
+    if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) return;
     this.snackBar.open('Deleting...');
     this.#viewsSvc.delete(view.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });

@@ -77,7 +77,7 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
   }
 
   getModel(): PubMetaFilterModel {
-    if (!this.isFilterActive()) { return; }
+    if (!this.isFilterActive()) return;
 
     const model: PubMetaFilterModel = {
       filterType: 'pub-meta',

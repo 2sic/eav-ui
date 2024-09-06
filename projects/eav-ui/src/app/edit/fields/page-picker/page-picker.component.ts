@@ -90,10 +90,10 @@ export class PagePickerComponent implements OnInit, OnDestroy {
 
   select(page: PageTreeItem | PageSearchItem): void {
     // filters out pages without parent (broken)
-    if (page.id == null) { return; }
+    if (page.id == null) return;
     if (!page.isClickable || !page.isVisible) {
       const ok = window.confirm(this.translate.instant('Fields.Hyperlink.PagePicker.HiddenOrSystemPageWarning'));
-      if (!ok) { return; }
+      if (!ok) return;
     }
     this.closeDialog(page.id);
   }
@@ -145,10 +145,10 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   private parseSelectedPageId(): number {
     const prefix = 'page:';
     let fieldValue: FieldValue = this.dialogData.group.controls[this.dialogData.config.fieldName].value;
-    if (typeof fieldValue !== 'string') { return; }
+    if (typeof fieldValue !== 'string') return;
 
     fieldValue = fieldValue.trim().toLocaleLowerCase();
-    if (!fieldValue.startsWith(prefix)) { return; }
+    if (!fieldValue.startsWith(prefix)) return;
 
     try {
       const id = parseInt(fieldValue.split(prefix)[1], 10);

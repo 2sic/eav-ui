@@ -8,7 +8,7 @@ export function blockIdValueGetter(params: ValueGetterParams) {
 
 export function moduleIdValueGetter(params: ValueGetterParams) {
   const data: ViewUsageData = params.data;
-  if (data.Module == null) { return; }
+  if (data.Module == null) return;
   return `ID: ${data.Module.Id}\nUsageId: ${data.Module.UsageId}\nTitle: ${data.Module.Title}`;
 }
 
@@ -18,7 +18,7 @@ export function moduleIdClassGetter(params: CellClassParams): string[] {
 
 export function pageIdValueGetter(params: ValueGetterParams) {
   const data: ViewUsageData = params.data;
-  if (data.PageId == null) { return; }
+  if (data.PageId == null) return;
   return `ID: ${data.PageId}`;
 }
 
@@ -31,14 +31,14 @@ export function nameClassGetter(params: CellClassParams): string[] {
 }
 
 export function onNameClicked(params: CellClickedEvent) {
-  if (params.value == null) { return; }
+  if (params.value == null) return;
   const data: ViewUsageData = params.data;
   window.open(data.Url, '_blank');
 }
 
 export function statusCellRenderer(params: ICellRendererParams) {
   const status: ViewUsageDataStatus = params.value;
-  if (status == null) { return; }
+  if (status == null) return;
   return `
     <div style="height: 100%;display: flex;align-items: center;">
       ${status.IsVisible ? '<span class="material-icons-outlined">visibility</span>' : '<span class="material-icons-outlined">visibility_off</span>'}

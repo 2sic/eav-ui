@@ -76,7 +76,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
       this.dialogRef.backdropClick().subscribe(() => {
         if (this.form.dirty || this.selectedFields.data.length > 0) {
           const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
-          if (!confirmed) { return; }
+          if (!confirmed) return;
         }
         this.closeDialog();
       })

@@ -5,7 +5,7 @@ import { LocalizationHelpers } from '../localization/localization.helpers';
 import { FormLanguage } from '../state/form-languages.model';
 
 export function getItemForTooltip(itemFor: EavFor, translate: TranslateService) {
-  if (!itemFor) { return; }
+  if (!itemFor) return;
   return translate.instant('Form.Buttons.Metadata.Tip')
     + `\nTarget: ${itemFor.Target}`
     + `\nTargetType: ${itemFor.TargetType}`

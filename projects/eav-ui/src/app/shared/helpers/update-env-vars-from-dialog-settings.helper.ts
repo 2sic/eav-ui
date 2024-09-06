@@ -12,7 +12,7 @@ declare const window: EavWindow;
 export function UpdateEnvVarsFromDialogSettings(appContext: DialogContextApp): void {
   try {
     const includedApiRoot = appContext?.Api;
-    if (!includedApiRoot) { return; }
+    if (!includedApiRoot) return;
 
     const old2sxcHeader = (window.$2sxc.env as any).header as EnvironmentSpecs;
     const new2sxcHeader = { ...old2sxcHeader, appApi: includedApiRoot } as EnvironmentSpecs;

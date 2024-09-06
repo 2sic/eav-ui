@@ -69,7 +69,7 @@ export class AppStateComponent implements OnInit, OnDestroy {
   }
 
   resetApp(withFiles: boolean) {
-    if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
+    if (!confirm('Are you sure? All changes since last xml export will be lost')) return;
     this.snackBar.open('Resetting...');
     this.#importAppPartsSvc.resetApp(withFiles).subscribe({
       next: result => {

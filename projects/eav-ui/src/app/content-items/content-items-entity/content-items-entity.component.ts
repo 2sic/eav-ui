@@ -16,7 +16,7 @@ export class ContentItemsEntityComponent implements ICellRendererAngularComp {
   entities: number;
 
   agInit(params: ICellRendererParams) {
-    if (!Array.isArray(params.value)) { return; }
+    if (!Array.isArray(params.value)) return;
 
     this.encodedValue = this.htmlEncode(params.value.join(', '));
     if ((params.colDef as ExtendedColDef).allowMultiValue) {

@@ -348,7 +348,7 @@ export class LocalizationHelpers {
    * 2. value for all languages
    */
   static getBestValue(eavValues: EavField<any>, currentLanguage: string, defaultLanguage: string, mode: BestValueMode): FieldValue {
-    if (eavValues == null) { return; }
+    if (eavValues == null) return;
 
     let bestDimensions = [currentLanguage, `~${currentLanguage}`];
     let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
@@ -358,7 +358,7 @@ export class LocalizationHelpers {
     bestValue = this.findValueForDimensions(eavValues, bestDimensions);
     if (bestValue !== undefined) { return bestValue; }
 
-    if (mode === BestValueModes.Strict) { return; }
+    if (mode === BestValueModes.Strict) return;
 
     bestDimensions = [defaultLanguage, `~${defaultLanguage}`];
     bestValue = this.findValueForDimensions(eavValues, bestDimensions);
