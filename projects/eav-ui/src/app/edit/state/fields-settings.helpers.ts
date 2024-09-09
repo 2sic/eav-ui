@@ -13,6 +13,7 @@ import { MetadataDecorators } from './metadata-decorators.constants';
 import { ContentTypeSettings } from './content-type-settings.model';
 import { TranslationState } from '../localization/translate-state.model';
 import { FormLanguage } from '../form/form-languages.model';
+import { EavLogger } from '../../shared/logging/eav-logger';
 
 export class ContentTypeSettingsHelpers {
 
@@ -53,6 +54,12 @@ export class ContentTypeSettingsHelpers {
 
 }
 
+const logSpecs = {
+  enabled: true,
+  name: 'FieldsSettingsHelpers',
+}
+
+const fssLog = new EavLogger(logSpecs);
 export class FieldsSettingsHelpers {
 
   static getDefaultSettings(settings: FieldSettings): FieldSettings {
@@ -130,7 +137,12 @@ export class FieldsSettingsHelpers {
     return true;
   }
 
-  static getTranslationState(attributeValues: EavField<any>, disableTranslation: boolean, language: FormLanguage): TranslationState {
+  static getTranslationState(attributeValues: EavField<any>, disableTranslation: boolean, language: FormLanguage, debug: boolean): TranslationState {
+    if (debug) {
+      fssLog.fn('getTranslationState', { attributeValues, disableTranslation, language });
+      debugger;
+    }
+
     let infoLabel: string;
     let infoMessage: string;
 

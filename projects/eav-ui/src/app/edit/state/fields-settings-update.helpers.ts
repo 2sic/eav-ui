@@ -15,7 +15,7 @@ const logSpecsFactory = {
 };
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'FieldSettingsUpdateHelper',
   specs: {
     correctSettingsAfterChanges: true,

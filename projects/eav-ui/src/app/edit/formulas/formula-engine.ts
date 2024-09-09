@@ -35,7 +35,8 @@ const logSpecs = {
   enabled: false,
   name: 'FormulaEngine',
   specs: {
-    fields: ['UiGroup'],
+    // runFormulasForAllFields: false,
+    fields: ['DefaultValue'],
   }
 };
 
@@ -66,19 +67,19 @@ export class FormulaEngine {
   }
 
   init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctSettings: Signal<ContentTypeSettings>) {
-    this.entityGuid = entityGuid;
-    this.settingsSvc = settingsSvc;
-    this.promiseHandler = promiseHandler;
-    this.contentType = contentType;
-    this.contentTypeSettings = ctSettings;
+    this.#entityGuid = entityGuid;
+    this.#settingsSvc = settingsSvc;
+    this.#promiseHandler = promiseHandler;
+    this.#contentType = contentType;
+    this.#contentTypeSettings = ctSettings;
   }
 
   // properties to set on init
-  private entityGuid: string;
-  private contentType: EavContentType;
-  private contentTypeSettings: Signal<ContentTypeSettings>;
-  private settingsSvc: FieldsSettingsService;
-  private promiseHandler: FormulaPromiseHandler;
+  #entityGuid: string;
+  #contentType: EavContentType;
+  #contentTypeSettings: Signal<ContentTypeSettings>;
+  #settingsSvc: FieldsSettingsService;
+  #promiseHandler: FormulaPromiseHandler;
 
   /**
    * Find formulas of the current field which are still running.
@@ -104,7 +105,7 @@ export class FormulaEngine {
     // so never between cycles
     const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(engine.item.Entity.Guid);
 
-    for (const attr of this.contentType.Attributes) {
+    for (const attr of this.#contentType.Attributes) {
       const attrValues = cycle.allAttributes[attr.Name];
       const valueBefore = cycle.values[attr.Name];
       const constFieldPart = cycle.getFieldConstants(attr.Name);
@@ -134,7 +135,8 @@ export class FormulaEngine {
       if (formulaResult.fields)
         fieldUpdates.push(...formulaResult.fields);
 
-      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, engine.languages);
+      const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
+      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, engine.languages, debugDetails);
 
       fieldsProps[attr.Name] = {
         language: constFieldPart.language,
@@ -163,7 +165,7 @@ export class FormulaEngine {
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
-    const formulas = this.#activeFieldFormulas(this.entityGuid, fieldName);
+    const formulas = this.#activeFieldFormulas(this.#entityGuid, fieldName);
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -227,7 +229,7 @@ export class FormulaEngine {
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = formulaResult?.promise instanceof Promise;
       if (containsPromise)
-        this.promiseHandler.handleFormulaPromise(formulaResult, formula, constFieldPart.inputTypeSpecs.inputType);
+        this.#promiseHandler.handleFormulaPromise(formulaResult, formula, constFieldPart.inputTypeSpecs.inputType);
 
       // Stop depends on explicit result and the default is different if it has a promise
       formula.stopFormula = formulaResult.stop ?? (containsPromise ? true : formula.stopFormula);
@@ -277,7 +279,7 @@ export class FormulaEngine {
       debugEnabled,
       itemService: this.itemService,
       formConfig: this.formConfig,
-      fieldsSettingsService: this.settingsSvc,
+      fieldsSettingsService: this.#settingsSvc,
       features: this.features,
     } satisfies FormulaExecutionSpecs;
   }
@@ -301,7 +303,7 @@ export class FormulaEngine {
     const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
 
     const isOpenInDesigner = this.#isDesignerOpen(formula);
-    const ctTitle = this.contentTypeSettings()._itemTitle;
+    const ctTitle = this.#contentTypeSettings()._itemTitle;
     l.a(`formula version: ${formula.version}, entity: ${ctTitle}, field: ${formula.fieldName}, target: ${formula.target}`, {formula});
     try {
       switch (formula.version) {

@@ -164,6 +164,8 @@ export class FieldsSettingsService {
       // whose dependencies will be incorporated into this calculation
       const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
       prevFieldProps = props;
+
+      console.log('2dm props', props['DefaultValue']);
           
       // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
       // TODO: ATM unused #settingChangeBroadcast

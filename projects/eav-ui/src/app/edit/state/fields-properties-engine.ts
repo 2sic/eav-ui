@@ -35,14 +35,14 @@ export class FieldsPropsEngine {
   private log = new EavLogger(nameOfThis, logThis);
 
   // Shared / inherited services
-  private formConfig = inject(FormConfigService);
-  private globalConfigService = inject(GlobalConfigService);
-  private formsStateService = inject(FormsStateService);
-  private contentTypeItemService = inject(ContentTypeItemService);
-  private itemService = inject(ItemService);
+  #formConfig = inject(FormConfigService);
+  #globalConfigService = inject(GlobalConfigService);
+  #formsStateService = inject(FormsStateService);
+  #contentTypeItemService = inject(ContentTypeItemService);
+  #itemService = inject(ItemService);
 
   // Transient services for this instance only
-  private constantsService = transient(FieldsSettingsConstantsService);
+  #constantsService = transient(FieldsSettingsConstantsService);
   public formulaEngine = transient(FormulaEngine);
   public formulaPromises = transient(FormulaPromiseHandler);
   
@@ -50,7 +50,7 @@ export class FieldsPropsEngine {
   public item: EavItem;
 
   public modifiedChecker: FieldsValuesModifiedHelper;
-  private fieldsValues: FieldsSignalsHelper;
+  #fieldsValues: FieldsSignalsHelper;
 
   constructor() {
   }
@@ -71,14 +71,15 @@ export class FieldsPropsEngine {
 
     this.item = item;
     this.languages = reader();
-    this.fieldsValues = fieldsValues;
+    this.#wipReader = reader;
+    this.#fieldsValues = fieldsValues;
 
-    const slotIsEmpty = this.itemService.slotIsEmpty(entityGuid);
+    const slotIsEmpty = this.#itemService.slotIsEmpty(entityGuid);
     const ct = contentType();
 
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
-    this.#fieldLangConstants = this.constantsService
+    this.#fieldLangConstants = this.#constantsService
       .init(item, ct, reader)
       .getUnchangingDataOfLanguage();
 
@@ -88,11 +89,13 @@ export class FieldsPropsEngine {
     this.formulaPromises.init(entityGuid, contentType, fss, this.modifiedChecker);
     this.formulaEngine.init(entityGuid, fss, this.formulaPromises, ct, fss.contentTypeSettings);
 
-    this.#itemAttributes = this.itemService.itemAttributesSignal(entityGuid);
+    this.#itemAttributes = this.#itemService.itemAttributesSignal(entityGuid);
     return this;
   }
 
   #updateHelper: Signal<FieldSettingsUpdateHelperFactory>;
+
+  #wipReader: Signal<EntityReader>;
 
   /**
    * Constant field parts which don't ever change.
@@ -124,7 +127,12 @@ export class FieldsPropsEngine {
   public getLatestSettingsAndValues(fieldProps: Record<string, FieldProps>): PropsUpdateResult {  
     const l = this.log.fn('getLatestSettingsAndValues');
 
-    const initialValues = this.fieldsValues.values();
+    const initialValues = this.#fieldsValues.values();
+
+    this.languages = this.#formConfig.language();
+    console.log('languages', this.languages);
+
+    // console.log('languages reader', this.#wipReader());
 
     // These should only be accessed here, so the signal is only depended on once!
     // All this should never change during the cycle
@@ -148,15 +156,15 @@ export class FieldsPropsEngine {
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
     const prepared = named('prepared-parts', computed(() => {
       const languages = reader;
-      const isDebug = this.globalConfigService.isDebug();
-      const isReadOnly = this.formsStateService.readOnly();
+      const isDebug = this.#globalConfigService.isDebug();
+      const isReadOnly = this.#formsStateService.readOnly();
 
         // Logic Tools are needed when checking for settings defaults etc.
         const logicTools: FieldLogicTools = {
-          eavConfig: this.formConfig.config,
+          eavConfig: this.#formConfig.config,
           entityReader: reader,
           debug: isDebug,
-          contentTypeItemService: this.contentTypeItemService,
+          contentTypeItemService: this.#contentTypeItemService,
         };
         // This factory will generate helpers to validate settings updates
         const updHelperFactory = new FieldSettingsUpdateHelperFactory(
