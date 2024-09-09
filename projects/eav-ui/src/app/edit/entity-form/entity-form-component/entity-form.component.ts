@@ -34,7 +34,7 @@ import { EditForceReloadService } from '../../routing/edit-force-reload.service'
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'EntityFormComponent',
   specs: {
     all: false,

@@ -9,7 +9,7 @@ import { FeaturesService } from '../../features/features.service';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
 import { EditUrlParams } from '../routing/edit-url-params.model';
-import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
+import { EntityReader } from '../shared/helpers';
 import { EavEntity } from '../shared/models/eav/eav-entity';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
@@ -31,6 +31,7 @@ import { FormPublishingService } from './form-publishing.service';
 import { LanguageService } from '../localization/language.service';
 import { FormLanguageService } from './form-language.service';
 import { LinkCacheService } from '../shared/adam/link-cache.service';
+import { FieldsSettingsHelpers } from '../state/field-settings.helper';
 
 const logSpecs = {
   enabled: false,
@@ -217,6 +218,8 @@ export class EditInitializerService {
     let switchToDefault = false;
     const isCreateMode = eavConfig.createMode;
 
+    const fss = new FieldsSettingsHelpers(logSpecs.name);
+
     for (const item of items) {
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
 
@@ -232,7 +235,7 @@ export class EditInitializerService {
         const logic = FieldLogicManager.singleton().getOrUnknown(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const fieldSettings = FieldsSettingsHelpers.getDefaultSettings(
+        const fieldSettings = fss.getDefaultSettings(
           new EntityReader(language.primary, language.primary).flattenAll(ctAttribute.Metadata)
         );
 

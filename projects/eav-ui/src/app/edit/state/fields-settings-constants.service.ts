@@ -2,16 +2,19 @@ import { computed, Injectable, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { EntityReader, FieldsSettingsHelpers } from '../shared/helpers';
+import { EntityReader } from '../shared/helpers';
 import { EavItem, EavContentType } from '../shared/models/eav';
 import { FormConfigService } from '../form/form-config.service';
 import { ItemFieldVisibility } from './item-field-visibility';
 import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model';
 import { InputTypeService } from '../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
+import { FieldsSettingsHelpers } from './field-settings.helper';
 
-const logThis = false;
-const nameOfThis = 'FieldsSettingsConstantsService';
+const logSpecs = {
+  enabled: false,
+  name: 'FieldsSettingsConstantsService',
+};
 
 /**
  * Each instance is responsible for a single entity.
@@ -23,12 +26,14 @@ export class FieldsSettingsConstantsService {
   private entityReaderCurrent: Signal<EntityReader>;
   private contentType: EavContentType;
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = new EavLogger(logSpecs);
 
   constructor(
     private formConfig: FormConfigService,
     private inputTypeSvc: InputTypeService,
   ) { }
+
+  #fss = new FieldsSettingsHelpers(logSpecs.name);
 
   init(
     itemForIds: EavItem,
@@ -46,15 +51,15 @@ export class FieldsSettingsConstantsService {
     const entityGuid = this.item.Entity.Guid;
     const entityId = this.item.Entity.Id;
     const contentTypeNameId = this.contentType.Id;
-    const unchangingPartsAllLanguages = this.getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
-    return this.getConstantFieldPartsOfLanguage(unchangingPartsAllLanguages);
+    const unchangingPartsAllLanguages = this.#getConstantFieldParts(entityGuid, entityId, contentTypeNameId);
+    return this.#getConstantFieldPartsOfLanguage(unchangingPartsAllLanguages);
   }
 
-  private getConstantFieldPartsOfLanguage(fieldConstants: FieldConstants[]): Signal<FieldConstantsOfLanguage[]> {
-    return computed(() => this.getConstantPartsOfLanguage(this.entityReaderCurrent(), fieldConstants), { equal: isEqual });
+  #getConstantFieldPartsOfLanguage(fieldConstants: FieldConstants[]): Signal<FieldConstantsOfLanguage[]> {
+    return computed(() => this.#getConstantPartsOfLanguage(this.entityReaderCurrent(), fieldConstants), { equal: isEqual });
   }
 
-  private getConstantPartsOfLanguage(entityReader: EntityReader, fieldConstants: FieldConstants[]) {
+  #getConstantPartsOfLanguage(entityReader: EntityReader, fieldConstants: FieldConstants[]) {
     const contentType = this.contentType;
     const l = this.log.fn('constantFieldPartsLanguage(map)', { contentType, entityReader });
 
@@ -69,7 +74,7 @@ export class FieldsSettingsConstantsService {
       // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
       mergeRaw.InputType = ctAttrib.InputType;
       mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(ctAttrib.Name);
-      const settingsInitial = FieldsSettingsHelpers.getDefaultSettings(mergeRaw);
+      const settingsInitial = this.#fss.getDefaultSettings(mergeRaw);
       const constantFieldParts: FieldConstantsOfLanguage = {
         ...fieldConstants.find(c => c.fieldName === ctAttrib.Name),
         settingsInitial,
@@ -85,7 +90,7 @@ export class FieldsSettingsConstantsService {
     return l.r(constPartsWithGroupVisibility);
   }
 
-  private getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {
+  #getConstantFieldParts(entityGuid: string, entityId: number, contentTypeNameId: string): FieldConstants[] {
     const contentType = this.contentType;
     const l = this.log.fn('constantFieldParts', { entityGuid, entityId, contentTypeNameId });
     // Get the form languages - but we only need default & initial, so we don't have to observe
@@ -98,7 +103,7 @@ export class FieldsSettingsConstantsService {
     const constFieldParts = contentType.Attributes.map((attribute, index) => {
       // metadata in the initial language with all the core settings
       const metadata = mdMerger.flattenAll<FieldSettings>(attribute.Metadata);
-      const initialSettings = FieldsSettingsHelpers.getDefaultSettings(metadata);
+      const initialSettings = this.#fss.getDefaultSettings(metadata);
 
       const inputTypeSpecs = this.inputTypeSvc.getSpecs(attribute);
 
@@ -118,7 +123,7 @@ export class FieldsSettingsConstantsService {
         dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
         initialDisabled: initialSettings.Disabled ?? false,
         inputTypeSpecs,
-        isLastInGroup: FieldsSettingsHelpers.isLastInGroup(contentType, attribute),
+        isLastInGroup: this.#fss.isLastInGroup(contentType, attribute),
         type: attribute.Type,
         logic,
       };

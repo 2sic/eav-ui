@@ -24,7 +24,7 @@ import { awaitHttp, computedObj, signalObj } from '../../../shared/signals/signa
 import { EavLogger } from '../../../shared/logging/eav-logger';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'EditContentType',
   specs: { }
 }

@@ -4,7 +4,7 @@ import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { FieldProps } from './fields-configs.model';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'FieldTranslationInfo',
 };
 

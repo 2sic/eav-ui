@@ -19,11 +19,11 @@ import { FieldTranslationInfo } from './field-translation-info';
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'FieldsTranslateService',
   specs: {
     all: true,
-    constructor: true,
+    constructor: false,
     init: true,
     unlock: true,
     lock: true,
@@ -142,7 +142,6 @@ export class FieldsTranslateService {
     // Filter out fields that have translation disabled
     fieldNames = fieldNames.filter(field => !this.#getInfo(field).DisableTranslation);
     const textsForTranslation = fieldNames.map(field => LocalizationHelpers.findOfExactDimension(attributes[field].Values, autoTranslateLanguageKey).Value);
-    const doFieldsHaveExistingDimension = fieldNames.map(field => LocalizationHelpers.findOfExactDimension(attributes[field].Values, language.current) !== undefined);
 
     if (!areAllChecksKnown)
       fieldNames.forEach((field, i) => {
@@ -158,19 +157,19 @@ export class FieldsTranslateService {
       source: autoTranslateLanguageKey
     };
     this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${apiKeyInfo.ApiKey}`, translationData)
-      .pipe(tap(
-        (response: any) => {
-          response.data.translations.forEach((translation: any, i: number) => {
-            const elem = document.createElement('textarea');
-            elem.innerHTML = translation.translatedText;
-            if (!isMany && doFieldsHaveExistingDimension[i]) {
-              this.updater.updateItemAttributeValue(this.#entityGuid, fieldNames[i], elem.value, language, false);
-            } else if (!doFieldsHaveExistingDimension[i]) {
-              this.#addItemAttributeValueHelper(fieldNames[i], elem.value, language.current, false);
-            }
-          });
-        }
-      )).subscribe();
+      .subscribe((response: any) => {
+        const fieldsWithExistingDims = fieldNames.map(f => LocalizationHelpers.findOfExactDimension(attributes[f].Values, language.current) !== undefined);
+        response.data.translations.forEach((translation: any, i: number) => {
+          const elem = document.createElement('textarea');
+          elem.innerHTML = translation.translatedText;
+          const fieldHasExistingDimension = fieldsWithExistingDims[i];
+          if (!isMany && fieldHasExistingDimension) {
+            this.updater.updateItemAttributeValue(this.#entityGuid, fieldNames[i], elem.value, language, false);
+          } else if (!fieldHasExistingDimension) {
+            this.#addItemAttributeValueHelper(fieldNames[i], elem.value, language.current, false);
+          }
+        });
+      });
   }
 
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {

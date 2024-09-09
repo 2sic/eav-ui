@@ -71,7 +71,6 @@ export class FieldsPropsEngine {
 
     this.item = item;
     this.languages = reader();
-    this.#wipReader = reader;
     this.#fieldsValues = fieldsValues;
 
     const slotIsEmpty = this.#itemService.slotIsEmpty(entityGuid);
@@ -94,8 +93,6 @@ export class FieldsPropsEngine {
   }
 
   #updateHelper: Signal<FieldSettingsUpdateHelperFactory>;
-
-  #wipReader: Signal<EntityReader>;
 
   /**
    * Constant field parts which don't ever change.
@@ -130,9 +127,6 @@ export class FieldsPropsEngine {
     const initialValues = this.#fieldsValues.values();
 
     this.languages = this.#formConfig.language();
-    console.log('languages', this.languages);
-
-    // console.log('languages reader', this.#wipReader());
 
     // These should only be accessed here, so the signal is only depended on once!
     // All this should never change during the cycle

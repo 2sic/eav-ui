@@ -8,7 +8,7 @@ import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { EavLogger } from '../../shared/logging/eav-logger';
 
 const logSpecs = {
-  enabled: true,
+  enabled: false,
   name: 'FormLanguageService',
   specs: {
     getReader: false,

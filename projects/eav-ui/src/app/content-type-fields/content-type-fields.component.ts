@@ -284,7 +284,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private openImageConfiguration(field: Field) {
-    console.log('2dm - openImageConfiguration', field);
     const imgConfig = field.imageConfiguration;
     if (imgConfig?.isRecommended != true)
       throw new Error('This field does not expect to have an image configuration');

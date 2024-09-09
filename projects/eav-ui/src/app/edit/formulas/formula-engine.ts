@@ -15,7 +15,7 @@ import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaObjectsInternalData, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
-import { FieldsSettingsHelpers } from '../state/fields-settings.helpers';
+import { FieldsSettingsHelpers } from '../state/field-settings.helper';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { EditInitializerService } from '../form/edit-initializer.service';
@@ -105,6 +105,8 @@ export class FormulaEngine {
     // so never between cycles
     const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(engine.item.Entity.Guid);
 
+    const fss = new FieldsSettingsHelpers(logSpecs.name);
+
     for (const attr of this.#contentType.Attributes) {
       const attrValues = cycle.allAttributes[attr.Name];
       const valueBefore = cycle.values[attr.Name];
@@ -136,7 +138,7 @@ export class FormulaEngine {
         fieldUpdates.push(...formulaResult.fields);
 
       const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
-      const translationState = FieldsSettingsHelpers.getTranslationState(attrValues, fixed.DisableTranslation, engine.languages, debugDetails);
+      const translationState = fss.getTranslationState(attrValues, fixed.DisableTranslation, engine.languages, debugDetails);
 
       fieldsProps[attr.Name] = {
         language: constFieldPart.language,

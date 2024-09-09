@@ -5,7 +5,7 @@ import { EditUrlParams } from './edit-url-params.model';
 import { UrlHelpers } from '../shared/helpers';
 
 const logThis = {
-  enabled: true,
+  enabled: false,
   name: 'EditReloadComponent',
   specs: {},
 };

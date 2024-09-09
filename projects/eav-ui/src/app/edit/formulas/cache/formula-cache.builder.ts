@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { EntityReader, FieldsSettingsHelpers, ContentTypeSettingsHelpers } from '../../shared/helpers';
+import { EntityReader, ContentTypeSettingsHelpers } from '../../shared/helpers';
 import { EavItem } from '../../shared/models/eav/eav-item';
 import { FormulaSourceCodeHelper } from './source-code-helper';
 import { FormulaFunction } from '../formula-definitions';
@@ -23,6 +23,7 @@ import { FormulaCacheService } from './formula-cache.service';
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { FieldsSettingsHelpers } from '../../state/field-settings.helper';
 
 const logSpecs = {
   enabled: false,
@@ -70,6 +71,8 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     const language = this.formConfig.language();
     const reader = new EntityReader(language.current, language.primary);
 
+    const fss = new FieldsSettingsHelpers(logSpecs.name);
+
     for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.get(entityGuid);
 
@@ -78,7 +81,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
         // Get field settings
-        const settings = FieldsSettingsHelpers.getDefaultSettings(reader.flattenAll<FieldSettings>(attribute.Metadata));
+        const settings = fss.getDefaultSettings(reader.flattenAll<FieldSettings>(attribute.Metadata));
 
         // get input type specs
         const inputType = this.inputTypes.getSpecs(attribute);
