@@ -6,7 +6,6 @@ import { EntityFormStateService } from '../../entity-form/entity-form-state.serv
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/controls/control-status.model';
@@ -14,9 +13,10 @@ import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model'
 import { FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from '../picker/picker-data.factory';
+import { classLog, logFnIf } from '../../../shared/logging/logging';
 
 const logSpecs = {
-  enabled: false,
+  enabled: true,
   name: 'FieldInjectorService',
   specs: {
     getInjectors: true,
@@ -39,12 +39,12 @@ export class FieldInjectorService {
   #entityForm = inject(EntityFormStateService);
   #group = this.#entityForm.formGroup();
 
-  log = new EavLogger(logSpecs);
+  log = classLog(logSpecs);
 
   constructor() { }
 
   public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs) {
-    const l = this.log.fnIf('getInjectors');
+    const l = logFnIf(this, 'getInjectors');
     const fieldName = fieldConfig.fieldName;
 
     // Conditional logger for detailed logging

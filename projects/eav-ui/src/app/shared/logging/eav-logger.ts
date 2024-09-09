@@ -6,14 +6,6 @@ import { LogManager } from './log-manager';
 import { LogSpecs } from './log-specs';
 import { RxTapDebug } from './rx-debug-dbg';
 
-// export interface IEavLogger<T extends unknown = any> {
-//   svcId: string;
-//   name: string;
-//   enabled: boolean;
-//   enableChildren: boolean;
-//   specs: T;
-// }
-
 export class EavLogger<TSpecs extends unknown = any> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(7);
@@ -86,6 +78,15 @@ export class EavLogger<TSpecs extends unknown = any> {
     logMain(`[${this.nameWithSvcId}] values:`, data);
   }
 
+  /**
+   * 
+   * TODO: @2pp - refactor all uses to just use the fnCond method?
+   * 
+   * @param name 
+   * @param data 
+   * @param message 
+   * @returns 
+   */
   fn(name: string, data?: Record<string, unknown>, message?: string): LoggerFn {
     return new LoggerFnReal(this as EavLogger, name, message, data);
   }
@@ -103,10 +104,12 @@ export class EavLogger<TSpecs extends unknown = any> {
   /**
    * Create a logger function that will only log if the condition is true.
    * The condition must come from the specs object.
+   * 
+   * TODO: @2pp - refactor all uses to just use the fnCond method?
    */
   fnIf(key: BooleanKeys<TSpecs> & string, data?: Record<string, unknown>, message?: string): LoggerFn {
     // create real logger if condition is true, or if this logger is disabled anyhow
-    return !this.enabled || !!this.specs[key] || !!(this.specs as { all: boolean})['all']
+    return !this.enabled || !!this.specs[key] || !!(this.specs as { all: boolean })['all']
       ? this.fn(key, data, message)
       : new LoggerFnNoop();
   }

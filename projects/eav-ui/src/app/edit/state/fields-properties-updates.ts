@@ -4,17 +4,19 @@ import isEqual from 'lodash-es/isEqual';
 import { Signal } from '@angular/core';
 import { FieldProps } from './fields-configs.model';
 
-const logThis = false;
-const nameOfThis = 'FieldsPropertiesUpdates';
+const logSpecs = {
+  enabled: false,
+  name: 'FieldsPropertiesUpdates',
+};
 
 /**
  * Manage "manual" / forced updates of fields properties
  */
 export class FieldsPropertiesUpdates {
-  log = new EavLogger(nameOfThis, logThis);
+  log: EavLogger;
 
   constructor(private entityGuid: string, private fieldsProps: Signal<Record<string, FieldProps>>) {
-    this.log.rename(`${this.log.name}[${entityGuid.substring(0, 8)}]`);
+    this.log = new EavLogger({ ...logSpecs, name: `${logSpecs.name}[${entityGuid.substring(0, 8)}]` });
   }
 
   fieldPropsMixins: Record<string, Partial<FieldSettings>> = {};
