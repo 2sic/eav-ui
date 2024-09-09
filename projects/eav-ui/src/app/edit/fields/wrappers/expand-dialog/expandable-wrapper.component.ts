@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, Signal, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, ElementRef, inject, NgZone, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { vh } from '../../../../shared/helpers/viewport.helpers';
@@ -20,11 +20,9 @@ import { transient } from '../../../../core/transient';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ConnectorHelper } from '../../connector/connector.helper';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
-import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
-import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 const logThis = false;
 const nameOfThis = 'ExpandableWrapperComponent';
@@ -59,8 +57,6 @@ export class ExpandableWrapperComponent {
   @ViewChild('previewContainer') private previewContainerRef: ElementRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
-
-  public fieldsSettingsService = inject(FieldsSettingsService);
 
   protected fieldState = inject(FieldState) as FieldState<string>;
   private config = this.fieldState.config;

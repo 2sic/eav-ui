@@ -41,10 +41,12 @@ export interface FormulaExecutionSpecs {
   /** Item service to allow retrieving other items */
   itemService: ItemService;
   formConfig: FormConfigService;
-  fieldsSettingsService: FieldsSettingsService;
+
+  /** This is needed by the experimental API to retrieve settings for any other field */
+  fieldsSettingsSvc: FieldsSettingsService;
   features: Signal<FeatureSummary[]>;
 }
 
-export interface FormulaObjectsInternalData extends FormulaExecutionSpecs {
+export interface FormulaExecutionSpecsWithRunParams extends FormulaExecutionSpecs {
   runParameters: FormulaRunParameters;
 }

@@ -3,7 +3,7 @@ import { FormulaTargets, SettingsFormulaPrefix, FormulaFieldValidation } from '.
 import { FormulaV1Data } from './formula-run-data.model';
 import { FormulaHelpers } from '../formula.helpers';
 import { FormulaSourceCodeHelper } from '../cache/source-code-helper';
-import { FormulaObjectsInternalData } from './formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 /**
@@ -13,9 +13,9 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
  */
 export class FormulaDataObject implements FormulaV1Data {
   /** Private variable containing the data used in the getters */
-  #propsData: FormulaObjectsInternalData;
+  #propsData: FormulaExecutionSpecsWithRunParams;
 
-  constructor(propsData: FormulaObjectsInternalData) {
+  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
   }
 

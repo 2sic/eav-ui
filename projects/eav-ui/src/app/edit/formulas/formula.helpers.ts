@@ -1,7 +1,7 @@
 
 import { FormulaVersions } from './formula-definitions';
 import { FormulaDataObject } from './run/formula-run-data';
-import { FormulaObjectsInternalData } from './run/formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams } from './run/formula-objects-internal-data';
 import { FormulaContextObject } from './run/formula-run-context';
 import { FormulaExperimentalObject } from './run/formula-experimental-object';
 import { FormulaV1Data } from './run/formula-run-data.model';
@@ -14,7 +14,7 @@ export class FormulaHelpers {
    * Used to build formula props parameters.
    * @returns Formula properties
    */
-  static buildFormulaProps(propsData: FormulaObjectsInternalData,): FormulaPropsV1 {
+  static buildFormulaProps(propsData: FormulaExecutionSpecsWithRunParams,): FormulaPropsV1 {
     const { formula, currentValues: formValues } = propsData.runParameters;
     
     switch (formula.version) {

@@ -37,15 +37,15 @@ export class CollapsibleWrapperComponent {
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  private fieldState = inject(FieldState);
-  protected config = this.fieldState.config;
-  protected group = this.fieldState.group;
-  protected basics = this.fieldState.basics;
+  #fieldState = inject(FieldState);
+  protected config = this.#fieldState.config;
+  protected group = this.#fieldState.group;
+  protected basics = this.#fieldState.basics;
 
   /** Collapsed state - will be updated in various scenarios */
-  collapsed = computed(() => this.fieldState.settings().Collapsed);
+  collapsed = computed(() => this.#fieldState.settings().Collapsed);
 
-  private fieldsSettingsService = inject(FieldsSettingsService);
+  #fieldsSettingsSvc = inject(FieldsSettingsService);
 
   log = new EavLogger(logSpecs);
   constructor() {
@@ -55,6 +55,6 @@ export class CollapsibleWrapperComponent {
   toggleCollapse(): void {
     const before = this.collapsed();
     this.log.a('toggleCollapse', { before })
-    this.fieldsSettingsService.updateSetting(this.fieldState.name, { Collapsed: !before }, logSpecs.name);
+    this.#fieldsSettingsSvc.updateSetting(this.#fieldState.name, { Collapsed: !before }, logSpecs.name);
   }
 }

@@ -1,6 +1,6 @@
 import { FormulaV1ExperimentalEntity } from './formula-run-experimental.model';
 import { FormulaV1Experimental } from './formula-run-experimental.model';
-import { FormulaObjectsInternalData } from './formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
@@ -13,13 +13,14 @@ import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model'
 export class FormulaExperimentalObject implements FormulaV1Experimental {
 
   /** Private variable containing the data used in the getters */
-  #propsData: FormulaObjectsInternalData;
+  #formulaExecSpecs: FormulaExecutionSpecsWithRunParams;
 
-  constructor(propsData: FormulaObjectsInternalData) {
-    this.#propsData = propsData;
+  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
+    this.#formulaExecSpecs = propsData;
   }
+
   getEntities(): FormulaV1ExperimentalEntity[] {
-    const { itemService, formConfig } = this.#propsData;
+    const { itemService, formConfig } = this.#formulaExecSpecs;
     const v1Entities = itemService.getMany(formConfig.config.itemGuids).map(item => {
       const v1Entity: FormulaV1ExperimentalEntity = {
         guid: item.Entity.Guid,
@@ -36,11 +37,11 @@ export class FormulaExperimentalObject implements FormulaV1Experimental {
   }
 
   getSettings(fieldName: string): FieldSettings {
-    return this.#propsData.fieldsSettingsService.settings[fieldName]();
+    return this.#formulaExecSpecs.fieldsSettingsSvc.settings[fieldName]();
   }
 
   getValues(entityGuid: string): ItemValuesOfLanguage {
-    const { language, itemService } = this.#propsData;
+    const { language, itemService } = this.#formulaExecSpecs;
     const item = itemService.get(entityGuid);
     const values: ItemValuesOfLanguage = {};
     for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {

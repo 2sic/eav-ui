@@ -82,8 +82,7 @@ export class FieldsTranslateService {
     const language = this.formConfig.language();
     transactionItem = this.updater.removeItemAttributeDimension(this.#entityGuid, fieldName, language.current, isTransaction, transactionItem);
 
-    const attributes = this.#itemAttributes();
-    const values = attributes[fieldName];
+    const values = this.#itemAttributes()[fieldName];
     const doesFieldHaveExistingDimension = LocalizationHelpers.findOfExactDimension(values.Values, language.current) !== undefined;
     const defaultValue = LocalizationHelpers.getValueTranslation(values, FormLanguage.bothPrimary(language));
     if (!doesFieldHaveExistingDimension) 

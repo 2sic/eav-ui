@@ -20,7 +20,6 @@ import { FeatureNames } from '../../../../../features/feature-names';
 import { EavLogger } from '../../../../../shared/logging/eav-logger';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
-import { FieldsSettingsService } from '../../../../state/fields-settings.service';
 import { FormsStateService } from '../../../../form/forms-state.service';
 import { EditRoutingService } from '../../../../routing/edit-routing.service';
 import { AdamService } from '../../../../shared/adam/adam.service';
@@ -110,7 +109,6 @@ export class AdamBrowserComponent implements OnInit {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formsStateService: FormsStateService,
-    private fieldsSettingsService: FieldsSettingsService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
@@ -176,7 +174,7 @@ export class AdamBrowserComponent implements OnInit {
 
   private getImageConfigurationContentType(item: AdamItem) {
     // allow image configuration if file is type image and if image configuration is enabled in settings
-    const settings = this.fieldsSettingsService.settings[this.config.fieldName]();
+    const settings = this.fieldState.settings();
     return settings.EnableImageConfiguration && item.Type === 'image'
       ? eavConstants.contentTypes.imageDecorator
       : null;

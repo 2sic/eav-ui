@@ -2,7 +2,7 @@ import { Sxc } from '@2sic.com/2sxc-typings';
 import { FormulaVersions } from '../formula-definitions';
 import { FormulaTargets } from '../targets/formula-targets';
 import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
-import { FormulaObjectsInternalData } from './formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 
 /**
  * The object containing context information.
@@ -12,7 +12,7 @@ import { FormulaObjectsInternalData } from './formula-objects-internal-data';
 export class FormulaContextObject implements FormulaV1Context {
 
   /** Private variable containing the data used in the getters */
-  #propsData: FormulaObjectsInternalData;
+  #propsData: FormulaExecutionSpecsWithRunParams;
 
   cache: Record<string, any>;
   debug: boolean;
@@ -21,7 +21,7 @@ export class FormulaContextObject implements FormulaV1Context {
   app: FormulaV1CtxApp;
   culture: FormulaV1CtxCulture;
 
-  constructor(propsData: FormulaObjectsInternalData) {
+  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
     const definition = propsData.runParameters.formula;
     this.cache = definition.cache;
@@ -50,7 +50,7 @@ export class FormulaContextObject implements FormulaV1Context {
       runFormulas(): void {
         if (definition.version === FormulaVersions.V1) {
           console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-          propsData.fieldsSettingsService.retriggerFormulas('form.runFormulas()');
+          propsData.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
         } else if (definition.version === FormulaVersions.V2) {
           console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise.');
         }
@@ -69,9 +69,9 @@ export class FormulaContextObject implements FormulaV1Context {
  */
 class FormulaContextApp implements FormulaV1CtxApp {
   /** Private variable containing the data used in the getters */
-  #propsData: FormulaObjectsInternalData;
+  #propsData: FormulaExecutionSpecsWithRunParams;
 
-  constructor(propsData: FormulaObjectsInternalData) {
+  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
   }
 
@@ -108,9 +108,9 @@ class FormulaContextTarget implements FormulaV1CtxTarget {
   type: string;
 
   /** Private variable containing the data used in the getters */
-  #propsData: FormulaObjectsInternalData;
+  #propsData: FormulaExecutionSpecsWithRunParams;
 
-  constructor(propsData: FormulaObjectsInternalData) {
+  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
     const def = propsData.runParameters.formula;
     this.entity = def.targetEntity;

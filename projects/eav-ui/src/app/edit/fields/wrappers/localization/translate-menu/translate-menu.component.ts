@@ -16,7 +16,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 import { FieldState } from '../../../field-state';
 import { TranslationLinks } from '../../../../localization/translation-link.constants';
-import { FieldsSettingsService } from '../../../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../../../state/fields-translate.service';
 import { FormConfigService } from '../../../../form/form-config.service';
 import { FormsStateService } from '../../../../form/forms-state.service';

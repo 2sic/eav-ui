@@ -44,12 +44,12 @@ export class LocalizationHelpers {
    * 2. or read-only assigned
    * 3. or assigned to '*' when the current language is the default language
    */
-  private static valuesOfLanguage<T>(field: EavField<T>, language: FormLanguage): EavValue<T>[] {
+  static #valuesOfLanguage<T>(field: EavField<T>, language: FormLanguage): EavValue<T>[] {
     if (!field) return [];
-    return field.Values.filter(val => this.valueHasLanguage(val, language));
+    return field.Values.filter(val => this.#valueHasLanguage(val, language));
   }
 
-  private static valueHasLanguage<T>(val: EavValue<T>, language: FormLanguage): EavDimension | undefined {
+  static #valueHasLanguage<T>(val: EavValue<T>, language: FormLanguage): EavDimension | undefined {
     return val.Dimensions.find(d =>
       d.Value === language.current
       || d.Value === `~${language.current}`
@@ -59,19 +59,19 @@ export class LocalizationHelpers {
 
   static getValueTranslation<T>(field: EavField<T>, language: FormLanguage): EavValue<T> {
     // first match if any is the one we're looking for
-    return this.valuesOfLanguage(field, language)[0];
+    return this.#valuesOfLanguage(field, language)[0];
   }
 
   static isEditableOrReadonlyTranslationExist(field: EavField<any>, language: FormLanguage): boolean {
     if (!field) return false;
-    return this.valuesEditableOfCurrent(field, language).length > 0;
+    return this.#valuesEditableOfCurrent(field, language).length > 0;
   }
 
   /**
    * Values of a field are for the current language,
    * if they are assigned to the current language or to '*' (but only when the current-language is also the primary-language)
    */
-  private static valuesEditableOfCurrent<T>(field: EavField<T>, langs: FormLanguage): EavValue<T>[] {
+  static #valuesEditableOfCurrent<T>(field: EavField<T>, langs: FormLanguage): EavValue<T>[] {
     if (!field) return [];
     return field.Values
       .filter(val => val.Dimensions.find(d => (d.Value === langs.current) || (d.Value === '*' && langs.current === langs.primary)));
@@ -80,18 +80,18 @@ export class LocalizationHelpers {
 
   /** A value in specified Language is editable, if assigned to current language or to '*' (but only when on default-language) */
   static hasEditableValue(field: EavField<any>, language: FormLanguage): boolean {
-    return this.valuesEditableOfCurrent(field, language).length > 0;
+    return this.#valuesEditableOfCurrent(field, language).length > 0;
   }
 
   // Number of editable translatable fields that
   static countEditableValues(field: EavField<any>, language: FormLanguage): number {
-    return this.valuesEditableOfCurrent(field, language).length;
+    return this.#valuesEditableOfCurrent(field, language).length;
   }
 
   // Number of editable translatable fields that have some content
   static countEditableValuesWithContent(field: EavField<any>, language: FormLanguage): number {
     if (!field) return 0;
-    return this.valuesEditableOfCurrent(field, language).filter(v => v.Value != "" && v.Value != null)?.length
+    return this.#valuesEditableOfCurrent(field, language).filter(v => v.Value != "" && v.Value != null)?.length
   }
 
   static hasReadonlyValue(field: EavField<any>, language: string): boolean {
@@ -105,7 +105,7 @@ export class LocalizationHelpers {
   }
 
   /** Copy attributes from item */
-  private static updateAttribute(
+  static #updateAttribute(
     oldAttributes: EavEntityAttributes,
     attributeKey: string,
     attribute: EavField<any>,
@@ -155,14 +155,14 @@ export class LocalizationHelpers {
           const newValues: EavField<any> = {
             ...allFields[attributeKey],
             Values: allFields[attributeKey].Values.map(val => {
-              const hasLanguage = !!this.valueHasLanguage(val, language);
+              const hasLanguage = !!this.#valueHasLanguage(val, language);
               const newValue: EavValue<any> = hasLanguage
                 // Update value for languageKey
                 ? {
-                  ...val,
-                  Value: newItemValue,
-                }
-                : val;
+                    ...val,
+                    Value: newItemValue,
+                  }
+                  : val;
               return newValue;
             })
           };
@@ -170,11 +170,10 @@ export class LocalizationHelpers {
         } else { // else add new value with dimension languageKey
           l.a('saveAttributeValues add values ', { newItemValue });
           const newEavValue = EavValue.create(newItemValue, [EavDimension.create(language.current)]);
-          const newAttribute: EavField<any> = {
+          eavAttributes[attributeKey] = {
             ...allFields[attributeKey],
             Values: [...allFields[attributeKey].Values, newEavValue]
-          };
-          eavAttributes[attributeKey] = newAttribute;
+          } satisfies EavField<any>;
         }
       } else { // else copy item attributes
         const attributeCopy: EavField<any> = { ...allFields[attributeKey] };
@@ -201,7 +200,7 @@ export class LocalizationHelpers {
 
     const attribute: EavField<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(val => {
-        const hasLanguage = !!this.valueHasLanguage(val, language);
+        const hasLanguage = !!this.#valueHasLanguage(val, language);
         const newValue: EavValue<any> = hasLanguage
           // Update value and dimension
           ? {
@@ -222,7 +221,7 @@ export class LocalizationHelpers {
         return newValue;
       })
     };
-    eavAttributes = this.updateAttribute(allAttributes, attributeKey, attribute);
+    eavAttributes = this.#updateAttribute(allAttributes, attributeKey, attribute);
     return eavAttributes;
   }
 
@@ -246,7 +245,7 @@ export class LocalizationHelpers {
           Values: [...allAttributes[attributeKey].Values, attributeValue],
           Type: attributeType
         };
-    eavAttributes = this.updateAttribute(allAttributes, attributeKey, attribute);
+    eavAttributes = this.#updateAttribute(allAttributes, attributeKey, attribute);
     return eavAttributes;
   }
 
@@ -281,7 +280,7 @@ export class LocalizationHelpers {
         return newValue;
       })
     };
-    eavAttributes = this.updateAttribute(allAttributes, attributeKey, attribute);
+    eavAttributes = this.#updateAttribute(allAttributes, attributeKey, attribute);
     return eavAttributes;
   }
 
@@ -308,12 +307,12 @@ export class LocalizationHelpers {
         ...oldAttributes[attributeKey],
         Values: oldAttributes[attributeKey].Values.map(eavValue => {
           const dimensionExists = eavValue.Dimensions.some(dimension => validDimensions.includes(dimension.Value));
-          if (!dimensionExists) return eavValue;
-
-          return {
-            ...eavValue,
-            Dimensions: eavValue.Dimensions.filter(dimension => !validDimensions.includes(dimension.Value)),
-          } satisfies EavValue<any>;
+          return (!dimensionExists)
+            ? eavValue
+            : {
+                ...eavValue,
+                Dimensions: eavValue.Dimensions.filter(dimension => !validDimensions.includes(dimension.Value)),
+              } satisfies EavValue<any>;
         })
       };
     } else if (value.Dimensions.length === 1) {
@@ -327,7 +326,7 @@ export class LocalizationHelpers {
       };
     }
 
-    const newAttributes = this.updateAttribute(oldAttributes, attributeKey, newAttribute);
+    const newAttributes = this.#updateAttribute(oldAttributes, attributeKey, newAttribute);
     return newAttributes;
   }
 
@@ -351,17 +350,17 @@ export class LocalizationHelpers {
     if (eavValues == null) return;
 
     let bestDimensions = [currentLanguage, `~${currentLanguage}`];
-    let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    let bestValue = this.#findValueForDimensions(eavValues, bestDimensions);
     if (bestValue !== undefined) { return bestValue; }
 
     bestDimensions = ['*'];
-    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    bestValue = this.#findValueForDimensions(eavValues, bestDimensions);
     if (bestValue !== undefined) { return bestValue; }
 
     if (mode === BestValueModes.Strict) return;
 
     bestDimensions = [defaultLanguage, `~${defaultLanguage}`];
-    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    bestValue = this.#findValueForDimensions(eavValues, bestDimensions);
     if (bestValue !== undefined) { return bestValue; }
 
     bestValue = eavValues.Values[0]?.Value;
@@ -372,7 +371,7 @@ export class LocalizationHelpers {
     return eavValues.find(v => v.Dimensions.find(x => x.Value === dimension));
   }
 
-  private static findValueForDimensions(eavValues: EavField<any>, dimensions: string[]): FieldValue {
+  static #findValueForDimensions(eavValues: EavField<any>, dimensions: string[]): FieldValue {
     const value = eavValues.Values.find(
       eavValue => !!eavValue.Dimensions.find(dimension => dimensions.includes(dimension.Value)),
     )?.Value;

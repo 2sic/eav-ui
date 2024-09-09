@@ -13,7 +13,7 @@ import { FormulaPromiseHandler } from './promise/formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { EavLogger } from '../../shared/logging/eav-logger';
-import { FormulaObjectsInternalData, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
@@ -224,7 +224,7 @@ export class FormulaEngine {
         settingsCurrent,
         itemHeader
       };
-      const allObjectParameters: FormulaObjectsInternalData = { runParameters, ...reuseObjectsForFormulaDataAndContext };
+      const allObjectParameters: FormulaExecutionSpecsWithRunParams = { runParameters, ...reuseObjectsForFormulaDataAndContext };
 
       const formulaResult = this.#runFormula(allObjectParameters);
 
@@ -281,7 +281,7 @@ export class FormulaEngine {
       debugEnabled,
       itemService: this.itemService,
       formConfig: this.formConfig,
-      fieldsSettingsService: this.#settingsSvc,
+      fieldsSettingsSvc: this.#settingsSvc,
       features: this.features,
     } satisfies FormulaExecutionSpecs;
   }
@@ -297,7 +297,7 @@ export class FormulaEngine {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  #runFormula(allObjectsForDataAndContext: FormulaObjectsInternalData): FormulaResultRaw {
+  #runFormula(allObjectsForDataAndContext: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
     const { formula, item, inputTypeName } = allObjectsForDataAndContext.runParameters;
     
     const l = this.log.fnCond(logDetailsFor(formula.fieldName), `runFormula`, { fieldName: formula.fieldName });
