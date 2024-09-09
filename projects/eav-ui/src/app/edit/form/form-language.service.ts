@@ -11,8 +11,8 @@ const logSpecs = {
   enabled: true,
   name: 'FormLanguageService',
   specs: {
-    getReader: true,
-    getReaderSignal: true,
+    getReader: false,
+    getReaderSignal: false,
   }
 };
 

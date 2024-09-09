@@ -6,7 +6,6 @@ import { ItemFieldVisibility } from '../../state/item-field-visibility';
 import { AdamControl } from '../../fields/basic/hyperlink-library/hyperlink-library.models';
 import { convertValueToArray } from '../../fields/picker/picker.helpers';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
-import { FieldProps } from '../../state/fields-configs.model';
 import { Signal } from '@angular/core';
 
 
@@ -188,12 +187,12 @@ export class ValidationHelpers {
 
       const { error, warning } = (() => {
         if (this.ignoreValidators(specs.settings()) || formulaValidation == null)
-          return {error: false, warning: false};
+          return { error: false, warning: false };
         if (formulaValidation.severity === 'error')
-          return {error: true, warning: false};
+          return { error: true, warning: false };
         if (formulaValidation.severity === 'warning')
-          return {error: false, warning: true};
-        return {error: false, warning: false};
+          return { error: false, warning: true };
+        return { error: false, warning: false };
       })();
 
       control._warning$.next(warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null);
