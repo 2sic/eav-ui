@@ -2,6 +2,7 @@ import { computed, Signal, signal } from '@angular/core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 import isEqual from 'lodash-es/isEqual';
+import { LogSpecs } from '../../../shared/logging/log-specs';
 
 const logThisUndefined = true;
 const nameOfThis = 'SignalStoreBase';
@@ -42,10 +43,10 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 
   protected log: EavLogger;
 
-  constructor(options: SignalStoreOptions) {
-    this.log = new EavLogger(options.nameOfThis ?? nameOfThis, options.logThis ?? logThisUndefined);
-    this.log.a('SignalStoreBase created', { options });
-    this.name = options.nameOfThis;
+  constructor(logSpecs: LogSpecs) {
+    this.log = new EavLogger({ name: nameOfThis, enabled: logThisUndefined, ...logSpecs });
+    this.log.a('SignalStoreBase created', { options: logSpecs });
+    this.name = logSpecs.name;
   }
 
   //#region Add / Update / Remove / Clear Cache
@@ -164,9 +165,4 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 
   //#endregion
 
-}
-
-export interface SignalStoreOptions {
-  nameOfThis: string;
-  logThis?: boolean
 }

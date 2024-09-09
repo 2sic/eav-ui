@@ -3,8 +3,10 @@ import { AdamItem } from '../../../../../../edit-types';
 import { LinkInfo, PrefetchAdams, PrefetchLinks } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
 
-const logThis = false;
-const nameOfThis = 'LinkCacheService';
+const logSpecs = {
+  enabled: false,
+  name: 'LinkCacheService',
+};
 
 /**
  * The link Cache will store info to all links incl. file references (ADAM)
@@ -14,7 +16,7 @@ const nameOfThis = 'LinkCacheService';
 export class LinkCacheService extends SignalStoreBase<string, LinkCache> {
 
   constructor() {
-    super({ nameOfThis, logThis });
+    super(logSpecs);
   }
 
   override getId = (item: LinkCache) => item.key.trim().toLocaleLowerCase();

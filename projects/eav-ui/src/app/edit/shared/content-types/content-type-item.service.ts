@@ -3,8 +3,10 @@ import { EavEntity } from '../models/eav';
 import { EavEntityDto } from '../models/json-format-v1';
 import { SignalStoreBase } from '../store/signal-store-base';
 
-const logThis = false;
-const nameOfThis = 'ContentTypeItemService';
+const logSpecs = {
+  enabled: false,
+  name: 'ContentTypeItemService',
+};
 
 /**
  * Content-Type Items are additional entities which the ContentType info needs.
@@ -16,7 +18,7 @@ const nameOfThis = 'ContentTypeItemService';
 export class ContentTypeItemService extends SignalStoreBase<string, EavEntity> {
 
   constructor() {
-    super({ nameOfThis, logThis });
+    super(logSpecs);
   }
 
   override getId = (item: EavEntity) => item.Guid;

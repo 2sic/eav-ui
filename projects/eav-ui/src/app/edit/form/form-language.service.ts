@@ -5,15 +5,23 @@ import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { FormLanguage, FormLanguageComplete } from './form-languages.model';
 import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
+import { EavLogger } from '../../shared/logging/eav-logger';
 
-const logThis = false;
-const nameOfThis = 'FormLanguageService';
+const logSpecs = {
+  enabled: true,
+  name: 'FormLanguageService',
+  specs: {
+    getReader: true,
+    getReaderSignal: true,
+  }
+};
 
 @Injectable({ providedIn: 'root' })
 export class FormLanguageService extends SignalStoreObservableBase<number, FormLanguageInStore> {
 
+  log: EavLogger<typeof logSpecs.specs>;
   constructor() {
-    super({ nameOfThis, logThis});
+    super(logSpecs);
   }
 
   protected override getId = (item: FormLanguageInStore) => item.formId;
@@ -46,11 +54,14 @@ export class FormLanguageService extends SignalStoreObservableBase<number, FormL
    * This is to avoid errors when the form is not yet loaded or is being unloaded.
    */
   getEntityReader(formId: number): Signal<EntityReader> {
+    const l = this.log.fnIf('getReader', { formId });
     // Place creation of the language signal here to avoid creating it multiple times
-    return this.#entityReaderCache.getOrCreate(formId, () => {
+    const sig = this.#entityReaderCache.getOrCreateWithInfo(formId, () => {
       const language = this.getSignal(formId)() ?? FormLanguage.empty();
+      const l2 = this.log.fnIf('getReaderSignal', { language });
       return new EntityReader(language.current, language.primary);
     });
+    return l.rSilent(sig.signal, `isNew: ${sig.isNew}`);
   }
   #entityReaderCache = new ComputedCacheHelper<number, EntityReader>('entityReader');
 

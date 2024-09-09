@@ -10,8 +10,10 @@ import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { EavEntityAttributes } from '../shared/models/eav/eav-entity-attributes';
 import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
 
-const logThis = false;
-const nameOfThis = 'ItemService';
+const logSpecs = {
+  enabled: false,
+  name: 'ItemService',
+};
 
 /**
  * This class provides access to the items / entities cache which are being edited in the UI.
@@ -22,7 +24,7 @@ const nameOfThis = 'ItemService';
 export class ItemService extends SignalStoreObservableBase<string, EavItem> {
 
   constructor() {
-    super( { nameOfThis, logThis });
+    super(logSpecs);
   }
 
   override getId = (item: EavItem) => item.Entity.Guid;

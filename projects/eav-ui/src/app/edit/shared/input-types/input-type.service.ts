@@ -7,14 +7,16 @@ import { InputTypeSpecs } from './input-type-specs.model';
 import { SignalStoreBase } from '../store/signal-store-base';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 
-const logThis = false;
-const nameOfThis = 'InputTypeService';
+const logSpecs = {
+  enabled: false,
+  name: 'InputTypeService',
+};
 
 @Injectable({ providedIn: 'root' })
 export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata> {
 
   constructor() {
-    super({ nameOfThis, logThis });
+    super(logSpecs);
   }
 
   override getId = (item: InputTypeMetadata) => item.Type;

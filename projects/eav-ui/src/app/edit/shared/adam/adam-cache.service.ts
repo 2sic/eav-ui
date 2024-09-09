@@ -3,14 +3,16 @@ import { AdamItem } from '../../../../../../edit-types';
 import { PrefetchAdams } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
 
-const logThis = false;
-const nameOfThis = 'AdamCacheService';
+const logSpecs = {
+  enabled: false,
+  name: 'LinkCacheService',
+};
 
 @Injectable({ providedIn: 'root' })
 export class AdamCacheService extends SignalStoreBase<string, AdamSnapshot> {
 
   constructor() {
-    super({ nameOfThis, logThis });
+    super(logSpecs);
   }
 
   override getId = (item: AdamSnapshot) => item.Guid;

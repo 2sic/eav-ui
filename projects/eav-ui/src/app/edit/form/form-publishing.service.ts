@@ -4,14 +4,16 @@ import { PublishStatus, PublishMode, PublishModes, EavPublishStatus } from '../d
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { SignalStoreBase } from '../shared/store/signal-store-base';
 
-const logThis = false;
-const nameOfThis = 'PublishStatusService';
+const logSpecs = {
+  enabled: false,
+  name: 'PublishStatusService',
+};
 
 @Injectable({ providedIn: 'root' })
 export class FormPublishingService extends SignalStoreBase<number, PublishStatus> {
   
   constructor() {
-    super({ nameOfThis, logThis });
+    super(logSpecs);
   }
 
   override getId = (item: PublishStatus) => item.formId;
