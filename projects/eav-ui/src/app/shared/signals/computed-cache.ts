@@ -9,6 +9,15 @@ export type ComputedCache<TKey extends string, TValue> = Record<TKey, Signal<TVa
  */
 export class ComputedCacheHelper<TKey extends string | number, TValue> {
 
+  static proxy<TKey extends string | number, TValue>(
+    name: string = 'cache-name?',
+    factory: (name: string) => () => TValue, options: CreateComputedOptions<TValue> = null,
+  ) : Record<TKey, Signal<TValue>> {
+    const cch =  new ComputedCacheHelper<TKey, TValue>(name);
+    const proxy = cch.buildProxy(factory, options);
+    return proxy;
+  }
+
   constructor(private name: string = 'cache-name?', private named: boolean = true) {
   }
 

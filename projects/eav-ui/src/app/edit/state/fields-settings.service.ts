@@ -12,7 +12,6 @@ import { ContentTypeService } from '../shared/content-types/content-type.service
 import { ItemService } from './item.service';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
-import isEqual from 'lodash-es/isEqual';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { computedObj, named } from '../../shared/signals/signal.utilities';
@@ -65,8 +64,8 @@ export class FieldsSettingsService {
   //#endregion
 
   /**
-   * Stable field properties of all fields.
-   * It is updated after change-cycles are complete and stable.
+   * Field properties of all fields.
+   * It is updated when every round of change-cycles are complete and stable.
    */
   public allProps: Signal<Record<string, FieldProps>>;
 
@@ -187,11 +186,6 @@ export class FieldsSettingsService {
     this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.allProps);
   }
 
-  /**
-   * Get field properties for all fields.
-   * @returns Signal of object that has attribute name as a key and all of its field properties.
-   */
-  // public get allFieldProps(): Signal<Record<string, FieldProps>> { return this.allFieldsProps; }
 
   #fieldPropsCache = new ComputedCacheHelper<string, FieldProps>('field-props');
   public fieldProps = this.#fieldPropsCache.buildProxy(f => () => this.allProps()[f]);
@@ -204,15 +198,17 @@ export class FieldsSettingsService {
    */
   public settings = this.#fieldSignalsCache.buildProxy(f => () => this.allProps()[f].settings);
 
+  // getTranslationState(fieldName: string): Signal<TranslationState> {
+  //   return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.allProps()[fieldName].translationState);
+  // }
+  // #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>('transl-state');
+    
   /**
    * Used for translation state stream for a specific field.
    * @param fieldName
-   * @returns Translation state stream
+   * @returns Translation state signal
    */
-  getTranslationState(fieldName: string): Signal<TranslationState> {
-    return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.allProps()[fieldName].translationState);
-  }
-  #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>('transl-state');
+  translationState = ComputedCacheHelper.proxy<string, TranslationState>('transl-state', f => () => this.allProps()[f].translationState);
 
   /**
    * Triggers a reevaluation of all formulas.
