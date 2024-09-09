@@ -1,6 +1,5 @@
-import { Component, computed, inject, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, inject, Input, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { map, Observable, startWith } from 'rxjs';
 import { AutoTranslateDisabledWarningDialog } from '../../../../localization/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { AutoTranslateMenuDialogComponent } from '../../../../localization/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -12,10 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { mapUntilChanged } from '../../../../../shared/rxJs/mapUntilChanged';
 import { FieldState } from '../../../field-state';
 import { TranslationLinks } from '../../../../localization/translation-link.constants';
 import { FieldsSettingsService } from '../../../../state/fields-settings.service';
@@ -23,6 +21,7 @@ import { FieldsTranslateService } from '../../../../state/fields-translate.servi
 import { FormConfigService } from '../../../../form/form-config.service';
 import { FormsStateService } from '../../../../form/forms-state.service';
 import { TranslationState } from '../../../../localization/translate-state.model';
+import { computedObj } from '../../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-translate-menu',
@@ -37,81 +36,50 @@ import { TranslationState } from '../../../../localization/translate-state.model
     MatMenuModule,
     MatIconModule,
     FeatureIconIndicatorComponent,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
   ],
 })
-export class TranslateMenuComponent implements OnInit {
+export class TranslateMenuComponent {
   @Input() hideTranslateButton: boolean;
 
-  protected fieldState = inject(FieldState);
-  protected config = this.fieldState.config;
-  protected group = this.fieldState.group;
+  #fieldState = inject(FieldState);
+  #formsStateService = inject(FormsStateService);
 
   TranslationLinks = TranslationLinks;
-  viewModel$: Observable<TranslateMenuViewModel>;
 
-  private formsStateService = inject(FormsStateService);
-  protected readOnly = this.formsStateService.readOnly;
-
-  protected settings = this.fieldState.settings;
-  protected translationState = this.fieldSettings.getTranslationState(this.config.fieldName)
+  protected translationState = this.#fieldState.translationState; // this.fieldSettings.translationState[this.#fieldState.name];
   protected language = this.formConfig.language;
 
+  protected disabled = computedObj('disabled', () => this.#fieldState.controlStatus().disabled);
 
-  translationStateClass = computed(() => {
-    return TranslateMenuHelpers.getTranslationStateClass(this.translationState().linkType);
-  });
+  translationStateClass = computedObj('translationStateClass', () => TranslateMenuHelpers.getTranslationStateClass(this.translationState().linkType));
 
-  disableTranslateButtonSignal = computed(() => {
-    return this.readOnly().isReadOnly || this.settings().DisableTranslation;
-    });
+  disableTranslateButtonSignal = computedObj('disableTranslateButtonSignal',
+    () => this.#formsStateService.readOnly().isReadOnly || this.#fieldState.settings().DisableTranslation
+  );
 
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private formConfig: FormConfigService,
-    private fieldSettings: FieldsSettingsService,
     private fieldsTranslate: FieldsTranslateService,
   ) { }
 
-  ngOnInit(): void {
-
-    const control = this.group.controls[this.config.fieldName];
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    // @2dg note that disabled is already available on the FieldState
-    // const disabled = this.fieldState.controlStatus().disabled;
-    const disabled$ = control.valueChanges.pipe(
-      map(() => control.disabled),
-      startWith(control.disabled),
-      mapUntilChanged(m => m),
-    );
-
-    this.viewModel$ = disabled$.pipe(
-      map((disabled) => {
-        const viewModel: TranslateMenuViewModel = {
-          disabled,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
   translate(): void {
-    this.fieldsTranslate.unlock(this.config.fieldName);
+    this.fieldsTranslate.unlock(this.#fieldState.name);
   }
 
   dontTranslate(): void {
-    this.fieldsTranslate.lock(this.config.fieldName);
+    this.fieldsTranslate.lock(this.#fieldState.name);
   }
 
   openTranslateMenuDialog(translationState: TranslationState): void {
-    this.openDialog(translationState, TranslateMenuDialogComponent);
+    this.#openDialog(translationState, TranslateMenuDialogComponent);
   }
 
   openAutoTranslateMenuDialog(translationState: TranslationState): void {
-    if (this.fieldSettings.settings[this.config.fieldName]().DisableAutoTranslation) {
+    if (this.#fieldState.settings().DisableAutoTranslation) {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: false },
@@ -119,14 +87,14 @@ export class TranslateMenuComponent implements OnInit {
         width: '350px',
       });
     } else {
-      this.openDialog(translationState, AutoTranslateMenuDialogComponent);
+      this.#openDialog(translationState, AutoTranslateMenuDialogComponent);
     }
 
   }
 
-  private openDialog(translationState: TranslationState, component: any): void {
+  #openDialog(translationState: TranslationState, component: any): void {
     const dialogData: TranslateMenuDialogData = {
-      config: this.config,
+      config: this.#fieldState.config,
       translationState: {
         language: translationState.language,
         linkType: translationState.linkType,
@@ -139,9 +107,4 @@ export class TranslateMenuComponent implements OnInit {
       width: '400px',
     });
   }
-}
-
-
-export interface TranslateMenuViewModel  {
-  disabled: boolean;
 }

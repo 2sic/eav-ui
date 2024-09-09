@@ -78,7 +78,8 @@ export class EntityTranslateMenuComponent {
     if (autoTransFields.length === 0) 
       return this.fieldTranslateSvc.showMessageNoTranslatableFields(true);
 
-    const transStateForLanguages = this.fieldSettingsSvc.getTranslationState(autoTransFields[0])();
+    // Translation state of any field, to detect the languages
+    const translationStateAny = this.fieldSettingsSvc.translationState[autoTransFields[0]]();
     if (autoTransFields.length > 0) {
       const config: TranslateMenuDialogConfig = {
         entityGuid: this.entityGuid(),
@@ -87,8 +88,8 @@ export class EntityTranslateMenuComponent {
       const dialogData: TranslateMenuDialogData = {
         config,
         translationState: {
-          language: transStateForLanguages.language,
-          linkType: transStateForLanguages.linkType,
+          language: translationStateAny.language,
+          linkType: translationStateAny.linkType,
         },
         isTranslateMany: true,
         translatableFields: autoTransFields,

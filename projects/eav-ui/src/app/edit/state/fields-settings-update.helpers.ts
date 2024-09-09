@@ -7,8 +7,24 @@ import { ValidationHelpers } from '../shared/validation/validation.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
 import { FieldConstantsOfLanguage } from './fields-configs.model';
 import { FormLanguage } from '../form/form-languages.model';
+import { EavLogger } from '../../shared/logging/eav-logger';
 
+const logSpecsFactory = {
+  enabled: false,
+  name: 'FieldSettingsUpdateHelperFactory',
+};
+
+const logSpecs = {
+  enabled: true,
+  name: 'FieldSettingsUpdateHelper',
+  specs: {
+    correctSettingsAfterChanges: true,
+    schemaDisablesTranslation: true,
+    getDisabledBecauseTranslations: true,
+  }
+};
 export class FieldSettingsUpdateHelperFactory {
+  log = new EavLogger(logSpecsFactory);
   constructor(
     // General & Content Type Info
     private contentTypeMetadata: EavEntity[],
@@ -47,6 +63,8 @@ export class FieldSettingsUpdateHelperFactory {
  */
 export class FieldSettingsUpdateHelper {
 
+  log = new EavLogger(logSpecs);
+
   constructor(
     // General & Content Type Info
     private contentTypeMetadata: EavEntity[],
@@ -70,6 +88,8 @@ export class FieldSettingsUpdateHelper {
    * @returns Corrected settings
    */
   correctSettingsAfterChanges(settings: FieldSettings, fieldValue: FieldValue): FieldSettings {
+    const l = this.log.fnIf('correctSettingsAfterChanges');
+
     const constantFieldPart = this.constantFieldPart;
     const slotIsEmpty = this.formSlotIsEmpty();
 
@@ -98,6 +118,7 @@ export class FieldSettingsUpdateHelper {
 
   /** Find if DisableTranslation is true in any setting and in any language */
   #schemaDisablesTranslation(): boolean {
+    const l = this.log.fnIf('schemaDisablesTranslation');
     const contentTypeMetadata = this.contentTypeMetadata;
     const inputType = this.constantFieldPart.inputTypeConfiguration;
     const attributeValues = this.attributeValues;
@@ -128,23 +149,24 @@ export class FieldSettingsUpdateHelper {
   }
 
   #getDisabledBecauseTranslations(disableTranslation: boolean): boolean {
+    const l = this.log.fnIf('getDisabledBecauseTranslations');
     const attributeValues = this.attributeValues;
     const language = this.language;
     // On primary edit is never disabled by translations
     // This is the only one we check 
     if (language.current === language.primary)
-      return false;
+      return l.r(false, 'enabled, primary language');
     // If translations are disabled, then it's disabled
     // Only check this _after_ checking if we're in the primary language
     if (disableTranslation)
-      return true;
+      return l.r(true, 'disabled, disableTranslation');
     // If no value on primary, then it's disabled
     if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
-      return true;
+      return l.r(true, 'disabled, no value on primary');
     if (LocalizationHelpers.hasEditableValue(attributeValues, language))
-      return false;
+      return l.r(false, 'disabled, has editable value');
     if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current))
-      return true;
-    return true;
+      return l.r(true, 'enabled, has readonly value');
+    return l.r(true, 'enabled, no rule applies');
   }
 }
