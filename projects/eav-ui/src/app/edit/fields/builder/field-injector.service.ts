@@ -110,6 +110,7 @@ export class FieldInjectorService {
       basics,
       controlStatusChangeSignal,
       uiValue,
+      this.#fieldsSettingsService.translationState[fieldName],
       pdf.createPickerData(inputType),
     );
 

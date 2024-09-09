@@ -6,6 +6,7 @@ import { FieldConfigSet } from './field-config-set.model';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
 import { ControlStatus } from '../shared/controls/control-status.model';
 import { PickerData } from './picker/picker-data';
+import { TranslationState } from '../localization/translate-state.model';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -41,6 +42,8 @@ export class FieldState<T extends FieldValue> {
 
     /** The value of the field in the UI control as a signal */
     public uiValue: Signal<T>,
+
+    public translationState: Signal<TranslationState>,
 
     pickerData: PickerData,
   ) {
