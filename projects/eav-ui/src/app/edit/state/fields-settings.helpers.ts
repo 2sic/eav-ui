@@ -1,7 +1,7 @@
 import { EntityReader } from '../shared/helpers';
 import { ItemIdentifierEditConfig } from '../../shared/models/edit-form.model';
 import { EavContentType } from '../shared/models/eav';
-import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FieldReader } from '../localization/field-reader';
 import { ContentTypeSettings } from './content-type-settings.model';
 import { FormLanguage } from '../form/form-languages.model';
 
@@ -33,7 +33,7 @@ export class ContentTypeSettingsHelpers {
       // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
       const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
       let label = (type)
-        ? LocalizationHelpers.getValueOrDefault(type.Attributes.Label, language)?.Value
+        ? new FieldReader(type.Attributes.Label, language).currentOrDefault?.Value
         : null;
       label = label || contentType.Name;
       return label;

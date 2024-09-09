@@ -13,7 +13,6 @@ import { FormulaCacheItemConstants } from './formula-cache.model';
 import { FormulaResultRaw, FormulaIdentifier } from '../results/formula-results.models';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { EavLogger } from '../../../shared/logging/eav-logger';
-import { LocalizationHelpers as LocHelper } from '../../localization/localization.helpers';
 import { FormConfigService } from '../../form/form-config.service';
 import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
 import { ItemService } from '../../state/item.service';
@@ -69,7 +68,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     const l = this.log.fnIf('buildFormulaCache');
     const formulaCache: FormulaCacheItem[] = [];
     const language = this.formConfig.language();
-    const reader = new EntityReader(language.current, language.primary);
+    const reader = new EntityReader(language);
 
     const fss = new FieldsSettingsHelpers(logSpecs.name);
 
@@ -79,6 +78,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       const sharedParts = this.#buildItemFormulaCacheSharedParts(item, entityGuid);
 
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
+      const reader = new EntityReader(language);
       for (const attribute of contentType.Attributes) {
         // Get field settings
         const settings = fss.getDefaultSettings(reader.flattenAll<FieldSettings>(attribute.Metadata));
@@ -89,14 +89,14 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
         // Get all formulas for the field
         const formula = this.contentTypeItemService
           .getMany(settings.Formulas)
-          .filter(f => LocHelper.translate<boolean>(language, f.Attributes.Enabled, null));
+          .filter(f => reader.getBestValue<boolean>(f.Attributes.Enabled));
 
         for (const formulaItem of formula) {
-          const sourceCode: string = LocHelper.translate<string>(language, formulaItem.Attributes.Formula, null);
+          const sourceCode = reader.getBestValue<string>(formulaItem.Attributes.Formula);
           if (sourceCode == null) 
             continue;
 
-          const target: FormulaTarget = LocHelper.translate<string>(language, formulaItem.Attributes.Target, null);
+          const target: FormulaTarget = reader.getBestValue<string>(formulaItem.Attributes.Target);
 
           // create cleaned formula function, or if this fails, add info to log & results
           let formulaFunction: FormulaFunction;

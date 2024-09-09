@@ -1,8 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { EavEntity, EavFor } from '../shared/models/eav';
 import { NoteProps } from './entity-form.models';
-import { LocalizationHelpers } from '../localization/localization.helpers';
 import { FormLanguage } from '../form/form-languages.model';
+import { EntityReader } from '../shared/helpers';
 
 export function getItemForTooltip(itemFor: EavFor, translate: TranslateService) {
   if (!itemFor) return;
@@ -28,9 +28,10 @@ export function getNoteProps(note: EavEntity, language: FormLanguage, itemNotSav
   if (!note) { return noteProps; }
 
   noteProps.tooltip = undefined;
-  noteProps.noteHtml = LocalizationHelpers.translate(language, note.Attributes.Note, null);
+  const reader = new EntityReader(language);
+  noteProps.noteHtml = reader.getBestValue(note.Attributes.Note);
 
-  const noteType = LocalizationHelpers.translate(language, note.Attributes.NoteType, null);
+  const noteType = reader.getBestValue(note.Attributes.NoteType);
   if (noteType === 'note') {
     noteProps.triggerClass = 'has-note';
   } else if (noteType === 'warning') {

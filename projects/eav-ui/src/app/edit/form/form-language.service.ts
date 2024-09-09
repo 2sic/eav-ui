@@ -59,7 +59,7 @@ export class FormLanguageService extends SignalStoreObservableBase<number, FormL
     const sig = this.#entityReaderCache.getOrCreateWithInfo(formId, () => {
       const language = this.getSignal(formId)() ?? FormLanguage.empty();
       const l2 = this.log.fnIf('getReaderSignal', { language });
-      return new EntityReader(language.current, language.primary);
+      return new EntityReader(language);
     });
     return l.rSilent(sig.signal, `isNew: ${sig.isNew}`);
   }

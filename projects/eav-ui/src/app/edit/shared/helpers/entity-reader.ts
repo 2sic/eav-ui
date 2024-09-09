@@ -1,15 +1,46 @@
 import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FormLanguage } from '../../form/form-languages.model';
+import { EavLogger } from '../../../shared/logging/eav-logger';
+import { FieldReader } from '../../localization/field-reader';
+
+const logSpecs = {
+  enabled: false,
+  name: 'EntityReader',
+  specs: {
+    all: false,
+    constructor: false,
+  }
+};
 
 export class EntityReader implements FormLanguage {
-  constructor(public current: string, public primary: string) { }
+
+  /** @inheritdoc */
+  public current: string;
+  /** @inheritdoc */
+  public primary: string;
+
+  log = new EavLogger(logSpecs);
+
+  constructor(formLanguage: FormLanguage);
+  constructor(current: string, primary: string);
+  constructor(current: FormLanguage | string, primary?: string) {
+    this.log.fnIf('constructor', { current, primary });
+    if (typeof current === 'string') {
+      this.current = current;
+      this.primary = primary;
+    } else {
+      this.current = current.current;
+      this.primary = current.primary;
+    }
+  }
 
   // WIP - to make code clearer, this is what should be used from now on
   // But we'll probably end up calling this from the EntityReader only, so it should be straight forward
-  getBestValue<T>(attributeValues: EavField<unknown>, defaultValue: T = null): T {
-    return LocalizationHelpers.translate<T>(this, attributeValues as EavField<T>, defaultValue);
+  getBestValue<T>(attributeValues: EavField<T>, defaultValue: T = null): T {
+    const fieldReader = new FieldReader<T>(attributeValues, this);
+    return fieldReader.currentOrDefaultOrAny?.Value ?? defaultValue;
+    // return LocalizationHelpers.translate<T>(this, attributeValues as EavField<T>, defaultValue);
   }
 
   public flatten<T>(metadataItem: EavEntity): T {
@@ -50,9 +81,13 @@ export class EntityReader implements FormLanguage {
   }
 
   currentValues(itemAttributes: EavEntityAttributes): ItemValuesOfLanguage {
-    const formValues: ItemValuesOfLanguage = {};
-    for (const [name, values] of Object.entries(itemAttributes))
-      formValues[name] = this.getBestValue(values);
+
+    const formValues: ItemValuesOfLanguage = Object.entries(itemAttributes)
+      .reduce((acc, [name, values]) => {
+        acc[name] = this.getBestValue(values);
+        return acc;
+      }, {} as ItemValuesOfLanguage);
+
     return formValues;
   }
 

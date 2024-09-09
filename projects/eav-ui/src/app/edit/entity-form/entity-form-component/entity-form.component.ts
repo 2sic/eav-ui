@@ -32,6 +32,7 @@ import { ItemService } from '../../state/item.service';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
 import { EditForceReloadService } from '../../routing/edit-force-reload.service';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { EntityReader } from '../../shared/helpers/entity-reader';
 
 const logSpecs = {
   enabled: false,
@@ -229,7 +230,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
 
   deleteNote(note: EavEntity) {
     const language = this.formConfig.language();
-    const title = LocalizationHelpers.translate(language, note.Attributes.Title, null);
+    const title = new EntityReader(language).getBestValue(note.Attributes.Title); // LocalizationHelpers.translate(language, note.Attributes.Title, null);
     const id = note.Id;
     if (!confirm(this.#translate.instant('Data.Delete.Question', { title, id })))
       return;

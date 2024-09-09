@@ -1,15 +1,13 @@
 import { FieldSettings } from 'projects/edit-types';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
 import { FormLanguage } from '../form/form-languages.model';
-import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FieldReader } from '../localization/field-reader';
 import { TranslationState, TranslationStateCore } from '../localization/translate-state.model';
 import { TranslationLinks } from '../localization/translation-link.constants';
-import { EavEntity, EavField, EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
-import { MetadataDecorators } from './metadata-decorators.constants';
+import { EavField, EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 
 const logSpecs = {
   enabled: true,
@@ -49,34 +47,6 @@ export class FieldsSettingsHelpers {
     return defSettings;
   }
 
-  /** Find if DisableTranslation is true in any setting and in any language */
-  findDisableTranslation(
-    contentTypeMetadata: EavEntity[],
-    inputType: InputTypeMetadata,
-    attributeValues: EavField<any>,
-    defaultLanguage: string,
-    attributeMetadata: EavEntity[]
-  ): boolean {
-    // disable translation if LanguagesDecorator in ContentType is false in any language
-    const langDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (langDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
-      return true;
-
-    if (inputType?.DisableI18n)
-      return true;
-
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage))
-      return true;
-
-    // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
-    for (const mdItem of attributeMetadata ?? []) {
-      if (mdItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true))
-        return true;
-    }
-
-    return false;
-  }
-
   isLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {
     const index = contentType.Attributes.indexOf(attribute);
     if (contentType.Attributes[index + 1] == null) return true;
@@ -96,11 +66,12 @@ export class FieldsSettingsHelpers {
     disableTranslation: boolean,
     language: FormLanguage
   ): boolean {
+    const fieldReader = new FieldReader(attributeValues, language);
     if (language.current === language.primary) return false;
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary)) return true;
+    if (!fieldReader.hasPrimary) return true;
     if (disableTranslation) return true;
-    if (LocalizationHelpers.hasEditableValue(attributeValues, language)) return false;
-    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) return true;
+    if (fieldReader.hasEditableValues) return false;
+    if (fieldReader.hasCurrentReadonly) return true;
     return true;
   }
 
@@ -111,18 +82,20 @@ export class FieldsSettingsHelpers {
     let infoLabel: string;
     let infoMessage: string;
 
+    const fieldReader = new FieldReader(attributeValues, language);
+
     if (disableTranslation) {
       infoLabel = 'LangMenu.InAllLanguages';
       infoMessage = '';
-    } else if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary)) {
+    } else if (!fieldReader.hasPrimary) {
       infoLabel = 'LangMenu.MissingDefaultLangValue';
       infoMessage = language.primary;
     } else {
-      const hasEditable = LocalizationHelpers.hasEditableValue(attributeValues, language);
-      const hasReadonly = LocalizationHelpers.hasReadonlyValue(attributeValues, language.current);
+      const hasEditable = fieldReader.hasEditableValues;
+      const hasReadonly = fieldReader.hasCurrentReadonly;
 
       if (hasEditable || hasReadonly) {
-        const dimensions = LocalizationHelpers.getValueTranslation(attributeValues, language)
+        const dimensions = fieldReader.current
           .Dimensions.map(dimension => dimension.Value)
           .filter(dimension => !dimension.includes(language.current));
 
@@ -158,25 +131,26 @@ export class FieldsSettingsHelpers {
     disableTranslation: boolean,
     language: FormLanguage
   ): TranslationStateCore {
+    const fieldReader = new FieldReader(attributeValues, language);
     // Determine is control disabled or enabled and info message
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
+    if (!fieldReader.hasPrimary)
       return { language: '', linkType: TranslationLinks.MissingDefaultLangValue };
 
     if (disableTranslation)
       return { language: '', linkType: TranslationLinks.DontTranslate };
 
-    if (LocalizationHelpers.hasEditableValue(attributeValues, language)) {
-      const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
-        .Dimensions.filter(dimension => dimension.Value !== language.current);
+    if (fieldReader.hasEditableValues) {
+      const editableElements = fieldReader.current
+        .Dimensions.filter(d => d.Value !== language.current);
 
       return (editableElements.length > 0)
         ? { language: editableElements[0].Value, linkType: TranslationLinks.LinkReadWrite }
         : { language: '', linkType: TranslationLinks.Translate };
     }
 
-    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current)) {
-      const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, language)
-        .Dimensions.filter(dimension => dimension.Value !== language.current);
+    if (fieldReader.hasCurrentReadonly) {
+      const readOnlyElements = fieldReader.current
+        .Dimensions.filter(d => d.Value !== language.current);
 
       return { language: readOnlyElements[0].Value, linkType: TranslationLinks.LinkReadOnly, };
     }

@@ -3,14 +3,14 @@ import { SaveResult } from './save-result.model';
 import { ItemService } from './item.service';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } from '../shared/models/eav';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FieldReader } from '../localization/field-reader';
 import { FormLanguage, Language } from '../form/form-languages.model';
-import { BestValueModes } from '../localization/localization.constants';
-import { FieldHelper } from '../shared/helpers';
+import { EntityReader, FieldHelper } from '../shared/helpers';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
+import { FieldWriter } from '../localization/field-writer';
 
 const logSpecs = {
   enabled: false,
@@ -96,7 +96,7 @@ export class ItemUpdateHelper {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
+        Attributes: new FieldWriter().addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
       }
     };
 
@@ -122,7 +122,7 @@ export class ItemUpdateHelper {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.updateAttributeValue(
+        Attributes: new FieldWriter().updateAttributeValue(
           oldItem.Entity.Attributes, attributeKey, newValue, language, isReadOnly,
         ),
       }
@@ -141,12 +141,14 @@ export class ItemUpdateHelper {
     const l = this.log.fnIf('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
     const defaultValue = FieldHelper.getDefaultOrPrefillValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
-    const defaultLanguageValue = LocalizationHelpers.getBestValue(
-      item.Entity.Attributes[ctAttribute.Name],
-      defaultLanguage,
-      defaultLanguage,
-      BestValueModes.Strict,
-    );
+    // const defaultLanguageValue = LocalizationHelpers.getBestValue(
+    //   item.Entity.Attributes[ctAttribute.Name],
+    //   defaultLanguage,
+    //   // defaultLanguage,
+    //   BestValueModes.Strict,
+    // );
+    const defaultLanguageValue = new FieldReader(item.Entity.Attributes[ctAttribute.Name], defaultLanguage).currentOrDefault?.Value;
+
     // 2023-08-31 2dm simplified; leave comments in till EOY in case I broke something
     const languageCode = (languages.length === 0 || inputType?.DisableI18n) ? '*' : defaultLanguage;
     if (defaultLanguageValue === undefined) {
@@ -169,17 +171,18 @@ export class ItemUpdateHelper {
     const oldItem = this.itemSvc.get(entityGuid);
     if (!oldItem) return l.end('Item not found');
 
+    const reader = new EntityReader(language);
     const oldValues: ItemValuesOfLanguage = {};
-    for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
-      if (!newValues.hasOwnProperty(name))
-        continue;
-      oldValues[name] = LocalizationHelpers.translate(language, values, null);
-    }
+    const relevantValues = Object.entries(oldItem.Entity.Attributes)
+      .filter(([name]) => newValues.hasOwnProperty(name));
+    for (const [name, values] of relevantValues)
+      oldValues[name] = reader.getBestValue(values);
+
     const changes = FieldValueHelpers.getItemValuesChanges(oldValues, newValues);
     if (changes == null)
       return l.end('No changes');
 
-    const newAttributes = LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, language);
+    const newAttributes = new FieldWriter().updateAttributesValues(oldItem.Entity.Attributes, changes, language);
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
@@ -214,7 +217,7 @@ export class ItemUpdateHelper {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.addAttributeDimension(
+        Attributes: new FieldWriter().addAttributeDimension(
           oldItem.Entity.Attributes, attributeKey, currentLanguage, shareWithLanguage, defaultLanguage, isReadOnly,
         ),
       }
@@ -237,7 +240,7 @@ export class ItemUpdateHelper {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, fieldName, current),
+        Attributes: new FieldWriter().removeAttributeDimension(oldItem.Entity.Attributes, fieldName, current),
       }
     };
 

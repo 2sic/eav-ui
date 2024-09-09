@@ -1,9 +1,9 @@
 import { FormulaV1ExperimentalEntity } from './formula-run-experimental.model';
 import { FormulaV1Experimental } from './formula-run-experimental.model';
 import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
+import { EntityReader } from '../../shared/helpers';
 
 /**
  * The object containing experimental information which can change at any time.
@@ -43,10 +43,7 @@ export class FormulaExperimentalObject implements FormulaV1Experimental {
   getValues(entityGuid: string): ItemValuesOfLanguage {
     const { language, itemService } = this.#formulaExecSpecs;
     const item = itemService.get(entityGuid);
-    const values: ItemValuesOfLanguage = {};
-    for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
-      values[fieldName] = LocalizationHelpers.translate(language, fieldValues, null);
-    }
-    return values;
+    const reader = new EntityReader(language);
+    return reader.currentValues(item.Entity.Attributes);
   }
 }

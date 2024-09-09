@@ -17,11 +17,9 @@ import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormDataService } from './form-data.service';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { LocalizationHelpers } from '../localization/localization.helpers';
-import { BestValueModes } from '../localization/localization.constants';
+import { FieldReader } from '../localization/field-reader';
 import { FormConfigService } from './form-config.service';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { FormLanguage } from './form-languages.model';
 import { transient } from '../../core';
 import { AdamCacheService } from '../shared/adam/adam-cache.service';
 import { ContentTypeService } from '../shared/content-types/content-type.service';
@@ -186,12 +184,9 @@ export class EditInitializerService {
     if (!allLangs.includes(language.primary)) allLangs.push(language.primary);
 
     for (const item of items)
-      for (const lang of allLangs) {
-        const formValues: ItemValuesOfLanguage = {};
-        const lookupLang = FormLanguage.diffCurrent(language, lang);
-        for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes))
-          formValues[fieldName] = LocalizationHelpers.translate(lookupLang, fieldValues, null);
-        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, lang)] = formValues;
+      for (const currentLang of allLangs) {
+        const formValues = new EntityReader(currentLang, language.primary).currentValues(item.Entity.Attributes);
+        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, currentLang)] = formValues;
       }
   }
 
@@ -241,7 +236,8 @@ export class EditInitializerService {
 
         if (languages.length === 0) {
           l.a(`${currentName} languages none, simple init`);
-          const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
+          // const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*',*/ BestValueModes.Default);
+          const firstValue = new FieldReader(attributeValues, '*').currentOrDefaultOrAny?.Value;
           if (logic.isValueEmpty(firstValue, isCreateMode))
             updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
         } else {
@@ -249,7 +245,8 @@ export class EditInitializerService {
 
           // check if there is a value for the generic / all language
           const disableI18n = inputType?.DisableI18n;
-          const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Strict);
+          // const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*', */ BestValueModes.Strict);
+          const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.Value;
           l.values({ disableI18n, noLanguageValue }, currentName);
           if (!disableI18n && noLanguageValue !== undefined) {
             // move * value to defaultLanguage
@@ -268,13 +265,13 @@ export class EditInitializerService {
             continue;
           }
 
-          const defaultLanguageValue = LocalizationHelpers.getBestValue(
-            attributeValues,
-            language.primary,
-            language.primary,
-            BestValueModes.Strict,
-          );
-
+          // const defaultLanguageValue = LocalizationHelpers.getBestValue(
+          //   attributeValues,
+          //   language.primary,
+          //   // language.primary,
+          //   BestValueModes.Strict,
+          // );
+          const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.Value;
 
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
           l.values({ currentName, valueIsEmpty, defaultLanguageValue, isCreateMode }, currentName);

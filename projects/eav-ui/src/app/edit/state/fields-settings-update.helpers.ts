@@ -2,7 +2,7 @@ import { Signal } from '@angular/core';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { FieldLogicTools } from '../fields/logic/field-logic-tools';
 import { EavContentTypeAttribute, EavEntity, EavField } from '../shared/models/eav';
-import { LocalizationHelpers } from '../localization/localization.helpers';
+import { FieldReader } from '../localization/field-reader';
 import { ValidationHelpers } from '../shared/validation/validation.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
 import { FieldConstantsOfLanguage } from './fields-configs.model';
@@ -122,13 +122,12 @@ export class FieldSettingsUpdateHelper {
     const contentTypeMetadata = this.contentTypeMetadata;
     const inputType = this.constantFieldPart.inputTypeConfiguration;
     const attributeValues = this.attributeValues;
-    const defaultLanguage = this.language.primary;
     const attributeMetadata = this.attribute.Metadata;
 
     // Disable translation if not allowed by the ContentType.
     // This is configured using a LanguagesDecorator in ContentType.
     const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
-    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false))
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(v => v.Value === false))
       return true;
 
     // Disable translation if the input type says it can't be translated (e.g. Entity).
@@ -136,7 +135,7 @@ export class FieldSettingsUpdateHelper {
       return true;
 
     // TODO: CHECK if this should be here - it's repeated below
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, defaultLanguage))
+    if (!new FieldReader(attributeValues, this.language).hasPrimary)
       return true;
 
     // Disable translation if the Attribute Configuration says so.
@@ -156,16 +155,18 @@ export class FieldSettingsUpdateHelper {
     // This is the only one we check 
     if (language.current === language.primary)
       return l.r(false, 'enabled, primary language');
+
+    const fieldReader = new FieldReader(attributeValues, language);
     // If translations are disabled, then it's disabled
     // Only check this _after_ checking if we're in the primary language
     if (disableTranslation)
       return l.r(true, 'disabled, disableTranslation');
     // If no value on primary, then it's disabled
-    if (!LocalizationHelpers.hasValueOnPrimary(attributeValues, language.primary))
+    if (!fieldReader.hasPrimary)
       return l.r(true, 'disabled, no value on primary');
-    if (LocalizationHelpers.hasEditableValue(attributeValues, language))
+    if (fieldReader.hasEditableValues)
       return l.r(false, 'disabled, has editable value');
-    if (LocalizationHelpers.hasReadonlyValue(attributeValues, language.current))
+    if (fieldReader.hasCurrentReadonly)
       return l.r(true, 'enabled, has readonly value');
     return l.r(true, 'enabled, no rule applies');
   }

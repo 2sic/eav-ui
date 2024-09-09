@@ -1,5 +1,5 @@
 import { TranslationLink, TranslationLinks } from '../../../../localization/translation-link.constants';
-import { LocalizationHelpers } from '../../../../localization/localization.helpers';
+import { FieldReader } from '../../../../localization/field-reader';
 import { EavEntityAttributes } from '../../../../shared/models/eav';
 import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
@@ -17,7 +17,7 @@ export function getTemplateLanguages(
     .map(lang => {
       const values = attributes[config.fieldName];
       const disabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
-        || !LocalizationHelpers.hasEditableValue(values, FormLanguage.diffCurrent(language, lang.NameId));
+        || !new FieldReader(values, FormLanguage.diffCurrent(language, lang.NameId)).hasEditableValues;
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: lang.NameId,
         disabled,
@@ -43,8 +43,9 @@ export function getTemplateLanguagesWithContent(
       const langDefToUse = FormLanguage.diffCurrent(language, lang.NameId);
       translatableFields.forEach(field => {
         const values = attributes[field];
-        countTranslatableFields += LocalizationHelpers.countEditableValues(values, langDefToUse);
-        countTranslatableFieldsWithContent += LocalizationHelpers.countEditableValuesWithContent(values, langDefToUse);
+        const fieldReader = new FieldReader(values, langDefToUse);
+        countTranslatableFields += fieldReader.countEditable(); // LocalizationHelpers.countEditableValues(values, langDefToUse);
+        countTranslatableFieldsWithContent += fieldReader.countEditableWithContents(); // LocalizationHelpers.countEditableValuesWithContent(values, langDefToUse);
         isDisabled = (linkType === TranslationLinks.LinkReadWrite && !lang.IsAllowed)
           || countTranslatableFields == 0;
       });
