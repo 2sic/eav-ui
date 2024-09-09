@@ -1,7 +1,8 @@
 import { logMain } from '../helpers/console-log-angular.helper';
 import { EavLogger } from './eav-logger';
+import { LoggerFn } from './logger-fn.interface';
 
-export class EavLoggerFn {
+export class LoggerFnReal implements LoggerFn {
   constructor(private parent: EavLogger, private fnName: string, message?: string, data?: Record<string, unknown>) {
     this.parent.a(fnName + '() ' + (message ?? ''), data);
   }
@@ -34,6 +35,15 @@ export class EavLoggerFn {
     this.parent.a(`${this.fnName}/return NULL ${message}`);
     return null;
   }
+  rTrue(message?: string): boolean {
+    this.parent.a(`${this.fnName}/return TRUE ${message}`);
+    return true;
+  }
+  rFalse(message?: string): boolean {
+    this.parent.a(`${this.fnName}/return FALSE ${message}`);
+    return false;
+  }
+
 
   /** End without return but show message and optional data */
   end(message?: string, data?: Record<string, unknown>) {
@@ -41,3 +51,5 @@ export class EavLoggerFn {
   }
 
 }
+
+
