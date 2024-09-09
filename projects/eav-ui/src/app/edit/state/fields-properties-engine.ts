@@ -83,7 +83,7 @@ export class FieldsPropsEngine {
       .init(item, ct, reader)
       .getUnchangingDataOfLanguage();
 
-    this.#updateHelper = this.#getPreparedParts(reader(), ct, slotIsEmpty);
+    this.#updateHelper = this.#getPreparedParts(reader, ct, slotIsEmpty);
 
     this.modifiedChecker = new FieldsValuesModifiedHelper(contentType, slotIsEmpty);
     this.formulaPromises.init(entityGuid, contentType, fss, this.modifiedChecker);
@@ -152,9 +152,10 @@ export class FieldsPropsEngine {
   /**
    * Prepare / build FieldLogicTools for use in all the formulas / field settings updates
    */
-  #getPreparedParts(reader: EntityReader, contentType: EavContentType, slotIsEmpty: Signal<boolean>) {
+  #getPreparedParts(readerSignalToTriggerUpdate: Signal<EntityReader>, contentType: EavContentType, slotIsEmpty: Signal<boolean>) {
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
     const prepared = named('prepared-parts', computed(() => {
+      const reader = readerSignalToTriggerUpdate();
       const languages = reader;
       const isDebug = this.#globalConfigService.isDebug();
       const isReadOnly = this.#formsStateService.readOnly();

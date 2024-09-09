@@ -140,7 +140,7 @@ export class FieldsSettingsHelpers {
   static getTranslationState(attributeValues: EavField<any>, disableTranslation: boolean, language: FormLanguage, debug: boolean): TranslationState {
     if (debug) {
       fssLog.fn('getTranslationState', { attributeValues, disableTranslation, language });
-      debugger;
+      // debugger;
     }
 
     let infoLabel: string;
