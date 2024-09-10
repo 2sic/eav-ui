@@ -5,6 +5,7 @@ import { DataSourceBase } from '../data-sources/data-source-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { StateAdapter } from './state-adapter';
+import { PickerItem } from 'projects/edit-types';
 
 export abstract class DataAdapterBase {
 
@@ -22,7 +23,7 @@ export abstract class DataAdapterBase {
    * Can be different from the underlying data, since it may have error or loading-entries.
    * This is a signal, so it can be used in the template. it will _never_ be null.
    */
-  public optionsOrHints = computedObj('optionsOrHints', () => (this.dataSource().data()) ?? []);
+  public optionsOrHints: Signal<PickerItem[]> = computedObj('optionsOrHints', () => this.dataSource().data() ?? []);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
 

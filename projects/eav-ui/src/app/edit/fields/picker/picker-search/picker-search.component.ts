@@ -83,7 +83,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   public filteredItems = computedObj('filteredItems', () => {
     const _ = this.#reFilter(); // just make a dependency
-    const all = this.pickerData.source.optionsOrHints();
+    const all = this.pickerData.pickerOptions();
     const filterInDom = this.autocomplete()?.nativeElement.value;
     const filter = filterInDom?.toLocaleLowerCase();
 
@@ -148,7 +148,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     if (fieldSettings().PickerDisplayMode === 'tree') {
       // Setup Tree Helper - but should only happen, if we're really doing trees
       // Only doing this the first time, as these settings are not expected to change
-      this.#treeDataService.init(fieldSettings, this.pickerData.source.optionsOrHints);
+      this.#treeDataService.init(fieldSettings, this.pickerData.pickerOptions);
       this.treeHelper = this.#treeDataService.treeHelper;
     }
   }
@@ -163,7 +163,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     this.#logItemChecks.a(`displayFn: value: '${value}'`, { selectedItem });
     // and probably clean up if it's stable for a few days
     if (value == null) return '';
-    let returnValue = this.pickerData.source.optionsOrHints().find(ae => ae.value == value)?.label;
+    let returnValue = this.pickerData.pickerOptions().find(ae => ae.value == value)?.label;
 
     // If nothing yet, try to return label of selected or fallback to return the value
     // note: not quite sure, but I believe this is for scenarios where a manual entry was done
@@ -233,7 +233,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   }
 
   getPlaceholder(): string {
-    const allOptions = this.pickerData.source.optionsOrHints();
+    const allOptions = this.pickerData.pickerOptions();
     var placeholder = allOptions.length > 0
       ? this.translate.instant('Fields.Picker.Search')
       : this.translate.instant('Fields.Picker.QueryNoItems');

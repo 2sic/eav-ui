@@ -1,7 +1,7 @@
 import { PickerItem } from './models/picker-item.model';
 import { StateAdapter } from "./adapters/state-adapter";
 import { TranslateService } from '@ngx-translate/core';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { computedObj } from '../../../shared/signals/signal.utilities';
@@ -37,6 +37,9 @@ export class PickerData {
   */
   public state: StateAdapter;
 
+  /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
+  public pickerOptions = computedObj('pickerOptions', () => this.source?.optionsOrHints() ?? []);
+
   /** Temp info if it was already initialized, can probably be removed once we have the PickerDataFactory complete */
   public get isInitialized(): boolean {
     return !!this.source && !!this.state;
@@ -63,6 +66,7 @@ export class PickerData {
     source.init(name);
     this.state = state;
     this.source = source;
+    this.pickerOptions = source.optionsOrHints;
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.

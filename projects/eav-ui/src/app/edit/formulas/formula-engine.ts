@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
 import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
@@ -208,9 +208,11 @@ export class FormulaEngine {
       if (formula.disabled) {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
         // Show more debug in case of entity-pickers
-        if (formula.isValue) {
-          console.log('value', { value: cycle.values[formula.fieldName], picker: constFieldPart.pickerData(), constFieldPart});
-        }
+        untracked(() => {
+          if (formula.isValue) {
+            console.log('value', { value: cycle.values[formula.fieldName], picker: 0, constFieldPart});
+          }
+        });
         continue;
       }
 

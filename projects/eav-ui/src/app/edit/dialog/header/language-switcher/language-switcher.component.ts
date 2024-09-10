@@ -64,9 +64,9 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.centerSelectedHelper.destroy();
-    this.mouseScrollHelper.destroy();
-    this.showShadowsHelper.destroy();
+    this.centerSelectedHelper?.destroy();
+    this.mouseScrollHelper?.destroy();
+    this.showShadowsHelper?.destroy();
   }
 
   lngButtonMouseDown(event: MouseEvent) {
