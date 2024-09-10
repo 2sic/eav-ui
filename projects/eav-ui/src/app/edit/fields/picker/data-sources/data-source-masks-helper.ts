@@ -4,6 +4,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
 // const logThis = false;
 
@@ -15,7 +16,7 @@ export class DataSourceMasksHelper {
   
   log: EavLogger;
   constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
-    this.log = new EavLogger('DataSourceMasksHelper', enableLog ?? parentLog.enableChildren);
+    this.log = classLog('DataSourceMasksHelper', null, enableLog ?? parentLog.enableChildren);
     this.log.a('constructor - settings', { settings });
   }
 

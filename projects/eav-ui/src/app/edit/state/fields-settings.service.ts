@@ -108,7 +108,7 @@ export class FieldsSettingsService {
     const forceDebug = debugOnlyCt === null ? null : contentType.Id === debugOnlyCt;
     if (forceDebug !== null) {
       this.log.a(`Set debug for content type '${contentType.Id}' to ${forceDebug}, only debugging ${debugOnlyCt}`);
-      this.log.enabled = forceDebug;
+      this.log.forceEnable(forceDebug);
     }
 
     this.#fieldValues.init(entityGuid, this.#reader);

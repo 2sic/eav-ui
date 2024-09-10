@@ -24,7 +24,7 @@ export class FormulaCacheService {
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 
-  #log = classLog({FormulaCacheService});
+  #log = classLog({FormulaCacheService}, null, false);
 
   constructor() {
     classLog({FormulaCacheService});
@@ -164,6 +164,7 @@ export class FormulaCacheService {
         l.a('set results', { list, index, newResults});
         this.#results.set(newResults);
     });
+    l.end('ok');
   }
 
   public resultListIndexAndOriginal(id: FormulaIdentifier) {
@@ -173,5 +174,3 @@ export class FormulaCacheService {
     return { list, index, value };
   }
 }
-
-console.error('2dm', Object.keys({ FormulaCacheService })[0])

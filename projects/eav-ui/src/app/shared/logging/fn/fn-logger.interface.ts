@@ -14,7 +14,7 @@ export interface FnLogger {
   a(message: string, data?: Record<string, unknown>): void;
   end(message?: string, data?: Record<string, unknown>): void;
 
-  r<TResult>(result: TResult, message?: string, showData?: boolean): TResult;
+  r<TResult>(result: TResult, message?: string): TResult;
   rSilent<TResult>(result: TResult, message?: string): TResult;
   rNull(message?: string): null;
   rTrue(message?: string): boolean;

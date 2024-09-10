@@ -1,10 +1,11 @@
-import { logMain } from '../helpers/console-log-angular.helper';
+import { consoleLogObject } from './output-console';
 import { FnLoggerReal } from './fn/fn-logger-real';
 import { FnLogger } from './fn/fn-logger.interface';
 import { FnLoggerNoOp } from './fn/fn-logger-noop';
 import { LogManager } from './log-manager';
 import { LogSpecs } from './log-specs';
 import { RxTapDebug } from './rx-debug-dbg';
+import { environment } from '../../../environments/environment';
 
 /**
  * TODO:
@@ -14,11 +15,22 @@ import { RxTapDebug } from './rx-debug-dbg';
  */
 export class EavLogger<TSpecs extends unknown = any> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
-  svcId = Math.random().toString(36).substring(7);
+  svcId = Math.random().toString(36).substring(2, 5);
 
+  /** Name to be used in console logs etc. */
   name: string;
-  enabled: boolean;
+
+  /** Enabled state, combination of own enabled value + production-build info */
+  get enabled() { return this.#enabled; }
+  #enabled: boolean;
+  #setEnabled(value: boolean) {
+    this.#enabled = value && !environment.production;
+  }
+
+
   enableChildren: boolean;
+
+  /** Additional specs for logging just parts of the data */
   specs: TSpecs;
 
   constructor(logSpecs: LogSpecs<TSpecs>);
@@ -35,12 +47,10 @@ export class EavLogger<TSpecs extends unknown = any> {
 
     const mainSpecs = LogManager.getSpecs(initialSpecs);
 
-    this.name = mainSpecs.name;
-    this.enabled = mainSpecs.enabled;
+    this.rename(mainSpecs.name);
+    this.#setEnabled(mainSpecs.enabled);
     this.enableChildren = mainSpecs.enableChildren ?? false;
     this.specs = mainSpecs.specs;
-
-    this.nameWithSvcId = `${mainSpecs.name}-${this.svcId}`;
   }
 
   public rename(name: string) {
@@ -50,8 +60,12 @@ export class EavLogger<TSpecs extends unknown = any> {
 
   public nameWithSvcId: string;
 
-  inherit(parent: EavLogger<TSpecs>) {
-    this.enabled = this.enabled || parent.enabled;
+  public inherit(parent: EavLogger<TSpecs>) {
+    // if already enabled, don't do anything; inherit can only activate it
+    if (this.enabled)
+      return;
+
+    this.#setEnabled(parent.enabled);
 
     // if this results in log enabled, inform the console.
     // otherwise it's really hard to find out why a log is on
@@ -59,27 +73,31 @@ export class EavLogger<TSpecs extends unknown = any> {
       this.a(`Enabled: Inheriting log settings from parent ${parent.nameWithSvcId}`);
   }
 
+  public forceEnable(enabled: boolean | null) {
+    if (enabled == null || this.enabled) return;
+    if (enabled) this.a('Enabled: Forced to enable log');
+    this.#setEnabled(enabled);
+  }
+
+  /** Internal helper to really log - if enabled */
+  #a(message: string, data?: Record<string, unknown>, autoPad: boolean = true): void {
+    if (!this.enabled) return;
+    message ??= '';
+    if (message && autoPad) message = ` ${message}`;
+    consoleLogObject({ message: `${this.nameWithSvcId}${message}`, data });
+  }
+
   /**
    * Special 'a' = add log helper to better diagnose what is happening
    */
   a(message: string, data?: Record<string, unknown>): void {
+    this.#a(message, data);
     if (!this.enabled) return;
-    logMain(`[${this.nameWithSvcId}] ${message}`, data);
   }
 
   /** Create a special logger for rx logging */
   rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }) {
     return new RxTapDebug(this as EavLogger<unknown>, name, enabled, jsonify);
-  }
-
-  val(name: string, value: unknown) {
-    if (!this.enabled) return;
-    logMain(`[${this.nameWithSvcId}] value of ${name}:`, { value });
-  }
-
-  values(data: Record<string, unknown>) {
-    if (!this.enabled) return;
-    logMain(`[${this.nameWithSvcId}] values:`, data);
   }
 
   /**

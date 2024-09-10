@@ -44,15 +44,15 @@ export class ItemFormulaBroadcastService {
     const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: this.#entityGuid });
 
     if (Object.keys(modifiedValues).length == 0)
-      return l.r(false);
+      return l.rFalse();
 
     if (this.#maxValueFormulaCycles > this.#valueFormulaCounter) {
       this.#valueFormulaCounter++;
       this.#itemService.updater.updateItemAttributesValues(this.#entityGuid, modifiedValues, this.#reader());
       // return true to make sure fieldProps are not updated yet
-      return l.r(true);
+      return l.rTrue();
     }
-    return l.r(false, 'Max value formula cycles reached');
+    return l.rFalse('Max value formula cycles reached');
   }
 
 }

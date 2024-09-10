@@ -31,7 +31,6 @@ export class IntellisenseV2 {
           .replace('/* [inject:AllFields] */', allFields)
           .replace('/* [inject:AllParameters] */', allParameters);
 
-        // console.error('test 2dm', final);
         return final;
 
         // TODO: probably update the entity-type info which was added in v14.07.05

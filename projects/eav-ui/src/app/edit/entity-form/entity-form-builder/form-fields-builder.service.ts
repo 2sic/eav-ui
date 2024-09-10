@@ -17,16 +17,12 @@ import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model'
 import { EntityFormStateService } from '../entity-form-state.service';
 import { AdamCacheService } from '../../shared/adam/adam-cache.service';
 import { toObservable } from '@angular/core/rxjs-interop';
-
-const logSpecs = {
-  enabled: false,
-  name: 'FormFieldsBuilderService',
-};
+import { classLog } from '../../../shared/logging';
 
 @Injectable()
 export class FormFieldsBuilderService extends ServiceBase {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({FormFieldsBuilderService}, null, true);
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private adamCacheService: AdamCacheService,

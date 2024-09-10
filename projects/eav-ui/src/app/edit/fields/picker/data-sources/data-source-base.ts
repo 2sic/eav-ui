@@ -69,7 +69,7 @@ export abstract class DataSourceBase extends ServiceBase {
     const l = this.log.fn('addToRefresh', { additionalGuids });
     const before = this.guidsToRefresh();
     const merged = [...before, ...additionalGuids].filter(RxHelpers.distinct);
-    this.log.values({ before, additionalGuids, merged });
+    l.values({ before, additionalGuids, merged });
     this.guidsToRefresh.set(merged);
     l.end();
   }

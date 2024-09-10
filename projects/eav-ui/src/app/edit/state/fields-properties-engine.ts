@@ -67,7 +67,7 @@ export class FieldsPropsEngine {
   ): this {
     this.log.rename(`${this.log.name}[${entityGuid.substring(0, 8)}]`);
     this.log.fn('init', { entityGuid, item, contentType, reader, forceDebug });
-    if (forceDebug !== null) this.log.enabled = forceDebug;
+    if (forceDebug !== null) this.log.forceEnable(forceDebug);
 
     this.item = item;
     this.languages = reader();

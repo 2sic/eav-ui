@@ -20,13 +20,18 @@ import { FnLogger } from './fn/fn-logger.interface';
  * @param specs optional object containing further specs. If provided, can be used in `log.fnIf()` calls 
  * @returns 
  */
-export function classLog<TSpecs extends unknown = any>(owner: Record<string, unknown> | string, specs?: TSpecs, enabled: boolean = false): EavLogger<TSpecs> {
+export function classLog<TSpecs extends Record<string, unknown> = any>(
+  owner: Record<string, unknown> | string,
+  specs?: TSpecs,
+  enabled: boolean = false
+): EavLogger<TSpecs> {
   // Pick the first key as the name of the class
   const name = (() => {
     if (!owner) return 'unknown';
     if (typeof owner === 'string') return owner;
     return (owner ? Object.keys(owner)[0] : null) ?? 'unknown';
   })();
+  
   const logSpecs = {
     enabled,
     name,
