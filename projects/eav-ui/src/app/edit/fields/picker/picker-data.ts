@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Injectable, Signal, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { DataAdapterBase } from './adapters/data-adapter-base';
-import { computedObj } from '../../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
 
 /**
@@ -25,6 +25,8 @@ export class PickerData {
   
   //#endregion
 
+  //#region Adapters
+
   /**
    * The data for the list / options to show.
    * Populated at Setup.
@@ -37,21 +39,35 @@ export class PickerData {
   */
   public state: StateAdapter;
 
-  /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
-  public pickerOptions = computedObj('pickerOptions', () => this.source?.optionsOrHints() ?? []);
-
-  /** Temp info if it was already initialized, can probably be removed once we have the PickerDataFactory complete */
-  public get isInitialized(): boolean {
-    return !!this.source && !!this.state;
-  }
+  //#endregion
 
   public closeWatcherAttachedWIP = false;
 
+  //#region Possible Options to provide
+
+  #sourceReady = signalObj('sourceIsReady', false);
+
+  overrideOptions = signalObj<PickerItem[]>('overrideOptions', null);
+
+  /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
+  public pickerOptions = computedObj('pickerOptions', () => {
+    const override = this.overrideOptions();
+    if (override) return override;
+    const ready = this.#sourceReady();
+    return (ready ? this.source.optionsOrHints() : null) ?? [];
+  });
+
+  //#endregion
+
+  //#region Selected Data
+
   /** Signal containing the currently selected items */
-  public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.source.optionsOrHints()));
+  public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.pickerOptions()));
 
   /** Signal containing the first selected item */
   public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
+
+  //#endregion
 
   /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
   public features = computedObj('features', () => {
@@ -66,7 +82,7 @@ export class PickerData {
     source.init(name);
     this.state = state;
     this.source = source;
-    this.pickerOptions = source.optionsOrHints;
+    this.#sourceReady.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.

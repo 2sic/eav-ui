@@ -17,7 +17,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 
 const logSpecs = {
   all: false,
-  getFieldsToProcess: false,
+  getFieldsToProcess: true,
   ngOnInit: false,
 }
 
@@ -39,7 +39,7 @@ const logSpecs = {
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
-  log = classLog({EntityFormBuilderComponent}, logSpecs);
+  log = classLog({EntityFormBuilderComponent}, logSpecs, true);
 
   @Input() entityGuid: string;
 

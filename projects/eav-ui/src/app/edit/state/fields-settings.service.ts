@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavContentType, EavItem } from '../shared/models/eav';
@@ -37,7 +37,18 @@ export class FieldsSettingsService {
 
   log = classLog({FieldsSettingsService}, logSpecs);
 
-  constructor() { }
+  constructor() {
+    // Transfer changes to the props state to the public property
+    effect(
+      () => {
+        if (!this.#startSync())
+          return;
+        const update = this.#allProps();
+        this.allProps.set(update);
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   //#region injected services, constructor, clean-up
 
@@ -64,7 +75,9 @@ export class FieldsSettingsService {
    * Field properties of all fields.
    * It is updated when every round of change-cycles are complete and stable.
    */
-  public allProps: Signal<Record<string, FieldProps>>;
+  public allProps /*: Signal<Record<string, FieldProps>> */ = signalObj<Record<string, FieldProps>>('allProps', {});
+  #startSync = signal(false);
+  #allProps: Signal<Record<string, FieldProps>>; // = signal<Record<string, FieldProps>>({});
 
   /** Signal to force a refresh. */
   #forceRefresh = signalObj('forceRefresh', 0);
@@ -99,6 +112,8 @@ export class FieldsSettingsService {
 
     const item = this.#itemSvc.get(entityGuid);
     this.#item.set(item);
+    this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid);
+
     // Remember content-type, as it won't change and we don't need to listen to a signal
     const ct = this.#contentType();
     const debugOnlyCt = this.log.specs.type;
@@ -117,7 +132,8 @@ export class FieldsSettingsService {
 
     this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#fieldValues, forceDebug);
 
-    // Protect against infinite loops
+    // properties for the computation - set on an object, so we can do the call in a function
+    // and change what we'll do with it.
     const deps: Deps = {
       idMsg: `entityGuid: ${entityGuid}; contentTypeId: ${ct.Id};`,
       cycle: 0,
@@ -129,6 +145,7 @@ export class FieldsSettingsService {
       prevFieldProps: {} as Record<string, FieldProps>,
     } satisfies Deps;
     
+    // Protect against infinite loops
     setInterval(() => {
       if (deps.cycle > maxCyclesPerTime) {
         this.log.a(`restarting max cycles from ${deps.cycle}; ${deps.idMsg}`);
@@ -137,61 +154,13 @@ export class FieldsSettingsService {
       }
     }, maxCyclesMs);
 
-    // let prevFieldProps: Record<string, FieldProps> = {};
-
     // let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
-    this.allProps = computedObj('allFieldProps', () => this.#regenerateProps(deps));
-
-    // this.allProps = computedObj('allFieldProps', () => {
-    //   if (deps.analyzer)
-    //     console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
-
-    //   const l = this.log.fn('fieldsProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
-    //   // If disabled, for any reason, return the previous value
-    //   // The #disabled is a safeguard as data will be missing when this is being cleaned up.
-    //   // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
-    //   if (this.#disabled() || deps.slotIsEmpty())
-    //     return l.r(deps.prevFieldProps, 'disabled or slotIsEmpty');
-
-    //   // Listen to ForceRefresh. This is triggered by a) promise-completed messages and b) v1 formulas
-    //   this.#forceRefresh();
-
-    //   // If we have reached the max cycles, we should stop
-    //   if (deps.cycle++ > maxCyclesPerTime) {
-    //     const msg = `${maxCyclesWarning}; cycle: ${deps.cycle}; ${deps.idMsg};`;
-    //     console.warn(msg);
-    //     deps.watchRestart(); // to ensure it can start again in a second, access this before we exit.
-    //     return l.r(deps.prevFieldProps, msg);
-    //   }
-
-    //   const latestFieldProps = this.#fieldsPropsUpdate.hasChanges()
-    //     ? this.#fieldsPropsUpdate.mergeMixins(deps.prevFieldProps)
-    //     : deps.prevFieldProps;
-      
-    //   // Note that this will access a lot of source signals
-    //   // whose dependencies will be incorporated into this calculation
-    //   const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
-    //   deps.prevFieldProps = props;
-          
-    //   // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
-    //   // TODO: ATM unused #settingChangeBroadcast
-    //   // if (Object.keys(valueChanges).length > 0)
-    //   //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
-
-    //   return l.rSilent(props, 'normal update');
-    //   // const propsDiff = difference(props, prevFieldProps);
-    //   // if (Object.keys(propsDiff).length > 0) {
-    //   //   l.a('Fields Props Diff', propsDiff);
-    //   //   return l.r(props, `props: normal update`);
-    //   // } else {
-    //   //   return l.rSilent(prevFieldProps, 'props: no changes');
-    //   // }
-    // });
+    this.#allProps = computedObj('allFieldProps', () => this.#regenerateProps(deps));
 
     if (activateAnalyzer)
-      deps.analyzer = new ComputedAnalyzer(this.allProps);
+      deps.analyzer = new ComputedAnalyzer(this.#allProps);
 
-    this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.allProps);
+    this.#startSync.set(true);
   }
 
   #regenerateProps(deps: Deps): Record<string, FieldProps> {
@@ -279,7 +248,7 @@ export class FieldsSettingsService {
    * Note that this change won't fire the formulas - which may not be correct.
    */
   updateSetting(fieldName: string, update: Partial<FieldSettings>, source: string): void {
-    this.#fieldsPropsUpdate.updateSetting(fieldName, update, source);
+    this.#fieldsPropsUpdate.updateSetting(fieldName, update, source, this.allProps);
     
     // Retrigger formulas if the queue was empty (otherwise it was already retriggered and will run soon)
     // Put a very small delay into processing the queue, since startup can send single updates for many fields one at a time.

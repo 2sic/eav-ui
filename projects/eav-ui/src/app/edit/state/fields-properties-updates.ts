@@ -11,7 +11,7 @@ import { classLog } from '../../shared/logging';
 export class FieldsPropertiesUpdates {
   log: EavLogger;
 
-  constructor(private entityGuid: string, private fieldsProps: Signal<Record<string, FieldProps>>) {
+  constructor(private entityGuid: string) {
     this.log = classLog({FieldsPropertiesUpdates}).extendName(`[${entityGuid.substring(0, 8)}]`);
   }
 
@@ -25,11 +25,11 @@ export class FieldsPropertiesUpdates {
    * Modify a setting, ATM just to set collapsed / dialog-open states.
    * Note that this change won't fire the formulas - which may not be correct.
    */
-  updateSetting(fieldName: string, update: Partial<FieldSettings>, source: string): void {
+  updateSetting(fieldName: string, update: Partial<FieldSettings>, source: string, fieldsProps: Signal<Record<string, FieldProps>>): void {
     const queueWasEmpty = Object.keys(this.fieldPropsMixins).length === 0;
     const l = this.log.fn('updateSetting', { source, fieldName, update, queueWasEmpty });
     // Test if the update is a change, or if it's the same as the current value
-    const before = this.fieldsProps()[fieldName].settings;
+    const before = fieldsProps()[fieldName].settings;
     const after = { ...before, ...update };
     if (isEqual(before, after))
       return l.end(`no change; entityGuid: ${this.entityGuid}; fieldName: ${fieldName}`);

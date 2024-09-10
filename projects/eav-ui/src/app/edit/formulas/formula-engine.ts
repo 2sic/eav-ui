@@ -210,7 +210,7 @@ export class FormulaEngine {
         // Show more debug in case of entity-pickers
         untracked(() => {
           if (formula.isValue) {
-            console.log('value', { value: cycle.values[formula.fieldName], picker: 0, constFieldPart});
+            console.log('value', { value: cycle.values[formula.fieldName], picker: constFieldPart.pickerData().pickerOptions(), constFieldPart});
           }
         });
         continue;
