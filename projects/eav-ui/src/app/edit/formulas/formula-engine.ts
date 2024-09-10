@@ -47,9 +47,10 @@ function logDetailsFor(field: string) {
  */
 @Injectable()
 export class FormulaEngine {
-  private features = inject(FeaturesService).getAll();
-
   log = classLog({ FormulaEngine }, logSpecs);
+  
+  #features = inject(FeaturesService).getAll();
+
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -207,8 +208,10 @@ export class FormulaEngine {
     for (const formula of formulas) {
       if (formula.disabled) {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
-        if (formula.target === FormulaTargets.Value)
+        // Show more debug in case of entity-pickers
+        if (formula.target === FormulaTargets.Value) {
           console.log('value', { value: cycle.values[formula.fieldName] });
+        }
         continue;
       }
 
@@ -278,7 +281,7 @@ export class FormulaEngine {
       itemService: this.itemService,
       formConfig: this.formConfig,
       fieldsSettingsSvc: this.#settingsSvc,
-      features: this.features,
+      features: this.#features,
     } satisfies FormulaExecutionSpecs;
   }
 

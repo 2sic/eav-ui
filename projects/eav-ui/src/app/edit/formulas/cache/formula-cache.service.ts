@@ -1,11 +1,10 @@
-import { Injectable, signal, untracked } from '@angular/core';
+import { Injectable, untracked } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types';
 import { FormulaTarget } from '../targets/formula-targets';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaResultCacheItem } from './formula-cache.model';
-import { named } from '../../../shared/signals/signal.utilities';
-import isEqual from 'lodash-es/isEqual';
+import { signalObj } from '../../../shared/signals/signal.utilities';
 import { FormulaCacheBuilder } from './formula-cache.builder';
 import { transient } from '../../../core';
 import { classLog } from '../../../shared/logging';
@@ -17,10 +16,10 @@ import { classLog } from '../../../shared/logging';
 export class FormulaCacheService {
 
   /** All the formulas with various additional info to enable execution and editing */
-  public formulas = named('formulas', signal<FormulaCacheItem[]>([], { equal: isEqual }));
+  public formulas = signalObj<FormulaCacheItem[]>('formulas', []);
 
   /** All the formula results */
-  #results = named('formula-results', signal<FormulaResultCacheItem[]>([], { equal: isEqual }));
+  #results = signalObj<FormulaResultCacheItem[]>('formula-results', []);
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 

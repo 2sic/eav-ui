@@ -8,7 +8,7 @@ import { FormulaEngine } from '../formulas/formula-engine';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
 import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 import { FormConfigService } from '../form/form-config.service';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { FormsStateService } from '../form/forms-state.service';
@@ -19,8 +19,7 @@ import { transient } from '../../core/transient';
 import { FieldsSettingsConstantsService } from './fields-settings-constants.service';
 import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
-import isEqual from 'lodash-es/isEqual';
-import { named } from '../../shared/signals/signal.utilities';
+import { computedObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
 
 /**
@@ -143,9 +142,10 @@ export class FieldsPropsEngine {
   /**
    * Prepare / build FieldLogicTools for use in all the formulas / field settings updates
    */
-  #getPreparedParts(readerSignalToTriggerUpdate: Signal<EntityReader>, contentType: EavContentType, slotIsEmpty: Signal<boolean>) {
+  #getPreparedParts(readerSignalToTriggerUpdate: Signal<EntityReader>, contentType: EavContentType, slotIsEmpty: Signal<boolean>
+  ): Signal<FieldSettingsUpdateHelperFactory> {
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
-    const prepared = named('prepared-parts', computed(() => {
+    const prepared = computedObj('prepared-parts', () => {
       const reader = readerSignalToTriggerUpdate();
       const languages = reader;
       const isDebug = this.#globalConfigService.isDebug();
@@ -167,7 +167,7 @@ export class FieldsPropsEngine {
           slotIsEmpty,
         );
         return updHelperFactory;
-    }, { equal: isEqual }));
+    });
     return prepared;
   }
 

@@ -13,7 +13,7 @@ import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { FieldsPropertiesUpdates } from './fields-properties-updates';
 import { FieldsSignalsHelper } from './fields-signals.helper';
-import { computedObj, named } from '../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { classLog } from '../../shared/logging';
 
@@ -66,10 +66,10 @@ export class FieldsSettingsService {
   public allProps: Signal<Record<string, FieldProps>>;
 
   /** Signal to force a refresh. */
-  #forceRefresh = named('forceRefresh', signal(0));
+  #forceRefresh = signalObj('forceRefresh', 0);
 
   /** Signal to disable everything. Mainly on clean-up, as the computed will still run when data is removed from cache */
-  #disabled = named('disabled', signal(false));
+  #disabled = signalObj('disabled', false);
 
   #fieldsPropsUpdate: FieldsPropertiesUpdates;
 

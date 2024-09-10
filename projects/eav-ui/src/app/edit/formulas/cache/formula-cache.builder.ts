@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
@@ -112,6 +112,7 @@ export class FormulaCacheBuilder extends ServiceBase {
             sourceCodeGuid: formulaItem.Guid,
             sourceCodeId: formulaItem.Id,
             target,
+            inputType,
             ...this.#inputTypeSpecsForCacheItem(target, inputType),
             version: FormulaSourceCodeHelper.findFormulaVersion(sourceCode),
             targetEntity: sharedParts.targetEntity, // new v14.07.05
@@ -131,10 +132,10 @@ export class FormulaCacheBuilder extends ServiceBase {
     return formulaCache;
   }
 
-  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs) {
+  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'disabled' | 'disabledReason'> {
     return inputType.isNewPicker && [FormulaDefaultTargets.Value, FormulaNewPickerTargets.Options].includes(target)
-      ? { inputType, disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
-      : { inputType, disabled: false, disabledReason: '' };
+      ? { disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
+      : { disabled: false, disabledReason: '' };
   }
 
 
@@ -279,6 +280,7 @@ export class FormulaCacheBuilder extends ServiceBase {
       sourceCodeGuid: value?.sourceCodeGuid,
       sourceCodeId: value?.sourceCodeId,
       version: FormulaSourceCodeHelper.findFormulaVersion(formula),
+      inputType,
       ...this.#inputTypeSpecsForCacheItem(id.target, inputType),
       targetEntity: value?.targetEntity ?? shared.targetEntity,
       user: value?.user ?? shared.user,

@@ -1,12 +1,11 @@
-import { computed, effect, Injectable, signal, Signal } from '@angular/core';
+import { effect, Injectable, Signal } from '@angular/core';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { EntityReader } from '../shared/helpers';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldValue } from '../../../../../edit-types';
 import { ItemService } from './item.service';
-import isEqual from 'lodash-es/isEqual';
 import { difference } from '../../shared/helpers/difference';
-import { named } from '../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
 
 @Injectable()
@@ -33,11 +32,11 @@ export class FieldsSignalsHelper {
   }
 
   #reader: Signal<EntityReader>;
-  #itemGuid = signal<string>(null);
+  #itemGuid = signalObj<string>('itemGuid', null);
 
   init(itemGuid: string, reader: Signal<EntityReader>): this {
     this.#itemGuid.set(itemGuid);
-    this.#fieldValueSigCache = new ComputedCacheHelper(itemGuid, true);
+    this.#fieldValueSigCache = new ComputedCacheHelper(itemGuid);
     this.#reader = reader;
     const attributes = this.itemSvc.itemAttributesSignal(itemGuid);
     if (attributes == null)
@@ -47,7 +46,7 @@ export class FieldsSignalsHelper {
     return this;
   }
 
-  #attributesLazy = signal<Signal<EavEntityAttributes>>(null);
+  #attributesLazy = signalObj<Signal<EavEntityAttributes>>('attributesLazy', null);
 
   get values(): Signal<Record<string, FieldValue>> {
     const lGet = this.log.fn('get-values', { itemGuid: this.#itemGuid });
@@ -61,7 +60,7 @@ export class FieldsSignalsHelper {
   #values: Signal<Record<string, FieldValue>>;
 
   #createValuesSignal() {
-    const sig = named(`${this.#itemGuid().substring(0, 8)}-ALL`, computed(() => {
+    const sig = computedObj(`${this.#itemGuid().substring(0, 8)}-ALL`, () => {
       const l = this.log.fn('values');
 
       // Track dependencies early
@@ -77,7 +76,7 @@ export class FieldsSignalsHelper {
 
       const values = reader.currentValues(attributes);
       return values
-    }, { equal: isEqual }));
+    });
     return sig;
   }
 
