@@ -23,9 +23,10 @@ import { classLog } from '../../../shared/logging';
 export class FormFieldsBuilderService extends ServiceBase {
 
   log = classLog({FormFieldsBuilderService}, null, true);
+
   constructor(
-    private fieldsSettingsService: FieldsSettingsService,
-    private adamCacheService: AdamCacheService,
+    private fieldsSettingsSvc: FieldsSettingsService,
+    private adamCacheSvc: AdamCacheService,
     private formBuilder: UntypedFormBuilder,
     private entityFormConfigSvc: EntityFormStateService,
     private injector: Injector,
@@ -36,7 +37,7 @@ export class FormFieldsBuilderService extends ServiceBase {
   public start(entityGuid: string, form: UntypedFormGroup) {
     const l = this.log.fn('start');
 
-    const fieldProps = this.fieldsSettingsService.allProps;
+    const fieldProps = this.fieldsSettingsSvc.allProps;
     const fieldProps$ = toObservable(fieldProps, { injector: this.injector });
 
     // 1. Prepare: Take field props and enrich initial values and input types
@@ -61,7 +62,6 @@ export class FormFieldsBuilderService extends ServiceBase {
 
     // Create all the controls in the form right at the beginning
     fieldsToProcess.pipe(
-      filter(fields => fields != null && fields.length > 0),
       take(1)
     ).subscribe(allFields => {
       this.#createFields(entityGuid, form, allFields);
@@ -94,13 +94,13 @@ export class FormFieldsBuilderService extends ServiceBase {
       // ...except for directly below
       if (inputType === InputTypeCatalog.StringWysiwyg && initialValue) {
         const logic = FieldLogicManager.singleton().get(InputTypeCatalog.StringWysiwyg);
-        const adamItems = this.adamCacheService.getAdamSnapshot(entityGuid, fieldName);
+        const adamItems = this.adamCacheSvc.getAdamSnapshot(entityGuid, fieldName);
         fields.value = initialValue = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(initialValue, adamItems);
       }
 
       // Build control in the Angular form with validators
       const disabled = fieldProps.settings.uiDisabled;
-      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsService.settings[fieldName], this.fieldsSettingsService);
+      const valSpecs = new ValidationHelperSpecs(fieldName, inputType, this.fieldsSettingsSvc.settings[fieldName], this.fieldsSettingsSvc);
       const validators = ValidationHelpers.getValidators(valSpecs, inputType);
       const newControl = this.formBuilder.control({ disabled, value: initialValue }, validators);
       // TODO: build all fields at once. That should be faster

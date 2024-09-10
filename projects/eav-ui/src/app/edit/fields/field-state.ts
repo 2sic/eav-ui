@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
@@ -53,7 +52,7 @@ export class FieldState<T extends FieldValue> {
   get pickerData(): PickerData {
     if (this.#pickerData)
       return this.#pickerData;
-    throw new Error('PickerData was not initialized for this field');
+    throw new Error(`PickerData was not initialized for the field: ${this.name}`);
   }
   #pickerData: PickerData;
 }

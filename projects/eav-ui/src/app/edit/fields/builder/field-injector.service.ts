@@ -14,11 +14,11 @@ import { FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from '../picker/picker-data.factory';
 import { classLog, logFnIf } from '../../../shared/logging';
+import { InjectorBundle } from './injector-bundle.model';
 
 const logSpecs = {
   getInjectors: true,
-  fields: [] as string[],
-  // fields: ['Boolean'],
+  fields: [] as string[], // example: ['Boolean'],
 };
 
 /**
@@ -28,18 +28,16 @@ const logSpecs = {
 @Injectable()
 export class FieldInjectorService {
 
+  log = classLog({FieldInjectorService}, logSpecs);
+
   #injector = inject(Injector);
   #envInjector = inject(EnvironmentInjector);
   #fieldsSettingsService = inject(FieldsSettingsService);
-
   #entityForm = inject(EntityFormStateService);
-  #group = this.#entityForm.formGroup();
-
-  log = classLog({FieldInjectorService}, logSpecs);
 
   constructor() { }
 
-  public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs) {
+  public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs): InjectorBundle {
     const l = logFnIf(this, 'getInjectors');
     const fieldName = fieldConfig.fieldName;
 
@@ -54,7 +52,8 @@ export class FieldInjectorService {
     const basics = computedObj('basics', () => BasicControlSettings.fromSettings(settings()));
 
     // Control and Control Status
-    const control = this.#group.controls[fieldName];
+    const formGroup = this.#entityForm.formGroup();
+    const control = formGroup.controls[fieldName];
     let controlStatusChangeSignal: Signal<ControlStatus<FieldValue>>;
 
     // Create a signal to watch for value changes
@@ -100,7 +99,7 @@ export class FieldInjectorService {
     const fieldState = new FieldState(
       fieldName,
       fieldConfig,
-      this.#group,
+      formGroup,
       control,
       settings,
       basics,
