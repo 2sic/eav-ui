@@ -52,7 +52,7 @@ export class FieldInjectorService {
     const basics = computedObj('basics', () => BasicControlSettings.fromSettings(settings()));
 
     // Control and Control Status
-    const formGroup = this.#entityForm.formGroup();
+    const formGroup = this.#entityForm.formGroup;
     const control = formGroup.controls[fieldName];
     let controlStatusChangeSignal: Signal<ControlStatus<FieldValue>>;
 

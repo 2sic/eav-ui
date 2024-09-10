@@ -1,28 +1,25 @@
 import { AbstractControlPro } from './../../shared/validation/validation.helpers';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
+import { Component, Injector, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EntityFormComponent } from '../entity-form-component/entity-form.component';
-import { FieldValueHelpers } from '../../shared/helpers/field-value.helpers';
 import { EntityFormStateService } from '../entity-form-state.service';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
-import { BaseComponent } from '../../../shared/components/base.component';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
-import { FormConfigService } from '../../form/form-config.service';
-import { FormsStateService } from '../../form/forms-state.service';
-import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FormFieldsBuilderService } from './form-fields-builder.service';
 import { transient } from '../../../core';
-import { ItemService } from '../../state/item.service';
+import { FormFieldsSyncService } from './form-fields-sync.service';
+import { classLog } from '../../../shared/logging';
+import { EntityFormSyncService } from '../entity-form-sync.service';
+import { filter, map, Observable, take } from 'rxjs';
+import { FieldInitSpecs } from './field-init-specs.model';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EntityFormBuilderComponent',
-};
-
+  all: false,
+  getFieldsToProcess: false,
+  ngOnInit: false,
+}
 
 @Component({
   selector: 'app-edit-entity-form-builder',
@@ -40,81 +37,81 @@ const logSpecs = {
     EntityFormStateService, // used for sharing information about this entity form
   ],
 })
-export class EntityFormBuilderComponent extends BaseComponent implements OnInit, OnDestroy {
+export class EntityFormBuilderComponent implements OnInit, OnDestroy {
+
+  log = classLog({EntityFormBuilderComponent}, logSpecs);
+
   @Input() entityGuid: string;
 
-  form = new UntypedFormGroup({});
-
-  /** Inject the form state service, but automatically add the form for later use */
-  #formStateService = inject(EntityFormStateService).setup(this.form);
+  /** Inject and start the form state service */
+  #formStateSvc = inject(EntityFormStateService);
+  form = this.#formStateSvc.formGroup;
 
   #formulaDesignerService = inject(FormulaDesignerService);
-  #formFieldsBuilderService = transient(FormFieldsBuilderService);
 
-  log = new EavLogger(logSpecs);
+  #formFieldsBuilderService = transient(FormFieldsBuilderService);
+  #fieldsSyncSvc = transient(FormFieldsSyncService);
+  #formSyncSvc = transient(EntityFormSyncService);
+
   constructor(
-    private fieldsSettingsService: FieldsSettingsService,
-    private fieldsTranslateService: FieldsTranslateService,
-    private formConfig: FormConfigService,
-    private formsStateService: FormsStateService,
-    private itemService: ItemService,
+    private fieldsSettingsSvc: FieldsSettingsService,
+    private fieldsTranslateSvc: FieldsTranslateService,
+    private injector: Injector,
   ) {
-    super();
   }
 
   ngOnInit() {
-    const l = this.log.fn('ngOnInit');
-    this.fieldsSettingsService.init(this.entityGuid);
-    this.#formulaDesignerService.itemSettingsServices[this.entityGuid] = this.fieldsSettingsService;
-    this.fieldsTranslateService.init(this.entityGuid);
+    const l = this.log.fnIf('ngOnInit');
+    this.fieldsSettingsSvc.init(this.entityGuid);
+    this.#formulaDesignerService.itemSettingsServices[this.entityGuid] = this.fieldsSettingsSvc;
+    this.fieldsTranslateSvc.init(this.entityGuid);
 
-    const form = this.form;
+    const ftp$ = this.getFieldsToProcess$();
 
-    this.#formFieldsBuilderService.start(this.entityGuid, form);
+    // Create all the controls in the form right at the beginning
+    ftp$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(this.entityGuid, this.form, allFields));
+
+    this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, ftp$);
     
-    const formValid$ = form.valueChanges.pipe(
-      map(() => !form.invalid),
-      startWith(!form.invalid),
-      mapUntilChanged(m => m),
-    );
-
-    const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
-    this.subscriptions.add(
-      combineLatest([formValid$, itemHeader$]).pipe(
-        mapUntilChanged(([formValid, itemHeader]) => itemHeader.IsEmpty || formValid),
-      ).subscribe(isValid => {
-        this.formsStateService.setFormValid(this.entityGuid, isValid);
-      })
-    );
-
-    this.subscriptions.add(
-      form.valueChanges.pipe(
-        map(() => form.dirty),
-        startWith(form.dirty),
-        // distinctUntilChanged(), // cant have distinctUntilChanged because dirty state is not reset on form save
-      ).subscribe(isDirty => {
-        this.formsStateService.setFormDirty(this.entityGuid, isDirty);
-      })
-    );
-
-    this.subscriptions.add(
-      form.valueChanges.pipe(
-        map(() => form.getRawValue() as ItemValuesOfLanguage),
-        distinctUntilChanged((previous, current) => FieldValueHelpers.getItemValuesChanges(previous, current) == null),
-      ).subscribe((formValues) => {
-        const language = this.formConfig.language();
-        this.itemService.updater.updateItemAttributesValues(this.entityGuid, formValues, language);
-      })
-    );
+    // Sync state to parent: dirty, isValid, value changes
+    this.#formSyncSvc.setupSync(this.entityGuid);
 
     l.end();
   }
 
   ngOnDestroy() {
-    this.fieldsSettingsService.cleanUp();
+    this.fieldsSettingsSvc.disableForCleanUp();
     Object.values(this.form.controls).forEach((control: AbstractControlPro) => {
       control._warning$.complete();
     });
-    super.ngOnDestroy();
+  }
+
+  getFieldsToProcess$(): Observable<FieldInitSpecs[]> {
+    const l = this.log.fnIf('getFieldsToProcess');
+    const form = this.form;
+
+    const fieldProps = this.fieldsSettingsSvc.allProps;
+    const fieldProps$ = toObservable(fieldProps, { injector: this.injector });
+
+    // 1. Prepare: Take field props and enrich initial values and input types
+    const fieldsToProcess: Observable<FieldInitSpecs[]> = fieldProps$.pipe(
+      filter(fields => fields != null && Object.keys(fields).length > 0),
+      map(allFields => {
+        const fields: FieldInitSpecs[] = Object.entries(allFields).map(([fieldName, fieldProps]) => {
+          const hasControl = form.controls.hasOwnProperty(fieldName);
+          const control = hasControl ? form.controls[fieldName] : null;
+          return {
+            name: fieldName,
+            props: fieldProps,
+            inputType: fieldProps.constants.inputTypeSpecs.inputType,
+            value: fieldProps.buildValue,
+            hasControl,
+            control,
+          } satisfies FieldInitSpecs;
+        });
+        return fields;
+      }),
+    );
+    return l.rSilent(fieldsToProcess);
   }
 }

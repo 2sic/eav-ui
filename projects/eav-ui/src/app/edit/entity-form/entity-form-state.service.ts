@@ -1,41 +1,26 @@
-import { Injectable, signal } from '@angular/core';
-import { EavLogger } from '../../shared/logging/eav-logger';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-
-const logSpecs = {
-  enabled: false,
-  name: 'EntityFormStateService',
-  specs: {
-    all: false,
-    setup: false,
-  }
-};
+import { classLog } from '../../shared/logging';
+import { ServiceBase } from '../../shared/services/service-base';
 
 /**
- * Experimental: provide a service to hold the form group and anything specific to a form.
+ * A Service to hold the form group and anything specific to a form.
  * 
- * This is specific to a single entity.
+ * Important: This is specific to a single entity.
  */
 @Injectable()
-export class EntityFormStateService {
+export class EntityFormStateService extends ServiceBase implements OnDestroy {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({EntityFormStateService});
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
+  /** Signal to determine that the form group has been initialized */
   controlsCreated = signal(false);
 
-  setup(formGroup: UntypedFormGroup) {
-    this.log.fnIf('setup', { formGroup });
-    this.#formGroup = formGroup;
-    return this;
-  }
+  /** The Form Group */
+  public readonly formGroup = new UntypedFormGroup({});
 
-  public formGroup() {
-    if (!this.#formGroup) throw new Error('Form Group not set');
-    return this.#formGroup;
-  }
-
-  /** The Form Group, must be added by the FormBuilderComponent */
-  #formGroup: UntypedFormGroup;
 }

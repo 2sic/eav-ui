@@ -52,7 +52,7 @@ export class FieldsSettingsService {
 
   constructor() { }
 
-  cleanUp(): void {
+  disableForCleanUp(): void {
     this.log.fn('cleanUp');
     this.#disabled.set(true);
   }

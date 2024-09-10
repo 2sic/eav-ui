@@ -32,7 +32,7 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   #snackBar = inject(MatSnackBar);
   protected injector = inject(Injector);
   protected fieldState = inject(FieldState);
-  protected group = inject(EntityFormStateService).formGroup();
+  protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
   constructor(logSpecs: EavLogger) {

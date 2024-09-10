@@ -1,8 +1,16 @@
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 /** Base class for services, withOUT logging */
-export class ServiceBase {
+@Injectable()
+export abstract class ServiceBase implements OnDestroy {
+
   protected subscriptions = new Subscription();
+
+  // todo use this instead
+  ngOnDestroy(): void {
+    this.destroy();
+  }
 
   destroy() {
     this.subscriptions.unsubscribe();
