@@ -1,9 +1,9 @@
-import { LoggerFn } from './logger-fn.interface';
+import { FnLogger } from './fn-logger.interface';
 
 /**
  * No-Operation logger.
  */
-export class LoggerFnNoop implements LoggerFn {
+export class FnLoggerNoOp implements FnLogger {
   values(data: Record<string, unknown>, intro?: string): void { }
   a(message: string, data?: Record<string, unknown>): void { }
   r<TResult>(result: TResult, message?: string, showData?: boolean): TResult {

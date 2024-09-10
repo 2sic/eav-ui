@@ -1,11 +1,17 @@
 import { logMain } from '../helpers/console-log-angular.helper';
-import { LoggerFnReal } from './logger-fn-real';
-import { LoggerFn } from './logger-fn.interface';
-import { LoggerFnNoop } from './logger-fn-noop';
+import { FnLoggerReal } from './fn/fn-logger-real';
+import { FnLogger } from './fn/fn-logger.interface';
+import { FnLoggerNoOp } from './fn/fn-logger-noop';
 import { LogManager } from './log-manager';
 import { LogSpecs } from './log-specs';
 import { RxTapDebug } from './rx-debug-dbg';
 
+/**
+ * TODO:
+ * - STOP using this directly, but instead use the classLog function
+ * - Then rename to ClassLogger
+ * - ...and move to sub-folder
+ */
 export class EavLogger<TSpecs extends unknown = any> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(7);
@@ -24,10 +30,8 @@ export class EavLogger<TSpecs extends unknown = any> {
           name: name,
           enabled: enabled ?? false,
           enableChildren: enableChildren,
+          specs: {} as TSpecs,
         } satisfies LogSpecs<TSpecs>;
-
-    // if (name == 'FormulaEngine')
-    //   debugger;
 
     const mainSpecs = LogManager.getSpecs(initialSpecs);
 
@@ -87,18 +91,18 @@ export class EavLogger<TSpecs extends unknown = any> {
    * @param message 
    * @returns 
    */
-  fn(name: string, data?: Record<string, unknown>, message?: string): LoggerFn {
-    return new LoggerFnReal(this as EavLogger, name, message, data);
+  fn(name: string, data?: Record<string, unknown>, message?: string): FnLogger {
+    return new FnLoggerReal(this as EavLogger, name, message, data);
   }
 
   /**
    * Create a logger function that will only log if the condition is true
    */
-  fnCond(condition: boolean, name: string, data?: Record<string, unknown>, message?: string): LoggerFn {
+  fnCond(condition: boolean, name: string, data?: Record<string, unknown>, message?: string): FnLogger {
     // create real logger if condition is true, or if this logger is disabled anyhow
     return condition || !this.enabled
       ? this.fn(name, data, message)
-      : new LoggerFnNoop();
+      : new FnLoggerNoOp();
   }
 
   /**
@@ -107,11 +111,11 @@ export class EavLogger<TSpecs extends unknown = any> {
    * 
    * TODO: @2pp - refactor all uses to just use the fnCond method?
    */
-  fnIf(key: BooleanKeys<TSpecs> & string, data?: Record<string, unknown>, message?: string): LoggerFn {
+  fnIf(key: BooleanKeys<TSpecs> & string, data?: Record<string, unknown>, message?: string): FnLogger {
     // create real logger if condition is true, or if this logger is disabled anyhow
     return !this.enabled || !!this.specs[key] || !!(this.specs as { all: boolean })['all']
       ? this.fn(key, data, message)
-      : new LoggerFnNoop();
+      : new FnLoggerNoOp();
   }
 }
 

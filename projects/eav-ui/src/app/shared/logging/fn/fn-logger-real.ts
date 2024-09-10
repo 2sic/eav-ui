@@ -1,8 +1,8 @@
-import { logMain } from '../helpers/console-log-angular.helper';
-import { EavLogger } from './eav-logger';
-import { LoggerFn } from './logger-fn.interface';
+import { logMain } from '../../helpers/console-log-angular.helper';
+import { EavLogger } from '../eav-logger';
+import { FnLogger } from './fn-logger.interface';
 
-export class LoggerFnReal implements LoggerFn {
+export class FnLoggerReal implements FnLogger {
   constructor(private parent: EavLogger, private fnName: string, message?: string, data?: Record<string, unknown>) {
     this.parent.a(fnName + '() ' + (message ?? ''), data);
   }

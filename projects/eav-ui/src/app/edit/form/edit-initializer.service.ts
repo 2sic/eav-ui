@@ -247,7 +247,7 @@ export class EditInitializerService {
           const disableI18n = inputType?.DisableI18n;
           // const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', /* '*', */ BestValueModes.Strict);
           const noLanguageValue = new FieldReader(attributeValues, '*').currentOrDefault?.Value;
-          l.values({ disableI18n, noLanguageValue }, currentName);
+          l.a(currentName, { disableI18n, noLanguageValue });
           if (!disableI18n && noLanguageValue !== undefined) {
             // move * value to defaultLanguage
             const transactionItem = updater.removeItemAttributeDimension(item.Entity.Guid, ctAttribute.Name, '*', true);
@@ -274,7 +274,7 @@ export class EditInitializerService {
           const defaultLanguageValue = new FieldReader(attributeValues, language.primary).currentOrDefault?.Value;
 
           const valueIsEmpty = logic.isValueEmpty(defaultLanguageValue, isCreateMode);
-          l.values({ currentName, valueIsEmpty, defaultLanguageValue, isCreateMode }, currentName);
+          l.a(currentName, { currentName, valueIsEmpty, defaultLanguageValue, isCreateMode });
           if (valueIsEmpty) {
             const valUsed = updater.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, language.primary);
 

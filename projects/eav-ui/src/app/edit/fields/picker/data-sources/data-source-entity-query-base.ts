@@ -169,8 +169,6 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
           loading: false
         }));
         l.values({ before, additions: additions, merged: cache().data });
-        // const merged = [...new Map([...before.data, ...additions.data].map(item => [item.value, item])).values()];
-        // cache.set({ data: merged, loading: false });
       });
     l.end();
   }
