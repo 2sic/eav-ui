@@ -1,7 +1,7 @@
-import { FieldSettings } from 'projects/edit-types';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { FieldProps } from './fields-configs.model';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 
 const logSpecs = {
   enabled: false,

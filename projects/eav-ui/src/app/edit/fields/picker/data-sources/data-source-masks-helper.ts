@@ -4,7 +4,7 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { classLog } from '../../../../shared/logging/logging';
 
 // const logThis = false;
 

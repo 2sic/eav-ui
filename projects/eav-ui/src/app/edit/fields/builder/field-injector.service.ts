@@ -13,7 +13,7 @@ import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model'
 import { FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from '../picker/picker-data.factory';
-import { classLog, logFnIf } from '../../../shared/logging/logging';
+import { classLog, logFnIf } from '../../../shared/logging';
 
 const logSpecs = {
   getInjectors: true,

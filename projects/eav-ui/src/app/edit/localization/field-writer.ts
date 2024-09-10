@@ -1,4 +1,3 @@
-import { FieldValue } from 'projects/edit-types/src/FieldValue';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormLanguage } from '../form/form-languages.model';
 import { EavDimension } from '../shared/models/eav/eav-dimension';
@@ -8,6 +7,7 @@ import { EavField } from '../shared/models/eav/eav-values';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FieldReader } from './field-reader';
 import { DimensionReader } from './dimension-reader';
+import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 
 const logSpecs = {
   enabled: false,

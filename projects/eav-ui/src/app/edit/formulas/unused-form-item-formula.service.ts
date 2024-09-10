@@ -2,7 +2,7 @@ import { inject, Injectable, Signal } from "@angular/core";
 import { EntityReader } from "../shared/helpers";
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ItemService } from '../state/item.service';
-import { classLog } from '../../shared/logging/logging';
+import { classLog } from '../../shared/logging';
 
 /**
  * Contains methods for updating value changes from formulas to the global state.

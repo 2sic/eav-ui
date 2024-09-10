@@ -1,4 +1,3 @@
-import { FieldSettings } from 'projects/edit-types';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
@@ -8,6 +7,7 @@ import { FieldReader } from '../localization/field-reader';
 import { TranslationState, TranslationStateCore } from '../localization/translate-state.model';
 import { TranslationLinks } from '../localization/translation-link.constants';
 import { EavField, EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
+import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 
 const logSpecs = {
   enabled: true,

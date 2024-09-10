@@ -3,7 +3,6 @@ import { transient } from '../../../core';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { PickerData } from './picker-data';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldState } from '../field-state';
 import { DataAdapterString } from './adapters/data-adapter-string';
 import { DataAdapterQuery } from './adapters/data-adapter-query';
@@ -14,11 +13,7 @@ import { StateAdapterString } from './adapters/state-adapter-string';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerDataFactory',
-};
+import { classLog } from '../../../shared/logging';
 
 /**
  * Factory for creating PickerData instances.
@@ -27,7 +22,7 @@ const logSpecs = {
  */
 export class PickerDataFactory {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({PickerDataFactory});
 
   constructor(injector: Injector) {
     this.#injector = injector;
@@ -72,7 +67,7 @@ export class PickerDataFactory {
     const dataSourceType = fieldState.settings().DataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
 
-    pickerData.setup(logSpecs.name, state, source);
+    pickerData.setup(this.log.name, state, source);
     l.end('ok', { state, source });
   }
 
