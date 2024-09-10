@@ -103,7 +103,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     this.#value$.complete();
     this.#customEl?.parentNode.removeChild(this.#customEl);
     this.#customEl = null;
-    super.destroy();
+    super.ngOnDestroy();
   }
 
   #buildConnector() {

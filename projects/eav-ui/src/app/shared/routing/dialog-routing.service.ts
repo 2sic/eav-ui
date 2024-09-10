@@ -1,7 +1,7 @@
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith } from 'rxjs';
 import { EavLogger } from '../logging/eav-logger';
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ServiceBase } from '../services/service-base';
 
 const logSpecs = {
@@ -18,7 +18,7 @@ const logSpecs = {
  * 2. accessing the router and route - a very common task when you have dialogs
  */
 @Injectable()
-export class DialogRoutingService extends ServiceBase implements OnDestroy {
+export class DialogRoutingService extends ServiceBase {
 
   log = new EavLogger(logSpecs);
 
@@ -27,10 +27,6 @@ export class DialogRoutingService extends ServiceBase implements OnDestroy {
     public route: ActivatedRoute
   ) {
     super();
-  }
-
-  ngOnDestroy(): void {
-    super.destroy();
   }
 
   get snapshot() { return this.route.snapshot; }

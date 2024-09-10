@@ -4,7 +4,7 @@ import { DataSourceMoreFieldsHelper } from './data-source-more-fields-helper';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataWithLoading } from '../models/data-with-loading';
-import { Signal, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import { FieldState } from '../../field-state';
 import { ServiceBase } from '../../../../shared/services/service-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
@@ -12,6 +12,7 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 
+@Injectable()
 export abstract class DataSourceBase extends ServiceBase {
 
   /** Field State with settings etc. */
@@ -51,9 +52,9 @@ export abstract class DataSourceBase extends ServiceBase {
 
   public setup(): this { return this; }
 
-  destroy(): void {
+  ngOnDestroy(): void {
     this.getAll$.complete();
-    super.destroy();
+    super.ngOnDestroy();
   }
 
   protected fieldsHelper = new DataSourceMoreFieldsHelper();

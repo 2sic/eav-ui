@@ -23,7 +23,7 @@ const FieldUnwrap = /[\[\]]/ig;
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
 @Injectable()
-export class FieldMask extends ServiceBase /* for field-change subscription */ implements OnDestroy {
+export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
   #fieldState = inject(FieldState);
   #formConfig = inject(FormConfigService);
@@ -32,10 +32,6 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   constructor(private injector: Injector) {
     super();
     this.log.a('constructor');
-  }
-
-  ngOnDestroy() {
-    this.destroy();
   }
 
   /**

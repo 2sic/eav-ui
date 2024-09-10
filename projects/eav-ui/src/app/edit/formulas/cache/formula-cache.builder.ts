@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
@@ -12,7 +12,6 @@ import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaCacheItemConstants } from './formula-cache.model';
 import { FormulaResultRaw, FormulaIdentifier } from '../results/formula-results.models';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../form/form-config.service';
 import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
 import { ItemService } from '../../state/item.service';
@@ -23,17 +22,14 @@ import { Sxc } from '@2sic.com/2sxc-typings';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldsSettingsHelpers } from '../../state/field-settings.helper';
+import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'FormulaCacheBuilder',
-  specs: {
-    all: false,
-    buildFormulaCache: false,
-    updateFormulaFromEditor: false,
-    createPromisedParts: false,
-    buildItemFormulaCacheSharedParts: false,
-  }
+  all: false,
+  buildFormulaCache: false,
+  updateFormulaFromEditor: false,
+  createPromisedParts: false,
+  buildItemFormulaCacheSharedParts: false,
 };
 
 
@@ -41,8 +37,8 @@ const logSpecs = {
  * Service just to cache formulas for execution and use in the designer.
  */
 @Injectable()
-export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
-  log = new EavLogger(logSpecs);
+export class FormulaCacheBuilder extends ServiceBase {
+  log = classLog({FormulaCacheBuilder}, logSpecs);
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -55,11 +51,6 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     super();
   }
 
-  ngOnDestroy() {
-    // Destroy all observables which were used for promises and callback triggers
-    super.destroy();
-  }
-
   /**
    * Used for building the initial formula cache.
    * @returns
@@ -70,7 +61,7 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
     const language = this.formConfig.language();
     const reader = new EntityReader(language);
 
-    const fss = new FieldsSettingsHelpers(logSpecs.name);
+    const fss = new FieldsSettingsHelpers(this.log.name);
 
     for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.get(entityGuid);
@@ -78,7 +69,6 @@ export class FormulaCacheBuilder extends ServiceBase implements OnDestroy {
       const sharedParts = this.#buildItemFormulaCacheSharedParts(item, entityGuid);
 
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
-      const reader = new EntityReader(language);
       for (const attribute of contentType.Attributes) {
         // Get field settings
         const settings = fss.getDefaultSettings(reader.flattenAll<FieldSettings>(attribute.Metadata));

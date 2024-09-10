@@ -1,25 +1,21 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-/** Base class for services, withOUT logging */
+/**
+ * Base class for services - just to standardize use of subscriptions.
+ * Has @Injectable() just to allow it ot use the standard OnDestroy interface.
+ */
 @Injectable()
 export abstract class ServiceBase implements OnDestroy {
 
   protected subscriptions = new Subscription();
 
-  // todo use this instead
   ngOnDestroy(): void {
     this.destroy();
   }
 
+  // TODO: TRY TO GET RID OF THIS. AFAIK it's just used in the mask, which should switch over to signals.
   destroy() {
     this.subscriptions.unsubscribe();
   }
-
-  // Note: we can't do this, because angular compiler complains about wanting to implement OnDestroy
-  // and if we do that, it will want a decorator, which we can't have here.
-  // ngOnDestroy() {
-  //   this.destroy();
-  // }
-
 }

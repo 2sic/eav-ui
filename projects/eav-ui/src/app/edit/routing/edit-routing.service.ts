@@ -52,7 +52,7 @@ export class EditRoutingService extends ServiceBase implements OnDestroy {
 
   ngOnDestroy() {
     this.#childFormResult$.complete();
-    super.destroy();
+    super.ngOnDestroy();
   }
 
   init() {

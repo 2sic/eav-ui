@@ -1,7 +1,7 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { WritableSignal } from '@angular/core';
+import { Inject, Injectable, OnDestroy, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
@@ -15,6 +15,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
  * - entities
  * - queries
  */
+@Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   //#region Inject and blank constructor
@@ -34,10 +35,10 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     super(log);
   }
 
-  destroy(): void {
+  ngOnDestroy(): void {
     this.#typeOrParams$.complete();
     this.getAll$.complete();
-    super.destroy();
+    super.ngOnDestroy();
   }
 
 

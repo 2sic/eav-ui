@@ -61,7 +61,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
     this.pipelineModel$.complete();
     this.dataSources$.complete();
     this.putEntityCountOnConnections$.complete();
-    super.destroy();
+    super.ngOnDestroy();
   }
 
   init() {
