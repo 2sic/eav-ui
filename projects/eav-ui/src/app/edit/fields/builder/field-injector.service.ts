@@ -12,7 +12,7 @@ import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../..
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { PickerDataFactory } from '../picker/picker-data.factory';
+import { PickerDataSetup } from '../picker/picker-data-setup';
 import { classLog, logFnIf } from '../../../shared/logging';
 import { InjectorBundle } from './injector-bundle.model';
 import { AbstractControl } from '@angular/forms';
@@ -66,7 +66,7 @@ export class FieldStateInjectorFactory {
     // TODO: this is probably better solved using a toSignal(control.valueChanges)
     const uiValue: Signal<FieldValue> = computedObj('uiValue', () => controlStatusChangeSignal().value);
 
-    const pickerData = PickerDataFactory.createPickerData(inputType, this.#injector);
+    const pickerData = PickerDataSetup.createPickerData(inputType, this.#injector);
 
     const fieldState = new FieldState(
       name,

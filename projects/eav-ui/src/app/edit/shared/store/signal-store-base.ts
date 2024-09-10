@@ -1,8 +1,8 @@
-import { computed, Signal, signal } from '@angular/core';
+import { Signal } from '@angular/core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
-import isEqual from 'lodash-es/isEqual';
 import { LogSpecs } from '../../../shared/logging/log-specs';
+import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 
 const logThisUndefined = true;
 const nameOfThis = 'SignalStoreBase';
@@ -15,10 +15,10 @@ const nameOfThis = 'SignalStoreBase';
  */
 export class SignalStoreBase<TKey extends string | number, TValue> {
   /** Main Cache */
-  #cache = signal<Record<TKey, TValue>>({} as Record<TKey, TValue>);
+  #cache = signalObj<Record<TKey, TValue>>('cache', {} as Record<TKey, TValue>);
 
   /** Cached version of the list, with the latest object-values */
-  #list = computed(() => Object.values(this.#cache()) as TValue[]);
+  #list = computedObj('list', () => Object.values(this.#cache()) as TValue[]);
 
   /** Cache for the inheriting classes, but as read-only */
   protected get cache(): Signal<Record<TKey, TValue>> {
@@ -149,10 +149,7 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 
 
   getManySignal(ids: TKey[]): Signal<TValue[]> {
-    const sig = computed(
-      () => ids.map(id => this.get(id)).filter(item => item != null),
-      { equal: isEqual }
-    );
+    const sig = computedObj('getMany', () => ids.map(id => this.get(id)).filter(item => item != null));
     this.log.a('getManySignal()', { ids });
     return sig;
   }

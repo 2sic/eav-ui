@@ -1,5 +1,4 @@
-import { Component, computed, effect, inject, Injector, OnInit } from '@angular/core';
-import { map } from 'rxjs';
+import { Component, effect, inject, Injector, OnInit } from '@angular/core';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -7,8 +6,7 @@ import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { AdamConfig } from '../../../../../../../edit-types/src/AdamConfig';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { mapUntilChanged } from '../../../../shared/rxJs/mapUntilChanged';
+import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
 
 @Component({
   selector: InputTypeCatalog.HyperlinkLibrary,
@@ -51,18 +49,18 @@ export class HyperlinkLibraryComponent implements OnInit {
   }
 
   private attachAdamConfig() {
-    const adamConfig = computed(() => {
-      const settings = this.fieldState.settings();
+    const adamConfig = computedObj('adamConfig', () => {
+      const s = this.fieldState.settings();
       return {
-        allowAssetsInRoot: settings.AllowAssetsInRoot,
+        allowAssetsInRoot: s.AllowAssetsInRoot,
         autoLoad: true,
         enableSelect: false,
-        rootSubfolder: settings.Paths,
-        fileFilter: settings.FileFilter,
-        folderDepth: settings.FolderDepth || 0,
-        metadataContentTypes: settings.MetadataContentTypes,
+        rootSubfolder: s.Paths,
+        fileFilter: s.FileFilter,
+        folderDepth: s.FolderDepth || 0,
+        metadataContentTypes: s.MetadataContentTypes,
       } as AdamConfig;
-    }, SignalEquals.object);
+    });
 
     effect(() => {
       const config = adamConfig();

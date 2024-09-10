@@ -75,8 +75,8 @@ export class FieldsPropsEngine {
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
     this.#fieldLangConstants = this.#constantsService
-      .init(item, ct, reader)
-      .getUnchangingDataOfLanguage();
+      .init(item, ct, reader, fss)
+      .stableDataOfLanguage();
 
     this.#updateHelper = this.#getPreparedParts(reader, ct, slotIsEmpty);
 

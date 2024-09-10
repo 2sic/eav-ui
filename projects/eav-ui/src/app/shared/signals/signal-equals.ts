@@ -24,9 +24,6 @@ export class SignalEquals {
   //   equal: RxHelpers.valueEquals<boolean | string | number>
   // };
 
-  /** Options for object signal to ensure equality only on value difference */
-  static object = { equal: isEqual };
-
   /**
    * Helper to _not_ set the equal and use the standard equal.
    * This is just to ensure that the code can explicitly show that RefEquals was expected,

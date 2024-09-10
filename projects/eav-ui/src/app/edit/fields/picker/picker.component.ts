@@ -6,7 +6,7 @@ import { BaseComponent } from '../../../shared/components/base.component';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
-import { PickerDataFactory } from './picker-data.factory';
+import { PickerDataSetup } from './picker-data-setup';
 
 
 @Component({
@@ -44,7 +44,7 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
     super();
     this.log = log ?? new EavLogger(PickerComponent.logSpecs);
     this.log.a('constructor');
-    const pickerDataFactory = new PickerDataFactory(this.#injector);
+    const pickerDataFactory = new PickerDataSetup(this.#injector);
     pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
   }
 

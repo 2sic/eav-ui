@@ -9,6 +9,7 @@ import { findI18nKey } from '../../edit/fields/wrappers/localization/translate-m
 import { TranslationStateCore } from '../../edit/localization/translate-state.model';
 import { LanguageService } from '../../edit/localization/language.service';
 import { ItemService } from '../../edit/state/item.service';
+import { computedObj } from '../signals/signal.utilities';
 
 interface TranslationInfo {
   showLanguageSelection: boolean;
@@ -34,7 +35,7 @@ export abstract class TranslateHelperComponent {
   protected language = this.formConfig.language;
   public translationStateSignal = signal<TranslationStateCore>(this.dialogData.translationState);
 
-  protected translationInfo: Signal<TranslationInfo> = computed<TranslationInfo>(() => {
+  protected translationInfo = computedObj<TranslationInfo>('translationInfo', () => {
     const translationState = this.translationStateSignal();
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
     return {
@@ -42,7 +43,7 @@ export abstract class TranslateHelperComponent {
       i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
       submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
     };
-  }, SignalEquals.object);
+  });
 
   protected languages = this.languageService.getAllSignal();
   protected itemAttributes = this.itemService.itemAttributesSignal(this.dialogData.config.entityGuid);

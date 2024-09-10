@@ -4,6 +4,7 @@ import { FieldLogicBase } from '../fields/logic/field-logic-base';
 import { TranslationState } from '../localization/translate-state.model';
 import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
 import { InputTypeSpecs } from '../shared/input-types/input-type-specs.model';
+import { PickerData } from '../fields/picker/picker-data';
 
 export interface FieldProps {
   /** The language which applied to these field props as added to cache */
@@ -37,6 +38,8 @@ export interface FieldConstants {
   isLastInGroup?: boolean;
   type: string;
   logic?: FieldLogicBase,
+
+  pickerData: () => PickerData | null;
 }
 
 /** Extended field config information which is constant as long as the language doesn't change. */

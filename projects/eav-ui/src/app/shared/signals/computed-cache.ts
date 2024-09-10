@@ -1,6 +1,5 @@
-import { computed, Signal, CreateComputedOptions } from '@angular/core';
-import isEqual from 'lodash-es/isEqual';
-import { named } from './signal.utilities';
+import { Signal, CreateComputedOptions } from '@angular/core';
+import { computedObj } from './signal.utilities';
 
 export type ComputedCache<TKey extends string, TValue> = Record<TKey, Signal<TValue>>;
 
@@ -20,8 +19,6 @@ export class ComputedCacheHelper<TKey extends string | number, TValue> {
 
   constructor(private name: string = 'cache-name?') {
   }
-
-  #named = true;
 
   private cache: Record<TKey, Signal<TValue>> = {} as Record<TKey, Signal<TValue>>;
 
@@ -49,11 +46,8 @@ export class ComputedCacheHelper<TKey extends string | number, TValue> {
   getOrCreateWithInfo(key: TKey, factory: () => TValue, options: CreateComputedOptions<TValue> = null): { signal: Signal<TValue>, isNew: boolean } {
     if (this.cache[key])
       return { signal: this.cache[key], isNew: false };
-    const sig = computed(() => factory(), options ?? { equal: isEqual });
-    const final = this.#named
-      ? named(`${this.name}-${key}`, sig)
-      : sig;
-    return { signal: this.set(key, final), isNew: true };
+    const sig = computedObj(`${this.name}-${key}`, () => factory());
+    return { signal: this.set(key, sig), isNew: true };
   }
 
 

@@ -1,10 +1,10 @@
-import { computed, Injectable, Signal, signal } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 import { FormConfigService } from './form-config.service';
 import { EavLogger } from '../../shared/logging/eav-logger';
 import { SignalEquals } from '../../shared/signals/signal-equals';
 import { ItemService } from '../state/item.service';
 import { LanguageService } from '../localization/language.service';
-import isEqual from 'lodash-es/isEqual';
+import { computedObj } from '../../shared/signals/signal.utilities';
 
 const logThis = false;
 const nameOfThis = 'FormsStateService';
@@ -22,7 +22,7 @@ export class FormsStateService {
   formsAreDirty = signal(false);
   readOnly: Signal<FormReadOnly>;
   formsValidTemp = signal<boolean>(false);
-  saveButtonDisabled = computed(() => this.readOnly().isReadOnly || !this.formsValidTemp());
+  saveButtonDisabled = computedObj('saveButtonDisabled', () => this.readOnly().isReadOnly || !this.formsValidTemp());
 
   private formsValid: Record<string, boolean> = {};
   private formsDirty: Record<string, boolean> = {};
@@ -47,7 +47,7 @@ export class FormsStateService {
     );
     const language = this.languageService.getAllSignal();
 
-    this.readOnly = computed(() => {
+    this.readOnly = computedObj('readOnly', () => {
       const itemsReadOnly = itemHeaders().some(itemHeader => itemHeader().EditInfo?.ReadOnly ?? false);
       const languageAllowed = language().find(l => l.NameId === this.formConfig.language().current)?.IsAllowed ?? true;
       const isReadOnly = itemsReadOnly || !languageAllowed;
@@ -57,7 +57,7 @@ export class FormsStateService {
         isReadOnly,
         reason,
       } satisfies FormReadOnly;
-    }, { equal: isEqual });
+    });
   }
 
   getFormValid(entityGuid: string) {

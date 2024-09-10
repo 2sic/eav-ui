@@ -20,9 +20,9 @@ import { classLog } from '../../../shared/logging';
  * Goal is to move all the logic for which combination of input types
  * result in what states etc. to here.
  */
-export class PickerDataFactory {
+export class PickerDataSetup {
 
-  log = classLog({PickerDataFactory});
+  log = classLog({PickerDataSetup});
 
   constructor(injector: Injector) {
     this.#injector = injector;

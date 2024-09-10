@@ -209,7 +209,7 @@ export class FormulaEngine {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
         // Show more debug in case of entity-pickers
         if (formula.isValue) {
-          console.log('value', { value: cycle.values[formula.fieldName] });
+          console.log('value', { value: cycle.values[formula.fieldName], picker: constFieldPart.pickerData(), constFieldPart});
         }
         continue;
       }
@@ -222,9 +222,9 @@ export class FormulaEngine {
         settingsCurrent,
         itemHeader
       };
-      const allObjectParameters: FormulaExecutionSpecsWithRunParams = { runParameters, ...reuseObjectsForFormulaDataAndContext };
+      const allRunParams: FormulaExecutionSpecsWithRunParams = { runParameters, ...reuseObjectsForFormulaDataAndContext };
 
-      const formulaResult = this.#runFormula(allObjectParameters);
+      const formulaResult = this.#runFormula(allRunParams);
 
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = formulaResult?.promise instanceof Promise;
@@ -295,12 +295,12 @@ export class FormulaEngine {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  #runFormula(allObjectsForDataAndContext: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
-    const { formula, item, inputTypeName } = allObjectsForDataAndContext.runParameters;
+  #runFormula(runParams: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
+    const { formula, item, inputTypeName } = runParams.runParameters;
     
     const l = this.log.fnCond(logDetailsFor(formula.fieldName), `runFormula`, { fieldName: formula.fieldName });
 
-    const params = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
+    const params = FormulaHelpers.buildFormulaProps(runParams);
     const ctTitle = this.#contentTypeTitle;
     const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, formula, ctTitle, params);
     const valHelper = new FormulaValueCorrections(formula.isValue, inputTypeName, devHelper.isOpen);
@@ -312,7 +312,7 @@ export class FormulaEngine {
       switch (formula.version) {
         // Formula V1
         case FormulaVersions.V1:
-          const v1Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental, item);
+          const v1Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental);
           const { ok, v1Result: valueV1 } = valHelper.v1(v1Raw);
           if (ok) {
             l.a('V1 formula result is pure', { v1Raw, valueV1 });
@@ -326,7 +326,7 @@ export class FormulaEngine {
         // Formula V2
         case FormulaVersions.V2:
           //TODO: @2dm -> Added item as last argument so if ew use experimental anywhere nothing breaks
-          const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental, item);
+          const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental);
           const v2Value = valHelper.v2(v2Raw);
           devHelper.showResult(v2Value.value, false, !!v2Value.promise);
           return v2Value;

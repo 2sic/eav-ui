@@ -28,7 +28,7 @@ export class FnLoggerReal implements FnLogger {
 
   /** Return result and log it */
   r<TResult>(result: TResult, message?: string): TResult {
-    this.#a('/return' + (message ? ' ' + message : ''), { result: result });
+    this.#a('/return' + (message ? ' ' + message : ''), { result: result }, false);
     return result;
   }
 

@@ -36,7 +36,7 @@ export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
 export type FormulaFunctionDefault = () => FieldValue | FormulaResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental, item: PickerItem) => FieldValue | FormulaResultRaw;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue | FormulaResultRaw;
 
 //#endregion
 
