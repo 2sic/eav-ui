@@ -7,19 +7,15 @@ import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { Injectable, Signal } from "@angular/core";
 import { FormulaResultRaw } from "../results/formula-results.models";
 import { FieldSettingPair } from './formula-promise-result.model';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { ItemService } from '../../state/item.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FieldsPropsEngine } from '../../state/fields-properties-engine';
 import { FieldsValuesModifiedHelper } from '../../state/fields-values-modified.helper';
 import { FieldsPropsEngineCycle } from '../../state/fields-properties-engine-cycle';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-
-const logThis = false;
-const nameOfThis = 'FormulaPromiseHandler';
+import { classLog } from '../../../shared/logging';
 
 /**
  * FormulaPromiseHandler is responsible for handling the promise parts of formula results.
@@ -32,7 +28,7 @@ export class FormulaPromiseHandler {
   private contentType: Signal<EavContentType>;
   private modifiedChecker: FieldsValuesModifiedHelper;
 
-  private log = new EavLogger(nameOfThis, logThis);
+  private log = classLog({ FormulaPromiseHandler });
 
   private updateValueQueue: Record<string, FormulaPromiseResult> = {};
   

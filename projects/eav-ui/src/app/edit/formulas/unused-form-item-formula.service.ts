@@ -1,11 +1,8 @@
 import { inject, Injectable, Signal } from "@angular/core";
 import { EntityReader } from "../shared/helpers";
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { ItemService } from '../state/item.service';
-
-const logThis = false;
-const nameOfThis = 'FormItemFormulaService';
+import { classLog } from '../../shared/logging/logging';
 
 /**
  * Contains methods for updating value changes from formulas to the global state.
@@ -19,19 +16,19 @@ const nameOfThis = 'FormItemFormulaService';
 @Injectable()
 export class ItemFormulaBroadcastService {
 
-  private log = new EavLogger(nameOfThis, logThis);
+  log = classLog({ItemFormulaBroadcastService});
 
-  private itemService = inject(ItemService);
+  #itemService = inject(ItemService);
 
-  valueFormulaCounter = 0;
-  maxValueFormulaCycles = 5;
+  #valueFormulaCounter = 0;
+  #maxValueFormulaCycles = 5;
 
-  private entityGuid: string;
-  private reader: Signal<EntityReader>;
+  #entityGuid: string;
+  #reader: Signal<EntityReader>;
 
   init(entityGuid: string, reader: Signal<EntityReader>): void {
-    this.entityGuid = entityGuid;
-    this.reader = reader;
+    this.#entityGuid = entityGuid;
+    this.#reader = reader;
   }
 
   /**
@@ -44,14 +41,14 @@ export class ItemFormulaBroadcastService {
    * @returns true if values are updated, false otherwise
    */
   applyValueChangesFromFormulas(modifiedValues: ItemValuesOfLanguage): boolean {
-    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: this.entityGuid });
+    const l = this.log.fn('applyValueChangesFromFormulas', { entityGuid: this.#entityGuid });
 
     if (Object.keys(modifiedValues).length == 0)
       return l.r(false);
 
-    if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
-      this.valueFormulaCounter++;
-      this.itemService.updater.updateItemAttributesValues(this.entityGuid, modifiedValues, this.reader());
+    if (this.#maxValueFormulaCycles > this.#valueFormulaCounter) {
+      this.#valueFormulaCounter++;
+      this.#itemService.updater.updateItemAttributesValues(this.#entityGuid, modifiedValues, this.#reader());
       // return true to make sure fieldProps are not updated yet
       return l.r(true);
     }

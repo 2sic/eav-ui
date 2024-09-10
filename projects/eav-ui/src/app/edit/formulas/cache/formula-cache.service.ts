@@ -4,14 +4,11 @@ import { FormulaTarget } from '../targets/formula-targets';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaResultCacheItem } from './formula-cache.model';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { named } from '../../../shared/signals/signal.utilities';
 import isEqual from 'lodash-es/isEqual';
 import { FormulaCacheBuilder } from './formula-cache.builder';
 import { transient } from '../../../core';
-
-const logThis = false;
-const nameOfThis = 'FormulaCacheService';
+import { classLog } from '../../../shared/logging';
 
 /**
  * Service just to cache formulas for execution and use in the designer.
@@ -27,8 +24,11 @@ export class FormulaCacheService {
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 
-  #log = new EavLogger(nameOfThis, logThis);
-  constructor() { }
+  #log = classLog({FormulaCacheService});
+
+  constructor() {
+    classLog({FormulaCacheService});
+  }
 
   init() {
     const formulaCache = this.#cacheBuilder.buildFormulaCache(this);
@@ -173,3 +173,5 @@ export class FormulaCacheService {
     return { list, index, value };
   }
 }
+
+console.error('2dm', Object.keys({ FormulaCacheService })[0])

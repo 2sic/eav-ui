@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormulaTargets } from '../targets/formula-targets';
 import { DesignerState } from './designer-state.model';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { transient } from '../../../core';
 import { FormulaTargetsService } from '../targets/formula-targets.service';
 import { EntityOption, FieldOption, TargetOption } from '../../dialog/footer/formula-designer/formula-designer.models';
@@ -12,15 +11,15 @@ import { ItemService } from '../../state/item.service';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { IntellisenseV2 } from './intellisense-v2';
-
-const logThis = false;
-const nameOfThis = 'FormulaDesignerService';
+import { classLog } from '../../../shared/logging';
 
 /**
  * Contains methods for extended CRUD operations for formulas.
  */
 @Injectable()
 export class FormulaDesignerService {
+
+  log = classLog({FormulaDesignerService});
 
   /**
    * Contain all the settings to all items/settings in this form
@@ -42,13 +41,12 @@ export class FormulaDesignerService {
   /** Formula result of the formula which is currently open in the editor */
   formulaResult = computedObj('formulaResult', () => {
     const state = this.designerState();
-    const { value } = this.cache.resultListIndexAndOriginal(state);
-    return value;
+    return this.cache.resultListIndexAndOriginal(state).value;
   });
 
   #targetsService = transient(FormulaTargetsService);
 
-  currentTargetOptions = computedObj<TargetOption[]>('currentTargetOptions',() => {
+  currentTargetOptions = computedObj<TargetOption[]>('currentTargetOptions', () => {
     const state = this.designerState();
     const formulas = this.cache.formulas();
     return this.#targetsService.getTargetOptions(state, formulas);
@@ -90,8 +88,6 @@ export class FormulaDesignerService {
     });
     return fieldOptions;
   });
-
-  log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private itemService: ItemService,

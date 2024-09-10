@@ -16,13 +16,9 @@ import { PickerDataFactory } from '../picker/picker-data.factory';
 import { classLog, logFnIf } from '../../../shared/logging/logging';
 
 const logSpecs = {
-  enabled: true,
-  name: 'FieldInjectorService',
-  specs: {
-    getInjectors: true,
-    fields: [] as string[],
-    // fields: ['Boolean'],
-  }
+  getInjectors: true,
+  fields: [] as string[],
+  // fields: ['Boolean'],
 };
 
 /**
@@ -39,7 +35,7 @@ export class FieldInjectorService {
   #entityForm = inject(EntityFormStateService);
   #group = this.#entityForm.formGroup();
 
-  log = classLog(logSpecs);
+  log = classLog({FieldInjectorService}, logSpecs);
 
   constructor() { }
 

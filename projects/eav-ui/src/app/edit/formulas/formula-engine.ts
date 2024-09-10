@@ -12,7 +12,6 @@ import { FormulaValueCorrections } from './results/formula-value-corrections.hel
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
@@ -30,18 +29,15 @@ import { ItemService } from '../state/item.service';
 import { LanguageService } from '../localization/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'FormulaEngine',
-  specs: {
-    // runFormulasForAllFields: false,
-    fields: ['DefaultValue'],
-  }
+  // runFormulasForAllFields: false,
+  fields: ['DefaultValue'],
 };
 
 function logDetailsFor(field: string) {
-  return logSpecs.specs.fields?.includes(field) || logSpecs.specs.fields?.includes('*');
+  return logSpecs.fields?.includes(field) || logSpecs.fields?.includes('*');
 }
 
 /**
@@ -53,7 +49,7 @@ function logDetailsFor(field: string) {
 export class FormulaEngine {
   private features = inject(FeaturesService).getAll();
 
-  log = new EavLogger(logSpecs);
+  log = classLog({ FormulaEngine }, logSpecs);
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
@@ -105,7 +101,7 @@ export class FormulaEngine {
     // so never between cycles
     const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(engine.item.Entity.Guid);
 
-    const fss = new FieldsSettingsHelpers(logSpecs.name);
+    const fss = new FieldsSettingsHelpers(this.log.name);
 
     for (const attr of this.#contentType.Attributes) {
       const attrValues = cycle.allAttributes[attr.Name];
