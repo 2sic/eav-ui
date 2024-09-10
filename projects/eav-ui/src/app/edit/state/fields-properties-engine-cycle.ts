@@ -49,9 +49,6 @@ export class FieldsPropsEngineCycle {
    */
   values: ItemValuesOfLanguage;
 
-  // TODO: must use this throughout the cycle
-  pickers: Record<string, PickerItem[]> = {};
-
   public getCycleSettingsAndValues(): PropsUpdate {
     const l = this.log.fn('getLatestSettingsAndValues');
 
@@ -68,7 +65,6 @@ export class FieldsPropsEngineCycle {
       // Update state for next cycles
       this.fieldProps = cycle.props;
       this.values = mergedValues;
-      // this.pickers = cycle.pickers; // TODO: MERGE WITH CHANGE DETECTION
     }
 
     // figure out the final changes to propagate
@@ -126,11 +122,11 @@ export class FieldsPropsEngineCycle {
    * if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
    */
   getFieldSettingsInCycle(constFieldPart: FieldConstantsOfLanguage): FieldSettings {
-    const latest = this.fieldProps[constFieldPart.fieldName];
+    const cached = this.fieldProps[constFieldPart.fieldName];
     // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
-    const cachedStillValid = constFieldPart.language == latest?.language;
+    const cachedStillValid = constFieldPart.language == cached?.language;
     const result: FieldSettings = cachedStillValid
-      ? latest?.settings ?? { ...constFieldPart.settingsInitial }
+      ? cached?.settings ?? { ...constFieldPart.settingsInitial }
       : { ...constFieldPart.settingsInitial };
     return result;
   }

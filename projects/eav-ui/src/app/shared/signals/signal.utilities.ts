@@ -1,5 +1,5 @@
 import { computed, signal, Signal, WritableSignal } from '@angular/core';
-import { SIGNAL } from '@angular/core/primitives/signals';
+import { ReactiveNode, SIGNAL } from '@angular/core/primitives/signals';
 import isEqual from 'lodash-es/isEqual';
 import { Observable, take } from 'rxjs';
 
@@ -60,4 +60,9 @@ export function computedWithPrev<T>(computation: (prev: T | undefined) => T, ini
 		previous = newValue;
 		return newValue;
 	}, { equal: isEqual });
+}
+
+export function getVersion(signal: Signal<unknown>): number | null {
+  if (!signal) return null;
+  return (signal[SIGNAL] as ReactiveNode)?.version ?? null;
 }

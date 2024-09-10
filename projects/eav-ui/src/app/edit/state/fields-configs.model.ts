@@ -19,6 +19,7 @@ export interface FieldProps {
   formulaValidation: FormulaFieldValidation;
 
   pickerOptions: PickerItem[];
+  pickerVersion: number | null;
 }
 
 /** Field Config information which never changes through the entire lifetime in the UI */

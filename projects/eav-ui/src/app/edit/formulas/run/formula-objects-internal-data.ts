@@ -25,6 +25,8 @@ export interface FormulaRunParameters {
   
   optionsInitial: PickerItem[];
   optionsCurrent: PickerItem[];
+  pickerVersion: number | null;
+  pickerVersionBefore: number | null;
 }
 
 export interface FormulaExecutionSpecs {

@@ -31,6 +31,9 @@ import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle'
 import { classLog } from '../../shared/logging';
 import { FormulaDeveloperHelper } from './formula-developer-helper';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
+import { ReactiveNode, SIGNAL } from '@angular/core/primitives/signals';
+import { Version } from '../../item-history/models/version.model';
+import { getVersion } from '../../shared/signals/signal.utilities';
 
 const logSpecs = {
   // runFormulasForAllFields: false,
@@ -97,7 +100,6 @@ export class FormulaEngine {
     const fieldsProps: Record<string, FieldProps> = {};
     const valueUpdates: ItemValuesOfLanguage = {};
     const fieldUpdates: FieldValuePair[] = [];
-    // let pickers: Record<string, PickerItem[]>;
 
     // Many aspects of a field are re-usable across formulas, so we prepare them here
     // These are things explicit to the entity and either never change, or only rarely
@@ -115,6 +117,8 @@ export class FormulaEngine {
       const latestSettings = cycle.getFieldSettingsInCycle(fieldConstants);
       const settingsUpdateHelper = cycle.updateHelper.create(attr, fieldConstants, values);
 
+      const propsBefore = cycle.fieldProps[attr.Name] ?? {} as FieldProps;
+
       // run formulas
       const formulaResult = this.#runOneFieldOrInitSettings(
         cycle,
@@ -123,6 +127,7 @@ export class FormulaEngine {
         latestSettings,
         engine.item.Header,
         valueBefore,
+        propsBefore,
         reuseObjectsForFormulaDataAndContext,
         settingsUpdateHelper,
       );
@@ -136,19 +141,15 @@ export class FormulaEngine {
       if (formulaResult.fields)
         fieldUpdates.push(...formulaResult.fields);
 
-      // if (formulaResult.pickers)
-      //   pickers = { ...pickers, ...formulaResult.pickers };
-
       const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
       const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
 
       const pickerOptions = formulaResult.pickers;
       if (pickerOptions)
-        lAttr.a('picker options', { pickerOptions });
+        lAttr.a('picker options', { pickerOptions, version: formulaResult.optionsVersion });
 
-      const before = cycle.fieldProps[attr.Name] ?? {} as FieldProps;
       fieldsProps[attr.Name] = {
-        ...before,
+        ...propsBefore,
         language: fieldConstants.language,
         constants: fieldConstants,
         settings: fixed,
@@ -156,7 +157,8 @@ export class FormulaEngine {
         buildValue: valueBefore,
         buildWrappers: null, // required, but set elsewhere
         formulaValidation: formulaResult.validation,
-        pickerOptions: pickerOptions ?? before.pickerOptions,
+        pickerOptions: pickerOptions ?? propsBefore.pickerOptions,
+        pickerVersion: formulaResult.optionsVersion ?? propsBefore.pickerVersion,
       };
     }
     return { fieldsProps, valueUpdates, fieldUpdates };
@@ -173,6 +175,7 @@ export class FormulaEngine {
     settingsBefore: FieldSettings,
     itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     valueBefore: FieldValue,
+    propsBefore: FieldProps,
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
@@ -180,24 +183,18 @@ export class FormulaEngine {
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
-    const { value, validation, fields, settings, pickers } = hasFormulas
-      ? this.#runAllOfField(cycle, formulas, constFieldPart, settingsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
-      : { value: valueBefore, validation: null, fields: [], settings: {}, pickers: null };
+    const raw = hasFormulas
+      ? this.#runAllOfField(cycle, formulas, constFieldPart, settingsBefore, propsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
+      : { value: valueBefore, validation: null, fields: [], settings: {}, pickers: null, optionsVersion: null };
 
     // Correct any settings necessary after
     // possibly making invalid changes in formulas or if settings need to adjust
     // eg. custom bool labels which react to the value, etc.
-    const updatedSettings = setUpdHelper.correctSettingsAfterChanges(
-      { ...settingsBefore, ...settings },
-      value || valueBefore
-    );
+    const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsBefore, ...raw.settings }, raw.value || valueBefore);
 
     const runFormulaResult: RunFormulasResult = {
-      settings: updatedSettings,
-      validation: validation,
-      value,
-      fields,
-      pickers,
+      ...raw,
+      settings,
     };
     return runFormulaResult;
   }
@@ -207,6 +204,7 @@ export class FormulaEngine {
     formulas: FormulaCacheItem[],
     constFieldPart: FieldConstantsOfLanguage,
     settingsCurrent: FieldSettings,
+    propsBefore: FieldProps,
     itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
@@ -217,6 +215,21 @@ export class FormulaEngine {
     const fields: FieldValuePair[] = [];     // Any additional fields
     let pickers: PickerItem[] = null; // Any additional picker options
     let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
+
+    const picker = constFieldPart.pickerData();
+    const pickerVersion = getVersion(picker?.optionsSource);
+    console.warn('picker version', pickerVersion, propsBefore.pickerVersion);
+    const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
+      currentValues: cycle.values,
+      inputTypeName: constFieldPart.inputTypeSpecs.inputType,
+      settingsInitial: constFieldPart.settingsInitial,
+      settingsCurrent,
+      itemHeader,
+      optionsInitial: picker?.optionsSource(),
+      optionsCurrent: picker?.optionsFinal(),
+      pickerVersion,
+      pickerVersionBefore: propsBefore.pickerVersion,
+    };
 
     const start = performance.now();
     for (const formula of formulas) {
@@ -231,18 +244,13 @@ export class FormulaEngine {
         continue;
       }
 
-      const picker = constFieldPart.pickerData();
-      const runParameters: FormulaRunParameters = {
-        formula,
-        currentValues: cycle.values,
-        inputTypeName: constFieldPart.inputTypeSpecs.inputType,
-        settingsInitial: constFieldPart.settingsInitial,
-        settingsCurrent,
-        itemHeader,
-        optionsInitial: picker?.optionsSource(),
-        optionsCurrent: picker?.optionsFinal(),
+      const allRunParams: FormulaExecutionSpecsWithRunParams = {
+        runParameters: {
+          formula,
+          ...runParamsStatic,
+        },
+        ...reuseObjectsForFormulaDataAndContext
       };
-      const allRunParams: FormulaExecutionSpecsWithRunParams = { runParameters, ...reuseObjectsForFormulaDataAndContext };
 
       const formulaResult = this.#runFormula(allRunParams);
 
@@ -283,7 +291,7 @@ export class FormulaEngine {
       ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, settingsCurrent, formulaResult.value, settingsNew));
     }
     const afterRun = performance.now();
-    return l.r({ value, validation, fields, settings: settingsNew, pickers }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
+    return l.r({ value, validation, fields, settings: settingsNew, pickers, optionsVersion: pickerVersion }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
   }
 
   /**
