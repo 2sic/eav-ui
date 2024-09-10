@@ -2,6 +2,7 @@ import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
 import { InputTypeCatalog, InputTypeStrict } from "../../../shared/fields/input-type-catalog";
 import { FormulaResultRaw } from "./formula-results.models";
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
 
 /**
  * Contains methods for correcting formula results.
@@ -36,38 +37,61 @@ export class FormulaValueCorrections {
    * @returns Strongly typed FormulaResultRaw object
    */
   allValues(result: FieldValue | FormulaResultRaw): FormulaResultRaw {
-    const stop = (result as FormulaResultRaw)?.stop ?? null;
+    // 2024-09-10 21:15 2dm changed this, as I believe all cases have a clear stop-value
+    // const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
-      return { value: result as FieldValue, fields: [], stop };
+      return { value: result as FieldValue, fields: [], stop: null };
     
     const targetIsValue = this.isValue;
+
+    // Handle object results - the larger / more complex case
     if (typeof result === 'object') {
       if (result instanceof Date && targetIsValue)
-        return { value: this.#oneValue(result as FieldValue), fields: [], stop };
+        return { value: this.#oneValue(result as FieldValue), fields: [], stop: null };
 
       if (result instanceof Promise)
-        return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop };
+        return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop: null };
 
-      const corrected: FormulaResultRaw = (result as FormulaResultRaw);
-      corrected.stop = stop;
-      if ((result as FormulaResultRaw).value && targetIsValue) {
-        corrected.value = this.#oneValue((result as FormulaResultRaw).value);
-      }
+      const raw: FormulaResultRaw = result as FormulaResultRaw;
 
-      if ((result as FormulaResultRaw).fields) {
-        corrected.fields = (result as FormulaResultRaw).fields?.map((fields) => {
-          fields.value = this.#oneValue(fields.value);
-          return fields;
+      // fix stop so it's never undefined
+      raw.stop ??= null;
+
+      // fix single value
+      if (raw.value && targetIsValue)
+        raw.value = this.#oneValue(raw.value);
+
+      // fix fields
+      if (raw.fields)
+        raw.fields = raw.fields?.map(f => {
+          f.value = this.#oneValue(f.value);
+          return f;
         });
-        return corrected;
+
+      // test options
+      if (raw.options) {
+        if (!Array.isArray(raw.options)) {
+          console.error('options is not an array', raw.options);
+          raw.options = [];
+        } else if (raw.options.length > 0) {
+          if (raw.options.find(o => !o || o.value == null)) {
+            console.error('some options are missing value', raw.options);
+            raw.options = [];
+          }
+          if (hasDuplicateValues(raw.options)) {
+            console.error('duplicate values in options', raw.options);
+            raw.options = [];
+          }
+        }
       }
-      return corrected;
+      return raw;
     }
     const value: FormulaResultRaw = { value: result as FieldValue };
 
+    // Handle value only result
     // atm we are only correcting Value formulas
     if (targetIsValue) {
-      return { value: this.#oneValue(value.value), fields: [], stop };
+      return { value: this.#oneValue(value.value), fields: [], stop: null };
     }
     return value;
   }
@@ -112,4 +136,14 @@ export class FormulaValueCorrections {
       openInDesigner: this.isOpen
     };
   }
+}
+
+function hasDuplicateValues(options: PickerItem[]) {
+  var ids = options.map(o => o.value);
+  var uniqueIds = new Set(ids);
+  if (ids.length !== uniqueIds.size) {
+    console.error('Duplicate values in options', options);
+    return true;
+  }
+  return false;
 }

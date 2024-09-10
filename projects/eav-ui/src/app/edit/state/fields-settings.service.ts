@@ -19,6 +19,7 @@ import { classLog } from '../../shared/logging';
 import { PickerData } from '../fields/picker/picker-data';
 
 const logSpecs = {
+  pickerUpdate: true,
   // Debug only on the following content type
   type: '', //'@String';
 }
@@ -35,7 +36,7 @@ const maxCyclesWarning = "Max cycles reached, stopping for this second";
 @Injectable()
 export class FieldsSettingsService {
 
-  log = classLog({FieldsSettingsService}, logSpecs);
+  log = classLog({FieldsSettingsService}, logSpecs, true);
 
   constructor() {
     // Transfer changes to the props state to the public property
@@ -45,6 +46,18 @@ export class FieldsSettingsService {
           return;
         const update = this.#allProps();
         this.allProps.set(update);
+
+        // Transfer picker data
+        const lPicker = this.log.fnIf('pickerUpdate');
+        // 1. find all fieldProps with picker data
+        const toTransfer = Object.entries(update)
+          .filter(([_, v]) => v.pickerOptions);
+        // lPicker.a('To Transfer', { map: toTransfer.map(([k, v]) => ({ k, v })) });
+        // 2. transfer to pickerData
+        for (const [fieldName, fieldProps] of toTransfer) {
+          lPicker.a('Transfer', { fieldName, fieldProps });
+          fieldProps.constants.pickerData().optionsOverride.set(fieldProps.pickerOptions);
+        }
       },
       { allowSignalWrites: true }
     );

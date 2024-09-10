@@ -14,7 +14,7 @@ import { FieldInitSpecs } from './field-init-specs.model';
 @Injectable()
 export class FormFieldsBuilderService {
 
-  log = classLog({FormFieldsBuilderService}, null, true);
+  log = classLog({FormFieldsBuilderService}, null);
 
   constructor(
     private fieldsSettingsSvc: FieldsSettingsService,

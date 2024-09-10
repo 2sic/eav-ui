@@ -34,7 +34,11 @@ export class FormulaHelpers {
           experimental,
         } satisfies FormulaPropsV1;
       default:
-        return;
+        // default should never happen, so don't return any data to use; will probably error if this happens
+        // 2024-09-10 2dm adding throw error here to see if it's anywhere
+        // TODO: REMOVE option default everywhere ca. 2024-Q3
+        throw new Error(`Formula version unknown not supported`);
+        // return;
     }
   }
 

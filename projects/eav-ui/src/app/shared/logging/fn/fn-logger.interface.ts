@@ -9,7 +9,7 @@
  * so there are multiple implementations.
  */
 export interface FnLogger {
-  
+  enabled: boolean;
   values(data: Record<string, unknown>, intro?: string): void;
   a(message: string, data?: Record<string, unknown>): void;
   end(message?: string, data?: Record<string, unknown>): void;

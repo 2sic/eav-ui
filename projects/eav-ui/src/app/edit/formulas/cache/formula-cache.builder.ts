@@ -131,10 +131,11 @@ export class FormulaCacheBuilder extends ServiceBase {
     return formulaCache;
   }
 
-  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'disabled' | 'disabledReason'> {
-    return inputType.isNewPicker && [FormulaDefaultTargets.Value, FormulaNewPickerTargets.Options].includes(target)
-      ? { disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
-      : { disabled: false, disabledReason: '' };
+  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'isNewPicker' | 'disabled' | 'disabledReason'> {
+    if (!inputType.isNewPicker) return { isNewPicker: false, disabled: false, disabledReason: '' };
+    return [FormulaDefaultTargets.Value /*, FormulaNewPickerTargets.Options */].includes(target)
+      ? { isNewPicker: true, disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
+      : { isNewPicker: true, disabled: false, disabledReason: '' };
   }
 
   #targetInfoForCacheItem(target: FormulaTarget): Pick<FormulaCacheItem, 'isSetting' | 'settingName' | 'isValue' | 'isValidation'> {

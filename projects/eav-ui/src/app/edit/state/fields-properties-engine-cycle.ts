@@ -7,6 +7,7 @@ import { FieldsPropsEngine } from './fields-properties-engine';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { classLog } from '../../shared/logging';
+import { PickerItem } from 'projects/edit-types';
 
 const maxChangeCycles = 5;
 
@@ -43,12 +44,13 @@ export class FieldsPropsEngineCycle {
     return this.fieldConstants.find(f => f.fieldName === name);
   }
 
-
-
   /**
    * Get the current values of the fields, as they may update during the cycle
    */
   values: ItemValuesOfLanguage;
+
+  // TODO: must use this throughout the cycle
+  pickers: Record<string, PickerItem[]> = {};
 
   public getCycleSettingsAndValues(): PropsUpdate {
     const l = this.log.fn('getLatestSettingsAndValues');
@@ -66,6 +68,7 @@ export class FieldsPropsEngineCycle {
       // Update state for next cycles
       this.fieldProps = cycle.props;
       this.values = mergedValues;
+      // this.pickers = cycle.pickers; // TODO: MERGE WITH CHANGE DETECTION
     }
 
     // figure out the final changes to propagate
@@ -103,10 +106,10 @@ export class FieldsPropsEngineCycle {
     // 3. Run formulas for all fields - as a side effect (not nice) will also get / init all field settings
     // Note that in the case of promises being executed, the whole process will need to run again
     // when the promises finish
-    const { fieldsProps, valueUpdates, fieldUpdates } = this.engine.formulaEngine.runFormulasForAllFields(this.engine, this);
+    const { fieldsProps: props, valueUpdates, fieldUpdates } = this.engine.formulaEngine.runAllFields(this.engine, this);
 
     // 4. On first cycle, also make sure we have the wrappers specified as it's needed by the field creator; otherwise preserve previous
-    for (const [key, value] of Object.entries(fieldsProps))
+    for (const [key, value] of Object.entries(props))
       value.buildWrappers = isFirstRound
         ? WrapperHelper.getWrappers(value.settings, value.constants.inputTypeSpecs)
         : this.fieldProps[key]?.buildWrappers;
@@ -114,7 +117,7 @@ export class FieldsPropsEngineCycle {
     // 6.1 If we have value changes were applied
     const modifiedValues = this.engine.modifiedChecker.getValueUpdates(this, fieldUpdates, valueUpdates);
 
-    return { valueChanges: modifiedValues, props: fieldsProps };
+    return { valueChanges: modifiedValues, props: props };
   }
 
 
@@ -136,4 +139,5 @@ export class FieldsPropsEngineCycle {
 interface PropsUpdate {
   valueChanges: ItemValuesOfLanguage;
   props: Record<string, FieldProps>;
+  // pickers: Record<string, PickerItem[]>;
 }

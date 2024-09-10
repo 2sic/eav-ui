@@ -4,6 +4,7 @@ import { FnLogger } from './fn-logger.interface';
  * No-Operation logger.
  */
 export class FnLoggerNoOp implements FnLogger {
+  enabled: boolean = false;
   values(data: Record<string, unknown>, intro?: string): void { }
   a(message: string, data?: Record<string, unknown>): void { }
   r<TResult>(result: TResult, message?: string, showData?: boolean): TResult {

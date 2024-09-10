@@ -23,6 +23,7 @@ import { computedObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
 import { PickerDataFactory } from '../fields/picker/picker-data.factory';
 import { PickerData } from '../fields/picker/picker-data';
+import { PickerItem } from 'projects/edit-types';
 
 const logSpecs = {
   all: false,
@@ -71,7 +72,7 @@ export class FieldsPropsEngine {
   ): this {
     this.log.extendName(`[${entityGuid.substring(0, 8)}]`);
     const l = this.log.fnIf('init', { entityGuid, item, contentType, reader, forceDebug });
-    if (forceDebug !== null) this.log.forceEnable(forceDebug);
+    if (forceDebug != null) this.log.forceEnable(forceDebug);
 
     this.item = item;
     this.languages = reader();
@@ -121,17 +122,6 @@ export class FieldsPropsEngine {
    * Will be reset every time a new round starts.
    */
   cycle: FieldsPropsEngineCycle;
-
-  // getPickers() {
-  //   const l = this.log.fnIf('getPickers');
-  //   const attribs = this.#fieldLangConstants();
-
-  //   // Loop through the attributes to generate the pickers
-
-  //   const nameTypeDic = attribs.map(attrib => ({ name: attrib.fieldName, inputType: attrib.inputTypeSpecs }));
-  //   const pickersRec: Record<string, PickerData> = this.#pickerFac.#createPickersData(nameTypeDic);
-  //   return l.rSilent(pickersRec, `Pickers created: ${Object.keys(pickersRec).length}`);
-  // }
 
   /**
    *
@@ -203,4 +193,5 @@ interface PropsUpdate {
 
 interface PropsUpdateResult extends PropsUpdate {
   values: ItemValuesOfLanguage;
+  // pickers: Record<string, PickerItem[]>;
 }

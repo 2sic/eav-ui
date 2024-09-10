@@ -7,6 +7,8 @@ export class FnLoggerReal implements FnLogger {
     this.#a(message, data);
   }
 
+  get enabled() { return this.parent.enabled; };
+
   /** Internal helper to really log - if enabled */
   #a(message: string, data?: Record<string, unknown>, autoPad: boolean = true): void {
     if (!this.parent.enabled) return;

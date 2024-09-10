@@ -1,4 +1,4 @@
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { FieldSettings, FieldValue, PickerItem } from '../../../../../edit-types';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { FieldLogicBase } from '../fields/logic/field-logic-base';
 import { TranslationState } from '../localization/translate-state.model';
@@ -17,6 +17,8 @@ export interface FieldProps {
   buildValue: FieldValue;
   buildWrappers: string[];
   formulaValidation: FormulaFieldValidation;
+
+  pickerOptions: PickerItem[];
 }
 
 /** Field Config information which never changes through the entire lifetime in the UI */

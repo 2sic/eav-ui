@@ -29,8 +29,11 @@ export interface PickerItem {
    * Prevent select of this item for whatever reason, v16
    * It was originally added so "no query" message will be shown in the dropdown.
    * This property does not come from the server, but must be added by code.
+   * 
+   * TODO: this is not quite correct, the UI seems to use and then look if re-select is allowed,
+   * but it's usually true for error messages...
    */
-  notSelectable?: boolean;
+  noSelect?: boolean;
 
 
   /**
@@ -71,25 +74,13 @@ export interface PickerItem {
 }
 
 export class PickerItemFactory {
-  static create(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem {
-    return {
-      id: id,
-      value: value,
-      label: text,
-      tooltip: tooltip,
-      infoBox: information,
-      noEdit: disableEdit,
-      noDelete: disableDelete,
-      notSelectable: disableSelect,
-    } as PickerItem;
-  }
 
   /** Generate a placeholder item to show in the list to show during loading or in case of error */
   static placeholder(translate: TranslateService, i18nLabel: string, suffix?: string): PickerItem {
     return {
       label: translate.instant(i18nLabel) + (suffix ?? ''),
       value: null,
-      notSelectable: true,
+      noSelect: true,
       isMessage: true,
       noDelete: true,
       noEdit: true,
@@ -101,7 +92,7 @@ export class PickerItemFactory {
     return {
       label: translate.instant(i18nLabel, params),
       value: null,
-      notSelectable: true,
+      noSelect: true,
       isMessage: true,
       noDelete: true,
       noEdit: true,

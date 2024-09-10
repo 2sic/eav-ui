@@ -1,12 +1,14 @@
 import { FormulaFieldValidation, FormulaTarget } from '../targets/formula-targets';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { PickerItem } from 'projects/edit-types';
 
 export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
   fields: FieldValuePair[];
+  pickers: PickerItem[];
 }
 
 export interface FormulaIdentifier {
@@ -23,6 +25,9 @@ export interface FormulaResultRaw {
   promise?: Promise<FormulaResultRaw>;
   fields?: FieldValuePair[];
   stop?: boolean | null;
+
+  /** WIP v18 */
+  options?: PickerItem[];
 
   /** Note: not a real result, for internal use only */
   openInDesigner?: boolean;

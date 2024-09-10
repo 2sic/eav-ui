@@ -48,6 +48,7 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   /** Information about the input type, so the formula can adjust to it new v18.01 */
   inputType: InputTypeSpecs;
 
+  isNewPicker: boolean;
   disabled: boolean;
   disabledReason: string;
 

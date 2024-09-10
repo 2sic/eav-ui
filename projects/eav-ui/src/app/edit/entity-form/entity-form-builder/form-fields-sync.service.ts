@@ -11,7 +11,7 @@ import { FieldInitSpecs } from './field-init-specs.model';
 @Injectable()
 export class FormFieldsSyncService extends ServiceBase {
 
-  log = classLog({FormFieldsSyncService}, null, true);
+  log = classLog({FormFieldsSyncService}, null);
 
   constructor() {
     super();

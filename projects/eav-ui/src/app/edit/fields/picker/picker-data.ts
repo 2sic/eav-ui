@@ -1,7 +1,7 @@
 import { PickerItem } from './models/picker-item.model';
 import { StateAdapter } from "./adapters/state-adapter";
 import { TranslateService } from '@ngx-translate/core';
-import { Injectable, Signal, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
@@ -19,10 +19,10 @@ export class PickerData {
   
   log = classLog({PickerData});
 
+  #translate = inject(TranslateService);
+
   constructor() { }
 
-  #translate = inject(TranslateService);
-  
   //#endregion
 
   //#region Adapters
@@ -47,14 +47,19 @@ export class PickerData {
 
   #sourceReady = signalObj('sourceIsReady', false);
 
-  overrideOptions = signalObj<PickerItem[]>('overrideOptions', null);
+  public optionsOverride = signalObj<PickerItem[]>('overrideOptions', null);
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
-  public pickerOptions = computedObj('pickerOptions', () => {
-    const override = this.overrideOptions();
-    if (override) return override;
+  public optionsSource = computedObj('pickerOptions', () => {
     const ready = this.#sourceReady();
     return (ready ? this.source.optionsOrHints() : null) ?? [];
+  });
+
+  /** Final Options to show in the picker and to use to calculate labels of selected etc. */
+  public optionsFinal = computedObj('pickerOptions', () => {
+    const override = this.optionsOverride();
+    if (override) return override;
+    return this.optionsSource();
   });
 
   //#endregion
@@ -62,7 +67,7 @@ export class PickerData {
   //#region Selected Data
 
   /** Signal containing the currently selected items */
-  public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.pickerOptions()));
+  public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.optionsFinal()));
 
   /** Signal containing the first selected item */
   public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
@@ -105,21 +110,21 @@ export class PickerData {
   #createUIModel(selected: PickerItem[], data: PickerItem[]): PickerItem[] {
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item
-      const entity = data.find(e => e.value === item.value);
-      if (!entity)
+      const original = data.find(e => e.value === item.value);
+      if (!original)
         return item;
       
       // Since we seem to have more information from the source, use that
-      const text = entity.label ?? this.#translate.instant('Fields.Picker.EntityNotFound');
+      const label = original.label ?? this.#translate.instant('Fields.Picker.EntityNotFound');
       return {
-        id: entity.id,
-        value: entity.value,
-        label: text,
-        tooltip: entity.tooltip || `${text} (${entity.value})`,
-        infoBox: entity.infoBox || '',
-        noEdit: entity.noEdit === true,
-        noDelete: entity.noDelete === true,
-        notSelectable: false,
+        id: original.id,
+        value: original.value,
+        label,
+        tooltip: original.tooltip || `${label} (${original.value})`,
+        infoBox: original.infoBox || '',
+        noEdit: original.noEdit === true,
+        noDelete: original.noDelete === true,
+        noSelect: false,
       } satisfies PickerItem;
     });
     return result;

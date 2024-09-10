@@ -2,8 +2,9 @@ import { FieldHelper } from '../../shared/helpers';
 import { FormulaFieldValidation } from '../targets/formula-targets';
 import { FormulaV1Data } from './formula-run-data.model';
 import { FormulaHelpers } from '../formula.helpers';
-import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { PickerItem } from 'projects/edit-types';
 
 /**
  * The object containing data information.
@@ -13,42 +14,46 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 export class FormulaDataObject implements FormulaV1Data {
   /** Private variable containing the data used in the getters */
   #propsData: FormulaExecutionSpecsWithRunParams;
+  #params: FormulaRunParameters;
 
   constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
+    this.#params = propsData.runParameters;
   }
 
   get default(): FieldValue {
-    const { runParameters } = this.#propsData;
-    const { formula, settingsInitial, inputTypeName } = runParameters;
+    const { formula, settingsInitial, inputTypeName } = this.#params;
     if (formula.isValue)
       return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial);
 
     if (formula.isSetting)
       return (settingsInitial as Record<string, any>)[formula.settingName];
+
+    if (formula.isNewPicker)
+      return this.#params.optionsCurrent as unknown as FieldValue;
   }
 
   get initial(): FieldValue {
-    const definition = this.#propsData.runParameters.formula;
-    if (!definition.isValue)
+    const formula = this.#params.formula;
+    if (!formula.isValue)
       return;
-    return this.#propsData.initialFormValues[definition.fieldName];
+    return this.#propsData.initialFormValues[formula.fieldName];
   }
 
   get parameters(): Record<string, any> {
-    return FormulaHelpers.buildFormulaPropsParameters(this.#propsData.runParameters.itemHeader.ClientData?.parameters);
+    return FormulaHelpers.buildFormulaPropsParameters(this.#params.itemHeader.ClientData?.parameters);
   }
 
   get prefill(): FieldValue {
-    const { formula, settingsInitial, itemHeader, inputTypeName } = this.#propsData.runParameters;
+    const { formula, settingsInitial, itemHeader, inputTypeName } = this.#params;
     if (!formula.isValue) return;
     return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial, itemHeader, true);
   }
 
   get value(): FieldValue {
-    const { formula, settingsCurrent, currentValues: formValues } = this.#propsData.runParameters;
+    const { formula } = this.#params;
     if (formula.isValue)
-      return formValues[formula.fieldName];
+      return this.#params.currentValues[formula.fieldName];
 
     if (formula.isValidation) {
       const formulaValidation: FormulaFieldValidation = {
@@ -59,6 +64,17 @@ export class FormulaDataObject implements FormulaV1Data {
     }
 
     if (formula.isSetting)
-      return (settingsCurrent as Record<string, any>)[formula.settingName];
+      return (this.#params.settingsCurrent as Record<string, any>)[formula.settingName];
+
+    if (formula.isNewPicker)
+      return this.#params.optionsInitial as unknown as FieldValue;
+  }
+
+  get options(): PickerItem[] {
+    return this.#params.optionsCurrent;
+  }
+
+  get optionsInitial(): PickerItem[] {
+    return this.#params.optionsInitial;
   }
 }
