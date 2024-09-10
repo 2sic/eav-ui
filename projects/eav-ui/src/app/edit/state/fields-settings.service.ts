@@ -1,7 +1,7 @@
-import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
-import { EavItem } from '../shared/models/eav';
+import { EavContentType, EavItem } from '../shared/models/eav';
 import { transient } from '../../core';
 import { FormConfigService } from '../form/form-config.service';
 import { FieldProps } from './fields-configs.model';
@@ -24,7 +24,7 @@ const logSpecs = {
 }
 const activateAnalyzer = false;
 
-const maxCyclesMs = 250;
+const maxCyclesMs = 1000;
 const maxCyclesPerTime = 10;
 const maxCyclesWarning = "Max cycles reached, stopping for this second";
 
@@ -118,69 +118,126 @@ export class FieldsSettingsService {
     this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#fieldValues, forceDebug);
 
     // Protect against infinite loops
-    const watchRestart = signal(0);
-    let cycle = 0;
+    const deps: Deps = {
+      idMsg: `entityGuid: ${entityGuid}; contentTypeId: ${ct.Id};`,
+      cycle: 0,
+      analyzer: null as ComputedAnalyzer<Record<string, FieldProps>>,
+      disabled: this.#disabled,
+      slotIsEmpty,
+      forceRefresh: this.#forceRefresh,
+      watchRestart: signal(0),
+      prevFieldProps: {} as Record<string, FieldProps>,
+    } satisfies Deps;
+    
     setInterval(() => {
-      if (cycle > maxCyclesPerTime) {
-        this.log.a(`restarting max cycles from ${cycle}; entityGuid: ${entityGuid}; contentTypeId: ${ct.Id}`);
-        cycle = 0;
-        watchRestart.update(v => v + 1);
+      if (deps.cycle > maxCyclesPerTime) {
+        this.log.a(`restarting max cycles from ${deps.cycle}; ${deps.idMsg}`);
+        deps.cycle = 0;
+        deps.watchRestart.update(v => v + 1);
       }
     }, maxCyclesMs);
 
-    let prevFieldProps: Record<string, FieldProps> = {};
+    // let prevFieldProps: Record<string, FieldProps> = {};
 
-    let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
-    this.allProps = computedObj('allFieldProps', () => {
-      if (analyzer)
-        console.log('analyzer', { fieldProps: this.allProps }, analyzer.snapShotProducers(true));
+    // let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
+    this.allProps = computedObj('allFieldProps', () => this.#regenerateProps(deps));
 
-      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: ct.Id, props: this.allProps });
-      // If disabled, for any reason, return the previous value
-      // The #disabled is a safeguard as data will be missing when this is being cleaned up.
-      // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
-      if (this.#disabled() || slotIsEmpty())
-        return l.r(prevFieldProps, 'disabled or slotIsEmpty');
+    // this.allProps = computedObj('allFieldProps', () => {
+    //   if (deps.analyzer)
+    //     console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
 
-      // Listen to ForceRefresh. This is triggered by a) promise-completed messages and b) v1 formulas
-      this.#forceRefresh();
+    //   const l = this.log.fn('fieldsProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
+    //   // If disabled, for any reason, return the previous value
+    //   // The #disabled is a safeguard as data will be missing when this is being cleaned up.
+    //   // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
+    //   if (this.#disabled() || deps.slotIsEmpty())
+    //     return l.r(deps.prevFieldProps, 'disabled or slotIsEmpty');
 
-      // If we have reached the max cycles, we should stop
-      if (cycle++ > maxCyclesPerTime) {
-        const msg = `${maxCyclesWarning}; cycle: ${cycle} entityGuid: ${entityGuid}; contentTypeId: ${ct.Id}`;
-        console.warn(msg);
-        watchRestart(); // to ensure it can start again in a second, access this before we exit.
-        return l.r(prevFieldProps, msg);
-      }
+    //   // Listen to ForceRefresh. This is triggered by a) promise-completed messages and b) v1 formulas
+    //   this.#forceRefresh();
 
-      const latestFieldProps = this.#fieldsPropsUpdate.hasChanges()
-        ? this.#fieldsPropsUpdate.mergeMixins(prevFieldProps)
-        : prevFieldProps;
+    //   // If we have reached the max cycles, we should stop
+    //   if (deps.cycle++ > maxCyclesPerTime) {
+    //     const msg = `${maxCyclesWarning}; cycle: ${deps.cycle}; ${deps.idMsg};`;
+    //     console.warn(msg);
+    //     deps.watchRestart(); // to ensure it can start again in a second, access this before we exit.
+    //     return l.r(deps.prevFieldProps, msg);
+    //   }
+
+    //   const latestFieldProps = this.#fieldsPropsUpdate.hasChanges()
+    //     ? this.#fieldsPropsUpdate.mergeMixins(deps.prevFieldProps)
+    //     : deps.prevFieldProps;
       
-      // Note that this will access a lot of source signals
-      // whose dependencies will be incorporated into this calculation
-      const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
-      prevFieldProps = props;
+    //   // Note that this will access a lot of source signals
+    //   // whose dependencies will be incorporated into this calculation
+    //   const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
+    //   deps.prevFieldProps = props;
           
-      // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
-      // TODO: ATM unused #settingChangeBroadcast
-      // if (Object.keys(valueChanges).length > 0)
-      //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+    //   // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
+    //   // TODO: ATM unused #settingChangeBroadcast
+    //   // if (Object.keys(valueChanges).length > 0)
+    //   //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
 
-      return l.rSilent(props, 'normal update');
-      // const propsDiff = difference(props, prevFieldProps);
-      // if (Object.keys(propsDiff).length > 0) {
-      //   l.a('Fields Props Diff', propsDiff);
-      //   return l.r(props, `props: normal update`);
-      // } else {
-      //   return l.rSilent(prevFieldProps, 'props: no changes');
-      // }
-    });
+    //   return l.rSilent(props, 'normal update');
+    //   // const propsDiff = difference(props, prevFieldProps);
+    //   // if (Object.keys(propsDiff).length > 0) {
+    //   //   l.a('Fields Props Diff', propsDiff);
+    //   //   return l.r(props, `props: normal update`);
+    //   // } else {
+    //   //   return l.rSilent(prevFieldProps, 'props: no changes');
+    //   // }
+    // });
 
     if (activateAnalyzer)
-      analyzer = new ComputedAnalyzer(this.allProps);
+      deps.analyzer = new ComputedAnalyzer(this.allProps);
 
     this.#fieldsPropsUpdate = new FieldsPropertiesUpdates(entityGuid, this.allProps);
+  }
+
+  #regenerateProps(deps: Deps): Record<string, FieldProps> {
+    if (deps.analyzer)
+      console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
+
+    const l = this.log.fn('fieldsProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
+    // If disabled, for any reason, return the previous value
+    // The #disabled is a safeguard as data will be missing when this is being cleaned up.
+    // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
+    if (this.#disabled() || deps.slotIsEmpty())
+      return l.r(deps.prevFieldProps, 'disabled or slotIsEmpty');
+
+    // Listen to ForceRefresh. This is triggered by a) promise-completed messages and b) v1 formulas
+    this.#forceRefresh();
+
+    // If we have reached the max cycles, we should stop
+    if (deps.cycle++ > maxCyclesPerTime) {
+      const msg = `${maxCyclesWarning}; cycle: ${deps.cycle}; ${deps.idMsg};`;
+      console.warn(msg);
+      deps.watchRestart(); // to ensure it can start again in a second, access this before we exit.
+      return l.r(deps.prevFieldProps, msg);
+    }
+
+    const latestFieldProps = this.#fieldsPropsUpdate.hasChanges()
+      ? this.#fieldsPropsUpdate.mergeMixins(deps.prevFieldProps)
+      : deps.prevFieldProps;
+    
+    // Note that this will access a lot of source signals
+    // whose dependencies will be incorporated into this calculation
+    const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
+    deps.prevFieldProps = props;
+        
+    // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
+    // TODO: ATM unused #settingChangeBroadcast
+    // if (Object.keys(valueChanges).length > 0)
+    //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
+
+    return l.rSilent(props, 'normal update');
+    // const propsDiff = difference(props, prevFieldProps);
+    // if (Object.keys(propsDiff).length > 0) {
+    //   l.a('Fields Props Diff', propsDiff);
+    //   return l.r(props, `props: normal update`);
+    // } else {
+    //   return l.rSilent(prevFieldProps, 'props: no changes');
+    // }
   }
 
 
@@ -238,4 +295,15 @@ export class FieldsSettingsService {
    * ATM just used for formulas which have data-sources.
    */
   public get pickerData(): Record<string, PickerData> { return this.#propsEngine.pickerData; };
+}
+
+interface Deps {
+  idMsg: string,
+  cycle: number,
+  analyzer: ComputedAnalyzer<Record<string, FieldProps>>,
+  disabled: Signal<boolean>,
+  slotIsEmpty: Signal<boolean>,
+  forceRefresh: Signal<number>,
+  watchRestart: WritableSignal<number>,
+  prevFieldProps: Record<string, FieldProps>,
 }
