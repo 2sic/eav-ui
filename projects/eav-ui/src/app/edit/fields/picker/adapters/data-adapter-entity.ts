@@ -1,16 +1,15 @@
 import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { Injectable } from '@angular/core';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { DataAdapterBase } from './data-adapter-base';
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
-  protected dataSourceRaw = transient(DataSourceEntity);
+  log = classLog({DataAdapterEntity}, DataAdapterBase.logSpecs);
 
-  constructor() {
-    super(new EavLogger('DataAdapterEntity'));
-  }
+  protected dataSourceRaw = transient(DataSourceEntity);
 
   onAfterViewInit(): void {
     super.onAfterViewInit();

@@ -1,20 +1,32 @@
 import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
-import { DataSourceString } from "../data-sources/data-source-string";
-import { Injectable } from '@angular/core';
+import { Injectable, Injector, inject } from '@angular/core';
+import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { transient } from '../../../../core/transient';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { StateAdapter } from './state-adapter';
 
 @Injectable()
-export class DataAdapterString extends DataAdapterBase {
+export class DataAdapterEmpty extends DataAdapterBase {
 
-  log = classLog({DataAdapterString}, DataAdapterBase.logSpecs);
-
+  log = classLog({DataAdapterEmpty}, DataAdapterBase.logSpecs);
+  
   public features = signalObj('features', { edit: false, create: false, delete: false, } satisfies Partial<PickerFeatures>);
 
-  protected dataSourceRaw = transient(DataSourceString);
+  protected dataSourceRaw = transient(DataSourceEmpty);
+
+  public override connectState(state: StateAdapter): this {
+    this.dataSourceRaw.preSetup("Error: configuration missing");
+    return super.connectState(state);
+  }
+
+  public setupEmpty(): this {
+    const l = this.log.fnIf('setupEmpty');
+    this.dataSource.set(this.dataSourceRaw.preSetup("Error: configuration missing"));
+    return l.rSilent(this);
+  }
 
   /** should never be needed as we have synchronously all data in settings */
   override initPrefetch(prefetchGuids: string[]): void { }
@@ -23,7 +35,7 @@ export class DataAdapterString extends DataAdapterBase {
   override forceReloadData(missingData: string[]): void { }
 
   fetchItems(): void {
-    this.log.fnIf('fetchItems');
+    this.log.a('fetchItems');
     this.dataSource().triggerGetAll();
   }
 

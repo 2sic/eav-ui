@@ -4,42 +4,35 @@ import { Injectable, untracked } from '@angular/core';
 import { PickerItemFactory } from '../models/picker-item.model';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { transient } from '../../../../core/transient';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-
-const logThis = false;
-const logName = 'PickerQuerySourceAdapter';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { DataAdapterBase } from './data-adapter-base';
 
 @Injectable()
 export class DataAdapterQuery extends DataAdapterEntityBase {
+  log = classLog({DataAdapterQuery}, DataAdapterBase.logSpecs);
+
   protected dataSourceRaw = transient(DataSourceQuery);
 
-  constructor() {
-    super(new EavLogger(logName, logThis));
-  }
-
-  /** Url Parameters - often mask - from settings; debounced */
-  #urlParametersSettings = computedObj('urlParametersSettings', () => this.fieldState.settings().UrlParameters);
+  /** Url Parameters - often mask - from settings */
+  #maskTemplate = computedObj('urlParametersSettings', () => this.fieldState.settings().UrlParameters);
 
   /** This is a text or mask containing all query parameters. Since it's a mask, it can also contain values from the current item */
-  #queryParamsMask = computedObj('queryParamsMask', () => {
-    const urlParameters = this.#urlParametersSettings();
-    // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
-    let fieldMask: FieldMask;
-    untracked(() => {
-      fieldMask = transient(FieldMask, this.injector).init(logName, urlParameters);
-    });
+  #paramsMaskLazy = computedObj('paramsMaskLazy', () => {
+    const urlParameters = this.#maskTemplate();
+    // Note: untracked so that the creation of the mask (which has signals) doesn't trigger additional computations
+    const fieldMask = untracked(() => transient(FieldMask, this.injector).init(this.log.name, urlParameters));
     return fieldMask;
   });
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dataSourceRaw.setParams(this.#queryParamsMask()?.result());
+    this.dataSourceRaw.setParams(this.#paramsMaskLazy()?.result());
   }
 
   fetchItems(): void {
     this.log.a('fetchItems');
-    this.dataSourceRaw.setParams(this.#queryParamsMask()?.result());
+    this.dataSourceRaw.setParams(this.#paramsMaskLazy()?.result());
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
       const errors = [PickerItemFactory.placeholder(this.translate, 'Fields.Picker.QueryNotDefined')];

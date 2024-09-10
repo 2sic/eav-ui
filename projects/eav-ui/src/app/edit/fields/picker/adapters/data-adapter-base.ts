@@ -8,6 +8,9 @@ import { StateAdapter } from './state-adapter';
 
 export abstract class DataAdapterBase {
 
+  /** Log Specs to be used as a basis for all inheriting classes */
+  static logSpecs = { all: false, setupEmpty: true, connectState: false, fetchItems: false };
+
   /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
   public abstract features: Signal<Partial<PickerFeatures>>;
 
@@ -23,27 +26,21 @@ export abstract class DataAdapterBase {
 
   public deleteCallback: (props: DeleteEntityProps) => void;
 
-  log: EavLogger;
-  constructor(logSpecs: EavLogger) {
-    this.log = logSpecs;
-  }
+  log: EavLogger<typeof DataAdapterBase.logSpecs>;
+
+  constructor() { }
 
   //#region Setup
 
   protected abstract dataSourceRaw: DataSourceBase;
 
   public connectState(state: StateAdapter): this {
-    const l = this.log.fn('connectState');
+    const l = this.log.fnIf('connectState');
 
     this.dataSource.set(this.dataSourceRaw.setup());
 
-    this.setup(p => state.doAfterDelete(p));
+    this.deleteCallback = p => state.doAfterDelete(p);
     return l.rSilent(this);
-  }
-
-
-  protected setup(deleteCallback: (props: DeleteEntityProps) => void): void {
-    this.deleteCallback = deleteCallback;
   }
 
   //#endregion

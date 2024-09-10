@@ -32,11 +32,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
-  constructor(logSpecs: EavLogger) {
-    super(logSpecs);
-    this.log.a('constructor');
-  }
-
   public linkLog(log: EavLogger): this {
     if (!this.log.enabled)
       this.log.inherit(log);
@@ -46,24 +41,21 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   //#endregion
 
   /** Content Type Mask */
-  #typeMaskFromSettings = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
+  #maskTemplate = computedObj('typeMaskFromSettings', () => this.fieldState.settings().EntityType);
 
   /**
    * This is a text or mask containing all query parameters.
    * Since it's a mask, it can also contain values from the current item
    */
-  #contentTypeMaskLazy = computedObj('contentTypeMaskLazy', () => {
-    const typeMask = this.#typeMaskFromSettings();
-    // Note: this is a bit ugly, not 100% sure if the cleanup will happen as needed
-    let fieldMask: FieldMask;
-    untracked(() => {
-      fieldMask = transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask);
-    });
+  #paramsMaskLazy = computedObj('paramsMaskLazy', () => {
+    const typeMask = this.#maskTemplate();
+    // Note: untracked so that the creation of the mask (which has signals) doesn't trigger additional computations
+    const fieldMask = untracked(() => transient(FieldMask, this.injector).init('PickerSource-EntityType', typeMask));
     return fieldMask;
   });
 
 
-  protected contentType = computedObj('contentType', () => this.#contentTypeMaskLazy()?.result() ?? '');
+  protected contentType = computedObj('contentType', () => this.#paramsMaskLazy()?.result() ?? '');
 
   #createEntityTypes = computedObj('createEntityTypes', () => this.fieldState.settings().CreateTypes);
 

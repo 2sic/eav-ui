@@ -6,12 +6,13 @@ import { DataAdapterString } from './adapters/data-adapter-string';
 import { DataAdapterQuery } from './adapters/data-adapter-query';
 import { DataAdapterEntity } from './adapters/data-adapter-entity';
 import { OfPickerConfig, PickerConfigs } from './constants/picker-config-model.constants';
-import { DeleteEntityProps } from './models/picker.models';
 import { StateAdapterString } from './adapters/state-adapter-string';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
 import { classLog } from '../../../shared/logging';
+import { DataAdapterEmpty } from './adapters/data-adapter-empty';
+import { DataAdapterBase } from './adapters/data-adapter-base';
 
 /**
  * Factory for creating PickerData instances.
@@ -70,7 +71,7 @@ export class PickerDataSetup {
     return transient(type, this.#injector) as StateAdapterString;
   }
 
-  #getSourceAdapter(inputType: InputTypeStrict, dataSourceType: string, state: StateAdapter): DataAdapterString | DataAdapterQuery | DataAdapterEntity {
+  #getSourceAdapter(inputType: InputTypeStrict, dataSourceType: string, state: StateAdapter): DataAdapterBase {
 
     // Get config for allowed sources / adapters for the current inputType
     const parts = partsMap[inputType];
@@ -94,11 +95,14 @@ export class PickerDataSetup {
     }
 
     // If we still don't know the type, add a no-configured-yet data-source
-    if (!dsType)
-      return transient(DataAdapterString, this.#injector).setupEmpty();
+    if (!dsType) {
+      return transient(DataAdapterEmpty, this.#injector).connectState(state);
+    }
   }
 
   #throwIfSourceAdapterNotAllowed(inputType: InputTypeStrict, dataSourceType: ProviderToken<unknown>): boolean {
+    // Empty is always allowed, as it's usually for errors / missing configs
+    if (dataSourceType === DataAdapterEmpty) return false;
     if (partsMap[inputType]?.sources?.includes(dataSourceType)) return false;
     throw new Error(`Specified SourceAdapter not allowed for inputTypeSpecs: ${inputType}: ${DataAdapterString}`);
   }
