@@ -1,5 +1,4 @@
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../fields/wrappers/localization/translate-menu/translate-menu.helpers';
 import { FormLanguage } from '../form/form-languages.model';
@@ -8,11 +7,7 @@ import { TranslationState, TranslationStateCore } from '../localization/translat
 import { TranslationLinks } from '../localization/translation-link.constants';
 import { EavField, EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-
-const logSpecs = {
-  enabled: true,
-  name: 'FieldsSettingsHelpers',
-};
+import { classLog } from '../../shared/logging';
 
 /**
  * Helper to figure out / initialize field settings.
@@ -21,10 +16,10 @@ const logSpecs = {
  */
 export class FieldsSettingsHelpers {
 
-  log: EavLogger;
+  // TODO: conditionally create logger based on source name
+  log = classLog({FieldsSettingsHelpers});
+
   constructor(source: string) {
-    // TODO: conditionally create logger based on source name
-    this.log = new EavLogger(logSpecs);
   }
 
   getDefaultSettings(settings: FieldSettings): FieldSettings {

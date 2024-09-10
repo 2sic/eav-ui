@@ -7,24 +7,15 @@ import { ValidationHelpers } from '../shared/validation/validation.helpers';
 import { MetadataDecorators } from './metadata-decorators.constants';
 import { FieldConstantsOfLanguage } from './fields-configs.model';
 import { FormLanguage } from '../form/form-languages.model';
-import { EavLogger } from '../../shared/logging/eav-logger';
-
-const logSpecsFactory = {
-  enabled: false,
-  name: 'FieldSettingsUpdateHelperFactory',
-};
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'FieldSettingsUpdateHelper',
-  specs: {
-    correctSettingsAfterChanges: true,
-    schemaDisablesTranslation: true,
-    getDisabledBecauseTranslations: true,
-  }
+  correctSettingsAfterChanges: true,
+  schemaDisablesTranslation: true,
+  getDisabledBecauseTranslations: true,
 };
 export class FieldSettingsUpdateHelperFactory {
-  log = new EavLogger(logSpecsFactory);
+  log = classLog({FieldSettingsUpdateHelperFactory});
   constructor(
     // General & Content Type Info
     private contentTypeMetadata: EavEntity[],
@@ -63,7 +54,7 @@ export class FieldSettingsUpdateHelperFactory {
  */
 export class FieldSettingsUpdateHelper {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({FieldSettingsUpdateHelper}, logSpecs);
 
   constructor(
     // General & Content Type Info

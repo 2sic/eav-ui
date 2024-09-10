@@ -2,7 +2,6 @@ import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
 import { EavItem } from '../shared/models/eav';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
 import { FormConfigService } from '../form/form-config.service';
 import { FieldProps } from './fields-configs.model';
@@ -16,14 +15,11 @@ import { FieldsPropertiesUpdates } from './fields-properties-updates';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { computedObj, named } from '../../shared/signals/signal.utilities';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  name: 'FieldsSettingsService',
-  enabled: false,
-  specs: {
-    // Debug only on the following content type
-    type: '', //'@String';
-  }
+  // Debug only on the following content type
+  type: '', //'@String';
 }
 const activateAnalyzer = false;
 
@@ -52,7 +48,7 @@ export class FieldsSettingsService {
   // #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
   #propsEngine = transient(FieldsPropsEngine);
 
-  log = new EavLogger(logSpecs);
+  log = classLog({FieldsSettingsService}, logSpecs);
 
   constructor() { }
 

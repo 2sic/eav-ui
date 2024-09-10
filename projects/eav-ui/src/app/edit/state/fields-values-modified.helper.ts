@@ -1,4 +1,3 @@
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FieldValuePair } from '../formulas/results/formula-results.models';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
@@ -6,12 +5,10 @@ import { Signal } from '@angular/core';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
 import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
 import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
-
-const logThis = false;
-const nameOfThis = 'FieldsValuesModifiedHelper';
+import { classLog } from '../../shared/logging';
 
 export class FieldsValuesModifiedHelper {
-  private log = new EavLogger(nameOfThis, logThis);
+  private log = classLog({FieldsValuesModifiedHelper});
 
   constructor(
     private contentType: Signal<EavContentType>,

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 import { EditApiKeyPaths } from '../../shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../shared/models/dialog-context.models';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldReader } from '../localization/field-reader';
 import { EavEntityAttributes, EavItem } from '../shared/models/eav';
 import { FieldsSettingsService } from './fields-settings.service';
@@ -14,24 +13,21 @@ import { ContentTypeService } from '../shared/content-types/content-type.service
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldTranslationInfo } from './field-translation-info';
+import { classLog } from '../../shared/logging';
 
 const apiKeyInDemoModeAlert = `This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`;
 
 const logSpecs = {
-  enabled: false,
-  name: 'FieldsTranslateService',
-  specs: {
-    all: true,
-    constructor: false,
-    init: true,
-    unlock: true,
-    lock: true,
-    getInfo: true,
-    autoTranslate: true,
-    findAutoTranslatableFields: true,
-    addItemAttributeValueHelper: true,
-  }
-}
+  all: true,
+  constructor: false,
+  init: true,
+  unlock: true,
+  lock: true,
+  getInfo: true,
+  autoTranslate: true,
+  findAutoTranslatableFields: true,
+  addItemAttributeValueHelper: true,
+};
 
 /**
  * Fields-Translation service.
@@ -39,7 +35,7 @@ const logSpecs = {
  */
 @Injectable()
 export class FieldsTranslateService {
-  log = new EavLogger(logSpecs);
+  log = classLog({FieldsTranslateService}, logSpecs);
 
   #itemAttributes: Signal<EavEntityAttributes>;
 

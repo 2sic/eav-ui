@@ -1,11 +1,8 @@
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { FieldConstantsOfLanguage } from './fields-configs.model';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-
-const logThis = false;
-const nameOfThis = 'ItemFieldVisibility';
+import { classLog } from '../../shared/logging';
 
 /**
  * Small helper to parse Item-Field-Visibility requirements from the URL.
@@ -16,7 +13,7 @@ export class ItemFieldVisibility {
   private defaultIsShow = true;
   private fields: Record<string, boolean> = null;
 
-  private log = new EavLogger(nameOfThis, logThis);
+  private log = classLog({ItemFieldVisibility});
 
   constructor(identifier: ItemIdentifierShared) {
     const l = this.log.fn('ctor', { identifier });

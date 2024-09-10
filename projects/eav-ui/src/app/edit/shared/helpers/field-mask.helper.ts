@@ -87,7 +87,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ i
   }
 
   public initSignal(name: string, mask: Signal<string>): this {
-    this.log.rename(`${this.log.name}-${name}`);
+    this.log.extendName(`-${name}`);
     const l = this.log.fn('init', { name, mask });
     this.#maskSignal.set(mask);
     this.#updateMaskFinal();

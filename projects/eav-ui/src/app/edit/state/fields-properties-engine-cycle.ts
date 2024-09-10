@@ -2,14 +2,11 @@ import { FieldConstantsOfLanguage, FieldProps } from './fields-configs.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { WrapperHelper } from '../fields/wrappers/wrapper.helper';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsPropsEngine } from './fields-properties-engine';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
-
-const logThis = false;
-const nameOfThis = 'FieldsPropsEngineCycle';
+import { classLog } from '../../shared/logging';
 
 const maxChangeCycles = 5;
 
@@ -27,7 +24,7 @@ const maxChangeCycles = 5;
  * Note that as of now, this engine should be created and discarded on every cycle.
  */
 export class FieldsPropsEngineCycle {
-  private log = new EavLogger(nameOfThis, logThis);
+  private log = classLog({FieldsPropsEngineCycle});
 
   constructor(
     private engine: FieldsPropsEngine,

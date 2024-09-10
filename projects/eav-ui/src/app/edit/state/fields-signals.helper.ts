@@ -4,25 +4,21 @@ import { EntityReader } from '../shared/helpers';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { FieldValue } from '../../../../../edit-types';
 import { ItemService } from './item.service';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { difference } from '../../shared/helpers/difference';
 import { named } from '../../shared/signals/signal.utilities';
-
-const logThis = false;
-const nameOfThis = 'FieldsSignalsHelper';
-
-const logChanges = false;
-const nameOfLogChanges = 'FieldValues';
+import { classLog } from '../../shared/logging';
 
 @Injectable()
 export class FieldsSignalsHelper {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({FieldsSignalsHelper}, {
+    logChanges: false,
+  });
 
   constructor(private itemSvc: ItemService) {
-    if (logChanges) {
-      const lChange = new EavLogger(nameOfLogChanges, logChanges);
+    if (this.log.specs.logChanges) {
+      const lChange = classLog('FieldValues');
       lChange.a('will log value changes');
       let before: Record<string, FieldValue> = {};
       effect(() => {

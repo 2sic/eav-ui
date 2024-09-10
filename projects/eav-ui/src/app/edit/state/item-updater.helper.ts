@@ -7,34 +7,29 @@ import { FieldReader } from '../localization/field-reader';
 import { FormLanguage, Language } from '../form/form-languages.model';
 import { EntityReader, FieldHelper } from '../shared/helpers';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
 import { FieldWriter } from '../localization/field-writer';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'ItemUpdateHelper',
-  specs: {
-    all: true,
-    updateItemId: false,
-    updateItemHeader: false,
-    addItemAttributeValue: false,
-    updateItemAttributeValue: false,
-    setDefaultValue: false,
-    updateItemAttributesValues: false,
-    addItemAttributeDimension: false,
-    removeItemAttributeDimension: false,
-    updateItemMetadata: false,
-  }
+  all: true,
+  updateItemId: false,
+  updateItemHeader: false,
+  addItemAttributeValue: false,
+  updateItemAttributeValue: false,
+  setDefaultValue: false,
+  updateItemAttributesValues: false,
+  addItemAttributeDimension: false,
+  removeItemAttributeDimension: false,
+  updateItemMetadata: false,
 };
 
 export class ItemUpdateHelper {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({ItemUpdateHelper}, logSpecs);
   
-  constructor(private itemSvc: ItemService) {  
-  }
+  constructor(private itemSvc: ItemService) { }
 
   updateItemId(saveResult: SaveResult): void {
     const l = this.log.fnIf('updateItemId', { saveResult });

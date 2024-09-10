@@ -6,7 +6,6 @@ import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpe
 import { FormulaPromiseHandler } from '../formulas/promise/formula-promise-handler';
 import { FormulaEngine } from '../formulas/formula-engine';
 import { EavContentType, EavEntityAttributes, EavItem } from '../shared/models/eav';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldsValuesModifiedHelper } from './fields-values-modified.helper';
 import { FieldsPropsEngineCycle } from './fields-properties-engine-cycle';
 import { computed, inject, Injectable, Signal } from '@angular/core';
@@ -22,9 +21,7 @@ import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import isEqual from 'lodash-es/isEqual';
 import { named } from '../../shared/signals/signal.utilities';
-
-const logThis = false;
-const nameOfThis = 'FieldsPropsEngine';
+import { classLog } from '../../shared/logging';
 
 /**
  * Assistant helper to process / recalculate the value of fields and their settings.
@@ -32,7 +29,7 @@ const nameOfThis = 'FieldsPropsEngine';
  */
 @Injectable()
 export class FieldsPropsEngine {
-  private log = new EavLogger(nameOfThis, logThis);
+  private log = classLog({FieldsPropsEngine});
 
   // Shared / inherited services
   #formConfig = inject(FormConfigService);
@@ -65,7 +62,7 @@ export class FieldsPropsEngine {
     fieldsValues: FieldsSignalsHelper,
     forceDebug: boolean | null = null
   ): this {
-    this.log.rename(`${this.log.name}[${entityGuid.substring(0, 8)}]`);
+    this.log.extendName(`[${entityGuid.substring(0, 8)}]`);
     this.log.fn('init', { entityGuid, item, contentType, reader, forceDebug });
     if (forceDebug !== null) this.log.forceEnable(forceDebug);
 

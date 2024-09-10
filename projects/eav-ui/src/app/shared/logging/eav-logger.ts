@@ -47,15 +47,20 @@ export class EavLogger<TSpecs extends unknown = any> {
 
     const mainSpecs = LogManager.getSpecs(initialSpecs);
 
-    this.rename(mainSpecs.name);
+    this.#rename(mainSpecs.name);
     this.#setEnabled(mainSpecs.enabled);
     this.enableChildren = mainSpecs.enableChildren ?? false;
     this.specs = mainSpecs.specs;
   }
 
-  public rename(name: string) {
+  #rename(name: string) {
     this.name = name;
     this.nameWithSvcId = `${name}-${this.svcId}`;
+  }
+
+  public extendName(addOn: string): this {
+    this.#rename(`${this.name}${addOn}`);
+    return this;
   }
 
   public nameWithSvcId: string;

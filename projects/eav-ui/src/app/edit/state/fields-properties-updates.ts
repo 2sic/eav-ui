@@ -3,11 +3,7 @@ import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { Signal } from '@angular/core';
 import { FieldProps } from './fields-configs.model';
-
-const logSpecs = {
-  enabled: false,
-  name: 'FieldsPropertiesUpdates',
-};
+import { classLog } from '../../shared/logging';
 
 /**
  * Manage "manual" / forced updates of fields properties
@@ -16,7 +12,7 @@ export class FieldsPropertiesUpdates {
   log: EavLogger;
 
   constructor(private entityGuid: string, private fieldsProps: Signal<Record<string, FieldProps>>) {
-    this.log = new EavLogger({ ...logSpecs, name: `${logSpecs.name}[${entityGuid.substring(0, 8)}]` });
+    this.log = classLog({FieldsPropertiesUpdates}).extendName(`[${entityGuid.substring(0, 8)}]`);
   }
 
   fieldPropsMixins: Record<string, Partial<FieldSettings>> = {};

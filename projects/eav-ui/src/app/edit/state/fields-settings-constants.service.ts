@@ -1,7 +1,6 @@
 import { computed, Injectable, Signal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { EntityReader } from '../shared/helpers';
 import { EavItem, EavContentType } from '../shared/models/eav';
 import { FormConfigService } from '../form/form-config.service';
@@ -10,11 +9,7 @@ import { FieldConstants, FieldConstantsOfLanguage } from './fields-configs.model
 import { InputTypeService } from '../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 import { FieldsSettingsHelpers } from './field-settings.helper';
-
-const logSpecs = {
-  enabled: false,
-  name: 'FieldsSettingsConstantsService',
-};
+import { classLog } from '../../shared/logging';
 
 /**
  * Each instance is responsible for a single entity.
@@ -26,14 +21,14 @@ export class FieldsSettingsConstantsService {
   private entityReaderCurrent: Signal<EntityReader>;
   private contentType: EavContentType;
 
-  log = new EavLogger(logSpecs);
+  log = classLog({FieldsSettingsConstantsService});
 
   constructor(
     private formConfig: FormConfigService,
     private inputTypeSvc: InputTypeService,
   ) { }
 
-  #fss = new FieldsSettingsHelpers(logSpecs.name);
+  #fss = new FieldsSettingsHelpers(this.log.name);
 
   init(
     itemForIds: EavItem,

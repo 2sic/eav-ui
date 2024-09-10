@@ -1,16 +1,11 @@
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { FieldProps } from './fields-configs.model';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-
-const logSpecs = {
-  enabled: false,
-  name: 'FieldTranslationInfo',
-};
+import { classLog } from '../../shared/logging';
 
 export class FieldTranslationInfo implements Pick<FieldSettings, 'DisableTranslation' | 'DisableAutoTranslation'> {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({FieldTranslationInfo});
 
   constructor(private getFieldsProps: () => FieldProps) { }
 
