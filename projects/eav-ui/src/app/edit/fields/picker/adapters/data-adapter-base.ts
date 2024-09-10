@@ -1,9 +1,10 @@
 import { DeleteEntityProps } from '../models/picker.models';
-import { Optional, Signal } from '@angular/core';
+import { Signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { StateAdapter } from './state-adapter';
 
 export abstract class DataAdapterBase {
 
@@ -17,10 +18,7 @@ export abstract class DataAdapterBase {
    * The options to show.
    * Can be different from the underlying data, since it may have error or loading-entries.
    * This is a signal, so it can be used in the template. it will _never_ be null.
-   *
-   * WIP: Currently based on the observable
    */
-  protected useDataSourceStream = signalObj('useDataSourceStream', false);
   public optionsOrHints = computedObj('optionsOrHints', () => (this.dataSource().data()) ?? []);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
@@ -30,9 +28,25 @@ export abstract class DataAdapterBase {
     this.log = logSpecs;
   }
 
+  //#region Setup
+
+  protected abstract dataSourceRaw: DataSourceBase;
+
+  public connectState(state: StateAdapter): this {
+    const l = this.log.fn('connectState');
+
+    this.dataSource.set(this.dataSourceRaw.setup());
+
+    this.setup(p => state.doAfterDelete(p));
+    return l.rSilent(this);
+  }
+
+
   protected setup(deleteCallback: (props: DeleteEntityProps) => void): void {
     this.deleteCallback = deleteCallback;
   }
+
+  //#endregion
 
   init(callerName: string) { }
 

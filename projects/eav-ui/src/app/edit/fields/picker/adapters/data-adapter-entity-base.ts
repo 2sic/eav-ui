@@ -4,9 +4,6 @@ import { DeleteEntityProps } from "../models/picker.models";
 import { DataAdapterBase } from "./data-adapter-base";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { StateAdapter } from './state-adapter';
-import { DataSourceBase } from '../data-sources/data-source-base';
-import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { Injector, inject, untracked } from '@angular/core';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
@@ -95,22 +92,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
       ? [PickerItemFactory.message(this.translate, 'Fields.Picker.Loading'), ...items]
       : items;
   });
-
-  protected abstract dataSourceEntityOrQuery: DataSourceBase;
-
-  public connectState(state: StateAdapter, useEmpty: boolean): this {
-    const l = this.log.fn('connectState');
-
-    this.dataSource.set(useEmpty
-      ? transient(DataSourceEmpty, this.injector).preSetup("Error: configuration missing")
-      : this.dataSourceEntityOrQuery.setup()
-    );
-    if (useEmpty)
-      this.useDataSourceStream.set(true);
-
-    super.setup(state.doAfterDelete);
-    return l.rSilent(this);
-  }
 
   initPrefetch(prefetchGuids: string[]): void {
     (this.dataSource() as DataSourceEntityQueryBase).initPrefetch?.(prefetchGuids);

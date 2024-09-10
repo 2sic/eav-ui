@@ -6,7 +6,7 @@ import { transient } from '../../../../core/transient';
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {
-  protected dataSourceEntityOrQuery = transient(DataSourceEntity);
+  protected dataSourceRaw = transient(DataSourceEntity);
 
   constructor() {
     super(new EavLogger('DataAdapterEntity'));
@@ -14,11 +14,11 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.dataSourceEntityOrQuery.setParams(this.contentType());
+    this.dataSourceRaw.setParams(this.contentType());
   }
 
   fetchItems(): void {
-    this.dataSourceEntityOrQuery.setParams(this.contentType());
+    this.dataSourceRaw.setParams(this.contentType());
     this.dataSource().triggerGetAll();
   }
 }

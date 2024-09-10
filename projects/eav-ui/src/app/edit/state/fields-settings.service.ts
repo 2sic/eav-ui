@@ -237,5 +237,5 @@ export class FieldsSettingsService {
    * Field States for every field.
    * ATM just used for formulas which have data-sources.
    */
-  public pickerData: Record<string, PickerData> = {};
+  public get pickerData(): Record<string, PickerData> { return this.#propsEngine.pickerData; };
 }

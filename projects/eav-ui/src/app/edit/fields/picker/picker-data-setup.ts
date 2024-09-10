@@ -1,7 +1,5 @@
 import { Injector, ProviderToken } from '@angular/core';
 import { transient } from '../../../core';
-import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { PickerData } from './picker-data';
 import { FieldState } from '../field-state';
 import { DataAdapterString } from './adapters/data-adapter-string';
@@ -38,13 +36,6 @@ export class PickerDataSetup {
   // 3. The control will override initAdaptersAndViewModel()
   // 3.1 init state with
   // ... it will also attach a CALLBACK! for focused?
-
-
-  static createPickerData(inputType: InputTypeSpecs, injector: Injector): PickerData {
-    return (InputTypeHelpers.isAnyPicker(inputType.inputType))
-      ? transient(PickerData, injector)
-      : null;
-  }
 
   /**
    * Setup / initialize a Picker Data.
@@ -89,25 +80,22 @@ export class PickerDataSetup {
 
     if (dsType === PickerConfigs.UiPickerSourceCustomList) {
       this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterString);
-      return transient(DataAdapterString, this.#injector).setupString(
-        (props: DeleteEntityProps) => state.doAfterDelete(props),
-        false,
-      );
+      return transient(DataAdapterString, this.#injector).connectState(state);
     }
     
     if (dsType === PickerConfigs.UiPickerSourceQuery) {
       this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterQuery);
-      return transient(DataAdapterQuery, this.#injector).linkLog(this.log).connectState(state, false);
+      return transient(DataAdapterQuery, this.#injector).linkLog(this.log).connectState(state);
     }
     
     if (dsType === PickerConfigs.UiPickerSourceEntity) {
       this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterEntity);
-      return transient(DataAdapterEntity, this.#injector).linkLog(this.log).connectState(state, false);
+      return transient(DataAdapterEntity, this.#injector).linkLog(this.log).connectState(state);
     }
 
     // If we still don't know the type, add a no-configured-yet data-source
     if (!dsType)
-      return transient(DataAdapterString, this.#injector).setupString(null, true);
+      return transient(DataAdapterString, this.#injector).setupEmpty();
   }
 
   #throwIfSourceAdapterNotAllowed(inputType: InputTypeStrict, dataSourceType: ProviderToken<unknown>): boolean {

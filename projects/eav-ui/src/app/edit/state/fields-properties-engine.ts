@@ -21,14 +21,21 @@ import { FieldsSettingsService } from './fields-settings.service';
 import { FieldsSignalsHelper } from './fields-signals.helper';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
+import { PickerDataFactory } from '../fields/picker/picker-data.factory';
+import { PickerData } from '../fields/picker/picker-data';
 
+const logSpecs = {
+  all: false,
+  init: true,
+  getPickers: true,
+}
 /**
  * Assistant helper to process / recalculate the value of fields and their settings.
  * 
  */
 @Injectable()
 export class FieldsPropsEngine {
-  private log = classLog({FieldsPropsEngine});
+  private log = classLog({FieldsPropsEngine}, logSpecs, true);
 
   // Shared / inherited services
   #formConfig = inject(FormConfigService);
@@ -39,6 +46,7 @@ export class FieldsPropsEngine {
 
   // Transient services for this instance only
   #constantsService = transient(FieldsSettingsConstantsService);
+  #pickerFac = transient(PickerDataFactory);
   public formulaEngine = transient(FormulaEngine);
   public formulaPromises = transient(FormulaPromiseHandler);
   
@@ -62,7 +70,7 @@ export class FieldsPropsEngine {
     forceDebug: boolean | null = null
   ): this {
     this.log.extendName(`[${entityGuid.substring(0, 8)}]`);
-    this.log.fn('init', { entityGuid, item, contentType, reader, forceDebug });
+    const l = this.log.fnIf('init', { entityGuid, item, contentType, reader, forceDebug });
     if (forceDebug !== null) this.log.forceEnable(forceDebug);
 
     this.item = item;
@@ -71,6 +79,9 @@ export class FieldsPropsEngine {
 
     const slotIsEmpty = this.#itemService.slotIsEmpty(entityGuid);
     const ct = contentType();
+
+    this.pickerData = this.#pickerFac.createPickersForAttributes(ct.Attributes);
+    l.a('Pickers created', this.pickerData);
 
     // Constant field parts which don't ever change.
     // They can only be created once the inputTypes and contentTypes are available
@@ -98,6 +109,8 @@ export class FieldsPropsEngine {
 
   #itemAttributes: Signal<EavEntityAttributes>;
 
+  pickerData: Record<string, PickerData>;
+
   /**
    * The languages used in the form, for retrieving various things during the calculation.
    */
@@ -108,6 +121,17 @@ export class FieldsPropsEngine {
    * Will be reset every time a new round starts.
    */
   cycle: FieldsPropsEngineCycle;
+
+  // getPickers() {
+  //   const l = this.log.fnIf('getPickers');
+  //   const attribs = this.#fieldLangConstants();
+
+  //   // Loop through the attributes to generate the pickers
+
+  //   const nameTypeDic = attribs.map(attrib => ({ name: attrib.fieldName, inputType: attrib.inputTypeSpecs }));
+  //   const pickersRec: Record<string, PickerData> = this.#pickerFac.#createPickersData(nameTypeDic);
+  //   return l.rSilent(pickersRec, `Pickers created: ${Object.keys(pickersRec).length}`);
+  // }
 
   /**
    *
@@ -142,11 +166,10 @@ export class FieldsPropsEngine {
   /**
    * Prepare / build FieldLogicTools for use in all the formulas / field settings updates
    */
-  #getPreparedParts(readerSignalToTriggerUpdate: Signal<EntityReader>, contentType: EavContentType, slotIsEmpty: Signal<boolean>
-  ): Signal<FieldSettingsUpdateHelperFactory> {
+  #getPreparedParts(readerSig: Signal<EntityReader>, contentType: EavContentType, slotIsEmpty: Signal<boolean>): Signal<FieldSettingsUpdateHelperFactory> {
     // Prepare / build FieldLogicTools for use in all the formulas / field settings updates
     const prepared = computedObj('prepared-parts', () => {
-      const reader = readerSignalToTriggerUpdate();
+      const reader = readerSig(); // must be as a signal, so a language change triggers an update
       const languages = reader;
       const isDebug = this.#globalConfigService.isDebug();
       const isReadOnly = this.#formsStateService.readOnly();

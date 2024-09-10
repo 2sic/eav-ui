@@ -18,7 +18,7 @@ export class PickerPartBaseComponent {
   fieldState = inject(FieldState);
 
   /** Picker Data Bundle with Source and state etc. */
-  pickerData = this.fieldState.pickerData; // input.required<PickerData>();
+  pickerData = this.fieldState.pickerData;
 
   public controlStatus = this.pickerData.state.controlStatus;
 
