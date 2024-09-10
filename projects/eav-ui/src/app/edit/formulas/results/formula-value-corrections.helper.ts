@@ -39,23 +39,25 @@ export class FormulaValueCorrections {
   allValues(result: FieldValue | FormulaResultRaw): FormulaResultRaw {
     // 2024-09-10 21:15 2dm changed this, as I believe all cases have a clear stop-value
     // const stop = (result as FormulaResultRaw)?.stop ?? null;
+    const defaults: Partial<FormulaResultRaw> = { fields: [], stop: null, wait: null };
     if (result === null || result === undefined)
-      return { value: result as FieldValue, fields: [], stop: null };
+      return { ...defaults, value: result as FieldValue};
     
     const targetIsValue = this.isValue;
 
     // Handle object results - the larger / more complex case
     if (typeof result === 'object') {
       if (result instanceof Date && targetIsValue)
-        return { value: this.#oneValue(result as FieldValue), fields: [], stop: null };
+        return { ...defaults, value: this.#oneValue(result as FieldValue) };
 
       if (result instanceof Promise)
-        return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop: null };
+        return { ...defaults, value: undefined, promise: result as Promise<FormulaResultRaw> };
 
       const raw: FormulaResultRaw = result as FormulaResultRaw;
 
       // fix stop so it's never undefined
       raw.stop ??= null;
+      raw.wait ??= null;
 
       // fix single value
       if (raw.value && targetIsValue)
@@ -91,7 +93,7 @@ export class FormulaValueCorrections {
     // Handle value only result
     // atm we are only correcting Value formulas
     if (targetIsValue) {
-      return { value: this.#oneValue(value.value), fields: [], stop: null };
+      return { ...defaults, value: this.#oneValue(value.value) };
     }
     return value;
   }
@@ -133,6 +135,7 @@ export class FormulaValueCorrections {
       value,
       fields: [],
       stop: null,
+      wait: null,
       openInDesigner: this.isOpen
     };
   }

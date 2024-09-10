@@ -9,7 +9,7 @@ export interface RunFormulasResult {
   value: FieldValue;
   fields: FieldValuePair[];
   pickers: PickerItem[];
-  optionsVersion: number | null;
+  pickerVersion: number | null;
 }
 
 export interface FormulaIdentifier {
@@ -29,6 +29,9 @@ export interface FormulaResultRaw {
 
   /** WIP v18 */
   options?: PickerItem[];
+
+  /** WIP v18 */
+  wait?: boolean;
 
   /** Note: not a real result, for internal use only */
   openInDesigner?: boolean;

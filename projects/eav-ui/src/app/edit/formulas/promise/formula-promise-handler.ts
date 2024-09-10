@@ -76,7 +76,7 @@ export class FormulaPromiseHandler {
 
     const queue = this.updateValueQueue;
     formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-      const corrected = new FormulaValueCorrections(formula.isValue, inputType, false).v2(result);
+      const raw = new FormulaValueCorrections(formula.isValue, inputType, false).v2(result);
 
       const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
       let valueUpdates: ItemValuesOfLanguage = {};
@@ -84,7 +84,7 @@ export class FormulaPromiseHandler {
 
       if (formula.isValue) {
         valueUpdates = queueItem.valueUpdates ?? {};
-        valueUpdates[formula.fieldName] = corrected.value;
+        valueUpdates[formula.fieldName] = raw.value;
       } else if (formula.isSetting) {
         l.a("formula promise settings");
         const settingName = formula.settingName;
@@ -95,10 +95,10 @@ export class FormulaPromiseHandler {
       }
 
       const fieldsUpdates = queueItem.fieldUpdates ?? [];
-      if (corrected.fields)
-        fieldsUpdates.push(...corrected.fields);
+      if (raw.fields)
+        fieldsUpdates.push(...raw.fields);
       queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
-      formula.stopFormula = corrected.stop ?? formula.stopFormula;
+      formula.stopFormula = raw.stop ?? formula.stopFormula;
       this.#fieldsSettingsService.retriggerFormulas('promise');
     });
   }

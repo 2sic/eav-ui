@@ -4,7 +4,7 @@ import { FeaturesService } from '../../features/features.service';
 import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaHelpers } from './formula.helpers';
-import { FormulaFunctionDefault, FormulaFunctionV1, FormulaVersions } from './formula-definitions';
+import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
 import { FormulaFieldValidation, FormulaNewPickerTargets, FormulaDefaultTargets, FormulaOptionalTargets } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
@@ -31,8 +31,6 @@ import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle'
 import { classLog } from '../../shared/logging';
 import { FormulaDeveloperHelper } from './formula-developer-helper';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
-import { ReactiveNode, SIGNAL } from '@angular/core/primitives/signals';
-import { Version } from '../../item-history/models/version.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 
 const logSpecs = {
@@ -51,7 +49,7 @@ function logDetailsFor(field: string) {
  */
 @Injectable()
 export class FormulaEngine {
-  log = classLog({ FormulaEngine }, logSpecs);
+  log = classLog({ FormulaEngine }, logSpecs, true);
 
   #features = inject(FeaturesService).getAll();
 
@@ -86,13 +84,18 @@ export class FormulaEngine {
    * Find formulas of the current field which are still running.
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
-  #activeFieldFormulas(entityGuid: string, name: string, forListItems: boolean = false): FormulaCacheItem[] {
+  #activeFieldFormulas(name: string, forListItems: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
     const targets = forListItems
       ? Object.values(FormulaNewPickerTargets)
       : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
-    return this.designerSvc.cache
-      .getFormulas(entityGuid, name, targets, false)
-      .filter(f => !f.stopFormula);
+    
+    const all = this.designerSvc.cache.getFormulas(this.#entityGuid, name, targets, false);
+
+    const unstopped = all.filter(f => !f.stopFormula);
+
+    const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
+
+    return unstopped;
   }
 
 
@@ -146,7 +149,7 @@ export class FormulaEngine {
 
       const pickerOptions = formulaResult.pickers;
       if (pickerOptions)
-        lAttr.a('picker options', { pickerOptions, version: formulaResult.optionsVersion });
+        lAttr.a('picker options', { pickerOptions, version: formulaResult.pickerVersion });
 
       fieldsProps[attr.Name] = {
         ...propsBefore,
@@ -158,7 +161,7 @@ export class FormulaEngine {
         buildWrappers: null, // required, but set elsewhere
         formulaValidation: formulaResult.validation,
         pickerOptions: pickerOptions ?? propsBefore.pickerOptions,
-        pickerVersion: formulaResult.optionsVersion ?? propsBefore.pickerVersion,
+        pickerVersion: formulaResult.pickerVersion ?? propsBefore.pickerVersion,
       };
     }
     return { fieldsProps, valueUpdates, fieldUpdates };
@@ -179,13 +182,38 @@ export class FormulaEngine {
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
-    const formulas = this.#activeFieldFormulas(this.#entityGuid, fieldName, constFieldPart.inputTypeSpecs.isNewPicker);
+    const doLog = logDetailsFor(fieldName);
+    const l = this.log.fnCond(doLog, 'runOneFieldOrInitSettings', { fieldName });
+
+    const picker = constFieldPart.pickerData();
+    const pickerVersion = getVersion(picker?.optionsSource);
+    const pickerVersionBefore = propsBefore.pickerVersion;
+    const hasChanged = pickerVersion !== pickerVersionBefore;
+    l.a('picker version', { pickerVersion, pickerVersionBefore, hasChanged });
+
+    const formulas = this.#activeFieldFormulas(fieldName, constFieldPart.inputTypeSpecs.isNewPicker, hasChanged);
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
-    const raw = hasFormulas
-      ? this.#runAllOfField(cycle, formulas, constFieldPart, settingsBefore, propsBefore, itemHeader, reuseObjectsForFormulaDataAndContext)
-      : { value: valueBefore, validation: null, fields: [], settings: {}, pickers: null, optionsVersion: null };
+    const raw = (() => {
+      // If we have no formulas, we need to set the value to the initial one as it might have been changed by formulas in the past
+      if (!hasFormulas)
+        return { value: valueBefore, validation: null, fields: [], settings: {}, pickers: null, pickerVersion: null };
+
+      const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
+        currentValues: cycle.values,
+        inputTypeName: constFieldPart.inputTypeSpecs.inputType,
+        settingsInitial: constFieldPart.settingsInitial,
+        settingsCurrent: settingsBefore,
+        itemHeader,
+        pickerRaw: picker?.optionsSource(),
+        pickerOptions: picker?.optionsFinal(),
+        pickerVersion,
+        pickerVersionBefore: pickerVersionBefore,
+      };
+  
+      return this.#runAllOfField(runParamsStatic, formulas, reuseObjectsForFormulaDataAndContext, doLog);
+    })();
 
     // Correct any settings necessary after
     // possibly making invalid changes in formulas or if settings need to adjust
@@ -200,36 +228,18 @@ export class FormulaEngine {
   }
 
   #runAllOfField(
-    cycle: FieldsPropsEngineCycle,
+    runParams: Omit<FormulaRunParameters, 'formula'>,
     formulas: FormulaCacheItem[],
-    constFieldPart: FieldConstantsOfLanguage,
-    settingsCurrent: FieldSettings,
-    propsBefore: FieldProps,
-    itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
+    doLog: boolean,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
-    const l = this.log.fnCond(logDetailsFor(formulas[0]?.fieldName), 'runFormulasOfField');
+    const l = this.log.fnCond(doLog, 'runFormulasOfField');
     // Target variables to fill using formula result
     let value: FieldValue;                   // The new value
     let validation: FormulaFieldValidation;  // The new validation
     const fields: FieldValuePair[] = [];     // Any additional fields
     let pickers: PickerItem[] = null; // Any additional picker options
     let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
-
-    const picker = constFieldPart.pickerData();
-    const pickerVersion = getVersion(picker?.optionsSource);
-    console.warn('picker version', pickerVersion, propsBefore.pickerVersion);
-    const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
-      currentValues: cycle.values,
-      inputTypeName: constFieldPart.inputTypeSpecs.inputType,
-      settingsInitial: constFieldPart.settingsInitial,
-      settingsCurrent,
-      itemHeader,
-      optionsInitial: picker?.optionsSource(),
-      optionsCurrent: picker?.optionsFinal(),
-      pickerVersion,
-      pickerVersionBefore: propsBefore.pickerVersion,
-    };
 
     const start = performance.now();
     for (const formula of formulas) {
@@ -238,7 +248,7 @@ export class FormulaEngine {
         // Show more debug in case of entity-pickers
         untracked(() => {
           if (formula.isValue) {
-            console.log('value', { value: cycle.values[formula.fieldName], picker: constFieldPart.pickerData().optionsFinal(), constFieldPart});
+            console.log('value', );
           }
         });
         continue;
@@ -247,7 +257,7 @@ export class FormulaEngine {
       const allRunParams: FormulaExecutionSpecsWithRunParams = {
         runParameters: {
           formula,
-          ...runParamsStatic,
+          ...runParams,
         },
         ...reuseObjectsForFormulaDataAndContext
       };
@@ -257,10 +267,14 @@ export class FormulaEngine {
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = formulaResult?.promise instanceof Promise;
       if (containsPromise)
-        this.#promiseHandler.handleFormulaPromise(formulaResult, formula, constFieldPart.inputTypeSpecs.inputType);
+        this.#promiseHandler.handleFormulaPromise(formulaResult, formula, runParams.inputTypeName);
 
       // Stop depends on explicit result and the default is different if it has a promise
       formula.stopFormula = formulaResult.stop ?? (containsPromise ? true : formula.stopFormula);
+
+      // Pause depends on explicit result; TODO: MAYBE automatic on Pickers
+      formula.pauseFormula = formulaResult.wait ?? formula.pauseFormula;
+      formula.pausedVersion = runParams.pickerVersion ?? -1;
 
       // If we have field changes, add to the list
       if (formulaResult.fields)
@@ -288,10 +302,10 @@ export class FormulaEngine {
       }
 
       // Target is a setting. Check validity and merge with other settings
-      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, settingsCurrent, formulaResult.value, settingsNew));
+      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, runParams.settingsCurrent, formulaResult.value, settingsNew));
     }
     const afterRun = performance.now();
-    return l.r({ value, validation, fields, settings: settingsNew, pickers, optionsVersion: pickerVersion }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
+    return l.r({ value, validation, fields, settings: settingsNew, pickers, pickerVersion: runParams.pickerVersion }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
   }
 
   /**
@@ -361,7 +375,7 @@ export class FormulaEngine {
           const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental);
           const v2Value = valHelper.v2(v2Raw);
           devHelper.showResult(v2Value.options as any ?? v2Value.value, false, !!v2Value.promise);
-          if (l.enabled) debugger;
+          // if (l.enabled) debugger;
           return v2Value;
 
         default:

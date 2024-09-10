@@ -119,6 +119,8 @@ export class FormulaCacheBuilder extends ServiceBase {
             app: sharedParts.app,   // new in v14.07.05
             sxc: sharedParts.sxc,   // put in shared in 14.11
             stopFormula: false,
+            pauseFormula: false,
+            pausedVersion: -1,
             ...this.#createPromisedParts(),
             ...this.#targetInfoForCacheItem(target),
           };
@@ -294,6 +296,8 @@ export class FormulaCacheBuilder extends ServiceBase {
       app: formula.app ?? shared.app,
       sxc: formula.sxc ?? shared.sxc,
       stopFormula: false,
+      pauseFormula: false,
+      pausedVersion: -1,
       ...streams,
       ...this.#targetInfoForCacheItem(id.target),
     };

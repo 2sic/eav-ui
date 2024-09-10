@@ -30,7 +30,7 @@ export class FormulaDataObject implements FormulaV1Data {
       return (settingsInitial as Record<string, any>)[formula.settingName];
 
     if (formula.isNewPicker)
-      return this.#params.optionsCurrent as unknown as FieldValue;
+      return this.#params.pickerOptions as unknown as FieldValue;
   }
 
   get initial(): FieldValue {
@@ -67,14 +67,14 @@ export class FormulaDataObject implements FormulaV1Data {
       return (this.#params.settingsCurrent as Record<string, any>)[formula.settingName];
 
     if (formula.isNewPicker)
-      return this.#params.optionsInitial as unknown as FieldValue;
+      return this.#params.pickerRaw as unknown as FieldValue;
   }
 
   get options(): PickerItem[] {
-    return this.#params.optionsCurrent;
+    return this.#params.pickerOptions;
   }
 
-  get optionsInitial(): PickerItem[] {
-    return this.#params.optionsInitial;
+  get optionsRaw(): PickerItem[] {
+    return this.#params.pickerRaw;
   }
 }

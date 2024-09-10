@@ -23,8 +23,8 @@ export interface FormulaRunParameters {
   settingsCurrent: FieldSettings;
   itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;
   
-  optionsInitial: PickerItem[];
-  optionsCurrent: PickerItem[];
+  pickerRaw: PickerItem[];
+  pickerOptions: PickerItem[];
   pickerVersion: number | null;
   pickerVersionBefore: number | null;
 }
