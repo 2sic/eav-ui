@@ -79,25 +79,9 @@ export class PickerDataSetup {
     // The config type is either the forced type (from defaults for old pickers) or the specified type
     const dsType = parts.forcePickerConfig ?? dataSourceType;
 
-    if (dsType === PickerConfigs.UiPickerSourceCustomList) {
-      this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterString);
-      return transient(DataAdapterString, this.#injector).connectState(state);
-    }
-    
-    if (dsType === PickerConfigs.UiPickerSourceQuery) {
-      this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterQuery);
-      return transient(DataAdapterQuery, this.#injector).linkLog(this.log).connectState(state);
-    }
-    
-    if (dsType === PickerConfigs.UiPickerSourceEntity) {
-      this.#throwIfSourceAdapterNotAllowed(inputType, DataAdapterEntity);
-      return transient(DataAdapterEntity, this.#injector).linkLog(this.log).connectState(state);
-    }
-
-    // If we still don't know the type, add a no-configured-yet data-source
-    if (!dsType) {
-      return transient(DataAdapterEmpty, this.#injector).connectState(state);
-    }
+    const dataAdapterType = mapNameToDataAdapter[dsType] ?? DataAdapterEmpty;
+    this.#throwIfSourceAdapterNotAllowed(inputType, dataAdapterType);
+    return transient(dataAdapterType, this.#injector).linkLog(this.log).connectState(state);
   }
 
   #throwIfSourceAdapterNotAllowed(inputType: InputTypeStrict, dataSourceType: ProviderToken<unknown>): boolean {
@@ -108,6 +92,12 @@ export class PickerDataSetup {
   }
 
 }
+
+const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
+  [PickerConfigs.UiPickerSourceCustomList]: DataAdapterString,
+  [PickerConfigs.UiPickerSourceQuery]: DataAdapterQuery,
+  [PickerConfigs.UiPickerSourceEntity]: DataAdapterEntity,
+};
 
 /**
  * Catalog of the parts to be used for each picker type.

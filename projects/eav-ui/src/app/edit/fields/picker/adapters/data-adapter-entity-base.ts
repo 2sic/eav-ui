@@ -32,12 +32,6 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
-  public linkLog(log: EavLogger): this {
-    if (!this.log.enabled)
-      this.log.inherit(log);
-    return this;
-  };
-
   //#endregion
 
   /** Content Type Mask */

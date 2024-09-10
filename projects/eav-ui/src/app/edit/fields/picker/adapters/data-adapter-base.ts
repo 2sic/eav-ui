@@ -30,7 +30,7 @@ export abstract class DataAdapterBase {
 
   constructor() { }
 
-  //#region Setup
+  //#region Setup & Init
 
   protected abstract dataSourceRaw: DataSourceBase;
 
@@ -43,9 +43,16 @@ export abstract class DataAdapterBase {
     return l.rSilent(this);
   }
 
+  init(callerName: string) { }
+
+  public linkLog(log: EavLogger): this {
+    if (!this.log.enabled)
+      this.log.inherit(log);
+    return this;
+  };
+
   //#endregion
 
-  init(callerName: string) { }
 
   onAfterViewInit(): void { }
 
