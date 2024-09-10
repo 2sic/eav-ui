@@ -4,11 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Injectable, inject } from '@angular/core';
 import { PickerFeatures } from './picker-features.model';
 import { DataAdapterBase } from './adapters/data-adapter-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { computedObj } from '../../../shared/signals/signal.utilities';
-
-const logThis = false;
-const nameOfThis = 'PickerData';
+import { classLog } from '../../../shared/logging';
 
 /**
  * Manages the data for the picker component.
@@ -20,8 +17,10 @@ export class PickerData {
 
   //#region Constructor, Log, Services
   
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({PickerData});
+
   constructor() { }
+
   #translate = inject(TranslateService);
   
   //#endregion

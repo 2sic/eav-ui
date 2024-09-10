@@ -5,7 +5,7 @@ import { CustomDefaultComponent } from '../basic/custom-default/custom-default.c
 import { PickerExpandableWrapperComponent } from '../../fields/wrappers/picker-dialog/picker-expandable-wrapper.component';
 import { InputComponents } from '../../fields/input-components.constant';
 import { InjectorBundle } from './injector-bundle.model';
-import { FieldInjectorService } from './field-injector.service';
+import { FieldStateInjectorFactory } from './field-injector.service';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { transient } from '../../../core';
 import { FieldConfigSet } from '../field-config-set.model';
@@ -26,16 +26,17 @@ import { classLog } from '../../../shared/logging';
 })
 export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
+  log = classLog({EditControlsBuilderDirective});
+
   /** Service to create custom injectors for each field */
-  #fieldInjector = transient(FieldInjectorService);
+  #fieldInjectorFac = transient(FieldStateInjectorFactory);
 
   /** Ref to this HTML DOM, for adding controls */
-  #thisContainerRef = inject(ViewContainerRef);
+  #myContainerRef = inject(ViewContainerRef);
 
   /** Service to get all settings for each field */
-  #fieldsSettingsService = inject(FieldsSettingsService);
+  #fieldsSettingsSvc = inject(FieldsSettingsService);
 
-  log = classLog({EditControlsBuilderDirective});
   constructor(private formConfigService: EntityFormStateService) {
     effect(() => {
       const onInitReady = this.onInitReady();
@@ -47,7 +48,7 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
       this.log.a('createControls RUN');
       // TODO: NOT YET CLEAR IF THIS IS THE RIGHT SOLUTION
       untracked(() => this.createControls());
-    }); // , { allowSignalWrites: true });
+    });
   }
 
   /** Field Configs for clean-up after the control closes */
@@ -61,13 +62,13 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
   createControls() {
     // clear container
-    this.#thisContainerRef.clear();
+    this.#myContainerRef.clear();
 
     // Set the current container to be "This" = the main container (not a specific group)
     // When groups open/close, this will be set to that group,
     // so fields are then inside that container.
-    let currentContainer = this.#thisContainerRef;
-    const fieldsProps = this.#fieldsSettingsService.allProps();
+    let currentContainer = this.#myContainerRef;
+    const fieldsProps = this.#fieldsSettingsSvc.allProps();
 
     // Loop through each field and create the component
     // If we encounter a group, we create a new container and set it as the main one
@@ -81,15 +82,16 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
       this.#fieldConfigSets.push(fieldConfig);
       const inputType = fieldProps.constants.inputTypeSpecs.inputType;
 
-      // If we encounter a group-start, then create a new container based on the main container
-      if (InputTypeHelpers.isGroupStart(inputType))
-        currentContainer = this.#createGroup(this.#thisContainerRef, fieldProps, fieldConfig);
-      // If we encounter a group-end, set the main container to be the default one again
-      else if (InputTypeHelpers.isGroupEnd(inputType))
-        currentContainer = this.#thisContainerRef;
-      // Just create the normal component within the current container
-      else
+      if (InputTypeHelpers.isGroupStart(inputType)) {
+        // If we encounter a group-start, then create a new container based on the main container
+        currentContainer = this.#createGroup(this.#myContainerRef, fieldProps, fieldConfig);
+      } else if (InputTypeHelpers.isGroupEnd(inputType)) {
+        // If we encounter a group-end, set the main container to be the default one again
+        currentContainer = this.#myContainerRef;
+      } else {
+        // Just create the normal component within the current container
         this.#createComponent(currentContainer, fieldProps, fieldConfig);
+      }
     }
   }
 
@@ -99,7 +101,7 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
   }
 
   #createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
-    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputTypeSpecs);
+    const injectors = this.#fieldInjectorFac.getInjectors(fieldConfig, fieldProps.constants.inputTypeSpecs);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.buildWrappers)
       wrapperInfo = this.#createWrappers(wrapperInfo, fieldProps.buildWrappers);
@@ -107,25 +109,24 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
   }
 
   #createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
-    this.log.a('createComponent', { inputTypeSpecs: fieldProps.constants.inputTypeSpecs });
+    const inputSpecs = fieldProps.constants.inputTypeSpecs;
+    this.log.a('createComponent', { inputSpecs });
 
     // Add injector to first wrapper, so that it will be attached to the top level, and then dropped
-    const injectors = this.#fieldInjector.getInjectors(fieldConfig, fieldProps.constants.inputTypeSpecs);
+    const injectors = this.#fieldInjectorFac.getInjectors(fieldConfig, inputSpecs);
     let wrapperInfo = new DynamicControlInfo(null, containerRef, injectors);
     if (fieldProps.buildWrappers)
       wrapperInfo = this.#createWrappers(wrapperInfo, fieldProps.buildWrappers);
 
-    const componentType = fieldProps.constants.inputTypeSpecs.isExternal
-      ? this.#readComponentType(InputTypeCatalog.ExternalWebComponent)
-      : this.#readComponentType(fieldProps.constants.inputTypeSpecs.inputType);
+    const componentName = inputSpecs.isExternal ? InputTypeCatalog.ExternalWebComponent : inputSpecs.inputType;
+    const componentType = this.#readComponentType(componentName);
 
     // create component - ideally with metadata if provided (ATM can specify alternate wrapper)
-    // New 2024-06-11 will not break if metadata not specified
-    const fieldMetadata: FieldMetadataModel = Reflect.getMetadata(FieldMetadataKey, componentType);
+    const componentMd: FieldMetadataModel = Reflect.getMetadata(FieldMetadataKey, componentType);
 
     // generate wrappers if they are defined
-    if (fieldMetadata?.wrappers)
-      wrapperInfo = this.#createWrappers(wrapperInfo, fieldMetadata.wrappers);
+    if (componentMd?.wrappers)
+      wrapperInfo = this.#createWrappers(wrapperInfo, componentMd.wrappers);
 
     // generate the real input field component
     // this.log.a('createComponent - add component', { componentType });
@@ -134,7 +135,7 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
     // generate the picker preview component if it exists
     const pickerPreviewContainerRef = (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent;
     if (pickerPreviewContainerRef != null) {
-      const previewType = this.#readComponentType(fieldProps.constants.inputTypeSpecs.inputType);
+      const previewType = this.#readComponentType(inputSpecs.inputType);
       this.log.a('createComponent - add preview', { previewType });
       this.#generateAndAttachField(previewType, pickerPreviewContainerRef, wrapperInfo.injectors);
     }

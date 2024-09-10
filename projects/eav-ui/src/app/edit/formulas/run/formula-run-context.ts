@@ -1,6 +1,5 @@
 import { Sxc } from '@2sic.com/2sxc-typings';
 import { FormulaVersions } from '../formula-definitions';
-import { FormulaTargets } from '../targets/formula-targets';
 import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
 import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 
@@ -116,7 +115,7 @@ class FormulaContextTarget implements FormulaV1CtxTarget {
     this.entity = def.targetEntity;
 
     // Name and type are truncated from the original target string if it's a setting
-    const isValueOrValidation = def.target === FormulaTargets.Value || def.target === FormulaTargets.Validation;
+    const isValueOrValidation = def.isValue || def.isValidation;
     this.name = isValueOrValidation
       ? def.fieldName
       : def.target.substring(def.target.lastIndexOf('.') + 1);

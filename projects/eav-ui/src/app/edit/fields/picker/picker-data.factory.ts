@@ -40,9 +40,9 @@ export class PickerDataFactory {
   // ... it will also attach a CALLBACK! for focused?
 
 
-  createPickerData(inputType: InputTypeSpecs): PickerData {
+  static createPickerData(inputType: InputTypeSpecs, injector: Injector): PickerData {
     return (InputTypeHelpers.isAnyPicker(inputType.inputType))
-      ? transient(PickerData, this.#injector)
+      ? transient(PickerData, injector)
       : null;
   }
 

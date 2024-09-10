@@ -1,4 +1,4 @@
-import { Injectable, input } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
@@ -6,7 +6,7 @@ import { EntityReader, ContentTypeSettingsHelpers } from '../../shared/helpers';
 import { EavItem } from '../../shared/models/eav/eav-item';
 import { FormulaSourceCodeHelper } from './source-code-helper';
 import { FormulaFunction } from '../formula-definitions';
-import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaTarget } from '../targets/formula-targets';
+import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaTarget, SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaCacheItemConstants } from './formula-cache.model';
@@ -23,6 +23,7 @@ import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldsSettingsHelpers } from '../../state/field-settings.helper';
 import { classLog } from '../../../shared/logging';
+import { DialogContextUser } from '../../../shared/models/dialog-context.models';
 
 const logSpecs = {
   all: false,
@@ -77,16 +78,16 @@ export class FormulaCacheBuilder extends ServiceBase {
         const inputType = this.inputTypes.getSpecs(attribute);
 
         // Get all formulas for the field
-        const formula = this.contentTypeItemService
+        const formulas = this.contentTypeItemService
           .getMany(settings.Formulas)
           .filter(f => reader.getBestValue<boolean>(f.Attributes.Enabled));
 
-        for (const formulaItem of formula) {
-          const sourceCode = reader.getBestValue<string>(formulaItem.Attributes.Formula);
+        for (const formula of formulas) {
+          const sourceCode = reader.getBestValue<string>(formula.Attributes.Formula);
           if (sourceCode == null) 
             continue;
 
-          const target: FormulaTarget = reader.getBestValue<string>(formulaItem.Attributes.Target);
+          const target: FormulaTarget = reader.getBestValue<string>(formula.Attributes.Target);
 
           // create cleaned formula function, or if this fails, add info to log & results
           let formulaFunction: FormulaFunction;
@@ -99,8 +100,6 @@ export class FormulaCacheBuilder extends ServiceBase {
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }
 
-          const streams = this.#createPromisedParts();
-
           const formulaCacheItem: FormulaCacheItem = {
             cache: {},
             entityGuid,
@@ -109,8 +108,8 @@ export class FormulaCacheBuilder extends ServiceBase {
             isDraft: formulaFunction == null,
             sourceCode,
             sourceCodeSaved: sourceCode,
-            sourceCodeGuid: formulaItem.Guid,
-            sourceCodeId: formulaItem.Id,
+            sourceCodeGuid: formula.Guid,
+            sourceCodeId: formula.Id,
             target,
             inputType,
             ...this.#inputTypeSpecsForCacheItem(target, inputType),
@@ -120,8 +119,8 @@ export class FormulaCacheBuilder extends ServiceBase {
             app: sharedParts.app,   // new in v14.07.05
             sxc: sharedParts.sxc,   // put in shared in 14.11
             stopFormula: false,
-            promises$: streams.promises$,
-            updateCallback$: streams.callback$,
+            ...this.#createPromisedParts(),
+            ...this.#targetInfoForCacheItem(target),
           };
 
           formulaCache.push(formulaCacheItem);
@@ -136,6 +135,12 @@ export class FormulaCacheBuilder extends ServiceBase {
     return inputType.isNewPicker && [FormulaDefaultTargets.Value, FormulaNewPickerTargets.Options].includes(target)
       ? { disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
       : { disabled: false, disabledReason: '' };
+  }
+
+  #targetInfoForCacheItem(target: FormulaTarget): Pick<FormulaCacheItem, 'isSetting' | 'settingName' | 'isValue' | 'isValidation'> {
+    return target.startsWith(SettingsFormulaPrefix)
+      ? { isSetting: true, settingName: target.substring(SettingsFormulaPrefix.length), isValue: false, isValidation: false }
+      : { isSetting: false, settingName: '', isValue: target === FormulaDefaultTargets.Value, isValidation: target === FormulaDefaultTargets.Validation };
   }
 
 
@@ -167,19 +172,19 @@ export class FormulaCacheBuilder extends ServiceBase {
       },
     };
     const formConfig = this.formConfig.config;
-    const user = formConfig.dialogContext.User;
+    const user = formConfig.dialogContext.User ?? {} as Partial<DialogContextUser>;
     return {
       targetEntity,
       user: {
-        email: user?.Email,
-        guid: user?.Guid,
-        id: user?.Id,
-        isAnonymous: user?.IsAnonymous,
-        isSiteAdmin: user?.IsSiteAdmin,
-        isContentAdmin: user?.IsContentAdmin,
-        isSystemAdmin: user?.IsSystemAdmin,
-        name: user?.Name,
-        username: user?.Username,
+        email: user.Email,
+        guid: user.Guid,
+        id: user.Id,
+        isAnonymous: user.IsAnonymous,
+        isSiteAdmin: user.IsSiteAdmin,
+        isContentAdmin: user.IsContentAdmin,
+        isSystemAdmin: user.IsSystemAdmin,
+        name: user.Name,
+        username: user.Username,
       } satisfies FormulaV1CtxUser,
       app: {
         appId: formConfig.appId,
@@ -208,19 +213,19 @@ export class FormulaCacheBuilder extends ServiceBase {
   #createPromisedParts() {
     this.log.fnIf('createPromisedParts');
     const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
-    const callback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
+    const updateCallback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
     const lastPromise = promises$.pipe(
       filter(x => !!x),
       switchMap(promise => from(promise)),
     );
     // This combineLatest triggers the callback for the first time when the last promise is resolved
-    this.subscriptions.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
+    this.subscriptions.add(combineLatest([lastPromise, updateCallback$.pipe(filter(x => !!x))]).subscribe(
       ([result, callback]) => {
         callback(result);
       },
     ));
 
-    return { promises$, callback$ };
+    return { promises$, updateCallback$ };
   }
 
 
@@ -230,11 +235,11 @@ export class FormulaCacheBuilder extends ServiceBase {
    * @param entityGuid
    * @param fieldName
    * @param target
-   * @param formula
+   * @param sourceCode
    * @param run
    */
-  public updateFormulaFromEditor(cacheSvc: FormulaCacheService, id: FormulaIdentifier, formula: string, run: boolean) {
-    this.log.fnIf('updateFormulaFromEditor', { id, formula, run });
+  public updateFormulaFromEditor(cacheSvc: FormulaCacheService, id: FormulaIdentifier, sourceCode: string, run: boolean) {
+    this.log.fnIf('updateFormulaFromEditor', { id, sourceCode, run });
     // important: the designer contains too much info, so we need to extract the essentials
     // to not have it in the cache - which would trigger loads of changes to that signal later on.
     let formulaFunction: FormulaFunction;
@@ -242,7 +247,7 @@ export class FormulaCacheBuilder extends ServiceBase {
     // If we should also run it, push it to the formulas cache so it will be executed
     if (run)
       try {
-        formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(formula);
+        formulaFunction = FormulaSourceCodeHelper.buildFormulaFunction(sourceCode);
       } catch (error) {
         cacheSvc.cacheResults(id, /* value: */ undefined, /* isError: */ true, /* isPromise */ false);
         const item = this.itemService.get(id.entityGuid);
@@ -262,33 +267,34 @@ export class FormulaCacheBuilder extends ServiceBase {
 
     // Find original in case we had it already (as we would then update it)
     const { list, index, value } = cacheSvc.formulaListIndexAndOriginal(id);
+    const formula = value ?? {} as FormulaCacheItem;
 
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
     const shared = this.#buildItemFormulaCacheSharedParts(null, id.entityGuid);
 
-    const streams = (value?.promises$ && value?.updateCallback$)
-      ? { promises$: value.promises$, callback$: value.updateCallback$ }
+    const streams = (formula.promises$ && formula.updateCallback$)
+      ? { promises$: value.promises$, updateCallback$: value.updateCallback$ }
       : this.#createPromisedParts();
 
     const newFormulaItem: FormulaCacheItem = {
       ...id,
-      cache: value?.cache ?? {},
+      cache: formula.cache ?? {},
       fn: formulaFunction?.bind({}),
       isDraft: run ? formulaFunction == null : true,
-      sourceCode: formula,
-      sourceCodeSaved: value?.sourceCodeSaved,
-      sourceCodeGuid: value?.sourceCodeGuid,
-      sourceCodeId: value?.sourceCodeId,
-      version: FormulaSourceCodeHelper.findFormulaVersion(formula),
+      sourceCode: sourceCode,
+      sourceCodeSaved: formula.sourceCodeSaved,
+      sourceCodeGuid: formula.sourceCodeGuid,
+      sourceCodeId: formula.sourceCodeId,
+      version: FormulaSourceCodeHelper.findFormulaVersion(sourceCode),
       inputType,
       ...this.#inputTypeSpecsForCacheItem(id.target, inputType),
-      targetEntity: value?.targetEntity ?? shared.targetEntity,
-      user: value?.user ?? shared.user,
-      app: value?.app ?? shared.app,
-      sxc: value?.sxc ?? shared.sxc,
+      targetEntity: formula.targetEntity ?? shared.targetEntity,
+      user: formula.user ?? shared.user,
+      app: formula.app ?? shared.app,
+      sxc: formula.sxc ?? shared.sxc,
       stopFormula: false,
-      promises$: value?.promises$ ?? streams.promises$,
-      updateCallback$: value?.updateCallback$ ?? streams.callback$,
+      ...streams,
+      ...this.#targetInfoForCacheItem(id.target),
     };
 
     const newCache = index >= 0

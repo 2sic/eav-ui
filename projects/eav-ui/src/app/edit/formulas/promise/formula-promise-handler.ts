@@ -61,36 +61,36 @@ export class FormulaPromiseHandler {
 
   /**
    * Used for defining the callback handler for the promise if it doesn't already exist and filling queue for the next run.
-   * @param formulaCache
-   * @param inputTypeName
+   * @param formula
+   * @param inputType
    * @param entityGuid
    */
   private defineCallbackHandlerIfMissing(
-    formulaCache: FormulaCacheItem,
-    inputTypeName: InputTypeStrict,
+    formula: FormulaCacheItem,
+    inputType: InputTypeStrict,
   ) {
     const entityGuid = this.entityGuid;
-    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formulaCache, inputTypeName, entityGuid });
-    if (formulaCache.updateCallback$.value)
+    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formula, inputType, entityGuid });
+    if (formula.updateCallback$.value)
       return;
 
     const queue = this.updateValueQueue;
-    formulaCache.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-      const corrected = FormulaValueCorrections.correctAllValues(formulaCache.target, result, inputTypeName);
+    formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
+      const corrected = new FormulaValueCorrections(formula.isValue, inputType, false).v2(result);
 
       const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
       let valueUpdates: ItemValuesOfLanguage = {};
       let settingUpdate: FieldSettingPair[] = [];
 
-      if (formulaCache.target === FormulaTargets.Value) {
+      if (formula.isValue) {
         valueUpdates = queueItem.valueUpdates ?? {};
-        valueUpdates[formulaCache.fieldName] = corrected.value;
-      } else if (formulaCache.target.startsWith(SettingsFormulaPrefix)) {
+        valueUpdates[formula.fieldName] = corrected.value;
+      } else if (formula.isSetting) {
         l.a("formula promise settings");
-        const settingName = formulaCache.target.substring(SettingsFormulaPrefix.length);
+        const settingName = formula.settingName;
         settingUpdate = queueItem.settingUpdates ?? [];
-        const newSetting = { name: formulaCache.fieldName, settings: [{ settingName, value: result as FieldValue }] };
-        settingUpdate = settingUpdate.filter(s => s.name !== formulaCache.fieldName && !s.settings.find(ss => ss.settingName === settingName));
+        const newSetting = { name: formula.fieldName, settings: [{ settingName, value: result as FieldValue }] };
+        settingUpdate = settingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.settingName === settingName));
         settingUpdate.push(newSetting);
       }
 
@@ -98,7 +98,7 @@ export class FormulaPromiseHandler {
       if (corrected.fields)
         fieldsUpdates.push(...corrected.fields);
       queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
-      formulaCache.stopFormula = corrected.stop ?? formulaCache.stopFormula;
+      formula.stopFormula = corrected.stop ?? formula.stopFormula;
       this.#fieldsSettingsService.retriggerFormulas('promise');
     });
   }

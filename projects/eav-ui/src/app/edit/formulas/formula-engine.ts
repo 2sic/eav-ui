@@ -1,11 +1,11 @@
-import { Injectable, Signal, inject, untracked } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from '../../features/features.service';
-import { EavContentType } from '../shared/models/eav';
+import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaHelpers } from './formula.helpers';
 import { FormulaFunctionDefault, FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation, FormulaNewPickerTargets, FormulaDefaultTargets, FormulaTargets, FormulaOptionalTargets } from './targets/formula-targets';
+import { FormulaFieldValidation, FormulaNewPickerTargets, FormulaDefaultTargets, FormulaOptionalTargets } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
@@ -20,16 +20,16 @@ import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { EditInitializerService } from '../form/edit-initializer.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { FormConfigService } from '../form/form-config.service';
-import { LoggingService, LogSeverities } from '../shared/services/logging.service';
+import { LoggingService } from '../shared/services/logging.service';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { ContentTypeSettings } from '../state/content-type-settings.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { ItemService } from '../state/item.service';
 import { LanguageService } from '../localization/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 import { classLog } from '../../shared/logging';
+import { FormulaDeveloperHelper } from './formula-developer-helper';
 
 const logSpecs = {
   // runFormulasForAllFields: false,
@@ -48,35 +48,35 @@ function logDetailsFor(field: string) {
 @Injectable()
 export class FormulaEngine {
   log = classLog({ FormulaEngine }, logSpecs);
-  
+
   #features = inject(FeaturesService).getAll();
 
   constructor(
     private formConfig: FormConfigService,
     private itemService: ItemService,
-    private languageService: LanguageService,
+    private languageSvc: LanguageService,
     private designerSvc: FormulaDesignerService,
     private logSvc: LoggingService,
     private translate: TranslateService,
-    private globalConfigService: GlobalConfigService,
-    private editInitializerService: EditInitializerService,
+    private globalConfigSvc: GlobalConfigService,
+    private editInitializerSvc: EditInitializerService,
   ) {
   }
 
-  init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctSettings: Signal<ContentTypeSettings>) {
+  init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctTitle: string) {
     this.#entityGuid = entityGuid;
     this.#settingsSvc = settingsSvc;
     this.#promiseHandler = promiseHandler;
-    this.#contentType = contentType;
-    this.#contentTypeSettings = ctSettings;
+    this.#attributes = contentType.Attributes;
+    this.#contentTypeTitle = ctTitle;
   }
 
   // properties to set on init
   #entityGuid: string;
-  #contentType: EavContentType;
-  #contentTypeSettings: Signal<ContentTypeSettings>;
+  #contentTypeTitle: string;
   #settingsSvc: FieldsSettingsService;
   #promiseHandler: FormulaPromiseHandler;
+  #attributes: EavContentTypeAttribute[];
 
   /**
    * Find formulas of the current field which are still running.
@@ -104,20 +104,19 @@ export class FormulaEngine {
 
     const fss = new FieldsSettingsHelpers(this.log.name);
 
-    for (const attr of this.#contentType.Attributes) {
-      const attrValues = cycle.allAttributes[attr.Name];
+    for (const attr of this.#attributes) {
+      const values = cycle.allAttributes[attr.Name];
       const valueBefore = cycle.values[attr.Name];
-      const constFieldPart = cycle.getFieldConstants(attr.Name);
 
-      const latestSettings: FieldSettings = cycle.getFieldSettingsInCycle(constFieldPart);
-
-      const settingsUpdateHelper = cycle.updateHelper.create(attr, constFieldPart, attrValues);
+      const fieldConstants = cycle.getFieldConstants(attr.Name);
+      const latestSettings = cycle.getFieldSettingsInCycle(fieldConstants);
+      const settingsUpdateHelper = cycle.updateHelper.create(attr, fieldConstants, values);
 
       // run formulas
       const formulaResult = this.#runAllFormulasOfFieldOrInitSettings(
         cycle,
         attr.Name,
-        constFieldPart,
+        fieldConstants,
         latestSettings,
         engine.item.Header,
         valueBefore,
@@ -135,11 +134,11 @@ export class FormulaEngine {
         fieldUpdates.push(...formulaResult.fields);
 
       const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
-      const translationState = fss.getTranslationState(attrValues, fixed.DisableTranslation, engine.languages, debugDetails);
+      const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
 
       fieldsProps[attr.Name] = {
-        language: constFieldPart.language,
-        constants: constFieldPart,
+        language: fieldConstants.language,
+        constants: fieldConstants,
         settings: fixed,
         translationState,
         buildValue: valueBefore,
@@ -209,7 +208,7 @@ export class FormulaEngine {
       if (formula.disabled) {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
         // Show more debug in case of entity-pickers
-        if (formula.target === FormulaTargets.Value) {
+        if (formula.isValue) {
           console.log('value', { value: cycle.values[formula.fieldName] });
         }
         continue;
@@ -245,13 +244,13 @@ export class FormulaEngine {
 
       // If we do have a value, we need to place it in the correct target
       // Target is the value. Remember it for later
-      if (formula.target === FormulaTargets.Value) {
+      if (formula.isValue) {
         value = formulaResult.value;
         continue;
       }
 
       // Target is the validation. Remember it for later
-      if (formula.target === FormulaTargets.Validation) {
+      if (formula.isValidation) {
         validation = formulaResult.value as unknown as FormulaFieldValidation;
         continue;
       }
@@ -270,9 +269,9 @@ export class FormulaEngine {
    */
   #prepareDataForFormulaObjects(entityGuid: string): FormulaExecutionSpecs {
     const language = this.formConfig.language();
-    const languages = this.languageService.getAll();
-    const debugEnabled = this.globalConfigService.isDebug();
-    const initialFormValues = this.editInitializerService.getInitialValues(entityGuid, language.current);
+    const languages = this.languageSvc.getAll();
+    const debugEnabled = this.globalConfigSvc.isDebug();
+    const initialFormValues = this.editInitializerSvc.getInitialValues(entityGuid, language.current);
     return {
       initialFormValues,
       language,
@@ -301,99 +300,48 @@ export class FormulaEngine {
     
     const l = this.log.fnCond(logDetailsFor(formula.fieldName), `runFormula`, { fieldName: formula.fieldName });
 
-    const formulaProps = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
+    const params = FormulaHelpers.buildFormulaProps(allObjectsForDataAndContext);
+    const ctTitle = this.#contentTypeTitle;
+    const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, formula, ctTitle, params);
+    const valHelper = new FormulaValueCorrections(formula.isValue, inputTypeName, devHelper.isOpen);
 
-    const isOpenInDesigner = this.#isDesignerOpen(formula);
-    const ctTitle = this.#contentTypeSettings()._itemTitle;
     l.a(`formula version: ${formula.version}, entity: ${ctTitle}, field: ${formula.fieldName}, target: ${formula.target}`, {formula});
     try {
+      devHelper.showStart();
+
       switch (formula.version) {
         // Formula V1
         case FormulaVersions.V1:
-          if (isOpenInDesigner)
-            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
-
-          const v1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);
-          const isArray = v1Result && Array.isArray(v1Result) && (v1Result as any).every((r: any) => typeof r === 'string');
-          const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date || isArray || !v1Result;
-          if (resultIsPure) {
-            l.a('V1 formula result is pure', { v1Result });
-            const v1Value = (formula.target === FormulaTargets.Value)
-              ? FormulaValueCorrections.correctOneValue(v1Result as FieldValue, inputTypeName)
-              : v1Result as FieldValue;
-            this.designerSvc.cache.cacheResults(formula, v1Value, false, false);
-            if (isOpenInDesigner)
-              console.log('Formula result:', v1Value);
-            return {
-              value: v1Value,
-              fields: [],
-              stop: null,
-              openInDesigner: isOpenInDesigner
-            } satisfies FormulaResultRaw;
+          const v1Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental, item);
+          const { ok, v1Result: valueV1 } = valHelper.v1(v1Raw);
+          if (ok) {
+            l.a('V1 formula result is pure', { v1Raw, valueV1 });
+            devHelper.showResult(valueV1.value, false, false);
+            return valueV1;
           }
-          l.a('V1 formula result is not pure', { v1Result });
+          l.a('V1 formula result is not pure', { v1Raw });
           console.error('V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.');
-          return {
-            value: undefined,
-            fields: [],
-            stop: null,
-            openInDesigner: isOpenInDesigner
-          } satisfies FormulaResultRaw;
+          return valHelper.toFormulaResult(undefined);
 
         // Formula V2
         case FormulaVersions.V2:
-          if (isOpenInDesigner)
-            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
-
           //TODO: @2dm -> Added item as last argument so if ew use experimental anywhere nothing breaks
-          const v2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental, item);
+          const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental, item);
+          const v2Value = valHelper.v2(v2Raw);
+          devHelper.showResult(v2Value.value, false, !!v2Value.promise);
+          return v2Value;
 
-          const valueV2 = FormulaValueCorrections.correctAllValues(formula.target, v2Result, inputTypeName);
-          valueV2.openInDesigner = isOpenInDesigner;
-          this.designerSvc.cache.cacheResults(formula, valueV2.value, false, !!valueV2.promise);
-          if (isOpenInDesigner)
-            console.log('Formula result:', valueV2.value);
-          return valueV2;
-
-        default:
-          if (isOpenInDesigner)
-            console.log(`Running formula for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
-          const resultDef = (formula.fn as FormulaFunctionDefault)();
-          const valueDef = FormulaValueCorrections.correctAllValues(formula.target, resultDef, inputTypeName);
-          valueDef.openInDesigner = isOpenInDesigner;
-          this.designerSvc.cache.cacheResults(formula, valueDef.value, false, false);
-          if (isOpenInDesigner)
-            console.log('Formula result:', valueDef);
-          return valueDef;
+        default:  // TODO: not sure if this should ever be possible!
+          const defRaw = (formula.fn as FormulaFunctionDefault)();
+          const defValue = valHelper.v2(defRaw);
+          devHelper.showResult(defValue.value, false, false);
+          return defValue;
       }
     } catch (error) {
-      const errorLabel = `Error in formula calculation for Entity: "${ctTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
-      this.designerSvc.cache.cacheResults(formula, undefined, true, false);
-      this.logSvc.addLog(LogSeverities.Error, errorLabel, error);
-      if (isOpenInDesigner)
-        console.error(errorLabel, error);
-      else
-        this.logSvc.showMessage(this.translate.instant('Errors.FormulaCalculation'), 2000);
-      return {
-        value: undefined,
-        fields: [],
-        stop: null,
-        openInDesigner: isOpenInDesigner,
-      } satisfies FormulaResultRaw;
+      devHelper.showError(error);
+      return valHelper.toFormulaResult(undefined);
     }
   }
 
-  /**
-   * Used for checking if the currently running formula is open in designer.
-   * @param f
-   * @returns True if formula is open in designer, otherwise false
-   */
-  #isDesignerOpen(f: FormulaCacheItem): boolean {
-    return untracked(() => {
-      const ds = this.designerSvc.designerState();
-      const isOpenInDesigner = ds.isOpen && ds.entityGuid === f.entityGuid && ds.fieldName === f.fieldName && ds.target === f.target;
-      return isOpenInDesigner;
-    });
-  }
 }
 

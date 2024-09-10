@@ -16,6 +16,7 @@ import { FieldsSignalsHelper } from './fields-signals.helper';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { classLog } from '../../shared/logging';
+import { PickerData } from '../fields/picker/picker-data';
 
 const logSpecs = {
   // Debug only on the following content type
@@ -34,6 +35,10 @@ const maxCyclesWarning = "Max cycles reached, stopping for this second";
 @Injectable()
 export class FieldsSettingsService {
 
+  log = classLog({FieldsSettingsService}, logSpecs);
+
+  constructor() { }
+
   //#region injected services, constructor, clean-up
 
   // Shared / inherited services
@@ -47,10 +52,6 @@ export class FieldsSettingsService {
   // TODO: ATM unused #settingChangeBroadcast
   // #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
   #propsEngine = transient(FieldsPropsEngine);
-
-  log = classLog({FieldsSettingsService}, logSpecs);
-
-  constructor() { }
 
   disableForCleanUp(): void {
     this.log.fn('cleanUp');
@@ -99,11 +100,11 @@ export class FieldsSettingsService {
     const item = this.#itemSvc.get(entityGuid);
     this.#item.set(item);
     // Remember content-type, as it won't change and we don't need to listen to a signal
-    const contentType = this.#contentType();
+    const ct = this.#contentType();
     const debugOnlyCt = this.log.specs.type;
-    const forceDebug = debugOnlyCt === null ? null : contentType.Id === debugOnlyCt;
+    const forceDebug = debugOnlyCt === null ? null : ct.Id === debugOnlyCt;
     if (forceDebug !== null) {
-      this.log.a(`Set debug for content type '${contentType.Id}' to ${forceDebug}, only debugging ${debugOnlyCt}`);
+      this.log.a(`Set debug for content type '${ct.Id}' to ${forceDebug}, only debugging ${debugOnlyCt}`);
       this.log.forceEnable(forceDebug);
     }
 
@@ -121,7 +122,7 @@ export class FieldsSettingsService {
     let cycle = 0;
     setInterval(() => {
       if (cycle > maxCyclesPerTime) {
-        this.log.a(`restarting max cycles from ${cycle}; entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`);
+        this.log.a(`restarting max cycles from ${cycle}; entityGuid: ${entityGuid}; contentTypeId: ${ct.Id}`);
         cycle = 0;
         watchRestart.update(v => v + 1);
       }
@@ -134,19 +135,19 @@ export class FieldsSettingsService {
       if (analyzer)
         console.log('analyzer', { fieldProps: this.allProps }, analyzer.snapShotProducers(true));
 
-      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: contentType.Id, props: this.allProps });
+      const l = this.log.fn('fieldsProps', { cycle, entityGuid, contentTypeId: ct.Id, props: this.allProps });
       // If disabled, for any reason, return the previous value
       // The #disabled is a safeguard as data will be missing when this is being cleaned up.
       // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
       if (this.#disabled() || slotIsEmpty())
         return l.r(prevFieldProps, 'disabled or slotIsEmpty');
 
-      // This is triggered by promise-completed messages + v1 formulas
+      // Listen to ForceRefresh. This is triggered by a) promise-completed messages and b) v1 formulas
       this.#forceRefresh();
 
       // If we have reached the max cycles, we should stop
       if (cycle++ > maxCyclesPerTime) {
-        const msg = `${maxCyclesWarning}; cycle: ${cycle} entityGuid: ${entityGuid}; contentTypeId: ${this.#contentType().Id}`;
+        const msg = `${maxCyclesWarning}; cycle: ${cycle} entityGuid: ${entityGuid}; contentTypeId: ${ct.Id}`;
         console.warn(msg);
         watchRestart(); // to ensure it can start again in a second, access this before we exit.
         return l.r(prevFieldProps, msg);
@@ -228,4 +229,13 @@ export class FieldsSettingsService {
     setTimeout(() => this.retriggerFormulas('updateSetting'), 10);
   }
 
+
+  //#endregion
+
+  /**
+   * WIP
+   * Field States for every field.
+   * ATM just used for formulas which have data-sources.
+   */
+  public pickerData: Record<string, PickerData> = {};
 }

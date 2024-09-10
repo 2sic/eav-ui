@@ -82,7 +82,7 @@ export class FieldsPropsEngine {
 
     this.modifiedChecker = new FieldsValuesModifiedHelper(contentType, slotIsEmpty);
     this.formulaPromises.init(entityGuid, contentType, fss, this.modifiedChecker);
-    this.formulaEngine.init(entityGuid, fss, this.formulaPromises, ct, fss.contentTypeSettings);
+    this.formulaEngine.init(entityGuid, fss, this.formulaPromises, ct, fss.contentTypeSettings()._itemTitle);
 
     this.#itemAttributes = this.#itemService.itemAttributesSignal(entityGuid);
     return this;

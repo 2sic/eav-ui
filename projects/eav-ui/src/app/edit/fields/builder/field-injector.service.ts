@@ -10,11 +10,12 @@ import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/controls/control-status.model';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
-import { FieldValue } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataFactory } from '../picker/picker-data.factory';
 import { classLog, logFnIf } from '../../../shared/logging';
 import { InjectorBundle } from './injector-bundle.model';
+import { AbstractControl } from '@angular/forms';
 
 const logSpecs = {
   getInjectors: true,
@@ -26,42 +27,79 @@ const logSpecs = {
  * It's used in the fields-builder to initialize dynamic controls.
  */
 @Injectable()
-export class FieldInjectorService {
+export class FieldStateInjectorFactory {
 
-  log = classLog({FieldInjectorService}, logSpecs);
+  log = classLog({FieldStateInjectorFactory}, logSpecs);
 
   #injector = inject(Injector);
   #envInjector = inject(EnvironmentInjector);
-  #fieldsSettingsService = inject(FieldsSettingsService);
+  #fieldsSettingsSvc = inject(FieldsSettingsService);
   #entityForm = inject(EntityFormStateService);
 
   constructor() { }
 
+  /**
+   * Get the injectors for a specific form field.
+   * Requires that the angular form has already created the field.
+   * 
+   * IMPORTANT: It also has a side-effect that it adds picker data to the FieldStateService.
+   * this is not elegant ATM.
+   * @param fieldConfig 
+   * @param inputType 
+   * @returns an injector bundle with control and environment injectors
+   */
   public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs): InjectorBundle {
-    const l = logFnIf(this, 'getInjectors');
-    const fieldName = fieldConfig.fieldName;
+    const l = logFnIf(this, 'getInjectors', { fieldConfig, inputType });
 
-    // Conditional logger for detailed logging
-    const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'getInjectorsDetailed', { fieldConfig, inputType });
+    const name = fieldConfig.fieldName;
 
     // Create settings() and basics() signal for further use
-    const settings = this.#fieldsSettingsService.settings[fieldName];
-
-    const settings$ = toObservable(settings, { injector: this.#injector });
-
+    const settings = this.#fieldsSettingsSvc.settings[name];
     const basics = computedObj('basics', () => BasicControlSettings.fromSettings(settings()));
 
     // Control and Control Status
     const formGroup = this.#entityForm.formGroup;
-    const control = formGroup.controls[fieldName];
-    let controlStatusChangeSignal: Signal<ControlStatus<FieldValue>>;
+    const control = formGroup.controls[name];    
+    const controlStatusChangeSignal = this.#buildControlChangeSignal(name, control, inputType, settings);
+
+    /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
+    // TODO: this is probably better solved using a toSignal(control.valueChanges)
+    const uiValue: Signal<FieldValue> = computedObj('uiValue', () => controlStatusChangeSignal().value);
+
+    const pickerData = PickerDataFactory.createPickerData(inputType, this.#injector);
+
+    const fieldState = new FieldState(
+      name,
+      fieldConfig,
+      formGroup,
+      control,
+      settings,
+      basics,
+      controlStatusChangeSignal,
+      uiValue,
+      this.#fieldsSettingsSvc.translationState[name],
+      pickerData,
+    );
+
+    // Side-effect!
+    this.#fieldsSettingsSvc.pickerData[name] = pickerData;
+
+    return l.r(this.#createInjectors(fieldState));
+  }
+
+  #buildControlChangeSignal(fieldName: string, control: AbstractControl<any, any>, inputType: InputTypeSpecs, settings: Signal<FieldSettings>
+  ): Signal<ControlStatus<FieldValue>> {
+    // Conditional logger for detailed logging
+    const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'buildControlChangeSignal', { fieldName, inputType });
+
+    const settings$ = toObservable(settings, { injector: this.#injector });
 
     // Create a signal to watch for value changes
     // Note: 2dm is not sure if this is a good thing to provide, since it could be misused
     // This signal spreads value changes even if they don't spread to the state/store
     // so we must be careful with what we do with it
-    if (control) {
-      runInInjectionContext(this.#injector, () => {
+    if (control)
+      return runInInjectionContext(this.#injector, () => {
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
         const controlStatus$ = combineLatest([
@@ -76,39 +114,22 @@ export class FieldInjectorService {
         // Build controlStatus observable.
         // Should be changed to a pure signal without the observables probably in Angular 18
         // which probably has a signal for this as well...
-        controlStatusChangeSignal = toSignal(controlStatus$, {
+        return toSignal(controlStatus$, {
           initialValue: controlToControlStatus(control, settings().uiDisabled)
         });
       });
-    } else {
-      // No control found - could be a problem, could be expected
-      // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
-      if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
-        console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
-        // try to have a temporary result, so that in most cases it won't just fail
-        controlStatusChangeSignal = signalObj('control-status-empty', emptyControlStatus);
-      }
+    
+    // No control found - could be a problem, could be expected
+    // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
+    if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
+      console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
+      // try to have a temporary result, so that in most cases it won't just fail
+      return signalObj('control-status-empty', emptyControlStatus);
     }
+    return null;
+  }
 
-    /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
-    // TODO: this is probably better solved using a toSignal(control.valueChanges)
-    const uiValue: Signal<FieldValue> = computedObj('uiValue', () => controlStatusChangeSignal().value);
-
-    const pdf = new PickerDataFactory(this.#injector);
-
-    const fieldState = new FieldState(
-      fieldName,
-      fieldConfig,
-      formGroup,
-      control,
-      settings,
-      basics,
-      controlStatusChangeSignal,
-      uiValue,
-      this.#fieldsSettingsService.translationState[fieldName],
-      pdf.createPickerData(inputType),
-    );
-
+  #createInjectors(fieldState: FieldState<FieldValue>) {
     const providers = [
       { provide: FieldState, useValue: fieldState },
     ];
@@ -126,7 +147,6 @@ export class FieldInjectorService {
       this.#envInjector,
       'FieldEnvInjector'
     );
-
-    return l.r({ injector, environmentInjector, fieldState });
+    return { injector, environmentInjector };
   }
 }

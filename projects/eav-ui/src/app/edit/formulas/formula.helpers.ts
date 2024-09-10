@@ -51,7 +51,7 @@ export class FormulaHelpers {
 
 
 
-interface FormulaPropsV1 {
+export interface FormulaPropsV1 {
   data: FormulaV1Data;
   context: FormulaV1Context;
   experimental: FormulaV1Experimental;

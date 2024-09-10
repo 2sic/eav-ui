@@ -55,6 +55,11 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   stopFormula: boolean;
   promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;
   updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
+
+  isSetting: boolean;
+  settingName: string;
+  isValue: boolean;
+  isValidation: boolean;
 }
 
 export interface FormulaResultCacheItem extends FormulaIdentifier {

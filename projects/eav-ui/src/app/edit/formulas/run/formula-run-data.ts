@@ -1,8 +1,7 @@
 import { FieldHelper } from '../../shared/helpers';
-import { FormulaTargets, SettingsFormulaPrefix, FormulaFieldValidation } from '../targets/formula-targets';
+import { FormulaFieldValidation } from '../targets/formula-targets';
 import { FormulaV1Data } from './formula-run-data.model';
 import { FormulaHelpers } from '../formula.helpers';
-import { FormulaSourceCodeHelper } from '../cache/source-code-helper';
 import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
@@ -22,18 +21,16 @@ export class FormulaDataObject implements FormulaV1Data {
   get default(): FieldValue {
     const { runParameters } = this.#propsData;
     const { formula, settingsInitial, inputTypeName } = runParameters;
-    if (formula.target === FormulaTargets.Value)
+    if (formula.isValue)
       return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial);
 
-    if (formula.target.startsWith(SettingsFormulaPrefix)) {
-      const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-      return (settingsInitial as Record<string, any>)[settingName];
-    }
+    if (formula.isSetting)
+      return (settingsInitial as Record<string, any>)[formula.settingName];
   }
 
   get initial(): FieldValue {
     const definition = this.#propsData.runParameters.formula;
-    if (definition.target !== FormulaTargets.Value)
+    if (!definition.isValue)
       return;
     return this.#propsData.initialFormValues[definition.fieldName];
   }
@@ -44,16 +41,16 @@ export class FormulaDataObject implements FormulaV1Data {
 
   get prefill(): FieldValue {
     const { formula, settingsInitial, itemHeader, inputTypeName } = this.#propsData.runParameters;
-    if (formula.target !== FormulaTargets.Value) return;
+    if (!formula.isValue) return;
     return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial, itemHeader, true);
   }
 
   get value(): FieldValue {
     const { formula, settingsCurrent, currentValues: formValues } = this.#propsData.runParameters;
-    if (formula.target === FormulaTargets.Value)
+    if (formula.isValue)
       return formValues[formula.fieldName];
 
-    if (formula.target === FormulaTargets.Validation) {
+    if (formula.isValidation) {
       const formulaValidation: FormulaFieldValidation = {
         severity: '',
         message: '',
@@ -61,9 +58,7 @@ export class FormulaDataObject implements FormulaV1Data {
       return formulaValidation as unknown as FieldValue;
     }
 
-    if (formula.target.startsWith(SettingsFormulaPrefix)) {
-      const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-      return (settingsCurrent as Record<string, any>)[settingName];
-    }
+    if (formula.isSetting)
+      return (settingsCurrent as Record<string, any>)[formula.settingName];
   }
 }

@@ -1,6 +1,5 @@
 import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
 import { InputTypeCatalog, InputTypeStrict } from "../../../shared/fields/input-type-catalog";
-import { FormulaTarget, FormulaTargets } from '../targets/formula-targets';
 import { FormulaResultRaw } from "./formula-results.models";
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
@@ -9,32 +8,55 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
  */
 export class FormulaValueCorrections {
 
+  constructor(private isValue: boolean, private inputType: InputTypeStrict, private isOpen: boolean) {
+  }
+
+  v1(v1Result: FieldValue | FormulaResultRaw): { ok: boolean, v1Result: FormulaResultRaw } {
+    const isArray = v1Result && Array.isArray(v1Result) && (v1Result as any).every((r: any) => typeof r === 'string');
+    const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date || isArray || !v1Result;
+    if (!resultIsPure)
+      return { ok: false, v1Result: this.toFormulaResult(undefined) };
+
+    const v1Value = this.isValue
+      ? this.#oneValue(v1Result as FieldValue)
+      : v1Result as FieldValue;
+    return { ok: true, v1Result: this.toFormulaResult(v1Value) };
+  }
+
+  v2(result: FieldValue | FormulaResultRaw): FormulaResultRaw {
+    const beforeIsOpen = this.allValues(result);
+    return { ...beforeIsOpen, openInDesigner: this.isOpen };
+  }
+
   /**
-   * This method is used to support ducktyping in the formula result and from it to fill FormulaResultRaw object with corrected values.
+   * This method is used to support duck typing in the formula result and from it to fill FormulaResultRaw object with corrected values.
    * @param target Formula target
    * @param result Formula result
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Strongly typed FormulaResultRaw object
    */
-  static correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputTypeName: InputTypeStrict): FormulaResultRaw {
+  allValues(result: FieldValue | FormulaResultRaw): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
       return { value: result as FieldValue, fields: [], stop };
     
-    const targetIsValue = target === FormulaTargets.Value;
+    const targetIsValue = this.isValue;
     if (typeof result === 'object') {
       if (result instanceof Date && targetIsValue)
-        return { value: this.correctOneValue(result as FieldValue, inputTypeName), fields: [], stop };
+        return { value: this.#oneValue(result as FieldValue), fields: [], stop };
+
       if (result instanceof Promise)
         return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop };
+
       const corrected: FormulaResultRaw = (result as FormulaResultRaw);
       corrected.stop = stop;
       if ((result as FormulaResultRaw).value && targetIsValue) {
-        corrected.value = this.correctOneValue((result as FormulaResultRaw).value, inputTypeName);
+        corrected.value = this.#oneValue((result as FormulaResultRaw).value);
       }
+
       if ((result as FormulaResultRaw).fields) {
         corrected.fields = (result as FormulaResultRaw).fields?.map((fields) => {
-          fields.value = this.correctOneValue(fields.value, inputTypeName);
+          fields.value = this.#oneValue(fields.value);
           return fields;
         });
         return corrected;
@@ -45,7 +67,7 @@ export class FormulaValueCorrections {
 
     // atm we are only correcting Value formulas
     if (targetIsValue) {
-      return { value: this.correctOneValue(value.value, inputTypeName), fields: [], stop };
+      return { value: this.#oneValue(value.value), fields: [], stop };
     }
     return value;
   }
@@ -56,9 +78,11 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Corrected field value
    */
-  static correctOneValue(value: FieldValue, inputTypeName: InputTypeStrict): FieldValue {
+  #oneValue(value: FieldValue): FieldValue {
     if (value == null)
       return value;
+
+    const inputTypeName = this.inputType;
     
     if (inputTypeName === InputTypeCatalog.DateTimeDefault) {
       const date = new Date(value as string | number | Date);
@@ -77,5 +101,15 @@ export class FormulaValueCorrections {
       return value.toString();
     }
     return value;
+  }
+
+
+  toFormulaResult(value: FieldValue): FormulaResultRaw {
+    return {
+      value,
+      fields: [],
+      stop: null,
+      openInDesigner: this.isOpen
+    };
   }
 }

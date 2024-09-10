@@ -11,7 +11,7 @@ import { TranslationState } from '../localization/translate-state.model';
  * This is provided / injected at the fields-builder for every single field.
  * So any control or service within that field, which requests this service, will get one containing exactly that fields.
  */
-export class FieldState<T extends FieldValue> {
+export class FieldState<T extends FieldValue = FieldValue> {
   constructor(
     /** The fields technical name to access settings etc. */
     public name: string,
