@@ -5,10 +5,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'MatDayjsDateAdapter';
+import { classLog } from '../../../../shared/logging';
 
 export interface MatDayjsDateAdapterOptions {
   /**
@@ -45,6 +42,9 @@ export const MAT_DAYJS_DATE_ADAPTER_OPTIONS =
  */
 @Injectable()
 export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
+  
+  log = classLog({MatDayjsDateAdapter});
+  
   private localeData: {
     firstDayOfWeek: number;
     longMonths: string[];
@@ -54,8 +54,6 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     shortDaysOfWeek: string[];
     narrowDaysOfWeek: string[];
   };
-
-  log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     @Optional() @Inject(MAT_DATE_LOCALE) public dateLocale: string,

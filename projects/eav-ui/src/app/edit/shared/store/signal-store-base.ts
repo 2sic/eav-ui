@@ -1,11 +1,7 @@
 import { Signal } from '@angular/core';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
-import { LogSpecs } from '../../../shared/logging/log-specs';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-
-const logThisUndefined = true;
-const nameOfThis = 'SignalStoreBase';
+import { classLog } from '../../../shared/logging';
 
 /**
  * Signal based store for any kind of data which is accessed by a key.
@@ -14,6 +10,9 @@ const nameOfThis = 'SignalStoreBase';
  * - Standard get/add/remove methods exist, and can be augmented by the inheriting store.
  */
 export class SignalStoreBase<TKey extends string | number, TValue> {
+  
+  log = classLog({SignalStoreBase});
+  
   /** Main Cache */
   #cache = signalObj<Record<TKey, TValue>>('cache', {} as Record<TKey, TValue>);
 
@@ -41,13 +40,7 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 
   name: string;
 
-  protected log: EavLogger;
-
-  constructor(logSpecs: LogSpecs) {
-    this.log = new EavLogger({ name: nameOfThis, enabled: logThisUndefined, ...logSpecs });
-    this.log.a('SignalStoreBase created', { options: logSpecs });
-    this.name = logSpecs.name;
-  }
+  constructor() { }
 
   //#region Add / Update / Remove / Clear Cache
 

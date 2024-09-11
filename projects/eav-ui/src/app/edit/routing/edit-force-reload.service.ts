@@ -5,18 +5,14 @@ import { ItemHistoryResult } from '../../item-history/models/item-history-result
 import { EditEntryComponent } from '../dialog/entry/edit-entry.component';
 import { EditUrlParams } from './edit-url-params.model';
 import { UrlHelpers } from '../shared/helpers';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { NavigateFormResult } from './edit-routing.service';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EditRoutingReloadWatcher',
-  specs: {
-    all: true,
-    watchToRefreshOnVersionsClosed: true,
-  }
+  all: true,
+  watchToRefreshOnVersionsClosed: true,
 }
 
 /**
@@ -25,7 +21,7 @@ const logSpecs = {
 @Injectable()
 export class EditForceReloadService implements OnDestroy {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({EditForceReloadService}, logSpecs);
 
   #dialogRef = inject(MatDialogRef<EditEntryComponent>);
   #dialogRouter = transient(DialogRoutingService);

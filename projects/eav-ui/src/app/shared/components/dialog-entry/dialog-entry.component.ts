@@ -4,15 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
-import { EavLogger } from '../../logging/eav-logger';
 import { NavigateFormResult } from '../../../edit/routing/edit-routing.service';
+import { classLog } from '../../logging';
 
 declare const window: EavWindow;
-
-const logSpecs = {
-  enabled: false,
-  name: 'DialogEntryComponent',
-};
 
 @Component({
   selector: 'app-dialog-entry',
@@ -25,10 +20,12 @@ const logSpecs = {
   ],
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
+  
+  log = classLog({DialogEntryComponent});
+
   #dialogData: Record<string, any>;
   #dialogRef: MatDialogRef<any>;
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

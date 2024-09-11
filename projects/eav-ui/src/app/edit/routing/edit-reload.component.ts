@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { EditUrlParams } from './edit-url-params.model';
 import { UrlHelpers } from '../shared/helpers';
-
-const logThis = {
-  enabled: false,
-  name: 'EditReloadComponent',
-};
+import { classLog } from '../../shared/logging';
 
 /**
  * The purpose of this component is to refresh the edit dialog completely.
@@ -25,7 +20,7 @@ const logThis = {
 })
 export class EditReloadComponent {
 
-  log = new EavLogger(logThis);
+  log = classLog({EditReloadComponent});
 
   constructor(router: Router, route: ActivatedRoute) {
     const l = this.log.fn('constructor', null, '🔄️');

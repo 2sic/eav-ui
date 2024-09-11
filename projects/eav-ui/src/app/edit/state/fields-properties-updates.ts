@@ -1,5 +1,4 @@
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import isEqual from 'lodash-es/isEqual';
 import { Signal } from '@angular/core';
 import { FieldProps } from './fields-configs.model';
@@ -9,7 +8,8 @@ import { classLog } from '../../shared/logging';
  * Manage "manual" / forced updates of fields properties
  */
 export class FieldsPropertiesUpdates {
-  log: EavLogger;
+
+  log = classLog({FieldsPropertiesUpdates});
 
   constructor(private entityGuid: string) {
     this.log = classLog({FieldsPropertiesUpdates}).extendName(`[${entityGuid.substring(0, 8)}]`);

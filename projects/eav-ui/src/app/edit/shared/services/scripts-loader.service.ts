@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormConfiguration } from '../../form/form-configuration.model';
+import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
   enabled: false,
@@ -37,11 +37,12 @@ interface LoadFile {
  */
 @Injectable()
 export class ScriptsLoaderService {
+  
+  log = classLog({ScriptsLoaderService});
+  
   #loadedFiles: LoadFile[] = [];
 
-  log = new EavLogger(logSpecs);
-  constructor(private formConfig: FormConfigService) {
-  }
+  constructor(private formConfig: FormConfigService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
   load(scripts: string[], callback: () => void) {

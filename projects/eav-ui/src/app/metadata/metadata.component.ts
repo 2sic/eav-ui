@@ -8,10 +8,8 @@ import { ContentItemsService } from '../content-items/services/content-items.ser
 import { EntityEditService } from '../shared/services/entity-edit.service';
 import { EavFor } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
+import { MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
@@ -28,16 +26,11 @@ import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedD
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-
-const logSpecs = {
-  enabled: false,
-  name: 'MetadataComponent',
-};
+import { classLog } from '../shared/logging';
 
 @Component({
   selector: 'app-metadata',
@@ -60,6 +53,9 @@ const logSpecs = {
   ],
 })
 export class MetadataComponent implements OnInit, OnDestroy {
+  
+  log = classLog({MetadataComponent});
+  
   gridOptions = this.buildGridOptions();
 
   #entitiesSvc = transient(EntityEditService);
@@ -77,15 +73,13 @@ export class MetadataComponent implements OnInit, OnDestroy {
   #contentTypeStaticName = this.#dialogRoutes.snapshot.paramMap.get('contentTypeStaticName');
   viewModel$: Observable<MetadataViewModel>;
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialogRef: MatDialogRef<MetadataComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchFor();

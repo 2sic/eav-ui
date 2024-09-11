@@ -1,19 +1,16 @@
-import { EavLogger } from '../../shared/logging/eav-logger';
+import { classLog } from '../../shared/logging';
 import { FormLanguage } from '../form/form-languages.model';
 import { EavField, EavValue } from '../shared/models/eav';
 import { DimensionReader } from './dimension-reader';
 
 const logSpecs = {
-  enabled: false,
-  name: 'FieldReader',
-  specs: {
-    all: false,
-    constructor: false,
-  }
+  all: false,
+  constructor: false,
 };
 
 export class FieldReader<T = any> {
-  log = new EavLogger(logSpecs);
+  
+  log = classLog({FieldReader}, logSpecs);
 
   constructor(field: EavField<T>, language: string);
   constructor(field: EavField<T>, language: FormLanguage);
