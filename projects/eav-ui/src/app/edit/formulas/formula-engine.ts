@@ -4,7 +4,7 @@ import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaHelpers } from './formula.helpers';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation, FormulaNewPickerTargets, FormulaDefaultTargets, FormulaOptionalTargets } from './targets/formula-targets';
+import { FormulaFieldValidation } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
@@ -69,26 +69,6 @@ export class FormulaEngine {
   #contentTypeTitle: string;
   #promiseHandler: FormulaPromiseHandler;
   #attributes: EavContentTypeAttribute[];
-
-  /**
-   * Find formulas of the current field which are still running.
-   * Uses the designerService as that can modify the behavior while developing a formula.
-   */
-  #getFormulas(name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
-    const l = this.log.fnIfInList('getFormulas', 'fields', name, { name, forNewPicker, versionHasChanged });
-    const targets = forNewPicker
-      ? Object.values(FormulaNewPickerTargets)
-      : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
-    
-    const all = this.designerSvc.cache.getFormulas(this.#entityGuid, name, targets, false);
-
-    const unstopped = all.filter(f => !f.stopFormula);
-
-    const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
-
-    return l.r(unPaused, `all: ${all.length}, unstopped: ${unstopped.length}, unpaused: ${unPaused.length}`);
-  }
-
 
   runAllFields(engine: FieldsPropsEngine, cycle: FieldsPropsEngineCycle) {
     const fieldsProps: Record<string, FieldProps> = {};
@@ -185,7 +165,7 @@ export class FormulaEngine {
     l.a('picker version', { pickerVersion, pickerVersionBefore, hasChanged });
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
-    const formulas = untracked(() => this.#getFormulas(fieldName, fieldConstants.inputTypeSpecs.isNewPicker, hasChanged));
+    const formulas = untracked(() => this.designerSvc.cache.getActive(this.#entityGuid, fieldName, fieldConstants.inputTypeSpecs.isNewPicker, hasChanged));
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes

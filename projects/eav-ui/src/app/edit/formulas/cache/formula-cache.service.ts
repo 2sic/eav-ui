@@ -1,6 +1,6 @@
 import { Injectable, untracked } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types';
-import { FormulaTarget } from '../targets/formula-targets';
+import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaOptionalTargets, FormulaTarget } from '../targets/formula-targets';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaResultCacheItem } from './formula-cache.model';
@@ -42,7 +42,7 @@ export class FormulaCacheService {
    * @param allowDraft
    * @returns Filtered formula array
    */
-  public getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
+  #findFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
     return this.formulas().filter(f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
@@ -50,6 +50,27 @@ export class FormulaCacheService {
         && (allowDraft ? true : !f.isDraft)
     );
   }
+
+  /**
+   * Find formulas of the current field which are still running.
+   * Uses the designerService as that can modify the behavior while developing a formula.
+   */
+  public getActive(entityGuid: string, name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
+    const l = this.log.fnIfInList('getFormulas', 'fields', name, { name, forNewPicker, versionHasChanged });
+    const targets = forNewPicker
+      ? Object.values(FormulaNewPickerTargets)
+      : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
+    
+    const all = this.#findFormulas(entityGuid, name, targets, false);
+
+    const unstopped = all.filter(f => !f.stopFormula);
+
+    const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
+
+    return l.r(unPaused, `all: ${all.length}, unstopped: ${unstopped.length}, unpaused: ${unPaused.length}`);
+  }
+
+
 
   public formulaListIndexAndOriginal(fOrDs: FormulaIdentifier) {
     const list = this.formulas();
