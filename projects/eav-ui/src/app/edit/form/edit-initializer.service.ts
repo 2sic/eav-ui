@@ -14,7 +14,6 @@ import { EavEntity } from '../shared/models/eav/eav-entity';
 import { ItemAddIdentifier } from '../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../fields/logic/field-logic-manager';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormDataService } from './form-data.service';
 import { InputTypeHelpers } from '../../shared/fields/input-type-helpers';
 import { FieldReader } from '../localization/field-reader';
@@ -30,17 +29,14 @@ import { LanguageService } from '../localization/language.service';
 import { FormLanguageService } from './form-language.service';
 import { LinkCacheService } from '../shared/adam/link-cache.service';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EditInitializerService',
-  specs: {
-    all: false,
-    fetchFormData: false,
-    importLoadedData: false,
-    keepInitialValues: false,
-    initMissingValues: false,
-  }
+  all: false,
+  fetchFormData: false,
+  importLoadedData: false,
+  keepInitialValues: false,
+  initMissingValues: false,
 };
 
 /**
@@ -51,6 +47,8 @@ const logSpecs = {
  */
 @Injectable()
 export class EditInitializerService {
+  
+  log = classLog({EditInitializerService}, logSpecs);
 
   public loaded = signal(false);
 
@@ -58,7 +56,6 @@ export class EditInitializerService {
 
   private initialFormValues: Record<string, ItemValuesOfLanguage> = {};
 
-  log = new EavLogger(logSpecs);
   constructor(
     private route: ActivatedRoute,
     private formConfig: FormConfigService,
@@ -213,7 +210,7 @@ export class EditInitializerService {
     let switchToDefault = false;
     const isCreateMode = eavConfig.createMode;
 
-    const fss = new FieldsSettingsHelpers(logSpecs.name);
+    const fss = new FieldsSettingsHelpers("EditInitializerService");
 
     for (const item of items) {
       const contentType = this.contentTypeService.getContentTypeOfItem(item);

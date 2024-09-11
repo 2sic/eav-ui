@@ -8,9 +8,9 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { WrappersCatalog } from '../wrappers.constants';
+import { classLog } from '../../../../shared/logging';
 
 const logSpecs = {
   enabled: false,
@@ -34,6 +34,8 @@ const logSpecs = {
   ],
 })
 export class CollapsibleWrapperComponent {
+  
+  log = classLog({CollapsibleWrapperComponent});
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
@@ -47,7 +49,6 @@ export class CollapsibleWrapperComponent {
 
   #fieldsSettingsSvc = inject(FieldsSettingsService);
 
-  log = new EavLogger(logSpecs);
   constructor() {
     EmptyDefaultLogic.importMe();
   }

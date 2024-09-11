@@ -16,12 +16,7 @@ import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerExpandableWrapper',
-};
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: WrappersCatalog.PickerExpandableWrapper,
@@ -44,6 +39,9 @@ const logSpecs = {
   ],
 })
 export class PickerExpandableWrapperComponent implements OnInit {
+
+  log = classLog({PickerExpandableWrapperComponent});
+
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
@@ -52,21 +50,18 @@ export class PickerExpandableWrapperComponent implements OnInit {
   private fieldState = inject(FieldState);
   protected basics = this.fieldState.basics;
   private config = this.fieldState.config;
-
-  log = new EavLogger(logSpecs);
   
   constructor(
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
     private fieldsSettingsService: FieldsSettingsService,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid)
       .subscribe(isOpen => {
         this.dialogIsOpen.set(isOpen);
-        this.fieldsSettingsService.updateSetting(this.config.fieldName, { isDialog: isOpen }, logSpecs.name);
+        this.fieldsSettingsService.updateSetting(this.config.fieldName, { isDialog: isOpen }, "PickerExpandableWrapper");
       });
   }
 

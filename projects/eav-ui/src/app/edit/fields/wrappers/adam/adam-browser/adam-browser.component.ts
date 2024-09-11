@@ -17,7 +17,6 @@ import { ClickStopPropagationDirective } from '../../../../../shared/directives/
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
 import { FeaturesService } from '../../../../../features/features.service';
 import { FeatureNames } from '../../../../../features/feature-names';
-import { EavLogger } from '../../../../../shared/logging/eav-logger';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
 import { FormsStateService } from '../../../../form/forms-state.service';
@@ -31,11 +30,8 @@ import { AdamConnector } from './adam-connector';
 import { transient } from '../../../../../core/transient';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
 import { signalObj } from '../../../../../shared/signals/signal.utilities';
+import { classLog } from '../../../../../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'AdamBrowserComponent',
-};
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -71,6 +67,9 @@ const logSpecs = {
   ],
 })
 export class AdamBrowserComponent implements OnInit {
+  
+  log = classLog({AdamBrowserComponent});
+
   @Output() openUpload = new EventEmitter<null>();
 
   protected fieldState = inject(FieldState);
@@ -102,7 +101,6 @@ export class AdamBrowserComponent implements OnInit {
   #adamService = transient(AdamService);
   #dialogRouter = transient(DialogRoutingService);
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,

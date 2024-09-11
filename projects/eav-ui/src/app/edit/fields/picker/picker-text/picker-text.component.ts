@@ -6,13 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerItem } from '../models/picker-item.model';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerTextComponent',
-};
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-picker-text',
@@ -29,6 +24,8 @@ const logSpecs = {
   ],
 })
 export class PickerTextComponent extends PickerPartBaseComponent {
+  
+  log = classLog({PickerTextComponent});
 
   filteredEntities: PickerItem[] = [];
 
@@ -39,10 +36,7 @@ export class PickerTextComponent extends PickerPartBaseComponent {
     return isSeparatorNewLine;
   });
 
-  log = new EavLogger(logSpecs);
-  constructor() {
-    super();
-  }
+  constructor() { super(); }
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) return;

@@ -4,22 +4,18 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { Injectable } from '@angular/core';
 import { RelationshipChildParent, RelationshipParentChild, UiPickerModeTree } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../models/picker-item.model';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerTreeHelper',
-};
+import { classLog } from '../../../../shared/logging';
 
 @Injectable()
 export class PickerTreeDataHelper {
+  
+  log = classLog({PickerTreeDataHelper});
 
   #pickerTreeConfiguration: UiPickerModeTree;
   #treeItems: PickerTreeItem[];
 
   dataSource: MatTreeFlatDataSource<PickerItem, PickerTreeItem, PickerTreeItem>
 
-  log = new EavLogger(logSpecs);
   constructor() {
     this.build();
   }

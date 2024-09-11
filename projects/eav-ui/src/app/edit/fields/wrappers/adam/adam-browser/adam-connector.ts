@@ -1,16 +1,15 @@
 import { Adam, AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 import { AdamBrowserComponent } from './adam-browser.component';
 import { computed, signal } from '@angular/core';
-import { EavLogger } from '../../../../../../../../eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'AdamConnector';
+import { classLog } from '../../../../../shared/logging';
 
 /**
  * Helper to connect ADAM.
  * It will be added to the field state early on, but won't work until the browser is initialized.
  */
 export class AdamConnector implements Adam {
+  
+  log = classLog({AdamConnector});
 
   get browser() {
     const b = this.#browser();
@@ -22,8 +21,6 @@ export class AdamConnector implements Adam {
     this.#browser.set(browser);
   }
   #browser = signal<AdamBrowserComponent>(null);
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   get items() { return computed(() => this.#browser()?.items() ?? [] satisfies AdamItem[]) };
 

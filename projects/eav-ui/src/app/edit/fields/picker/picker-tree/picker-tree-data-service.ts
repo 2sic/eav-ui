@@ -1,18 +1,16 @@
 import { Injectable, Injector, Signal, effect, runInInjectionContext } from '@angular/core';
 import { PickerTreeItem } from '../models/picker-tree.models';
 import { PickerTreeDataHelper } from './picker-tree-data-helper';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldSettings, RelationshipParentChild } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../models/picker-item.model';
-
-const logThis = false;
+import { classLog } from '../../../../shared/logging';
 
 @Injectable()
 export class PickerTreeDataService {
-  log = new EavLogger('PickerTreeDataService', logThis);
 
-  constructor(public treeHelper: PickerTreeDataHelper, private inject: Injector) {
-  }
+  log = classLog({PickerTreeDataService});
+
+  constructor(public treeHelper: PickerTreeDataHelper, private inject: Injector) { }
 
   public init(fieldSettings: Signal<FieldSettings>, allItems: Signal<PickerItem[]>) {
     this.log.a('init');
