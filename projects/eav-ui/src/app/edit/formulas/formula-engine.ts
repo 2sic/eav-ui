@@ -36,8 +36,8 @@ import { getVersion } from '../../shared/signals/signal.utilities';
 const logSpecs = {
   all: false,
   getFormulas: true,
-  runAllFields: true,
-  runFormula: true,
+  runAllFields: false,
+  runFormula: false,
   runOneFieldOrInitSettings: true,
   fields: ['StringPicker'], // or '*' for all
 };
@@ -187,6 +187,7 @@ export class FormulaEngine {
     const doLog = l.enabled;
 
     const picker = fieldConstants.pickerData();
+    const pickerRaw = picker?.optionsSource(); // must access before version check
     const pickerVersion = getVersion(picker?.optionsSource);
     const pickerVersionBefore = propsBefore.pickerVersion;
     const hasChanged = pickerVersion !== pickerVersionBefore;
@@ -235,7 +236,7 @@ export class FormulaEngine {
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     doLog: boolean,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
-    const l = this.log.fnCond(doLog, 'runFormulasOfField');
+    const l = this.log.fnCond(doLog, 'runFormulasOfField', { runParams, formulas });
     // Target variables to fill using formula result
     let value: FieldValue;                   // The new value
     let validation: FormulaFieldValidation;  // The new validation
@@ -249,9 +250,8 @@ export class FormulaEngine {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
         // Show more debug in case of entity-pickers
         untracked(() => {
-          if (formula.isValue) {
+          if (formula.isValue)
             console.log('value', );
-          }
         });
         continue;
       }
