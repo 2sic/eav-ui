@@ -4,7 +4,7 @@ import { FormulaV1Data } from './formula-run-data.model';
 import { FormulaHelpers } from '../formula.helpers';
 import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { PickerItem } from 'projects/edit-types';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
 
 /**
  * The object containing data information.

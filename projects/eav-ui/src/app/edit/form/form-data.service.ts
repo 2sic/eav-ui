@@ -4,19 +4,15 @@ import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { Context } from '../../shared/services/context';
 import { EavEditLoadDto, SaveEavFormData } from '../dialog/main/edit-dialog-main.models';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { SaveResult } from '../state/save-result.model';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
+import { classLog } from '../../shared/logging';
 
 
 const logSpecs = {
-  enabled: false,
-  name: 'FormDataService',
-  specs: {
-    all: false,
-    fetchFormData: false,
-    saveFormData: false,
-  }
+  all: false,
+  fetchFormData: false,
+  saveFormData: false,
 };
 
 export const webApiEditRoot = 'cms/edit/';
@@ -24,7 +20,8 @@ export const webApiEditRoot = 'cms/edit/';
 @Injectable()
 export class FormDataService {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({ FormDataService }, logSpecs);
+
   constructor(
     private http: HttpClient,
     private dnnContext: DnnContext,

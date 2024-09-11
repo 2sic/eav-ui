@@ -15,7 +15,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { MatCardModule } from '@angular/material/card';
 import { FormDataService } from '../../form/form-data.service';
 import { EditControlsBuilderDirective } from '../../fields/builder/fields-builder.directive';
-import { LocalizationHelpers } from '../../localization/localization.helpers';
 import { FeatureNames } from '../../../features/feature-names';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';

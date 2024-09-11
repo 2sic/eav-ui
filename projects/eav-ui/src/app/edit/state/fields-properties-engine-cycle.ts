@@ -7,7 +7,6 @@ import { FieldsPropsEngine } from './fields-properties-engine';
 import { EavEntityAttributes } from '../shared/models/eav';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { classLog } from '../../shared/logging';
-import { PickerItem } from 'projects/edit-types';
 
 const maxChangeCycles = 5;
 

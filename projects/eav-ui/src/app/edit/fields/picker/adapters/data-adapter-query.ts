@@ -5,8 +5,8 @@ import { PickerItemFactory } from '../models/picker-item.model';
 import { FieldMask } from '../../../shared/helpers/field-mask.helper';
 import { transient } from '../../../../core/transient';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { DataAdapterBase } from './data-adapter-base';
+import { classLog } from '../../../../shared/logging/logging';
 
 @Injectable()
 export class DataAdapterQuery extends DataAdapterEntityBase {

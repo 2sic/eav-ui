@@ -6,7 +6,6 @@ import { EavLogger } from '../shared/logging/eav-logger';
 const logSpecs = {
   enabled: false,
   name: 'EditRoutingModule',
-  specs: { }
 };
 
 const logger = new EavLogger(logSpecs);

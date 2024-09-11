@@ -3,18 +3,14 @@ import { TranslateService } from "@ngx-translate/core";
 import { Injectable, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
+import { classLog } from '../../../../shared/logging/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'DataSourceQuery',
-  specs: {
-    ...DataSourceEntityQueryBase.logSpecs,
-  }
+  ...DataSourceEntityQueryBase.logSpecs,
 };
 
 // TODO: NEXT STEPS
@@ -30,7 +26,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
   #translate = inject(TranslateService);
 
   constructor() {
-    super(new EavLogger(logSpecs));
+    super(classLog({DataSourceQuery}, logSpecs));
   }
 
   protected formState = inject(FormConfigService);

@@ -1,24 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EavLogger } from '../logging/eav-logger';
 import { Context } from './context';
 import { QueryStreams } from '../models/query-stream.model';
+import { classLog } from '../logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'QueryService',
-  specs: {
-    all: false,
-    getAvailableEntities: false,
-    getEntities: false,
-  }
+  all: false,
+  getAvailableEntities: false,
+  getEntities: false,
 };
 
 @Injectable()
 export class QueryService {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({QueryService}, logSpecs);
+
   constructor(private http: HttpClient, private context: Context) { }
 
   getAvailableEntities(queryUrl: string, params: string, fields: string, entitiesFilter?: string[]): Observable<QueryStreams> {

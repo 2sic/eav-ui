@@ -30,7 +30,7 @@ import isEqual from 'lodash-es/isEqual';
 import { AdamConnector } from './adam-connector';
 import { transient } from '../../../../../core/transient';
 import { DialogRoutingService } from '../../../../../shared/routing/dialog-routing.service';
-import { signalObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
+import { signalObj } from '../../../../../shared/signals/signal.utilities';
 
 const logSpecs = {
   enabled: false,

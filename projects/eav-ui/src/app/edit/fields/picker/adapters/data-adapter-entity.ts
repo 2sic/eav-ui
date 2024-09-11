@@ -2,8 +2,8 @@ import { DataSourceEntity } from "../data-sources/data-source-entity";
 import { DataAdapterEntityBase } from "./data-adapter-entity-base";
 import { Injectable } from '@angular/core';
 import { transient } from '../../../../core/transient';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { DataAdapterBase } from './data-adapter-base';
+import { classLog } from '../../../../shared/logging/logging';
 
 @Injectable()
 export class DataAdapterEntity extends DataAdapterEntityBase {

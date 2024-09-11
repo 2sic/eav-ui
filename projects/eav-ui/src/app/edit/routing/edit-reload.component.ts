@@ -7,7 +7,6 @@ import { UrlHelpers } from '../shared/helpers';
 const logThis = {
   enabled: false,
   name: 'EditReloadComponent',
-  specs: {},
 };
 
 /**

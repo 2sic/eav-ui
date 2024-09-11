@@ -6,7 +6,7 @@ import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { AdamConfig } from '../../../../../../../edit-types/src/AdamConfig';
-import { computedObj } from 'projects/eav-ui/src/app/shared/signals/signal.utilities';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: InputTypeCatalog.HyperlinkLibrary,

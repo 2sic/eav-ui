@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { transient } from '../../../../core/transient';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { classLog } from '../../../../shared/logging/logging';
 
 @Injectable()
 export class DataAdapterString extends DataAdapterBase {

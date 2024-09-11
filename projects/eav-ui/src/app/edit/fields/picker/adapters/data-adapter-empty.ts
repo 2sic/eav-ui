@@ -1,12 +1,12 @@
 import { DataAdapterBase } from "./data-adapter-base";
 import { DeleteEntityProps } from "../models/picker.models";
-import { Injectable, Injector, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DataSourceEmpty } from '../data-sources/data-source-empty';
 import { PickerFeatures } from '../picker-features.model';
 import { transient } from '../../../../core/transient';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 import { StateAdapter } from './state-adapter';
+import { classLog } from '../../../../shared/logging/logging';
 
 @Injectable()
 export class DataAdapterEmpty extends DataAdapterBase {

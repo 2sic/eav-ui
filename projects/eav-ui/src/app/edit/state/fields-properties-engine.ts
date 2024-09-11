@@ -23,7 +23,6 @@ import { computedObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
 import { PickerDataFactory } from '../fields/picker/picker-data.factory';
 import { PickerData } from '../fields/picker/picker-data';
-import { PickerItem } from 'projects/edit-types';
 
 const logSpecs = {
   all: false,

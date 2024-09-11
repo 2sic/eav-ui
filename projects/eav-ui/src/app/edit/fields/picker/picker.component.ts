@@ -7,6 +7,7 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataSetup } from './picker-data-setup';
+import { classLog } from '../../../shared/logging';
 
 
 @Component({
@@ -20,14 +21,10 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
 
   /** Typed Log Specs for inheriting classes to reuse */
   static logSpecs = {
-    enabled: false,
-    name: 'PickerComponent',
-    specs: {
-      all: true,
-      focusOnSearchComponent: false,
-      refreshOnChildClosed: false,
-      childFormResult: true,
-    }
+    all: true,
+    focusOnSearchComponent: false,
+    refreshOnChildClosed: false,
+    childFormResult: true,
   };
 
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
@@ -39,10 +36,10 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
 
     #pickerData = this.#fieldState.pickerData;
 
-  log: EavLogger<typeof PickerComponent.logSpecs.specs>;
+  log: EavLogger<typeof PickerComponent.logSpecs>;
   constructor(@Optional()log?: EavLogger) {
     super();
-    this.log = log ?? new EavLogger(PickerComponent.logSpecs);
+    this.log = log ?? classLog({PickerComponent}, PickerComponent.logSpecs);
     this.log.a('constructor');
     const pickerDataFactory = new PickerDataSetup(this.#injector);
     pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);

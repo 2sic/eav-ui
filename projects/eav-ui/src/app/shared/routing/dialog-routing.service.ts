@@ -1,15 +1,11 @@
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map, pairwise, startWith } from 'rxjs';
-import { EavLogger } from '../logging/eav-logger';
 import { Injectable } from '@angular/core';
 import { ServiceBase } from '../services/service-base';
+import { classLog } from '../logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'DialogRoutingService',
-  specs: {
-    doOnDialogClosed: true,
-  }
+  doOnDialogClosed: true,
 };
 
 /**
@@ -20,7 +16,7 @@ const logSpecs = {
 @Injectable()
 export class DialogRoutingService extends ServiceBase {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({DialogRoutingService}, logSpecs);
 
   constructor(
     public router: Router,

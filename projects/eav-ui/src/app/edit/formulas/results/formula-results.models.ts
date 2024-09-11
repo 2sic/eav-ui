@@ -1,7 +1,7 @@
 import { FormulaFieldValidation, FormulaTarget } from '../targets/formula-targets';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
-import { PickerItem } from 'projects/edit-types';
+import { PickerItem } from '../../fields/picker/models/picker-item.model';
 
 export interface RunFormulasResult {
   settings: FieldSettings;

@@ -26,7 +26,6 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 const logSpecs = {
   enabled: false,
   name: 'EditContentType',
-  specs: { }
 }
 @Component({
   selector: 'app-edit-content-type',
