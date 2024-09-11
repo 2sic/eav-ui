@@ -34,13 +34,13 @@ import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 
 const logSpecs = {
-  // runFormulasForAllFields: false,
-  fields: ['StringPicker'],
+  all: false,
+  getFormulas: true,
+  runAllFields: true,
+  runFormula: true,
+  runOneFieldOrInitSettings: true,
+  fields: ['StringPicker'], // or '*' for all
 };
-
-function logDetailsFor(field: string) {
-  return logSpecs.fields?.includes(field) || logSpecs.fields?.includes('*');
-}
 
 /**
  * Formula engine is responsible for running formulas and returning the result.
@@ -49,6 +49,7 @@ function logDetailsFor(field: string) {
  */
 @Injectable()
 export class FormulaEngine {
+
   log = classLog({ FormulaEngine }, logSpecs, true);
 
   #features = inject(FeaturesService).getAll();
@@ -83,8 +84,9 @@ export class FormulaEngine {
    * Find formulas of the current field which are still running.
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
-  #getFormulas(name: string, forListItems: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
-    const targets = forListItems
+  #getFormulas(name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
+    const l = this.log.fnIfInList('getFormulas', 'fields', name, { name, forNewPicker, versionHasChanged });
+    const targets = forNewPicker
       ? Object.values(FormulaNewPickerTargets)
       : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
     
@@ -94,7 +96,7 @@ export class FormulaEngine {
 
     const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
 
-    return unPaused;
+    return l.r(unPaused, `all: ${all.length}, unstopped: ${unstopped.length}, unpaused: ${unPaused.length}`);
   }
 
 
@@ -111,7 +113,7 @@ export class FormulaEngine {
     const fss = new FieldsSettingsHelpers(this.log.name);
 
     for (const attr of this.#attributes) {
-      const lAttr = this.log.fnCond(logDetailsFor(attr.Name), 'runFormulasForAllFields', { fieldName: attr.Name });
+      const lAttr = this.log.fnIfInList('runAllFields', 'fields', attr.Name, { fieldName: attr.Name });
       const values = cycle.allAttributes[attr.Name];
       const valueBefore = cycle.values[attr.Name];
 
@@ -181,8 +183,8 @@ export class FormulaEngine {
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
-    const doLog = logDetailsFor(fieldName);
-    const l = this.log.fnCond(doLog, 'runOneFieldOrInitSettings', { fieldName });
+    const l = this.log.fnIfInList('runOneFieldOrInitSettings', 'fields', fieldName, { fieldName });
+    const doLog = l.enabled;
 
     const picker = fieldConstants.pickerData();
     const pickerVersion = getVersion(picker?.optionsSource);
@@ -344,7 +346,7 @@ export class FormulaEngine {
   #runFormula(runParams: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
     const { formula, inputTypeName } = runParams.runParameters;
     
-    const l = this.log.fnCond(logDetailsFor(formula.fieldName), `runFormula`, { fieldName: formula.fieldName });
+    const l = this.log.fnIfInList('runFormula', 'fields', formula.fieldName, { fieldName: formula.fieldName });
 
     const params = FormulaHelpers.buildFormulaProps(runParams);
     const ctTitle = this.#contentTypeTitle;

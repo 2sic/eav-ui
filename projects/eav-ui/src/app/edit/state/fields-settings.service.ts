@@ -36,7 +36,7 @@ const maxCyclesWarning = "Max cycles reached, stopping for this second";
 @Injectable()
 export class FieldsSettingsService {
 
-  log = classLog({FieldsSettingsService}, logSpecs, true);
+  log = classLog({FieldsSettingsService}, logSpecs, false);
 
   constructor() {
     // Transfer changes to the props state to the public property
