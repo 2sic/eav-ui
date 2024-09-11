@@ -32,6 +32,8 @@ export class FormulaCacheService {
     this.formulas.set(formulaCache);
   }
 
+  //#region Formulas Get / Find
+
   /**
    * Used for returning formulas filtered by optional entity, field or target.
    * @param entityGuid Optional entity guid
@@ -49,15 +51,19 @@ export class FormulaCacheService {
     );
   }
 
+  public formulaListIndexAndOriginal(fOrDs: FormulaIdentifier) {
+    const list = this.formulas();
+    const index = list.findIndex(f => f.entityGuid === fOrDs.entityGuid && f.fieldName === fOrDs.fieldName && f.target === fOrDs.target);
+    const value = list[index];
+    return { list, index, value };
+  }
+
+  //#endregion
+
+  //#region Formulas CRUD
+
   /**
    * Used for saving updated formula from editor.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
-   * @param formula
-   * @param sourceGuid
-   * @param sourceId
-   * @returns
    */
   public updateSaved(formulaItem: FormulaCacheItem, sourceGuid: string, sourceId: number): void {
     const { list, index, value } = this.formulaListIndexAndOriginal(formulaItem);
@@ -75,59 +81,41 @@ export class FormulaCacheService {
     this.formulas.set(newCache);
   }
 
-  public formulaListIndexAndOriginal(fOrDs: FormulaIdentifier) {
-    const list = this.formulas();
-    const index = list.findIndex(f => f.entityGuid === fOrDs.entityGuid && f.fieldName === fOrDs.fieldName && f.target === fOrDs.target);
-    const value = list[index];
-    return { list, index, value };
+  /**
+   * Used for updating formula from editor.
+   */
+  public updateFormulaFromEditor(id: FormulaIdentifier, formula: string, run: boolean): void {
+    const newCache = this.#cacheBuilder.updateFormulaFromEditor(this, id, formula, run);
+    this.formulas.set(newCache);
   }
 
   /**
    * Used for deleting formula.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
    */
-  public delete(formulaItem: FormulaCacheItem): void {
-    const { list, index } = this.formulaListIndexAndOriginal(formulaItem);
+  public delete(id: FormulaIdentifier): void {
+    const { list, index } = this.formulaListIndexAndOriginal(id);
+    if (index < 0) return;
     const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
     this.formulas.set(newCache);
   }
 
   /**
    * Used for resetting formula.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
    */
   public resetFormula(id: FormulaIdentifier): void {
-    const { list: resList, index: resIndex } = this.resultListIndexAndOriginal(id);
-    if (resIndex >= 0) {
-      const newResults = [...resList.slice(0, resIndex), ...resList.slice(resIndex + 1)];
-      this.#results.set(newResults);
-    }
+    this.#deleteResult(id);
 
-    const { list, index, value: formValue } = this.formulaListIndexAndOriginal(id);
-    if (formValue?.sourceCodeSaved != null) {
-      this.updateFormulaFromEditor(id, formValue.sourceCodeSaved, true);
-    } else if (index >= 0) {
-      const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
-      this.formulas.set(newCache);
-    }
+    // If we reset to saved code, then do that, otherwise delete/flush
+    const sourceCodeSaved = this.formulaListIndexAndOriginal(id).value?.sourceCodeSaved;
+    if (sourceCodeSaved != null)
+      this.updateFormulaFromEditor(id, sourceCodeSaved, true);
+    else 
+      this.delete(id);
   }
 
-  /**
-   * Used for updating formula from editor.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
-   * @param formula
-   * @param run
-   */
-  public updateFormulaFromEditor(id: FormulaIdentifier, formula: string, run: boolean): void {
-    const newCache = this.#cacheBuilder.updateFormulaFromEditor(this, id, formula, run);
-    this.formulas.set(newCache);
-  }
+  //#endregion
+
+  //#region Get Results & Delete
 
   /**
    * Cache the results of a formula - mainly for showing formula result in editor.
@@ -170,4 +158,16 @@ export class FormulaCacheService {
     const value = list[index];
     return { list, index, value };
   }
+
+  /**
+   * Delete Results from cache.
+   */
+  #deleteResult(id: FormulaIdentifier): void {
+    const { list, index } = this.resultListIndexAndOriginal(id);
+    if (index < 0) return;
+    const newResults = [...list.slice(0, index), ...list.slice(index + 1)];
+    this.#results.set(newResults);
+  }  
+
+  //#endregion
 }

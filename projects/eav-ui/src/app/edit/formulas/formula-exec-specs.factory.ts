@@ -8,6 +8,10 @@ import { ItemService } from '../state/item.service';
 import { FeaturesService } from '../../features/features.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 
+/**
+ * Factory for creating FormulaExecutionSpecs objects.
+ * These are parameters needed to run formulas, which are reused quite a few times.
+ */
 @Injectable()
 export class FormulaExecutionSpecsFactory {
 
@@ -35,7 +39,7 @@ export class FormulaExecutionSpecsFactory {
    * Can be reused for a short time, as the data doesn't change in a normal cycle,
    * but it will need to be regenerated after things such as language or feature change.
    */
-  prepareDataForFormulaObjects(): FormulaExecutionSpecs {
+  getSharedSpecs(): FormulaExecutionSpecs {
     const language = this.formConfig.language();
     const languages = this.languageSvc.getAll();
     const debugEnabled = this.globalConfigSvc.isDebug();

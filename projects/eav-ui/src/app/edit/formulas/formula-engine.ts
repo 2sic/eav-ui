@@ -98,7 +98,7 @@ export class FormulaEngine {
     // Many aspects of a field are re-usable across formulas, so we prepare them here
     // These are things explicit to the entity and either never change, or only rarely
     // so never between cycles
-    const reuseObjectsForFormulaDataAndContext = this.#formulaExecSpecsFactory.prepareDataForFormulaObjects();
+    const reuseExecSpecs = this.#formulaExecSpecsFactory.getSharedSpecs();
 
     const fss = new FieldsSettingsHelpers(this.log.name);
 
@@ -122,7 +122,7 @@ export class FormulaEngine {
         engine.item.Header,
         valueBefore,
         propsBefore,
-        reuseObjectsForFormulaDataAndContext,
+        reuseExecSpecs,
         settingsUpdateHelper,
       );
 
@@ -170,7 +170,7 @@ export class FormulaEngine {
     itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     valueBefore: FieldValue,
     propsBefore: FieldProps,
-    reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
+    reuseExecSpecs: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
     const l = this.log.fnIfInList('runOneFieldOrInitSettings', 'fields', fieldName, { fieldName });
@@ -206,7 +206,7 @@ export class FormulaEngine {
         pickerVersionBefore: pickerVersionBefore,
       };
   
-      return this.#runAllOfField(runParamsStatic, formulas, reuseObjectsForFormulaDataAndContext, doLog);
+      return this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
     })();
 
     // Correct any settings necessary after
