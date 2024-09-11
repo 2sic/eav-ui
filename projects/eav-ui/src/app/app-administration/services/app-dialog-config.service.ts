@@ -2,11 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { GlobalDialogConfigService } from './global-dialog-config.service';
-
-const logThis = false;
-const nameOfThis = 'DialogConfigService';
+import { classLog } from '../../shared/logging';
 
 /**
  * Context aware dialog configuration service.
@@ -16,7 +13,7 @@ const nameOfThis = 'DialogConfigService';
 @Injectable()
 export class AppDialogConfigService {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({AppDialogConfigService});
 
   constructor(private contextSvcShared: GlobalDialogConfigService, private context: Context) {
   }

@@ -18,7 +18,6 @@ import { EditControlsBuilderDirective } from '../../fields/builder/fields-builde
 import { FeatureNames } from '../../../features/feature-names';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { FeaturesService } from '../../../features/features.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -32,15 +31,12 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
 import { EditForceReloadService } from '../../routing/edit-force-reload.service';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { EntityReader } from '../../shared/helpers/entity-reader';
+import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EntityFormComponent',
-  specs: {
-    all: false,
-    fetchNote: true,
-    noteFormData: true,
-  }
+  all: false,
+  fetchNote: true,
+  noteFormData: true,
 };
 
 /**
@@ -69,6 +65,9 @@ const logSpecs = {
   ],
 })
 export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy {
+
+  log = classLog({EntityFormComponent}, logSpecs);
+
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
@@ -131,7 +130,6 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   #entitySvc = transient(EntityService);
   #dialogRouter = transient(DialogRoutingService);
 
-  log = new EavLogger(logSpecs);
   constructor(
     private itemSvc: ItemService,
     private editRoutingSvc: EditRoutingService,

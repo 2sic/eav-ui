@@ -26,14 +26,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { ItemService } from '../../../state/item.service';
 import { ContentTypeService } from '../../../shared/content-types/content-type.service';
 import { EditPrep } from '../../../../shared/models/edit-form.model';
-
-const logThis = false;
-const nameOfThis = 'FormulaDesignerComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-formula-designer',
@@ -59,11 +56,11 @@ const nameOfThis = 'FormulaDesignerComponent';
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
+  log = classLog({FormulaDesignerComponent});
+
   #designerSvc = inject(FormulaDesignerService);
 
   #entitiesService = transient(EntityEditService);
-
-  private log = new EavLogger(nameOfThis, logThis);
   
   constructor(
     private snackBar: MatSnackBar,

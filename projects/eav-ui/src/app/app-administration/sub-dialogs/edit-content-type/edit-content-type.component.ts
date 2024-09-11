@@ -21,12 +21,8 @@ import { ClickStopPropagationDirective } from '../../../shared/directives/click-
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
 import { awaitHttp, computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { EavLogger } from '../../../shared/logging/eav-logger';
+import { classLog } from '../../../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'EditContentType',
-}
 @Component({
   selector: 'app-edit-content-type',
   templateUrl: './edit-content-type.component.html',
@@ -49,9 +45,10 @@ const logSpecs = {
   ],
 })
 export class EditContentTypeComponent implements AfterViewInit {
-  @HostBinding('className') hostClass = 'dialog-component';
 
-  log = new EavLogger(logSpecs);
+  log = classLog({EditContentTypeComponent});
+
+  @HostBinding('className') hostClass = 'dialog-component';
   
   #contentTypeSvc = transient(ContentTypesService);
 

@@ -1,14 +1,9 @@
 import { Routes } from '@angular/router';
 import { editDialog } from './edit-dialog.config';
 import { matchEditRoot, matchEditSub, matchEditSubRefresh, matchEditRootRefresh } from './routing/edit-route-matchers';
-import { EavLogger } from '../shared/logging/eav-logger';
+import { classLog } from '../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'EditRoutingModule',
-};
-
-const logger = new EavLogger(logSpecs);
+const log = classLog('Routes');
 
 /**
  * Routes which open an empty component which then reloads the entity to ensure a full refresh.
@@ -55,7 +50,7 @@ export const EditRoutes: Routes = [
     matcher: matchEditSub,
     loadChildren: () => {
       // Recursively use these routes again.
-      logger.a('loadChildren - matcher: sub-edit');
+      log.a('loadChildren - matcher: sub-edit');
       return editRoutesDialogAndChildren;
     },
   },

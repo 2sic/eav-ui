@@ -6,12 +6,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldState } from '../../field-state';
 import { ConnectorComponent } from '../../connector/connector.component';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
-
-const logThis = false;
-const nameOfThis = 'ExternalWebComponentComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: InputTypeCatalog.ExternalWebComponent,
@@ -26,13 +23,13 @@ const nameOfThis = 'ExternalWebComponentComponent';
 })
 export class ExternalWebComponentComponent {
 
+  log = classLog({ExternalWebComponentComponent});
+
   protected fieldState = inject(FieldState);
   protected config = this.fieldState.config;
 
   protected isExpanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
   protected loading = signal<boolean>(true)
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private scriptsLoaderService: ScriptsLoaderService,

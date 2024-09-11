@@ -11,10 +11,7 @@ import { NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { UserSettings } from '../../../shared/user/user-settings.service';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'EditDialogFooterComponent';
+import { classLog } from '../../../shared/logging';
 
 declare const window: EavWindow;
 
@@ -37,7 +34,7 @@ declare const window: EavWindow;
 })
 export class EditDialogFooterComponent {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({EditDialogFooterComponent});
   
   DebugTypes = DebugTypes;
   sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));

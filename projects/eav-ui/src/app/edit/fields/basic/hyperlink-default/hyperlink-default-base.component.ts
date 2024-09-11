@@ -7,7 +7,6 @@ import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { PagePicker } from '../../page-picker/page-picker.helper';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { FormConfigService } from '../../../form/form-config.service';
 import { FormsStateService } from '../../../form/forms-state.service';
@@ -15,11 +14,7 @@ import { AdamService } from '../../../shared/adam/adam.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 import { transient } from '../../../../core/transient';
-
-const logSpecs = {
-  enabled: false,
-  name: 'HyperlinkDefaultBaseComponent',
-};
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-base-field-hyperlink-component',
@@ -27,6 +22,8 @@ const logSpecs = {
 })
 // tslint:disable-next-line:directive-class-suffix
 export class HyperlinkDefaultBaseComponent implements OnInit {
+
+  log = classLog({HyperlinkDefaultBaseComponent});
 
   preview = signal<Preview>({
     url: '',
@@ -51,7 +48,6 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
 
   public adamService = transient(AdamService);
 
-  log = new EavLogger(logSpecs);
   constructor(
     private formConfig: FormConfigService,
     public dialog: MatDialog,
@@ -60,8 +56,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     public linkCacheService: LinkCacheService,
     public editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     effect(() => {

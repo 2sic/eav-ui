@@ -24,7 +24,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FormDataService } from '../../form/form-data.service';
 import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
@@ -49,11 +48,7 @@ import { LinkCacheService } from '../../shared/adam/link-cache.service';
 import { isCtrlS, isEscape } from './keyboard-shortcuts';
 import { computedWithPrev } from '../../../shared/signals/signal.utilities';
 import { UserSettings } from '../../../shared/user/user-settings.service';
-
-const logSpecs = {
-  enabled: false,
-  name: 'EditDialogMainComponent',
-};
+import { classLog } from '../../../shared/logging';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -87,6 +82,9 @@ const logSpecs = {
   ],
 })
 export class EditDialogMainComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  log = classLog({EditDialogMainComponent});
+
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
   viewModel$: Observable<EditDialogMainViewModel>;
@@ -141,7 +139,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       startWith(true)
     ));
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
     private contentTypeItemService: ContentTypeItemService,

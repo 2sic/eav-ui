@@ -5,16 +5,16 @@ import { FieldLogicManager } from '../../logic/field-logic-manager';
 import { EavEntity } from '../../../shared/models/eav';
 import { InputTypeCatalog, InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
 import { FieldSettings, UiPickerSourceCustomList } from '../../../../../../../edit-types/src/FieldSettings';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
-
-const logThis = false;
+import { classLog } from '../../../../shared/logging';
 
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeCatalog.StringPicker;
 
   update(specs: FieldLogicUpdate<string>): FieldSettings {
+    
+    var log = classLog({StringPickerLogic});
+
     const { value, tools } = specs;
-    var log = new EavLogger('StringPickerLogic', logThis);
     log.a('update', { specs });
 
     let dataSources: EavEntity[] = [];

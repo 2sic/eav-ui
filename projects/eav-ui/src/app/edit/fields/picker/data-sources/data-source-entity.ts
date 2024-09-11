@@ -5,17 +5,11 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { PickerItem } from '../models/picker-item.model';
 import { classLog } from '../../../../shared/logging/logging';
 
-const logSpecs = {
-  ...DataSourceEntityQueryBase.logSpecs,
-  all: true,
-  getFromBackend: true,
-};
-
 @Injectable()
 export class DataSourceEntity extends DataSourceEntityQueryBase {
 
   constructor() {
-    super(classLog({DataSourceEntity}, logSpecs));
+    super(classLog({DataSourceEntity}, DataSourceEntityQueryBase.logSpecs));
   }
 
   public override getFromBackend(typeName: string, guids: string[], purposeForLog: string) {

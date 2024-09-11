@@ -1,5 +1,4 @@
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { EavLogger } from './../../../../shared/logging/eav-logger';
 import { Component, computed, inject, Signal } from '@angular/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -21,10 +20,7 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
-import { ControlStatus } from '../../../shared/controls/control-status.model';
-
-const logThis = false;
-const nameOfThis = 'DateTimeDefaultComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: InputTypeCatalog.DateTimeDefault,
@@ -49,6 +45,8 @@ const nameOfThis = 'DateTimeDefaultComponent';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class DatetimeDefaultComponent {
 
+  log = classLog({DatetimeDefaultComponent});
+
   protected fieldState = inject(FieldState) as FieldState<string>;
 
   protected group = this.fieldState.group;
@@ -60,8 +58,6 @@ export class DatetimeDefaultComponent {
   protected basics = this.fieldState.basics;
 
   protected useTimePicker = computed(() => this.settings().UseTimePicker, SignalEquals.bool);
-
-  log = new EavLogger(nameOfThis, logThis);
 
   /** The date/time picker needs the date-info cleaned up, so it doesn't do time-zone handling */
   valueForTimePicker = computed(() => this.uiValue()?.replace('Z', ''), SignalEquals.string);

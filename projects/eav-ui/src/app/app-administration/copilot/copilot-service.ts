@@ -1,24 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Context } from '../../shared/services/context';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { EditionData, EditionDataDto } from './edition-data';
 import { map, shareReplay } from 'rxjs';
 import { Edition, EditionDto } from './edition';
-
-const logSpecs = {
-  enabled: false,
-  name: 'CopilotService',
-}
+import { classLog } from '../../shared/logging';
 
 @Injectable()
 export class CopilotService {
+  
+  log = classLog({CopilotService});
+
   static webApiEditions: string = 'admin/code/getEditions';
   static webApiGeneratedCode: string = 'admin/code/generateDataModels';
 
   public specs = this.#getCopilotSpecs();
 
-  log = new EavLogger(logSpecs);
   constructor(private http: HttpClient, private context: Context) { }
 
   getEditions() {

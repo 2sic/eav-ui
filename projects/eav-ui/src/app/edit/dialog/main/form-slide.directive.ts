@@ -1,13 +1,10 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, fromEvent, map, merge, pairwise } from 'rxjs';
 import { BaseDirective } from '../../../shared/directives/base.directive';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { mapUntilChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../../form/form-config.service';
 import { LanguageService } from '../../localization/language.service';
-
-const logThis = false;
-const nameOfThis = 'FormSlideDirective';
+import { classLog } from '../../../shared/logging';
 
 const classNext = 'next';
 const classPrevious = 'previous';
@@ -19,7 +16,7 @@ const animationNames = ['move-next', 'move-previous'];
 })
 export class FormSlideDirective extends BaseDirective implements OnInit, OnDestroy {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({FormSlideDirective});
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,

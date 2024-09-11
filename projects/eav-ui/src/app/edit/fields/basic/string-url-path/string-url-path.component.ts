@@ -12,10 +12,7 @@ import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { transient } from '../../../../core/transient';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'StringUrlPathComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: InputTypeCatalog.StringUrlPath,
@@ -33,6 +30,7 @@ const nameOfThis = 'StringUrlPathComponent';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringUrlPathComponent {
 
+  log = classLog({StringUrlPathComponent});
 
   protected fieldState = inject(FieldState);
 
@@ -63,8 +61,6 @@ export class StringUrlPathComponent {
     const newValue = this.#fieldMask.result();
     return UrlHelpers.stripNonUrlCharacters(newValue, this.settings().AllowSlashes, true);
   });
-
-  log = new EavLogger(nameOfThis, logThis);
 
   constructor() {
     StringUrlPathLogic.importMe();

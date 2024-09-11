@@ -8,7 +8,6 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AppAdminMenu } from './app-admin-menu';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
@@ -19,11 +18,8 @@ import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.direc
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { classLog } from '../../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'AppAdminMainComponent',
-}
 @Component({
   selector: 'app-app-admin-main',
   templateUrl: './app-admin-main.component.html',
@@ -43,10 +39,11 @@ const logSpecs = {
 })
 export class AppAdminMainComponent implements OnInit, OnDestroy {
 
+  log = classLog({AppAdminMainComponent});
+
   #dialogConfigSvc = transient(AppDialogConfigService);
   #dialogRouter = transient(DialogRoutingService);
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialogRef: MatDialogRef<AppAdminMainComponent>,
     private media: MediaMatcher

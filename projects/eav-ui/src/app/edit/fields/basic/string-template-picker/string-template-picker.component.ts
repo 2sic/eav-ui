@@ -21,11 +21,8 @@ import { transient } from '../../../../core/transient';
 import { SourceService } from '../../../../code-editor/services/source.service';
 import { CreateFileDialogComponent } from '../../../../create-file-dialog/create-file-dialog.component';
 import { CreateFileDialogData, CreateFileDialogResult } from '../../../../create-file-dialog/create-file-dialog.models';
-import { EavLogger } from '../../../../../../../eav-ui/src/app/shared/logging/eav-logger';
 import { take } from 'rxjs';
-
-const logThis = false;
-const nameOfThis = 'StringTemplatePickerComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: InputTypeCatalog.StringTemplatePicker,
@@ -48,7 +45,8 @@ const nameOfThis = 'StringTemplatePickerComponent';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class StringTemplatePickerComponent implements OnDestroy {
-  log = new EavLogger(nameOfThis, logThis);
+  
+  log = classLog({StringTemplatePickerComponent});
 
   #fieldState = inject(FieldState) as FieldState<string>;
   protected group = this.#fieldState.group;

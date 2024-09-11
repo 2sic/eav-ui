@@ -6,8 +6,6 @@ import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareR
 import { FeatureNames } from '../../features/feature-names';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { Context } from '../../shared/services/context';
@@ -22,7 +20,6 @@ import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,11 +32,8 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { classLog } from '../../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'AppsListComponent',
-}
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
@@ -62,6 +56,9 @@ const logSpecs = {
   ],
 })
 export class AppsListComponent implements OnInit, OnDestroy {
+
+  log = classLog({AppsListComponent});
+
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
@@ -75,7 +72,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
   #appsListSvc = transient(AppsListService);
   #dialogRouter = transient(DialogRoutingService);
 
-  log = new EavLogger(logSpecs);
   constructor(
     private snackBar: MatSnackBar,
     private context: Context,

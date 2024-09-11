@@ -6,15 +6,12 @@ import { ShowShadowsHelper } from './show-shadows.helper';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { Language } from '../../../form/form-languages.model';
 import { FormLanguageService } from '../../../form/form-language.service';
 import { LanguageService } from '../../../localization/language.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-const logThis = false;
-const nameOfThis = 'LanguageSwitcherComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-language-switcher',
@@ -28,6 +25,9 @@ const nameOfThis = 'LanguageSwitcherComponent';
   ],
 })
 export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
+
+  log = classLog({LanguageSwitcherComponent});
+
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
@@ -36,8 +36,6 @@ export class LanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
   private showShadowsHelper: ShowShadowsHelper;
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   current = computed(() => this.formConfig.language().current);
 

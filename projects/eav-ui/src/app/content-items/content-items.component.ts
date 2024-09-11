@@ -46,14 +46,9 @@ import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directi
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ToggleDebugDirective } from '../shared/directives/toggle-debug.directive';
 import { transient } from '../core';
-import { EavLogger } from '../shared/logging/eav-logger';
 import { GlobalConfigService } from '../shared/services/global-config.service';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-
-const logSpecs = {
-  enabled: false,
-  name: 'ContentItemsComponent',
-}
+import { classLog } from '../shared/logging';
 
 @Component({
   selector: 'app-content-items',
@@ -73,6 +68,9 @@ const logSpecs = {
   ],
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
+
+  log = classLog({ContentItemsComponent});
+
   contentType$ = new Subject<ContentType>();
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   gridOptions: GridOptions = {
@@ -91,15 +89,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   viewModel$: Observable<ContentItemsViewModel>;
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchContentType();

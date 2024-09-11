@@ -27,11 +27,12 @@ import { SelectorWithHelpComponent } from '../selector-with-help/selector-with-h
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { transient } from '../../core';
+import { classLog } from '../../shared/logging';
 
 const pathToApi = 'app/{appname}/{endpointPath}/{action}';
-const logThis = false;
+
+
 @Component({
   selector: 'app-dev-rest-api',
   templateUrl: './api.component.html',
@@ -60,8 +61,10 @@ const logThis = false;
   ],
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
-  @HostBinding('className') hostClass = 'dialog-component';
 
+  log = classLog({DevRestApiComponent});
+
+  @HostBinding('className') hostClass = 'dialog-component';
 
   /** action name to check for */
   selectedActionName$ = new BehaviorSubject<string>(null);
@@ -69,7 +72,6 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implem
   /** Test values for url params */
   urlParams$ = new BehaviorSubject<string>('');
 
-  log = new EavLogger("DevRestApiComponent", logThis);
   private sourceService = transient(SourceService);
   
   constructor(
