@@ -2,12 +2,14 @@ import { DeleteEntityProps } from '../models/picker.models';
 import { Signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { StateAdapter } from './state-adapter';
 import { PickerItem } from '../models/picker-item.model';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
 export abstract class DataAdapterBase {
+  
+  log = classLog({DataAdapterBase});
 
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = { all: false, setupEmpty: true, connectState: false, fetchItems: false };
@@ -27,8 +29,6 @@ export abstract class DataAdapterBase {
 
   public deleteCallback: (props: DeleteEntityProps) => void;
 
-  log: EavLogger<typeof DataAdapterBase.logSpecs>;
-
   constructor() { }
 
   //#region Setup & Init
@@ -46,7 +46,7 @@ export abstract class DataAdapterBase {
 
   init(callerName: string) { }
 
-  public linkLog(log: EavLogger): this {
+  public linkLog(log: ReturnType<typeof classLog>): this {
     if (!this.log.enabled)
       this.log.inherit(log);
     return this;

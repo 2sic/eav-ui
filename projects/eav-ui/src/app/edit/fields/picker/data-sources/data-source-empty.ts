@@ -1,13 +1,7 @@
 import { DataSourceBase } from './data-source-base';
 import { Injectable } from '@angular/core';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
-import { LogSpecs } from '../../../../shared/logging/log-specs';
-
-const logSpecs: LogSpecs = {
-  enabled: false,
-  name: 'DataSourceEmpty',
-};
+import { classLog } from '../../../../shared/logging';
 
 /**
  * This is the data-source we plan to attach when a picker is not configured.
@@ -16,14 +10,16 @@ const logSpecs: LogSpecs = {
 @Injectable()
 export class DataSourceEmpty extends DataSourceBase {
 
+  log = classLog({DataSourceEmpty});
+
   loading = signalObj('loading', false);
 
   constructor() {
-    super(new EavLogger(logSpecs));
+    super();
   }
   
 
-  #label = signalObj('label', `something is wrong - using ${logSpecs.name}`);
+  #label = signalObj('label', `something is wrong - using DataSourceEmpty`);
 
   public preSetup(label: string): this {
     this.#label.set(label);

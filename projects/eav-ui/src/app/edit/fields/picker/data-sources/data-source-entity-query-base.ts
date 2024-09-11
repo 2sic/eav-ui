@@ -1,14 +1,14 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { Inject, Injectable, OnDestroy, WritableSignal } from '@angular/core';
+import { Injectable, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { classLog } from '../../../../shared/logging';
 
 /**
  * This is the base class for data-sources providing data from
@@ -17,6 +17,8 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
  */
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
+  
+  log = classLog({DataSourceEntityQueryBase});
 
   //#region Inject and blank constructor
 
@@ -30,10 +32,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   protected querySvc = transient(QueryService);
 
-  log: EavLogger<typeof DataSourceEntityQueryBase.logSpecs>;
-  constructor(log: EavLogger) {
-    super(log);
-  }
+  constructor() { super(); }
 
   ngOnDestroy(): void {
     this.#typeOrParams$.complete();

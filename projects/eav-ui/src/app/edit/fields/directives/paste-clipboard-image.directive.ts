@@ -6,25 +6,23 @@ import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { FeaturesService } from '../../../features/features.service';
 import { BaseDirective } from '../../../shared/directives/base.directive';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
-
-const logThis = false;
-const nameOfThis = 'PasteClipboardImageDirective';
+import { classLog } from '../../../shared/logging';
 
 @Directive({
   selector: '[appPasteClipboardImage]',
   standalone: true
 })
 export class PasteClipboardImageDirective extends BaseDirective implements OnInit, OnDestroy {
+  
+  log = classLog({PasteClipboardImageDirective});
+
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
 
   private pasteImageEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private elementRef: ElementRef,

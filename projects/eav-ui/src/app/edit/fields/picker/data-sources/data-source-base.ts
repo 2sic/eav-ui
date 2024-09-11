@@ -7,23 +7,20 @@ import { DataWithLoading } from '../models/data-with-loading';
 import { Injectable, Signal, inject } from '@angular/core';
 import { FieldState } from '../../field-state';
 import { ServiceBase } from '../../../../shared/services/service-base';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
+import { classLog } from '../../../../shared/logging';
 
 @Injectable()
 export abstract class DataSourceBase extends ServiceBase {
+  
+  log = classLog({DataSourceBase});
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
-  log: EavLogger;
-  constructor(log: EavLogger) {
-    super();
-    this.log ??= log ?? new EavLogger('DataSourceBase', false);
-    this.log.a('constructor', { forField: this.fieldState.name });
-  }
+  constructor() { super(); }
 
   /** Signal containing the data */
   public data: Signal<PickerItem[]>;

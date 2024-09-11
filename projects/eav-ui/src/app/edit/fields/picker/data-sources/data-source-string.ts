@@ -1,25 +1,19 @@
 import { DataSourceBase } from './data-source-base';
 import { Injectable } from '@angular/core';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { classLog } from '../../../../shared/logging';
 
-
-const logSpecs = {
-  enabled: false,
-  name: 'DataSourceString',
-  logChildren: false,
-};
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
+  
+  log = classLog({DataSourceString});
 
   loading = signalObj('loading', false);
 
-  constructor() {
-    super(new EavLogger(logSpecs));
-  }
+  constructor() { super(); }
 
   #dataMaskHelper = (() => {
     // Make sure the converter/builder uses the "Value" field for the final 'value'

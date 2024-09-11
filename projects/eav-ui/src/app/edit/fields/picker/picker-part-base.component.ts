@@ -1,9 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'PickerPartBaseComponent';
+import { classLog } from '../../../shared/logging';
 
 /**
  * Base class for Picker Part Components.
@@ -13,6 +10,8 @@ const nameOfThis = 'PickerPartBaseComponent';
   template: '',
 })
 export class PickerPartBaseComponent {
+  
+  log = classLog({PickerPartBaseComponent});
 
   /** Entire Field State */
   fieldState = inject(FieldState);
@@ -34,8 +33,5 @@ export class PickerPartBaseComponent {
   /** Features */
   features = this.pickerData.features;
 
-  log: EavLogger;
-  constructor() {
-    this.log ??= new EavLogger(nameOfThis, logThis);
-  }
+  constructor() { }
 }

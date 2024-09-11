@@ -3,7 +3,6 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataSetup } from './picker-data-setup';
@@ -18,6 +17,8 @@ import { classLog } from '../../../shared/logging';
   imports: PickerImports,
 })
 export class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
+  
+  log = classLog({PickerComponent});
 
   /** Typed Log Specs for inheriting classes to reuse */
   static logSpecs = {
@@ -36,11 +37,8 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
 
     #pickerData = this.#fieldState.pickerData;
 
-  log: EavLogger<typeof PickerComponent.logSpecs>;
-  constructor(@Optional()log?: EavLogger) {
+  constructor() {
     super();
-    this.log = log ?? classLog({PickerComponent}, PickerComponent.logSpecs);
-    this.log.a('constructor');
     const pickerDataFactory = new PickerDataSetup(this.#injector);
     pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
   }

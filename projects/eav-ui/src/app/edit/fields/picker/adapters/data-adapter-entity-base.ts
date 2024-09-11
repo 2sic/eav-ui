@@ -11,7 +11,6 @@ import { DataSourceEntityQueryBase } from '../data-sources/data-source-entity-qu
 import { EntityFormStateService } from '../../../entity-form/entity-form-state.service';
 import { FieldState } from '../../field-state';
 import { FieldMask } from '../../../shared/helpers';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
 import { FormConfigService } from '../../../form/form-config.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';

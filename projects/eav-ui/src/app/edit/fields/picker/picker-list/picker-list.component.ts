@@ -10,14 +10,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../../../../shared/directives/mousedown-stop-propagation.directive';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerListComponent',
-}
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-picker-list',
@@ -39,6 +34,8 @@ const logSpecs = {
   ],
 })
 export class PickerListComponent extends PickerPartBaseComponent {
+  
+  log = classLog({PickerListComponent});
 
   mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();
@@ -49,10 +46,7 @@ export class PickerListComponent extends PickerPartBaseComponent {
       enableRemove: settings.EnableRemove,
     };
   });
-  log = new EavLogger(logSpecs);
-  constructor() {
-    super();
-  }
+  constructor() { super(); }
 
   trackByFn(_: number, item: PickerItem): string {
     return item.value;

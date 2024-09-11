@@ -6,26 +6,19 @@ import { Injectable, Optional, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { ControlHelpers } from '../../../shared/controls/control.helpers';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
-
-const logSpecs = {
-  enabled: false,
-  name: 'StateAdapter',
-};
+import { classLog } from '../../../../shared/logging';
 
 @Injectable()
 export class StateAdapter {
+  
+  log = classLog({StateAdapter});
 
   public formConfigSvc = inject(FormConfigService);
   private fieldState = inject(FieldState) as FieldState<string | string[]>;
 
-  log: EavLogger
-
-  constructor(@Optional() logger: EavLogger = null) {
-    this.log = logger ?? new EavLogger(logSpecs);
-  }
+  constructor() { }
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
@@ -59,7 +52,7 @@ export class StateAdapter {
 
   #focusOnSearchComponent: () => void;
 
-  public linkLog(log: EavLogger): this {
+  public linkLog(log: ReturnType<typeof classLog>): this {
     if (!this.log.enabled)
       this.log.inherit(log);
     return this;
