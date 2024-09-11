@@ -22,8 +22,8 @@ const logSpecs = {
   pickerUpdate: true,
   // Debug only on the following content type
   type: '', //'@String';
+  activateAnalyzer: true,
 }
-const activateAnalyzer = false;
 
 const maxCyclesMs = 1000;
 const maxCyclesPerTime = 10;
@@ -167,10 +167,11 @@ export class FieldsSettingsService {
       }
     }, maxCyclesMs);
 
-    // let analyzer: ComputedAnalyzer<Record<string, FieldProps>>;
+    // This computed will contain all the updated field properties
     this.#allProps = computedObj('allFieldProps', () => this.#regenerateProps(deps));
 
-    if (activateAnalyzer)
+    // Start Analyzer if necessary
+    if (this.log.specs.activateAnalyzer)
       deps.analyzer = new ComputedAnalyzer(this.#allProps);
 
     this.#startSync.set(true);

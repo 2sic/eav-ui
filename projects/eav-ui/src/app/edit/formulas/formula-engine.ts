@@ -62,8 +62,7 @@ export class FormulaEngine {
     private translate: TranslateService,
     private globalConfigSvc: GlobalConfigService,
     private editInitializerSvc: EditInitializerService,
-  ) {
-  }
+  ) { }
 
   init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctTitle: string) {
     this.#entityGuid = entityGuid;
@@ -84,7 +83,7 @@ export class FormulaEngine {
    * Find formulas of the current field which are still running.
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
-  #activeFieldFormulas(name: string, forListItems: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
+  #getFormulas(name: string, forListItems: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
     const targets = forListItems
       ? Object.values(FormulaNewPickerTargets)
       : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
@@ -95,7 +94,7 @@ export class FormulaEngine {
 
     const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
 
-    return unstopped;
+    return unPaused;
   }
 
 
@@ -174,7 +173,7 @@ export class FormulaEngine {
   #runOneFieldOrInitSettings(
     cycle: FieldsPropsEngineCycle,
     fieldName: string,
-    constFieldPart: FieldConstantsOfLanguage,
+    fieldConstants: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
     itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
     valueBefore: FieldValue,
@@ -185,13 +184,14 @@ export class FormulaEngine {
     const doLog = logDetailsFor(fieldName);
     const l = this.log.fnCond(doLog, 'runOneFieldOrInitSettings', { fieldName });
 
-    const picker = constFieldPart.pickerData();
+    const picker = fieldConstants.pickerData();
     const pickerVersion = getVersion(picker?.optionsSource);
     const pickerVersionBefore = propsBefore.pickerVersion;
     const hasChanged = pickerVersion !== pickerVersionBefore;
     l.a('picker version', { pickerVersion, pickerVersionBefore, hasChanged });
 
-    const formulas = this.#activeFieldFormulas(fieldName, constFieldPart.inputTypeSpecs.isNewPicker, hasChanged);
+    // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
+    const formulas = untracked(() => this.#getFormulas(fieldName, fieldConstants.inputTypeSpecs.isNewPicker, hasChanged));
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -202,8 +202,8 @@ export class FormulaEngine {
 
       const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
         currentValues: cycle.values,
-        inputTypeName: constFieldPart.inputTypeSpecs.inputType,
-        settingsInitial: constFieldPart.settingsInitial,
+        inputTypeName: fieldConstants.inputTypeSpecs.inputType,
+        settingsInitial: fieldConstants.settingsInitial,
         settingsCurrent: settingsBefore,
         itemHeader,
         pickerRaw: picker?.optionsSource(),

@@ -15,6 +15,10 @@ import { classLog } from '../../../shared/logging';
 @Injectable()
 export class FormulaCacheService {
 
+  log = classLog({FormulaCacheService}, null, false);
+
+  constructor() { }
+
   /** All the formulas with various additional info to enable execution and editing */
   public formulas = signalObj<FormulaCacheItem[]>('formulas', []);
 
@@ -22,12 +26,6 @@ export class FormulaCacheService {
   #results = signalObj<FormulaResultCacheItem[]>('formula-results', []);
 
   #cacheBuilder = transient(FormulaCacheBuilder);
-
-  #log = classLog({FormulaCacheService}, null, false);
-
-  constructor() {
-    classLog({FormulaCacheService});
-  }
 
   init() {
     const formulaCache = this.#cacheBuilder.buildFormulaCache(this);
@@ -149,7 +147,7 @@ export class FormulaCacheService {
       isError,
       isOnlyPromise,
     };
-    const l = this.#log.fn('cacheResults', { newResult });
+    const l = this.log.fn('cacheResults', { newResult });
 
     // We should not track reading the list during formula execution
     // since we don't depend on it!
