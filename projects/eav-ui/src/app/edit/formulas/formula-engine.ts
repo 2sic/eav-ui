@@ -1,6 +1,5 @@
-import { Injectable, inject, untracked } from '@angular/core';
+import { Injectable, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FeaturesService } from '../../features/features.service';
 import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaHelpers } from './formula.helpers';
@@ -17,21 +16,18 @@ import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpe
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { EditInitializerService } from '../form/edit-initializer.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
-import { FormConfigService } from '../form/form-config.service';
 import { LoggingService } from '../shared/services/logging.service';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { ItemService } from '../state/item.service';
-import { LanguageService } from '../localization/language.service';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 import { classLog } from '../../shared/logging';
 import { FormulaDeveloperHelper } from './formula-developer-helper';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
+import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
+import { transient } from '../../core';
 
 const logSpecs = {
   all: false,
@@ -52,31 +48,25 @@ export class FormulaEngine {
 
   log = classLog({ FormulaEngine }, logSpecs, true);
 
-  #features = inject(FeaturesService).getAll();
+  #formulaExecSpecsFactory = transient(FormulaExecutionSpecsFactory);
 
   constructor(
-    private formConfig: FormConfigService,
-    private itemService: ItemService,
-    private languageSvc: LanguageService,
     private designerSvc: FormulaDesignerService,
     private logSvc: LoggingService,
     private translate: TranslateService,
-    private globalConfigSvc: GlobalConfigService,
-    private editInitializerSvc: EditInitializerService,
   ) { }
 
   init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctTitle: string) {
     this.#entityGuid = entityGuid;
-    this.#settingsSvc = settingsSvc;
     this.#promiseHandler = promiseHandler;
     this.#attributes = contentType.Attributes;
     this.#contentTypeTitle = ctTitle;
+    this.#formulaExecSpecsFactory.init(entityGuid, settingsSvc);
   }
 
   // properties to set on init
   #entityGuid: string;
   #contentTypeTitle: string;
-  #settingsSvc: FieldsSettingsService;
   #promiseHandler: FormulaPromiseHandler;
   #attributes: EavContentTypeAttribute[];
 
@@ -108,7 +98,7 @@ export class FormulaEngine {
     // Many aspects of a field are re-usable across formulas, so we prepare them here
     // These are things explicit to the entity and either never change, or only rarely
     // so never between cycles
-    const reuseObjectsForFormulaDataAndContext = this.#prepareDataForFormulaObjects(engine.item.Entity.Guid);
+    const reuseObjectsForFormulaDataAndContext = this.#formulaExecSpecsFactory.prepareDataForFormulaObjects();
 
     const fss = new FieldsSettingsHelpers(this.log.name);
 
@@ -186,6 +176,7 @@ export class FormulaEngine {
     const l = this.log.fnIfInList('runOneFieldOrInitSettings', 'fields', fieldName, { fieldName });
     const doLog = l.enabled;
 
+    // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const picker = fieldConstants.pickerData();
     const pickerRaw = picker?.optionsSource(); // must access before version check
     const pickerVersion = getVersion(picker?.optionsSource);
@@ -209,7 +200,7 @@ export class FormulaEngine {
         settingsInitial: fieldConstants.settingsInitial,
         settingsCurrent: settingsBefore,
         itemHeader,
-        pickerRaw: picker?.optionsSource(),
+        pickerRaw,
         pickerOptions: picker?.optionsFinal(),
         pickerVersion,
         pickerVersionBefore: pickerVersionBefore,
@@ -308,28 +299,6 @@ export class FormulaEngine {
     }
     const afterRun = performance.now();
     return l.r({ value, validation, fields, settings: settingsNew, pickers, pickerVersion: runParams.pickerVersion }, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
-  }
-
-  /**
-   * Get all objects which are needed for the data and context and are reused quite a few times.
-   * Can be reused for a short time, as the data doesn't change in a normal cycle,
-   * but it will need to be regenerated after things such as language or feature change.
-   */
-  #prepareDataForFormulaObjects(entityGuid: string): FormulaExecutionSpecs {
-    const language = this.formConfig.language();
-    const languages = this.languageSvc.getAll();
-    const debugEnabled = this.globalConfigSvc.isDebug();
-    const initialFormValues = this.editInitializerSvc.getInitialValues(entityGuid, language.current);
-    return {
-      initialFormValues,
-      language,
-      languages,
-      debugEnabled,
-      itemService: this.itemService,
-      formConfig: this.formConfig,
-      fieldsSettingsSvc: this.#settingsSvc,
-      features: this.#features,
-    } satisfies FormulaExecutionSpecs;
   }
 
   /**
