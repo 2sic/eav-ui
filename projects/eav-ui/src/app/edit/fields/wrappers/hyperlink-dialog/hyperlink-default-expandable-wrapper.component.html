@@ -55,12 +55,12 @@
     <!-- image / icon -->
     <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
       [tippyDisabled]="controlStatus().disabled" [ngClass]="{
-          'icon-before-input': controlStatus().value && !preV.isImage,
+          'icon-before-input': uiValue() && !preV.isImage,
           'thumbnail-before-input--disabled': controlStatus().disabled
           }"
-      [ngStyle]="{ 'background-image': controlStatus().value && preV.isImage ? preV.thumbnailUrl : '' }"
+      [ngStyle]="{ 'background-image': uiValue() && preV.isImage ? preV.thumbnailUrl : '' }"
       (click)="expandDialog()">
-      @if (controlStatus().value && !preV.isImage) {
+      @if (uiValue() && !preV.isImage) {
         <mat-icon [tippy]="preV.url" tippyPlacement="right" [svgIcon]="preV.icon"></mat-icon>
       }
     </div>
@@ -73,7 +73,7 @@
               }">
           <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
             tippyPlacement="top" [placeholder]="basics().placeholder" (change)="setValue($event)"
-            [disabled]="controlStatus().disabled" (blur)="markAsTouched()" [value]="controlStatus().value"
+            [disabled]="controlStatus().disabled" (blur)="markAsTouched()" [value]="uiValue()"
             (keyup)="setValue($event)" appPasteClipboardImage [config]="config" [elementType]="'input'">
           @if (buttonAdam() || buttonPage()) {
             <div matTextSuffix fxLayoutAlign="center center">
@@ -114,7 +114,7 @@
         <!-- link absolutely positioned above input -->
         @if (preV.floatingText) {
           <div class="hyperlink-floating" fxHide fxShow.gt-xs>
-            <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
+            <div class="hyperlink-floating__value">{{ uiValue() }}</div>
             <div class="hyperlink-floating__url-box">
               <a [href]="preV.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
                 [tippy]="preV.url">

@@ -43,6 +43,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
   public group = this.fieldState.group;
   public control = this.fieldState.control;
   protected controlStatus = this.fieldState.controlStatus;
+  protected uiValue = this.fieldState.uiValue;
 
   private injector = inject(Injector);
 

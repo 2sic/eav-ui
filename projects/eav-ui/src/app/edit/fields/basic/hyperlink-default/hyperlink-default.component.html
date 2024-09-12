@@ -71,7 +71,7 @@
             <!-- link absolutely positioned above input -->
             @if (preV?.floatingText) {
               <div class="hyperlink-floating">
-                <div class="hyperlink-floating__value">{{ controlStatus().value }}</div>
+                <div class="hyperlink-floating__value">{{ uiValue() }}</div>
                 <div class="hyperlink-floating__url-box">
                   <a [href]="preV.url" target="_blank" class="hyperlink-floating__url" [tippy]="preV.url">
                     <span>{{ preV.floatingText }}</span>
@@ -80,7 +80,7 @@
               </div>
             }
           </div>
-          @if (controlStatus().value) {
+          @if (uiValue()) {
             <div class="preview-wrapper">
               @if (preV.isImage) {
                 <!-- image -->

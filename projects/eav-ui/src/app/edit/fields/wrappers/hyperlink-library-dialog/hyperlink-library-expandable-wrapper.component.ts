@@ -55,6 +55,7 @@ export class HyperlinkLibraryExpandableWrapperComponent {
 
   protected config = this.fieldState.config;
   protected controlStatus = this.fieldState.controlStatus;
+  protected uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
