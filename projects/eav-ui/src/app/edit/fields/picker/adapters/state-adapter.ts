@@ -54,7 +54,6 @@ export class StateAdapter {
   });
 
   protected readonly settings = this.#fieldState.settings;
-  public controlStatus = this.#fieldState.ui;
 
   #sepAndOpts = computedObj('sepAndOpts', () => {
     const settings = this.#fieldState.settings();

@@ -1,13 +1,13 @@
 
 @if (!mySettings().allowMultiValue) {
   <mat-label class="field-label"
-    [ngClass]="{ 'disabled': controlStatus().disabled }">
+    [ngClass]="{ 'disabled': ui().disabled }">
     {{ basics().labelWithRequired }}
   </mat-label>
 }
 @if (selectedItems().length > 0) {
   <div cdkDropList
-    [cdkDropListDisabled]="!mySettings().allowMultiValue || controlStatus().disabled"
+    [cdkDropListDisabled]="!mySettings().allowMultiValue || ui().disabled"
     (cdkDropListDropped)="drop($event)"
     [ngClass]="{
     'normal-list': !mySettings().allowMultiValue,
@@ -20,13 +20,13 @@
         [ngClass]="{
         'normal-item': !mySettings().allowMultiValue,
         'dnd-item': mySettings().allowMultiValue,
-        'disabled': controlStatus().disabled
+        'disabled': ui().disabled
         }">
-        <div class="item-title" [ngClass]="{ 'disabled': controlStatus().disabled }">
+        <div class="item-title" [ngClass]="{ 'disabled': ui().disabled }">
           @if (mySettings().allowMultiValue) {
             <mat-icon class="item-title__icon"
               [tippy]="'Fields.Picker.DragMove' | translate"
-              [tippyDisabled]="controlStatus().disabled">
+              [tippyDisabled]="ui().disabled">
               drag_handle
             </mat-icon>
           }
@@ -48,7 +48,7 @@
           @if (mySettings().enableDelete && !item.noDelete) {
             <button mat-icon-button class="eav-action-button"
               [tippy]="'Fields.Picker.Delete' | translate"
-              [disabled]="controlStatus().disabled"
+              [disabled]="ui().disabled"
               appMousedownStopPropagation
               (click)="deleteItem(index, item.value)">
               <mat-icon>delete</mat-icon>
@@ -57,7 +57,7 @@
           @if (mySettings().enableRemove) {
             <button mat-icon-button class="eav-action-button"
               [tippy]="'Fields.Picker.Remove' | translate"
-              [disabled]="controlStatus().disabled"
+              [disabled]="ui().disabled"
               appMousedownStopPropagation
               (click)="removeItem(index)">
               <mat-icon>do_not_disturb_on</mat-icon>

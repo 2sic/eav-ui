@@ -19,7 +19,7 @@
   {
     <div fxLayout="row" fxLayoutAlign="end center">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
-        [disabled]="controlStatus().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
+        [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
         <mat-icon>add</mat-icon>
       </button>
       <mat-menu #entityTypesMenu="matMenu">
@@ -35,7 +35,7 @@
   {
     <div fxLayout="row" fxLayoutAlign="end center">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
-        [disabled]="controlStatus().disabled || !features().create" (click)="openNewEntityDialog(null)">
+        [disabled]="ui().disabled || !features().create" (click)="openNewEntityDialog(null)">
         <mat-icon>add</mat-icon>
       </button>
     </div>

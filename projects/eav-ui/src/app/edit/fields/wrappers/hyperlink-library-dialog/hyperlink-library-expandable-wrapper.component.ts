@@ -54,7 +54,7 @@ export class HyperlinkLibraryExpandableWrapperComponent {
   protected fieldState = inject(FieldState);
 
   protected config = this.fieldState.config;
-  protected controlStatus = this.fieldState.ui;
+  protected ui = this.fieldState.ui;
   protected uiValue = this.fieldState.uiValue;
   protected basics = this.fieldState.basics;
 

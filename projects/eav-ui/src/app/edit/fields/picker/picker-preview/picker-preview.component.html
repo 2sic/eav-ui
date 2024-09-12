@@ -4,7 +4,7 @@
     {
       <app-picker-text>
         <app-picker-toggle-text freeTextButtons
-          [csDisabled]="controlStatus().disabled"
+          [csDisabled]="ui().disabled"
           [allowText]="mySettings().enableTextEntry"
           [freeTextMode]="isInFreeTextMode()">
         </app-picker-toggle-text>
@@ -16,7 +16,7 @@
       {
         <app-picker-pills>
           <app-picker-toggle-text freeTextButtons
-            [csDisabled]="controlStatus().disabled"
+            [csDisabled]="ui().disabled"
             [allowText]="mySettings().enableTextEntry"
             [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
@@ -28,7 +28,7 @@
           [showSelectedItem]="true"
           [showItemEditButtons]="true">
           <app-picker-toggle-text freeTextButtons
-            [csDisabled]="controlStatus().disabled"
+            [csDisabled]="ui().disabled"
             [allowText]="mySettings().enableTextEntry"
             [freeTextMode]="isInFreeTextMode()">
           </app-picker-toggle-text>
@@ -43,7 +43,7 @@
       @if (pickerData.state.createEntityTypes().length > 1)
       {
         <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-          [disabled]="controlStatus().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
+          [disabled]="ui().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
           <mat-icon>add_circle_outline</mat-icon>
         </button>
         <mat-menu #entityTypesMenu="matMenu">
@@ -58,7 +58,7 @@
       @else
       {
         <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-          [disabled]="controlStatus().disabled || !features().create" (click)="openNewEntityDialog(null)">
+          [disabled]="ui().disabled || !features().create" (click)="openNewEntityDialog(null)">
           <mat-icon>add_circle_outline</mat-icon>
         </button>
       }
@@ -66,7 +66,7 @@
     @if (mySettings().showGoToListDialogButton)
     {
       <button mat-icon-button class="eav-suffix-button"
-        [disabled]="controlStatus().disabled"
+        [disabled]="ui().disabled"
         [tippy]="'Fields.Picker.OpenMultiselect' | translate"
         (click)="expandDialog()">
         <mat-icon>post_add</mat-icon>

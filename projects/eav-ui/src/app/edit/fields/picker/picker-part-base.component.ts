@@ -21,7 +21,7 @@ export class PickerPartBaseComponent {
   /** Picker Data Bundle with Source and state etc. */
   protected pickerData = this.fieldState.pickerData;
 
-  protected controlStatus = this.pickerData.state.controlStatus;
+  protected ui = this.fieldState.ui;
 
   /** All Selected Items */
   protected selectedItems = this.pickerData.selectedAll;

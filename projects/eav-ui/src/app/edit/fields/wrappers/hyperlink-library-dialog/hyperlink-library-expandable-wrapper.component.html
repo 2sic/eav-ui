@@ -51,15 +51,15 @@
     <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
       'mat-caption' : itemsNumber() > 0,
       'mat-empty' : itemsNumber() === 0,
-      'mat-error' : controlStatus().invalid && !config.initialDisabled,
-      'color__primary' : !controlStatus().invalid && !config.initialDisabled,
+      'mat-error' : ui().invalid && !config.initialDisabled,
+      'color__primary' : !ui().invalid && !config.initialDisabled,
       'color__label-disabled' : config.initialDisabled
       }">
       {{basics().labelWithRequired}}
     </mat-label>
     <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
       [ngClass]="{
-      'c-ew__preview--invalid': controlStatus().invalid,
+      'c-ew__preview--invalid': ui().invalid,
       'c-ew__preview--disabled': config.initialDisabled
       }">
       <div [ngClass]="uiValue() ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">

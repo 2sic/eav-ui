@@ -30,7 +30,7 @@ export class BooleanTristateComponent {
   #fieldState = inject(FieldState) as FieldState<boolean | ''>;;
 
   protected group = this.#fieldState.group;
-  protected uiControl = this.#fieldState.ui;
+  protected ui = this.#fieldState.ui;
 
   protected settings = this.#fieldState.settings;
   protected basics = this.#fieldState.basics;
