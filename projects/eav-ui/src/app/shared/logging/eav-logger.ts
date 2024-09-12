@@ -98,7 +98,11 @@ export class EavLogger<TSpecs extends unknown = any> {
    */
   a(message: string, data?: RecordOrGenerator): void {
     this.#a(message, data);
-    if (!this.enabled) return;
+  }
+
+  aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void {
+    if (this.enabled && this.#ifInSpecsList(list, subKey))
+      this.#a(message, data);
   }
 
   /** Create a special logger for rx logging */

@@ -106,7 +106,7 @@ export class FieldStateInjectorFactory {
           settings$.pipe(mapUntilObjChanged(s => s.uiDisabled)),
         ]).pipe(
           tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
-          mapUntilObjChanged(([_, disabled]) => new UiControl(control, disabled)),
+          mapUntilObjChanged(([_, disabled]) => new UiControl(control, fieldName, disabled)),
           tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
         );
 
@@ -114,7 +114,7 @@ export class FieldStateInjectorFactory {
         // Should be changed to a pure signal without the observables probably in Angular 18
         // which probably has a signal for this as well...
         return toSignal(controlStatus$, {
-          initialValue: new UiControl(control, settings().uiDisabled)
+          initialValue: new UiControl(control, fieldName, settings().uiDisabled)
         });
       });
     }

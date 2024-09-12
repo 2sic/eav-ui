@@ -9,20 +9,22 @@ const logSpecs = {
   markTouched: true,
   set: true,
   disable: true,
-  fields: ['*'] as string[], // example: ['SomeField'],
+  fields: ['StringPicker'] as string[], // examples: ['SomeField'] or ['*'] for all
 };
 
 export class UiControl<T extends FieldValue = FieldValue> {
 
-  log = classLog({ UiControl }, logSpecs);
+  log = classLog({ UiControl }, logSpecs, true);
 
   constructor(
     public control: AbstractControl,
+    private name = 'unknown',
     private moreDisabled: boolean = false,
   ) {
     // Patch control with dummy object for the nullable case where we're just creating a fake control...
     this.control ??= { dirty: false, invalid: false, touched: false, value: null, disabled: false } as AbstractControl;
-    this.log.fnIf('constructor', { moreDisabled });
+    this.log.extendName(`[${name}]`);
+    this.log.aIfInList('fields', this.name, { moreDisabled }, 'constructor');
   }
 
   static emptyControl() {
@@ -44,19 +46,19 @@ export class UiControl<T extends FieldValue = FieldValue> {
   //#region methods
   
   markTouched(): void {
-    this.log.fnIf('markTouched');
+    this.log.aIfInList('fields', this.name, null, 'markTouched');
     UiControl.markTouched(this.control);
   }
 
   setIfChanged(newValue: FieldValue): void {
-    this.log.fnIf('set', { newValue });
+    this.log.aIfInList('fields', this.name, { newValue }, 'setIfChanged');
     if (newValue === this.value) return;
     this.set(newValue);
   }
 
   /** Use to update form controls value */
   set(newValue: FieldValue): void {
-    this.log.fnIf('set', { newValue });
+    this.log.aIfInList('fields', this.name, { newValue }, 'set');
     const control = this.control;
     if (!control.touched)
       control.markAsTouched();
@@ -68,7 +70,7 @@ export class UiControl<T extends FieldValue = FieldValue> {
   }
 
   disable(disable: boolean): void {
-    this.log.fnIf('disable', { disable });
+    this.log.aIfInList('fields', this.name, null, `disable: ${disable}`);
     UiControl.disable(this.control, disable);
   }
 
