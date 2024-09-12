@@ -98,7 +98,7 @@ export class FormulaPromiseHandler {
       if (raw.fields)
         fieldsUpdates.push(...raw.fields);
       queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
-      formula.stopFormula = raw.stop ?? formula.stopFormula;
+      formula.stop = raw.stop ?? formula.stop;
       this.#fieldsSettingsService.retriggerFormulas('promise');
     });
   }

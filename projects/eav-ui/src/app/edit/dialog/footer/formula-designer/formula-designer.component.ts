@@ -9,7 +9,7 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { FormulaDesignerService } from '../../../formulas/designer/formula-designer.service';
 import { defaultFormula, defaultListItemFormula } from '../../../formulas/formula-definitions';
 import { FormulaNewPickerTargets, FormulaTarget } from '../../../formulas/targets/formula-targets';
-import { DesignerSnippet, EntityOption, FieldOption, SelectTarget, SelectTargets } from './formula-designer.models';
+import { SelectTarget, SelectTargets } from './formula-designer.models';
 import { FormulaIdentifier } from '../../../formulas/results/formula-results.models';
 import { DesignerState } from '../../../formulas/designer/designer-state.model';
 import { SnippetLabelSizePipe } from './snippet-label-size.pipe';

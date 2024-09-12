@@ -69,7 +69,7 @@ export class FormulaCacheService {
     
     const all = this.#findFormulas(entityGuid, name, targets, false);
 
-    const unstopped = all.filter(f => !f.stopFormula);
+    const unstopped = all.filter(f => !f.stop);
 
     const unPaused = unstopped.filter(f => !f.sleep || versionHasChanged);
 

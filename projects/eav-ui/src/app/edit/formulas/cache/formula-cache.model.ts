@@ -53,7 +53,7 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   disabledReason: string;
 
   /** if the formula is stopped at the moment */
-  stopFormula: boolean;
+  stop: boolean;
   promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;
   updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
 

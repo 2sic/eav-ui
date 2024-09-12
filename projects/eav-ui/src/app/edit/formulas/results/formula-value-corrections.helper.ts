@@ -53,16 +53,17 @@ export class FormulaValueCorrections {
     const l = this.log.fnIfInList('allValues', 'fields', this.fieldName, { result });
     // 2024-09-10 21:15 2dm changed this, as I believe all cases have a clear stop-value
     // const stop = (result as FormulaResultRaw)?.stop ?? null;
-    const defaults: Partial<FormulaResultRaw> = { fields: [], stop: null, wait: null };
+    const defaults: Partial<FormulaResultRaw> = { value: undefined, fields: [], stop: null, sleep: null };
     if (result == null)
       return l.r({ ...defaults, value: result as FieldValue}, 'null/empty');
     
     const targetIsValue = this.isValue;
 
-    // Handle arrays - new v18 newPicker - DISABLED
-    // if (Array.isArray(result)) {
-    //   return l.r({ ...defaults, value: result }, 'array');
-    // }
+    // Show warning if array - new v18 newPicker
+    if (Array.isArray(result)) {
+      console.warn('Formula result was an array - this is not allowed. Please return an object containing the array instead: { value: [...] }.', result);
+      return l.r(defaults, 'array');
+    }
 
     // Handle object results - the larger / more complex case
     if (typeof result === 'object') {
@@ -76,7 +77,7 @@ export class FormulaValueCorrections {
 
       // fix stop so it's never undefined
       raw.stop ??= null;
-      raw.wait ??= null;
+      raw.sleep ??= null;
 
       // Fix single value - but only if it's not an array, in which case we must leave as is
       if (raw.value && targetIsValue && !Array.isArray(raw.value))
@@ -154,7 +155,7 @@ export class FormulaValueCorrections {
       value,
       fields: [],
       stop: null,
-      wait: null,
+      sleep: null,
       openInDesigner: this.isOpen
     };
   }

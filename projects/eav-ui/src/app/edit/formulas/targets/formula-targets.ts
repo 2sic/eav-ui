@@ -32,6 +32,11 @@ export const FormulaSpecialPickerTargets = [
   FormulaDefaultTargets.Value
 ];
 
+/** These formulas should auto-sleep unless specified otherwise */
+export const FormulaSpecialPickerAutoSleep = [
+  FormulaNewPickerTargets.Options,
+];
+
 
 
 export const FormulaOptionalTargets = {

@@ -32,7 +32,7 @@ export interface FormulaResultRaw {
   options?: PickerItem[];
 
   /** WIP v18 */
-  wait?: boolean;
+  sleep?: boolean;
 
   /** Note: not a real result, for internal use only */
   openInDesigner?: boolean;

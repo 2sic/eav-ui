@@ -2,7 +2,7 @@ import { untracked } from '@angular/core';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaDefaultTargetValues, FormulaFieldValidation, FormulaSpecialPickerTargets } from './targets/formula-targets';
+import { FormulaDefaultTargetValues, FormulaFieldValidation, FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
@@ -173,48 +173,46 @@ export class FormulaRunField {
         ...reuseObjectsForFormulaDataAndContext
       };
 
-      const formulaResult = this.#runFormula(allRunParams);
+      const raw = this.#runFormula(allRunParams);
 
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
-      const containsPromise = formulaResult?.promise instanceof Promise;
+      const containsPromise = raw?.promise instanceof Promise;
       if (containsPromise)
-        this.promiseHandler.handleFormulaPromise(formulaResult, formula, runParams.inputTypeName);
+        this.promiseHandler.handleFormulaPromise(raw, formula, runParams.inputTypeName);
 
       // Stop depends on explicit result and the default is different if it has a promise
-      formula.stopFormula = formulaResult.stop ?? (containsPromise ? true : formula.stopFormula);
+      formula.stop = raw.stop ?? (containsPromise ? true : formula.stop);
 
       // Pause depends on explicit result; TODO: MAYBE automatic on Pickers
-      // TODO: INCOMPLETE - WOULD AFFECT ALL PICKER FIELDS, EVEN SETTINGS ETC.
-      // formula.pauseFormula = formulaResult.wait ?? (formula.isNewPicker ? true : formula.pauseFormula);
-      formula.sleep = formulaResult.wait ?? formula.sleep;
+      formula.sleep = raw.sleep ?? (FormulaSpecialPickerAutoSleep.includes(formula.target) ? true : formula.sleep);
 
       // If we have field changes, add to the list
-      if (formulaResult.fields)
-        fields.push(...formulaResult.fields);
+      if (raw.fields)
+        fields.push(...raw.fields);
 
       // new - experimental
-      if (formulaResult.options)
-        pickers = formulaResult.options;
+      if (raw.options)
+        pickers = raw.options;
 
       // If the value is not set, skip further result processing
-      if (formulaResult.value === undefined)
+      if (raw.value === undefined)
         continue;
 
       // If we do have a value, we need to place it in the correct target
       // Target is the value. Remember it for later
       if (formula.isValue) {
-        value = formulaResult.value;
+        value = raw.value;
         continue;
       }
 
       // Target is the validation. Remember it for later
       if (formula.isValidation) {
-        validation = formulaResult.value as unknown as FormulaFieldValidation;
+        validation = raw.value as unknown as FormulaFieldValidation;
         continue;
       }
 
       // Target is a setting. Check validity and merge with other settings
-      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, runParams.settingsCurrent, formulaResult.value, settingsNew));
+      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, runParams.settingsCurrent, raw.value, settingsNew));
     }
     const afterRun = performance.now();
     const result: Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } = {
