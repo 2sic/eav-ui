@@ -13,7 +13,7 @@ export function correctStringEmptyValue(
 
   const valueAsArray = typeof fieldValue === 'string'
     ? convertValueToArray(fieldValue, separator, dropdownOptions)
-    : fieldValue;
+    : fieldValue ?? [];
 
   const result = valueAsArray.map(value => {
     const option = dropdownOptions?.find(o => o.value == value);

@@ -68,7 +68,7 @@ export class FieldStateInjectorFactory {
     const uiValue: Signal<FieldValue> = (() => {
       if (!control) return signalObj('value-change-empty', null);
       const debouncedValue$ = control.valueChanges.pipe(mapUntilObjChanged(v => v));
-      return toSignal(debouncedValue$, { injector: this.#injector, initialValue: null});
+      return toSignal(debouncedValue$, { injector: this.#injector, initialValue: control.value});
     })();
 
     const fieldState = new FieldState(
