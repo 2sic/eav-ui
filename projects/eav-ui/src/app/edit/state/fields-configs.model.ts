@@ -14,7 +14,7 @@ export interface FieldProps {
   translationState: TranslationState;
 
   /** INITIAL Value of this field - eg. at form-load or language change. */
-  buildValue: FieldValue;
+  value: FieldValue;
   buildWrappers: string[];
   formulaValidation: FormulaFieldValidation;
 

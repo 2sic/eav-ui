@@ -16,10 +16,10 @@ import { classLog } from '../../shared/logging';
 import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
 import { transient } from '../../core';
 import { FormulaRunField } from './formula-run-field';
-import { FormRecord } from '@angular/forms';
+import { DebugFields } from '../edit-debug';
 
 /** The list of fields to debug is used in multiple places */
-export const logSpecsFormulaFields = ['StringPicker']; // or '*' for all
+export const logSpecsFormulaFields = [...DebugFields, 'StringPicker']; // or '*' for all
 
 const logSpecs = {
   all: false,
@@ -122,7 +122,7 @@ export class FormulaEngine {
         constants: fieldConstants,
         settings: fixed,
         translationState,
-        buildValue: valueBefore,
+        value: valueBefore,
         buildWrappers: null, // required, but set elsewhere
         formulaValidation: formulaResult.validation,
         pickerOptions: pickerOptions ?? propsBefore.pickerOptions,

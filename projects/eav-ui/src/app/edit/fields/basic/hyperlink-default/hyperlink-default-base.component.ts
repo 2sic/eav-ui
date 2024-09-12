@@ -14,6 +14,7 @@ import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { LinkCacheService } from '../../../shared/adam/link-cache.service';
 import { transient } from '../../../../core/transient';
 import { classLog } from '../../../../shared/logging';
+import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-base-field-hyperlink-component',
@@ -64,6 +65,21 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
       this.fetchLink(status);
     }, { injector: this.injector, allowSignalWrites: true });
   }
+
+  adamItem = computedObj('adamItem', () => {
+    const value = this.uiValue();
+    const adamItems = this.config.adam.items() as AdamItem[];
+
+    if (!value || !adamItems.length) return;
+
+    const match = value.trim().match(/^file:([0-9]+)$/i);
+    if (!match) return;
+
+    const adamItemId = parseInt(match[1], 10);
+    const adamItem = adamItems.find(i => i.Id === adamItemId);
+    return adamItem;
+  });
+
 
   openPagePicker() {
     PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {

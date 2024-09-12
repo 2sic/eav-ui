@@ -2,6 +2,7 @@ import { AbstractControl } from '@angular/forms';
 import { FieldValue } from '../../../../../../edit-types';
 import { classLog } from '../../../shared/logging';
 import { FieldValueHelpers } from '../helpers/field-value.helpers';
+import { DebugFields } from '../../edit-debug';
 
 const logSpecs = {
   all: true,
@@ -9,10 +10,14 @@ const logSpecs = {
   markTouched: true,
   set: true,
   disable: true,
-  fields: ['StringPicker'] as string[], // examples: ['SomeField'] or ['*'] for all
+  fields: [...DebugFields, 'StringPicker'] as string[], // examples: ['SomeField'] or ['*'] for all
 };
 
-export class UiControl<T extends FieldValue = FieldValue> {
+/**
+ * Provides information about the UI Control, but NOT the value.
+ * It is used to simplify the logic when interacting with the Angular Virtual Form.
+ */
+export class UiControl {
 
   log = classLog({ UiControl }, logSpecs, true);
 
@@ -35,7 +40,6 @@ export class UiControl<T extends FieldValue = FieldValue> {
   get dirty() { return this.control.dirty; }
   get invalid() { return this.control.invalid; }
   get touched() { return this.control.touched; }
-  get value() { return this.control.value as T; } // todo: maybe remove?
   //#endregion
 
   //#region complex properties
@@ -52,7 +56,7 @@ export class UiControl<T extends FieldValue = FieldValue> {
 
   setIfChanged(newValue: FieldValue): void {
     this.log.aIfInList('fields', this.name, { newValue }, 'setIfChanged');
-    if (newValue === this.value) return;
+    if (newValue === this.control.value) return;
     this.set(newValue);
   }
 

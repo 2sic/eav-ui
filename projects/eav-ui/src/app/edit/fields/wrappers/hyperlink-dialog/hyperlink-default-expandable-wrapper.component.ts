@@ -73,21 +73,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
-  adamItem = computed(() => {
-    const controlStatus = this.ui();
-    const adamItems = this.config.adam.items();
-
-    if (!controlStatus.value || !adamItems.length) return;
-
-    const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
-    if (!match) return;
-
-    const adamItemId = parseInt(match[1], 10);
-    const adamItem = adamItems.find(i => i.Id === adamItemId);
-    return adamItem;
-  });
-
-
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(

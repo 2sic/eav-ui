@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
 import { ContentTypeSettingsHelpers } from '../shared/helpers';
-import { EavContentType, EavItem } from '../shared/models/eav';
+import { EavItem } from '../shared/models/eav';
 import { transient } from '../../core';
 import { FormConfigService } from '../form/form-config.service';
 import { FieldProps } from './fields-configs.model';
@@ -45,6 +45,16 @@ export class FieldsSettingsService {
         if (!this.#startSync())
           return;
         const update = this.#allProps();
+
+        // Temporary Debugging
+        // const before = untracked(() => this.allProps());
+        // const equals = isEqual(before, update);
+        // console.warn('equals', equals);
+        // if (!equals) {
+        //   const delta = difference(update, before);
+        //   console.warn('delta', delta);
+        // }
+
         this.allProps.set(update);
 
         // Transfer picker data

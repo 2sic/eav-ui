@@ -104,7 +104,7 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
             name: fieldName,
             props: fieldProps,
             inputType: fieldProps.constants.inputTypeSpecs.inputType,
-            value: fieldProps.buildValue,
+            value: fieldProps.value,
             hasControl,
             control,
           } satisfies FieldInitSpecs;

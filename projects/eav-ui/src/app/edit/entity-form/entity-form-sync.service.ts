@@ -69,7 +69,7 @@ export class EntityFormSyncService extends ServiceBase {
       form.valueChanges.pipe(
         map(() => form.getRawValue() as ItemValuesOfLanguage),
         distinctUntilChanged((previous, current) => FieldValueHelpers.getItemValuesChanges(previous, current) == null),
-      ).subscribe((formValues) => {
+      ).subscribe(formValues => {
         const language = this.formConfig.language();
         this.itemSvc.updater.updateItemAttributesValues(entityGuid, formValues, language);
       })

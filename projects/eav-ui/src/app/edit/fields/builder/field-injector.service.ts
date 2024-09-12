@@ -4,7 +4,7 @@ import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, tap } from 'rxjs';
+import { combineLatest, map, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
@@ -15,11 +15,14 @@ import { computedObj, signalObj } from '../../../shared/signals/signal.utilities
 import { classLog, logFnIf } from '../../../shared/logging';
 import { InjectorBundle } from './injector-bundle.model';
 import { AbstractControl } from '@angular/forms';
+import { DebugFields } from '../../edit-debug';
 
 const logSpecs = {
   getInjectors: true,
-  fields: [] as string[], // example: ['Boolean'],
+  fields: [...DebugFields] as string[], // example: ['Boolean'],
 };
+
+const detailedDebug = false;
 
 /**
  * This service creates custom injectors for each field.
@@ -28,7 +31,7 @@ const logSpecs = {
 @Injectable()
 export class FieldStateInjectorFactory {
 
-  log = classLog({FieldStateInjectorFactory}, logSpecs);
+  log = classLog({FieldStateInjectorFactory}, logSpecs, true);
 
   #injector = inject(Injector);
   #envInjector = inject(EnvironmentInjector);
@@ -63,7 +66,7 @@ export class FieldStateInjectorFactory {
 
     /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
     // TODO: this is probably better solved using a toSignal(control.valueChanges)
-    const uiValue: Signal<FieldValue> = computedObj('uiValue', () => controlStatusChangeSignal().value);
+    const uiValue: Signal<FieldValue> = toSignal(control.valueChanges, { injector: this.#injector, initialValue: null}); // computedObj('uiValue', () => controlStatusChangeSignal().value);
 
     const fieldState = new FieldState(
       name,
@@ -99,13 +102,20 @@ export class FieldStateInjectorFactory {
       // console.warn('2dm equals', equals);
 
       return runInInjectionContext(this.#injector, () => {
+        // Watch the control for state changes - this is triggered on the ValueChanges
+        // but we only want to continue triggering if a relevant state changed.
+        const controlStateChange = control.valueChanges.pipe(
+          mapUntilObjChanged(_ => ({ dirty: control.dirty, invalid: control.invalid, touched: control.touched, disabled: control.disabled })),
+          tap(state => detailedDebug && console.error('controlStateChange', state)),
+        );
+
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
         const controlStatus$ = combineLatest([
-          control.valueChanges,
+          controlStateChange,
           settings$.pipe(mapUntilObjChanged(s => s.uiDisabled)),
         ]).pipe(
-          tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
+          tap(([_, disabled]) => lDetailed.a('controlStateChange on control', { control, disabled })),
           mapUntilObjChanged(([_, disabled]) => new UiControl(control, fieldName, disabled)),
           tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
         );

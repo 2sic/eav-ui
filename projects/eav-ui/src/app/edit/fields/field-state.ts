@@ -32,7 +32,7 @@ export class FieldState<T extends FieldValue = FieldValue> {
      * The UI control (actually it's the virtual UI control), since it's a reactive form control.
      * Note: e just introduced uiValue below, which should be used in most cases
      */
-    public ui: Signal<UiControl<T>>,
+    public ui: Signal<UiControl>,
 
     /** The value of the field in the UI control as a signal */
     public uiValue: Signal<T>,

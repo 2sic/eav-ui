@@ -19,13 +19,14 @@ import { getVersion } from '../../shared/signals/signal.utilities';
 import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { logSpecsFormulaFields } from './formula-engine';
+import { DebugFields } from '../edit-debug';
 
 const logSpecs = {
   all: true,
   runFormula: true,
   runOrInitSettings: true,
   getPickerInfos: true,
-  fields: ['*'], // will be replaced by shared list below
+  fields: [...DebugFields, '*'], // will be replaced by shared list below
 };
 
 /**
@@ -34,7 +35,7 @@ const logSpecs = {
  */
 export class FormulaRunField {
 
-  log = classLog({FormulaRunField}, { ...logSpecs, fields: logSpecsFormulaFields }, true);
+  log = classLog({FormulaRunField}, { ...logSpecs, fields: logSpecsFormulaFields });
 
   constructor(
     private promiseHandler: FormulaPromiseHandler,

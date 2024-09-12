@@ -43,8 +43,8 @@
 </div>
 <div class="c-ew__preview-holder">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : ui().value,
-      'mat-empty' : !ui().value,
+      'mat-caption' : uiValue(),
+      'mat-empty' : !uiValue(),
       'mat-error' : ui().invalid && (ui().touched || ui().dirty) && !ui().disabled,
       'color__primary' : !(ui().touchedAndInvalid) && !ui().disabled,
       'color__label-disabled' : ui().disabled,

@@ -35,7 +35,7 @@ const logSpecs = {
  */
 @Injectable()
 export class FieldsPropsEngine {
-  private log = classLog({FieldsPropsEngine}, logSpecs, true);
+  private log = classLog({FieldsPropsEngine}, logSpecs);
 
   // Shared / inherited services
   #formConfig = inject(FormConfigService);
