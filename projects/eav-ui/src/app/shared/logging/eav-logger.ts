@@ -114,7 +114,7 @@ export class EavLogger<TSpecs extends unknown = any> {
    * @param message 
    * @returns 
    */
-  fn(name: string, data?: Record<string, unknown>, message?: string): FnLogger {
+  fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger {
     return new FnLoggerReal(this as EavLogger, name, message, data);
   }
 
@@ -141,7 +141,7 @@ export class EavLogger<TSpecs extends unknown = any> {
       : new FnLoggerNoOp();
   }
 
-  fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: Record<string, unknown>, message?: string): FnLogger {
+  fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): FnLogger {
     return this.enabled && this.#ifInSpecs(key) && this.#ifInSpecsList(list, subKey)
       ? this.fn(key, data, message)
       : new FnLoggerNoOp();
@@ -166,3 +166,5 @@ type BooleanKeys<T> = { [k in keyof T]: T[k] extends boolean ? k : never }[keyof
 type BooleanSpecs<T> = { [k in BooleanKeys<T>]: boolean };
 
 type StringArrayKeys<T> = { [k in keyof T]: T[k] extends string[] ? k : never }[keyof T];
+
+export type RecordOrGenerator = Record<string, unknown> | (() => Record<string, unknown>);

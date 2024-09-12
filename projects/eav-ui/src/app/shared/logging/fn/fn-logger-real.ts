@@ -1,20 +1,21 @@
 import { consoleLogObject } from '../output-console';
-import { EavLogger } from '../eav-logger';
+import { EavLogger, RecordOrGenerator } from '../eav-logger';
 import { FnLogger } from './fn-logger.interface';
 
 export class FnLoggerReal implements FnLogger {
-  constructor(private parent: EavLogger, private fnName: string, message?: string, data?: Record<string, unknown>) {
+  constructor(private parent: EavLogger, private fnName: string, message?: string, data?: RecordOrGenerator) {
     this.#a(message, data);
   }
 
   get enabled() { return this.parent.enabled; };
 
   /** Internal helper to really log - if enabled */
-  #a(message: string, data?: Record<string, unknown>, autoPad: boolean = true): void {
+  #a(message: string, data?: RecordOrGenerator, autoPad: boolean = true): void {
     if (!this.parent.enabled) return;
     message ??= '';
     if (message && autoPad) message = ` ${message}`;
-    consoleLogObject({ message: `${this.parent.nameWithSvcId}.${this.fnName}()${message}`, data });
+    const d = typeof data === 'function' ? data() : data;
+    consoleLogObject({ message: `${this.parent.nameWithSvcId}.${this.fnName}()${message}`, data: d });
   }
 
   a(message: string, data?: Record<string, unknown>): void {
