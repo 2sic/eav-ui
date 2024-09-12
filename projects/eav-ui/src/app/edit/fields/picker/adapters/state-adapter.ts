@@ -5,7 +5,6 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Optional, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
@@ -55,7 +54,7 @@ export class StateAdapter {
   });
 
   protected readonly settings = this.#fieldState.settings;
-  public controlStatus = this.#fieldState.controlStatus;
+  public controlStatus = this.#fieldState.ui;
 
   #sepAndOpts = computedObj('sepAndOpts', () => {
     const settings = this.#fieldState.settings();
@@ -104,7 +103,7 @@ export class StateAdapter {
     }
 
     const newValue = this.createNewValue(valueArray);
-    ControlHelpers.patchControlValue(this.#fieldState.control, newValue);
+    this.#fieldState.ui().set(newValue);
 
     if (action === 'delete' && !valueArray.length) {
       // move back to component

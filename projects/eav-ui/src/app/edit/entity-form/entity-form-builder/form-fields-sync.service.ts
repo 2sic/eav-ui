@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ServiceBase } from '../../../shared/services/service-base';
-import { ControlHelpers } from '../../shared/controls/control.helpers';
 import { FieldValueHelpers } from '../../shared/helpers/field-value.helpers';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { classLog } from '../../../shared/logging';
 import { FieldInitSpecs } from './field-init-specs.model';
+import { UiControl } from '../../shared/controls/control-status.model';
 
 @Injectable()
 export class FormFieldsSyncService extends ServiceBase {
@@ -50,7 +50,7 @@ export class FormFieldsSyncService extends ServiceBase {
         this.log.a('sync "disabled" state');
         for (const { control, props: fieldProps } of fieldsOnForm) {
           // WARNING!!! Fires valueChange event for every single control
-          ControlHelpers.disableControl(control, fieldProps.settings.uiDisabled);
+          UiControl.disable(control, fieldProps.settings.uiDisabled);
         }
 
         // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run

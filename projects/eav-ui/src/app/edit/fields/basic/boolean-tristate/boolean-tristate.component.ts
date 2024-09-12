@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { FieldMetadata } from '../../field-metadata.decorator';
@@ -8,9 +8,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldState } from '../../field-state';
-import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.BooleanTristate,
@@ -32,8 +30,7 @@ export class BooleanTristateComponent {
   #fieldState = inject(FieldState) as FieldState<boolean | ''>;;
 
   protected group = this.#fieldState.group;
-  protected controlStatus = this.#fieldState.controlStatus;
-  protected control = this.#fieldState.control;
+  protected uiControl = this.#fieldState.ui;
 
   protected settings = this.#fieldState.settings;
   protected basics = this.#fieldState.basics;
@@ -54,7 +51,7 @@ export class BooleanTristateComponent {
 
   updateValue(disabled: boolean) {
     if (!disabled) {
-      const currentValue: boolean | '' = this.control.value;
+      const currentValue: boolean | '' = this.#fieldState.uiValue();
       const reverseToggle = this.settings().ReverseToggle;
 
       let nextValue: boolean;
@@ -70,7 +67,7 @@ export class BooleanTristateComponent {
           nextValue = reverseToggle ? null : false;
           break;
       }
-      ControlHelpers.patchControlValue(this.control, nextValue);
+      this.#fieldState.ui().set(nextValue);
     }
   }
 }

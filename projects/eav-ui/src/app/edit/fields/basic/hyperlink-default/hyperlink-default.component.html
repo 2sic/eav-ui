@@ -3,7 +3,7 @@
     <div class="fabs-box">
       @if (buttonAdam()) {
         <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
-          [disabled]="controlStatus().disabled" (click)="toggleAdam(false, false)">
+          [disabled]="ui().disabled" (click)="toggleAdam(false, false)">
           <mat-icon svgIcon="apple-outlined"></mat-icon>
         </button>
       }
@@ -17,13 +17,13 @@
       </button>
       @if (buttonPage()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
-          [disabled]="controlStatus().disabled" (click)="openPagePicker()">
+          [disabled]="ui().disabled" (click)="openPagePicker()">
           <mat-icon svgIcon="sitemap"></mat-icon>
         </button>
       }
       @if (buttonMore()) {
         <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
-          [disabled]="controlStatus().disabled" [matMenuTriggerFor]="menu">
+          [disabled]="ui().disabled" [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
       }

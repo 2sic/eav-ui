@@ -11,7 +11,7 @@
       <mat-label>{{ basics().label }}</mat-label>
     </mat-form-field>
     <button mat-icon-button [tippy]="'Fields.TemplatePicker.NewTemplate' | translate"
-      [disabled]="controlStatus().disabled" (click)="createTemplate()">
+      [disabled]="ui().disabled" (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

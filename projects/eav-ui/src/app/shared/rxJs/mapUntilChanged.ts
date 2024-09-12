@@ -21,7 +21,7 @@ export function mapUntilObjChanged<T, R>(
   fn: (state: T) => R
 ): UnaryFunction<Observable<T>, Observable<R>> {
   return pipe(
-    distinctUntilChanged(),
+    distinctUntilChanged(isEqual),
     map(fn),
     distinctUntilChanged(isEqual),
   );

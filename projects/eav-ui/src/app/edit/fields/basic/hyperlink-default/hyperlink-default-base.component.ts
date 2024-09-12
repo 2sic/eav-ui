@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Preview } from './hyperlink-default.models';
 import { FieldState } from '../../field-state';
 import { UrlHelpers, FileTypeHelpers } from '../../../shared/helpers';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { PagePicker } from '../../page-picker/page-picker.helper';
 import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 import { EditForm, EditPrep } from '../../../../shared/models/edit-form.model';
@@ -41,8 +40,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
   protected basics = this.fieldState.basics;
   public config = this.fieldState.config;
   public group = this.fieldState.group;
-  public control = this.fieldState.control;
-  protected controlStatus = this.fieldState.controlStatus;
+  protected ui = this.fieldState.ui;
   protected uiValue = this.fieldState.uiValue;
 
   private injector = inject(Injector);
@@ -71,7 +69,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
     PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
       if (!page) return;
-      ControlHelpers.patchControlValue(this.control, `page:${page.id}`);
+      this.fieldState.ui().set(`page:${page.id}`);
     });
   }
 

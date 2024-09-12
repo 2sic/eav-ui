@@ -13,7 +13,6 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMask } from '../../../shared/helpers';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
@@ -53,8 +52,7 @@ export class StringTemplatePickerComponent implements OnDestroy {
   protected config = this.#fieldState.config;
 
   protected basics = this.#fieldState.basics;
-  protected controlStatus = this.#fieldState.controlStatus;
-  #control = this.#fieldState.control;
+  protected ui = this.#fieldState.ui;
 
   templateOptions = signal([]);
 
@@ -123,9 +121,9 @@ export class StringTemplatePickerComponent implements OnDestroy {
       .filter(template => template.endsWith(ext));
     this.templateOptions.set(filtered);
 
-    const resetValue = this.#resetIfNotFound && !filtered.some(template => template === this.#control.value);
+    const resetValue = this.#resetIfNotFound && !filtered.some(template => template === this.#fieldState.uiValue());
     if (resetValue)
-      ControlHelpers.patchControlValue(this.#control, '');
+      this.ui().setIfChanged('');
   }
 
   createTemplate() {
@@ -153,7 +151,7 @@ export class StringTemplatePickerComponent implements OnDestroy {
         } else {
           this.#templates.push(result.name);
           this.#setTemplateOptions();
-          ControlHelpers.patchControlValue(this.#control, result.name);
+          this.ui().setIfChanged(result.name);
         }
       });
     });

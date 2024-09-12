@@ -49,14 +49,14 @@
 @if (preview(); as preV) {
 <div class="c-hyperlink-default-field-preview">
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
-        'c-ew__preview--disabled': controlStatus().disabled,
+        'c-ew__preview--disabled': ui().disabled,
         'c-ew__preview--last-in-group': config.isLastInGroup
         }">
     <!-- image / icon -->
     <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
-      [tippyDisabled]="controlStatus().disabled" [ngClass]="{
+      [tippyDisabled]="ui().disabled" [ngClass]="{
           'icon-before-input': uiValue() && !preV.isImage,
-          'thumbnail-before-input--disabled': controlStatus().disabled
+          'thumbnail-before-input--disabled': ui().disabled
           }"
       [ngStyle]="{ 'background-image': uiValue() && preV.isImage ? preV.thumbnailUrl : '' }"
       (click)="expandDialog()">
@@ -69,23 +69,23 @@
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
         <mat-form-field color="accent" class="eav-mat-form-field" [ngClass]="{
-              'mat-form-field-invalid': controlStatus().touchedAndInvalid
+              'mat-form-field-invalid': ui().touchedAndInvalid
               }">
           <input matInput class="eav-translate-on-dblclick" [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate"
             tippyPlacement="top" [placeholder]="basics().placeholder" (change)="setValue($event)"
-            [disabled]="controlStatus().disabled" (blur)="markAsTouched()" [value]="uiValue()"
+            [disabled]="ui().disabled" (blur)="markAsTouched()" [value]="uiValue()"
             (keyup)="setValue($event)" appPasteClipboardImage [config]="config" [elementType]="'input'">
           @if (buttonAdam() || buttonPage()) {
             <div matTextSuffix fxLayoutAlign="center center">
               <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
-                          'c-ew__preview-suffix-text--disabled': controlStatus().disabled
+                          'c-ew__preview-suffix-text--disabled': ui().disabled
                           }">
                 {{ buttonAdam() ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
               </div>
               @if (buttonAdam()) {
               <button mat-icon-button class="c-ew__preview-suffix-icon"
                 [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
-                [disabled]="controlStatus().disabled" (click)="expandDialog()">
+                [disabled]="ui().disabled" (click)="expandDialog()">
                 <mat-icon svgIcon="apple-outlined"></mat-icon>
               </button>
               }
@@ -101,13 +101,13 @@
               @if (buttonPage()) {
               <button mat-icon-button class="c-ew__preview-suffix-icon"
                 [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
-                [disabled]="controlStatus().disabled" (click)="openPagePicker()">
+                [disabled]="ui().disabled" (click)="openPagePicker()">
                 <mat-icon svgIcon="sitemap"></mat-icon>
               </button>
             }
           </div>
           }
-          <mat-label [ngClass]="{ 'mat-error' : controlStatus().touchedAndInvalid }">
+          <mat-label [ngClass]="{ 'mat-error' : ui().touchedAndInvalid }">
             {{basics().labelWithRequired}}
           </mat-label>
         </mat-form-field>

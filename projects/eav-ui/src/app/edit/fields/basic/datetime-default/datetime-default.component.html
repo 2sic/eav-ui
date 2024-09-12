@@ -2,7 +2,7 @@
   <!-- Date-Picker only - use the classic Angular-Material date picker -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
     <input matInput class="eav-translate-on-dblclick"
-      [disabled]="controlStatus().disabled"
+      [disabled]="ui().disabled"
       [matDatepicker]="picker"
       [placeholder]="basics().placeholder"
       [required]="basics().required" [value]="uiValue()"
@@ -17,7 +17,7 @@
   <!-- Date & Time Picker - use the OWL picker (not ideal, but looks similar)  -->
   <mat-form-field [formGroup]="group" color="accent" class="eav-mat-form-field">
     <input matInput class="eav-translate-on-dblclick"
-      [disabled]="controlStatus().disabled"
+      [disabled]="ui().disabled"
       [owlDateTime]="owlPicker"
       [placeholder]="basics().placeholder"
       [required]="basics().required" [value]="valueForTimePicker()"

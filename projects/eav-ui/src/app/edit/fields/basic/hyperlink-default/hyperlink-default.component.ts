@@ -13,7 +13,6 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersCatalog } from '../../wrappers/wrappers.constants';
 import { PasteClipboardImageDirective } from '../../directives/paste-clipboard-image.directive';
@@ -69,7 +68,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   adamItem = computed(() => {
-    const controlStatus = this.controlStatus();
+    const controlStatus = this.ui();
     const adamItems = this.config.adam.items() as AdamItem[];
 
     if (!controlStatus.value || !adamItems.length) return;
@@ -136,6 +135,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   private setValue(item: AdamItem) {
     const usePath = this.settings().ServerResourceMapping === 'url';
     const newValue = !usePath ? item.ReferenceId : item.Url;
-    ControlHelpers.patchControlValue(this.control, newValue);
+    this.fieldState.ui().setIfChanged(newValue);
   }
 }

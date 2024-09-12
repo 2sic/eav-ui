@@ -63,7 +63,7 @@ export class ExpandableWrapperComponent {
 
   protected basics = this.fieldState.basics;
   protected settings = this.fieldState.settings;
-  protected controlStatus = this.fieldState.controlStatus;
+  protected controlStatus = this.fieldState.ui;
 
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
   focused = signal(false);

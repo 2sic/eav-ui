@@ -3,7 +3,7 @@ import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
-import { ControlStatus } from '../shared/controls/control-status.model';
+import { UiControl } from '../shared/controls/control-status.model';
 import { PickerData } from './picker/picker-data';
 import { TranslationState } from '../localization/translate-state.model';
 
@@ -25,9 +25,6 @@ export class FieldState<T extends FieldValue = FieldValue> {
     /** The control of the field in the form group */
     public control: AbstractControl,
 
-    // /** The settings as an observable - where possible, try to use the signal instead */
-    // public settings$: Observable<FieldSettings>,
-
     /** The settings as a signal - use this for most cases */
     public settings: Signal<FieldSettings>,
 
@@ -37,7 +34,7 @@ export class FieldState<T extends FieldValue = FieldValue> {
     /**
      * Note: e just introduced uiValue below, which should be used in most cases
      */
-    public controlStatus: Signal<ControlStatus<T>>,
+    public ui: Signal<UiControl<T>>,
 
     /** The value of the field in the UI control as a signal */
     public uiValue: Signal<T>,

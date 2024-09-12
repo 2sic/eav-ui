@@ -1,7 +1,7 @@
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { ControlHelpers } from '../controls/control.helpers';
 import { FieldConfigSet } from '../../fields/field-config-set.model';
 import { AbstractControlPro } from './validation.helpers';
+import { UiControl } from '../controls/control-status.model';
 
 export class ValidationMessagesHelpers {
 
@@ -44,7 +44,7 @@ export class ValidationMessagesHelpers {
   static validateForm(form: UntypedFormGroup): Record<string, string> {
     const errors: Record<string, string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
-      ControlHelpers.markControlTouched(control);
+      UiControl.markTouched(control);
 
       if (!control.invalid) continue;
 

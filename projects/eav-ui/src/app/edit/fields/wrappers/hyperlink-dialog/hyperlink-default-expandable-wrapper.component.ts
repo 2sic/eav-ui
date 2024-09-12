@@ -15,7 +15,6 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, NgStyle } from '@angular/common';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldState } from '../../field-state';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
@@ -75,7 +74,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   open = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid);
 
   adamItem = computed(() => {
-    const controlStatus = this.controlStatus();
+    const controlStatus = this.ui();
     const adamItems = this.config.adam.items();
 
     if (!controlStatus.value || !adamItems.length) return;
@@ -134,17 +133,16 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   }
 
   markAsTouched() {
-    ControlHelpers.markControlTouched(this.control);
+    this.fieldState.ui().markTouched();
   }
 
   setValue(event: Event) {
     const newValue = (event.target as HTMLInputElement).value;
-    if (this.control.value === newValue) return;
-    ControlHelpers.patchControlValue(this.control, newValue);
+    this.fieldState.ui().setIfChanged(newValue);
   }
 
   expandDialog() {
-    if (this.control.disabled) return;
+    if (this.fieldState.ui().disabled) return;
     this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 

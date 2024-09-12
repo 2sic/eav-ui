@@ -8,7 +8,6 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { MonacoEditorComponent } from '../../../../monaco-editor/monaco-editor.component';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
@@ -33,9 +32,8 @@ import { FormConfigService } from '../../../form/form-config.service';
 export class CustomJsonEditorComponent {
   #fieldState = inject(FieldState) as FieldState<string>;
   #config = this.#fieldState.config;
-  #control = this.#fieldState.control;
 
-  protected controlStatus = this.#fieldState.controlStatus;
+  protected ui = this.#fieldState.ui;
   protected uiValue = this.#fieldState.uiValue;
   protected basics = this.#fieldState.basics;
   #settings = this.#fieldState.settings;
@@ -87,7 +85,7 @@ export class CustomJsonEditorComponent {
   }
 
   codeChanged(code: string): void {
-    ControlHelpers.patchControlValue(this.#control, code);
+    this.ui().setIfChanged(code);
   }
 
   onFocused(): void {
@@ -95,8 +93,7 @@ export class CustomJsonEditorComponent {
   }
 
   onBlurred(): void {
-    if (!this.#control.touched)
-      ControlHelpers.markControlTouched(this.#control);
+    this.ui().markTouched();
     this.#config.focused$.next(false);
   }
 }

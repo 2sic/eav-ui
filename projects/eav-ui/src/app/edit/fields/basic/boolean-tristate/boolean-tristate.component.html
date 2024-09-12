@@ -1,9 +1,9 @@
 <!-- New -->
 <div [formGroup]="group">
-  <div class="eav-toggle-hitbox" (click)="updateValue(controlStatus().disabled)">
+  <div class="eav-toggle-hitbox" (click)="updateValue(uiControl().disabled)">
     <mat-slide-toggle
     [checked]="checkedState()"
-    [disabled]="controlStatus().disabled"
+    [disabled]="uiControl().disabled"
     [ngClass]="{
           'toggle-false': checkedState() === false,
           'toggle-true': checkedState() === true,

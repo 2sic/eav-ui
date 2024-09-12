@@ -8,7 +8,6 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { FieldMask, UrlHelpers } from '../../../shared/helpers';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { transient } from '../../../../core/transient';
@@ -38,7 +37,6 @@ export class StringUrlPathComponent {
 
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
-  public control = this.fieldState.control;
 
   /** The mask to use comes from the field settings */
   #maskFromSettings = computed(() => this.fieldState.settings().AutoGenerateMask, SignalEquals.string);
@@ -80,7 +78,7 @@ export class StringUrlPathComponent {
     const l = this.log.fn('#onSourcesChanged', { newValue: cleanedNewValue });
 
     const v = {
-      uiValue: this.control.value,
+      uiValue: this.fieldState.uiValue(),
       lastAutoCopy: this.#lastAutoCopy(),
       allowSlashes: this.settings().AllowSlashes,
       cleaned: cleanedNewValue,
@@ -97,15 +95,14 @@ export class StringUrlPathComponent {
       return l.end('no changes', v);
 
     this.#lastAutoCopy.set(v.cleaned);
-    ControlHelpers.patchControlValue(this.control, v.cleaned);
+    this.fieldState.ui().setIfChanged(v.cleaned);
     l.end(`updated to "${v.cleaned}"`, v);
   }
 
   clean(trimEnd: boolean) {
     const l = this.log.fn('clean', { trimEnd });
-    const value = this.control.value;
+    const value = this.fieldState.uiValue();
     const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.settings().AllowSlashes, trimEnd);
-    if (value === cleaned) return;
-    ControlHelpers.patchControlValue(this.control, cleaned);
+    this.fieldState.ui().setIfChanged(cleaned);
   }
 }

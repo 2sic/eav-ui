@@ -1,5 +1,5 @@
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { BooleanDefaultLogic } from './boolean-default-logic';
@@ -9,9 +9,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
-import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.BooleanDefault,
@@ -33,9 +31,8 @@ export class BooleanDefaultComponent {
   #fieldState = inject(FieldState) as FieldState<boolean>;
 
   group = this.#fieldState.group;
-  controlStatus = this.#fieldState.controlStatus;
+  ui = this.#fieldState.ui;
   uiValue = this.#fieldState.uiValue;
-  #control = this.#fieldState.control;
 
   #settings = this.#fieldState.settings;
   basics = this.#fieldState.basics;
@@ -51,9 +48,8 @@ export class BooleanDefaultComponent {
     BooleanDefaultLogic.importMe();
   }
 
-  updateValue(disabled: boolean) {
-    if (disabled) return;
-    const newValue = !this.#control.value;
-    ControlHelpers.patchControlValue(this.#control, newValue);
+  updateValue() {
+    if (this.ui().disabled) return;
+    this.#fieldState.ui().setIfChanged(!this.uiValue());
   }
 }

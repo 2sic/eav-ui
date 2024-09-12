@@ -22,7 +22,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaCacheService {
 
-  log = classLog({FormulaCacheService}, { ...logSpecs, fields: logSpecsFormulaFields }, true);
+  log = classLog({FormulaCacheService}, { ...logSpecs, fields: logSpecsFormulaFields }, false);
 
   constructor() { }
 

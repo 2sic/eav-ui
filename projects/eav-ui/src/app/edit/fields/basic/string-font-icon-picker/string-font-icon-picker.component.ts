@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, Injector, Signal, signal } from '@angular/core';
+import { Component, computed, effect, inject, Injector, signal } from '@angular/core';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
 import { IconOption } from './string-font-icon-picker.models';
@@ -16,7 +16,6 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { ScriptsLoaderService } from '../../../shared/services/scripts-loader.service';
-import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.StringFontIconPicker,

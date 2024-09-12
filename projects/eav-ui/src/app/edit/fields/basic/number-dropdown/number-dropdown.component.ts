@@ -47,7 +47,7 @@ export class NumberDropdownComponent {
 
   protected group = this.fieldState.group;
   protected config = this.fieldState.config;
-  protected controlStatus = this.fieldState.controlStatus;
+  protected controlStatus = this.fieldState.ui;
 
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;

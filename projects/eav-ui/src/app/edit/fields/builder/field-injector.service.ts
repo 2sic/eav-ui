@@ -8,7 +8,7 @@ import { combineLatest, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
-import { ControlStatus, controlToControlStatus, emptyControlStatus } from '../../shared/controls/control-status.model';
+import { UiControl } from '../../shared/controls/control-status.model';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
@@ -82,7 +82,7 @@ export class FieldStateInjectorFactory {
   }
 
   #buildControlChangeSignal(fieldName: string, control: AbstractControl<any, any>, inputType: InputTypeSpecs, settings: Signal<FieldSettings>
-  ): Signal<ControlStatus<FieldValue>> {
+  ): Signal<UiControl<FieldValue>> {
     // Conditional logger for detailed logging
     const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'buildControlChangeSignal', { fieldName, inputType });
 
@@ -92,7 +92,13 @@ export class FieldStateInjectorFactory {
     // Note: 2dm is not sure if this is a good thing to provide, since it could be misused
     // This signal spreads value changes even if they don't spread to the state/store
     // so we must be careful with what we do with it
-    if (control)
+    if (control) {
+      // test 2dm
+      // var a = new UiControl(control, true);
+      // var b = new UiControl(control, true);
+      // const equals = isEqual(a, b);
+      // console.warn('2dm equals', equals);
+
       return runInInjectionContext(this.#injector, () => {
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
@@ -101,7 +107,7 @@ export class FieldStateInjectorFactory {
           settings$.pipe(mapUntilObjChanged(s => s.uiDisabled)),
         ]).pipe(
           tap(([_, disabled]) => lDetailed.a('valueChanges on control', { control, disabled })),
-          mapUntilObjChanged(([_, disabled]) => controlToControlStatus(control, disabled) as ControlStatus<FieldValue>),
+          mapUntilObjChanged(([_, disabled]) => new UiControl(control, disabled)),
           tap(result => lDetailed.a('controlStatusChangeSignal', { result })),
         );
 
@@ -109,16 +115,17 @@ export class FieldStateInjectorFactory {
         // Should be changed to a pure signal without the observables probably in Angular 18
         // which probably has a signal for this as well...
         return toSignal(controlStatus$, {
-          initialValue: controlToControlStatus(control, settings().uiDisabled)
+          initialValue: new UiControl(control, settings().uiDisabled)
         });
       });
+    }
     
     // No control found - could be a problem, could be expected
     // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
     if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
       console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
       // try to have a temporary result, so that in most cases it won't just fail
-      return signalObj('control-status-empty', emptyControlStatus);
+      return signalObj('control-status-empty', UiControl.emptyControl());
     }
     return null;
   }

@@ -50,7 +50,7 @@ export class TranslateMenuComponent {
   protected translationState = this.#fieldState.translationState; // this.fieldSettings.translationState[this.#fieldState.name];
   protected language = this.formConfig.language;
 
-  protected disabled = computedObj('disabled', () => this.#fieldState.controlStatus().disabled);
+  protected disabled = computedObj('disabled', () => this.#fieldState.ui().disabled);
 
   translationStateClass = computedObj('translationStateClass', () => TranslateMenuHelpers.getTranslationStateClass(this.translationState().linkType));
 

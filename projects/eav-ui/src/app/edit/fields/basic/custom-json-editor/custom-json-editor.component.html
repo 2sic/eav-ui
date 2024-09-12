@@ -1,7 +1,7 @@
 <div class="json-field" [ngClass]="{
-  'disabled': controlStatus().disabled,
+  'disabled': ui().disabled,
   'focused': focused().value,
-  'error': controlStatus().touchedAndInvalid
+  'error': ui().touchedAndInvalid
   }">
   <mat-label class="label">{{ basics().label }} {{ basics().required ? '*' : '' }}</mat-label>
   <app-monaco-editor class="editor"

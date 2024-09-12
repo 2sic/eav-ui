@@ -1,5 +1,5 @@
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import dayjs, { Dayjs } from 'dayjs';
@@ -14,7 +14,6 @@ import { DateTimeDefaultLogic } from './datetime-default-logic';
 import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 import { FieldState } from '../../field-state';
 import { MatDayjsModule, MatDayjsDateAdapter } from '../../../shared/date-adapters/date-adapter-api';
-import { ControlHelpers } from '../../../shared/controls/control.helpers';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
@@ -50,9 +49,8 @@ export class DatetimeDefaultComponent {
   protected fieldState = inject(FieldState) as FieldState<string>;
 
   protected group = this.fieldState.group;
-  protected control = this.fieldState.control;
 
-  protected controlStatus = this.fieldState.controlStatus;
+  protected ui = this.fieldState.ui;
   uiValue = this.fieldState.uiValue;
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
@@ -79,6 +77,6 @@ export class DatetimeDefaultComponent {
     // @2dg old code, remove after test and verify from 2dm
     // utc(keepLocalTime: true) to preserve 'neutral' time from OwlDateTime picker
     const newValue = event.value != null ? event.value.utc(true).toJSON() : null;
-    ControlHelpers.patchControlValue(this.control, newValue);
+    this.ui().setIfChanged(newValue);
   }
 }

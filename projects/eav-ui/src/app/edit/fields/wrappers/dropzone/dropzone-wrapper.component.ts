@@ -33,7 +33,7 @@ export class DropzoneWrapperComponent implements AfterViewInit {
   #config = this.#fieldState.config;
 
   dropzoneConfig = signal<DropzoneConfigExt>(null);
-  dropzoneDisabled = computed(() => this.#fieldState.controlStatus().disabled || (this.dropzoneConfig()?.disabled ?? true));
+  dropzoneDisabled = computed(() => this.#fieldState.ui().disabled || (this.dropzoneConfig()?.disabled ?? true));
   
   #wysiwygHelper = new DropzoneWysiwyg();
 

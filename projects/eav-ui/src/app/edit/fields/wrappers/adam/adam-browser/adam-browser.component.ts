@@ -77,7 +77,7 @@ export class AdamBrowserComponent implements OnInit {
   protected group = this.fieldState.group;
   private control = this.fieldState.control;
 
-  disabled = computed(() => this.fieldState.controlStatus().disabled);
+  disabled = computed(() => this.fieldState.ui().disabled);
 
   value = computed(() => this.fieldState.uiValue());
   

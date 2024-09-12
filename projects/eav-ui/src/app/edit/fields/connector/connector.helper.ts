@@ -6,11 +6,10 @@ import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
 import { FieldMask } from '../../shared/helpers';
-import { ControlHelpers } from '../../shared/controls/control.helpers';
 import { FieldState } from '../field-state';
 import { PagePicker } from '../page-picker/page-picker.helper';
 import { transient } from '../../../core';
@@ -25,6 +24,7 @@ import { ContentTypeService } from '../../shared/content-types/content-type.serv
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 import { classLog } from '../../../shared/logging';
+import { UiControl } from '../../shared/controls/control-status.model';
 
 const logSpecs = {
   all: false,
@@ -53,9 +53,9 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   
   #adamService = transient(AdamService);
 
-  #control: AbstractControl;
+  // #control = this.#fieldState.ui().control;
   #customEl: EavCustomInputField;
-  #value$: BehaviorSubject<FieldValue>;
+  #value$ = this.#fieldState.ui().control.valueChanges.pipe(distinctUntilChanged(isEqual)); //: BehaviorSubject<FieldValue>;
 
   #config = this.#fieldState.config;
   #group = this.#fieldState.group;
@@ -78,13 +78,13 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     this.#viewContainerRef = viewContainerRef;
     this.#changeDetectorRef = changeDetectorRef;
 
-    this.#control = this.#group.controls[this.#config.fieldName];
-    this.#value$ = new BehaviorSubject(this.#control.value);
-    this.subscriptions.add(
-      this.#control.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
-        this.#value$.next(value);
-      })
-    );
+    // this.#value$ = new BehaviorSubject(this.#control.value);
+    // this.subscriptions.add(
+    //   this.#control.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
+    //     this.#value$.next(value);
+    //   })
+    // );
+    // const value$ = this.#fieldState.ui().control.valueChanges.pipe(distinctUntilChanged(isEqual));
 
     this.#customEl = document.createElement(customElName) as EavCustomInputField;
     this.#customEl.connector = this.#buildConnector();
@@ -94,7 +94,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
   ngOnDestroy() {
     this.log.a('ngOnDestroy');
-    this.#value$.complete();
+    // this.#value$.complete();
     this.#customEl?.parentNode.removeChild(this.#customEl);
     this.#customEl = null;
     super.ngOnDestroy();
@@ -107,8 +107,8 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       const settings = this.#fieldState.settings();
       return toFieldConfig(this.#config, settings);
     }, { equal: isEqual});
-    const value$ = this.#value$.asObservable();
-    const connector = new ConnectorInstance(connectorHost, value$, fieldConfigSignal, experimental, this.#formConfig.config);
+    // const value$ = this.#value$.asObservable();
+    const connector = new ConnectorInstance(connectorHost, this.#value$, fieldConfigSignal, experimental, this.#formConfig.config);
 
     effect(() => {
       const s = this.#fieldState.settings();
@@ -124,7 +124,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #getCallbacks() {
     const connectorHost: ConnectorHost = {
       update: (value) => {
-        this.#zone.run(() => this.#updateControl(this.#control, value));
+        this.#zone.run(() => this.#updateControl(value));
       },
       expand: (expand, componentTag) => {
         this.#zone.run(() => this.#editRoutingService.expand(expand, this.#config.index, this.#config.entityGuid, componentTag));
@@ -149,7 +149,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       adam: this.#config.adam,
       updateField: (name, value) => {
         lEx.fn('updateField', { name, value });
-        this.#zone.run(() => { this.#updateControl(this.#group.controls[name], value); });
+        this.#zone.run(() => { this.#updateControl(value, this.#group.controls[name]); });
       },
       isFeatureEnabled$: (nameId) => this.#featuresService.isEnabled$(nameId),
       setFocused: (focused) => {
@@ -197,9 +197,10 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     });
   }
 
-  #updateControl(control: AbstractControl, value: FieldValue) {
-    if (control.disabled) return;
-    ControlHelpers.patchControlValue(control, value);
+  #updateControl(value: FieldValue, control: AbstractControl = null) {
+    const ui = control ? new UiControl(control) : this.#fieldState.ui();
+    if (ui.disabled) return;
+    this.#fieldState.ui().setIfChanged(value);
   }
 
   #openFeatureDisabledWarning(featureNameId: string) { 
