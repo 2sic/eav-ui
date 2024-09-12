@@ -50,22 +50,25 @@ export class ValidationHelpers {
       control._warning$ = new BehaviorSubject<ValidationErrors>(null);
   }
 
+  private static ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs): FieldSettings {
+    this.ensureWarning(control);
+    const settings = specs.settings();
+    if (this.ignoreValidators(settings)) return null;
+    return settings;
+  }
+
   private static required(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (!settings.valueRequired) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s == null || !s.valueRequired) return null;
       return Validators.required(control);
     };
   }
 
   private static requiredAdam(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (!settings.valueRequired) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s == null || !s.valueRequired) return null;
 
       return (control as AdamControl).adamItems === 0 ? { required: true } : null;
     };
@@ -73,24 +76,20 @@ export class ValidationHelpers {
 
   private static pattern(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (!settings.ValidationRegExJavaScript) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s == null || !s.ValidationRegExJavaScript) return null;
 
-      return Validators.pattern(settings.ValidationRegExJavaScript)(control);
+      return Validators.pattern(s.ValidationRegExJavaScript)(control);
     };
   }
 
   private static decimals(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (settings.Decimals == null || settings.Decimals < 0) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s?.Decimals == null || s.Decimals < 0) return null;
       if (control.value == null) return null;
 
-      const matchString = settings.Decimals === 0 ? `^-?[0-9]+$` : `^-?[0-9]+(\.[0-9]{1,${settings.Decimals}})?$`;
+      const matchString = s.Decimals === 0 ? `^-?[0-9]+$` : `^-?[0-9]+(\.[0-9]{1,${s.Decimals}})?$`;
       const matches = (control.value as number).toString().match(matchString);
       return !matches ? { decimals: true } : null;
     };
@@ -98,53 +97,45 @@ export class ValidationHelpers {
 
   private static min(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (settings.Min == null) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s?.Min == null) return null;
 
-      return Validators.min(settings.Min)(control);
+      return Validators.min(s.Min)(control);
     };
   }
 
   private static max(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (settings.Max == null) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s?.Max == null) return null;
 
-      return Validators.max(settings.Max)(control);
+      return Validators.max(s.Max)(control);
     };
   }
 
   private static minNoItems(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s == null || s.AllowMultiMin == 0 || s.AllowMultiMin == undefined) return null;
 
       const lessThanMin = (Array.isArray(control.value)
         ? control.value.length
-        : convertValueToArray(control.value, settings.Separator, settings._options).length)
-          < settings.AllowMultiMin
-      return lessThanMin ? { minNoItems: settings.AllowMultiMin } : null;
+        : convertValueToArray(control.value, s.Separator, s._options).length)
+          < s.AllowMultiMin
+      return lessThanMin ? { minNoItems: s.AllowMultiMin } : null;
     };
   }
 
   private static maxNoItems(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      this.ensureWarning(control);
-      const settings = specs.settings();
-      if (this.ignoreValidators(settings)) return null;
-      if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) return null;
+      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      if (s == null || s.AllowMultiMax == 0 || s.AllowMultiMax == undefined) return null;
 
       const moreThanMax = (Array.isArray(control.value)
         ? control.value.length
-        : convertValueToArray(control.value, settings.Separator, settings._options).length)
-        > settings.AllowMultiMax
-      return moreThanMax ? { maxNoItems: settings.AllowMultiMax } : null;
+        : convertValueToArray(control.value, s.Separator, s._options).length)
+        > s.AllowMultiMax
+      return moreThanMax ? { maxNoItems: s.AllowMultiMax } : null;
     };
   }
 
@@ -154,8 +145,9 @@ export class ValidationHelpers {
       const settings = specs.settings();
       let error: boolean;
       let warning: boolean;
+      const jsonMode = settings.JsonValidation;
 
-      if (this.ignoreValidators(settings) || settings.JsonValidation === 'none' || !control.value) {
+      if (this.ignoreValidators(settings) || jsonMode === 'none' || !control.value) {
         error = false;
         warning = false;
       } else {
@@ -164,10 +156,10 @@ export class ValidationHelpers {
           error = false;
           warning = false;
         } catch {
-          if (settings.JsonValidation === 'strict') {
+          if (jsonMode === 'strict') {
             error = true;
             warning = false;
-          } else if (settings.JsonValidation === 'light') {
+          } else if (jsonMode === 'light') {
             error = false;
             warning = true;
           }
