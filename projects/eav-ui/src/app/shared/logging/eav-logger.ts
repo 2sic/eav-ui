@@ -85,17 +85,18 @@ export class EavLogger<TSpecs extends unknown = any> {
   }
 
   /** Internal helper to really log - if enabled */
-  #a(message: string, data?: Record<string, unknown>, autoPad: boolean = true): void {
+  #a(message: string, data?: RecordOrGenerator, autoPad: boolean = true): void {
     if (!this.enabled) return;
     message ??= '';
     if (message && autoPad) message = ` ${message}`;
+    data = typeof data === 'function' ? data() : data;
     consoleLogObject({ message: `${this.nameWithSvcId}${message}`, data });
   }
 
   /**
    * Special 'a' = add log helper to better diagnose what is happening
    */
-  a(message: string, data?: Record<string, unknown>): void {
+  a(message: string, data?: RecordOrGenerator): void {
     this.#a(message, data);
     if (!this.enabled) return;
   }
@@ -121,7 +122,7 @@ export class EavLogger<TSpecs extends unknown = any> {
   /**
    * Create a logger function that will only log if the condition is true
    */
-  fnCond(condition: boolean, name: string, data?: Record<string, unknown>, message?: string): FnLogger {
+  fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger {
     // create real logger if condition is true, or if this logger is disabled anyhow
     return condition || !this.enabled
       ? this.fn(name, data, message)
@@ -134,7 +135,7 @@ export class EavLogger<TSpecs extends unknown = any> {
    * 
    * TODO: @2pp - refactor all uses to just use the fnCond method?
    */
-  fnIf(key: BooleanKeys<TSpecs> & string, data?: Record<string, unknown>, message?: string): FnLogger {
+  fnIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): FnLogger {
     // create real logger if condition is true, or if this logger is disabled anyhow
     return this.enabled && this.#ifInSpecs(key)
       ? this.fn(key, data, message)

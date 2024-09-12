@@ -14,8 +14,8 @@ export class FnLoggerReal implements FnLogger {
     if (!this.parent.enabled) return;
     message ??= '';
     if (message && autoPad) message = ` ${message}`;
-    const d = typeof data === 'function' ? data() : data;
-    consoleLogObject({ message: `${this.parent.nameWithSvcId}.${this.fnName}()${message}`, data: d });
+    data = typeof data === 'function' ? data() : data;
+    consoleLogObject({ message: `${this.parent.nameWithSvcId}.${this.fnName}()${message}`, data });
   }
 
   a(message: string, data?: Record<string, unknown>): void {
