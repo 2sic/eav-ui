@@ -1,5 +1,5 @@
 import { BasicControlSettings } from './../../../../../../edit-types/src/BasicControlSettings';
-import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
+import { EnvironmentInjector, Injectable, Injector, Signal, createEnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldState } from '../../fields/field-state';
 import { EntityFormStateService } from '../../entity-form/entity-form-state.service';
@@ -62,11 +62,14 @@ export class FieldStateInjectorFactory {
     // Control and Control Status
     const formGroup = this.#entityForm.formGroup;
     const control = formGroup.controls[name];    
-    const controlStatusChangeSignal = this.#buildControlChangeSignal(name, control, inputType, settings);
+    const controlStatusChangeSignal = this.#buildUiSignal(name, control, inputType, settings);
 
-    /** The UI Value changes - note that it can sometimes contain arrays, so we're using the strong equal */
-    // TODO: this is probably better solved using a toSignal(control.valueChanges)
-    const uiValue: Signal<FieldValue> = toSignal(control.valueChanges, { injector: this.#injector, initialValue: null}); // computedObj('uiValue', () => controlStatusChangeSignal().value);
+    /** The UI Value changes. Since it can also contain arrays, so we're using the strong equal */
+    const uiValue: Signal<FieldValue> = (() => {
+      if (!control) return signalObj('value-change-empty', null);
+      const debouncedValue$ = control.valueChanges.pipe(mapUntilObjChanged(v => v));
+      return toSignal(debouncedValue$, { injector: this.#injector, initialValue: null});
+    })();
 
     const fieldState = new FieldState(
       name,
@@ -83,36 +86,29 @@ export class FieldStateInjectorFactory {
     return l.r(this.#createInjectors(fieldState));
   }
 
-  #buildControlChangeSignal(fieldName: string, control: AbstractControl<any, any>, inputType: InputTypeSpecs, settings: Signal<FieldSettings>
-  ): Signal<UiControl> {
+  /**
+   * Create a signal for the control status - mainly disabled etc.
+   */
+  #buildUiSignal(fieldName: string, control: AbstractControl, inputType: InputTypeSpecs, settings: Signal<FieldSettings>): Signal<UiControl> {
     // Conditional logger for detailed logging
     const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'buildControlChangeSignal', { fieldName, inputType });
 
-    const settings$ = toObservable(settings, { injector: this.#injector });
-
-    // Create a signal to watch for value changes
-    // Note: 2dm is not sure if this is a good thing to provide, since it could be misused
-    // This signal spreads value changes even if they don't spread to the state/store
-    // so we must be careful with what we do with it
+    // Create a signal to watch for control-state changes
     if (control) {
-      // test 2dm
-      // var a = new UiControl(control, true);
-      // var b = new UiControl(control, true);
-      // const equals = isEqual(a, b);
-      // console.warn('2dm equals', equals);
+      const settings$ = toObservable(settings, { injector: this.#injector });
 
       return runInInjectionContext(this.#injector, () => {
         // Watch the control for state changes - this is triggered on the ValueChanges
         // but we only want to continue triggering if a relevant state changed.
-        const controlStateChange = control.valueChanges.pipe(
+        const uiStateChange$ = control.valueChanges.pipe(
           mapUntilObjChanged(_ => ({ dirty: control.dirty, invalid: control.invalid, touched: control.touched, disabled: control.disabled })),
           tap(state => detailedDebug && console.error('controlStateChange', state)),
         );
 
         // disabled can be caused by settings in addition to the control status
         // since the control doesn't cause a `valueChanged` on disabled, we need to watch the settings
-        const controlStatus$ = combineLatest([
-          controlStateChange,
+        const uiStatus$ = combineLatest([
+          uiStateChange$,
           settings$.pipe(mapUntilObjChanged(s => s.uiDisabled)),
         ]).pipe(
           tap(([_, disabled]) => lDetailed.a('controlStateChange on control', { control, disabled })),
@@ -123,22 +119,23 @@ export class FieldStateInjectorFactory {
         // Build controlStatus observable.
         // Should be changed to a pure signal without the observables probably in Angular 18
         // which probably has a signal for this as well...
-        return toSignal(controlStatus$, {
-          initialValue: new UiControl(control, fieldName, settings().uiDisabled)
-        });
+        return toSignal(uiStatus$, { initialValue: new UiControl(control, fieldName, settings().uiDisabled) });
       });
     }
     
     // No control found - could be a problem, could be expected
     // If it's an empty message field, this is kind of expected, since it doesn't have a value control in the form
     if (!InputTypeHelpers.isEmpty(inputType.inputType)) {
-      console.error(`Error: can't create value-change signal for ${fieldName} - control not found. Input type is not empty, it's ${inputType.inputType}.`);
+      console.error(`Error: can't create signal for control of ${fieldName} (not found). Input type is not empty, it's ${inputType.inputType}.`);
       // try to have a temporary result, so that in most cases it won't just fail
       return signalObj('control-status-empty', UiControl.emptyControl());
     }
     return null;
   }
 
+  /**
+   * Create the injector definitions to use for this field.
+   */
   #createInjectors(fieldState: FieldState<FieldValue>) {
     const providers = [
       { provide: FieldState, useValue: fieldState },

@@ -9,5 +9,5 @@ export interface FieldInitSpecs {
   inputType: InputTypeStrict;
   value: FieldValue;
   hasControl: boolean;
-  control: AbstractControl<any, any>;
+  control: AbstractControl;
 }
