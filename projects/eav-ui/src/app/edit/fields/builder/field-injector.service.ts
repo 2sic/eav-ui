@@ -69,7 +69,6 @@ export class FieldStateInjectorFactory {
       name,
       fieldConfig,
       formGroup,
-      control,
       settings,
       basics,
       controlStatusChangeSignal,
@@ -82,7 +81,7 @@ export class FieldStateInjectorFactory {
   }
 
   #buildControlChangeSignal(fieldName: string, control: AbstractControl<any, any>, inputType: InputTypeSpecs, settings: Signal<FieldSettings>
-  ): Signal<UiControl<FieldValue>> {
+  ): Signal<UiControl> {
     // Conditional logger for detailed logging
     const lDetailed = this.log.fnCond(this.log.specs.fields.includes(fieldName), 'buildControlChangeSignal', { fieldName, inputType });
 

@@ -57,24 +57,23 @@ export class ValidationMessagesHelpers {
   }
 
   /** Calculates error message */
-  static getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
-    let error = '';
-    if (!control.invalid) return error;
-    if (!control.dirty && !control.touched) return error;
+  static getErrorMessage(uiControl: UiControl, config: FieldConfigSet): string {
+    const control = uiControl.control;
+    if (!control.invalid) return '';
+    if (!control.dirty && !control.touched) return '';
 
     for (const errorKey of Object.keys(control.errors)) {
-      if (errorKey === 'formulaError') {
-        error = control.errors['formulaMessage'] ?? this.validationMessages[errorKey]?.(config);
-      } else {
-        error = this.validationMessages[errorKey]?.(config);
-      }
-      if (error) break;
+      const error = (errorKey === 'formulaError')
+        ? control.errors['formulaMessage'] ?? this.validationMessages[errorKey]?.(config)
+        : this.validationMessages[errorKey]?.(config);
+      if (error) return error;
     }
 
-    return error;
+    return '';
   }
 
-  static getWarningMessage(control: AbstractControlPro): string {
+  static getWarningMessage(uiControl: UiControl): string {
+    const control = uiControl.control as AbstractControlPro;
     let warning = '';
     if (control._warning$.value == null) { return warning; }
     if (!control.dirty && !control.touched) { return warning; }

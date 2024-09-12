@@ -33,12 +33,13 @@ export class HyperlinkLibraryComponent implements OnInit {
 
     let first = true;
     effect(() => {
+      const control = this.fieldState.ui().control as AdamControl;
       // Patch length info to the control state, so the validator can pick it up
-      (this.fieldState.control as AdamControl).adamItems = this.fieldState.config.adam.items().length;
+      control.adamItems = this.fieldState.config.adam.items().length;
       // Update the validity of the control - but not during initialization, only on later changes
       // otherwise the field would glow red right from the start
       if (!first)
-        this.fieldState.control.updateValueAndValidity();
+        control.updateValueAndValidity();
       first = false;
     });
   }

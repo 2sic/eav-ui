@@ -1,5 +1,5 @@
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
@@ -22,9 +22,6 @@ export class FieldState<T extends FieldValue = FieldValue> {
     /** The form group containing the field - rarely relevant, as you should use the control in most cases */
     public group: UntypedFormGroup,
 
-    /** The control of the field in the form group */
-    public control: AbstractControl,
-
     /** The settings as a signal - use this for most cases */
     public settings: Signal<FieldSettings>,
 
@@ -32,6 +29,7 @@ export class FieldState<T extends FieldValue = FieldValue> {
     public basics: Signal<BasicControlSettings>,
 
     /**
+     * The UI control (actually it's the virtual UI control), since it's a reactive form control.
      * Note: e just introduced uiValue below, which should be used in most cases
      */
     public ui: Signal<UiControl<T>>,

@@ -23,14 +23,10 @@ export class LocalizationWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 
-  protected formConfig = inject(FormConfigService);
-  protected fieldState = inject(FieldState);
+  #formConfig = inject(FormConfigService);
+  #fieldState = inject(FieldState);
 
-  protected config = this.fieldState.config;
-  protected control = this.fieldState.control;
-
-
-  language = this.formConfig.language;
+  language = this.#formConfig.language;
   hideTranslateButton: boolean = true;
 
   constructor(
@@ -40,10 +36,11 @@ export class LocalizationWrapperComponent {
 
   translate() {
     if (this.formsStateService.readOnly().isReadOnly) return;
-    const language = this.formConfig.language();
+    const language = this.#formConfig.language();
     if (language.current === language.primary) return;
-    if (!this.control.disabled) return;
-    const isExpanded = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    if (!this.#fieldState.ui().disabled) return;
+    const config = this.#fieldState.config;
+    const isExpanded = this.editRoutingService.isExpanded(config.index, config.entityGuid);
     if (isExpanded) return;
 
     this.translateMenu.translate();

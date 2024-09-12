@@ -115,16 +115,17 @@ export class StateAdapter {
   }
 
   protected createNewValue(valueArray: string[]): string | string[] {
-    return typeof this.#fieldState.control.value === 'string'
+    return typeof this.#fieldState.uiValue() === 'string'
       ? convertArrayToString(valueArray, this.#fieldState.settings().Separator)
       : valueArray;
   }
 
   public createValueArray(): string[] {
     const fs = this.#fieldState;
-    if (typeof fs.control.value === 'string')
-      return convertValueToArray(fs.control.value, fs.settings().Separator);
-    return [...fs.control.value];
+    const value = fs.uiValue();
+    if (typeof value === 'string')
+      return convertValueToArray(value, fs.settings().Separator);
+    return [...value];
   }
 
   public doAfterDelete(props: DeleteEntityProps) {

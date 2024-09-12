@@ -39,8 +39,8 @@ export class FieldHelperTextComponent {
   //   mapUntilChanged(m => m),
   // );
 
-  invalidControl = computed(() => this.fieldState.control.invalid);
-  disabledControl = computed(() => this.fieldState.control.disabled);
+  invalidControl = computed(() => this.fieldState.ui().invalid);
+  disabledControl = computed(() => this.fieldState.ui().disabled);
 
   protected settings = this.fieldState.settings;
 
@@ -63,10 +63,10 @@ export class FieldHelperTextComponent {
   }
 
   getErrorMessage() {
-    return ValidationMessagesHelpers.getErrorMessage(this.fieldState.control, this.fieldState.config);
+    return ValidationMessagesHelpers.getErrorMessage(this.fieldState.ui(), this.fieldState.config);
   }
 
   getWarningMessage() {
-    return ValidationMessagesHelpers.getWarningMessage(this.fieldState.control);
+    return ValidationMessagesHelpers.getWarningMessage(this.fieldState.ui());
   }
 }

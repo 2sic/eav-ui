@@ -12,7 +12,7 @@ const logSpecs = {
   fields: ['*'] as string[], // example: ['SomeField'],
 };
 
-export class UiControl<T extends FieldValue> {
+export class UiControl<T extends FieldValue = FieldValue> {
 
   log = classLog({ UiControl }, logSpecs);
 

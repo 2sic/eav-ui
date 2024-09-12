@@ -75,9 +75,9 @@ export class AdamBrowserComponent implements OnInit {
 
   protected config = this.fieldState.config;
   protected group = this.fieldState.group;
-  private control = this.fieldState.control;
+  #ui = this.fieldState.ui;
 
-  disabled = computed(() => this.fieldState.ui().disabled);
+  disabled = computed(() => this.#ui().disabled);
 
   value = computed(() => this.fieldState.uiValue());
   
@@ -130,7 +130,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   addFolder() {
-    if (this.control.disabled) return;
+    if (this.#ui().disabled) return;
 
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (!folderName) return;
@@ -140,7 +140,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   del(item: AdamItem) {
-    if (this.control.disabled) return;
+    if (this.#ui().disabled) return;
 
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (!ok) return;
@@ -215,7 +215,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   rename(item: AdamItem) {
-    if (this.control.disabled) return;
+    if (this.#ui().disabled) return;
 
     const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
     if (!newName) return;
@@ -225,7 +225,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   select(item: AdamItem) {
-    if (this.control.disabled || !this.adamConfig().enableSelect) return;
+    if (this.#ui().disabled || !this.adamConfig().enableSelect) return;
     this.config.adam.onItemClick(item);
   }
 
