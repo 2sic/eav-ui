@@ -1,16 +1,15 @@
 import { DropdownOption } from '../../../../../../edit-types/src/DropdownOption';
 import { PickerItem } from './models/picker-item.model';
 import { guidRegex } from '../../../shared/constants/guid.constants';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-
-const logThis = false;
+import { classLog } from '../../../shared/logging';
 
 export function correctStringEmptyValue(
   fieldValue: string | string[],
   separator: string,
   dropdownOptions: DropdownOption[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
-  const log = new EavLogger('correctStringEmptyValue', logThis);
+  
+  const log = classLog({correctStringEmptyValue});
 
   const valueAsArray = typeof fieldValue === 'string'
     ? convertValueToArray(fieldValue, separator, dropdownOptions)

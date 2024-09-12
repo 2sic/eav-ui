@@ -16,7 +16,6 @@ import { PagePicker } from '../page-picker/page-picker.helper';
 import { transient } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FeaturesService } from '../../../features/features.service';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
@@ -25,24 +24,20 @@ import { AdamService } from '../../shared/adam/adam.service';
 import { ContentTypeService } from '../../shared/content-types/content-type.service';
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
+import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'ConnectorHelper',
-  specs: {
-    all: false,
-    init: true,
-    getUrlOfId: false,
-    updateControl: false,
-    openFeatureDisabledWarning: false,
-  }
+  all: false,
+  init: true,
+  getUrlOfId: false,
+  updateControl: false,
+  openFeatureDisabledWarning: false,
 };
-
-const logExperimental = true;
-const nameOfExperimental = 'ConnectorHelperExperimental';
 
 @Injectable()
 export class ConnectorHelper extends ServiceBase implements OnDestroy {
+  
+  log = classLog({ConnectorHelper}, logSpecs);
   
   #injector = inject(Injector);
   #fieldState = inject(FieldState);
@@ -68,7 +63,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #viewContainerRef: ViewContainerRef;
   #changeDetectorRef: ChangeDetectorRef;
 
-  log = new EavLogger(logSpecs);
   constructor() {
     super();
     this.log.a('constructor')
@@ -143,7 +137,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     const contentType = this.#contentTypeService.get(this.#config.contentTypeNameId);
     const allInputTypeNames = this.#inputTypeService.getAttributeInputTypes(contentType.Attributes);
 
-    const lEx = new EavLogger(nameOfExperimental, logExperimental);
+    const lEx = classLog("ConnectorHelperExperimental");
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.#config.entityGuid,

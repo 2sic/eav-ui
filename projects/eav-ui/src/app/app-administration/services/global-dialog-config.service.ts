@@ -3,11 +3,8 @@ import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-
-const logThis = false;
-const nameOfThis = 'GlobalDialogConfigService';
+import { classLog } from '../../shared/logging';
 
 const webApiSettings = 'admin/dialog/settings';
 
@@ -19,7 +16,7 @@ const webApiSettings = 'admin/dialog/settings';
 @Injectable({ providedIn: 'root' })
 export class GlobalDialogConfigService {
 
-  log = new EavLogger(nameOfThis, logThis);
+  log = classLog({GlobalDialogConfigService});
 
   constructor(
     private http: HttpClient,

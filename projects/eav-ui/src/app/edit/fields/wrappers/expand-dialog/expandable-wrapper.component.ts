@@ -17,15 +17,12 @@ import { FieldState } from '../../field-state';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { transient } from '../../../../core/transient';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { ConnectorHelper } from '../../connector/connector.helper';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { WrappersCatalog } from '../wrappers.constants';
-
-const logThis = false;
-const nameOfThis = 'ExpandableWrapperComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: WrappersCatalog.ExpandableWrapper,
@@ -51,6 +48,9 @@ const nameOfThis = 'ExpandableWrapperComponent';
   ],
 })
 export class ExpandableWrapperComponent {
+  
+  log = classLog({ExpandableWrapperComponent});
+
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   /** Child tag which will contain the inner html */
@@ -98,8 +98,6 @@ export class ExpandableWrapperComponent {
 
   private connectorCreator = transient(ConnectorHelper);
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private editRoutingService: EditRoutingService,

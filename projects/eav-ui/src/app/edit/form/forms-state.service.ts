@@ -1,13 +1,10 @@
 import { Injectable, Signal, signal } from '@angular/core';
 import { FormConfigService } from './form-config.service';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { SignalEquals } from '../../shared/signals/signal-equals';
 import { ItemService } from '../state/item.service';
 import { LanguageService } from '../localization/language.service';
 import { computedObj } from '../../shared/signals/signal.utilities';
-
-const logThis = false;
-const nameOfThis = 'FormsStateService';
+import { classLog } from '../../shared/logging';
 
 /**
  * Service to manage the state of forms.
@@ -15,6 +12,8 @@ const nameOfThis = 'FormsStateService';
  */
 @Injectable()
 export class FormsStateService {
+  
+  log = classLog({FormsStateService});
 
   /** Signal which is filled by sub-dialogs to trigger save (other saves like ctrl+s don't go through this) */
   triggerTrySaveAndMaybeClose = signal({ tryToSave: false, close: false }, SignalEquals.ref);
@@ -26,8 +25,6 @@ export class FormsStateService {
 
   private formsValid: Record<string, boolean> = {};
   private formsDirty: Record<string, boolean> = {};
-
-  log = new EavLogger(nameOfThis, logThis);
   
   constructor(
     private formConfig: FormConfigService,

@@ -6,10 +6,7 @@ import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, Pipeline
 import { EndpointInfo, PlumbType } from './plumb-editor.models';
 import { RenameStreamComponent } from './rename-stream/rename-stream.component';
 import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
-import { EavLogger } from '../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'Plumber';
+import { classLog } from '../../shared/logging';
 
 declare const window: EavWindow;
 
@@ -18,7 +15,9 @@ export const dataSrcIdPrefix = 'dataSource_';
 const endPointsWhereWeRotate = 3;
 
 export class Plumber {
-  private log = new EavLogger(nameOfThis, logThis);
+
+  log = classLog({Plumber});
+
   private instance: PlumbType;
   private lineCount = 0;
   private linePaintDefault = {

@@ -9,12 +9,12 @@ import { FormConfiguration } from '../../form/form-configuration.model';
 import { Signal } from '@angular/core';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'ConnectorInstance';
+import { classLog } from '../../../shared/logging';
 
 export class ConnectorInstance<T = any> implements Connector<T> {
+  
+  log = classLog({ConnectorInstance});
+  
   data: ConnectorData<T>;
   dialog: ConnectorDialog;
   loadScript: (...args: any[]) => void;
@@ -23,8 +23,6 @@ export class ConnectorInstance<T = any> implements Connector<T> {
 
   get field$() { return this.#field$ ??= toObservable(this.fieldConfigSignal, { injector: this._experimental.injector }) }
   #field$: Observable<FieldConfig>;
-
-  log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     _connectorHost: ConnectorHost<T>,

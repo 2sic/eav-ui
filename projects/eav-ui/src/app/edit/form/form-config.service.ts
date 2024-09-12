@@ -5,12 +5,9 @@ import { Context } from '../../shared/services/context';
 import { EditSettings } from '../dialog/main/edit-dialog-main.models';
 import { Observable } from 'rxjs';
 import { FormLanguageService } from './form-language.service';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormLanguageComplete, FormLanguagesConfig } from './form-languages.model';
 import { FormConfiguration, VersioningOptions } from './form-configuration.model';
-
-const logThis = false;
-const nameOfThis = 'FormConfigService';
+import { classLog } from '../../shared/logging';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -22,10 +19,11 @@ export const webApiEditRoot = 'cms/edit/';
  */
 @Injectable()
 export class FormConfigService {
+  
+  log = classLog({FormConfigService});
+  
   /** no constructor */
   constructor() { }
-
-  log = new EavLogger(nameOfThis, logThis);
 
   /**
    * Important! These are constants that form was loaded with.

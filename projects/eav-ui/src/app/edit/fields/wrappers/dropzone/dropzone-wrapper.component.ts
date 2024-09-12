@@ -6,13 +6,10 @@ import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models'
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { FieldState } from '../../field-state';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { WrappersCatalog } from '../wrappers.constants';
 import { DropzoneWysiwyg } from './dropzone-wysiwyg';
-
-const logThis = false;
-const nameOfThis = 'DropzoneWrapperComponent';
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: WrappersCatalog.DropzoneWrapper,
@@ -26,6 +23,9 @@ const nameOfThis = 'DropzoneWrapperComponent';
   ],
 })
 export class DropzoneWrapperComponent implements AfterViewInit {
+  
+  log = classLog({DropzoneWrapperComponent});
+
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
@@ -36,8 +36,6 @@ export class DropzoneWrapperComponent implements AfterViewInit {
   dropzoneDisabled = computed(() => this.#fieldState.controlStatus().disabled || (this.dropzoneConfig()?.disabled ?? true));
   
   #wysiwygHelper = new DropzoneWysiwyg();
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(
     private formConfig: FormConfigService,

@@ -2,10 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, ViewCh
 import { ConnectorHelper } from './connector.helper';
 import { FieldState } from '../field-state';
 import { transient } from '../../../core/transient';
-import { EavLogger } from '../../../shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'ConnectorComponent';
+import { classLog } from '../../../shared/logging';
 
 @Component({
   selector: 'app-connector',
@@ -15,6 +12,8 @@ const nameOfThis = 'ConnectorComponent';
 })
 export class ConnectorComponent implements AfterViewInit {
 
+  log = classLog({ConnectorComponent});
+
   /** Child tag which will contain the inner html */
   @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
@@ -22,8 +21,6 @@ export class ConnectorComponent implements AfterViewInit {
   private connectorCreator = transient(ConnectorHelper);
   private viewContainerRef = inject(ViewContainerRef);
   private changeDetectorRef = inject(ChangeDetectorRef);
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor() { }
 

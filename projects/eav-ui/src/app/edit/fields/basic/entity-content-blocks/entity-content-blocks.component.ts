@@ -4,9 +4,6 @@ import { EntityDefaultComponent } from '../entity-default/entity-default.compone
 import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 import { PickerImports } from '../../picker/picker-providers.constant';
 
-const logThis = false;
-const nameOfThis = 'EntityContentBlockComponent';
-
 @Component({
   selector: InputTypeCatalog.EntityContentBlocks,
   templateUrl: '../../picker/picker.component.html',
@@ -20,5 +17,4 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
     super();
     EntityContentBlocksLogic.importMe();
   }
-
 }
