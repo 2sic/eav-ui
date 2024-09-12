@@ -1,6 +1,6 @@
 import { Injectable, untracked } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types';
-import { FormulaTarget } from '../targets/formula-targets';
+import { FormulaDefaultTargetValues, FormulaNewPickerTargetValues, FormulaOptionalTargetValues, FormulaTarget } from '../targets/formula-targets';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaResultCacheItem } from './formula-cache.model';
@@ -9,11 +9,21 @@ import { FormulaCacheBuilder } from './formula-cache.builder';
 import { transient } from '../../../core';
 import { classLog } from '../../../shared/logging';
 
+const logSpecs = {
+  all: true,
+  getActive: true,
+  fields: ['StringPicker'],
+};
+
 /**
  * Service just to cache formulas for execution and use in the designer.
  */
 @Injectable()
 export class FormulaCacheService {
+
+  log = classLog({FormulaCacheService}, logSpecs, true);
+
+  constructor() { }
 
   /** All the formulas with various additional info to enable execution and editing */
   public formulas = signalObj<FormulaCacheItem[]>('formulas', []);
@@ -23,16 +33,12 @@ export class FormulaCacheService {
 
   #cacheBuilder = transient(FormulaCacheBuilder);
 
-  #log = classLog({FormulaCacheService}, null, false);
-
-  constructor() {
-    classLog({FormulaCacheService});
-  }
-
   init() {
     const formulaCache = this.#cacheBuilder.buildFormulaCache(this);
     this.formulas.set(formulaCache);
   }
+
+  //#region Formulas Get / Find
 
   /**
    * Used for returning formulas filtered by optional entity, field or target.
@@ -42,7 +48,7 @@ export class FormulaCacheService {
    * @param allowDraft
    * @returns Filtered formula array
    */
-  public getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
+  #findFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget[], allowDraft?: boolean): FormulaCacheItem[] {
     return this.formulas().filter(f =>
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
@@ -52,14 +58,38 @@ export class FormulaCacheService {
   }
 
   /**
+   * Find formulas of the current field which are still running.
+   * Uses the designerService as that can modify the behavior while developing a formula.
+   */
+  public getActive(entityGuid: string, name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
+    const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, versionHasChanged, formulas: this.formulas() }));
+    const targets = FormulaDefaultTargetValues
+      .concat(forNewPicker ? FormulaNewPickerTargetValues : FormulaOptionalTargetValues);
+    
+    const all = this.#findFormulas(entityGuid, name, targets, false);
+
+    const unstopped = all.filter(f => !f.stopFormula);
+
+    const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
+
+    return l.r(unPaused, `all: ${all.length}, unstopped: ${unstopped.length}, unpaused: ${unPaused.length}`);
+  }
+
+
+
+  public formulaListIndexAndOriginal(fOrDs: FormulaIdentifier) {
+    const list = this.formulas();
+    const index = list.findIndex(f => f.entityGuid === fOrDs.entityGuid && f.fieldName === fOrDs.fieldName && f.target === fOrDs.target);
+    const value = list[index];
+    return { list, index, value };
+  }
+
+  //#endregion
+
+  //#region Formulas CRUD
+
+  /**
    * Used for saving updated formula from editor.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
-   * @param formula
-   * @param sourceGuid
-   * @param sourceId
-   * @returns
    */
   public updateSaved(formulaItem: FormulaCacheItem, sourceGuid: string, sourceId: number): void {
     const { list, index, value } = this.formulaListIndexAndOriginal(formulaItem);
@@ -77,59 +107,41 @@ export class FormulaCacheService {
     this.formulas.set(newCache);
   }
 
-  public formulaListIndexAndOriginal(fOrDs: FormulaIdentifier) {
-    const list = this.formulas();
-    const index = list.findIndex(f => f.entityGuid === fOrDs.entityGuid && f.fieldName === fOrDs.fieldName && f.target === fOrDs.target);
-    const value = list[index];
-    return { list, index, value };
+  /**
+   * Used for updating formula from editor.
+   */
+  public updateFormulaFromEditor(id: FormulaIdentifier, formula: string, run: boolean): void {
+    const newCache = this.#cacheBuilder.updateFormulaFromEditor(this, id, formula, run);
+    this.formulas.set(newCache);
   }
 
   /**
    * Used for deleting formula.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
    */
-  public delete(formulaItem: FormulaCacheItem): void {
-    const { list, index } = this.formulaListIndexAndOriginal(formulaItem);
+  public delete(id: FormulaIdentifier): void {
+    const { list, index } = this.formulaListIndexAndOriginal(id);
+    if (index < 0) return;
     const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
     this.formulas.set(newCache);
   }
 
   /**
    * Used for resetting formula.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
    */
   public resetFormula(id: FormulaIdentifier): void {
-    const { list: resList, index: resIndex } = this.resultListIndexAndOriginal(id);
-    if (resIndex >= 0) {
-      const newResults = [...resList.slice(0, resIndex), ...resList.slice(resIndex + 1)];
-      this.#results.set(newResults);
-    }
+    this.#deleteResult(id);
 
-    const { list, index, value: formValue } = this.formulaListIndexAndOriginal(id);
-    if (formValue?.sourceCodeSaved != null) {
-      this.updateFormulaFromEditor(id, formValue.sourceCodeSaved, true);
-    } else if (index >= 0) {
-      const newCache = [...list.slice(0, index), ...list.slice(index + 1)];
-      this.formulas.set(newCache);
-    }
+    // If we reset to saved code, then do that, otherwise delete/flush
+    const sourceCodeSaved = this.formulaListIndexAndOriginal(id).value?.sourceCodeSaved;
+    if (sourceCodeSaved != null)
+      this.updateFormulaFromEditor(id, sourceCodeSaved, true);
+    else 
+      this.delete(id);
   }
 
-  /**
-   * Used for updating formula from editor.
-   * @param entityGuid
-   * @param fieldName
-   * @param target
-   * @param formula
-   * @param run
-   */
-  public updateFormulaFromEditor(id: FormulaIdentifier, formula: string, run: boolean): void {
-    const newCache = this.#cacheBuilder.updateFormulaFromEditor(this, id, formula, run);
-    this.formulas.set(newCache);
-  }
+  //#endregion
+
+  //#region Get Results & Delete
 
   /**
    * Cache the results of a formula - mainly for showing formula result in editor.
@@ -149,7 +161,7 @@ export class FormulaCacheService {
       isError,
       isOnlyPromise,
     };
-    const l = this.#log.fn('cacheResults', { newResult });
+    const l = this.log.fn('cacheResults', { newResult });
 
     // We should not track reading the list during formula execution
     // since we don't depend on it!
@@ -172,4 +184,16 @@ export class FormulaCacheService {
     const value = list[index];
     return { list, index, value };
   }
+
+  /**
+   * Delete Results from cache.
+   */
+  #deleteResult(id: FormulaIdentifier): void {
+    const { list, index } = this.resultListIndexAndOriginal(id);
+    if (index < 0) return;
+    const newResults = [...list.slice(0, index), ...list.slice(index + 1)];
+    this.#results.set(newResults);
+  }  
+
+  //#endregion
 }

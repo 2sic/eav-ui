@@ -1,7 +1,7 @@
 import { untracked } from '@angular/core';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaDesignerService } from './designer/formula-designer.service';
-import { FormulaPropsV1 } from './formula.helpers';
+import { FormulaPropsV1 } from './formula-run-one-helpers.factory';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService, LogSeverities } from '../shared/services/logging.service';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';

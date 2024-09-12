@@ -8,25 +8,58 @@ import { FormulaV1Data } from './run/formula-run-data.model';
 import { FormulaV1Context } from './run/formula-run-context.model';
 import { FormulaV1Experimental } from './run/formula-run-experimental.model';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
+import { FormulaDesignerService } from './designer/formula-designer.service';
+import { TranslateService } from '@ngx-translate/core';
+import { LoggingService } from '../shared/services/logging.service';
+import { FormulaDeveloperHelper } from './formula-developer-helper';
+import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
 
-export class FormulaHelpers {
+/**
+ * Helper to run a single formula.
+ * Will be initialized for each field as it's about to run all, and can then provide
+ * helper objects and build the formula props (data/context/experimental).
+ */
+export class FormulaRunOneHelpersFactory {
+
+  constructor(
+    private designerSvc: FormulaDesignerService,
+    private translate: TranslateService,
+    private logSvc: LoggingService,
+    public ctTitle: string,
+  ) { }
+
+  public getPartsFor(runParams: FormulaExecutionSpecsWithRunParams) {
+    const { formula, inputTypeName } = runParams.runParameters;
+    const params = this.#dataAndCtx(runParams);
+    const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, formula, this.ctTitle, params);
+
+    return {
+      formula,
+      fieldName: formula.fieldName,
+      params,
+      title: this.ctTitle,
+      devHelper,
+      valHelper: new FormulaValueCorrections(formula.isValue, inputTypeName, devHelper.isOpen),
+    };
+  }
+
   /**
    * Used to build formula props parameters.
    * @returns Formula properties
    */
-  static buildFormulaProps(propsData: FormulaExecutionSpecsWithRunParams,): FormulaPropsV1 {
-    const { formula, currentValues: formValues } = propsData.runParameters;
+  #dataAndCtx(runParams: FormulaExecutionSpecsWithRunParams,): FormulaPropsV1 {
+    const { formula, currentValues: formValues } = runParams.runParameters;
     
     switch (formula.version) {
       case FormulaVersions.V1:
       case FormulaVersions.V2:
 
         // Create the data object and add all value properties of the form to it
-        const data = Object.assign(new FormulaDataObject(propsData), formValues);
+        const data = Object.assign(new FormulaDataObject(runParams), formValues);
 
-        const context = new FormulaContextObject(propsData);
+        const context = new FormulaContextObject(runParams);
 
-        const experimental = new FormulaExperimentalObject(propsData);
+        const experimental = new FormulaExperimentalObject(runParams);
 
         return {
           data,

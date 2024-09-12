@@ -1,7 +1,7 @@
 import { FieldHelper } from '../../shared/helpers';
 import { FormulaFieldValidation } from '../targets/formula-targets';
 import { FormulaV1Data } from './formula-run-data.model';
-import { FormulaHelpers } from '../formula.helpers';
+import { FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
 import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
@@ -41,7 +41,7 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get parameters(): Record<string, any> {
-    return FormulaHelpers.buildFormulaPropsParameters(this.#params.itemHeader.ClientData?.parameters);
+    return FormulaRunOneHelpersFactory.buildFormulaPropsParameters(this.#params.itemHeader.ClientData?.parameters);
   }
 
   get prefill(): FieldValue {

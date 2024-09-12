@@ -5,7 +5,7 @@ import { FormulaV1Data } from '../run/formula-run-data.model';
 import { FormulaV1Context } from '../run/formula-run-context.model';
 import { FormulaV1Experimental } from '../run/formula-run-experimental.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
-import { FormulaHelpers } from '../formula.helpers';
+import { FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
 
 // Import the type definitions for intellisense
 import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
@@ -21,7 +21,7 @@ export class IntellisenseV2 {
   static buildFormulaTypingsV2(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): string {
     switch (formula.version) {
       case FormulaVersions.V2: {
-        const formulaPropsParameters = FormulaHelpers.buildFormulaPropsParameters(prefillAsParameters);
+        const formulaPropsParameters = FormulaRunOneHelpersFactory.buildFormulaPropsParameters(prefillAsParameters);
 
         // debugger;
 

@@ -1,8 +1,7 @@
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { FormulaVersions } from '../formula-definitions';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
-import { FormulaHelpers } from '../formula.helpers';
-import { FormulaSourceCodeHelper } from '../cache/source-code-helper';
+import { FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
 
 export class FormulaV1Helpers {
 
@@ -59,7 +58,7 @@ export class FormulaV1Helpers {
   static getSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
-        const formulaPropsParameters = FormulaHelpers.buildFormulaPropsParameters(prefillAsParameters);
+        const formulaPropsParameters = FormulaRunOneHelpersFactory.buildFormulaPropsParameters(prefillAsParameters);
         const snippets = [
           'value',
           'default',
