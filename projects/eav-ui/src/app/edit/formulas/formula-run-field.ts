@@ -76,43 +76,38 @@ export class FormulaRunField {
     const enabled = splitDisabled.enabled ?? [];
 
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
-    const formulas = (isSpecialPicker && !picker.ready)
+    const formulas = isSpecialPicker && !picker.ready
       ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
       : enabled;
 
-    const hasFormulas = formulas.length > 0;
+    // If we have no formulas, exit early.
+    if (formulas.length == 0)
+      return finalize({}, valueBefore, {
+        value: valueBefore, validation: null, fields: [], settings: {},
+        pickers: null, pickerOptionsVer: null, pickerSelectedVer: null
+      });
 
     // Run all formulas IF we have any and work with the objects containing specific changes
-    const raw = (() => {
-      // If we have no formulas, we need to set the value to the initial one as it might have been changed by formulas in the past
-      if (!hasFormulas)
-        return {
-          value: valueBefore, validation: null, fields: [], settings: {},
-          pickers: null, pickerOptionsVer: null, pickerSelectedVer: null
-        };
-
-      const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
-        currentValues,
-        inputTypeName: fieldConstants.inputTypeSpecs.inputType,
-        settingsInitial: fieldConstants.settingsInitial,
-        settingsCurrent: settingsBefore,
-        itemHeader,
-        ...picker,
-      };
-  
-      return this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
-    })();
-
-    // Correct any settings necessary after
-    // possibly making invalid changes in formulas or if settings need to adjust
-    // eg. custom bool labels which react to the value, etc.
-    const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsBefore, ...raw.settings }, raw.value || valueBefore);
-
-    const runFormulaResult: RunFormulasResult = {
-      ...raw,
-      settings,
+    const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
+      currentValues,
+      inputTypeName: fieldConstants.inputTypeSpecs.inputType,
+      settingsInitial: fieldConstants.settingsInitial,
+      settingsCurrent: settingsBefore,
+      itemHeader,
+      ...picker,
     };
-    return runFormulaResult;
+    const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
+
+    return finalize(raw.settings, raw.value, raw);
+
+    // Helper to finalize the result, needed to quit early and also when it really runs
+    function finalize(settingsUpdate: Partial<FieldSettings>, value: FieldValue, raw: RunFormulaPartialSettings): RunFormulasResult {
+      // Correct any settings necessary after
+      // possibly making invalid changes in formulas or if settings need to adjust
+      // eg. custom bool labels which react to the value, etc.
+      const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsBefore, ...settingsUpdate }, value || valueBefore);
+      return { ...raw, settings, } satisfies RunFormulasResult;
+    }
   }
 
   #getPickerInfos(fieldName: string, fieldConstants: FieldConstantsOfLanguage, propsBefore: FieldProps): FormulaRunPickers {
@@ -158,7 +153,7 @@ export class FormulaRunField {
     formulas: FormulaCacheItem[],
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     doLog: boolean,
-  ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
+  ): RunFormulaPartialSettings {
     const l = this.log.fnCond(doLog, 'runFormulasOfField', { runParams, formulas });
     // Target variables to fill using formula result
     let value: FieldValue;                   // The new value
@@ -295,3 +290,5 @@ export class FormulaRunField {
   }
 
 }
+
+type RunFormulaPartialSettings = Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> };
