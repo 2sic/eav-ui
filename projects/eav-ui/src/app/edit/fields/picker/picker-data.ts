@@ -45,18 +45,19 @@ export class PickerData {
 
   //#region Possible Options to provide
 
-  #sourceReady = signalObj('sourceIsReady', false);
+  #partsReady = signalObj('sourceIsReady', false);
 
-  public optionsOverride = signalObj<PickerItem[]>('overrideOptions', null);
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
-  public optionsSource = computedObj('pickerOptions', () => {
-    const ready = this.#sourceReady();
+  public optionsSource = computedObj('optionsSource', () => {
+    const ready = this.#partsReady();
     return (ready ? this.source.optionsOrHints() : null) ?? [];
   });
+  
+  public optionsOverride = signalObj<PickerItem[]>('overrideOptions', null);
 
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
-  public optionsFinal = computedObj('pickerOptions', () => {
+  public optionsFinal = computedObj('optionsFinal', () => {
     const override = this.optionsOverride();
     if (override) return override;
     return this.optionsSource();
@@ -67,7 +68,20 @@ export class PickerData {
   //#region Selected Data
 
   /** Signal containing the currently selected items */
-  public selectedAll = computedObj('selectedAll', () => this.#createUIModel(this.state.selectedItems(), this.optionsFinal()));
+  public selectedState = computedObj('selectedState', () => {
+    const ready = this.#partsReady();
+    return this.#addInfosFromSourceForUi(ready ? this.state.selectedItems() : [], this.optionsFinal());
+  });
+
+
+  public selectedOverride = signalObj<PickerItem[]>('selectedOverride', null);
+
+  /** Signal containing the currently selected items */
+  public selectedAll = computedObj('selectedAll', () => {
+    const override = this.selectedOverride();
+    if (override) return override;
+    return this.selectedState();
+  });
 
   /** Signal containing the first selected item */
   public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
@@ -87,7 +101,7 @@ export class PickerData {
     source.init(name);
     this.state = state;
     this.source = source;
-    this.#sourceReady.set(true);
+    this.#partsReady.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
@@ -107,10 +121,10 @@ export class PickerData {
     l.end();
   }
 
-  #createUIModel(selected: PickerItem[], data: PickerItem[]): PickerItem[] {
+  #addInfosFromSourceForUi(selected: PickerItem[], opts: PickerItem[]): PickerItem[] {
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item
-      const original = data.find(e => e.value === item.value);
+      const original = opts.find(e => e.value === item.value);
       if (!original)
         return item;
       

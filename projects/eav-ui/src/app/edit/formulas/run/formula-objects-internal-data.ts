@@ -12,8 +12,22 @@ import { Language } from '../../../shared/models/language.model';
 import { FormLanguage } from '../../form/form-languages.model';
 import { ItemService } from '../../state/item.service';
 
+export interface FormulaRunPickers {
+  pickerOptionsRaw: PickerItem[];
+  pickerOptions: PickerItem[];
+  pickerOptionsVer: number | null;
+  pickerOptionsVerBefore: number | null;
+  pickerOptionsChanged: boolean;
+
+  pickerSelectedRaw: PickerItem[];
+  pickerSelected: PickerItem[];
+  pickerSelectedVerBefore: number | null;
+  pickerSelectedVer: number | null;
+  pickerChanged: boolean;
+}
+
 /** Everything a formula needs to run */
-export interface FormulaRunParameters {
+export interface FormulaRunParameters extends FormulaRunPickers {
   /** The formula to run */
   formula: FormulaCacheItem;
   currentValues: ItemValuesOfLanguage;
@@ -22,11 +36,6 @@ export interface FormulaRunParameters {
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
   itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;
-  
-  pickerRaw: PickerItem[];
-  pickerOptions: PickerItem[];
-  pickerVersion: number | null;
-  pickerVersionBefore: number | null;
 }
 
 export interface FormulaExecutionSpecs {

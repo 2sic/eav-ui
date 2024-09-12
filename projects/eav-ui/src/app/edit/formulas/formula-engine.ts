@@ -16,6 +16,7 @@ import { classLog } from '../../shared/logging';
 import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
 import { transient } from '../../core';
 import { FormulaRunField } from './formula-run-field';
+import { FormRecord } from '@angular/forms';
 
 /** The list of fields to debug is used in multiple places */
 export const logSpecsFormulaFields = ['StringPicker']; // or '*' for all
@@ -113,7 +114,7 @@ export class FormulaEngine {
 
       const pickerOptions = formulaResult.pickers;
       if (pickerOptions)
-        lAttr.a('picker options', { pickerOptions, version: formulaResult.pickerVersion });
+        lAttr.a('picker options', { pickerOptions, version: formulaResult.pickerOptionsVer });
 
       fieldsProps[attr.Name] = {
         ...propsBefore,
@@ -125,7 +126,8 @@ export class FormulaEngine {
         buildWrappers: null, // required, but set elsewhere
         formulaValidation: formulaResult.validation,
         pickerOptions: pickerOptions ?? propsBefore.pickerOptions,
-        pickerVersion: formulaResult.pickerVersion ?? propsBefore.pickerVersion,
+        pickerVersion: formulaResult.pickerOptionsVer ?? propsBefore.pickerVersion,
+        pickerSelectedVerBefore: formulaResult.pickerSelectedVer ?? propsBefore.pickerVersion,
       };
     }
     return { fieldsProps, valueUpdates, fieldUpdates };

@@ -20,6 +20,7 @@ export interface FieldProps {
 
   pickerOptions: PickerItem[];
   pickerVersion: number | null;
+  pickerSelectedVerBefore: number | null;
 }
 
 /** Field Config information which never changes through the entire lifetime in the UI */

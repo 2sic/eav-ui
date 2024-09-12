@@ -51,9 +51,17 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get value(): FieldValue {
-    const { formula } = this.#params;
+    const formula = this.#params.formula;
+    // WIP CONTINUE HERE
+    if (formula.isNewPicker) {
+      return this.#params.pickerSelectedRaw?.map(pi => pi.value) as unknown as FieldValue;
+    }
+
     if (formula.isValue)
       return this.#params.currentValues[formula.fieldName];
+
+    if (formula.isSetting)
+      return (this.#params.settingsCurrent as Record<string, any>)[formula.settingName];
 
     if (formula.isValidation) {
       const formulaValidation: FormulaFieldValidation = {
@@ -62,12 +70,6 @@ export class FormulaDataObject implements FormulaV1Data {
       };
       return formulaValidation as unknown as FieldValue;
     }
-
-    if (formula.isSetting)
-      return (this.#params.settingsCurrent as Record<string, any>)[formula.settingName];
-
-    if (formula.isNewPicker)
-      return this.#params.pickerRaw as unknown as FieldValue;
   }
 
   get options(): PickerItem[] {
@@ -75,6 +77,6 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get optionsRaw(): PickerItem[] {
-    return this.#params.pickerRaw;
+    return this.#params.pickerOptionsRaw;
   }
 }

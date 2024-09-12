@@ -9,7 +9,8 @@ export interface RunFormulasResult {
   value: FieldValue;
   fields: FieldValuePair[];
   pickers: PickerItem[];
-  pickerVersion: number | null;
+  pickerOptionsVer: number | null;
+  pickerSelectedVer: number | null;
 }
 
 export interface FormulaIdentifier {

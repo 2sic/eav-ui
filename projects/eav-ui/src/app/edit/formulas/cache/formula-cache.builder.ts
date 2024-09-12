@@ -33,7 +33,6 @@ const logSpecs = {
   buildItemFormulaCacheSharedParts: false,
 };
 
-
 /**
  * Service just to cache formulas for execution and use in the designer.
  */
@@ -134,7 +133,10 @@ export class FormulaCacheBuilder extends ServiceBase {
   }
 
   #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'isNewPicker' | 'disabled' | 'disabledReason'> {
-    if (!inputType.isNewPicker) return { isNewPicker: false, disabled: false, disabledReason: '' };
+
+    // Disable picker checks WIP
+    /* if (!inputType.isNewPicker) */
+    return { isNewPicker: inputType.isNewPicker, disabled: false, disabledReason: '' };
     return [FormulaDefaultTargets.Value /*, FormulaNewPickerTargets.Options */].includes(target)
       ? { isNewPicker: true, disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
       : { isNewPicker: true, disabled: false, disabledReason: '' };
