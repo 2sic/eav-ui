@@ -136,9 +136,25 @@ export class EavLogger<TSpecs extends unknown = any> {
    */
   fnIf(key: BooleanKeys<TSpecs> & string, data?: Record<string, unknown>, message?: string): FnLogger {
     // create real logger if condition is true, or if this logger is disabled anyhow
-    return !this.enabled || !!this.specs[key] || !!(this.specs as { all: boolean })['all']
+    return this.enabled && this.#ifInSpecs(key)
       ? this.fn(key, data, message)
       : new FnLoggerNoOp();
+  }
+
+  fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: Record<string, unknown>, message?: string): FnLogger {
+    return this.enabled && this.#ifInSpecs(key) && this.#ifInSpecsList(list, subKey)
+      ? this.fn(key, data, message)
+      : new FnLoggerNoOp();
+  }
+
+  /** Helper to check if a key is in the specs and is true, or 'all' is true */
+  #ifInSpecs(key: BooleanKeys<TSpecs> & string): boolean {
+    return this.specs && !!(this.specs[key] || (this.specs as { all: boolean })['all']);
+  }
+
+  #ifInSpecsList(list: StringArrayKeys<TSpecs>, subKey: string): boolean {
+    const keys = this.specs?.[list] as string[];
+    return keys && (keys.includes(subKey) || keys.includes('*'));
   }
 }
 
@@ -148,3 +164,5 @@ export class EavLogger<TSpecs extends unknown = any> {
 */
 type BooleanKeys<T> = { [k in keyof T]: T[k] extends boolean ? k : never }[keyof T];
 type BooleanSpecs<T> = { [k in BooleanKeys<T>]: boolean };
+
+type StringArrayKeys<T> = { [k in keyof T]: T[k] extends string[] ? k : never }[keyof T];
