@@ -28,7 +28,7 @@ export class PickerPartBaseComponent {
   config = this.fieldState.config;
 
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = this.pickerData.state.basics;
+  basics = this.fieldState.basics;
 
   /** Features */
   features = this.pickerData.features;

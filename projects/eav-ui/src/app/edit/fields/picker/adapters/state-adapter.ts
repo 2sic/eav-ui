@@ -21,7 +21,7 @@ export class StateAdapter {
   log: EavLogger
 
   public formConfigSvc = inject(FormConfigService);
-  private fieldState = inject(FieldState) as FieldState<string | string[]>;
+  #fieldState = inject(FieldState) as FieldState<string | string[]>;
 
   constructor(@Optional() logger: EavLogger = null) {
     this.log = logger ?? new EavLogger(logSpecs);
@@ -33,7 +33,7 @@ export class StateAdapter {
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
   public createEntityTypes = computedObj('createEntityTypes', () => {
-    const types = this.fieldState.settings().CreateTypes;
+    const types = this.#fieldState.settings().CreateTypes;
     return types
       ? types
         .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
@@ -41,20 +41,17 @@ export class StateAdapter {
       : []
   });
 
-  protected readonly settings = this.fieldState.settings;
-  public controlStatus = this.fieldState.controlStatus;
-  public basics = this.fieldState.basics;
+  protected readonly settings = this.#fieldState.settings;
+  public controlStatus = this.#fieldState.controlStatus;
 
-
-  #value = computedObj('value', () => this.controlStatus().value);
   #sepAndOpts = computedObj('sepAndOpts', () => {
-    const settings = this.fieldState.settings();
+    const settings = this.#fieldState.settings();
     return { separator: settings.Separator, options: settings._options };
   });
 
   public selectedItems = computedObj('selectedItems', () => {
     const sAndO = this.#sepAndOpts();
-    return correctStringEmptyValue(this.#value(), sAndO.separator, sAndO.options);
+    return correctStringEmptyValue(this.#fieldState.uiValue(), sAndO.separator, sAndO.options);
   });
 
   #focusOnSearchComponent: () => void;
@@ -78,7 +75,7 @@ export class StateAdapter {
     switch (action) {
       case 'add':
         const guid = value as string;
-        if (this.fieldState.settings().AllowMultiValue)
+        if (this.#fieldState.settings().AllowMultiValue)
           valueArray.push(guid);
         else
           valueArray = [guid];
@@ -94,7 +91,7 @@ export class StateAdapter {
     }
 
     const newValue = this.createNewValue(valueArray);
-    ControlHelpers.patchControlValue(this.fieldState.control, newValue);
+    ControlHelpers.patchControlValue(this.#fieldState.control, newValue);
 
     if (action === 'delete' && !valueArray.length) {
       // move back to component
@@ -106,13 +103,13 @@ export class StateAdapter {
   }
 
   protected createNewValue(valueArray: string[]): string | string[] {
-    return typeof this.fieldState.control.value === 'string'
-      ? convertArrayToString(valueArray, this.fieldState.settings().Separator)
+    return typeof this.#fieldState.control.value === 'string'
+      ? convertArrayToString(valueArray, this.#fieldState.settings().Separator)
       : valueArray;
   }
 
   public createValueArray(): string[] {
-    const fs = this.fieldState;
+    const fs = this.#fieldState;
     if (typeof fs.control.value === 'string')
       return convertValueToArray(fs.control.value, fs.settings().Separator);
     return [...fs.control.value];
@@ -122,7 +119,7 @@ export class StateAdapter {
     this.#updateValue('delete', props.index);
   }
 
-  addSelected(guid: string) { this.#updateValue('add', guid); }
+  add(value: string) { this.#updateValue('add', value); }
   removeSelected(index: number) { this.#updateValue('delete', index); }
   reorder(reorderIndexes: ReorderIndexes) { this.#updateValue('reorder', reorderIndexes); }
 

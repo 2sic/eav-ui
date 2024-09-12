@@ -54,7 +54,7 @@ export class FormulaDataObject implements FormulaV1Data {
     const formula = this.#params.formula;
     // WIP CONTINUE HERE
     if (formula.isNewPicker) {
-      return this.#params.pickerSelectedRaw?.map(pi => pi.value) as unknown as FieldValue;
+      return this.#params.pickerSelectedRaw?.map(pi => pi.value) ?? [];
     }
 
     if (formula.isValue)
@@ -70,6 +70,14 @@ export class FormulaDataObject implements FormulaV1Data {
       };
       return formulaValidation as unknown as FieldValue;
     }
+  }
+
+  get selected(): PickerItem[] {
+    return this.#params.pickerSelected;
+  }
+
+  get selectedRaw(): PickerItem[] {
+    return this.#params.pickerSelectedRaw;
   }
 
   get options(): PickerItem[] {

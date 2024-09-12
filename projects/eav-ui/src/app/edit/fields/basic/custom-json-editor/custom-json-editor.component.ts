@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import type * as Monaco from 'monaco-editor';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,6 @@ import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { JsonSchema } from '../../../../monaco-editor/monaco-editor.models';
 import { FormConfigService } from '../../../form/form-config.service';
-import { ControlStatus } from '../../../shared/controls/control-status.model';
 
 @Component({
   selector: InputTypeCatalog.CustomJsonEditor,
@@ -32,23 +31,24 @@ import { ControlStatus } from '../../../shared/controls/control-status.model';
 })
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class CustomJsonEditorComponent {
-  protected fieldState = inject(FieldState) as FieldState<string>;
-  protected config = this.fieldState.config;
-  protected control = this.fieldState.control;
+  #fieldState = inject(FieldState) as FieldState<string>;
+  #config = this.#fieldState.config;
+  #control = this.#fieldState.control;
 
-  protected controlStatus = this.fieldState.controlStatus;
-  protected basics = this.fieldState.basics;
-  protected settings = this.fieldState.settings;
+  protected controlStatus = this.#fieldState.controlStatus;
+  protected uiValue = this.#fieldState.uiValue;
+  protected basics = this.#fieldState.basics;
+  #settings = this.#fieldState.settings;
 
-  protected rows = computed(() => this.settings().Rows, SignalEquals.number);
-  protected focused = computed(() => this.config.focused$);
+  #rows = computed(() => this.#settings().Rows, SignalEquals.number);
+  protected focused = computed(() => this.#config.focused$);
 
-  editorHeight = computed(() => {
-    return this.rows() * this.monacoOptions.lineHeight + 'px';
+  protected editorHeight = computed(() => {
+    return this.#rows() * this.monacoOptions.lineHeight + 'px';
   });
 
-  jsonSchema = computed(() => {
-    const settings = this.settings();
+  protected jsonSchema = computed(() => {
+    const settings = this.#settings();
     if (settings.JsonSchemaMode === 'none') return;
     const jsonSchema: JsonSchema = {
       type: settings.JsonSchemaSource,
@@ -57,14 +57,14 @@ export class CustomJsonEditorComponent {
     return jsonSchema;
   });
 
-  jsonComments = computed(() => {
-    const settings = this.settings();
+  protected jsonComments = computed(() => {
+    const settings = this.#settings();
     const jsonComments: Monaco.languages.json.SeverityLevel = settings.JsonCommentsAllowed ? 'ignore' : 'error';
     return jsonComments;
   });
 
-  filename: string;
-  monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
+  protected filename: string;
+  protected monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
       enabled: false,
     },
@@ -83,21 +83,20 @@ export class CustomJsonEditorComponent {
   }
 
   ngOnInit() {
-    this.filename = `${this.config.fieldName} ${this.config.entityGuid} ${this.formConfig.config.formId}.json`;
+    this.filename = `${this.#config.fieldName} ${this.#config.entityGuid} ${this.formConfig.config.formId}.json`;
   }
 
   codeChanged(code: string): void {
-    ControlHelpers.patchControlValue(this.control, code);
+    ControlHelpers.patchControlValue(this.#control, code);
   }
 
   onFocused(): void {
-    this.config.focused$.next(true);
+    this.#config.focused$.next(true);
   }
 
   onBlurred(): void {
-    if (!this.control.touched) {
-      ControlHelpers.markControlTouched(this.control);
-    }
-    this.config.focused$.next(false);
+    if (!this.#control.touched)
+      ControlHelpers.markControlTouched(this.#control);
+    this.#config.focused$.next(false);
   }
 }

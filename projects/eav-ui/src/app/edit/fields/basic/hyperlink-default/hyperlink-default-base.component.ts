@@ -61,7 +61,7 @@ export class HyperlinkDefaultBaseComponent implements OnInit {
   ngOnInit() {
     effect(() => {
       this.log.a('controlStatus effect');
-      const status = this.fieldState.controlStatus().value;
+      const status = this.fieldState.uiValue();
       this.fetchLink(status);
     }, { injector: this.injector, allowSignalWrites: true });
   }

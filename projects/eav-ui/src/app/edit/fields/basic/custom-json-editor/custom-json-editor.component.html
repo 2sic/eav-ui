@@ -7,7 +7,7 @@
   <app-monaco-editor class="editor"
     [filename]="filename"
     [ngStyle]="{ 'height': editorHeight() }"
-    [value]="controlStatus().value"
+    [value]="uiValue()"
     [options]="monacoOptions"
     [jsonSchema]="jsonSchema()"
     [jsonComments]="jsonComments()"
@@ -15,7 +15,7 @@
     (focused)="onFocused()"
     (blurred)="onBlurred()">
   </app-monaco-editor>
-  @if (!controlStatus().value && basics().placeholder) {
+  @if (!uiValue() && basics().placeholder) {
     <input class="placeholder eav-translate-on-dblclick" [placeholder]="basics().placeholder">
   }
 </div>

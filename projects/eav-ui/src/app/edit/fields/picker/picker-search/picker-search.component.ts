@@ -220,7 +220,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     this.#newValue = event.option.value;
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
-    this.pickerData.state.addSelected(selected);
+    this.pickerData.state.add(selected);
     // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
       this.autocomplete().nativeElement.blur();
@@ -244,7 +244,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   insertNull(): void {
     this.log.a('insertNull');
-    this.pickerData.state.addSelected(null);
+    this.pickerData.state.add(null);
   }
 
   isOptionDisabled(value: string): boolean {
