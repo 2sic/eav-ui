@@ -1,7 +1,7 @@
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../fields/field-config-set.model';
 import { AbstractControlPro } from './validation.helpers';
-import { UiControl } from '../controls/control-status.model';
+import { UiControl } from '../controls/ui-control';
 
 export class ValidationMessagesHelpers {
 

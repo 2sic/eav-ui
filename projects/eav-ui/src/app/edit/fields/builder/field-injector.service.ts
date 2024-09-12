@@ -8,7 +8,7 @@ import { combineLatest, tap } from 'rxjs';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
 import { mapUntilObjChanged } from '../../../shared/rxJs/mapUntilChanged';
 import { FieldConfigSet } from '../field-config-set.model';
-import { UiControl } from '../../shared/controls/control-status.model';
+import { UiControl } from '../../shared/controls/ui-control';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';

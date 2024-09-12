@@ -24,7 +24,7 @@ import { ContentTypeService } from '../../shared/content-types/content-type.serv
 import { InputTypeService } from '../../shared/input-types/input-type.service';
 import isEqual from 'lodash-es/isEqual';
 import { classLog } from '../../../shared/logging';
-import { UiControl } from '../../shared/controls/control-status.model';
+import { UiControl } from '../../shared/controls/ui-control';
 
 const logSpecs = {
   all: false,

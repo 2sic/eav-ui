@@ -26,7 +26,7 @@ import { RxHelpers } from '../../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { transient } from '../../core';
-import { UiControl } from '../../edit/shared/controls/control-status.model';
+import { UiControl } from '../../edit/shared/controls/ui-control';
 
 @Component({
   selector: 'app-create-metadata-dialog',

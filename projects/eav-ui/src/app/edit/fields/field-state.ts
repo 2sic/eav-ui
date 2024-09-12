@@ -3,7 +3,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { Signal } from '@angular/core';
 import { FieldConfigSet } from './field-config-set.model';
 import { BasicControlSettings } from '../../../../../edit-types/src/BasicControlSettings';
-import { UiControl } from '../shared/controls/control-status.model';
+import { UiControl } from '../shared/controls/ui-control';
 import { PickerData } from './picker/picker-data';
 import { TranslationState } from '../localization/translate-state.model';
 
