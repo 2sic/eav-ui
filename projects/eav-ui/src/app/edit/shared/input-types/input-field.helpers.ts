@@ -1,9 +1,7 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputTypeStrict, InputTypeCatalog } from '../../../shared/fields/input-type-catalog';
-import { EavLogger } from '../../../shared/logging/eav-logger';
+import { classLog } from '../../../shared/logging';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
-
-const logThis = false;
 
 export class FieldHelper {
 
@@ -16,7 +14,7 @@ export class FieldHelper {
     onlyPrefill?: boolean,
   ): FieldValue {
     
-    const log = new EavLogger('InputFieldHelpers', logThis);
+    const log = classLog({FieldHelper});
     const l = log.fn('parseDefaultValue', { name, inputType, settings, itemHeader, onlyPrefill });
 
     const prefillRaw = itemHeader?.Prefill?.[name];

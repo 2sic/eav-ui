@@ -1,14 +1,8 @@
 import { ServiceBase } from '../../../shared/services/service-base';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { Injectable, inject, signal, Injector, OnDestroy, effect, computed, Signal } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../form/form-config.service';
 import { classLog } from '../../../shared/logging';
-
-const logSpecs = {
-  enabled: false,
-  name: 'FieldMask',
-};
 
 const FieldsFind = /\[.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
@@ -97,7 +91,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
    */
   public logChanges(): this {
     // use logger, but if not enabled, create new just for this
-    const l = this.log.enabled ? this.log : new EavLogger(logSpecs);
+    const l = this.log.enabled ? this.log : classLog({FieldMask});
     effect(() => l.a(`Mask '${this.#mask()}' value changed to: ${this.result()}`), { injector: this.injector });
     return this;
   }

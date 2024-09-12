@@ -6,6 +6,8 @@ import { FieldLogicManager } from '../../logic/field-logic-manager';
 export class EntityQueryLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityQuery;
 
+  constructor() { super({ EntityQueryLogic }); }
+
   update({ settings, tools, value }: FieldLogicUpdate<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
     const fixedSettings = entityDefaultLogic.update({ settings, value, tools });

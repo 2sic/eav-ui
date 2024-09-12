@@ -6,10 +6,7 @@ const logThis = false;
 
 export class DateTimeDefaultLogic extends FieldLogicBase {
 
-  constructor() {
-    super(InputTypeCatalog.DateTimeDefault, logThis);
-  }
-
+  constructor() { super({ DateTimeDefaultLogic }); }
 
   update({ settings, tools }: FieldLogicUpdate<string[]>): FieldSettings {
     const l = this.log.fn('update', { settings, tools });

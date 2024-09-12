@@ -5,6 +5,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 export class CustomGpsLogic extends FieldLogicBase {
   name = InputTypeCatalog.CustomGps;
 
+  constructor() { super({ CustomGpsLogic }); }
+
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     // fixedSettings.DisableAutoTranslation = true;

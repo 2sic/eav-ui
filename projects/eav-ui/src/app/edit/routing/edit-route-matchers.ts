@@ -1,21 +1,17 @@
 import { UrlMatchResult, UrlSegment } from '@angular/router';
 import { EditUrlParams } from './edit-url-params.model';
-import { EavLogger } from '../../shared/logging/eav-logger';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EditRouteMatchers',
-  specs: {
-    all: true,
-    hasGuidAndId: false,
-    editRouteMatcherRoot: false,
-    editRouteMatcherRootRefresh: false,
-    editRouteMatcherSubEdit: false,
-    editRouteMatcherSubEditRefresh: false,
-  },
+  all: true,
+  hasGuidAndId: false,
+  editRouteMatcherRoot: false,
+  editRouteMatcherRootRefresh: false,
+  editRouteMatcherSubEdit: false,
+  editRouteMatcherSubEditRefresh: false,
 };
 
-const logger = new EavLogger(logSpecs);
+const logger = classLog('EditRouteMatchers', logSpecs);
 
 /**
  * Matches:

@@ -10,6 +10,8 @@ import { classLog } from '../../../../shared/logging';
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeCatalog.StringPicker;
 
+  constructor() { super({ StringPickerLogic }); }
+
   update(specs: FieldLogicUpdate<string>): FieldSettings {
     
     var log = classLog({StringPickerLogic});

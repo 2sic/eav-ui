@@ -1,13 +1,11 @@
 import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
-import { EavLogger } from '../../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
+import { classLog } from '../../../../../projects/eav-ui/src/app/shared/logging';
 
-const logThis = false;
-const nameOfThis = 'DefaultPaste';
-
-const log = new EavLogger(nameOfThis, logThis);
 
 export class DefaultPaste {
+  
+  log = classLog({DefaultPaste});
 
   /** Paste formatted text, e.g. text copied from MS Word */
   static formattedText: RawEditorOptions = {
@@ -23,10 +21,10 @@ export class DefaultPaste {
     paste_remove_spans: true,
     paste_remove_styles: true,
     paste_preprocess(plugin: any, args: any) {
-      log.a('TinyMCE paste_preprocess', {plugin, args});
+      this.log.a('TinyMCE paste_preprocess', {plugin, args});
     },
     paste_postprocess(plugin: any, args: any) {
-      log.a('TinyMCE paste_postprocess', {plugin, args});
+      this.log.a('TinyMCE paste_postprocess', {plugin, args});
       try {
         const anchors = (args.node as HTMLElement).getElementsByTagName('a');
         for (const anchor of Array.from(anchors)) {
@@ -58,7 +56,8 @@ export class DefaultPaste {
     dropzone: Dropzone,
     adam: Adam,
   ): Promise<string> {
-    const l = new EavLogger(nameOfThis, logThis).fn('imagesUploadHandler');
+
+    const l = classLog({DefaultPaste}).fn('imagesUploadHandler');
     l.a('TinyMCE upload');
 
     const formData = new FormData();
