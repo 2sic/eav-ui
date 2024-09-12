@@ -1,6 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { StateManagerLocal, StateManagerSession } from './state-manager';
 import { EavLogger } from '../logging/eav-logger';
+import { classLog } from '../logging';
 
 const logThis = false;
 const nameOfThis = 'UserSettings';
@@ -9,7 +10,9 @@ const storeKey = 'user-settings';
 
 @Injectable({ providedIn: 'root' })
 export class UserSettings {
-  log = new EavLogger(nameOfThis, logThis);
+
+  log = classLog({ UserSettings });
+
   constructor() {
     this.log.fn('constructor');
   }
@@ -50,7 +53,9 @@ export class UserSettings {
 }
 
 export class UserSettingsPart<T extends Record<string, unknown>> {
+
   log = new EavLogger(nameOfThis + 'Part', logThis);
+  
   constructor(private userSettings: UserSettings, private storeKey: string, data: T, private longTerm = false) {
     const merged = { ...data, ...userSettings.get<T>(storeKey, longTerm) };
     this.log.fn('constructor', merged);

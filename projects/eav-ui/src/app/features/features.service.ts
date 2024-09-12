@@ -1,18 +1,14 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { DialogContext } from '../shared/models/dialog-settings.model';
-import { EavLogger } from '../shared/logging/eav-logger';
 import { FeatureSummary } from './models/feature-summary.model';
 import { SignalEquals } from '../shared/signals/signal-equals';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { transient } from '../core';
+import { classLog } from '../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'FeaturesService',
-}
 
 // TODO: @2dg - try to refactor the observables away so it only provides signals
 
@@ -28,6 +24,9 @@ const logSpecs = {
  */
 @Injectable({ providedIn: 'root' })
 export class FeaturesService {
+  
+  log = classLog({FeaturesService});
+
   // new 2dm WIP
   // Provide context information and ensure that previously added data is always available
   private dialogContextSignal = signal<DialogContext>(null);
@@ -35,7 +34,6 @@ export class FeaturesService {
 
   private dialogConfigSvc = transient(AppDialogConfigService);
 
-  log = new EavLogger(logSpecs);
   constructor() {
     this.dialogConfigSvc.getCurrent$().subscribe(ds => this.load(ds.Context));
   }

@@ -4,11 +4,8 @@ import { Connector, EavCustomInputField } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
-import { EavLogger } from '../../../eav-ui/src/app/shared/logging/eav-logger';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
 import { connectorToDisabled$, registerCustomElement } from '../editor/editor-helpers';
-
-const logThis = false;
-const nameOfThis = 'FieldStringWysiwygPreview';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 
@@ -17,13 +14,14 @@ export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
  * Will be registered as a custom element below.
  */
 export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
+
+  log = classLog({FieldStringWysiwygPreview});
+
   fieldInitialized = false;
   connector: Connector<string>;
 
   private eventListeners: ElementEventListener[];
   private subscriptions = new Subscription();
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor() {
     super();

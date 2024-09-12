@@ -8,23 +8,21 @@ import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TranslationsLoader } from './translation-loader';
 import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'TinyMceConfigurator';
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check https://go.2sxc.org/field-wysiwyg`;
 
 /** This object will configure the TinyMCE */
 export class TinyMceConfigurator {
+  
+  log = classLog({ TinyMceConfigurator });
+  
   addOnSettings: AddOnSettings = { ...DefaultAddOnSettings };
 
   private language: string;
   private isWysiwygPasteFormatted$ = new BehaviorSubject<boolean>(false);
   private subscription = new Subscription();
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
     this.log.a('TinyMceConfigurator', { connector, reconfigure });
