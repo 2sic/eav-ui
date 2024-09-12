@@ -5,6 +5,8 @@ import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 export class BooleanTristateLogic extends FieldLogicBase {
   name = InputTypeCatalog.BooleanTristate;
 
+  constructor() { super({ BooleanTristateLogic }); }
+
   update({ settings, value }: FieldLogicUpdate<boolean | ''>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.ReverseToggle ??= false;

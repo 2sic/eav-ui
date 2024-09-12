@@ -44,6 +44,7 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 
   name: string;
 
+  // TODO: @2dm #log
   constructor(logSpecs: LogSpecs) {
     this.log = new EavLogger({ name: nameOfThis, enabled: logThisUndefined, ...logSpecs });
     this.log.a('SignalStoreBase created', { options: logSpecs });

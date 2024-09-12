@@ -1,4 +1,3 @@
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { FormLanguage } from '../form/form-languages.model';
 import { EavDimension } from '../shared/models/eav/eav-dimension';
 import { EavEntityAttributes } from '../shared/models/eav/eav-entity-attributes';
@@ -8,15 +7,11 @@ import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FieldReader } from './field-reader';
 import { DimensionReader } from './dimension-reader';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-
-const logSpecs = {
-  enabled: false,
-  name: 'FieldWriter',
-};
-
-const log = new EavLogger(logSpecs);
+import { classLog } from '../../shared/logging';
 
 export class FieldWriter {
+
+  log = classLog({FieldWriter});
 
   /** Copy attributes from item */
   #updateAttribute(
@@ -54,7 +49,7 @@ export class FieldWriter {
     updateValues: ItemValuesOfLanguage,
     language: FormLanguage,
   ): EavEntityAttributes {
-    const l = log.fn('updateAttributesValues', { allFields, updateValues, language });
+    const l = this.log.fn('updateAttributesValues', { allFields, updateValues, language });
     // copy attributes from item
     const eavAttributes: EavEntityAttributes = {};
     Object.keys(allFields).forEach(attributeKey => {

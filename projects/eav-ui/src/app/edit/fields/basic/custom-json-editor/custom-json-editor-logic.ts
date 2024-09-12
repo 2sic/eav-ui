@@ -5,6 +5,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 export class CustomJsonEditorLogic extends FieldLogicBase {
   name = InputTypeCatalog.CustomJsonEditor as string;
 
+  constructor() { super({ CustomJsonEditorLogic }); }
+
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Rows ||= 5;

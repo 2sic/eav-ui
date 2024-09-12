@@ -5,6 +5,8 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 export class BooleanDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.BooleanDefault;
 
+  constructor() { super({ BooleanDefaultLogic }); }
+
   update({ settings, value }: FieldLogicUpdate<boolean>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.ReverseToggle ??= false;

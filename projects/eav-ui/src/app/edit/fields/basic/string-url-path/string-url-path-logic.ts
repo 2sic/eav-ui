@@ -5,6 +5,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 export class StringUrlPathLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringUrlPath;
 
+  constructor() { super({ InputTypeCatalog }); }
+
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.AutoGenerateMask ??= null;

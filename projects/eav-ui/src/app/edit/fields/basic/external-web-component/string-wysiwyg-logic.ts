@@ -9,6 +9,8 @@ import { AdamItem } from '../../../../../../../edit-types/src/AdamItem';
 export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWithValueInit {
   name = InputTypeCatalog.StringWysiwyg;
 
+  constructor() { super({ StringWysiwygLogic }); }
+
   canAutoTranslate = true;
 
   update({ settings, tools }: FieldLogicUpdate): FieldSettings {

@@ -5,6 +5,8 @@ import { EntityPickerLogic } from '../entity-picker/entity-picker-logic';
 
 export class EntityDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityDefault;
+  
+  constructor() { super({ EntityDefaultLogic }); }
 
   update({ settings, tools }: FieldLogicUpdate): FieldSettings {
     

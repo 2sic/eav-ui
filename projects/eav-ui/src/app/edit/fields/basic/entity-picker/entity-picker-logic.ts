@@ -9,6 +9,8 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityPicker;
 
+  constructor() { super({ EntityPickerLogic }); }
+
   static maybeOverrideEditRestrictions(fs: FieldSettings, tools: FieldLogicTools): FieldSettings {
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
       console.log(`SystemAdmin + Debug: Overriding edit restrictions for field \'${fs.Name}\' (EntityType: \'${fs.EntityType}\').`);

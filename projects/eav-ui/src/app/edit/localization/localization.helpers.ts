@@ -1,7 +1,3 @@
-import { EavLogger } from '../../shared/logging/eav-logger';
-import { EavValue, EavField } from '../shared/models/eav';
-import { FormLanguage } from '../form/form-languages.model';
-import { DimensionReader } from './dimension-reader';
 
 // 2024-09-09 2dm - all moved to other helper objects
 

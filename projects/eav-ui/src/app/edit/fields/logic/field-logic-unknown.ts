@@ -4,6 +4,8 @@ import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 export class UnknownLogic extends FieldLogicBase {
   name = InputTypeCatalog.Unknown;
+  
+  constructor() { super({UnknownLogic}); }
 
   canAutoTranslate = false;
 
