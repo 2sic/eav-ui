@@ -63,10 +63,8 @@ export class FormulaCacheService {
    */
   public getActive(entityGuid: string, name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
     const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, versionHasChanged, formulas: this.formulas() }));
-    const targets = (forNewPicker
-      ? FormulaDefaultTargetValues
-      : FormulaDefaultTargetValues
-    ).concat(FormulaOptionalTargetValues);
+    const targets = FormulaDefaultTargetValues
+      .concat(forNewPicker ? FormulaNewPickerTargetValues : FormulaOptionalTargetValues);
     
     const all = this.#findFormulas(entityGuid, name, targets, false);
 
