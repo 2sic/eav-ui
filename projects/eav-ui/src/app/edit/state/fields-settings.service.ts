@@ -19,13 +19,15 @@ import { classLog } from '../../shared/logging';
 import { PickerData } from '../fields/picker/picker-data';
 
 const logSpecs = {
-  pickerUpdate: true,
+  pickerUpdate: false,
+  regenerateProps: true,
   // Debug only on the following content type
   type: '', //'@String';
-  activateAnalyzer: true,
+  activateAnalyzer: false,
 }
 
-const maxCyclesMs = 1000;
+const maxCyclesMs = 250;
+const maxCycleRestartDelay = 500;
 const maxCyclesPerTime = 10;
 const maxCyclesWarning = "Max cycles reached, stopping for this second";
 
@@ -36,7 +38,7 @@ const maxCyclesWarning = "Max cycles reached, stopping for this second";
 @Injectable()
 export class FieldsSettingsService {
 
-  log = classLog({FieldsSettingsService}, logSpecs, false);
+  log = classLog({FieldsSettingsService}, logSpecs, true);
 
   constructor() {
     // Transfer changes to the props state to the public property
@@ -82,9 +84,6 @@ export class FieldsSettingsService {
   #itemSvc = inject(ItemService);
 
   // Transient services for this instance only
-  // Note that it's not clear if we are going to use this...
-  // TODO: ATM unused #settingChangeBroadcast
-  // #changeBroadcastSvc = transient(ItemFormulaBroadcastService);
   #propsEngine = transient(FieldsPropsEngine);
 
   disableForCleanUp(): void {
@@ -98,9 +97,9 @@ export class FieldsSettingsService {
    * Field properties of all fields.
    * It is updated when every round of change-cycles are complete and stable.
    */
-  public allProps /*: Signal<Record<string, FieldProps>> */ = signalObj<Record<string, FieldProps>>('allProps', {});
+  public allProps = signalObj<Record<string, FieldProps>>('allProps', {});
   #startSync = signal(false);
-  #allProps: Signal<Record<string, FieldProps>>; // = signal<Record<string, FieldProps>>({});
+  #allProps: Signal<Record<string, FieldProps>>;
 
   /** Signal to force a refresh. */
   #forceRefresh = signalObj('forceRefresh', 0);
@@ -146,13 +145,8 @@ export class FieldsSettingsService {
       this.log.forceEnable(forceDebug);
     }
 
-    this.#fieldValues.init(entityGuid, this.#reader);
-
     const slotIsEmpty = this.#itemSvc.slotIsEmpty(entityGuid);
-
-    // TODO: ATM unused #settingChangeBroadcast
-    // this.#changeBroadcastSvc.init(entityGuid, this.#reader);
-
+    this.#fieldValues.init(entityGuid, this.#reader);
     this.#propsEngine.init(this, entityGuid, item, this.#contentType, this.#reader, this.#fieldValues, forceDebug);
 
     // properties for the computation - set on an object, so we can do the call in a function
@@ -170,11 +164,14 @@ export class FieldsSettingsService {
     
     // Protect against infinite loops
     setInterval(() => {
-      if (deps.cycle > maxCyclesPerTime) {
-        this.log.a(`restarting max cycles from ${deps.cycle}; ${deps.idMsg}`);
-        deps.cycle = 0;
-        deps.watchRestart.update(v => v + 1);
-      }
+      // If we ran into a max-count, we should reset and trigger the watchRestart
+      if (deps.cycle > maxCyclesPerTime)
+        setTimeout(() => {
+          this.log.a(`restarting max cycles from ${deps.cycle}; ${deps.idMsg}`);
+          return deps.watchRestart.update(v => v + 1);
+        }, maxCycleRestartDelay);
+      // Every interval, reset the cycle count
+      deps.cycle = 0;
     }, maxCyclesMs);
 
     // This computed will contain all the updated field properties
@@ -191,7 +188,7 @@ export class FieldsSettingsService {
     if (deps.analyzer)
       console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
 
-    const l = this.log.fn('fieldsProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
+    const l = this.log.fnIf('regenerateProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
     // If disabled, for any reason, return the previous value
     // The #disabled is a safeguard as data will be missing when this is being cleaned up.
     // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
