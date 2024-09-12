@@ -43,8 +43,7 @@
       @if (pickerData.state.createEntityTypes().length > 1)
       {
         <button mat-icon-button class="eav-suffix-button" [tippy]="'Fields.Picker.New' | translate"
-          [disabled]="controlStatus().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu"
-          (click)="getEntityTypesData()">
+          [disabled]="controlStatus().disabled || !features().create" [matMenuTriggerFor]="entityTypesMenu">
           <mat-icon>add_circle_outline</mat-icon>
         </button>
         <mat-menu #entityTypesMenu="matMenu">

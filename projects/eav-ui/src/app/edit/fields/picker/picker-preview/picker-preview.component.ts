@@ -72,8 +72,4 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
     if (config.initialDisabled) return;
     this.editRoutingService.expand(true, config.index, config.entityGuid);
   }
-
-  getEntityTypesData(): void {
-    this.pickerData.state.getEntityTypesData();
-  }
 }

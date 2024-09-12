@@ -34,11 +34,24 @@ export class StateAdapter {
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
   public createEntityTypes = computedObj('createEntityTypes', () => {
     const types = this.#fieldState.settings().CreateTypes;
-    return types
+    // Get / split the types from the configuration
+    const raw = types
       ? types
         .split(types.indexOf('\n') > -1 ? '\n' : ',')   // use either \n or , as delimiter
         .map((guid: string) => ({ label: null, guid }))
       : []
+    // Augment with additional label and guid if we have this
+    const updated = raw.map(orig => {
+      const guid = orig.guid;
+      const ct = this.formConfigSvc.settings.ContentTypes
+        .find(ct => ct.Id === guid || ct.Name == guid);
+      return {
+        ...orig,
+        label: ct?.Name ?? guid + " (not found)",
+        guid: ct?.Id ?? guid,
+      }
+    });
+    return updated;
   });
 
   protected readonly settings = this.#fieldState.settings;
@@ -125,16 +138,6 @@ export class StateAdapter {
 
   toggleFreeTextMode(): void {
     this.isInFreeTextMode.update(p => !p);
-  }
-
-  getEntityTypesData(): void {
-    if (this.createEntityTypes()[0].label) return;
-    this.createEntityTypes().forEach(entityType => {
-      const ct = this.formConfigSvc.settings.ContentTypes
-        .find(ct => ct.Id === entityType.guid || ct.Name == entityType.guid);
-      entityType.label = ct?.Name ?? entityType.guid + " (not found)";
-      entityType.guid = ct?.Id ?? entityType.guid;
-    });
   }
 }
 

@@ -13,25 +13,25 @@ export class PickerPartBaseComponent {
   
   log = classLog({PickerPartBaseComponent});
 
+  constructor() { }
+
   /** Entire Field State */
-  fieldState = inject(FieldState);
+  protected fieldState = inject(FieldState);
 
   /** Picker Data Bundle with Source and state etc. */
-  pickerData = this.fieldState.pickerData;
+  protected pickerData = this.fieldState.pickerData;
 
-  public controlStatus = this.pickerData.state.controlStatus;
+  protected controlStatus = this.pickerData.state.controlStatus;
 
   /** All Selected Items */
-  public selectedItems = this.pickerData.selectedAll;
+  protected selectedItems = this.pickerData.selectedAll;
 
   /** Field Configuration - from field state */
-  config = this.fieldState.config;
+  protected config = this.fieldState.config;
 
   /** Label and other basics to show from the picker data. Is not auto-attached, since it's not the initial/top-level component. */
-  basics = this.fieldState.basics;
+  protected basics = this.fieldState.basics;
 
   /** Features */
-  features = this.pickerData.features;
-
-  constructor() { }
+  protected features = this.pickerData.features;
 }
