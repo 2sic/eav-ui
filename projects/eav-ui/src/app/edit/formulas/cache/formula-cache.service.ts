@@ -1,6 +1,6 @@
 import { Injectable, untracked } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types';
-import { FormulaDefaultTargets, FormulaDefaultTargetValues, FormulaNewPickerTargets, FormulaNewPickerTargetValues, FormulaOptionalTargets, FormulaOptionalTargetValues, FormulaTarget } from '../targets/formula-targets';
+import { FormulaDefaultTargetValues, FormulaNewPickerTargetValues, FormulaOptionalTargetValues, FormulaTarget } from '../targets/formula-targets';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaResultCacheItem } from './formula-cache.model';

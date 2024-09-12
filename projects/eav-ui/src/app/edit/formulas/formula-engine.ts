@@ -2,12 +2,11 @@ import { Injectable, untracked } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
-import { FormulaHelpers } from './formula.helpers';
+import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
 import { FormulaFieldValidation } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
-import { FormulaValueCorrections } from './results/formula-value-corrections.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
@@ -23,7 +22,6 @@ import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { FieldsPropsEngine } from '../state/fields-properties-engine';
 import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 import { classLog } from '../../shared/logging';
-import { FormulaDeveloperHelper } from './formula-developer-helper';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
@@ -166,8 +164,11 @@ export class FormulaEngine {
     l.a('picker version', { pickerVersion, pickerVersionBefore, hasChanged });
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
-    const formulas = untracked(() => this.designerSvc.cache.getActive(this.#entityGuid, fieldName, fieldConstants.inputTypeSpecs.isNewPicker, hasChanged));
-    const splitDisabled = groupBy(formulas, f => f.disabled ? 'disabled' : 'enabled');
+    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.#entityGuid, fieldName, fieldConstants.inputTypeSpecs.isNewPicker, hasChanged));
+    const splitDisabled = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
+    if (splitDisabled.disabled)
+      this.#showDisabledFormulasWarnings(splitDisabled.disabled);
+    const formulas = splitDisabled.enabled ?? [];
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -187,8 +188,10 @@ export class FormulaEngine {
         pickerVersion,
         pickerVersionBefore: pickerVersionBefore,
       };
+
+      const runOneHelper = new FormulaRunOneHelpersFactory(this.designerSvc, this.translate, this.logSvc, this.#contentTypeTitle);
   
-      return this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
+      return this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, runOneHelper, doLog);
     })();
 
     // Correct any settings necessary after
@@ -203,18 +206,16 @@ export class FormulaEngine {
     return runFormulaResult;
   }
 
-  #showDisabledFormulasWarnings(formulas: FormulaCacheItem[]): void {
-    const disabledFormulas = formulas.filter(f => f.disabled);
-    for (const formula of formulas) {
-      if (formula.disabled)
-        console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
-    }
+  #showDisabledFormulasWarnings(disabled: FormulaCacheItem[]): void {
+    for (const formula of disabled)
+      console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
   }
 
   #runAllOfField(
     runParams: Omit<FormulaRunParameters, 'formula'>,
     formulas: FormulaCacheItem[],
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
+    runOneHelper: FormulaRunOneHelpersFactory,
     doLog: boolean,
   ): Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } {
     const l = this.log.fnCond(doLog, 'runFormulasOfField', { runParams, formulas });
@@ -227,11 +228,6 @@ export class FormulaEngine {
 
     const start = performance.now();
     for (const formula of formulas) {
-      if (formula.disabled) {
-        console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
-        continue;
-      }
-        else console.warn('formula is not disabled' + `Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
 
       const allRunParams: FormulaExecutionSpecsWithRunParams = {
         runParameters: {
@@ -241,7 +237,7 @@ export class FormulaEngine {
         ...reuseObjectsForFormulaDataAndContext
       };
 
-      const formulaResult = this.#runFormula(allRunParams);
+      const formulaResult = this.#runFormula(allRunParams, runOneHelper);
 
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = formulaResult?.promise instanceof Promise;
@@ -298,17 +294,13 @@ export class FormulaEngine {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  #runFormula(runParams: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
-    const { formula, inputTypeName } = runParams.runParameters;
-    
-    const l = this.log.fnIfInList('runFormula', 'fields', formula.fieldName, { fieldName: formula.fieldName });
+  #runFormula(runParams: FormulaExecutionSpecsWithRunParams, runOneHelper: FormulaRunOneHelpersFactory): FormulaResultRaw {
 
-    const params = FormulaHelpers.buildFormulaProps(runParams);
-    const ctTitle = this.#contentTypeTitle;
-    const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, formula, ctTitle, params);
-    const valHelper = new FormulaValueCorrections(formula.isValue, inputTypeName, devHelper.isOpen);
+    const { formula, fieldName, params, title, devHelper, valHelper } = runOneHelper.getPartsFor(runParams);
 
-    l.a(`formula version: ${formula.version}, entity: ${ctTitle}, field: ${formula.fieldName}, target: ${formula.target}`, {formula});
+    const l = this.log.fnIfInList('runFormula', 'fields', fieldName, { fieldName });
+
+    l.a(`formula version: ${formula.version}, entity: ${title}, field: ${fieldName}, target: ${formula.target}`, {formula});
     try {
       devHelper.showStart();
 
