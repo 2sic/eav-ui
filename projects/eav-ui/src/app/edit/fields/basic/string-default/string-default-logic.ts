@@ -5,6 +5,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 export class StringDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringDefault;
 
+  constructor() { super({ StringDefaultLogic }); }
+
   canAutoTranslate = true;
 
   update(specs: FieldLogicUpdate): FieldSettings {

@@ -6,6 +6,8 @@ import { InputTypeCatalog } from '../../../../shared/fields/input-type-catalog';
 export class EntityContentBlocksLogic extends FieldLogicBase {
   name = InputTypeCatalog.EntityContentBlocks;
 
+  constructor() { super({ EntityContentBlocksLogic }); }
+
   update(specs: FieldLogicUpdate<string[]>): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityDefault);
     const fixedSettings = entityDefaultLogic.update(specs);

@@ -1,4 +1,5 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { classLog } from '../../../shared/logging';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
@@ -11,12 +12,17 @@ type LogicConstructor = new (...args: any[]) => FieldLogicBase;
 
 export abstract class FieldLogicBase {
 
-  constructor(name?: string, logThis?: boolean) {
-    if (name) {
-      this.name = name;
-      this._log = new EavLogger(`${nameOfThis}[${name}]`, logThis);
-      this.log.a(`constructor for ${name}`);
-    }
+  get log() { return this._log ??= new EavLogger(`${nameOfThis}[${this.name}]`, logThis) };
+  private _log: EavLogger;
+
+  // TODO: @2pp make sure it's in all the constructors of theinheriting Logic classes
+  constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
+    if(!this.name)
+      return
+    
+    this._log = classLog(inheritingClass ?? {FieldLogicBase}, null, logThis);
+    this.name ??= this._log.name;
+    this.log.a(`constructor for ${inheritingClass}`);
   }
 
   /** Input type name */
@@ -33,9 +39,6 @@ export abstract class FieldLogicBase {
 
   /** Run this dummy method from component to make sure Logic files are not tree shaken */
   static importMe(): void { }
-
-  get log() { return this._log ??= new EavLogger(`${nameOfThis}[${this.name}]`, logThis) };
-  private _log: EavLogger;
 
   /**
    * Entity fields for empty items are prefilled on the backend with []

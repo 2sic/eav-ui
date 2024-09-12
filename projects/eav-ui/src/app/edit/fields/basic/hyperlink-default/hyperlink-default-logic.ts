@@ -5,6 +5,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 export class HyperlinkDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.HyperlinkDefault;
 
+  constructor() { super({ HyperlinkDefaultLogic }); }
+
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Buttons ||= 'adam,more';

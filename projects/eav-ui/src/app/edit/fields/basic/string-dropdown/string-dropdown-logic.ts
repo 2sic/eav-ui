@@ -7,6 +7,8 @@ export class StringDropdownLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeCatalog.StringDropdown;
   type: 'string' | 'number' = 'string';
 
+  constructor() { super({ StringDropdownLogic }); }
+
   update({ settings, value }: FieldLogicUpdate<string>): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EnableTextEntry ??= false;

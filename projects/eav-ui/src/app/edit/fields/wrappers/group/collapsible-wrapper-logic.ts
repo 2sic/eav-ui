@@ -5,6 +5,8 @@ import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 export class EmptyDefaultLogic extends FieldLogicBase {
   name = InputTypeCatalog.EmptyDefault;
 
+  constructor() { super({ EmptyDefaultLogic }); }
+
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Visible ??= true;

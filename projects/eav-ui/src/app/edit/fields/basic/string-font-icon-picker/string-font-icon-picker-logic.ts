@@ -5,6 +5,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 export class StringFontIconPickerLogic extends FieldLogicBase {
   name = InputTypeCatalog.StringFontIconPicker;
 
+  constructor() { super({ StringFontIconPickerLogic }); }
+
   update({ settings }: FieldLogicUpdate): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Files ??= '';

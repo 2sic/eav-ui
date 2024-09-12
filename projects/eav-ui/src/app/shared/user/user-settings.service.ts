@@ -54,6 +54,7 @@ export class UserSettings {
 
 export class UserSettingsPart<T extends Record<string, unknown>> {
 
+  // TODO: @2dm #log
   log = new EavLogger(nameOfThis + 'Part', logThis);
   
   constructor(private userSettings: UserSettings, private storeKey: string, data: T, private longTerm = false) {
