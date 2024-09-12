@@ -18,6 +18,7 @@ import { classLog } from '../../shared/logging';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 import groupBy from 'lodash-es/groupBy';
+import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 
 const logSpecs = {
   all: true,
@@ -28,6 +29,7 @@ const logSpecs = {
 
 /**
  * Run all formulas of a single field.
+ * Will also ensure that any settings are initialized properly if not yet created.
  */
 export class FormulaRunField {
 
@@ -46,7 +48,7 @@ export class FormulaRunField {
    * @returns Object with all changes that formulas should make
    */
   runOrInitSettings(
-    cycle: FieldsPropsEngineCycle,
+    currentValues: ItemValuesOfLanguage,
     fieldName: string,
     fieldConstants: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
@@ -82,7 +84,7 @@ export class FormulaRunField {
         return { value: valueBefore, validation: null, fields: [], settings: {}, pickers: null, pickerVersion: null };
 
       const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
-        currentValues: cycle.values,
+        currentValues,
         inputTypeName: fieldConstants.inputTypeSpecs.inputType,
         settingsInitial: fieldConstants.settingsInitial,
         settingsCurrent: settingsBefore,

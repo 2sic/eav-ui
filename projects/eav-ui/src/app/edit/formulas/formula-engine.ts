@@ -85,7 +85,7 @@ export class FormulaEngine {
       const runOneHelper = new FormulaRunOneHelpersFactory(this.designerSvc, this.translate, this.logSvc, this.#contentTypeTitle);
       const runOne = new FormulaRunField(this.#promiseHandler, this.designerSvc, this.#entityGuid, runOneHelper);
       const formulaResult = runOne.runOrInitSettings(
-        cycle,
+        cycle.values,
         attr.Name,
         fieldConstants,
         latestSettings,
