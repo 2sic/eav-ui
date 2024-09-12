@@ -1,6 +1,6 @@
 import { Injectable, untracked } from '@angular/core';
 import { FieldValue } from '../../../../../../edit-types';
-import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaOptionalTargets, FormulaTarget } from '../targets/formula-targets';
+import { FormulaDefaultTargets, FormulaDefaultTargetValues, FormulaNewPickerTargets, FormulaNewPickerTargetValues, FormulaOptionalTargets, FormulaOptionalTargetValues, FormulaTarget } from '../targets/formula-targets';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaIdentifier } from '../results/formula-results.models';
 import { FormulaResultCacheItem } from './formula-cache.model';
@@ -9,13 +9,19 @@ import { FormulaCacheBuilder } from './formula-cache.builder';
 import { transient } from '../../../core';
 import { classLog } from '../../../shared/logging';
 
+const logSpecs = {
+  all: true,
+  getActive: true,
+  fields: ['StringPicker'],
+};
+
 /**
  * Service just to cache formulas for execution and use in the designer.
  */
 @Injectable()
 export class FormulaCacheService {
 
-  log = classLog({FormulaCacheService}, null, false);
+  log = classLog({FormulaCacheService}, logSpecs, true);
 
   constructor() { }
 
@@ -56,10 +62,11 @@ export class FormulaCacheService {
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
   public getActive(entityGuid: string, name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
-    const l = this.log.fnIfInList('getFormulas', 'fields', name, { name, forNewPicker, versionHasChanged });
-    const targets = forNewPicker
-      ? Object.values(FormulaNewPickerTargets)
-      : Object.values(FormulaDefaultTargets).concat(Object.values(FormulaOptionalTargets));
+    const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, versionHasChanged, formulas: this.formulas() }));
+    const targets = (forNewPicker
+      ? FormulaDefaultTargetValues
+      : FormulaDefaultTargetValues
+    ).concat(FormulaOptionalTargetValues);
     
     const all = this.#findFormulas(entityGuid, name, targets, false);
 

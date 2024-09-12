@@ -28,6 +28,7 @@ import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
 import { transient } from '../../core';
+import groupBy from 'lodash-es/groupBy';
 
 const logSpecs = {
   all: false,
@@ -46,7 +47,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaEngine {
 
-  log = classLog({ FormulaEngine }, logSpecs, true);
+  log = classLog({FormulaEngine}, logSpecs, true);
 
   #formulaExecSpecsFactory = transient(FormulaExecutionSpecsFactory);
 
@@ -166,6 +167,7 @@ export class FormulaEngine {
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     const formulas = untracked(() => this.designerSvc.cache.getActive(this.#entityGuid, fieldName, fieldConstants.inputTypeSpecs.isNewPicker, hasChanged));
+    const splitDisabled = groupBy(formulas, f => f.disabled ? 'disabled' : 'enabled');
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -201,6 +203,14 @@ export class FormulaEngine {
     return runFormulaResult;
   }
 
+  #showDisabledFormulasWarnings(formulas: FormulaCacheItem[]): void {
+    const disabledFormulas = formulas.filter(f => f.disabled);
+    for (const formula of formulas) {
+      if (formula.disabled)
+        console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
+    }
+  }
+
   #runAllOfField(
     runParams: Omit<FormulaRunParameters, 'formula'>,
     formulas: FormulaCacheItem[],
@@ -219,13 +229,9 @@ export class FormulaEngine {
     for (const formula of formulas) {
       if (formula.disabled) {
         console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
-        // Show more debug in case of entity-pickers
-        untracked(() => {
-          if (formula.isValue)
-            console.log('value', );
-        });
         continue;
       }
+        else console.warn('formula is not disabled' + `Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
 
       const allRunParams: FormulaExecutionSpecsWithRunParams = {
         runParameters: {
