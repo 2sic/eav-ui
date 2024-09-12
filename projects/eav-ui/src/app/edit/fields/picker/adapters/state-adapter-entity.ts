@@ -9,7 +9,7 @@ export class StateAdapterEntity extends StateAdapter {
 
   constructor() { super(); }
 
-  protected createNewValue(valueArray: string[]): string | string[] {
+  protected asFieldValue(valueArray: string[]): string | string[] {
     this.log.a('createNewValue', { valueArray });
     return valueArray;
   }

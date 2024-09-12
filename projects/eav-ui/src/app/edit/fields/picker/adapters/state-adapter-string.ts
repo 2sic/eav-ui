@@ -10,7 +10,7 @@ export class StateAdapterString extends StateAdapter {
   
   constructor() { super(); }
 
-  protected override createNewValue(valueArray: string[]): string | string[] {
+  protected override asFieldValue(valueArray: string[]): string | string[] {
     return convertArrayToString(valueArray, this.settings().Separator);
   }
 }

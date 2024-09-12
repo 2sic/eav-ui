@@ -68,7 +68,7 @@ export class PickerListComponent extends PickerPartBaseComponent {
   }
 
   removeItem(index: number): void {
-    this.pickerData.state.removeSelected(index);
+    this.pickerData.state.remove(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {

@@ -114,7 +114,7 @@ export class PickerData {
   public addNewlyCreatedItem(result: Record<string, number>) {
     const newItemGuid = Object.keys(result)[0];
     const l = this.log.fn('addNewlyCreatedItem', { result, newItemGuid });
-    if (!this.state.createValueArray().includes(newItemGuid)) {
+    if (!this.state.asArray().includes(newItemGuid)) {
       this.state.add(newItemGuid);
       this.source.forceReloadData([newItemGuid]);
     }

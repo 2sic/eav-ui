@@ -21,6 +21,7 @@ export class StateAdapter {
 
   public formConfigSvc = inject(FormConfigService);
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
+  #settings = this.#fieldState.settings;
 
   constructor(@Optional() logger: EavLogger = null) {
     this.log = logger ?? new EavLogger(logSpecs);
@@ -32,7 +33,7 @@ export class StateAdapter {
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
   public createEntityTypes = computedObj('createEntityTypes', () => {
-    const types = this.#fieldState.settings().CreateTypes;
+    const types = this.#settings().CreateTypes;
     // Get / split the types from the configuration
     const raw = types
       ? types
@@ -56,7 +57,7 @@ export class StateAdapter {
   protected readonly settings = this.#fieldState.settings;
 
   #sepAndOpts = computedObj('sepAndOpts', () => {
-    const settings = this.#fieldState.settings();
+    const settings = this.#settings();
     return { separator: settings.Separator, options: settings._options };
   });
 
@@ -79,32 +80,46 @@ export class StateAdapter {
     return this;
   }
 
-  #updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
-    const l = this.log.fn('updateValue', { action, value });
-    let valueArray: string[] = this.createValueArray();
-
-    switch (action) {
-      case 'add':
-        const guid = value as string;
-        if (this.#fieldState.settings().AllowMultiValue)
-          valueArray.push(guid);
-        else
-          valueArray = [guid];
-        break;
-      case 'delete':
-        const index = value as number;
-        valueArray.splice(index, 1);
-        break;
-      case 'reorder':
-        const reorderIndexes = value as ReorderIndexes;
-        moveItemInArray(valueArray, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
-        break;
-    }
-
-    const newValue = this.createNewValue(valueArray);
+  #updateValue(value: string | number | ReorderIndexes, operation: (original: string[]) => string[]): void {
+    const l = this.log.fn('updateValue', { value });
+    const valueArray: string[] = this.asArray();
+    const modified = operation(valueArray);
+    const newValue = this.asFieldValue(modified);
     this.#fieldState.ui().set(newValue);
+  }
 
-    if (action === 'delete' && !valueArray.length) {
+  protected asFieldValue(valueArray: string[]): string | string[] {
+    return typeof this.#fieldState.uiValue() === 'string'
+      ? convertArrayToString(valueArray, this.#settings().Separator)
+      : valueArray;
+  }
+
+  public asArray(): string[] {
+    const value = this.#fieldState.uiValue();
+    return (typeof value === 'string')
+      ? convertValueToArray(value, this.#settings().Separator)
+      : [...value];
+  }
+
+  
+  public add(value: string) {
+    this.#updateValue(value, list => (this.#settings().AllowMultiValue) ? [...list, value] : [value]);
+  }
+
+  public reorder(reorderIndexes: ReorderIndexes) {
+    this.#updateValue(reorderIndexes, list => {
+      moveItemInArray(list, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
+      return list;
+    });
+  }
+
+  public remove(index: number) {
+    this.#updateValue(index, list => {
+      list.splice(index, 1);
+      return list;
+    });
+
+    if (!this.asArray().length) {
       // move back to component
       setTimeout(() => {
         console.log('trying to call focus');
@@ -113,27 +128,7 @@ export class StateAdapter {
     }
   }
 
-  protected createNewValue(valueArray: string[]): string | string[] {
-    return typeof this.#fieldState.uiValue() === 'string'
-      ? convertArrayToString(valueArray, this.#fieldState.settings().Separator)
-      : valueArray;
-  }
-
-  public createValueArray(): string[] {
-    const fs = this.#fieldState;
-    const value = fs.uiValue();
-    if (typeof value === 'string')
-      return convertValueToArray(value, fs.settings().Separator);
-    return [...value];
-  }
-
-  public doAfterDelete(props: DeleteEntityProps) {
-    this.#updateValue('delete', props.index);
-  }
-
-  add(value: string) { this.#updateValue('add', value); }
-  removeSelected(index: number) { this.#updateValue('delete', index); }
-  reorder(reorderIndexes: ReorderIndexes) { this.#updateValue('reorder', reorderIndexes); }
+  public doAfterDelete(props: DeleteEntityProps) { this.remove(props.index); }
 
   toggleFreeTextMode(): void {
     this.isInFreeTextMode.update(p => !p);

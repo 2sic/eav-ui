@@ -260,7 +260,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
 
   removeItem(index: number): void {
     this.log.a(`removeItem index: '${index}'`);
-    this.pickerData.state.removeSelected(index);
+    this.pickerData.state.remove(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
