@@ -8,11 +8,12 @@ import { signalObj } from '../../../shared/signals/signal.utilities';
 import { FormulaCacheBuilder } from './formula-cache.builder';
 import { transient } from '../../../core';
 import { classLog } from '../../../shared/logging';
+import { logSpecsFormulaFields } from '../formula-engine';
 
 const logSpecs = {
   all: true,
   getActive: true,
-  fields: ['StringPicker'],
+  fields: ['*'], // will be replaced by shared list below
 };
 
 /**
@@ -21,7 +22,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaCacheService {
 
-  log = classLog({FormulaCacheService}, logSpecs, true);
+  log = classLog({FormulaCacheService}, { ...logSpecs, fields: logSpecsFormulaFields }, true);
 
   constructor() { }
 

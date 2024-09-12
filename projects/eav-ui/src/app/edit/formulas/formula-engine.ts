@@ -17,13 +17,16 @@ import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
 import { transient } from '../../core';
 import { FormulaRunField } from './formula-run-field';
 
+/** The list of fields to debug is used in multiple places */
+export const logSpecsFormulaFields = ['StringPicker']; // or '*' for all
+
 const logSpecs = {
   all: false,
   getFormulas: true,
   runAllFields: false,
   runFormula: false,
   runOneFieldOrInitSettings: true,
-  fields: ['StringPicker'], // or '*' for all
+  fields: logSpecsFormulaFields,
 };
 
 /**

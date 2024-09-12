@@ -13,18 +13,18 @@ import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpe
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
-import { FieldsPropsEngineCycle } from '../state/fields-properties-engine-cycle';
 import { classLog } from '../../shared/logging';
 import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
+import { logSpecsFormulaFields } from './formula-engine';
 
 const logSpecs = {
   all: true,
   runFormula: true,
   runOrInitSettings: true,
-  fields: ['StringPicker'],
+  fields: ['*'], // will be replaced by shared list below
 };
 
 /**
@@ -33,7 +33,7 @@ const logSpecs = {
  */
 export class FormulaRunField {
 
-  log = classLog({FormulaRunField}, logSpecs, true);
+  log = classLog({FormulaRunField}, { ...logSpecs, fields: logSpecsFormulaFields }, true);
 
   constructor(
     private promiseHandler: FormulaPromiseHandler,
