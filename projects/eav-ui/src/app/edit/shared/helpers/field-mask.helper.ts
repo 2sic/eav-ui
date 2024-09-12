@@ -3,7 +3,7 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { Injectable, inject, signal, Injector, OnDestroy, effect, computed, Signal } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../form/form-config.service';
-import { FieldsSettingsService } from '../../state/fields-settings.service';
+import { classLog } from '../../../shared/logging';
 
 const logSpecs = {
   enabled: false,
@@ -24,11 +24,12 @@ const FieldUnwrap = /[\[\]]/ig;
  */
 @Injectable()
 export class FieldMask extends ServiceBase /* for field-change subscription */ {
+  
+  log = classLog({FieldMask});
 
   #fieldState = inject(FieldState);
   #formConfig = inject(FormConfigService);
 
-  log = new EavLogger(logSpecs);
   constructor(private injector: Injector) {
     super();
     this.log.a('constructor');

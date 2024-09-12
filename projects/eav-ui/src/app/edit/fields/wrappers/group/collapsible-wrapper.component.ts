@@ -8,14 +8,10 @@ import { NgClass, AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldsSettingsService } from '../../../state/fields-settings.service';
 import { WrappersCatalog } from '../wrappers.constants';
+import { classLog } from '../../../../shared/logging';
 
-const logSpecs = {
-  enabled: false,
-  name: 'CollapsibleWrapperComponent',
-};
 
 @Component({
   selector: WrappersCatalog.CollapsibleWrapper,
@@ -34,6 +30,8 @@ const logSpecs = {
   ],
 })
 export class CollapsibleWrapperComponent {
+  
+  log = classLog({CollapsibleWrapperComponent});
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
@@ -47,7 +45,6 @@ export class CollapsibleWrapperComponent {
 
   #fieldsSettingsSvc = inject(FieldsSettingsService);
 
-  log = new EavLogger(logSpecs);
   constructor() {
     EmptyDefaultLogic.importMe();
   }
@@ -55,6 +52,6 @@ export class CollapsibleWrapperComponent {
   toggleCollapse(): void {
     const before = this.collapsed();
     this.log.a('toggleCollapse', { before })
-    this.#fieldsSettingsSvc.updateSetting(this.#fieldState.name, { Collapsed: !before }, logSpecs.name);
+    this.#fieldsSettingsSvc.updateSetting(this.#fieldState.name, { Collapsed: !before }, "CollapsibleWrapperComponent");
   }
 }

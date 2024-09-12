@@ -12,14 +12,9 @@ import { PickerPillsComponent } from '../picker-pills/picker-pills.component';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerPreviewComponent',
-};
+import { classLog } from '../../../../shared/logging';
 
 @Component({
   selector: 'app-picker-preview',
@@ -42,6 +37,8 @@ const logSpecs = {
   ],
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent {
+  
+  log = classLog({PickerPreviewComponent});
 
   isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
 
@@ -61,12 +58,9 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
     };
   });
 
-  log = new EavLogger(logSpecs);
   constructor(
     private editRoutingService: EditRoutingService,
-  ) {
-    super();
-  }
+  ) { super(); }
 
   openNewEntityDialog(entityType: string): void {
     this.log.a(`openNewEntityDialog: '${entityType}'`);

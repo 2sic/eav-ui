@@ -1,17 +1,12 @@
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-
-const logSpecs = {
-  enabled: false,
-  name: 'DataSourceMoreFieldsHelper',
-};
+import { classLog } from '../../../../shared/logging';
 
 /**
  * Helper class for data source, to figure out all the fields we need to retrieve from the server.
  */
 export class DataSourceMoreFieldsHelper {
-  log = new EavLogger(logSpecs);
+  log = classLog({DataSourceMoreFieldsHelper});
 
   fieldListToRetrieveFromServer(settings: FieldSettings): string {
     this.log.a('fieldListToRetrieveFromServer', { settings });

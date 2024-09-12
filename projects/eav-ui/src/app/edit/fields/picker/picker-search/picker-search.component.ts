@@ -24,15 +24,10 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
+import { classLog } from '../../../../shared/logging';
 
 /** log each detail, eg. item-is-disabled (separate logger) */
 const logEachItemChecks = false;
-
-const logSpecs = {
-  enabled: false,
-  name: 'PickerSearchComponent',
-};
-
 
 @Component({
   selector: 'app-picker-search',
@@ -60,6 +55,9 @@ const logSpecs = {
   ]
 })
 export class PickerSearchComponent extends PickerPartBaseComponent implements OnInit {
+  
+  log = classLog({PickerSearchComponent});
+
   //#region Inputs
 
   /** Determine if the input field shows the selected items. eg. not when in dialog where it's just a search-box */
@@ -128,13 +126,10 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   #treeDataService = transient(PickerTreeDataService);
   public treeHelper = transient(PickerTreeDataHelper);
 
-  log = new EavLogger(logSpecs);
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
-  ) {
-    super();
-  }
+  ) { super(); }
 
   ngOnInit(): void {
     // process formulas on options...?
