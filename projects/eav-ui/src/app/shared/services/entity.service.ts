@@ -2,20 +2,16 @@ import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
-import { EavLogger } from '../logging/eav-logger';
+import { classLog } from '../logging';
 import { EntityBasic } from '../../shared/models/entity-basic';
 import { QueryService } from './query.service';
 import { transient } from '../../core';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EntityService',
-  specs: {
-    all: false,
-    getEntities: false,
-    getAvailableEntities: false,
-    delete: false,
-  }
+  all: false,
+  getEntities: false,
+  getAvailableEntities: false,
+  delete: false,
 };
 
 export const webApiEntityRoot = 'admin/entity/';
@@ -23,9 +19,11 @@ export const webApiEntityList = 'admin/entity/list';
 
  @Injectable()
  export class EntityService {
+  
+  log = classLog({EntityService}, logSpecs);
+
   private queryService = transient(QueryService);
 
-  log = new EavLogger(logSpecs);
   constructor(private http: HttpClient, private dnnContext: DnnContext) { }
 
   /**

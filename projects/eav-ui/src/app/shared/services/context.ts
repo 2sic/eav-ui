@@ -2,19 +2,15 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyZoneId, prefix } from '../constants/session.constants';
 import { EavWindow } from '../models/eav-window.model';
-import { EavLogger } from '../logging/eav-logger';
+import { classLog } from '../logging';
 
 declare const window: EavWindow;
 
 const logSpecs = {
-  enabled: false,
-  name: 'RouteContext',
-  specs: {
-    all: false,
-    constructor: false,
-    init: false,
-    initRoot: false,
-  }
+  all: false,
+  constructor: false,
+  init: false,
+  initRoot: false,
 };
 
 /**
@@ -26,7 +22,8 @@ const logSpecs = {
 @Injectable()
 export class Context {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({Context}, logSpecs);
+
   constructor(@Optional() @SkipSelf() parentContext: Context) {
     this.log.a(`constructor; hasParent: ${parentContext != null}`, { parentContext, 'parentId': parentContext?.id });
     this.parent = parentContext;

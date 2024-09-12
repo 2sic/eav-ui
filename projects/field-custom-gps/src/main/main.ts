@@ -7,14 +7,14 @@ import * as template from './main.html';
 import * as styles from './main.scss';
 import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
 import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
-import { EavLogger } from '../../../eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'FieldCustomGpsDialog';
+import { classLog } from '../../../eav-ui/src/app/shared/logging';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
+  
+  log = classLog({FieldCustomGpsDialog});
+  
   fieldInitialized: boolean;
   connector: Connector<string>;
 
@@ -30,8 +30,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private marker: google.maps.Marker;
   private eventListeners: ElementEventListener[];
   private defaultCoordinates: google.maps.LatLngLiteral;
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor() {
     super();

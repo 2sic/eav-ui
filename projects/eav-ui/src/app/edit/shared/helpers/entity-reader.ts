@@ -1,26 +1,22 @@
 import { EavEntity, EavEntityAttributes, EavField } from '../models/eav';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { FormLanguage } from '../../form/form-languages.model';
-import { EavLogger } from '../../../shared/logging/eav-logger';
+import { classLog } from '../../../shared/logging';
 import { FieldReader } from '../../localization/field-reader';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EntityReader',
-  specs: {
-    all: false,
-    constructor: false,
-  }
+  all: false,
+  constructor: false,
 };
 
 export class EntityReader implements FormLanguage {
+  
+  log = classLog({EntityReader}, logSpecs);
 
   /** @inheritdoc */
   public current: string;
   /** @inheritdoc */
   public primary: string;
-
-  log = new EavLogger(logSpecs);
 
   constructor(formLanguage: FormLanguage);
   constructor(current: string, primary: string);

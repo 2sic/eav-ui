@@ -1,12 +1,9 @@
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
-import { EavLogger } from '../logging/eav-logger';
 import { EditForm, EditPrep, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { classLog } from '../logging';
 
-const logThis = false;
-const nameOfThis = "UrlPrepHelper";
-
-const log = new EavLogger(nameOfThis, logThis);
+const log = classLog("UrlPrepHelper")
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';

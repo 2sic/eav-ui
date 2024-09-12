@@ -28,11 +28,11 @@ import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedD
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { EavLogger } from '../shared/logging/eav-logger';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
 import { transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { classLog } from '../shared/logging';
 
 const logSpecs = {
   enabled: false,
@@ -60,6 +60,9 @@ const logSpecs = {
   ],
 })
 export class MetadataComponent implements OnInit, OnDestroy {
+  
+  log = classLog({MetadataComponent});
+
   gridOptions = this.buildGridOptions();
 
   #entitiesSvc = transient(EntityEditService);
@@ -77,15 +80,13 @@ export class MetadataComponent implements OnInit, OnDestroy {
   #contentTypeStaticName = this.#dialogRoutes.snapshot.paramMap.get('contentTypeStaticName');
   viewModel$: Observable<MetadataViewModel>;
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialogRef: MatDialogRef<MetadataComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchFor();

@@ -15,14 +15,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgStyle, NgClass, AsyncPipe } from '@angular/common';
 import { JsonHelpers } from '../../shared/helpers/json.helpers';
 import { MousedownStopPropagationDirective } from '../../shared/directives/mousedown-stop-propagation.directive';
-import { EavLogger } from '../../shared/logging/eav-logger';
+import { classLog } from '../../shared/logging';
 import { mapUntilObjChanged } from '../../shared/rxJs/mapUntilChanged';
 import { transient } from '../../core';
-
-const logSpecs = {
-  enabled: false,
-  name: 'PlumbEditorComponent',
-}
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -41,6 +36,9 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   ],
 })
 export class PlumbEditorComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
+  
+  log = classLog({PlumbEditorComponent});
+
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
 
@@ -54,16 +52,12 @@ export class PlumbEditorComponent extends BaseComponent implements OnInit, After
   
   private queryDefinitionService = transient(QueryDefinitionService);
 
-  log = new EavLogger(logSpecs);
-
   constructor(
     private visualQueryService: VisualQueryStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-  ) {
-    super();
-  }
+  ) { super();}
 
   ngOnInit() {
     loadScripts([{ test: 'jsPlumb', src: jsPlumbUrl }], () => {

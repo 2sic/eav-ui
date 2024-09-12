@@ -8,14 +8,11 @@ import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
 import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
-
-const logThis = false;
-const nameOfThis = 'WysiwygConfigurationManager';
-
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 export class WysiwygConfigurationManager {
 
-  private log = new EavLogger(nameOfThis, logThis);
+  log = classLog({ WysiwygConfigurationManager });
 
   constructor(
     private connector: Connector<string>,

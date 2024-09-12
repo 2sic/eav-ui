@@ -37,12 +37,9 @@ import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { connectorToDisabled$, registerCustomElement } from './editor-helpers';
 import { DropzoneWysiwyg } from '../../../eav-ui/src/app/edit/fields/wrappers/dropzone/dropzone-wysiwyg';
-
-const logThis = false;
-const nameOfThis = 'FieldStringWysiwygEditor';
+import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 declare const window: EavWindow;
 
@@ -51,6 +48,9 @@ declare const window: EavWindow;
  * It is registered as a custom-element in the browser (below)
  */
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
+
+  log = classLog({ FieldStringWysiwygEditor });
+
   fieldInitialized = false;
   connector: Connector<string>;
   mode?: 'inline' | 'normal';
@@ -79,8 +79,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private firstInit: boolean;
   private dialogIsOpen: boolean;
   private menuObserver: MutationObserver;
-
-  private log = new EavLogger(nameOfThis, logThis);
 
   constructor() {
     super();

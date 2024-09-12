@@ -25,10 +25,12 @@ const logSpecs = {
   ],
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
+  
+  log = new EavLogger(logSpecs);
+  
   #dialogData: Record<string, any>;
   #dialogRef: MatDialogRef<any>;
 
-  log = new EavLogger(logSpecs);
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,

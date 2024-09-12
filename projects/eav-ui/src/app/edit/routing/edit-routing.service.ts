@@ -8,21 +8,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { FormConfigService } from '../form/form-config.service';
 import { FormLanguageService } from '../form/form-language.service';
-import { EavLogger } from '../../shared/logging/eav-logger';
 import { ServiceBase } from '../../shared/services/service-base';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'EditRoutingService',
-  specs: {
-    all: false,
-    childFormResult: true,
-    expand: false,
-    open: false,
-    watchToRefreshOnVersionsClosed: true,
-  }
+  all: false,
+  childFormResult: true,
+  expand: false,
+  open: false,
+  watchToRefreshOnVersionsClosed: true,
 }
 
 /**
@@ -36,7 +32,7 @@ const logSpecs = {
 @Injectable()
 export class EditRoutingService extends ServiceBase implements OnDestroy {
 
-  log = new EavLogger(logSpecs);
+  log = classLog({EditRoutingService}, logSpecs);
 
   #dialogRouter = transient(DialogRoutingService);
   #route = this.#dialogRouter.route;
