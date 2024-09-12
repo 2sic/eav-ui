@@ -15,6 +15,7 @@ import { classLog } from '../../../../shared/logging/logging';
 export class DataSourceMasksHelper {
   
   log: EavLogger;
+  
   constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
     this.log = classLog('DataSourceMasksHelper', null, enableLog ?? parentLog.enableChildren);
     this.log.a('constructor - settings', { settings });

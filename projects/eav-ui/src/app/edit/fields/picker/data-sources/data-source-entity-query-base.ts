@@ -17,6 +17,8 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
  */
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
+  
+  log: EavLogger<typeof DataSourceEntityQueryBase.logSpecs>;
 
   //#region Inject and blank constructor
 
@@ -30,7 +32,6 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   protected querySvc = transient(QueryService);
 
-  log: EavLogger<typeof DataSourceEntityQueryBase.logSpecs>;
   constructor(log: EavLogger) {
     super(log);
   }

@@ -9,6 +9,7 @@ import { classLog } from '../../shared/logging';
  * Manage "manual" / forced updates of fields properties
  */
 export class FieldsPropertiesUpdates {
+  
   log: EavLogger;
 
   constructor(private entityGuid: string) {

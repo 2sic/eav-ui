@@ -15,6 +15,7 @@ export class FieldHelper {
     itemHeader?: Pick<ItemIdentifierShared, "Prefill">,
     onlyPrefill?: boolean,
   ): FieldValue {
+    
     const log = new EavLogger('InputFieldHelpers', logThis);
     const l = log.fn('parseDefaultValue', { name, inputType, settings, itemHeader, onlyPrefill });
 

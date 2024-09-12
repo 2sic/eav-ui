@@ -19,7 +19,6 @@ export abstract class FieldLogicBase {
     }
   }
 
-
   /** Input type name */
   name: string;
 

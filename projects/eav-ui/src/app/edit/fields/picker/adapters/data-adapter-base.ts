@@ -8,6 +8,8 @@ import { StateAdapter } from './state-adapter';
 import { PickerItem } from '../models/picker-item.model';
 
 export abstract class DataAdapterBase {
+  
+  log: EavLogger<typeof DataAdapterBase.logSpecs>;
 
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = { all: false, setupEmpty: true, connectState: false, fetchItems: false };
@@ -26,8 +28,6 @@ export abstract class DataAdapterBase {
   public optionsOrHints: Signal<PickerItem[]> = computedObj('optionsOrHints', () => this.dataSource().data() ?? []);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
-
-  log: EavLogger<typeof DataAdapterBase.logSpecs>;
 
   constructor() { }
 

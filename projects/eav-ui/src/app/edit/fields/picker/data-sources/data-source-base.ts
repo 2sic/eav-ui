@@ -14,11 +14,12 @@ import { signalObj } from '../../../../shared/signals/signal.utilities';
 
 @Injectable()
 export abstract class DataSourceBase extends ServiceBase {
+  
+  log: EavLogger;
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
-  log: EavLogger;
   constructor(log: EavLogger) {
     super();
     this.log ??= log ?? new EavLogger('DataSourceBase', false);

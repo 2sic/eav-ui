@@ -14,6 +14,9 @@ const nameOfThis = 'SignalStoreBase';
  * - Standard get/add/remove methods exist, and can be augmented by the inheriting store.
  */
 export class SignalStoreBase<TKey extends string | number, TValue> {
+  
+  protected log: EavLogger;
+  
   /** Main Cache */
   #cache = signalObj<Record<TKey, TValue>>('cache', {} as Record<TKey, TValue>);
 
@@ -40,8 +43,6 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
   protected sanitizeAdd: (item: TValue) => TValue = (item) => item;
 
   name: string;
-
-  protected log: EavLogger;
 
   constructor(logSpecs: LogSpecs) {
     this.log = new EavLogger({ name: nameOfThis, enabled: logThisUndefined, ...logSpecs });

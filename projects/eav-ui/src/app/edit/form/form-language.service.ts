@@ -20,6 +20,7 @@ const logSpecs = {
 export class FormLanguageService extends SignalStoreObservableBase<number, FormLanguageInStore> {
 
   log: EavLogger<typeof logSpecs.specs>;
+  
   constructor() {
     super(logSpecs);
   }

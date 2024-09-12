@@ -17,11 +17,11 @@ const logSpecs = {
 
 @Injectable()
 export class StateAdapter {
+  
+  log: EavLogger
 
   public formConfigSvc = inject(FormConfigService);
   private fieldState = inject(FieldState) as FieldState<string | string[]>;
-
-  log: EavLogger
 
   constructor(@Optional() logger: EavLogger = null) {
     this.log = logger ?? new EavLogger(logSpecs);

@@ -3,6 +3,7 @@ import { EavLogger, RecordOrGenerator } from '../eav-logger';
 import { FnLogger } from './fn-logger.interface';
 
 export class FnLoggerReal implements FnLogger {
+  
   constructor(private parent: EavLogger, private fnName: string, message?: string, data?: RecordOrGenerator) {
     this.#a(message, data);
   }
