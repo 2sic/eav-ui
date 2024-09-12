@@ -3,17 +3,30 @@ import { InputTypeCatalog, InputTypeStrict } from "../../../shared/fields/input-
 import { FormulaResultRaw } from "./formula-results.models";
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
+import { DebugFields } from '../../edit-debug';
+import { classLog } from '../../../shared/logging';
+
+const logSpecs = {
+  all: false,
+  v1: false,
+  v2: false,
+  allValues: true,
+  oneValue: true,
+  fields: [...DebugFields],
+}
 
 /**
  * Contains methods for correcting formula results.
  */
 export class FormulaValueCorrections {
 
-  constructor(private isValue: boolean, private inputType: InputTypeStrict, private isOpen: boolean) {
+  log = classLog({FormulaValueCorrections}, logSpecs, false);
+
+  constructor(private fieldName: string, private isValue: boolean, private inputType: InputTypeStrict, private isOpen: boolean) {
   }
 
   v1(v1Result: FieldValue | FormulaResultRaw): { ok: boolean, v1Result: FormulaResultRaw } {
-    const isArray = v1Result && Array.isArray(v1Result) && (v1Result as any).every((r: any) => typeof r === 'string');
+    const isArray = v1Result && Array.isArray(v1Result) && v1Result.every(r => typeof r === 'string');
     const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date || isArray || !v1Result;
     if (!resultIsPure)
       return { ok: false, v1Result: this.toFormulaResult(undefined) };
@@ -25,8 +38,8 @@ export class FormulaValueCorrections {
   }
 
   v2(result: FieldValue | FormulaResultRaw): FormulaResultRaw {
-    const beforeIsOpen = this.allValues(result);
-    return { ...beforeIsOpen, openInDesigner: this.isOpen };
+    const raw = this.allValues(result);
+    return { ...raw, openInDesigner: this.isOpen };
   }
 
   /**
@@ -37,21 +50,27 @@ export class FormulaValueCorrections {
    * @returns Strongly typed FormulaResultRaw object
    */
   allValues(result: FieldValue | FormulaResultRaw): FormulaResultRaw {
+    const l = this.log.fnIfInList('allValues', 'fields', this.fieldName, { result });
     // 2024-09-10 21:15 2dm changed this, as I believe all cases have a clear stop-value
     // const stop = (result as FormulaResultRaw)?.stop ?? null;
     const defaults: Partial<FormulaResultRaw> = { fields: [], stop: null, wait: null };
-    if (result === null || result === undefined)
-      return { ...defaults, value: result as FieldValue};
+    if (result == null)
+      return l.r({ ...defaults, value: result as FieldValue}, 'null/empty');
     
     const targetIsValue = this.isValue;
+
+    // Handle arrays - new v18 newPicker - DISABLED
+    // if (Array.isArray(result)) {
+    //   return l.r({ ...defaults, value: result }, 'array');
+    // }
 
     // Handle object results - the larger / more complex case
     if (typeof result === 'object') {
       if (result instanceof Date && targetIsValue)
-        return { ...defaults, value: this.#oneValue(result as FieldValue) };
+        return l.r({ ...defaults, value: this.#oneValue(result) }, 'date');
 
       if (result instanceof Promise)
-        return { ...defaults, value: undefined, promise: result as Promise<FormulaResultRaw> };
+        return l.r({ ...defaults, value: undefined, promise: result as Promise<FormulaResultRaw> }, 'promise');
 
       const raw: FormulaResultRaw = result as FormulaResultRaw;
 
@@ -59,8 +78,8 @@ export class FormulaValueCorrections {
       raw.stop ??= null;
       raw.wait ??= null;
 
-      // fix single value
-      if (raw.value && targetIsValue)
+      // Fix single value - but only if it's not an array, in which case we must leave as is
+      if (raw.value && targetIsValue && !Array.isArray(raw.value))
         raw.value = this.#oneValue(raw.value);
 
       // fix fields
@@ -86,16 +105,17 @@ export class FormulaValueCorrections {
           }
         }
       }
-      return raw;
+      return l.r(raw, 'object');
     }
+
+    // Non-Object results
     const value: FormulaResultRaw = { value: result as FieldValue };
 
     // Handle value only result
     // atm we are only correcting Value formulas
-    if (targetIsValue) {
-      return { ...defaults, value: this.#oneValue(value.value) };
-    }
-    return value;
+    if (targetIsValue)
+      return l.r({ ...defaults, value: this.#oneValue(value.value) }, 'non-object, value');
+    return l.r(value, 'non-object, non-value');
   }
 
   /**
@@ -104,19 +124,18 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Corrected field value
    */
-  #oneValue(value: FieldValue): FieldValue {
+  #oneValue(value: FieldValue | Date): FieldValue {
     if (value == null)
-      return value;
+      return value as FieldValue;
 
     const inputTypeName = this.inputType;
     
-    if (inputTypeName === InputTypeCatalog.DateTimeDefault) {
+    if (inputTypeName === InputTypeCatalog.DateTimeDefault || value instanceof Date) {
       const date = new Date(value as string | number | Date);
 
       // if value is not ISO string, nor milliseconds, correct timezone
-      if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value) {
+      if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value)
         date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
-      }
 
       date.setMilliseconds(0);
       return date.toJSON();

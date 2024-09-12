@@ -27,6 +27,11 @@ export const FormulaNewPickerTargets = {
 /** Values of the NewPicker Targets (used often, so precalculated) */
 export const FormulaNewPickerTargetValues = Object.values(FormulaNewPickerTargets);
 
+export const FormulaSpecialPickerTargets = [
+  FormulaNewPickerTargets.Options,
+  FormulaDefaultTargets.Value
+];
+
 
 
 export const FormulaOptionalTargets = {

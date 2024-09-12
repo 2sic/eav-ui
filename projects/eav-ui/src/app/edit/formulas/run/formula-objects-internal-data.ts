@@ -13,6 +13,7 @@ import { FormLanguage } from '../../form/form-languages.model';
 import { ItemService } from '../../state/item.service';
 
 export interface FormulaRunPickers {
+  ready: boolean;
   pickerOptionsRaw: PickerItem[];
   pickerOptions: PickerItem[];
   pickerOptionsVer: number | null;

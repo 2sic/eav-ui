@@ -54,7 +54,9 @@ export class FormulaDataObject implements FormulaV1Data {
     const formula = this.#params.formula;
     // WIP CONTINUE HERE
     if (formula.isNewPicker) {
-      return this.#params.pickerSelectedRaw?.map(pi => pi.value) ?? [];
+      const value = this.#params.pickerSelectedRaw?.map(pi => pi.value) ?? [];
+      console.warn('2dm value isNewPicker', value);
+      return value;
     }
 
     if (formula.isValue)

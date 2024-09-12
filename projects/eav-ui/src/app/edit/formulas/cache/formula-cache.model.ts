@@ -58,8 +58,7 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
 
   /** WIP v18 */
-  pauseFormula: boolean;
-  pausedVersion: number;
+  sleep: boolean;
 
   isSetting: boolean;
   settingName: string;

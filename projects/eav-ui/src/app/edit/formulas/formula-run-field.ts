@@ -2,7 +2,7 @@ import { untracked } from '@angular/core';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation } from './targets/formula-targets';
+import { FormulaDefaultTargetValues, FormulaFieldValidation, FormulaSpecialPickerTargets } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
@@ -63,15 +63,23 @@ export class FormulaRunField {
     const doLog = l.enabled;
 
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
+    const isSpecialPicker = fieldConstants.inputTypeSpecs.isNewPicker;
     const picker = this.#getPickerInfos(fieldName, fieldConstants, propsBefore);
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
-    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, fieldConstants.inputTypeSpecs.isNewPicker, picker.pickerChanged));
+    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picker.pickerChanged));
     const splitDisabled = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
     if (splitDisabled.disabled)
       this.#showDisabledFormulasWarnings(splitDisabled.disabled);
-    const formulas = splitDisabled.enabled ?? [];
+
+    const enabled = splitDisabled.enabled ?? [];
+
+    // If we're working on the picker, but it's not ready yet, we must skip these formulas
+    const formulas = (isSpecialPicker && !picker.ready)
+      ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
+      : enabled;
+
     const hasFormulas = formulas.length > 0;
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -122,6 +130,7 @@ export class FormulaRunField {
     const selectedChanged = selectedVer !== selectedVerBefore;
 
     const result: FormulaRunPickers = {
+      ready: picker?.ready(),
       pickerOptionsRaw: optionsRaw,
       pickerOptions: picker?.optionsFinal(),
       pickerOptionsVer: optionsVer,
@@ -180,8 +189,9 @@ export class FormulaRunField {
       formula.stopFormula = formulaResult.stop ?? (containsPromise ? true : formula.stopFormula);
 
       // Pause depends on explicit result; TODO: MAYBE automatic on Pickers
-      formula.pauseFormula = formulaResult.wait ?? formula.pauseFormula;
-      formula.pausedVersion = runParams.pickerOptionsVer ?? -1;
+      // TODO: INCOMPLETE - WOULD AFFECT ALL PICKER FIELDS, EVEN SETTINGS ETC.
+      // formula.pauseFormula = formulaResult.wait ?? (formula.isNewPicker ? true : formula.pauseFormula);
+      formula.sleep = formulaResult.wait ?? formula.sleep;
 
       // If we have field changes, add to the list
       if (formulaResult.fields)

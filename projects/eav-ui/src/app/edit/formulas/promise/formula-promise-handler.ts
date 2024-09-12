@@ -76,7 +76,7 @@ export class FormulaPromiseHandler {
 
     const queue = this.updateValueQueue;
     formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-      const raw = new FormulaValueCorrections(formula.isValue, inputType, false).v2(result);
+      const raw = new FormulaValueCorrections(formula.fieldName, formula.isValue, inputType, false).v2(result);
 
       const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
       let valueUpdates: ItemValuesOfLanguage = {};

@@ -39,7 +39,7 @@ export class FormulaRunOneHelpersFactory {
       params,
       title: this.ctTitle,
       devHelper,
-      valHelper: new FormulaValueCorrections(formula.isValue, inputTypeName, devHelper.isOpen),
+      valHelper: new FormulaValueCorrections(formula.fieldName, formula.isValue, inputTypeName, devHelper.isOpen),
     };
   }
 

@@ -148,7 +148,7 @@ export class EavLogger<TSpecs extends unknown = any> {
 
   fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): FnLogger {
     return this.enabled && this.#ifInSpecs(key) && this.#ifInSpecsList(list, subKey)
-      ? this.fn(key, data, message)
+      ? this.fn(`${key}[${subKey}]`, data, message)
       : new FnLoggerNoOp();
   }
 

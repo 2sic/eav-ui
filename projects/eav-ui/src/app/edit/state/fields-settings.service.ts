@@ -212,14 +212,9 @@ export class FieldsSettingsService {
     
     // Note that this will access a lot of source signals
     // whose dependencies will be incorporated into this calculation
-    const { props, valueChanges, values } = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
+    const props = this.#propsEngine.getLatestSettingsAndValues(latestFieldProps);
     deps.prevFieldProps = props;
         
-    // TODO: 2dm - not sure why but everything seems to work without this, which I find very suspicious
-    // TODO: ATM unused #settingChangeBroadcast
-    // if (Object.keys(valueChanges).length > 0)
-    //   this.#changeBroadcastSvc.applyValueChangesFromFormulas(valueChanges);
-
     return l.rSilent(props, 'normal update');
     // const propsDiff = difference(props, prevFieldProps);
     // if (Object.keys(propsDiff).length > 0) {

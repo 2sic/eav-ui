@@ -45,12 +45,16 @@ export class PickerData {
 
   //#region Possible Options to provide
 
-  #partsReady = signalObj('sourceIsReady', false);
+  /**
+   * Inform the system that the sources are ready.
+   * WIP experimenting with making it public, so that formulas can delay running dependant function.
+   */
+  ready = signalObj('sourceIsReady', false);
 
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
   public optionsSource = computedObj('optionsSource', () => {
-    const ready = this.#partsReady();
+    const ready = this.ready();
     return (ready ? this.source.optionsOrHints() : null) ?? [];
   });
   
@@ -69,7 +73,7 @@ export class PickerData {
 
   /** Signal containing the currently selected items */
   public selectedState = computedObj('selectedState', () => {
-    const ready = this.#partsReady();
+    const ready = this.ready();
     return this.#addInfosFromSourceForUi(ready ? this.state.selectedItems() : [], this.optionsFinal());
   });
 
@@ -101,7 +105,7 @@ export class PickerData {
     source.init(name);
     this.state = state;
     this.source = source;
-    this.#partsReady.set(true);
+    this.ready.set(true);
     // 1. Init Prefetch - for Entity Picker
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.

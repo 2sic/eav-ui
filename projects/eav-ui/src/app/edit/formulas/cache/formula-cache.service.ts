@@ -71,7 +71,7 @@ export class FormulaCacheService {
 
     const unstopped = all.filter(f => !f.stopFormula);
 
-    const unPaused = unstopped.filter(f => !f.pauseFormula || versionHasChanged);
+    const unPaused = unstopped.filter(f => !f.sleep || versionHasChanged);
 
     return l.r(unPaused, `all: ${all.length}, unstopped: ${unstopped.length}, unpaused: ${unPaused.length}`);
   }
