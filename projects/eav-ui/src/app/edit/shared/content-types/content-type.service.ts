@@ -3,17 +3,16 @@ import { EavContentType, EavContentTypeAttribute, EavItem } from '../models/eav'
 import { EavContentTypeDto } from '../models/json-format-v1';
 import { ItemHelper } from '../helpers/item.helper';
 import { SignalStoreBase } from '../store/signal-store-base';
-
-const logSpecs = {
-  enabled: false,
-  name: 'ContentTypeService',
-};
+import { classLog } from '../../../shared/logging';
 
 @Injectable({ providedIn: 'root' })
 export class ContentTypeService extends SignalStoreBase<string, EavContentType> {
 
+  log = classLog({ContentTypeService});
+  
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
   
   override getId = (item: EavContentType) => item.Id;

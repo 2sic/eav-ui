@@ -6,17 +6,16 @@ import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { InputTypeSpecs } from './input-type-specs.model';
 import { SignalStoreBase } from '../store/signal-store-base';
 import { InputTypeHelpers } from '../../../shared/fields/input-type-helpers';
-
-const logSpecs = {
-  enabled: false,
-  name: 'InputTypeService',
-};
+import { classLog } from '../../../shared/logging';
 
 @Injectable({ providedIn: 'root' })
 export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata> {
 
+  log = classLog({InputTypeService}, null, true);
+
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
 
   override getId = (item: InputTypeMetadata) => item.Type;

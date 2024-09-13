@@ -13,9 +13,18 @@ const nameOfThis = 'SignalStoreBase';
  * - The key type can be customized.
  * - Standard get/add/remove methods exist, and can be augmented by the inheriting store.
  */
-export class SignalStoreBase<TKey extends string | number, TValue> {
+export abstract class SignalStoreBase<TKey extends string | number, TValue> {
   
-  protected log: EavLogger;
+  protected abstract log: EavLogger;
+
+  /** Empty constructor. Note that this.log is not available yet! */
+  constructor() { }
+
+  protected constructorEnd() {
+    console.warn('constructorEnd of ' + this.log.name);
+    this.log.a('SignalStoreBase created');
+    this.name = this.log.name;
+  }
   
   /** Main Cache */
   #cache = signalObj<Record<TKey, TValue>>('cache', {} as Record<TKey, TValue>);
@@ -40,12 +49,6 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
 
   name: string;
 
-  // TODO: @2dm #log
-  constructor(logSpecs: LogSpecs) {
-    this.log = new EavLogger({ name: nameOfThis, enabled: logThisUndefined, ...logSpecs });
-    this.log.a('SignalStoreBase created', { options: logSpecs });
-    this.name = logSpecs.name;
-  }
 
   //#region Add / Update / Remove / Clear Cache
 

@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { AdamItem } from '../../../../../../edit-types';
 import { LinkInfo, PrefetchAdams, PrefetchLinks } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
-
-const logSpecs = {
-  enabled: false,
-  name: 'LinkCacheService',
-};
+import { classLog } from '../../../shared/logging';
 
 /**
  * The link Cache will store info to all links incl. file references (ADAM)
@@ -15,8 +11,11 @@ const logSpecs = {
 @Injectable({ providedIn: 'root' })
 export class LinkCacheService extends SignalStoreBase<string, LinkCache> {
 
+  log = classLog({LinkCacheService});
+  
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
 
   override getId = (item: LinkCache) => item.key.trim().toLocaleLowerCase();

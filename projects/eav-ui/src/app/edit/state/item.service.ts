@@ -9,11 +9,7 @@ import { ItemUpdateHelper } from './item-updater.helper';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
 import { EavEntityAttributes } from '../shared/models/eav/eav-entity-attributes';
 import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
-
-const logSpecs = {
-  enabled: false,
-  name: 'ItemService',
-};
+import { classLog } from '../../shared/logging';
 
 /**
  * This class provides access to the items / entities cache which are being edited in the UI.
@@ -23,8 +19,11 @@ const logSpecs = {
 @Injectable({ providedIn: 'root' })
 export class ItemService extends SignalStoreObservableBase<string, EavItem> {
 
+  log = classLog({ItemService});
+  
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
 
   override getId = (item: EavItem) => item.Entity.Guid;

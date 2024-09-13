@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { EavEntity } from '../models/eav';
 import { EavEntityDto } from '../models/json-format-v1';
 import { SignalStoreBase } from '../store/signal-store-base';
-
-const logSpecs = {
-  enabled: false,
-  name: 'ContentTypeItemService',
-};
+import { classLog } from '../../../shared/logging/logging';
 
 /**
  * Content-Type Items are additional entities which the ContentType info needs.
@@ -17,8 +13,11 @@ const logSpecs = {
 @Injectable({ providedIn: 'root' })
 export class ContentTypeItemService extends SignalStoreBase<string, EavEntity> {
 
+  log = classLog({ContentTypeItemService});
+
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
 
   override getId = (item: EavEntity) => item.Guid;

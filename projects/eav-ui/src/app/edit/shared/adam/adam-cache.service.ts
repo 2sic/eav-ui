@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { AdamItem } from '../../../../../../edit-types';
 import { PrefetchAdams } from '../../dialog/main/edit-dialog-main.models';
 import { SignalStoreBase } from '../store/signal-store-base';
-
-const logSpecs = {
-  enabled: false,
-  name: 'LinkCacheService',
-};
+import { classLog } from '../../../shared/logging';
 
 @Injectable({ providedIn: 'root' })
 export class AdamCacheService extends SignalStoreBase<string, AdamSnapshot> {
 
+  log = classLog({AdamCacheService});
+
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
 
   override getId = (item: AdamSnapshot) => item.Guid;

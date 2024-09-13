@@ -5,24 +5,21 @@ import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { FormLanguage, FormLanguageComplete } from './form-languages.model';
 import { SignalStoreObservableBase } from '../shared/store/signal-store-observable-base';
 import { ComputedCacheHelper } from '../../shared/signals/computed-cache';
-import { EavLogger } from '../../shared/logging/eav-logger';
+import { classLog } from '../../shared/logging';
 
 const logSpecs = {
-  enabled: false,
-  name: 'FormLanguageService',
-  specs: {
-    getReader: false,
-    getReaderSignal: false,
-  }
+  getReader: false,
+  getReaderSignal: false,
 };
 
 @Injectable({ providedIn: 'root' })
 export class FormLanguageService extends SignalStoreObservableBase<number, FormLanguageInStore> {
 
-  log: EavLogger<typeof logSpecs.specs>;
+  log = classLog({FormLanguageService}, logSpecs);
   
   constructor() {
-    super(logSpecs);
+    super();
+    this.constructorEnd();
   }
 
   protected override getId = (item: FormLanguageInStore) => item.formId;
