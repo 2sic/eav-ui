@@ -9,10 +9,22 @@ import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog, ClassLogger } from '../../../../shared/logging';
 
+const logSpecs = {
+  all: false,
+  updateValue: true,
+  add: true,
+  remove: true,
+  reorder: true,
+  selectedItems: true,
+  sepAndOpts: true,
+  createEntityTypes: true,
+  attachCallback: true,
+};
+
 @Injectable()
 export class StateAdapter {
   
-  log = classLog({StateAdapter})
+  log = classLog({StateAdapter}, logSpecs);
   
   public formConfigSvc = inject(FormConfigService);
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
@@ -74,8 +86,8 @@ export class StateAdapter {
     return this;
   }
 
-  #updateValue(value: string | number | ReorderIndexes, operation: (original: string[]) => string[]): void {
-    const l = this.log.fn('updateValue', { value });
+  #updateValue(operation: (original: string[]) => string[]): void {
+    const l = this.log.fnIf('updateValue');
     const valueArray: string[] = this.asArray();
     const modified = operation(valueArray);
     const newValue = this.asFieldValue(modified);
@@ -96,19 +108,22 @@ export class StateAdapter {
   }
 
   
-  public add(value: string) {
-    this.#updateValue(value, list => (this.#settings().AllowMultiValue) ? [...list, value] : [value]);
+  public add(value: string): void {
+    this.log.fnIf('add', { value });
+    this.#updateValue(list => (this.#settings().AllowMultiValue) ? [...list, value] : [value]);
   }
 
   public reorder(reorderIndexes: ReorderIndexes) {
-    this.#updateValue(reorderIndexes, list => {
+    this.log.fnIf('reorder', { reorderIndexes });
+    this.#updateValue(list => {
       moveItemInArray(list, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
       return list;
     });
   }
 
   public remove(index: number) {
-    this.#updateValue(index, list => {
+    this.log.fnIf('remove', { index });
+    this.#updateValue(list => {
       list.splice(index, 1);
       return list;
     });
