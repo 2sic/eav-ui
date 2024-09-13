@@ -11,6 +11,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
 @Injectable()
 export abstract class DataSourceBase extends ServiceBase {
@@ -22,7 +23,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   constructor(log: EavLogger) {
     super();
-    this.log ??= log ?? new EavLogger('DataSourceBase', false);
+    this.log ??= log ?? classLog({DataSourceBase});
     this.log.a('constructor', { forField: this.fieldState.name });
   }
 

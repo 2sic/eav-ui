@@ -8,11 +8,7 @@ import { FieldState } from '../../field-state';
 import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
-
-const logSpecs = {
-  enabled: false,
-  name: 'StateAdapter',
-};
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
 @Injectable()
 export class StateAdapter {
@@ -24,7 +20,7 @@ export class StateAdapter {
   #settings = this.#fieldState.settings;
 
   constructor(@Optional() logger: EavLogger = null) {
-    this.log = logger ?? new EavLogger(logSpecs);
+    this.log = logger ?? classLog({StateAdapter});
   }
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);

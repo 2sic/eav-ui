@@ -1,16 +1,9 @@
 import { DataSourceBase } from './data-source-base';
 import { Injectable } from '@angular/core';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-
-
-const logSpecs = {
-  enabled: false,
-  name: 'DataSourceString',
-  logChildren: false,
-};
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
 @Injectable()
 export class DataSourceString extends DataSourceBase {
@@ -18,7 +11,7 @@ export class DataSourceString extends DataSourceBase {
   loading = signalObj('loading', false);
 
   constructor() {
-    super(new EavLogger(logSpecs));
+    super(classLog({DataSourceString}));
   }
 
   #dataMaskHelper = (() => {

@@ -4,15 +4,11 @@ import { EavLogger } from '../../../shared/logging/eav-logger';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
 
-/** LogThis will apply, if the inheriting class isn't specifying it in the constructor */
-const logThis = false;
-const nameOfThis = 'FieldLogic';
-
 type LogicConstructor = new (...args: any[]) => FieldLogicBase;
 
 export abstract class FieldLogicBase {
 
-  get log() { return this._log ??= new EavLogger(`${nameOfThis}[${this.name}]`, logThis) };
+  get log() { return this._log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
   private _log: EavLogger;
 
   // TODO: @2pp make sure it's in all the constructors of theinheriting Logic classes

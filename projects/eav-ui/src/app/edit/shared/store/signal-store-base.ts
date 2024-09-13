@@ -24,14 +24,10 @@ export class SignalStoreBase<TKey extends string | number, TValue> {
   #list = computedObj('list', () => Object.values(this.#cache()) as TValue[]);
 
   /** Cache for the inheriting classes, but as read-only */
-  protected get cache(): Signal<Record<TKey, TValue>> {
-    return this.#cache;
-  }
+  protected get cache(): Signal<Record<TKey, TValue>> { return this.#cache; }
 
   /** List for the inheriting classes, but as read-only */
-  protected get list(): Signal<TValue[]> {
-    return this.#list;
-  }
+  protected get list(): Signal<TValue[]> { return this.#list; }
 
   /**
    * Function to get the key / id for storing in the cache.

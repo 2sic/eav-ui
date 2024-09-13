@@ -19,14 +19,10 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { transient } from '../../../../core/transient';
 import { GlobalConfigService } from '../../../../shared/services/global-config.service';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging';
-
-/** log each detail, eg. item-is-disabled (separate logger) */
-const logEachItemChecks = false;
 
 @Component({
   selector: 'app-picker-search',
@@ -95,7 +91,7 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   });
 
   /** Special log which would fire a lot for each item doing disabled checks etc. */
-  #logItemChecks = new EavLogger('PickerSearchComponent-ItemChecks', logEachItemChecks);
+  #logItemChecks = classLog({PickerSearchComponent}).extendName("-ItemChecks");
 
   /** Debug status for UI, mainly to show "add-null" button */
   debugEnabled = this.globalConfigService.isDebug;
