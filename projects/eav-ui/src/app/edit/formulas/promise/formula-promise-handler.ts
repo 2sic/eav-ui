@@ -48,15 +48,15 @@ export class FormulaPromiseHandler {
   /**
    * Used for filling queue and triggering next run.
    * @param promiseResult
-   * @param formulaCache
+   * @param formula
    * @param inputTypeName
    */
-  handleFormulaPromise(promiseResult: FormulaResultRaw, formulaCache: FormulaCacheItem, inputTypeName: InputTypeStrict): void {
-    this.log.fn('handleFormulaPromise', { promiseResult, formulaCache, inputTypeName });
+  handleFormulaPromise(promiseResult: FormulaResultRaw, formula: FormulaCacheItem): void {
+    this.log.fn('handleFormulaPromise', { promiseResult, formula });
     if (promiseResult.openInDesigner && promiseResult.stop === null)
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
-    formulaCache.promises$.next(promiseResult.promise);
-    this.defineCallbackHandlerIfMissing(formulaCache, inputTypeName);
+    formula.promises$.next(promiseResult.promise);
+    this.defineCallbackHandlerIfMissing(formula);
   }
 
   /**
@@ -65,18 +65,15 @@ export class FormulaPromiseHandler {
    * @param inputType
    * @param entityGuid
    */
-  private defineCallbackHandlerIfMissing(
-    formula: FormulaCacheItem,
-    inputType: InputTypeStrict,
-  ) {
+  private defineCallbackHandlerIfMissing(formula: FormulaCacheItem) {
     const entityGuid = this.entityGuid;
-    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formula, inputType, entityGuid });
+    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formula, entityGuid });
     if (formula.updateCallback$.value)
       return;
 
     const queue = this.updateValueQueue;
     formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-      const raw = new FormulaValueCorrections(formula.fieldName, formula.isValue, inputType, false).v2(result);
+      const raw = new FormulaValueCorrections(formula.fieldName, formula.isValue, formula.inputType, false).v2(result);
 
       const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
       let valueUpdates: ItemValuesOfLanguage = {};

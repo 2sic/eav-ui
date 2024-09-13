@@ -39,7 +39,7 @@ export class FormulaRunOneHelpersFactory {
       params,
       title: this.ctTitle,
       devHelper,
-      valHelper: new FormulaValueCorrections(formula.fieldName, formula.isValue, inputTypeName, devHelper.isOpen),
+      valHelper: new FormulaValueCorrections(formula.fieldName, formula.isValue, formula.inputType, devHelper.isOpen),
     };
   }
 
@@ -66,6 +66,7 @@ export class FormulaRunOneHelpersFactory {
           context,
           experimental,
         } satisfies FormulaPropsV1;
+
       default:
         // default should never happen, so don't return any data to use; will probably error if this happens
         // 2024-09-10 2dm adding throw error here to see if it's anywhere
@@ -92,7 +93,4 @@ export interface FormulaPropsV1 {
   data: FormulaV1Data;
   context: FormulaV1Context;
   experimental: FormulaV1Experimental;
-  item?: PickerItem; //@SDV possibly add PickerTreeItem also
 }
-
-

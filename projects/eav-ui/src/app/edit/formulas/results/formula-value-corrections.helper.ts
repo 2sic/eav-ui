@@ -1,10 +1,11 @@
 import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
-import { InputTypeCatalog, InputTypeStrict } from "../../../shared/fields/input-type-catalog";
+import { InputTypeCatalog } from "../../../shared/fields/input-type-catalog";
 import { FormulaResultRaw } from "./formula-results.models";
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { DebugFields } from '../../edit-debug';
 import { classLog } from '../../../shared/logging';
+import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 
 const logSpecs = {
   all: false,
@@ -22,8 +23,13 @@ export class FormulaValueCorrections {
 
   log = classLog({FormulaValueCorrections}, logSpecs, false);
 
-  constructor(private fieldName: string, private isValue: boolean, private inputType: InputTypeStrict, private isOpen: boolean) {
-  }
+  constructor(
+    private fieldName: string,
+    private isValue: boolean,
+    private inputType: InputTypeSpecs,
+    private isOpen: boolean
+  ) { }
+
 
   v1(v1Result: FieldValue | FormulaResultRaw): { ok: boolean, v1Result: FormulaResultRaw } {
     const isArray = v1Result && Array.isArray(v1Result) && v1Result.every(r => typeof r === 'string');
@@ -129,9 +135,9 @@ export class FormulaValueCorrections {
     if (value == null)
       return value as FieldValue;
 
-    const inputTypeName = this.inputType;
+    const inputType = this.inputType.inputType;
     
-    if (inputTypeName === InputTypeCatalog.DateTimeDefault || value instanceof Date) {
+    if (inputType === InputTypeCatalog.DateTimeDefault || value instanceof Date) {
       const date = new Date(value as string | number | Date);
 
       // if value is not ISO string, nor milliseconds, correct timezone
@@ -142,8 +148,8 @@ export class FormulaValueCorrections {
       return date.toJSON();
     }
     
-    if (typeof (value) !== 'string' && (inputTypeName?.startsWith(DataTypeCatalog.String.toLocaleLowerCase())
-      || inputTypeName?.startsWith(DataTypeCatalog.Hyperlink.toLocaleLowerCase()))) {
+    if (typeof (value) !== 'string' && (inputType?.startsWith(DataTypeCatalog.String.toLocaleLowerCase())
+      || inputType?.startsWith(DataTypeCatalog.Hyperlink.toLocaleLowerCase()))) {
       return value.toString();
     }
     return value;

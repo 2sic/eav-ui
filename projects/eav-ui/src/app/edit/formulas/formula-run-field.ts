@@ -178,7 +178,7 @@ export class FormulaRunField {
       // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
       const containsPromise = raw?.promise instanceof Promise;
       if (containsPromise)
-        this.promiseHandler.handleFormulaPromise(raw, formula, runParams.inputTypeName);
+        this.promiseHandler.handleFormulaPromise(raw, formula);
 
       // Stop depends on explicit result and the default is different if it has a promise
       formula.stop = raw.stop ?? (containsPromise ? true : formula.stop);
