@@ -21,11 +21,11 @@
     <div matSuffix class="selection-suffix">
       <button mat-icon-button [ngClass]="{ 'active': !freeTextMode() }"
         [tippy]="'Fields.String.Dropdown' | translate" [disabled]="ui().disabled"
-        (click)="toggleFreeTextMode(false)">
+        (click)="toggleFreeText.set(false)">
         <mat-icon>search</mat-icon>
       </button>
       <button mat-icon-button [ngClass]="{ 'active': freeTextMode() }" [tippy]="'Fields.String.Freetext' | translate"
-        [disabled]="ui().disabled" (click)="toggleFreeTextMode(true)">
+        [disabled]="ui().disabled" (click)="toggleFreeText.set(true)">
         <mat-icon>text_fields</mat-icon>
       </button>
     </div>

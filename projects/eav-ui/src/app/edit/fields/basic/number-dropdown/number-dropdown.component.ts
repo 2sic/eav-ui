@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NumberDropdownLogic } from './number-dropdown-logic';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,8 +16,7 @@ import { FieldState } from '../../field-state';
 import { FieldMetadata } from '../../field-metadata.decorator';
 import { WrappersLocalizationOnly } from '../../wrappers/wrappers.constants';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
-import { SignalEquals } from '../../../../shared/signals/signal-equals';
+import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: InputTypeCatalog.NumberDropdown,
@@ -43,30 +42,25 @@ import { SignalEquals } from '../../../../shared/signals/signal-equals';
 @FieldMetadata({ ...WrappersLocalizationOnly })
 export class NumberDropdownComponent {
 
-  protected fieldState = inject(FieldState) as FieldState<number>;
-
-  protected group = this.fieldState.group;
-  protected config = this.fieldState.config;
-  protected ui = this.fieldState.ui;
-
-  protected settings = this.fieldState.settings;
-  protected basics = this.fieldState.basics;
-
-  protected enableTextEntry = computed(() => this.settings().EnableTextEntry, SignalEquals.bool);
-
-  dropdownOptions = computed(() => this.settings()._options, { equal: RxHelpers.arraysEqual });
-
-  toggleFreeText = signal<boolean>(false);
-  freeTextMode = computed(() => {
-    return this.enableTextEntry() ? this.toggleFreeText() : false;
-  });
+  #fieldState = inject(FieldState) as FieldState<number>;
 
   constructor() {
     NumberDropdownLogic.importMe();
   }
 
-  toggleFreeTextMode(freeTextMode: boolean) {
-    if (this.toggleFreeText() !== freeTextMode)
-      this.toggleFreeText.set(freeTextMode);
-  }
+  protected group = this.#fieldState.group;
+  protected config = this.#fieldState.config;
+  protected ui = this.#fieldState.ui;
+
+  // #settings = this.#fieldState.settings;
+  protected basics = this.#fieldState.basics;
+
+  // protected enableTextEntry = computedObj('enableTextEntry', () => this.#settings().EnableTextEntry);
+  protected enableTextEntry = this.#fieldState.setting('EnableTextEntry');
+
+  // protected dropdownOptions = computedObj('_options', () => this.#settings()._options);
+  protected dropdownOptions = this.#fieldState.setting('_options');
+
+  protected toggleFreeText = signalObj<boolean>('toggleFreeText', false);
+  protected freeTextMode = computedObj('freeTextMode', () => this.enableTextEntry() ? this.toggleFreeText() : false);
 }

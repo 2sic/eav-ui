@@ -6,6 +6,7 @@ import { BasicControlSettings } from '../../../../../edit-types/src/BasicControl
 import { UiControl } from '../shared/controls/ui-control';
 import { PickerData } from './picker/picker-data';
 import { TranslationState } from '../localization/translate-state.model';
+import { computedObj } from '../../shared/signals/signal.utilities';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -50,4 +51,17 @@ export class FieldState<T extends FieldValue = FieldValue> {
     throw new Error(`PickerData was not initialized for the field: ${this.name}`);
   }
   #pickerData: PickerData;
+
+  /**
+   * Cool helper to just get a single value-signal from the settings.
+   * It will automatically
+   * - ensure that you only use valid keys
+   * - return a signal with that name
+   * - the signal will be correctly typed as the setting value is typed
+   * @param name property name of a FieldSettings
+   * @returns the signal for that property, with isEqual change detection and name
+   */
+  setting<K extends keyof FieldSettings>(name: K): Signal<FieldSettings[K]> {
+    return computedObj(name, () => this.settings()[name]);
+  }
 }
