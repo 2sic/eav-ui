@@ -1,12 +1,12 @@
-import { consoleLogObject } from './output-console';
-import { FnLoggerReal } from './fn/fn-logger-real';
-import { FnLogger } from './fn/fn-logger.interface';
-import { FnLoggerNoOp } from './fn/fn-logger-noop';
-import { LogManager } from './log-manager';
-import { LogSpecs } from './log-specs';
-import { RxTapDebug } from './rx-debug-dbg';
-import { environment } from '../../../environments/environment';
-import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './logger.interface';
+import { consoleLogObject } from '../output-console';
+import { FnLoggerReal } from '../fn/fn-logger-real';
+import { FnLogger } from '../fn/fn-logger.interface';
+import { FnLoggerNoOp } from '../fn/fn-logger-noop';
+import { LogManager } from '../log-manager';
+import { LogSpecs } from '../log-specs';
+import { RxTapDebug } from '../rx-debug-dbg';
+import { environment } from '../../../../environments/environment';
+import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './class-logger';
 
 /**
  * TODO:
@@ -14,7 +14,7 @@ import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './
  * - Then rename to ClassLogger
  * - ...and move to sub-folder
  */
-export class EavLogger<TSpecs extends unknown = any> implements ClassLogger<TSpecs> {
+export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogger<TSpecs> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(2, 5);
 

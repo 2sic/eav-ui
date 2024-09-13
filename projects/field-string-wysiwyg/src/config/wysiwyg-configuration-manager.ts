@@ -7,8 +7,7 @@ import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
-import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
-import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
+import { classLog, ClassLogger } from '../../../../projects/eav-ui/src/app/shared/logging';
 
 export class WysiwygConfigurationManager {
 

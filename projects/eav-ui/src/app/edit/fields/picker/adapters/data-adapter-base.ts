@@ -5,7 +5,7 @@ import { DataSourceBase } from '../data-sources/data-source-base';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { StateAdapter } from './state-adapter';
 import { PickerItem } from '../models/picker-item.model';
-import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
+import { ClassLogger } from '../../../../shared/logging';
 
 export abstract class DataAdapterBase {
   

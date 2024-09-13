@@ -6,9 +6,7 @@ import { BaseComponent } from '../../../shared/components/base.component';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataSetup } from './picker-data-setup';
-import { classLog } from '../../../shared/logging';
-import { ClassLogger } from '../../../shared/logging/logger.interface';
-
+import { classLog, ClassLogger } from '../../../shared/logging';
 
 @Component({
   // selector: none since it's a base class

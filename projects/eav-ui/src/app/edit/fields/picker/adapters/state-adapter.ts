@@ -7,8 +7,7 @@ import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
-import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
+import { classLog, ClassLogger } from '../../../../shared/logging';
 
 @Injectable()
 export class StateAdapter {

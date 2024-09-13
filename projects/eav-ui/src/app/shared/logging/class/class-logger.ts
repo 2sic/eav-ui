@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EavLogger } from './eav-logger';
-import { FnLogger } from './fn/fn-logger.interface';
-import { RxTapDebug } from './rx-debug-dbg';
+import { ClassLoggerReal } from './class-logger-real';
+import { FnLogger } from '../fn/fn-logger.interface';
+import { RxTapDebug } from '../rx-debug-dbg';
 
 export interface ClassLogger<TSpecs extends unknown = any> {
   svcId: string;
@@ -36,7 +36,7 @@ export type StringArrayKeys<T> = { [k in keyof T]: T[k] extends string[] ? k : n
 
 /** Must also be defined as a class, so that can use it in constructors of controls etc. (usually for inheritance) */
 @Injectable()
-export class ClassLogger<TSpecs extends unknown = any> extends EavLogger<TSpecs> {
+export class ClassLogger<TSpecs extends unknown = any> extends ClassLoggerReal<TSpecs> {
   constructor() {
     super('unknown-injected');
   }

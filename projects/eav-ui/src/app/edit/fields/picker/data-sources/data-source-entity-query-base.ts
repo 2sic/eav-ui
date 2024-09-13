@@ -8,7 +8,7 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
+import { ClassLogger } from '../../../../shared/logging';
 
 /**
  * This is the base class for data-sources providing data from

@@ -1,8 +1,7 @@
 import { Signal } from '@angular/core';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { classLog } from '../../../shared/logging';
-import { ClassLogger } from '../../../shared/logging/logger.interface';
+import { classLog, ClassLogger } from '../../../shared/logging';
 
 /**
  * Signal based store for any kind of data which is accessed by a key.

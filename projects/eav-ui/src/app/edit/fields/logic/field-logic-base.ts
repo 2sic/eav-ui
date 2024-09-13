@@ -1,6 +1,6 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { classLog } from '../../../shared/logging';
-import { ClassLogger } from '../../../shared/logging/logger.interface';
+import { ClassLogger } from '../../../shared/logging';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
 

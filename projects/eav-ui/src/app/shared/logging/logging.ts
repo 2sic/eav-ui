@@ -1,5 +1,5 @@
-import { EavLogger } from './eav-logger';
-import { ClassLogger } from './logger.interface';
+import { ClassLoggerReal } from './class/class-logger-real';
+import { ClassLogger } from './class/class-logger';
 
 //
 // This is a special section for logging.
@@ -34,5 +34,5 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
     name,
     specs: specs ?? {} as TSpecs,
   }
-  return new EavLogger<TSpecs>(logSpecs);
+  return new ClassLoggerReal<TSpecs>(logSpecs);
 }

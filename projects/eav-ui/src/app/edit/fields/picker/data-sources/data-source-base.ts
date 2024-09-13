@@ -10,8 +10,7 @@ import { ServiceBase } from '../../../../shared/services/service-base';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
-import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
+import { classLog, ClassLogger } from '../../../../shared/logging';
 
 @Injectable()
 export abstract class DataSourceBase extends ServiceBase {

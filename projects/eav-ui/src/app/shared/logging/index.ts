@@ -6,3 +6,5 @@
  */
 
 export * from './logging';
+export { ClassLogger } from './class/class-logger';
+export { FnLogger } from './fn/fn-logger.interface';

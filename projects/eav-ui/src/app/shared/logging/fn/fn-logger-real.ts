@@ -1,6 +1,6 @@
 import { consoleLogObject } from '../output-console';
 import { FnLogger } from './fn-logger.interface';
-import { ClassLogger, RecordOrGenerator } from '../logger.interface';
+import { ClassLogger, RecordOrGenerator } from '../class/class-logger';
 
 export class FnLoggerReal implements FnLogger {
   
