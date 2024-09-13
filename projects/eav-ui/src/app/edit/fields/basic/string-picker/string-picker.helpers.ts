@@ -7,7 +7,7 @@ import { DropdownOption } from '../../../../../../../edit-types';
 export function calculateDropdownOptions(
   currentValue: string,
   type: 'string' | 'number',
-  dropdownValuesFormat: '' | 'value-label', // firs one is empty as a compatibility with old 2sxc versions
+  dropdownValuesFormat: '' | 'value-label', // first one is empty as a compatibility with old 2sxc versions
   dropdownValues: string
 ): DropdownOption[] {
   let options: DropdownOption[] = [];

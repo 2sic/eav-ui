@@ -19,25 +19,25 @@ export class ValidationHelpers {
 
   static isRequired(settings: FieldSettings): boolean {
     // hidden field can't be required
-    return this.ignoreValidators(settings) ? false : settings.Required;
+    return this.#shouldIgnoreValidators(settings) ? false : settings.Required;
   }
 
   public static getValidators(specs: ValidationHelperSpecs, inputType: InputTypeStrict): ValidatorFn[] {
     // TODO: merge all validators in a single function? Should be faster
     const validators: ValidatorFn[] = [
       inputType !== InputTypeCatalog.HyperlinkLibrary
-        ? this.required(specs)
-        : this.requiredAdam(specs),
-      this.pattern(specs),
-      this.decimals(specs),
-      this.min(specs),
-      this.max(specs),
-      this.minNoItems(specs),
-      this.maxNoItems(specs),
-      this.formulaValidate(specs),
+        ? this.#required(specs)
+        : this.#requiredAdam(specs),
+      this.#regEx(specs),
+      this.#decimals(specs),
+      this.#numberMin(specs),
+      this.#numberMax(specs),
+      this.#listMin(specs),
+      this.#listMax(specs),
+      this.#formulaValidate(specs),
     ];
     if (inputType === InputTypeCatalog.CustomJsonEditor)
-      validators.push(this.validJson(specs));
+      validators.push(this.#jsonValidator(specs));
     return validators;
   }
 
@@ -50,42 +50,42 @@ export class ValidationHelpers {
       control._warning$ = new BehaviorSubject<ValidationErrors>(null);
   }
 
-  private static ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs): FieldSettings {
+  static #ensureWarningsAndGetSettingsIfNoIgnore(control: AbstractControl, specs: ValidationHelperSpecs): FieldSettings {
     this.ensureWarning(control);
     const settings = specs.settings();
-    if (this.ignoreValidators(settings)) return null;
+    if (this.#shouldIgnoreValidators(settings)) return null;
     return settings;
   }
 
-  private static required(specs: ValidationHelperSpecs): ValidatorFn {
+  static #required(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || !s.valueRequired) return null;
       return Validators.required(control);
     };
   }
 
-  private static requiredAdam(specs: ValidationHelperSpecs): ValidatorFn {
+  static #requiredAdam(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || !s.valueRequired) return null;
 
       return (control as AdamControl).adamItems === 0 ? { required: true } : null;
     };
   }
 
-  private static pattern(specs: ValidationHelperSpecs): ValidatorFn {
+  static #regEx(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || !s.ValidationRegExJavaScript) return null;
 
       return Validators.pattern(s.ValidationRegExJavaScript)(control);
     };
   }
 
-  private static decimals(specs: ValidationHelperSpecs): ValidatorFn {
+  static #decimals(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s?.Decimals == null || s.Decimals < 0) return null;
       if (control.value == null) return null;
 
@@ -95,51 +95,41 @@ export class ValidationHelpers {
     };
   }
 
-  private static min(specs: ValidationHelperSpecs): ValidatorFn {
+  static #numberMin(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s?.Min == null) return null;
 
       return Validators.min(s.Min)(control);
     };
   }
 
-  private static max(specs: ValidationHelperSpecs): ValidatorFn {
+  static #numberMax(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s?.Max == null) return null;
 
       return Validators.max(s.Max)(control);
     };
   }
 
-  private static minNoItems(specs: ValidationHelperSpecs): ValidatorFn {
+  static #listMin(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || s.AllowMultiMin == 0 || s.AllowMultiMin == undefined) return null;
-
-      const lessThanMin = (Array.isArray(control.value)
-        ? control.value.length
-        : convertValueToArray(control.value, s.Separator, s._options).length)
-          < s.AllowMultiMin
-      return lessThanMin ? { minNoItems: s.AllowMultiMin } : null;
+      return countValues(control, s) < s.AllowMultiMin ? { minNoItems: s.AllowMultiMin } : null;
     };
   }
 
-  private static maxNoItems(specs: ValidationHelperSpecs): ValidatorFn {
+  static #listMax(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const s = this.ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
+      const s = this.#ensureWarningsAndGetSettingsIfNoIgnore(control, specs);
       if (s == null || s.AllowMultiMax == 0 || s.AllowMultiMax == undefined) return null;
-
-      const moreThanMax = (Array.isArray(control.value)
-        ? control.value.length
-        : convertValueToArray(control.value, s.Separator, s._options).length)
-        > s.AllowMultiMax
-      return moreThanMax ? { maxNoItems: s.AllowMultiMax } : null;
+      return countValues(control, s) > s.AllowMultiMax ? { maxNoItems: s.AllowMultiMax } : null;
     };
   }
 
-  private static validJson(specs: ValidationHelperSpecs): ValidatorFn {
+  static #jsonValidator(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = specs.settings();
@@ -147,7 +137,7 @@ export class ValidationHelpers {
       let warning: boolean;
       const jsonMode = settings.JsonValidation;
 
-      if (this.ignoreValidators(settings) || jsonMode === 'none' || !control.value) {
+      if (this.#shouldIgnoreValidators(settings) || jsonMode === 'none' || !control.value) {
         error = false;
         warning = false;
       } else {
@@ -171,14 +161,14 @@ export class ValidationHelpers {
     };
   }
 
-  private static formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
+  static #formulaValidate(specs: ValidationHelperSpecs): ValidatorFn {
     return (control: AbstractControlPro): ValidationErrors | null => {
       this.ensureWarning(control);
       const fieldProps = specs.fieldsSettingsService.fieldProps[specs.fieldName]();
       const formulaValidation = fieldProps.formulaValidation;
 
       const { error, warning } = (() => {
-        if (this.ignoreValidators(specs.settings()) || formulaValidation == null)
+        if (this.#shouldIgnoreValidators(specs.settings()) || formulaValidation == null)
           return { error: false, warning: false };
         if (formulaValidation.severity === 'error')
           return { error: true, warning: false };
@@ -193,10 +183,17 @@ export class ValidationHelpers {
   }
 
   /** Hidden fields can't have validators */
-  private static ignoreValidators(settings: FieldSettings): boolean {
+  static #shouldIgnoreValidators(settings: FieldSettings): boolean {
     return !ItemFieldVisibility.mergedVisible(settings);
   }
 }
+
+function countValues(control: AbstractControl, s: FieldSettings): number {
+  return Array.isArray(control.value)
+    ? control.value.length
+    : convertValueToArray(control.value, s.Separator, s._options).length;
+}
+
 
 export class ValidationHelperSpecs {
   constructor(
