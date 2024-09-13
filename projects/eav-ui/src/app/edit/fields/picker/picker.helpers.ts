@@ -2,6 +2,7 @@ import { DropdownOption } from '../../../../../../edit-types/src/DropdownOption'
 import { PickerItem } from './models/picker-item.model';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { classLog } from '../../../shared/logging';
+import groupBy from 'lodash-es/groupBy';
 
 export function correctStringEmptyValue(
   fieldValue: string | string[],
@@ -29,7 +30,7 @@ export function correctStringEmptyValue(
     } satisfies PickerItem);
   });
 
-  log.a('equalizeSelectedItems', {
+  log.a('correctStringEmptyValue', {
     fieldValue,
     separator,
     dropdownOptions,
@@ -67,19 +68,20 @@ export function convertArrayToString(value: string | string[], separator: string
 export function filterGuids(entityName: string, fieldName: string, guids: string[]): string[] {
   if (guids == null) return;
 
-  const validGuids: string[] = [];
-  const invalidGuids: string[] = [];
-  for (const guid of guids) {
-    if (guidRegex().test(guid)) {
-      validGuids.push(guid);
-    } else {
-      invalidGuids.push(guid);
-    }
-  }
+  const grouped = groupBy(guids, guid => guidRegex().test(guid) ? 'valid' : 'invalid');
 
-  if (invalidGuids.length > 0) {
-    console.error(`Found invalid guids in Entity: "${entityName}", Field: "${fieldName}"`, invalidGuids);
-  }
+  // const validGuids: string[] = [];
+  // const invalidGuids: string[] = [];
+  // for (const guid of guids) {
+  //   if (guidRegex().test(guid)) {
+  //     validGuids.push(guid);
+  //   } else {
+  //     invalidGuids.push(guid);
+  //   }
+  // }
 
-  return validGuids;
+  if (grouped.invalid) // invalidGuids.length > 0)
+    console.error(`Found invalid guids in Entity: "${entityName}", Field: "${fieldName}"`, grouped.invalid); // invalidGuids);
+
+  return grouped.valid ?? []; // validGuids;
 }

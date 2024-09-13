@@ -1,7 +1,7 @@
 import { StateAdapter } from "./state-adapter";
-import { convertArrayToString } from "../picker.helpers";
 import { Injectable } from '@angular/core';
 import { classLog } from "../../../../shared/logging";
+import { StateUiMapperStringArray } from './state-ui-mapper-string-array';
 
 @Injectable()
 export class StateAdapterString extends StateAdapter {
@@ -10,7 +10,7 @@ export class StateAdapterString extends StateAdapter {
 
   constructor() { super(); }
 
-  protected override asFieldValue(valueArray: string[]): string | string[] {
-    return convertArrayToString(valueArray, this.settings().Separator);
-  }
+  // Noop mapper, since the stored data must be string, and the UI data is also a string...?
+  mapper = new StateUiMapperStringArray('todo field name', this.settings);
+
 }

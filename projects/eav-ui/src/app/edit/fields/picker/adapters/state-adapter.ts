@@ -8,6 +8,7 @@ import { FieldState } from '../../field-state';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog, ClassLogger } from '../../../../shared/logging';
+import { StateUiMapperBase } from './state-ui-mapper-base';
 
 const logSpecs = {
   all: false,
@@ -15,6 +16,7 @@ const logSpecs = {
   add: true,
   remove: true,
   reorder: true,
+  doAfterDelete: true,
   selectedItems: true,
   sepAndOpts: true,
   createEntityTypes: true,
@@ -22,8 +24,10 @@ const logSpecs = {
 };
 
 @Injectable()
-export class StateAdapter {
+export abstract class StateAdapter {
   
+  //#region Setup / Inject / Logs
+
   log = classLog({StateAdapter}, logSpecs);
   
   public formConfigSvc = inject(FormConfigService);
@@ -31,7 +35,15 @@ export class StateAdapter {
 
   constructor() { }
   
-  #settings = this.#fieldState.settings;
+  public linkLog(log: ClassLogger): this {
+    if (!this.log.enabled)
+      this.log.inherit(log);
+    return this;
+  };
+
+  //#endregion
+
+  protected readonly settings = this.#fieldState.settings;
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 
@@ -39,7 +51,7 @@ export class StateAdapter {
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
   public createEntityTypes = computedObj('createEntityTypes', () => {
-    const types = this.#settings().CreateTypes;
+    const types = this.settings().CreateTypes;
     // Get / split the types from the configuration
     const raw = types
       ? types
@@ -60,25 +72,24 @@ export class StateAdapter {
     return updated;
   });
 
-  protected readonly settings = this.#fieldState.settings;
+  /** Signal with all the currently selected items */
+  public selectedItems = (() => {
+    // Computed just to debounce changes on separator and options from field-settings (old picker)
+    const sepAndOpts = computedObj('sepAndOpts', () => {
+      const settings = this.settings();
+      return { separator: settings.Separator, options: settings._options };
+    });
 
-  #sepAndOpts = computedObj('sepAndOpts', () => {
-    const settings = this.#settings();
-    return { separator: settings.Separator, options: settings._options };
-  });
+    // Find selected items and correct empty value (if there is an empty-string options)
+    return computedObj('selectedItems', () => {
+      const sAndO = sepAndOpts();
+      return correctStringEmptyValue(this.#fieldState.uiValue(), sAndO.separator, sAndO.options);
+    });
+  })();
 
-  public selectedItems = computedObj('selectedItems', () => {
-    const sAndO = this.#sepAndOpts();
-    return correctStringEmptyValue(this.#fieldState.uiValue(), sAndO.separator, sAndO.options);
-  });
+  //#region Callbacks for setting the focus - TODO: not sure if it works ATM
 
   #focusOnSearchComponent: () => void;
-
-  public linkLog(log: ClassLogger): this {
-    if (!this.log.enabled)
-      this.log.inherit(log);
-    return this;
-  };
 
   public attachCallback(focusCallback: () => void): this {
     this.log.a('attachCallback');
@@ -86,31 +97,36 @@ export class StateAdapter {
     return this;
   }
 
-  #updateValue(operation: (original: string[]) => string[]): void {
-    const l = this.log.fnIf('updateValue');
-    const valueArray: string[] = this.asArray();
-    const modified = operation(valueArray);
-    const newValue = this.asFieldValue(modified);
-    this.#fieldState.ui().set(newValue);
-  }
+  //#endregion
 
-  protected asFieldValue(valueArray: string[]): string | string[] {
-    return typeof this.#fieldState.uiValue() === 'string'
-      ? convertArrayToString(valueArray, this.#settings().Separator)
-      : valueArray;
-  }
+  //#region Conversion back and forth between formats
+
+  /** Mapper to convert between the state and the UI - must be added by inheriting class */
+  public abstract mapper: StateUiMapperBase;
+
 
   public asArray(): string[] {
     const value = this.#fieldState.uiValue();
     return (typeof value === 'string')
-      ? convertValueToArray(value, this.#settings().Separator)
+      ? convertValueToArray(value, this.settings().Separator)
       : [...value];
   }
 
+  //#endregion
+
+  //#region CRUD operations
+
+  #updateValue(operation: (original: string[]) => string[]): void {
+    const l = this.log.fnIf('updateValue');
+    const valueArray: string[] = this.asArray();
+    const modified = operation(valueArray);
+    const newValue = this.mapper.toState(modified);
+    this.#fieldState.ui().set(newValue);
+  }
   
   public add(value: string): void {
     this.log.fnIf('add', { value });
-    this.#updateValue(list => (this.#settings().AllowMultiValue) ? [...list, value] : [value]);
+    this.#updateValue(list => (this.settings().AllowMultiValue) ? [...list, value] : [value]);
   }
 
   public reorder(reorderIndexes: ReorderIndexes) {
@@ -137,7 +153,12 @@ export class StateAdapter {
     }
   }
 
-  public doAfterDelete(props: DeleteEntityProps) { this.remove(props.index); }
+  public doAfterDelete(props: DeleteEntityProps) {
+    this.log.fnIf('doAfterDelete', { props });
+    this.remove(props.index);
+  }
+
+  //#endregion
 
   toggleFreeTextMode(): void {
     this.isInFreeTextMode.update(p => !p);
@@ -159,13 +180,4 @@ export class StateAdapter {
 //       && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue))
 //       && (!allowMultiValue || (allowMultiValue && isExpanded));
 //   })
-// );
-// if (dumpProperties) {
-//   this.shouldPickerListBeShown$.subscribe(shouldShow => this.log.add(`shouldPickerListBeShown ${shouldShow}`));
-// }
-
-
-// // signal
-// this.subscriptions.add(
-//   selectedItems$.subscribe(this.selectedItems.set)
 // );
