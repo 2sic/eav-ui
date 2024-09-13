@@ -23,7 +23,7 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
   specs?: TSpecs,
   enabled: boolean = false
 ): ClassLogger<TSpecs> {
-  if (!enabled) return new ClassLoggerNoop();
+  if (!enabled) return new ClassLoggerNoop(specs);
   // Pick the first key as the name of the class
   const name = (() => {
     if (!owner) return 'unknown';

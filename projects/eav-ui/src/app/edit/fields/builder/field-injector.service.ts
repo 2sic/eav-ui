@@ -31,7 +31,7 @@ const detailedDebug = false;
 @Injectable()
 export class FieldStateInjectorFactory {
 
-  log = classLog({FieldStateInjectorFactory}, logSpecs, true);
+  log = classLog({FieldStateInjectorFactory}, logSpecs, false);
 
   #injector = inject(Injector);
   #envInjector = inject(EnvironmentInjector);

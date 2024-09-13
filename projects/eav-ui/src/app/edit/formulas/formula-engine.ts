@@ -38,7 +38,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaEngine {
 
-  log = classLog({FormulaEngine}, logSpecs, true);
+  log = classLog({FormulaEngine}, logSpecs, false);
 
   #formulaExecSpecsFactory = transient(FormulaExecutionSpecsFactory);
 

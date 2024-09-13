@@ -19,7 +19,7 @@ const logSpecs = {
  */
 export class UiControl {
 
-  log = classLog({ UiControl }, logSpecs, true);
+  log = classLog({ UiControl }, logSpecs, false);
 
   constructor(
     public control: AbstractControl,

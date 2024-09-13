@@ -15,7 +15,7 @@ const logSpecs = {
 @Injectable()
 export class FormFieldsSyncService extends ServiceBase {
 
-  log = classLog({FormFieldsSyncService}, logSpecs, true);
+  log = classLog({FormFieldsSyncService}, logSpecs);
 
   constructor() {
     super();

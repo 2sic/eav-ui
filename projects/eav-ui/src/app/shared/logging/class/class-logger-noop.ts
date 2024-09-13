@@ -4,11 +4,14 @@ import { FnLoggerNoOp } from '../fn/fn-logger-noop';
 import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './class-logger';
 
 export class ClassLoggerNoop<TSpecs extends unknown = any> implements ClassLogger<TSpecs> {
+  constructor(specs: TSpecs) {
+    this.specs = specs ?? {} as TSpecs;
+  }
   svcId = 'noop';
   name = 'noop';
   get enabled() { return false; }
   enableChildren = false;
-  specs= {} as TSpecs;
+  specs: TSpecs;
 
   extendName(addOn: string): this { return this; }
 

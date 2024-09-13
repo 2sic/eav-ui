@@ -39,7 +39,7 @@ const logSpecs = {
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
-  log = classLog({EntityFormBuilderComponent}, logSpecs, true);
+  log = classLog({EntityFormBuilderComponent}, logSpecs, false);
 
   @Input() entityGuid: string;
 
