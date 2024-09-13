@@ -5,7 +5,6 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, Optional, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from 'projects/eav-ui/src/app/shared/logging';
@@ -20,7 +19,7 @@ export class StateAdapter {
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
   #settings = this.#fieldState.settings;
 
-  constructor(@Optional() logger: EavLogger = null) {
+  constructor(@Optional() logger?: ClassLogger) {
     this.log = logger ?? classLog({StateAdapter});
   }
 

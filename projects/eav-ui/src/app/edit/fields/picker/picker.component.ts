@@ -3,7 +3,6 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
 import { BaseComponent } from '../../../shared/components/base.component';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataSetup } from './picker-data-setup';
@@ -39,7 +38,7 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
 
   log: ClassLogger<typeof PickerComponent.logSpecs>;
   
-  constructor(@Optional()log: EavLogger = null) {
+  constructor(@Optional()log: ClassLogger = null) {
     super();
     this.log = log ?? classLog({PickerComponent}, PickerComponent.logSpecs);
     this.log.a('constructor');

@@ -1,10 +1,12 @@
+import { Injectable } from '@angular/core';
+import { EavLogger } from './eav-logger';
 import { FnLogger } from './fn/fn-logger.interface';
 import { RxTapDebug } from './rx-debug-dbg';
 
 export interface ClassLogger<TSpecs extends unknown = any> {
   svcId: string;
   name: string;
-  enabled: boolean;
+  get enabled(): boolean;
   enableChildren: boolean;
   specs: TSpecs;
 
@@ -31,3 +33,11 @@ export type BooleanKeys<T> = { [k in keyof T]: T[k] extends boolean ? k : never 
 type BooleanSpecs<T> = { [k in BooleanKeys<T>]: boolean };
 
 export type StringArrayKeys<T> = { [k in keyof T]: T[k] extends string[] ? k : never }[keyof T];
+
+/** Must also be defined as a class, so that can use it in constructors of controls etc. (usually for inheritance) */
+@Injectable()
+export class ClassLogger<TSpecs extends unknown = any> extends EavLogger<TSpecs> {
+  constructor() {
+    super('unknown-injected');
+  }
+}
