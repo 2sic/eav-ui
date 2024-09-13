@@ -112,7 +112,7 @@ export class FormulaEngine {
       const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
       const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
 
-      const pickerOptions = formulaResult.pickers;
+      const pickerOptions = formulaResult.options;
       if (pickerOptions)
         lAttr.a('picker options', { pickerOptions, version: formulaResult.pickerOptionsVer });
 
@@ -125,9 +125,9 @@ export class FormulaEngine {
         value: valueBefore,
         buildWrappers: null, // required, but set elsewhere
         formulaValidation: formulaResult.validation,
-        pickerOptions: pickerOptions ?? propsBefore.pickerOptions,
-        pickerVersion: formulaResult.pickerOptionsVer ?? propsBefore.pickerVersion,
-        pickerSelectedVerBefore: formulaResult.pickerSelectedVer ?? propsBefore.pickerVersion,
+        options: pickerOptions ?? propsBefore.options,
+        optionsVer: formulaResult.pickerOptionsVer ?? propsBefore.optionsVer,
+        selectedVer: formulaResult.pickerSelectedVer ?? propsBefore.optionsVer,
       };
     }
     return { fieldsProps, valueUpdates, fieldUpdates };

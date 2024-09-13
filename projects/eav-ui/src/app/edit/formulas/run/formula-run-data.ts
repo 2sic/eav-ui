@@ -5,6 +5,7 @@ import { FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory'
 import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
+import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
 
 /**
  * The object containing data information.
@@ -15,10 +16,12 @@ export class FormulaDataObject implements FormulaV1Data {
   /** Private variable containing the data used in the getters */
   #propsData: FormulaExecutionSpecsWithRunParams;
   #params: FormulaRunParameters;
+  #valueMapper: StateUiMapperBase;
 
   constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
     this.#params = propsData.runParameters;
+    this.#valueMapper = this.#params.pickerInfo.mapper;
   }
 
   get default(): FieldValue {
@@ -30,7 +33,7 @@ export class FormulaDataObject implements FormulaV1Data {
       return (settingsInitial as Record<string, any>)[formula.settingName];
 
     if (formula.isNewPicker)
-      return this.#params.pickerOptions as unknown as FieldValue;
+      return this.#params.pickerInfo.options as unknown as FieldValue;
   }
 
   get initial(): FieldValue {
@@ -52,15 +55,11 @@ export class FormulaDataObject implements FormulaV1Data {
 
   get value(): FieldValue {
     const formula = this.#params.formula;
-    // WIP CONTINUE HERE
-    if (formula.isNewPicker) {
-      const value = this.#params.pickerSelectedRaw?.map(pi => pi.value) ?? [];
-      console.warn('2dm value isNewPicker', value);
-      return value;
-    }
 
-    if (formula.isValue)
-      return this.#params.currentValues[formula.fieldName];
+    if (formula.isValue) {
+      const raw = this.#params.currentValues[formula.fieldName];
+      return this.#valueMapper?.toUi(raw) ?? raw;
+    }
 
     if (formula.isSetting)
       return (this.#params.settingsCurrent as Record<string, any>)[formula.settingName];
@@ -75,18 +74,18 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get selected(): PickerItem[] {
-    return this.#params.pickerSelected;
+    return this.#params.pickerInfo.selected;
   }
 
   get selectedRaw(): PickerItem[] {
-    return this.#params.pickerSelectedRaw;
+    return this.#params.pickerInfo.selectedRaw;
   }
 
   get options(): PickerItem[] {
-    return this.#params.pickerOptions;
+    return this.#params.pickerInfo.options;
   }
 
   get optionsRaw(): PickerItem[] {
-    return this.#params.pickerOptionsRaw;
+    return this.#params.pickerInfo.optionsRaw;
   }
 }

@@ -28,18 +28,18 @@ export class FormulaRunOneHelpersFactory {
     public ctTitle: string,
   ) { }
 
-  public getPartsFor(runParams: FormulaExecutionSpecsWithRunParams) {
-    const { formula, inputTypeName } = runParams.runParameters;
-    const params = this.#dataAndCtx(runParams);
-    const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, formula, this.ctTitle, params);
+  public getPartsFor(execSpecs: FormulaExecutionSpecsWithRunParams) {
+    const f = execSpecs.runParameters.formula;
+    const params = this.#dataAndCtx(execSpecs);
+    const devHelper = new FormulaDeveloperHelper(this.designerSvc, this.translate, this.logSvc, f, this.ctTitle, params);
 
     return {
-      formula,
-      fieldName: formula.fieldName,
+      formula: f,
+      fieldName: f.fieldName,
       params,
       title: this.ctTitle,
       devHelper,
-      valHelper: new FormulaValueCorrections(formula.fieldName, formula.isValue, formula.inputType, devHelper.isOpen),
+      valHelper: new FormulaValueCorrections(f.fieldName, f.isValue, f.inputType, devHelper.isOpen, execSpecs.runParameters.pickerInfo.mapper),
     };
   }
 

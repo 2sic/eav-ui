@@ -18,9 +18,9 @@ export interface FieldProps {
   buildWrappers: string[];
   formulaValidation: FormulaFieldValidation;
 
-  pickerOptions: PickerItem[];
-  pickerVersion: number | null;
-  pickerSelectedVerBefore: number | null;
+  options: PickerItem[];
+  optionsVer: number | null;
+  selectedVer: number | null;
 }
 
 /** Field Config information which never changes through the entire lifetime in the UI */

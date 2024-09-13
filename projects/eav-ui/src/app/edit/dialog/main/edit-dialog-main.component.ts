@@ -171,7 +171,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.editRoutingService.init();
     this.#loadIconsService.load();
     this.formsStateService.init();
-    this.formulaDesignerService.init();
+    this.formulaDesignerService.cache.init();
     const items$ = this.itemService.getMany$(this.#formConfig.config.itemGuids);
 
     // TODO: @2dg - this should be easy to get rid of #remove-observables

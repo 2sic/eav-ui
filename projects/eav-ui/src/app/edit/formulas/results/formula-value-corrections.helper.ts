@@ -6,6 +6,7 @@ import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { DebugFields } from '../../edit-debug';
 import { classLog } from '../../../shared/logging';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
+import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
 
 const logSpecs = {
   all: false,
@@ -27,7 +28,8 @@ export class FormulaValueCorrections {
     private fieldName: string,
     private isValue: boolean,
     private inputType: InputTypeSpecs,
-    private isOpen: boolean
+    private isOpen: boolean,
+    private valueMapper?: StateUiMapperBase,
   ) { }
 
 
@@ -86,8 +88,10 @@ export class FormulaValueCorrections {
       raw.sleep ??= null;
 
       // Fix single value - but only if it's not an array, in which case we must leave as is
-      if (raw.value && targetIsValue && !Array.isArray(raw.value))
-        raw.value = this.#oneValue(raw.value);
+      if (raw.value && targetIsValue)
+        raw.value = Array.isArray(raw.value)
+          ? this.valueMapper?.toState(raw.value) ?? raw.value
+          : this.#oneValue(raw.value);
 
       // fix fields
       if (raw.fields)

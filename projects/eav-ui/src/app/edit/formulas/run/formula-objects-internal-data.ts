@@ -11,24 +11,30 @@ import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model'
 import { Language } from '../../../shared/models/language.model';
 import { FormLanguage } from '../../form/form-languages.model';
 import { ItemService } from '../../state/item.service';
+import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
 
 export interface FormulaRunPickers {
+  /** Ready state, as it may need to wait for the picker-data to finish initialization */
   ready: boolean;
-  pickerOptionsRaw: PickerItem[];
-  pickerOptions: PickerItem[];
-  pickerOptionsVer: number | null;
-  pickerOptionsVerBefore: number | null;
-  pickerOptionsChanged: boolean;
 
-  pickerSelectedRaw: PickerItem[];
-  pickerSelected: PickerItem[];
-  pickerSelectedVerBefore: number | null;
-  pickerSelectedVer: number | null;
-  pickerChanged: boolean;
+  /** The mapper to be used when returning the value to the UI */
+  mapper: StateUiMapperBase;
+
+  optionsRaw: PickerItem[];
+  options: PickerItem[];
+  optionsVer: number | null;
+  optionsVerBefore: number | null;
+  optionsChanged: boolean;
+
+  selectedRaw: PickerItem[];
+  selected: PickerItem[];
+  selectedVerBefore: number | null;
+  selectedVer: number | null;
+  changed: boolean;
 }
 
 /** Everything a formula needs to run */
-export interface FormulaRunParameters extends FormulaRunPickers {
+export interface FormulaRunParameters { // extends FormulaRunPickers {
   /** The formula to run */
   formula: FormulaCacheItem;
   currentValues: ItemValuesOfLanguage;
@@ -37,6 +43,7 @@ export interface FormulaRunParameters extends FormulaRunPickers {
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
   itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;
+  pickerInfo: FormulaRunPickers;
 }
 
 export interface FormulaExecutionSpecs {

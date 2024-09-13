@@ -63,12 +63,12 @@ export class FieldsSettingsService {
         const lPicker = this.log.fnIf('pickerUpdate');
         // 1. find all fieldProps with picker data
         const toTransfer = Object.entries(update)
-          .filter(([_, v]) => v.pickerOptions);
+          .filter(([_, v]) => v.options);
         // lPicker.a('To Transfer', { map: toTransfer.map(([k, v]) => ({ k, v })) });
         // 2. transfer to pickerData
         for (const [fieldName, fieldProps] of toTransfer) {
           lPicker.a('Transfer', { fieldName, fieldProps });
-          fieldProps.constants.pickerData().optionsOverride.set(fieldProps.pickerOptions);
+          fieldProps.constants.pickerData().optionsOverride.set(fieldProps.options);
         }
       },
       { allowSignalWrites: true }

@@ -6,7 +6,7 @@ import { EntityReader, ContentTypeSettingsHelpers } from '../../shared/helpers';
 import { EavItem } from '../../shared/models/eav/eav-item';
 import { FormulaSourceCodeHelper } from './source-code-helper';
 import { FormulaFunction } from '../formula-definitions';
-import { FormulaDefaultTargets, FormulaNewPickerTargets, FormulaTarget, SettingsFormulaPrefix } from '../targets/formula-targets';
+import { FormulaDefaultTargets, FormulaTarget, SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaCacheItemConstants } from './formula-cache.model';
@@ -128,7 +128,7 @@ export class FormulaCacheBuilder extends ServiceBase {
       }
     }
 
-    return formulaCache;
+    return l.r(formulaCache);
   }
 
   #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'isNewPicker' | 'disabled' | 'disabledReason'> {

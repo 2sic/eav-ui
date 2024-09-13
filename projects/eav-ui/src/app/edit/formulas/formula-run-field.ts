@@ -68,7 +68,7 @@ export class FormulaRunField {
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
-    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picker.pickerChanged));
+    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picker.changed));
     const splitDisabled = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
     if (splitDisabled.disabled)
       this.#showDisabledFormulasWarnings(splitDisabled.disabled);
@@ -84,7 +84,7 @@ export class FormulaRunField {
     if (formulas.length == 0)
       return finalize({}, valueBefore, {
         value: valueBefore, validation: null, fields: [], settings: {},
-        pickers: null, pickerOptionsVer: null, pickerSelectedVer: null
+        options: null, pickerOptionsVer: null, pickerSelectedVer: null
       });
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -95,6 +95,7 @@ export class FormulaRunField {
       settingsCurrent: settingsBefore,
       itemHeader,
       ...picker,
+      pickerInfo: picker,
     };
     const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
 
@@ -116,29 +117,30 @@ export class FormulaRunField {
     const picker = fieldConstants.pickerData();
     const optionsRaw = picker?.optionsSource(); // must access before version check
     const optionsVer = getVersion(picker?.optionsSource);
-    const optionsVerBefore = propsBefore.pickerVersion;
+    const optionsVerBefore = propsBefore.optionsVer;
     const optionsChanged = optionsVer !== optionsVerBefore;
 
     const selectedRaw = picker?.selectedAll();
     const selectedVer = getVersion(picker?.selectedAll);
-    const selectedVerBefore = propsBefore.pickerSelectedVerBefore;
+    const selectedVerBefore = propsBefore.selectedVer;
     const selectedChanged = selectedVer !== selectedVerBefore;
 
     const result: FormulaRunPickers = {
       ready: picker?.ready(),
-      pickerOptionsRaw: optionsRaw,
-      pickerOptions: picker?.optionsFinal(),
-      pickerOptionsVer: optionsVer,
-      pickerOptionsVerBefore: optionsVerBefore,
-      pickerOptionsChanged: optionsChanged,
+      mapper: picker?.state?.mapper,
+      optionsRaw: optionsRaw,
+      options: picker?.optionsFinal(),
+      optionsVer: optionsVer,
+      optionsVerBefore: optionsVerBefore,
+      optionsChanged: optionsChanged,
 
       // Selected
-      pickerSelectedRaw: selectedRaw,
-      pickerSelected: picker?.selectedState(),
-      pickerSelectedVer: selectedVer,
-      pickerSelectedVerBefore: selectedVerBefore,
+      selectedRaw: selectedRaw,
+      selected: picker?.selectedState(),
+      selectedVer: selectedVer,
+      selectedVerBefore: selectedVerBefore,
 
-      pickerChanged: selectedChanged || optionsChanged,
+      changed: selectedChanged || optionsChanged,
     };
     return l.r(result);
   }
@@ -159,7 +161,7 @@ export class FormulaRunField {
     let value: FieldValue;                   // The new value
     let validation: FormulaFieldValidation;  // The new validation
     const fields: FieldValuePair[] = [];     // Any additional fields
-    let pickers: PickerItem[] = null; // Any additional picker options
+    let options: PickerItem[] = null; // Any additional picker options
     let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
 
     const start = performance.now();
@@ -192,7 +194,7 @@ export class FormulaRunField {
 
       // new - experimental
       if (raw.options)
-        pickers = raw.options;
+        options = raw.options;
 
       // If the value is not set, skip further result processing
       if (raw.value === undefined)
@@ -219,10 +221,10 @@ export class FormulaRunField {
       value,
       validation,
       fields,
-      pickers,
+      options,
       settings: settingsNew,
-      pickerOptionsVer: runParams.pickerOptionsVer,
-      pickerSelectedVer: runParams.pickerSelectedVer,
+      pickerOptionsVer: runParams.pickerInfo.optionsVer,
+      pickerSelectedVer: runParams.pickerInfo.selectedVer,
     };
     return l.r(result, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
   }
@@ -238,9 +240,9 @@ export class FormulaRunField {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  #runFormula(runParams: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
+  #runFormula(execSpecs: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
 
-    const { formula, fieldName, params, title, devHelper, valHelper } = this.runOneHelper.getPartsFor(runParams);
+    const { formula, fieldName, params, title, devHelper, valHelper } = this.runOneHelper.getPartsFor(execSpecs);
 
     const l = this.log.fnIfInList('runFormula', 'fields', fieldName, { fieldName });
 

@@ -13,21 +13,32 @@ import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { IntellisenseV2 } from './intellisense-v2';
 import { classLog } from '../../../shared/logging';
 
+const logSpecs = {
+  all: false,
+  constructor: false,
+  setDesignerOpen: false,
+}
+
 /**
  * Contains methods for extended CRUD operations for formulas.
  */
 @Injectable()
 export class FormulaDesignerService {
 
-  log = classLog({FormulaDesignerService});
+  log = classLog({FormulaDesignerService}, logSpecs);
+
+  public cache = transient(FormulaCacheService);
+  #targetsService = transient(FormulaTargetsService);
+
+  constructor(private itemService: ItemService) {
+    this.log.fnIf('constructor');
+  }
 
   /**
    * Contain all the settings to all items/settings in this form
    * for rare cases (formulas) which need to access settings of all items
    */
   public itemSettingsServices: Record<string, FieldsSettingsService> = {};
-
-  public cache = transient(FormulaCacheService);
 
   /** The current state of the UI, what field is being edited etc. */
   public designerState = signalObj<DesignerState>('designerState', {
@@ -43,8 +54,6 @@ export class FormulaDesignerService {
     const state = this.designerState();
     return this.cache.resultListIndexAndOriginal(state).value;
   });
-
-  #targetsService = transient(FormulaTargetsService);
 
   currentTargetOptions = computedObj<TargetOption[]>('currentTargetOptions', () => {
     const state = this.designerState();
@@ -88,16 +97,6 @@ export class FormulaDesignerService {
     });
     return fieldOptions;
   });
-
-  constructor(
-    private itemService: ItemService,
-  ) {
-    this.log.a('constructor');
-  }
-
-  init(): void {
-    this.cache.init();
-  }
 
   initAfterItemSettingsAreReady(): void {
     // Initialize the first designer state to contain the first item and field
@@ -161,11 +160,10 @@ export class FormulaDesignerService {
    * @param isOpen
    */
   setDesignerOpen(isOpen: boolean): void {
+    this.log.fnIf('setDesignerOpen', { isOpen });
     this.designerState.set({
       ...this.designerState(),
       isOpen,
     } satisfies DesignerState);
   }
-
-
 }

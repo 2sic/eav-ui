@@ -8,7 +8,7 @@ import { FieldSettings, FieldValue } from 'projects/edit-types';
  * 
  * This class should help map both ways.
  */
-export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, TUi extends unknown = unknown> {
+export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue> {
   
   constructor(protected fieldName?: string) { }
 
@@ -18,7 +18,7 @@ export abstract class StateUiMapperBase<TState extends FieldValue = FieldValue, 
 }
 
 
-export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = FieldValue, TUi extends unknown = unknown>
+export abstract class StateUiMapperWithSettingsBase<TState extends FieldValue = FieldValue, TUi extends FieldValue = FieldValue>
   extends StateUiMapperBase<TState, TUi> {
   constructor(fieldName: string, protected settings: Signal<FieldSettings>) {
     super(fieldName);

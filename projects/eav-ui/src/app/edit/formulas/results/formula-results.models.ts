@@ -8,7 +8,7 @@ export interface RunFormulasResult {
   validation: FormulaFieldValidation;
   value: FieldValue;
   fields: FieldValuePair[];
-  pickers: PickerItem[];
+  options: PickerItem[];
   pickerOptionsVer: number | null;
   pickerSelectedVer: number | null;
 }
