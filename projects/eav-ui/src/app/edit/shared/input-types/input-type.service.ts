@@ -12,7 +12,7 @@ import { classLog } from '../../../shared/logging';
 export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata> {
 
   constructor() {
-    super(classLog({InputTypeService}, null, true));
+    super(classLog({InputTypeService}, null));
   }
 
   override getId = (item: InputTypeMetadata) => item.Type;

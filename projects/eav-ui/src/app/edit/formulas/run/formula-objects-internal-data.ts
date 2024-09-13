@@ -11,6 +11,14 @@ import { Language } from '../../../shared/models/language.model';
 import { FormLanguage } from '../../form/form-languages.model';
 import { ItemService } from '../../state/item.service';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
+import { FieldPropsPicker } from '../../state/fields-configs.model';
+import { PickerData } from '../../fields/picker/picker-data';
+
+export interface FormulaRunPicker extends FieldPropsPicker {
+  listRaw: PickerItem[];
+  verBefore: number | null;
+  changed: boolean;
+}
 
 export interface FormulaRunPickers {
   /** Ready state, as it may need to wait for the picker-data to finish initialization */
@@ -19,16 +27,10 @@ export interface FormulaRunPickers {
   /** The mapper to be used when returning the value to the UI */
   mapper: StateUiMapperBase;
 
-  options: PickerItem[];
-  optionsRaw: PickerItem[];
-  optionsVer: number | null;
-  optionsVerBefore: number | null;
-  optionsChanged: boolean;
+  picker: PickerData,
+  options: FormulaRunPicker;
+  selected: FormulaRunPicker;
 
-  selected: PickerItem[];
-  selectedRaw: PickerItem[];
-  selectedVer: number | null;
-  selectedVerBefore: number | null;
   changed: boolean;
 }
 

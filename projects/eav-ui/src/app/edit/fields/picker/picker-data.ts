@@ -51,9 +51,8 @@ export class PickerData {
    */
   ready = signalObj('sourceIsReady', false);
 
-
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
-  public optionsSource = computedObj('optionsSource', () => {
+  public optionsRaw = computedObj('optionsSource', () => {
     const ready = this.ready();
     return (ready ? this.source.optionsOrHints() : null) ?? [];
   });
@@ -64,27 +63,36 @@ export class PickerData {
   public optionsFinal = computedObj('optionsFinal', () => {
     const override = this.optionsOverride();
     if (override) return override;
-    return this.optionsSource();
+    return this.optionsRaw();
   });
 
   //#endregion
 
   //#region Selected Data
 
+  public selectedOverride = signalObj<PickerItem[]>('selectedOverride', null);
+
   /** Signal containing the currently selected items */
-  public selectedState = computedObj('selectedState', () => {
+  public selectedRaw = computedObj('selectedState', () => {
+    // watch ready to rerun once initialized
     const ready = this.ready();
-    return this.#addInfosFromSourceForUi(ready ? this.state.selectedItems() : [], this.optionsFinal());
+    if (!ready) return [];
+    return this.#addInfosFromSourceForUi(this.state.selectedItems(), this.optionsFinal());
   });
 
+  public selectedCopy(original: PickerItem[]): PickerItem[] {
+    return original.map(item => ({ ...item }));
+  }
 
-  public selectedOverride = signalObj<PickerItem[]>('selectedOverride', null);
 
   /** Signal containing the currently selected items */
   public selectedAll = computedObj('selectedAll', () => {
     const override = this.selectedOverride();
-    if (override) return override;
-    return this.selectedState();
+    if (override) {
+      console.log('💖 override');
+      return override;
+    }
+    return this.selectedRaw();
   });
 
   /** Signal containing the first selected item */

@@ -2,12 +2,11 @@ import { EavContentType } from "../../shared/models/eav";
 import { FormulaPromiseResult } from "./formula-promise-result.model";
 import { FormulaSettingsHelper } from "../results/formula-settings.helper";
 import { FormulaValueCorrections } from "../results/formula-value-corrections.helper";
-import { FormulaTargets, SettingsFormulaPrefix } from '../targets/formula-targets';
+import { SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { Injectable, Signal } from "@angular/core";
 import { FormulaResultRaw } from "../results/formula-results.models";
 import { FieldSettingPair } from './formula-promise-result.model';
-import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { ItemService } from '../../state/item.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
@@ -16,6 +15,7 @@ import { FieldsValuesModifiedHelper } from '../../state/fields-values-modified.h
 import { FieldsPropsEngineCycle } from '../../state/fields-properties-engine-cycle';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../shared/logging';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 /**
  * FormulaPromiseHandler is responsible for handling the promise parts of formula results.
@@ -141,10 +141,10 @@ export class FormulaPromiseHandler {
       settings.forEach(valueSet => {
         const settingsCurrent = cycle.fieldProps[valueSet.name]?.settings;
         
-        let settingsNew: Record<string, any> = {};
+        let settingsNew: Partial<FieldSettings> = {};
         valueSet.settings.forEach(setting => {
           const target = SettingsFormulaPrefix + setting.settingName;
-          ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(target, settingsCurrent, setting.value, settingsNew));
+          settingsNew = FormulaSettingsHelper.keepSettingIfTypeOk(target, settingsCurrent, setting.value, settingsNew);
         });
 
         const constantFieldPart = cycle.getFieldConstants(valueSet.name);

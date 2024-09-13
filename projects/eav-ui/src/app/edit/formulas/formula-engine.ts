@@ -23,10 +23,10 @@ export const logSpecsFormulaFields = [...DebugFields, 'StringPicker']; // or '*'
 
 const logSpecs = {
   all: false,
-  getFormulas: true,
-  runAllFields: false,
+  getFormulas: false,
+  runAllFields: true,
   runFormula: false,
-  runOneFieldOrInitSettings: true,
+  runOneFieldOrInitSettings: false,
   fields: logSpecsFormulaFields,
 };
 
@@ -38,7 +38,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaEngine {
 
-  log = classLog({FormulaEngine}, logSpecs, false);
+  log = classLog({FormulaEngine}, logSpecs, true);
 
   #formulaExecSpecsFactory = transient(FormulaExecutionSpecsFactory);
 
@@ -88,7 +88,7 @@ export class FormulaEngine {
       // run formulas
       const runOneHelper = new FormulaRunOneHelpersFactory(this.designerSvc, this.translate, this.logSvc, this.#contentTypeTitle);
       const runOne = new FormulaRunField(this.#promiseHandler, this.designerSvc, this.#entityGuid, runOneHelper);
-      const formulaResult = runOne.runOrInitSettings(
+      const allResults = runOne.runOrInitSettings(
         cycle.values,
         attr.Name,
         fieldConstants,
@@ -100,21 +100,22 @@ export class FormulaEngine {
         settingsUpdateHelper,
       );
 
-      const fixed = formulaResult.settings;
+      const fixed = allResults.settings;
 
       // Add any value changes to the queue for finalizing
-      valueUpdates[attr.Name] = formulaResult.value;
+      valueUpdates[attr.Name] = allResults.value;
 
       // If _other_ fields were updated, add it to the queue for later processing
-      if (formulaResult.fields)
-        fieldUpdates.push(...formulaResult.fields);
+      if (allResults.fields)
+        fieldUpdates.push(...allResults.fields);
 
       const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
       const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
 
-      const pickerOptions = formulaResult.options;
-      if (pickerOptions)
-        lAttr.a('picker options', { pickerOptions, version: formulaResult.pickerOptionsVer });
+      if (allResults.opts.list)
+        lAttr.a('picker options', { options: allResults.opts.list, version: allResults.opts.ver });
+      if (allResults.sel.list)
+        lAttr.a('picker selected', { selected: allResults.sel.list, version: allResults.opts.ver });
 
       fieldsProps[attr.Name] = {
         ...propsBefore,
@@ -124,10 +125,10 @@ export class FormulaEngine {
         translationState,
         value: valueBefore,
         buildWrappers: null, // required, but set elsewhere
-        formulaValidation: formulaResult.validation,
-        options: pickerOptions ?? propsBefore.options,
-        optionsVer: formulaResult.pickerOptionsVer ?? propsBefore.optionsVer,
-        selectedVer: formulaResult.pickerSelectedVer ?? propsBefore.optionsVer,
+        formulaValidation: allResults.validation,
+        // Options and Selected. Use spread, as values must be undefined if not updated
+        opts: { ...propsBefore.opts, ...allResults.opts, },
+        sel: { ...propsBefore.sel, ...allResults.sel, },
       };
     }
     return { fieldsProps, valueUpdates, fieldUpdates };

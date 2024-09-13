@@ -6,6 +6,16 @@ import { FormulaFieldValidation } from '../formulas/targets/formula-targets';
 import { InputTypeSpecs } from '../shared/input-types/input-type-specs.model';
 import { PickerData } from '../fields/picker/picker-data';
 
+/**
+ * Field properties of a picker.
+ * Implemented as a class, so we can use new FieldPropsPicker();
+ * and reliably get undefined values (not null) to spread objects.
+ */
+export class FieldPropsPicker {
+  list: PickerItem[];
+  ver: number | undefined;
+}
+
 export interface FieldProps {
   /** The language which applied to these field props as added to cache */
   language: string;
@@ -18,9 +28,8 @@ export interface FieldProps {
   buildWrappers: string[];
   formulaValidation: FormulaFieldValidation;
 
-  options: PickerItem[];
-  optionsVer: number | null;
-  selectedVer: number | null;
+  opts: FieldPropsPicker;
+  sel: FieldPropsPicker;
 }
 
 /** Field Config information which never changes through the entire lifetime in the UI */

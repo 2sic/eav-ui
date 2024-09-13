@@ -19,7 +19,7 @@ import { classLog } from '../../shared/logging';
 import { PickerData } from '../fields/picker/picker-data';
 
 const logSpecs = {
-  pickerUpdate: false,
+  effectTransferPickerData: true,
   regenerateProps: true,
   // Debug only on the following content type
   type: '', //'@String';
@@ -38,7 +38,7 @@ const maxCyclesWarning = "Max cycles reached, stopping for this second";
 @Injectable()
 export class FieldsSettingsService {
 
-  log = classLog({FieldsSettingsService}, logSpecs, false);
+  log = classLog({FieldsSettingsService}, logSpecs, true);
 
   constructor() {
     // Transfer changes to the props state to the public property
@@ -48,31 +48,29 @@ export class FieldsSettingsService {
           return;
         const update = this.#allProps();
 
-        // Temporary Debugging
-        // const before = untracked(() => this.allProps());
-        // const equals = isEqual(before, update);
-        // console.warn('equals', equals);
-        // if (!equals) {
-        //   const delta = difference(update, before);
-        //   console.warn('delta', delta);
-        // }
-
         this.allProps.set(update);
 
         // Transfer picker data
-        const lPicker = this.log.fnIf('pickerUpdate');
-        // 1. find all fieldProps with picker data
-        const toTransfer = Object.entries(update)
-          .filter(([_, v]) => v.options);
-        // lPicker.a('To Transfer', { map: toTransfer.map(([k, v]) => ({ k, v })) });
-        // 2. transfer to pickerData
-        for (const [fieldName, fieldProps] of toTransfer) {
-          lPicker.a('Transfer', { fieldName, fieldProps });
-          fieldProps.constants.pickerData().optionsOverride.set(fieldProps.options);
-        }
+        this.#effectTransferPickerData(update, 'opts');
+        this.#effectTransferPickerData(update, 'sel');
       },
       { allowSignalWrites: true }
     );
+  }
+
+  #effectTransferPickerData(update: Record<string, FieldProps>, part: 'opts' | 'sel'): void {
+    // Transfer picker data
+    // 1. find all fieldProps with picker data and transfer to pickerData
+    const toTransfer = Object.entries(update).filter(([_, v]) => v[part]?.list);
+
+    const l = this.log.fnIf('effectTransferPickerData', { count: toTransfer.length, toTransfer }, part);
+
+    for (const [field, props] of toTransfer) {
+      l.a('Transfer', { field, props });
+      const pd = props.constants.pickerData();
+      const target = part == 'opts' ? pd.optionsOverride : pd.selectedOverride;
+      target.set(props[part].list);
+    }
   }
 
   //#region injected services, constructor, clean-up

@@ -6,15 +6,14 @@ import { FormulaFieldValidation, FormulaSpecialPickerAutoSleep, FormulaSpecialPi
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
-import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './results/formula-results.models';
+import { RunFormulasResult, FormulaResultRaw } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters, FormulaRunPickers } from './run/formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters, FormulaRunPickers, FormulaRunPicker } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
+import { FieldConstantsOfLanguage, FieldProps, FieldPropsPicker } from '../state/fields-configs.model';
 import { classLog } from '../../shared/logging';
-import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { getVersion } from '../../shared/signals/signal.utilities';
 import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
@@ -22,10 +21,11 @@ import { logSpecsFormulaFields } from './formula-engine';
 import { DebugFields } from '../edit-debug';
 
 const logSpecs = {
-  all: true,
-  runFormula: true,
+  all: false,
+  runFormula: false,
+  runAllOfField: true,
   runOrInitSettings: true,
-  getPickerInfos: true,
+  getPickerInfos: false,
   fields: [...DebugFields, '*'], // will be replaced by shared list below
 };
 
@@ -35,7 +35,7 @@ const logSpecs = {
  */
 export class FormulaRunField {
 
-  log = classLog({FormulaRunField}, { ...logSpecs, fields: logSpecsFormulaFields });
+  log = classLog({FormulaRunField}, { ...logSpecs, fields: logSpecsFormulaFields }, true);
 
   constructor(
     private promiseHandler: FormulaPromiseHandler,
@@ -64,11 +64,11 @@ export class FormulaRunField {
 
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const isSpecialPicker = fieldConstants.inputTypeSpecs.isNewPicker;
-    const picker = this.#getPickerInfos(fieldName, fieldConstants, propsBefore);
+    const picks = this.#getPickerInfos(fieldName, fieldConstants, propsBefore);
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
-    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picker.changed));
+    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picks.changed));
     const grouped = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
     if (grouped.disabled)
       this.#showDisabledFormulasWarnings(grouped.disabled);
@@ -76,16 +76,19 @@ export class FormulaRunField {
     const enabled = grouped.enabled ?? [];
 
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
-    const formulas = isSpecialPicker && !picker.ready
+    const formulas = isSpecialPicker && !picks.ready
       ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
       : enabled;
+    
+    l.a(`🧪📊formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`);
 
     // If we have no formulas, exit early.
     if (formulas.length == 0)
       return finalize({}, valueBefore, {
         value: valueBefore, validation: null, fields: [], settings: {},
-        options: null, pickerOptionsVer: null, pickerSelectedVer: null
-      });
+        opts: new FieldPropsPicker(), sel: new FieldPropsPicker(),
+        //options: null, selected: null, optionsVer: null, selectedVer: null
+      } satisfies RunFormulaPartialSettings);
 
     // Run all formulas IF we have any and work with the objects containing specific changes
     const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
@@ -93,8 +96,7 @@ export class FormulaRunField {
       settingsInitial: fieldConstants.settingsInitial,
       settingsCurrent: settingsBefore,
       itemHeader,
-      ...picker,
-      pickerInfo: picker,
+      pickerInfo: picks,
     };
     const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
 
@@ -106,56 +108,34 @@ export class FormulaRunField {
       // possibly making invalid changes in formulas or if settings need to adjust
       // eg. custom bool labels which react to the value, etc.
       const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsBefore, ...settingsUpdate }, value || valueBefore);
-      return { ...raw, settings, } satisfies RunFormulasResult;
+      return l.r({ ...raw, settings, } satisfies RunFormulasResult);
     }
   }
 
   #getPickerInfos(fieldName: string, fieldConstants: FieldConstantsOfLanguage, propsBefore: FieldProps): FormulaRunPickers {
-    const l = this.log.fnIfInList('getPickerInfos', 'fields', fieldName, { fieldName });
+    const l = this.log.fnIfInList('getPickerInfos', 'fields', fieldName);
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const picker = fieldConstants.pickerData();
-    if (picker?.ready() != true)
-      return {
-        ready: false,
-        mapper: null,
-        optionsRaw: null,
-        options: null,
-        optionsVer: null,
-        optionsVerBefore: null,
-        optionsChanged: false,
-        selectedRaw: null,
-        selected: null,
-        selectedVer: null,
-        selectedVerBefore: null,
-        changed: false,
-      };
+    if (picker?.ready() != true) {
+      const dummy = { list: [], listRaw: [], ver: null, verBefore: null, changed: false, } as FormulaRunPicker;
+      return { ready: false, mapper: null, picker, options: dummy, selected: dummy, changed: false, };
+    }
 
-    const optionsRaw = picker.optionsSource(); // must access before version check
-    const optionsVer = getVersion(picker.optionsSource);
-    const optionsVerBefore = propsBefore.optionsVer;
-    const optionsChanged = optionsVer !== optionsVerBefore;
-
-    const selectedRaw = picker?.selectedAll();
-    const selectedVer = getVersion(picker.selectedAll);
-    const selectedVerBefore = propsBefore.selectedVer;
-    const selectedChanged = selectedVer !== selectedVerBefore;
+    function getSpecs(cache: typeof picker.optionsRaw, final: typeof picker.optionsRaw, verBefore: number): FormulaRunPicker {
+      const listRaw = cache(); // must access before version check
+      const ver = getVersion(cache);
+      return { list: final(), listRaw, ver, verBefore, changed: ver !== verBefore, } satisfies FormulaRunPicker;
+    }
+    const options = getSpecs(picker.optionsRaw, picker.optionsFinal, propsBefore.opts?.ver);
+    const selected = getSpecs(picker.selectedRaw, picker.selectedAll, propsBefore.sel?.ver);
 
     const result: FormulaRunPickers = {
       ready: true,
       mapper: picker.state.mapper,
-      optionsRaw: optionsRaw,
-      options: picker.optionsFinal(),
-      optionsVer: optionsVer,
-      optionsVerBefore: optionsVerBefore,
-      optionsChanged: optionsChanged,
-
-      // Selected
-      selectedRaw: selectedRaw,
-      selected: picker.selectedState(),
-      selectedVer: selectedVer,
-      selectedVerBefore: selectedVerBefore,
-
-      changed: selectedChanged || optionsChanged,
+      picker,
+      options,
+      selected,
+      changed: selected.changed || options.changed,
     };
     return l.r(result);
   }
@@ -171,77 +151,80 @@ export class FormulaRunField {
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
     doLog: boolean,
   ): RunFormulaPartialSettings {
-    const l = this.log.fnCond(doLog, 'runFormulasOfField', { runParams, formulas });
+    const l = this.log.fnIfInList('runAllOfField', 'fields', formulas[0].fieldName, { runParams, formulas });
+
     // Target variables to fill using formula result
-    let value: FieldValue;                   // The new value
-    let validation: FormulaFieldValidation;  // The new validation
-    const fields: FieldValuePair[] = [];     // Any additional fields
-    let options: PickerItem[] = null; // Any additional picker options
-    let settingsNew: Record<string, any> = {};      // New settings - which can be updated multiple times by formulas
+    const wip: RunFormulaPartialSettings = {
+      value: undefined,       // The new value
+      validation: undefined,  // The new validation
+      fields: [],             // Any additional fields
+      opts: new FieldPropsPicker(), // { list: undefined, ver: undefined },             // Picker options
+      sel: new FieldPropsPicker(), // { list: undefined, ver: undefined },              // Picker selected
+      settings: {},           // New settings - which can be updated multiple times by formulas
+    };
 
     const start = performance.now();
     for (const formula of formulas) {
 
       const allRunParams: FormulaExecutionSpecsWithRunParams = {
-        runParameters: {
-          formula,
-          ...runParams,
-        },
+        runParameters: { formula, ...runParams, },
         ...reuseObjectsForFormulaDataAndContext
       };
 
       const raw = this.#runFormula(allRunParams);
 
-      // If result _contains_ a promise, add it to the queue but don't stop, as it can still contain settings/values for now
-      const containsPromise = raw?.promise instanceof Promise;
+      // If result _contains_ a promise, add it to the queue
+      // but don't stop, as it can still contain settings/values for now
+      const containsPromise = raw.promise instanceof Promise;
       if (containsPromise)
         this.promiseHandler.handleFormulaPromise(raw, formula);
 
       // Stop depends on explicit result and the default is different if it has a promise
       formula.stop = raw.stop ?? (containsPromise ? true : formula.stop);
 
-      // Pause depends on explicit result; TODO: MAYBE automatic on Pickers
+      // Pause depends on explicit result
       formula.sleep = raw.sleep ?? (FormulaSpecialPickerAutoSleep.includes(formula.target) ? true : formula.sleep);
+      l.a(`🧪⏸️formula.sleep: ${formula.target}; formula.sleep: ${formula.sleep}; raw.sleep: ${raw.sleep}`);
 
       // If we have field changes, add to the list
-      if (raw.fields)
-        fields.push(...raw.fields);
+      if (raw.fields) wip.fields.push(...raw.fields);
 
-      // new - experimental
-      if (raw.options)
-        options = raw.options;
+      // picker data results - experimental v18
+      if (raw.options) {
+        wip.opts = { list: raw.options, ver: runParams.pickerInfo.options.ver };
+        l.a(`🧪📃 options returned, will add`, wip.opts as unknown as Record<string, unknown>);
+      }
+      if (raw.selected) {
+        wip.sel = { list: raw.selected, ver: runParams.pickerInfo.selected.ver };
+        l.a(`🧪📃 selected returned, will add`, wip.sel as unknown as Record<string, unknown>);
+      }
+        
 
       // If the value is not set, skip further result processing
       if (raw.value === undefined)
         continue;
 
       // If we do have a value, we need to place it in the correct target
-      // Target is the value. Remember it for later
-      if (formula.isValue) {
-        value = raw.value;
-        continue;
-      }
+      switch (true) {
+        // Target is the value. Remember it for later
+        case formula.isValue:
+          wip.value = raw.value;
+          break;
 
-      // Target is the validation. Remember it for later
-      if (formula.isValidation) {
-        validation = raw.value as unknown as FormulaFieldValidation;
-        continue;
-      }
+        // Target is the validation. Remember it for later
+        case formula.isValidation:
+          wip.validation = raw.value as unknown as FormulaFieldValidation;
+          break;
 
-      // Target is a setting. Check validity and merge with other settings
-      ({ settingsNew } = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, runParams.settingsCurrent, raw.value, settingsNew));
+        // Target is a setting. Check validity and merge with other settings
+        case formula.isSetting:
+          wip.settings = FormulaSettingsHelper.keepSettingIfTypeOk(formula.target, runParams.settingsCurrent, raw.value, wip.settings);
+          break;
+      }
     }
     const afterRun = performance.now();
-    const result: Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> } = {
-      value,
-      validation,
-      fields,
-      options,
-      settings: settingsNew,
-      pickerOptionsVer: runParams.pickerInfo.optionsVer,
-      pickerSelectedVer: runParams.pickerInfo.selectedVer,
-    };
-    return l.r(result, 'runAllFormulas ' + `Time: ${afterRun - start}ms`);
+
+    return l.r(wip, `runAllFormulas Time: ${afterRun - start}ms`);
   }
 
   /**

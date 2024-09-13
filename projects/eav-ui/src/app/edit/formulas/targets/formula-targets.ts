@@ -21,7 +21,8 @@ export const FormulaDefaultTargetValues = Object.values(FormulaDefaultTargets);
 
 /** Targets for new Pickers only */
 export const FormulaNewPickerTargets = {
-  Options: `Field.Options`,
+  Options: 'Field.Options',
+  Selected: 'Field.Selected',
 };
 
 /** Values of the NewPicker Targets (used often, so precalculated) */
@@ -29,12 +30,13 @@ export const FormulaNewPickerTargetValues = Object.values(FormulaNewPickerTarget
 
 export const FormulaSpecialPickerTargets = [
   FormulaNewPickerTargets.Options,
-  FormulaDefaultTargets.Value
+  FormulaDefaultTargets.Value,
 ];
 
 /** These formulas should auto-sleep unless specified otherwise */
 export const FormulaSpecialPickerAutoSleep = [
   FormulaNewPickerTargets.Options,
+  FormulaNewPickerTargets.Selected,
 ];
 
 

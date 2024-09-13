@@ -2,15 +2,15 @@ import { FormulaFieldValidation, FormulaTarget } from '../targets/formula-target
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
+import { FieldPropsPicker } from '../../state/fields-configs.model';
 
 export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
   fields: FieldValuePair[];
-  options: PickerItem[];
-  pickerOptionsVer: number | null;
-  pickerSelectedVer: number | null;
+  opts: FieldPropsPicker;
+  sel: FieldPropsPicker;
 }
 
 export interface FormulaIdentifier {
@@ -32,6 +32,9 @@ export interface FormulaResultRaw {
   options?: PickerItem[];
 
   /** WIP v18 */
+  selected?: PickerItem[];
+
+  /** Decide if the formula should sleep (not be executed) until the source data changes again */
   sleep?: boolean;
 
   /** Note: not a real result, for internal use only */

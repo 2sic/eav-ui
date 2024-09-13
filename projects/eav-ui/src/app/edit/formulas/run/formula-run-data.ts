@@ -33,7 +33,7 @@ export class FormulaDataObject implements FormulaV1Data {
       return (settingsInitial as Record<string, any>)[formula.settingName];
 
     if (formula.isNewPicker)
-      return this.#params.pickerInfo.options as unknown as FieldValue;
+      return this.#params.pickerInfo.options.list as unknown as FieldValue;
   }
 
   get initial(): FieldValue {
@@ -70,21 +70,31 @@ export class FormulaDataObject implements FormulaV1Data {
       } satisfies FormulaFieldValidation;
   }
 
-  get selected(): PickerItem[] {
-    return this.#params.pickerInfo.selected;
-  }
+  /** Get the selected data - make sure it's a copy of each item, so changes don't affect the source! */
+  get selected(): PickerItem[] { return this.#getSelected('list'); }
 
-  get selectedRaw(): PickerItem[] {
-    return this.#params.pickerInfo.selectedRaw;
+  get selectedRaw(): PickerItem[] { return this.#getSelected('listRaw'); }
+
+  #getSelected(part: 'list' | 'listRaw') {
+    const list = this.#params.pickerInfo.selected[part];
+    return this.#params.pickerInfo.picker.selectedCopy(list);
   }
 
   get options(): PickerItem[] {
-    return this.#params.pickerInfo.options;
+    return this.#getOptions('list');
+    // return this.#params.pickerInfo.options.list;
   }
 
   get optionsRaw(): PickerItem[] {
-    return this.#params.pickerInfo.optionsRaw;
+    return this.#getOptions('listRaw');
+    // return this.#params.pickerInfo.options.listRaw;
   }
+
+  #getOptions(part: 'list' | 'listRaw') {
+    const list = this.#params.pickerInfo.options[part];
+    return list; // return this.#params.pickerInfo.picker.selectedCopy(list);
+  }
+
 
   #value(raw: FieldValue): FieldValue {
     return this.#valueMapper?.toUi(raw) ?? raw;
