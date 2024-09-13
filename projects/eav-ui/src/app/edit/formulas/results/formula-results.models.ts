@@ -8,7 +8,7 @@ export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
-  fields: FieldValuePair[];
+  fields: NameValuePair[];
   opts: FieldPropsPicker;
   sel: FieldPropsPicker;
 }
@@ -25,7 +25,7 @@ export interface FormulaIdentifier {
 export interface FormulaResultRaw {
   value?: FieldValue;
   promise?: Promise<FormulaResultRaw>;
-  fields?: FieldValuePair[];
+  fields?: NameValuePair[];
   stop?: boolean | null;
 
   /** WIP v18 */
@@ -41,9 +41,9 @@ export interface FormulaResultRaw {
   openInDesigner?: boolean;
 }
 
-export interface FieldValuePair {
+export interface NameValuePair<T = FieldValue> {
   name: string;
-  value: FieldValue;
+  value: T;
 }
 
 

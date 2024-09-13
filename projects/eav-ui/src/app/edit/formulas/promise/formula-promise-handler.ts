@@ -5,7 +5,7 @@ import { FormulaValueCorrections } from "../results/formula-value-corrections.he
 import { SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { Injectable, Signal } from "@angular/core";
-import { FormulaResultRaw } from "../results/formula-results.models";
+import { NameValuePair, FormulaResultRaw } from "../results/formula-results.models";
 import { FieldSettingPair } from './formula-promise-result.model';
 import { ItemService } from '../../state/item.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -84,10 +84,16 @@ export class FormulaPromiseHandler {
         valueUpdates[formula.fieldName] = raw.value;
       } else if (formula.isSetting) {
         l.a("formula promise settings");
-        const settingName = formula.settingName;
+        const name = formula.settingName;
         settingUpdate = queueItem.settingUpdates ?? [];
-        const newSetting = { name: formula.fieldName, settings: [{ settingName, value: result as FieldValue }] };
-        settingUpdate = settingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.settingName === settingName));
+        const newSetting = {
+          name: formula.fieldName,
+          settings: [{
+            name,
+            value: result as FieldValue
+          } satisfies NameValuePair]
+        };
+        settingUpdate = settingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.name === name));
         settingUpdate.push(newSetting);
       }
 
@@ -143,7 +149,7 @@ export class FormulaPromiseHandler {
         
         let settingsNew: Partial<FieldSettings> = {};
         valueSet.settings.forEach(setting => {
-          const target = SettingsFormulaPrefix + setting.settingName;
+          const target = SettingsFormulaPrefix + setting.name;
           settingsNew = FormulaSettingsHelper.keepSettingIfTypeOk(target, settingsCurrent, setting.value, settingsNew);
         });
 

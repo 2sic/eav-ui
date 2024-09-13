@@ -56,6 +56,8 @@ export class FieldsSettingsService {
       },
       { allowSignalWrites: true }
     );
+
+    // TODO: CONSIDER CREATING A Computed for the picker data, to debounce/not send updates if they don't change?
   }
 
   #effectTransferPickerData(update: Record<string, FieldProps>, part: 'opts' | 'sel'): void {

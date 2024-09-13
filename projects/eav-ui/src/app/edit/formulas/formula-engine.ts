@@ -4,7 +4,7 @@ import { EavContentType, EavContentTypeAttribute } from '../shared/models/eav';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
-import { FieldValuePair } from './results/formula-results.models';
+import { NameValuePair } from './results/formula-results.models';
 import { FieldsSettingsHelpers } from '../state/field-settings.helper';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { LoggingService } from '../shared/services/logging.service';
@@ -65,7 +65,7 @@ export class FormulaEngine {
   runAllFields(engine: FieldsPropsEngine, cycle: FieldsPropsEngineCycle) {
     const fieldsProps: Record<string, FieldProps> = {};
     const valueUpdates: ItemValuesOfLanguage = {};
-    const fieldUpdates: FieldValuePair[] = [];
+    const fieldUpdates: NameValuePair[] = [];
 
     // Many aspects of a field are re-usable across formulas, so we prepare them here
     // These are things explicit to the entity and either never change, or only rarely

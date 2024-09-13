@@ -2,23 +2,23 @@ import { untracked } from '@angular/core';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation, FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './targets/formula-targets';
+import { FormulaFieldValidation, FormulaSpecialPickerAutoSleep } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
-import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters, FormulaRunPickers, FormulaRunPicker } from './run/formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
 import { FieldSettings } from '../../../../../edit-types/src/FieldSettings';
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
 import { FieldConstantsOfLanguage, FieldProps, FieldPropsPicker } from '../state/fields-configs.model';
 import { classLog } from '../../shared/logging';
-import { getVersion } from '../../shared/signals/signal.utilities';
 import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { logSpecsFormulaFields } from './formula-engine';
 import { DebugFields } from '../edit-debug';
+import { FormulaRunFieldPickerHelper } from './formula-picker-handler';
 
 const logSpecs = {
   all: false,
@@ -60,15 +60,14 @@ export class FormulaRunField {
     setUpdHelper: FieldSettingsUpdateHelper,
   ): RunFormulasResult {
     const l = this.log.fnIfInList('runOrInitSettings', 'fields', fieldName, { fieldName });
-    const doLog = l.enabled;
 
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
-    const isSpecialPicker = fieldConstants.inputTypeSpecs.isNewPicker;
-    const picks = this.#getPickerInfos(fieldName, fieldConstants, propsBefore);
+    const pickHelp = new FormulaRunFieldPickerHelper(fieldName, fieldConstants, propsBefore);
+    const picks = pickHelp.infos;
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
-    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picks.changed));
+    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, pickHelp.isSpecialPicker, picks.changed));
     const grouped = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
     if (grouped.disabled)
       this.#showDisabledFormulasWarnings(grouped.disabled);
@@ -76,11 +75,11 @@ export class FormulaRunField {
     const enabled = grouped.enabled ?? [];
 
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
-    const formulas = isSpecialPicker && !picks.ready
-      ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
-      : enabled;
-    
-    l.a(`🧪📊formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`);
+    const formulas = pickHelp.filterFormulasIfPickerNotReady(enabled);
+    //  pickHelp.isSpecialPicker && !picks.ready
+    //   ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
+    //   : enabled;
+    // l.a(`🧪📊formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`);
 
     // If we have no formulas, exit early.
     if (formulas.length == 0)
@@ -98,7 +97,7 @@ export class FormulaRunField {
       itemHeader,
       pickerInfo: picks,
     };
-    const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs, doLog);
+    const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs);
 
     return finalize(raw.settings, raw.value, raw);
 
@@ -112,34 +111,6 @@ export class FormulaRunField {
     }
   }
 
-  #getPickerInfos(fieldName: string, fieldConstants: FieldConstantsOfLanguage, propsBefore: FieldProps): FormulaRunPickers {
-    const l = this.log.fnIfInList('getPickerInfos', 'fields', fieldName);
-    // Get the latest picker data and check if it has changed - as it affects which formulas to run
-    const picker = fieldConstants.pickerData();
-    if (picker?.ready() != true) {
-      const dummy = { list: [], listRaw: [], ver: null, verBefore: null, changed: false, } as FormulaRunPicker;
-      return { ready: false, mapper: null, picker, options: dummy, selected: dummy, changed: false, };
-    }
-
-    function getSpecs(cache: typeof picker.optionsRaw, final: typeof picker.optionsRaw, verBefore: number): FormulaRunPicker {
-      const listRaw = cache(); // must access before version check
-      const ver = getVersion(cache);
-      return { list: final(), listRaw, ver, verBefore, changed: ver !== verBefore, } satisfies FormulaRunPicker;
-    }
-    const options = getSpecs(picker.optionsRaw, picker.optionsFinal, propsBefore.opts?.ver);
-    const selected = getSpecs(picker.selectedRaw, picker.selectedAll, propsBefore.sel?.ver);
-
-    const result: FormulaRunPickers = {
-      ready: true,
-      mapper: picker.state.mapper,
-      picker,
-      options,
-      selected,
-      changed: selected.changed || options.changed,
-    };
-    return l.r(result);
-  }
-
   #showDisabledFormulasWarnings(disabled: FormulaCacheItem[]): void {
     for (const formula of disabled)
       console.warn(`Formula on field '${formula.fieldName}' with target '${formula.target}' is disabled. Reason: ${formula.disabledReason}`);
@@ -149,7 +120,6 @@ export class FormulaRunField {
     runParams: Omit<FormulaRunParameters, 'formula'>,
     formulas: FormulaCacheItem[],
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
-    doLog: boolean,
   ): RunFormulaPartialSettings {
     const l = this.log.fnIfInList('runAllOfField', 'fields', formulas[0].fieldName, { runParams, formulas });
 
@@ -173,6 +143,8 @@ export class FormulaRunField {
 
       const raw = this.#runFormula(allRunParams);
 
+      //#region Transfer to PromiseHandler
+
       // If result _contains_ a promise, add it to the queue
       // but don't stop, as it can still contain settings/values for now
       const containsPromise = raw.promise instanceof Promise;
@@ -182,12 +154,13 @@ export class FormulaRunField {
       // Stop depends on explicit result and the default is different if it has a promise
       formula.stop = raw.stop ?? (containsPromise ? true : formula.stop);
 
+      //#endregion
+
+      //#region Transfer to FormulaPickerHandler
+
       // Pause depends on explicit result
       formula.sleep = raw.sleep ?? (FormulaSpecialPickerAutoSleep.includes(formula.target) ? true : formula.sleep);
       l.a(`🧪⏸️formula.sleep: ${formula.target}; formula.sleep: ${formula.sleep}; raw.sleep: ${raw.sleep}`);
-
-      // If we have field changes, add to the list
-      if (raw.fields) wip.fields.push(...raw.fields);
 
       // picker data results - experimental v18
       if (raw.options) {
@@ -198,7 +171,11 @@ export class FormulaRunField {
         wip.sel = { list: raw.selected, ver: runParams.pickerInfo.selected.ver };
         l.a(`🧪📃 selected returned, will add`, wip.sel as unknown as Record<string, unknown>);
       }
+
+      //#endregion
         
+      // If we have field changes, add to the list
+      if (raw.fields) wip.fields.push(...raw.fields);
 
       // If the value is not set, skip further result processing
       if (raw.value === undefined)
@@ -268,7 +245,6 @@ export class FormulaRunField {
           const v2Raw = (formula.fn as FormulaFunctionV1)(params.data, params.context, params.experimental);
           const v2Value = valHelper.v2(v2Raw);
           devHelper.showResult(v2Value.options as any ?? v2Value.value, false, !!v2Value.promise);
-          // if (l.enabled) debugger;
           return v2Value;
 
         default:

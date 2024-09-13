@@ -1,6 +1,5 @@
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
-import { FieldValuePair } from "../results/formula-results.models";
-import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { NameValuePair } from "../results/formula-results.models";
 
 /**
  * The result of a formula promise.
@@ -9,7 +8,7 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 export class FormulaPromiseResult {
   constructor(
     public valueUpdates: ItemValuesOfLanguage,
-    public fieldUpdates: FieldValuePair[],
+    public fieldUpdates: NameValuePair[],
     public settingUpdates: FieldSettingPair[]
   ) {
   }
@@ -17,11 +16,5 @@ export class FormulaPromiseResult {
 
 export interface FieldSettingPair {
   name: string;
-  settings: SettingPair[];
+  settings: NameValuePair[];
 }
-
-interface SettingPair {
-  settingName: string;
-  value: FieldValue;
-}
-

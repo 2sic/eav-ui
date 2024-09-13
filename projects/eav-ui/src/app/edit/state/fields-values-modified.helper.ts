@@ -1,5 +1,5 @@
 import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { FieldValuePair } from '../formulas/results/formula-results.models';
+import { NameValuePair } from '../formulas/results/formula-results.models';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { Signal } from '@angular/core';
 import { EavContentType } from '../shared/models/eav/eav-content-type';
@@ -19,7 +19,7 @@ export class FieldsValuesModifiedHelper {
   // NEW WIP
   getValueUpdates(
     cycle: FieldsPropsEngineCycle,
-    valueUpdatesFromSideEffects: FieldValuePair[],
+    valueUpdatesFromSideEffects: NameValuePair[],
     valueUpdates: ItemValuesOfLanguage,
     originalValues?: ItemValuesOfLanguage
   ): ItemValuesOfLanguage {
@@ -52,7 +52,7 @@ export class FieldsValuesModifiedHelper {
     return changes;
   }
 
-  #findBestValue(fieldName: string, fieldsUpdates: FieldValuePair[], valueUpdates: ItemValuesOfLanguage): FieldValue {
+  #findBestValue(fieldName: string, fieldsUpdates: NameValuePair[], valueUpdates: ItemValuesOfLanguage): FieldValue {
     // First check if a formula had given a value as a side-effect of it's own calculation
     // This is prioritized in case we have both,
     // because it's very rare and it's usually something which resets another field
