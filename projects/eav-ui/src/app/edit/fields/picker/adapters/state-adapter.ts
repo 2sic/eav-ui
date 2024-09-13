@@ -2,7 +2,7 @@ import { ReorderIndexes } from '../picker-list/reorder-index.models';
 import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, Optional, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { FormConfigService } from '../../../form/form-config.service';
@@ -12,15 +12,14 @@ import { classLog, ClassLogger } from '../../../../shared/logging';
 @Injectable()
 export class StateAdapter {
   
-  log: ClassLogger
-
+  log = classLog({StateAdapter})
+  
   public formConfigSvc = inject(FormConfigService);
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
-  #settings = this.#fieldState.settings;
 
-  constructor(@Optional() logger?: ClassLogger) {
-    this.log = logger ?? classLog({StateAdapter});
-  }
+  constructor() { }
+  
+  #settings = this.#fieldState.settings;
 
   public isInFreeTextMode = signalObj('isInFreeTextMode', false);
 

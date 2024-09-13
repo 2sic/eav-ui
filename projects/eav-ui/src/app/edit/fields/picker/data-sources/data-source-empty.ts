@@ -10,12 +10,11 @@ import { classLog } from '../../../../shared/logging';
 @Injectable()
 export class DataSourceEmpty extends DataSourceBase {
 
-  loading = signalObj('loading', false);
+  log = classLog({DataSourceEmpty});
 
-  constructor() { 
-    super(classLog({DataSourceEmpty}));
-  }
+  constructor() { super(); this.constructorEnd() }
   
+  loading = signalObj('loading', false);
 
   #label = signalObj('label', `something is wrong - using DataSourceEmpty`);
 

@@ -1,0 +1,28 @@
+import { FnLogger } from '../fn/fn-logger.interface';
+import { RxTapDebug } from '../rx-debug-dbg';
+import { FnLoggerNoOp } from '../fn/fn-logger-noop';
+import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './class-logger';
+
+export class ClassLoggerNoop<TSpecs extends unknown = any> implements ClassLogger<TSpecs> {
+  svcId = 'noop';
+  name = 'noop';
+  get enabled() { return false; }
+  enableChildren = false;
+  specs= {} as TSpecs;
+
+  extendName(addOn: string): this { return this; }
+
+  nameWithSvcId: string;
+
+  inherit(parent: ClassLogger<any>): void { }
+  forceEnable(enabled: boolean | null): void { }
+  a(message: string, data?: RecordOrGenerator): void { }
+  aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void { }
+  rxTap(name: string, options?: { enabled?: boolean; jsonify?: boolean; }): RxTapDebug {
+    return new RxTapDebug(this as ClassLogger, 'noop');
+  }
+  fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger { return new FnLoggerNoOp(); }
+  fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger { return new FnLoggerNoOp(); }
+  fnIf(key: string, data?: RecordOrGenerator, message?: string): FnLogger { return new FnLoggerNoOp(); }
+  fnIfInList(key: BooleanKeys<TSpecs> & string, list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): FnLogger { return new FnLoggerNoOp(); }
+}

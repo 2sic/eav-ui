@@ -1,5 +1,6 @@
 import { ClassLoggerReal } from './class/class-logger-real';
 import { ClassLogger } from './class/class-logger';
+import { ClassLoggerNoop } from './class/class-logger-noop';
 
 //
 // This is a special section for logging.
@@ -22,6 +23,7 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
   specs?: TSpecs,
   enabled: boolean = false
 ): ClassLogger<TSpecs> {
+  if (!enabled) return new ClassLoggerNoop();
   // Pick the first key as the name of the class
   const name = (() => {
     if (!owner) return 'unknown';

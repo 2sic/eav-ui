@@ -14,8 +14,11 @@ import { classLog } from '../../../../shared/logging/logging';
 })
 export class StringPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 
+  log = classLog({StringPickerComponent}, PickerComponent.logSpecs);
+
   constructor() {
-    super(classLog({StringPickerComponent}, PickerComponent.logSpecs));
+    super();
+    this.constructorEnd();
     StringPickerLogic.importMe();
   }
 

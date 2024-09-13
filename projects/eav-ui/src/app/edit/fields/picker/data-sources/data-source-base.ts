@@ -15,14 +15,15 @@ import { classLog, ClassLogger } from '../../../../shared/logging';
 @Injectable()
 export abstract class DataSourceBase extends ServiceBase {
   
-  log: ClassLogger;
+  abstract log: ClassLogger;
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
 
-  constructor(log: ClassLogger) {
-    super();
-    this.log ??= log ?? classLog({DataSourceBase});
+  constructor() { super(); }
+
+  constructorEnd() {
+    this.log ??= classLog({DataSourceBase});
     this.log.a('constructor', { forField: this.fieldState.name });
   }
 

@@ -9,10 +9,12 @@ import { ClassLogger } from '../../../../shared/logging';
 
 export abstract class DataAdapterBase {
   
-  log: ClassLogger<typeof DataAdapterBase.logSpecs>;
-
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = { all: false, setupEmpty: true, connectState: false, fetchItems: false };
+
+  log: ClassLogger<typeof DataAdapterBase.logSpecs>;
+
+  constructor() { }
 
   /** Picker Features of this DataAdapter - must be implemented by every data source to communicate it's features */
   public abstract features: Signal<Partial<PickerFeatures>>;
@@ -28,8 +30,6 @@ export abstract class DataAdapterBase {
   public optionsOrHints: Signal<PickerItem[]> = computedObj('optionsOrHints', () => this.dataSource().data() ?? []);
 
   public deleteCallback: (props: DeleteEntityProps) => void;
-
-  constructor() { }
 
   //#region Setup & Init
 

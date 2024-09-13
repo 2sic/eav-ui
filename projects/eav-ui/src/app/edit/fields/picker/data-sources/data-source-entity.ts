@@ -8,9 +8,9 @@ import { classLog } from '../../../../shared/logging/logging';
 @Injectable()
 export class DataSourceEntity extends DataSourceEntityQueryBase {
 
-  constructor() {
-    super(classLog({DataSourceEntity}, DataSourceEntityQueryBase.logSpecs));
-  }
+  log = classLog({DataSourceEntity}, DataSourceEntityQueryBase.logSpecs);
+
+  constructor() { super(); this.constructorEnd(); }
 
   public override getFromBackend(typeName: string, guids: string[], purposeForLog: string) {
     const fields = this.fieldsToRetrieve(this.settings());

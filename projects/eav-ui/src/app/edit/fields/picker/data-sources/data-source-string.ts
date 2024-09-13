@@ -8,11 +8,11 @@ import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 @Injectable()
 export class DataSourceString extends DataSourceBase {
 
-  loading = signalObj('loading', false);
+  log = classLog({DataSourceString});
+  
+  constructor() { super(); this.constructorEnd() }
 
-  constructor() {
-    super(classLog({DataSourceString}));
-  }
+  loading = signalObj('loading', false);
 
   #dataMaskHelper = (() => {
     // Make sure the converter/builder uses the "Value" field for the final 'value'

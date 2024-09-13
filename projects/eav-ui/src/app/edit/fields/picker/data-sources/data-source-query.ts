@@ -9,10 +9,6 @@ import { QueryStreams } from '../../../../shared/models/query-stream.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging/logging';
 
-const logSpecs = {
-  ...DataSourceEntityQueryBase.logSpecs,
-};
-
 // TODO: NEXT STEPS
 // 5. afterwards check all edge cases.
 // - EG. not aggressively loading
@@ -23,11 +19,11 @@ const logSpecs = {
 @Injectable()
 export class DataSourceQuery extends DataSourceEntityQueryBase {
 
+  log = classLog({DataSourceQuery}, DataSourceEntityQueryBase.logSpecs);
+
   #translate = inject(TranslateService);
 
-  constructor() {
-    super(classLog({DataSourceQuery}, logSpecs));
-  }
+  constructor() { super(); this.constructorEnd() }
 
   protected formState = inject(FormConfigService);
   #appId = Number(this.formState.config.appId);

@@ -5,9 +5,9 @@ import { classLog } from "../../../../shared/logging";
 @Injectable()
 export class StateAdapterEntity extends StateAdapter {
   
-  constructor() {
-    super(classLog({StateAdapterEntity}));
-  }
+  log = classLog({StateAdapterEntity});
+
+  constructor() { super(); }
 
   protected asFieldValue(valueArray: string[]): string | string[] {
     this.log.a('createNewValue', { valueArray });

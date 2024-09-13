@@ -14,8 +14,11 @@ import { classLog } from '../../../../shared/logging/logging';
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
 
+  log = classLog({StringDropdownComponent}, PickerComponent.logSpecs);
+
   constructor() {
-    super(classLog({StringDropdownComponent}, PickerComponent.logSpecs));
+    super();
+    this.constructorEnd();
     EntityDefaultLogic.importMe();
   }
 

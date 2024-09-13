@@ -14,8 +14,11 @@ import { classLog } from '../../../../shared/logging/logging';
 })
 export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
 
+  log = classLog({EntityPickerComponent}, PickerComponent.logSpecs);
+
   constructor() {
-    super(classLog({EntityPickerComponent}, PickerComponent.logSpecs));
+    super();
+    this.constructorEnd();
     EntityPickerLogic.importMe();
   }
 

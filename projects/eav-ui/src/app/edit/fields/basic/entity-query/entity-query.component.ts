@@ -14,8 +14,11 @@ import { classLog } from '../../../../shared/logging/logging';
 })
 export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
 
+  log = classLog({EntityQueryComponent}, PickerComponent.logSpecs);
+  
   constructor() {
-    super(classLog({EntityQueryComponent}, PickerComponent.logSpecs));
+    super();
+    this.constructorEnd();
     EntityQueryLogic.importMe();
   }
 }

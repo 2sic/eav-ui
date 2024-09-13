@@ -6,9 +6,9 @@ import { classLog } from "../../../../shared/logging";
 @Injectable()
 export class StateAdapterString extends StateAdapter {
  
-  constructor() {
-    super(classLog({StateAdapterString}));
-  }
+  log = classLog({StateAdapterString});
+
+  constructor() { super(); }
 
   protected override asFieldValue(valueArray: string[]): string | string[] {
     return convertArrayToString(valueArray, this.settings().Separator);

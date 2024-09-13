@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, inject, Injector, Optional } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject, Injector } from '@angular/core';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerImports } from './picker-providers.constant';
 import { FieldState } from '../../fields/field-state';
@@ -25,6 +25,17 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
     childFormResult: true,
   };
 
+  log: ClassLogger<typeof PickerComponent.logSpecs>;
+  
+  constructor() { super(); }
+  
+  constructorEnd() {
+    this.log ??= classLog({PickerComponent}, PickerComponent.logSpecs);
+    this.log.a('constructor');
+    const pickerDataFactory = new PickerDataSetup(this.#injector);
+    pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
+  }
+
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
   /** The injector is used by most children to get transient one-time objects */
@@ -33,16 +44,6 @@ export abstract class PickerComponent extends BaseComponent implements OnInit, O
   #fieldState = inject(FieldState);
 
   #pickerData = this.#fieldState.pickerData;
-
-  log: ClassLogger<typeof PickerComponent.logSpecs>;
-  
-  constructor(@Optional()log: ClassLogger = null) {
-    super();
-    this.log = log ?? classLog({PickerComponent}, PickerComponent.logSpecs);
-    this.log.a('constructor');
-    const pickerDataFactory = new PickerDataSetup(this.#injector);
-    pickerDataFactory.setupPickerData(this.#pickerData, this.#fieldState);
-  }
 
   /**
    * Whether to show the preview or not,

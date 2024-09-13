@@ -18,8 +18,6 @@ import { ClassLogger } from '../../../../shared/logging';
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   
-  log: ClassLogger<typeof DataSourceEntityQueryBase.logSpecs>;
-
   //#region Inject and blank constructor
 
   static logSpecs = {
@@ -30,11 +28,11 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
     loadMoreIntoSignal: false,
   }
 
+  abstract log: ClassLogger<typeof DataSourceEntityQueryBase.logSpecs>;
+
   protected querySvc = transient(QueryService);
 
-  constructor(log: ClassLogger) {
-    super(log);
-  }
+  constructor() { super(); }
 
   ngOnDestroy(): void {
     this.#typeOrParams$.complete();
