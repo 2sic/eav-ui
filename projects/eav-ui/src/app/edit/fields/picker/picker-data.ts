@@ -62,8 +62,7 @@ export class PickerData {
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
   public optionsFinal = computedObj('optionsFinal', () => {
     const override = this.optionsOverride();
-    if (override) return override;
-    return this.optionsRaw();
+    return override ? override : this.optionsRaw();
   });
 
   //#endregion
@@ -76,8 +75,7 @@ export class PickerData {
   public selectedRaw = computedObj('selectedState', () => {
     // watch ready to rerun once initialized
     const ready = this.ready();
-    if (!ready) return [];
-    return this.#addInfosFromSourceForUi(this.state.selectedItems(), this.optionsFinal());
+    return !ready ? [] : this.#addInfosFromSourceForUi(this.state.selectedItems(), this.optionsFinal());
   });
 
   public selectedCopy(original: PickerItem[]): PickerItem[] {
@@ -88,11 +86,7 @@ export class PickerData {
   /** Signal containing the currently selected items */
   public selectedAll = computedObj('selectedAll', () => {
     const override = this.selectedOverride();
-    if (override) {
-      console.log('💖 override');
-      return override;
-    }
-    return this.selectedRaw();
+    return override ? override : this.selectedRaw();
   });
 
   /** Signal containing the first selected item */
