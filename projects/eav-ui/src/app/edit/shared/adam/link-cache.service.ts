@@ -11,11 +11,8 @@ import { classLog } from '../../../shared/logging';
 @Injectable({ providedIn: 'root' })
 export class LinkCacheService extends SignalStoreBase<string, LinkCache> {
 
-  log = classLog({LinkCacheService});
-  
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({LinkCacheService}));
   }
 
   override getId = (item: LinkCache) => item.key.trim().toLocaleLowerCase();

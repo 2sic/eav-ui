@@ -1,11 +1,8 @@
 import { Signal } from '@angular/core';
 import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
-import { LogSpecs } from '../../../shared/logging/log-specs';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-
-const logThisUndefined = true;
-const nameOfThis = 'SignalStoreBase';
+import { classLog } from '../../../shared/logging';
 
 /**
  * Signal based store for any kind of data which is accessed by a key.
@@ -15,13 +12,10 @@ const nameOfThis = 'SignalStoreBase';
  */
 export abstract class SignalStoreBase<TKey extends string | number, TValue> {
   
-  protected abstract log: EavLogger;
+  protected log: EavLogger;
 
-  /** Empty constructor. Note that this.log is not available yet! */
-  constructor() { }
-
-  protected constructorEnd() {
-    console.warn('constructorEnd of ' + this.log.name);
+  constructor(log: EavLogger) {
+    this.log = log ?? classLog({ SignalStoreBase });
     this.log.a('SignalStoreBase created');
     this.name = this.log.name;
   }

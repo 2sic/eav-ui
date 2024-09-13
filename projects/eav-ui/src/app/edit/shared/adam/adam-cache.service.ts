@@ -7,11 +7,8 @@ import { classLog } from '../../../shared/logging';
 @Injectable({ providedIn: 'root' })
 export class AdamCacheService extends SignalStoreBase<string, AdamSnapshot> {
 
-  log = classLog({AdamCacheService});
-
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({AdamCacheService}));
   }
 
   override getId = (item: AdamSnapshot) => item.Guid;

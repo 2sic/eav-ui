@@ -8,11 +8,8 @@ import { classLog } from '../../shared/logging';
 @Injectable({ providedIn: 'root' })
 export class FormPublishingService extends SignalStoreBase<number, PublishStatus> {
   
-  log = classLog({FormPublishingService});
-
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({FormPublishingService}));
   }
 
   override getId = (item: PublishStatus) => item.formId;

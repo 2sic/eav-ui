@@ -19,11 +19,8 @@ import { classLog } from '../../shared/logging';
 @Injectable({ providedIn: 'root' })
 export class ItemService extends SignalStoreObservableBase<string, EavItem> {
 
-  log = classLog({ItemService});
-  
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({ItemService}));
   }
 
   override getId = (item: EavItem) => item.Entity.Guid;

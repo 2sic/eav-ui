@@ -11,11 +11,8 @@ import { classLog } from '../../../shared/logging';
 @Injectable({ providedIn: 'root' })
 export class InputTypeService extends SignalStoreBase<string, InputTypeMetadata> {
 
-  log = classLog({InputTypeService}, null, true);
-
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({InputTypeService}, null, true));
   }
 
   override getId = (item: InputTypeMetadata) => item.Type;

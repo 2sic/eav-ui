@@ -13,11 +13,8 @@ import { classLog } from '../../../shared/logging/logging';
 @Injectable({ providedIn: 'root' })
 export class ContentTypeItemService extends SignalStoreBase<string, EavEntity> {
 
-  log = classLog({ContentTypeItemService});
-
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({ContentTypeItemService}));
   }
 
   override getId = (item: EavEntity) => item.Guid;

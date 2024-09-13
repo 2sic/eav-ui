@@ -15,11 +15,8 @@ const logSpecs = {
 @Injectable({ providedIn: 'root' })
 export class FormLanguageService extends SignalStoreObservableBase<number, FormLanguageInStore> {
 
-  log = classLog({FormLanguageService}, logSpecs);
-  
   constructor() {
-    super();
-    this.constructorEnd();
+    super(classLog({FormLanguageService}, logSpecs));
   }
 
   protected override getId = (item: FormLanguageInStore) => item.formId;
