@@ -1,8 +1,8 @@
 import { Signal } from '@angular/core';
-import { EavLogger } from '../../../shared/logging/eav-logger';
 import { ComputedCacheHelper } from '../../../shared/signals/computed-cache';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
+import { ClassLogger } from '../../../shared/logging/logger.interface';
 
 /**
  * Signal based store for any kind of data which is accessed by a key.
@@ -12,9 +12,9 @@ import { classLog } from '../../../shared/logging';
  */
 export abstract class SignalStoreBase<TKey extends string | number, TValue> {
   
-  protected log: EavLogger;
+  protected log: ClassLogger;
 
-  constructor(log: EavLogger) {
+  constructor(log: ClassLogger) {
     this.log = log ?? classLog({ SignalStoreBase });
     this.log.a('SignalStoreBase created');
     this.name = this.log.name;

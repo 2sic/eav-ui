@@ -1,5 +1,5 @@
 import { Observable, tap } from 'rxjs';
-import { EavLogger } from './eav-logger';
+import { ClassLogger } from './logger.interface';
 
 /**
  * Special debug helper for RxJS observables
@@ -11,7 +11,7 @@ export class RxTapDebug {
    * @param name name of the stream we're logging
    * @param jsonify will JSON.stringify the data if true - this is much faster as the browser doesn't block the debugger as much
    */
-  constructor(private logger: EavLogger<unknown>, public name: string, private enabled = true, private jsonify: boolean = true) { }
+  constructor(private logger: ClassLogger, public name: string, private enabled = true, private jsonify: boolean = true) { }
 
   /**
    * Generate a rxjs tap function that logs the data with the current context

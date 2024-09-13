@@ -6,6 +6,7 @@ import { LogManager } from './log-manager';
 import { LogSpecs } from './log-specs';
 import { RxTapDebug } from './rx-debug-dbg';
 import { environment } from '../../../environments/environment';
+import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './logger.interface';
 
 /**
  * TODO:
@@ -13,7 +14,7 @@ import { environment } from '../../../environments/environment';
  * - Then rename to ClassLogger
  * - ...and move to sub-folder
  */
-export class EavLogger<TSpecs extends unknown = any> {
+export class EavLogger<TSpecs extends unknown = any> implements ClassLogger<TSpecs> {
   /** Special random ID to identify a specific service and detect reuse or separate instances  */
   svcId = Math.random().toString(36).substring(2, 5);
 
@@ -65,7 +66,7 @@ export class EavLogger<TSpecs extends unknown = any> {
 
   public nameWithSvcId: string;
 
-  public inherit(parent: EavLogger<TSpecs>) {
+  public inherit(parent: ClassLogger) {
     // if already enabled, don't do anything; inherit can only activate it
     if (this.enabled)
       return;
@@ -106,8 +107,8 @@ export class EavLogger<TSpecs extends unknown = any> {
   }
 
   /** Create a special logger for rx logging */
-  rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }) {
-    return new RxTapDebug(this as EavLogger<unknown>, name, enabled, jsonify);
+  rxTap(name: string, { enabled = true, jsonify = true }: { enabled?: boolean; jsonify?: boolean; } = { enabled: true, jsonify: true }): RxTapDebug {
+    return new RxTapDebug(this as ClassLogger, name, enabled, jsonify);
   }
 
   /**
@@ -120,7 +121,7 @@ export class EavLogger<TSpecs extends unknown = any> {
    * @returns 
    */
   fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger {
-    return new FnLoggerReal(this as EavLogger, name, message, data);
+    return new FnLoggerReal(this as ClassLogger, name, message, data);
   }
 
   /**
@@ -162,14 +163,3 @@ export class EavLogger<TSpecs extends unknown = any> {
     return keys && (keys.includes(subKey) || keys.includes('*'));
   }
 }
-
-/** 
- * Helper to only allow boolean keys in the specs object.
- * https://stackoverflow.com/questions/50851263/how-do-i-require-a-keyof-to-be-for-a-property-of-a-specific-type
-*/
-type BooleanKeys<T> = { [k in keyof T]: T[k] extends boolean ? k : never }[keyof T];
-type BooleanSpecs<T> = { [k in BooleanKeys<T>]: boolean };
-
-type StringArrayKeys<T> = { [k in keyof T]: T[k] extends string[] ? k : never }[keyof T];
-
-export type RecordOrGenerator = Record<string, unknown> | (() => Record<string, unknown>);

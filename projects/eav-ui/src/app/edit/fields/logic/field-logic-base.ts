@@ -1,6 +1,6 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { classLog } from '../../../shared/logging';
-import { EavLogger } from '../../../shared/logging/eav-logger';
+import { ClassLogger } from '../../../shared/logging/logger.interface';
 import { FieldLogicManager } from './field-logic-manager';
 import { FieldLogicTools } from './field-logic-tools';
 
@@ -8,16 +8,16 @@ type LogicConstructor = new (...args: any[]) => FieldLogicBase;
 
 export abstract class FieldLogicBase {
 
-  get log() { return this._log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
-  private _log: EavLogger;
+  get log() { return this.#log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
+  #log: ClassLogger;
 
   // TODO: @2pp make sure it's in all the constructors of theinheriting Logic classes
   constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
     if(!this.name)
       return
     
-    this._log = classLog(inheritingClass ?? {FieldLogicBase}, null, logThis);
-    this.name ??= this._log.name;
+    this.#log = classLog(inheritingClass ?? {FieldLogicBase}, null, logThis);
+    this.name ??= this.#log.name;
     this.log.a(`constructor for ${inheritingClass}`);
   }
 

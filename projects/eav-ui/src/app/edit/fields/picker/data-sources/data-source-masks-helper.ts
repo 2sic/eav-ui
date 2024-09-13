@@ -1,7 +1,6 @@
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataSourceMasks } from './data-source-masks.model';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { PickerItem } from '../models/picker-item.model';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { classLog } from '../../../../shared/logging/logging';
@@ -14,10 +13,10 @@ import { classLog } from '../../../../shared/logging/logging';
  */
 export class DataSourceMasksHelper {
   
-  log: EavLogger;
+  log = classLog({DataSourceMasksHelper});
   
-  constructor(private settings: FieldSettings, parentLog: EavLogger, enableLog?: boolean) {
-    this.log = classLog('DataSourceMasksHelper', null, enableLog ?? parentLog.enableChildren);
+  constructor(private settings: FieldSettings, parentLog: { enableChildren: boolean }, enableLog?: boolean) {
+    this.log.forceEnable(enableLog ?? parentLog.enableChildren ?? false);
     this.log.a('constructor - settings', { settings });
   }
 

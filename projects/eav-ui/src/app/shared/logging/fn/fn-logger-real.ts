@@ -1,10 +1,10 @@
 import { consoleLogObject } from '../output-console';
-import { EavLogger, RecordOrGenerator } from '../eav-logger';
 import { FnLogger } from './fn-logger.interface';
+import { ClassLogger, RecordOrGenerator } from '../logger.interface';
 
 export class FnLoggerReal implements FnLogger {
   
-  constructor(private parent: EavLogger, private fnName: string, message?: string, data?: RecordOrGenerator) {
+  constructor(private parent: ClassLogger, private fnName: string, message?: string, data?: RecordOrGenerator) {
     this.#a(message, data);
   }
 

@@ -8,6 +8,7 @@ import { EditRoutingService } from '../../routing/edit-routing.service';
 import { computedObj } from '../../../shared/signals/signal.utilities';
 import { PickerDataSetup } from './picker-data-setup';
 import { classLog } from '../../../shared/logging';
+import { ClassLogger } from '../../../shared/logging/logger.interface';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { classLog } from '../../../shared/logging';
   standalone: true,
   imports: PickerImports,
 })
-export class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
+export abstract class PickerComponent extends BaseComponent implements OnInit, OnDestroy {
 
   /** Typed Log Specs for inheriting classes to reuse */
   static logSpecs = {
@@ -34,10 +35,11 @@ export class PickerComponent extends BaseComponent implements OnInit, OnDestroy 
   #editRoutingService = inject(EditRoutingService);
   #fieldState = inject(FieldState);
 
-    #pickerData = this.#fieldState.pickerData;
+  #pickerData = this.#fieldState.pickerData;
 
-  log: EavLogger<typeof PickerComponent.logSpecs>;
-  constructor(@Optional()log?: EavLogger) {
+  log: ClassLogger<typeof PickerComponent.logSpecs>;
+  
+  constructor(@Optional()log: EavLogger = null) {
     super();
     this.log = log ?? classLog({PickerComponent}, PickerComponent.logSpecs);
     this.log.a('constructor');

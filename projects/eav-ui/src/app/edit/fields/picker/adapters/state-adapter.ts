@@ -9,11 +9,12 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
 
 @Injectable()
 export class StateAdapter {
   
-  log: EavLogger
+  log: ClassLogger
 
   public formConfigSvc = inject(FormConfigService);
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
@@ -64,7 +65,7 @@ export class StateAdapter {
 
   #focusOnSearchComponent: () => void;
 
-  public linkLog(log: EavLogger): this {
+  public linkLog(log: ClassLogger): this {
     if (!this.log.enabled)
       this.log.inherit(log);
     return this;

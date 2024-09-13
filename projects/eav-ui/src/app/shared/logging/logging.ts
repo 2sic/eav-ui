@@ -20,7 +20,7 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
   owner: Record<string, unknown> | string,
   specs?: TSpecs,
   enabled: boolean = false
-): EavLogger<TSpecs> {
+): EavLogger<TSpecs> { // ClassLogger<TSpecs> {
   // Pick the first key as the name of the class
   const name = (() => {
     if (!owner) return 'unknown';

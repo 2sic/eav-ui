@@ -1,14 +1,14 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
 import { DataSourceBase } from './data-source-base';
-import { Inject, Injectable, OnDestroy, WritableSignal } from '@angular/core';
+import { Injectable, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
+import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
 
 /**
  * This is the base class for data-sources providing data from
@@ -18,7 +18,7 @@ import { EavLogger } from '../../../../shared/logging/eav-logger';
 @Injectable()
 export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   
-  log: EavLogger<typeof DataSourceEntityQueryBase.logSpecs>;
+  log: ClassLogger<typeof DataSourceEntityQueryBase.logSpecs>;
 
   //#region Inject and blank constructor
 
@@ -32,7 +32,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
 
   protected querySvc = transient(QueryService);
 
-  constructor(log: EavLogger) {
+  constructor(log: ClassLogger) {
     super(log);
   }
 

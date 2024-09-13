@@ -2,14 +2,14 @@ import { DeleteEntityProps } from '../models/picker.models';
 import { Signal } from '@angular/core';
 import { PickerFeatures } from '../picker-features.model';
 import { DataSourceBase } from '../data-sources/data-source-base';
-import { EavLogger } from '../../../../shared/logging/eav-logger';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { StateAdapter } from './state-adapter';
 import { PickerItem } from '../models/picker-item.model';
+import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
 
 export abstract class DataAdapterBase {
   
-  log: EavLogger<typeof DataAdapterBase.logSpecs>;
+  log: ClassLogger<typeof DataAdapterBase.logSpecs>;
 
   /** Log Specs to be used as a basis for all inheriting classes */
   static logSpecs = { all: false, setupEmpty: true, connectState: false, fetchItems: false };
@@ -46,7 +46,7 @@ export abstract class DataAdapterBase {
 
   init(callerName: string) { }
 
-  public linkLog(log: EavLogger): this {
+  public linkLog(log: ClassLogger): this {
     if (!this.log.enabled)
       this.log.inherit(log);
     return this;

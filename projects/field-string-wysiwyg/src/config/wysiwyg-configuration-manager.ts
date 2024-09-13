@@ -7,8 +7,8 @@ import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
-import { EavLogger } from '../../../../projects/eav-ui/src/app/shared/logging/eav-logger';
 import { classLog } from '../../../../projects/eav-ui/src/app/shared/logging';
+import { ClassLogger } from 'projects/eav-ui/src/app/shared/logging/logger.interface';
 
 export class WysiwygConfigurationManager {
 
@@ -93,7 +93,7 @@ export class WysiwygConfigurationManager {
   }
 }
 
-function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: EavLogger): WysiwygConfiguration {
+function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes, log: ClassLogger): WysiwygConfiguration {
 
   log.a('wysiwyg: getPresetConfiguration', { editMode, displayMode, ConfigurationPresets });
   // Find best match for modeConfig, if not found, rename and use default
