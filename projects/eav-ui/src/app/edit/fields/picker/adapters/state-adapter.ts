@@ -101,16 +101,14 @@ export abstract class StateAdapter {
 
   //#region Conversion back and forth between formats
 
-  /** Mapper to convert between the state and the UI - must be added by inheriting class */
-  public abstract mapper: StateUiMapperBase;
+  /**
+   * Mapper to convert between the state and the UI - must be added by inheriting class.
+   * On the UI side, must always be an array of strings.
+   */
+  public abstract mapper: StateUiMapperBase<string | string[], string[]>;
 
-
-  public asArray(): string[] {
-    const value = this.#fieldState.uiValue();
-    return (typeof value === 'string')
-      ? convertValueToArray(value, this.settings().Separator)
-      : [...value];
-  }
+  /** Signal with the current values in the picker, as an array */
+  public values = computedObj('ids', () => this.mapper.toUi(this.#fieldState.uiValue()));
 
   //#endregion
 
@@ -118,7 +116,7 @@ export abstract class StateAdapter {
 
   #updateValue(operation: (original: string[]) => string[]): void {
     const l = this.log.fnIf('updateValue');
-    const valueArray: string[] = this.asArray();
+    const valueArray = this.values();
     const modified = operation(valueArray);
     const newValue = this.mapper.toState(modified);
     this.#fieldState.ui().set(newValue);
@@ -144,7 +142,7 @@ export abstract class StateAdapter {
       return list;
     });
 
-    if (!this.asArray().length) {
+    if (!this.values().length) {
       // move back to component
       setTimeout(() => {
         console.log('trying to call focus');
