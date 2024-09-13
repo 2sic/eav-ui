@@ -1,10 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { StateManagerLocal, StateManagerSession } from './state-manager';
-import { EavLogger } from '../logging/eav-logger';
 import { classLog } from '../logging';
-
-const logThis = false;
-const nameOfThis = 'UserSettings';
 
 const storeKey = 'user-settings';
 
@@ -54,8 +50,7 @@ export class UserSettings {
 
 export class UserSettingsPart<T extends Record<string, unknown>> {
 
-  // TODO: @2dm #log
-  log = new EavLogger(nameOfThis + 'Part', logThis);
+  log = classLog({UserSettingsPart});
   
   constructor(private userSettings: UserSettings, private storeKey: string, data: T, private longTerm = false) {
     const merged = { ...data, ...userSettings.get<T>(storeKey, longTerm) };

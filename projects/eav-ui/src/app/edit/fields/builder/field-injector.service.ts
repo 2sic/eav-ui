@@ -12,7 +12,7 @@ import { UiControl } from '../../shared/controls/ui-control';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
-import { classLog, logFnIf } from '../../../shared/logging';
+import { classLog } from '../../../shared/logging';
 import { InjectorBundle } from './injector-bundle.model';
 import { AbstractControl } from '@angular/forms';
 import { DebugFields } from '../../edit-debug';
@@ -51,7 +51,7 @@ export class FieldStateInjectorFactory {
    * @returns an injector bundle with control and environment injectors
    */
   public getInjectors(fieldConfig: FieldConfigSet, inputType: InputTypeSpecs): InjectorBundle {
-    const l = logFnIf(this, 'getInjectors', { fieldConfig, inputType });
+    const l = this.log.fnIf('getInjectors', { fieldConfig, inputType });
 
     const name = fieldConfig.fieldName;
 
