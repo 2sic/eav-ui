@@ -25,9 +25,9 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get default(): FieldValue {
-    const { formula, settingsInitial, inputTypeName } = this.#params;
+    const { formula, settingsInitial } = this.#params;
     if (formula.isValue)
-      return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial);
+      return this.#value(FieldHelper.getDefaultOrPrefillValue(formula.fieldName, formula.inputType.inputType, settingsInitial));
 
     if (formula.isSetting)
       return (settingsInitial as Record<string, any>)[formula.settingName];
@@ -38,9 +38,9 @@ export class FormulaDataObject implements FormulaV1Data {
 
   get initial(): FieldValue {
     const formula = this.#params.formula;
-    if (!formula.isValue)
-      return;
-    return this.#propsData.initialFormValues[formula.fieldName];
+    return formula.isValue
+      ? this.#value(this.#propsData.initialFormValues[formula.fieldName])
+      : null;
   }
 
   get parameters(): Record<string, any> {
@@ -48,29 +48,26 @@ export class FormulaDataObject implements FormulaV1Data {
   }
 
   get prefill(): FieldValue {
-    const { formula, settingsInitial, itemHeader, inputTypeName } = this.#params;
-    if (!formula.isValue) return;
-    return FieldHelper.getDefaultOrPrefillValue(formula.fieldName, inputTypeName, settingsInitial, itemHeader, true);
+    const { formula, settingsInitial, itemHeader } = this.#params;
+    return formula.isValue
+      ? this.#value(FieldHelper.getDefaultOrPrefillValue(formula.fieldName, formula.inputType.inputType, settingsInitial, itemHeader, true))
+      : null;
   }
 
-  get value(): FieldValue {
+  get value(): FieldValue | FormulaFieldValidation {
     const formula = this.#params.formula;
 
-    if (formula.isValue) {
-      const raw = this.#params.currentValues[formula.fieldName];
-      return this.#valueMapper?.toUi(raw) ?? raw;
-    }
+    if (formula.isValue)
+      return this.#value(this.#params.currentValues[formula.fieldName]);
 
     if (formula.isSetting)
       return (this.#params.settingsCurrent as Record<string, any>)[formula.settingName];
 
-    if (formula.isValidation) {
-      const formulaValidation: FormulaFieldValidation = {
+    if (formula.isValidation)
+      return {
         severity: '',
         message: '',
-      };
-      return formulaValidation as unknown as FieldValue;
-    }
+      } satisfies FormulaFieldValidation;
   }
 
   get selected(): PickerItem[] {
@@ -87,5 +84,9 @@ export class FormulaDataObject implements FormulaV1Data {
 
   get optionsRaw(): PickerItem[] {
     return this.#params.pickerInfo.optionsRaw;
+  }
+
+  #value(raw: FieldValue): FieldValue {
+    return this.#valueMapper?.toUi(raw) ?? raw;
   }
 }

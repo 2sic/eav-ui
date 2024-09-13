@@ -1,7 +1,6 @@
 import { Signal } from '@angular/core';
 import { FeatureSummary } from '../../../features/models';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
-import { InputTypeStrict } from '../../../shared/fields/input-type-catalog';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
@@ -20,26 +19,24 @@ export interface FormulaRunPickers {
   /** The mapper to be used when returning the value to the UI */
   mapper: StateUiMapperBase;
 
-  optionsRaw: PickerItem[];
   options: PickerItem[];
+  optionsRaw: PickerItem[];
   optionsVer: number | null;
   optionsVerBefore: number | null;
   optionsChanged: boolean;
 
-  selectedRaw: PickerItem[];
   selected: PickerItem[];
-  selectedVerBefore: number | null;
+  selectedRaw: PickerItem[];
   selectedVer: number | null;
+  selectedVerBefore: number | null;
   changed: boolean;
 }
 
 /** Everything a formula needs to run */
-export interface FormulaRunParameters { // extends FormulaRunPickers {
+export interface FormulaRunParameters {
   /** The formula to run */
   formula: FormulaCacheItem;
   currentValues: ItemValuesOfLanguage;
-  /** The exact name of the input field */
-  inputTypeName: InputTypeStrict;
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
   itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;

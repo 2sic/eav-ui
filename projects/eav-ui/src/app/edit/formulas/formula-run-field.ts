@@ -2,7 +2,7 @@ import { untracked } from '@angular/core';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaDefaultTargetValues, FormulaFieldValidation, FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './targets/formula-targets';
+import { FormulaFieldValidation, FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
@@ -69,11 +69,11 @@ export class FormulaRunField {
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
     const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, isSpecialPicker, picker.changed));
-    const splitDisabled = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
-    if (splitDisabled.disabled)
-      this.#showDisabledFormulasWarnings(splitDisabled.disabled);
+    const grouped = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
+    if (grouped.disabled)
+      this.#showDisabledFormulasWarnings(grouped.disabled);
 
-    const enabled = splitDisabled.enabled ?? [];
+    const enabled = grouped.enabled ?? [];
 
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
     const formulas = isSpecialPicker && !picker.ready
@@ -90,7 +90,6 @@ export class FormulaRunField {
     // Run all formulas IF we have any and work with the objects containing specific changes
     const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
       currentValues,
-      inputTypeName: fieldConstants.inputTypeSpecs.inputType,
       settingsInitial: fieldConstants.settingsInitial,
       settingsCurrent: settingsBefore,
       itemHeader,
@@ -115,28 +114,44 @@ export class FormulaRunField {
     const l = this.log.fnIfInList('getPickerInfos', 'fields', fieldName, { fieldName });
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const picker = fieldConstants.pickerData();
-    const optionsRaw = picker?.optionsSource(); // must access before version check
-    const optionsVer = getVersion(picker?.optionsSource);
+    if (picker?.ready() != true)
+      return {
+        ready: false,
+        mapper: null,
+        optionsRaw: null,
+        options: null,
+        optionsVer: null,
+        optionsVerBefore: null,
+        optionsChanged: false,
+        selectedRaw: null,
+        selected: null,
+        selectedVer: null,
+        selectedVerBefore: null,
+        changed: false,
+      };
+
+    const optionsRaw = picker.optionsSource(); // must access before version check
+    const optionsVer = getVersion(picker.optionsSource);
     const optionsVerBefore = propsBefore.optionsVer;
     const optionsChanged = optionsVer !== optionsVerBefore;
 
     const selectedRaw = picker?.selectedAll();
-    const selectedVer = getVersion(picker?.selectedAll);
+    const selectedVer = getVersion(picker.selectedAll);
     const selectedVerBefore = propsBefore.selectedVer;
     const selectedChanged = selectedVer !== selectedVerBefore;
 
     const result: FormulaRunPickers = {
-      ready: picker?.ready(),
-      mapper: picker?.state?.mapper,
+      ready: true,
+      mapper: picker.state.mapper,
       optionsRaw: optionsRaw,
-      options: picker?.optionsFinal(),
+      options: picker.optionsFinal(),
       optionsVer: optionsVer,
       optionsVerBefore: optionsVerBefore,
       optionsChanged: optionsChanged,
 
       // Selected
       selectedRaw: selectedRaw,
-      selected: picker?.selectedState(),
+      selected: picker.selectedState(),
       selectedVer: selectedVer,
       selectedVerBefore: selectedVerBefore,
 

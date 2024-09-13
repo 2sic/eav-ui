@@ -1,4 +1,5 @@
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { FormulaFieldValidation } from '../targets/formula-targets';
 
 
 export interface FormulaV1Data {
@@ -6,6 +7,6 @@ export interface FormulaV1Data {
   initial: FieldValue;
   parameters: Record<string, any>;
   prefill: FieldValue;
-  value: FieldValue;
+  value: FieldValue | FormulaFieldValidation;
   [fieldName: string]: any;
 }
