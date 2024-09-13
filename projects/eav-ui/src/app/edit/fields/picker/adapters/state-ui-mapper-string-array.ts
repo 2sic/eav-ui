@@ -11,13 +11,17 @@ export class StateUiMapperStringArray extends StateUiMapperWithSettingsBase<stri
    * Convert a string to an array of strings for use in the UI.
    */
   toUi(state: string): string[] {
-    return state?.split(this.settings().Separator) ?? [];
+    return (state == null || state === '')
+      ? []
+      : state.split(this.settings().Separator) ?? [];
   }
 
   /**
    * The state needs a string, using the specified separator.
    */
   toState(uiValue: string[]): string {
-    return convertArrayToString(uiValue, this.settings().Separator);
+    return (uiValue == null || uiValue.length === 0) 
+      ? ''
+      : convertArrayToString(uiValue, this.settings().Separator);
   }
 }
