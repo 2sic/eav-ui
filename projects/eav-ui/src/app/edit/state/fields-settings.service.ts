@@ -39,7 +39,7 @@ const maxCyclesWarning = "Max cycles reached, stopping for this second";
 @Injectable()
 export class FieldsSettingsService {
 
-  log = classLog({FieldsSettingsService}, logSpecs, true);
+  log = classLog({FieldsSettingsService}, logSpecs);
 
   #pickerSync = new FieldSettingsPickerUpdater();
 

@@ -5,8 +5,7 @@ import { FormulaValueCorrections } from "../results/formula-value-corrections.he
 import { SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { Injectable, Signal } from "@angular/core";
-import { NameValuePair, FieldFormulasResultRaw } from "../results/formula-results.models";
-import { FieldSettingPair } from './formula-promise-result.model';
+import { FieldFormulasResultRaw } from "../results/formula-results.models";
 import { ItemService } from '../../state/item.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FieldProps } from '../../state/fields-configs.model';
@@ -16,6 +15,13 @@ import { FieldsPropsEngineCycle } from '../../state/fields-properties-engine-cyc
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { classLog } from '../../../shared/logging';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
+
+const logSpecs = {
+  all: false,
+  handleFormulaPromise: false,
+  DefineCallbackHandlerIfMissing: false,
+  changesFromQueue: false,
+};
 
 /**
  * FormulaPromiseHandler is responsible for handling the promise parts of formula results.
@@ -28,7 +34,7 @@ export class FormulaPromiseHandler {
   private contentType: Signal<EavContentType>;
   private modifiedChecker: FieldsValuesModifiedHelper;
 
-  private log = classLog({ FormulaPromiseHandler });
+  private log = classLog({ FormulaPromiseHandler }, logSpecs);
 
   private updateValueQueue: Record<string, FormulaPromiseResult> = {};
   
@@ -51,12 +57,12 @@ export class FormulaPromiseHandler {
    * @param formula
    * @param inputTypeName
    */
-  handleFormulaPromise(promiseResult: FieldFormulasResultRaw, formula: FormulaCacheItem): void {
-    this.log.fn('handleFormulaPromise', { promiseResult, formula });
+  public handleFormulaPromise(promiseResult: FieldFormulasResultRaw, formula: FormulaCacheItem): void {
+    this.log.fnIf('handleFormulaPromise', { promiseResult, formula });
     if (promiseResult.openInDesigner && promiseResult.stop === null)
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
     formula.promises$.next(promiseResult.promise);
-    this.defineCallbackHandlerIfMissing(formula);
+    this.#defineCallbackHandlerIfMissing(formula);
   }
 
   /**
@@ -65,33 +71,35 @@ export class FormulaPromiseHandler {
    * @param inputType
    * @param entityGuid
    */
-  private defineCallbackHandlerIfMissing(formula: FormulaCacheItem): void {
+  #defineCallbackHandlerIfMissing(formula: FormulaCacheItem): void {
     const entityGuid = this.entityGuid;
-    const l = this.log.fn('DefineCallbackHandlerIfMissing', { formula, entityGuid });
+    const l = this.log.fnIf('DefineCallbackHandlerIfMissing', { formula, entityGuid });
     if (formula.updateCallback$.value)
       return;
 
     const queue = this.updateValueQueue;
     formula.updateCallback$.next((result: FieldValue | FieldFormulasResultRaw) => {
-      const raw = new FormulaValueCorrections(formula.fieldName, formula.isValue, formula.inputType, false).v2(result);
+      const fieldName = formula.fieldName;
+      const raw = new FormulaValueCorrections(fieldName, formula.isValue, formula.inputType, false).v2(result);
 
       // Make sure the cache contains this entry
-      queue[entityGuid] = queue[entityGuid] ?? new FormulaPromiseResult(entityGuid, []);
-      const queueItem = queue[entityGuid];
-      
-      const fieldQueue = queueItem.getOrCreateField(formula.fieldName, formula.isValue ? raw.value : undefined);
+      const queueItem = queue[entityGuid] ??= new FormulaPromiseResult(entityGuid);      
+      const fieldQueue = queueItem.data[fieldName] ??= {
+        name: fieldName,
+        value: formula.isValue ? raw.value : undefined,
+        fields: [],
+        settings: {}
+      };
 
       if (formula.isSetting) {
         // New v18 settings are added to the field settings
         l.a("formula promise settings");
         fieldQueue.settings ??= {};
-        console.warn('2dm - formula promise settings', raw.value, result);
         fieldQueue.settings[formula.settingName] = raw.value;
       }
 
-      const fieldsUpdates = queueItem.fieldUpdates;
       if (raw.fields) {
-        fieldsUpdates.push(...raw.fields);
+        l.a("formula promise fields");
         fieldQueue.fields.push(...raw.fields);
       }
 
@@ -114,7 +122,7 @@ export class FormulaPromiseHandler {
    * @param formItemFormulaService
    * @returns true if values were updated, false otherwise and new field props
    */
-  changesFromQueue(cycle: FieldsPropsEngineCycle): QueuedChanges {
+  public changesFromQueue(cycle: FieldsPropsEngineCycle): QueuedChanges {
     // Get data from change queue and then flush, as we'll process it next and in case of errors we don't want to reprocess it
     const toProcess = this.updateValueQueue[this.entityGuid];
     this.updateValueQueue[this.entityGuid] = null;
@@ -131,9 +139,13 @@ export class FormulaPromiseHandler {
       return acc;
     }, {} as ItemValuesOfLanguage);
 
-    const fields = toProcess.fieldUpdates;
+    const fields = dataEntries
+      .filter(([_, field]) => field.fields.length > 0)
+      .map(([_, field]) => field.fields)
+      .flat();
+      
     const settings = dataEntries
-      .filter(([_, field]) => field.settings && Object.keys(field.settings).length > 0)
+      .filter(([_, field]) => Object.keys(field.settings).length > 0)
       .map(([name, field]) => ({ fieldName: name, settings: field.settings }));
 
     // Handle values (of this field) and fields (values of other fields)
