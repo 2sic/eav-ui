@@ -1,0 +1,38 @@
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+    'mat-caption' : itemCount(),
+    'mat-empty' : !itemCount(),
+    'mat-error' : ui().touchedAndInvalid && !config.initialDisabled,
+    'color__primary' : !ui().touchedAndInvalid && !config.initialDisabled,
+    'color__label-disabled' : config.initialDisabled
+    }">
+    {{ basics().labelWithRequired }}
+  </mat-label>
+  <div (click)="expandDialog()"
+    [ngClass]="{
+    'c-ew__preview--invalid' : ui().touchedAndInvalid,
+    'c-ew__preview--disabled': config.initialDisabled
+    }">
+
+
+    <div>
+      <!-- <div fxLayout="row" fxLayoutAlign="start center"> -->
+
+        @for (item of options(); track item.value) {
+          <p>
+            <mat-checkbox formControlName="pepperoni" (click)="select(item)" [checked]="item.selected">
+              {{ item.label }} - {{ item.value }} - {{ !!item.selected }}
+            </mat-checkbox>
+          </p>
+        }
+
+        
+        @if (enableTextEntry()) {
+          <span matSuffix class="eav-selection-suffix-inline">
+            <ng-content select="[freeTextButtons]"></ng-content>
+          </span>
+        }
+      <!-- </div> -->
+    </div>
+  </div>
+</div>

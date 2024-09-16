@@ -12,27 +12,35 @@
     }
     @else
     {
-      @if (selectedItems().length > 1)
-      {
-        <app-picker-pills>
-          <app-picker-toggle-text freeTextButtons
-            [csDisabled]="ui().disabled"
-            [allowText]="mySettings().enableTextEntry"
-            [freeTextMode]="isInFreeTextMode()">
-          </app-picker-toggle-text>
-        </app-picker-pills>
+      @if (pickerDisplayMode() === 'checkbox') {
+        <app-picker-checkboxes>
+        </app-picker-checkboxes>
+
       }
       @else
       {
-        <app-picker-search
-          [showSelectedItem]="true"
-          [showItemEditButtons]="true">
-          <app-picker-toggle-text freeTextButtons
-            [csDisabled]="ui().disabled"
-            [allowText]="mySettings().enableTextEntry"
-            [freeTextMode]="isInFreeTextMode()">
-          </app-picker-toggle-text>
-        </app-picker-search>
+        @if (selectedItems().length > 1)
+        {
+          <app-picker-pills>
+            <app-picker-toggle-text freeTextButtons
+              [csDisabled]="ui().disabled"
+              [allowText]="mySettings().enableTextEntry"
+              [freeTextMode]="isInFreeTextMode()">
+            </app-picker-toggle-text>
+          </app-picker-pills>
+        }
+        @else
+        {
+          <app-picker-search
+            [showSelectedItem]="true"
+            [showItemEditButtons]="true">
+            <app-picker-toggle-text freeTextButtons
+              [csDisabled]="ui().disabled"
+              [allowText]="mySettings().enableTextEntry"
+              [freeTextMode]="isInFreeTextMode()">
+            </app-picker-toggle-text>
+          </app-picker-search>
+        }
       }
     }
   </div>

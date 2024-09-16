@@ -279,17 +279,19 @@ export interface Boolean extends All {
   _label: string;
 }
 
-export interface EntityPicker extends EntityQuery {
+interface PickerSettings {
+  PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio';
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
+}
+
+export interface EntityPicker extends EntityQuery, PickerSettings {
   EnableReselect: boolean;
   AllowMultiMin: number;
   AllowMultiMax: number;
 
   DataSources: string[];
   UiPickerSourceQuery: UiPickerSourceQuery;
-
-  PickerDisplayMode: 'list' | 'tree';
-  PickerDisplayConfiguration: string[]; //can only be one entity guid
-  PickerTreeConfiguration: UiPickerModeTree;
 
   ItemInformation: string;
   ItemTooltip: string;
@@ -298,7 +300,7 @@ export interface EntityPicker extends EntityQuery {
   DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }
 
-export interface StringPicker extends StringDropdown {
+export interface StringPicker extends StringDropdown, PickerSettings {
   EnableReselect: boolean;
   AllowMultiMin: number;
   AllowMultiMax: number;
@@ -306,9 +308,9 @@ export interface StringPicker extends StringDropdown {
   DataSources: string[];
   UiPickerSourceQuery: UiPickerSourceQuery;
 
-  PickerDisplayMode: 'list' | 'tree';
-  PickerDisplayConfiguration: string[]; //can only be one entity guid
-  PickerTreeConfiguration: UiPickerModeTree;
+  // PickerDisplayMode: 'list' | 'tree';
+  // PickerDisplayConfiguration: string[]; //can only be one entity guid
+  // PickerTreeConfiguration: UiPickerModeTree;
 
   DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }

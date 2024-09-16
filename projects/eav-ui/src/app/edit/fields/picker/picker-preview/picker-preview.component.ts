@@ -15,6 +15,7 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging';
+import { PickerCheckboxesComponent } from '../picker-checkboxes/picker-checkboxes.component';
 
 @Component({
   selector: 'app-picker-preview',
@@ -27,11 +28,11 @@ import { classLog } from '../../../../shared/logging';
     PickerTextToggleComponent,
     PickerSearchComponent,
     PickerTextComponent,
+    PickerCheckboxesComponent,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
     FieldHelperTextComponent,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
   ],
@@ -40,11 +41,16 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
   
   log = classLog({PickerPreviewComponent});
 
+  constructor(
+    private editRoutingService: EditRoutingService,
+  ) { super(); }
+
   isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
+
+  pickerDisplayMode = this.fieldState.setting('PickerDisplayMode');
 
   mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();
-    // const leavePlaceForButtons = (settings.CreateTypes && settings.EnableCreate) || settings.AllowMultiValue;
     const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;
     const showGoToListDialogButton = settings.AllowMultiValue;
     return {
@@ -57,10 +63,6 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
       showGoToListDialogButton,
     };
   });
-
-  constructor(
-    private editRoutingService: EditRoutingService,
-  ) { super(); }
 
   openNewEntityDialog(entityType: string): void {
     this.log.a(`openNewEntityDialog: '${entityType}'`);

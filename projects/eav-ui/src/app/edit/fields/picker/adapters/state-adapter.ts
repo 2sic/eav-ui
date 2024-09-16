@@ -1,5 +1,5 @@
 import { ReorderIndexes } from '../picker-list/reorder-index.models';
-import { convertArrayToString, convertValueToArray, correctStringEmptyValue } from '../picker.helpers';
+import { correctStringEmptyValue } from '../picker.helpers';
 import { DeleteEntityProps } from '../models/picker.models';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject } from '@angular/core';
@@ -13,7 +13,8 @@ import { StateUiMapperBase } from './state-ui-mapper-base';
 const logSpecs = {
   all: false,
   updateValue: true,
-  add: true,
+  add: false,
+  set: true,
   remove: true,
   reorder: true,
   doAfterDelete: true,
@@ -120,11 +121,17 @@ export abstract class StateAdapter {
     const modified = operation(valueArray);
     const newValue = this.mapper.toState(modified);
     this.#fieldState.ui().set(newValue);
+    l.end();
   }
   
   public add(value: string): void {
     this.log.fnIf('add', { value });
     this.#updateValue(list => (this.settings().AllowMultiValue) ? [...list, value] : [value]);
+  }
+
+  public set(values: string[]): void {
+    this.log.fnIf('set', { values });
+    this.#updateValue(() => values);
   }
 
   public reorder(reorderIndexes: ReorderIndexes) {

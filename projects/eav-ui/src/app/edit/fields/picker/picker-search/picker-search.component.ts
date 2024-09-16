@@ -127,13 +127,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
   ) { super(); }
 
   ngOnInit(): void {
-    // process formulas on options...?
-    // TODO: @2dm - maybe there is even a more elegant way to do this
-    const enableFormulas = false;
-    if (enableFormulas) {
-      // this.fieldsSettingsService.processPickerItems$(config.fieldName, source.optionsOrHints$)
-    }
-
     const fieldSettings = this.fieldState.settings;
     if (fieldSettings().PickerDisplayMode === 'tree') {
       // Setup Tree Helper - but should only happen, if we're really doing trees
