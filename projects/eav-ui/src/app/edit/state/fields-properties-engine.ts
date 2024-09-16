@@ -184,13 +184,3 @@ export class FieldsPropsEngine {
   }
 
 }
-
-interface PropsUpdate {
-  valueChanges: ItemValuesOfLanguage;
-  props: Record<string, FieldProps>;
-}
-
-// interface PropsUpdateResult extends PropsUpdate {
-//   values: ItemValuesOfLanguage;
-//   // pickers: Record<string, PickerItem[]>;
-// }

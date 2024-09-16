@@ -6,7 +6,7 @@ import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, startWith } from 'rxjs';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 import { EavCustomInputField } from '../../../../../../edit-types/src/EavCustomInputField';
 import { FieldMask } from '../../shared/helpers';
@@ -53,9 +53,8 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   
   #adamService = transient(AdamService);
 
-  // #control = this.#fieldState.ui().control;
   #customEl: EavCustomInputField;
-  #value$ = this.#fieldState.ui().control.valueChanges.pipe(distinctUntilChanged(isEqual)); //: BehaviorSubject<FieldValue>;
+  #value$ = this.#fieldState.ui().control.valueChanges.pipe(startWith(this.#fieldState.uiValue()), distinctUntilChanged(isEqual));
 
   #config = this.#fieldState.config;
   #group = this.#fieldState.group;
@@ -77,15 +76,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
     this.log.a('init');
     this.#viewContainerRef = viewContainerRef;
     this.#changeDetectorRef = changeDetectorRef;
-
-    // this.#value$ = new BehaviorSubject(this.#control.value);
-    // this.subscriptions.add(
-    //   this.#control.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
-    //     this.#value$.next(value);
-    //   })
-    // );
-    // const value$ = this.#fieldState.ui().control.valueChanges.pipe(distinctUntilChanged(isEqual));
-
     this.#customEl = document.createElement(customElName) as EavCustomInputField;
     this.#customEl.connector = this.#buildConnector();
     customElContainerRef.nativeElement.appendChild(this.#customEl);
