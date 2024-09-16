@@ -84,15 +84,22 @@ export class FormulaPromiseHandler {
     formula.stop = newStop;
   }
 
-  // TODO: CONTINUE HERE
-  public filterFormulasIfSleeping(fieldName: string, enabled: FormulaCacheItem[]) {
-    const l = this.log.fnIfInList('filterFormulasIfSleeping', 'fields', fieldName, { enabled });
-    const formulas = enabled.filter(f => {
+  /**
+   * Filter out formulas which shouldn't run because of promises. Rules are:
+   * - not stopped (this is not handled here, as it applies to non-promise formulas too)
+   * - has promise, but is sleeping so we don't want to run it until it has completed
+   * @param fieldName 
+   * @param before 
+   * @returns 
+   */
+  public filterFormulas(fieldName: string, before: FormulaCacheItem[]) {
+    const l = this.log.fnIfInList('filterFormulasIfSleeping', 'fields', fieldName, { enabled: before });
+    const formulas = before.filter(f => {
       const promise = f.promises$.value;
-      l.a(`⚠️⚠️ hasPromise: ${!!promise}; completed: ${promise?.completed}; sleep: ${promise?.sleep}`);
+      l.a(`hasPromise: ${!!promise}; completed: ${promise?.completed}; sleep: ${promise?.sleep}`);
       return !promise || (promise.completed || !promise.sleep);
     });
-    const msg = `⚠️⚠️🧪📊 beforeFilter: ${enabled.length}; formulas: ${formulas.length}; `;
+    const msg = `🧪📊 beforeFilter: ${before.length}; formulas: ${formulas.length}; `;
     return l.rSilent(formulas, msg);
   }
 

@@ -29,6 +29,11 @@ export class FormulaFieldPickerHelper {
 
   //#endregion Prepare / Get Picker Infos / Select live formulas
 
+  /**
+   * Filter out formulas which should not run yet, for these reasons:
+   * 1. picker is not ready
+   * 2. picker is ready but nothing has changed, and "sleep" determines that in this case it shouldn't run.
+   */
   public filterFormulasIfPickerNotReady(before: FormulaCacheItem[]) {
     const l = this.log.fnIfInList('filterFormulasIfPickerNotReady', 'fields', this.fieldName, { before });
     const picks = this.infos;
@@ -38,11 +43,7 @@ export class FormulaFieldPickerHelper {
       : before; 
       
     // Figure out which picker-formulas must sleep
-    const formulas = ready
-      .filter(f => {
-        return !f.fieldIsSpecialPicker
-          || (this.isSpecialPicker && !f.sleep || picks.changed);
-      });
+    const formulas = ready.filter(f => !f.fieldIsSpecialPicker || (this.isSpecialPicker && !f.sleep || picks.changed));
 
     const msg = `🧪📊 before: ${before.length}; ready: ${ready.length}; formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`;
     return l.rSilent(formulas, msg);

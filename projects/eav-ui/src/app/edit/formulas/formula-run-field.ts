@@ -66,14 +66,14 @@ export class FormulaRunField {
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
-    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, pickHelp.isSpecialPicker, picks.changed));
+    const formulasAll = untracked(() => this.designerSvc.cache.getActive(this.entityGuid, fieldName, pickHelp.isSpecialPicker));
     const grouped = groupBy(formulasAll, f => f.disabled ? 'disabled' : 'enabled');
     if (grouped.disabled)
       this.#showDisabledFormulasWarnings(grouped.disabled);
 
     const enabled = grouped.enabled ?? [];
 
-    const noPromiseSleep = this.promiseHandler.filterFormulasIfSleeping(fieldName, enabled)
+    const noPromiseSleep = this.promiseHandler.filterFormulas(fieldName, enabled)
 
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
     const formulas = pickHelp.filterFormulasIfPickerNotReady(noPromiseSleep);

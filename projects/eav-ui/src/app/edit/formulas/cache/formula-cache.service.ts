@@ -62,7 +62,7 @@ export class FormulaCacheService {
    * Find formulas of the current field which are still running.
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
-  public getActive(entityGuid: string, name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
+  public getActive(entityGuid: string, name: string, forNewPicker: boolean): FormulaCacheItem[] {
     const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, formulas: this.formulas() }));
     const targets = FormulaDefaultTargetValues
       .concat(forNewPicker ? FormulaNewPickerTargetValues : FormulaOptionalTargetValues);
@@ -70,8 +70,6 @@ export class FormulaCacheService {
     const all = this.#findFormulas(entityGuid, name, targets, /* allowDraft: */ false);
 
     const unstopped = all.filter(f => !f.stop);
-
-    // const unPaused = unstopped.filter(f => !f.sleep || versionHasChanged);
 
     return l.r(unstopped, `all: ${all.length}, unstopped: ${unstopped.length}`);
   }
