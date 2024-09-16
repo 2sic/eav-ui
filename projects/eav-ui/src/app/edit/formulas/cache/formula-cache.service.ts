@@ -24,6 +24,8 @@ export class FormulaCacheService {
 
   log = classLog({FormulaCacheService}, logSpecs, false);
 
+  #cacheBuilder = transient(FormulaCacheBuilder);
+
   constructor() { }
 
   /** All the formulas with various additional info to enable execution and editing */
@@ -31,8 +33,6 @@ export class FormulaCacheService {
 
   /** All the formula results */
   #results = signalObj<FormulaResultCacheItem[]>('formula-results', []);
-
-  #cacheBuilder = transient(FormulaCacheBuilder);
 
   init() {
     const formulaCache = this.#cacheBuilder.buildFormulaCache(this);
@@ -63,17 +63,17 @@ export class FormulaCacheService {
    * Uses the designerService as that can modify the behavior while developing a formula.
    */
   public getActive(entityGuid: string, name: string, forNewPicker: boolean, versionHasChanged: boolean): FormulaCacheItem[] {
-    const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, versionHasChanged, formulas: this.formulas() }));
+    const l = this.log.fnIfInList('getActive', 'fields', name, () => ({ name, forNewPicker, formulas: this.formulas() }));
     const targets = FormulaDefaultTargetValues
       .concat(forNewPicker ? FormulaNewPickerTargetValues : FormulaOptionalTargetValues);
     
-    const all = this.#findFormulas(entityGuid, name, targets, false);
+    const all = this.#findFormulas(entityGuid, name, targets, /* allowDraft: */ false);
 
     const unstopped = all.filter(f => !f.stop);
 
-    const unPaused = unstopped.filter(f => !f.sleep || versionHasChanged);
+    // const unPaused = unstopped.filter(f => !f.sleep || versionHasChanged);
 
-    return l.r(unPaused, `all: ${all.length}, unstopped: ${unstopped.length}, unpaused: ${unPaused.length}`);
+    return l.r(unstopped, `all: ${all.length}, unstopped: ${unstopped.length}`);
   }
 
 

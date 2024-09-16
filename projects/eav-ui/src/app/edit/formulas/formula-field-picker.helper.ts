@@ -10,13 +10,13 @@ import { FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './ta
 const logSpecs = {
   all: false,
   getPickerInfos: false,
-  filterFormulasIfPickerNotReady: false,
+  filterFormulasIfPickerNotReady: true,
   fields: [...DebugFields],
 }
 
 export class FormulaFieldPickerHelper {
   
-  log = classLog({FormulaFieldPickerHelper}, logSpecs);
+  log = classLog({FormulaFieldPickerHelper}, logSpecs ,true);
 
   constructor(private fieldName: string, private fieldConstants: FieldConstantsOfLanguage, private propsBefore: FieldProps) {
     this.isSpecialPicker = fieldConstants.inputTypeSpecs.isNewPicker
@@ -29,13 +29,22 @@ export class FormulaFieldPickerHelper {
 
   //#endregion Prepare / Get Picker Infos / Select live formulas
 
-  public filterFormulasIfPickerNotReady(enabled: FormulaCacheItem[]) {
-    const l = this.log.fnIfInList('filterFormulasIfPickerNotReady', 'fields', this.fieldName);
+  public filterFormulasIfPickerNotReady(before: FormulaCacheItem[]) {
+    const l = this.log.fnIfInList('filterFormulasIfPickerNotReady', 'fields', this.fieldName, { before });
     const picks = this.infos;
-    const formulas = this.isSpecialPicker && !picks.ready
-      ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
-      : enabled
-    const msg = `🧪📊formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`;
+
+    const ready = this.isSpecialPicker && !picks.ready
+      ? before.filter(f => !f.fieldIsSpecialPicker)
+      : before; 
+      
+    // Figure out which picker-formulas must sleep
+    const formulas = ready
+      .filter(f => {
+        return !f.fieldIsSpecialPicker
+          || (this.isSpecialPicker && !f.sleep || picks.changed);
+      });
+
+    const msg = `🧪📊 before: ${before.length}; ready: ${ready.length}; formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`;
     return l.rSilent(formulas, msg);
   }
 

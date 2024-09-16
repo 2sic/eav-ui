@@ -1,9 +1,7 @@
-import { FieldFormulasResultRaw } from './results/formula-results.models';
+import { FieldValueOrResultRaw } from './results/formula-results.models';
 import { FormulaV1Context } from './run/formula-run-context.model';
 import { FormulaV1Data } from './run/formula-run-data.model';
 import { FormulaV1Experimental } from './run/formula-run-experimental.model';
-import { FieldValue } from '../../../../../edit-types/src/FieldValue';
-import { PickerItem } from '../fields/picker/models/picker-item.model';
 
 //#region Formula strings / parts to process and show templates
 
@@ -34,9 +32,9 @@ export const defaultListItemFormula = listItemFormulaV2;
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
-export type FormulaFunctionDefault = () => FieldValue | FieldFormulasResultRaw;
+export type FormulaFunctionDefault = () => FieldValueOrResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue | FieldFormulasResultRaw;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValueOrResultRaw;
 
 //#endregion
 

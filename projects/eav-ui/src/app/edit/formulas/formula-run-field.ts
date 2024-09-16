@@ -34,7 +34,7 @@ const logSpecs = {
  */
 export class FormulaRunField {
 
-  log = classLog({FormulaRunField}, logSpecs);
+  log = classLog({FormulaRunField}, logSpecs, true);
 
   constructor(
     private promiseHandler: FormulaPromiseHandler,
@@ -73,8 +73,12 @@ export class FormulaRunField {
 
     const enabled = grouped.enabled ?? [];
 
+    const noPromiseSleep = this.promiseHandler.filterFormulasIfSleeping(fieldName, enabled)
+
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
-    const formulas = pickHelp.filterFormulasIfPickerNotReady(enabled);
+    const formulas = pickHelp.filterFormulasIfPickerNotReady(noPromiseSleep);
+
+    l.a(`🧪📊 enabled: ${enabled.length}; noPromisesSleep: ${noPromiseSleep.length}; formulas: ${formulas.length}`);
 
     // If we have no formulas, exit early.
     if (formulas.length == 0)
@@ -138,19 +142,10 @@ export class FormulaRunField {
       };
 
       const raw = this.#runFormula(allRunParams);
+      l.a(`formula result`, { formula, raw });
 
-      //#region Transfer to PromiseHandler
-
-      // If result _contains_ a promise, add it to the queue
-      // but don't stop, as it can still contain settings/values for now
-      const containsPromise = raw.promise instanceof Promise;
-      if (containsPromise)
-        this.promiseHandler.handleFormulaPromise(raw, formula);
-
-      // Stop depends on explicit result and the default is different if it has a promise
-      formula.stop = raw.stop ?? (containsPromise ? true : formula.stop);
-
-      //#endregion
+      // Promise: Pick up in PromiseHandler if necessary and auto-stop if not explicitly set
+      this.promiseHandler.addFormulaPromise(formula, raw);
 
       // Picker: Pause depends on explicit result
       runParams.pickerHelper.updateFormulaSleep(formula, raw, l);
@@ -159,7 +154,8 @@ export class FormulaRunField {
       wip = runParams.pickerHelper.preserveResultsAfterRun(formula, wip, raw, l);
         
       // If we have field changes, add to the list
-      if (raw.fields) wip.fields.push(...raw.fields);
+      if (raw.fields)
+        wip.fields.push(...raw.fields);
 
       // If the value is not set, skip further result processing
       if (raw.value === undefined)

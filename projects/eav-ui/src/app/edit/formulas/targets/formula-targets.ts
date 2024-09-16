@@ -30,7 +30,8 @@ export const FormulaNewPickerTargetValues = Object.values(FormulaNewPickerTarget
 
 export const FormulaSpecialPickerTargets = [
   FormulaNewPickerTargets.Options,
-  FormulaDefaultTargets.Value,
+  // FormulaDefaultTargets.Value,
+  FormulaNewPickerTargets.Selected,
 ];
 
 /** These formulas should auto-sleep unless specified otherwise */

@@ -1,6 +1,6 @@
 import { DataTypeCatalog } from "../../../shared/fields/data-type-catalog";
 import { InputTypeCatalog } from "../../../shared/fields/input-type-catalog";
-import { FieldFormulasResultRaw } from "./formula-results.models";
+import { FieldFormulasResultRaw, FieldValueOrResultRaw } from "./formula-results.models";
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { DebugFields } from '../../edit-debug';
@@ -22,7 +22,7 @@ const logSpecs = {
  */
 export class FormulaValueCorrections {
 
-  log = classLog({FormulaValueCorrections}, logSpecs, false);
+  log = classLog({FormulaValueCorrections}, logSpecs, true);
 
   constructor(
     private fieldName: string,
@@ -33,7 +33,7 @@ export class FormulaValueCorrections {
   ) { }
 
 
-  v1(v1Result: FieldValue | FieldFormulasResultRaw): { ok: boolean, v1Result: FieldFormulasResultRaw } {
+  v1(v1Result: FieldValueOrResultRaw): { ok: boolean, v1Result: FieldFormulasResultRaw } {
     const isArray = v1Result && Array.isArray(v1Result) && v1Result.every(r => typeof r === 'string');
     const resultIsPure = ['string', 'number', 'boolean'].includes(typeof v1Result) || v1Result instanceof Date || isArray || !v1Result;
     if (!resultIsPure)
@@ -45,7 +45,7 @@ export class FormulaValueCorrections {
     return { ok: true, v1Result: this.toFormulaResult(v1Value) };
   }
 
-  v2(result: FieldValue | FieldFormulasResultRaw): FieldFormulasResultRaw {
+  v2(result: FieldValueOrResultRaw): FieldFormulasResultRaw {
     const raw = this.allValues(result);
     return { ...raw, openInDesigner: this.isOpen };
   }
@@ -57,8 +57,12 @@ export class FormulaValueCorrections {
    * @param inputType InputType is needed to check if the result is a date which needs to be corrected
    * @returns Strongly typed FormulaResultRaw object
    */
-  allValues(result: FieldValue | FieldFormulasResultRaw): FieldFormulasResultRaw {
+  allValues(result: FieldValueOrResultRaw): FieldFormulasResultRaw {
     const l = this.log.fnIfInList('allValues', 'fields', this.fieldName, { result });
+
+    // if (l.enabled)
+    //   debugger;
+
     // 2024-09-10 21:15 2dm changed this, as I believe all cases have a clear stop-value
     // const stop = (result as FormulaResultRaw)?.stop ?? null;
     const defaults: Partial<FieldFormulasResultRaw> = { value: undefined, fields: [], stop: null, sleep: null };
@@ -79,7 +83,11 @@ export class FormulaValueCorrections {
         return l.r({ ...defaults, value: this.#oneValue(result) }, 'date');
 
       if (result instanceof Promise)
-        return l.r({ ...defaults, value: undefined, promise: result as Promise<FieldFormulasResultRaw> }, 'promise');
+        return l.r({
+          ...defaults,
+          value: undefined,
+          promise: result as Promise<FieldFormulasResultRaw>,
+        }, 'promise');
 
       const raw: FieldFormulasResultRaw = result as FieldFormulasResultRaw;
 

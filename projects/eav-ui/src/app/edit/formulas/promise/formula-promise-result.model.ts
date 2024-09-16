@@ -1,5 +1,5 @@
 import { FieldValue } from 'projects/edit-types';
-import { NameValuePair } from "../results/formula-results.models";
+import { FieldValueOrResultRaw, NameValuePair } from "../results/formula-results.models";
 
 /**
  * The result of a formula promise.
@@ -21,4 +21,11 @@ interface FormulaPromiseResultField {
 export interface FieldSettingPair {
   name: string;
   settings: NameValuePair[];
+}
+
+
+export interface FormulaPromise {
+  promise: Promise<FieldValueOrResultRaw>;
+  sleep: boolean;
+  completed: boolean;
 }

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, filter, from, switchMap } from 'rxjs';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { BehaviorSubject, combineLatest, filter, from, map, switchMap } from 'rxjs';
+import { FieldSettings } from '../../../../../../edit-types';
 import { EntityReader, ContentTypeSettingsHelpers } from '../../shared/helpers';
 import { EavItem } from '../../shared/models/eav/eav-item';
 import { FormulaSourceCodeHelper } from './source-code-helper';
 import { FormulaFunction } from '../formula-definitions';
-import { FormulaDefaultTargets, FormulaTarget, SettingsFormulaPrefix } from '../targets/formula-targets';
+import { FormulaDefaultTargets, FormulaSpecialPickerTargets, FormulaTarget, SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaCacheItemConstants } from './formula-cache.model';
-import { FieldFormulasResultRaw, FormulaIdentifier } from '../results/formula-results.models';
+import { FieldValueOrResultRaw, FormulaIdentifier } from '../results/formula-results.models';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
 import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
@@ -24,13 +24,14 @@ import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model'
 import { FieldsSettingsHelpers } from '../../state/field-settings.helper';
 import { classLog } from '../../../shared/logging';
 import { DialogContextUser } from '../../../shared/models/dialog-context.models';
+import { FormulaPromise } from '../promise/formula-promise-result.model';
 
 const logSpecs = {
   all: false,
   buildFormulaCache: false,
   updateFormulaFromEditor: false,
   createPromisedParts: false,
-  buildItemFormulaCacheSharedParts: false,
+  getSharedParts: false,
 };
 
 /**
@@ -66,7 +67,7 @@ export class FormulaCacheBuilder extends ServiceBase {
     for (const entityGuid of this.formConfig.config.itemGuids) {
       const item = this.itemService.get(entityGuid);
 
-      const sharedParts = this.#buildItemFormulaCacheSharedParts(item, entityGuid);
+      const shared = this.#getSharedParts(entityGuid, item);
 
       const contentType = this.contentTypeService.getContentTypeOfItem(item);
       for (const attribute of contentType.Attributes) {
@@ -77,16 +78,16 @@ export class FormulaCacheBuilder extends ServiceBase {
         const inputType = this.inputTypes.getSpecs(attribute);
 
         // Get all formulas for the field
-        const formulas = this.contentTypeItemService
+        const formulaEntities = this.contentTypeItemService
           .getMany(settings.Formulas)
           .filter(f => reader.getBestValue<boolean>(f.Attributes.Enabled));
 
-        for (const formula of formulas) {
-          const sourceCode = reader.getBestValue<string>(formula.Attributes.Formula);
-          if (sourceCode == null) 
+        for (const fEntity of formulaEntities) {
+          const sourceCode = reader.getBestValue<string>(fEntity.Attributes.Formula);
+          if (!sourceCode) 
             continue;
 
-          const target: FormulaTarget = reader.getBestValue<string>(formula.Attributes.Target);
+          const target: FormulaTarget = reader.getBestValue<string>(fEntity.Attributes.Target);
 
           // create cleaned formula function, or if this fails, add info to log & results
           let formulaFunction: FormulaFunction;
@@ -107,18 +108,15 @@ export class FormulaCacheBuilder extends ServiceBase {
             isDraft: formulaFunction == null,
             sourceCode,
             sourceCodeSaved: sourceCode,
-            sourceCodeGuid: formula.Guid,
-            sourceCodeId: formula.Id,
+            sourceCodeGuid: fEntity.Guid,
+            sourceCodeId: fEntity.Id,
             target,
-            inputType,
             ...this.#inputTypeSpecsForCacheItem(target, inputType),
             version: FormulaSourceCodeHelper.findFormulaVersion(sourceCode),
-            targetEntity: sharedParts.targetEntity, // new v14.07.05
-            user: sharedParts.user,   // new in v14.07.05
-            app: sharedParts.app,   // new in v14.07.05
-            sxc: sharedParts.sxc,   // put in shared in 14.11
+            ...shared,
             stop: false,
             sleep: false,
+            fieldIsSpecialPicker: FormulaSpecialPickerTargets.includes(target),
             ...this.#createPromisedParts(),
             ...this.#targetInfoForCacheItem(target),
           };
@@ -131,14 +129,15 @@ export class FormulaCacheBuilder extends ServiceBase {
     return l.r(formulaCache);
   }
 
-  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'isNewPicker' | 'disabled' | 'disabledReason'> {
+
+  #inputTypeSpecsForCacheItem(target: FormulaTarget, inputType: InputTypeSpecs): Pick<FormulaCacheItem, 'inputType' | 'isNewPicker' | 'disabled' | 'disabledReason'> {
 
     // Disable picker checks WIP
     /* if (!inputType.isNewPicker) */
-    return { isNewPicker: inputType.isNewPicker, disabled: false, disabledReason: '' };
-    return [FormulaDefaultTargets.Value /*, FormulaNewPickerTargets.Options */].includes(target)
-      ? { isNewPicker: true, disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
-      : { isNewPicker: true, disabled: false, disabledReason: '' };
+    return { inputType: inputType, isNewPicker: inputType.isNewPicker, disabled: false, disabledReason: '' };
+    // return [FormulaDefaultTargets.Value /*, FormulaNewPickerTargets.Options */].includes(target)
+    //   ? { isNewPicker: true, disabled: true, disabledReason: 'New picker is not supported in formulas yet' }
+    //   : { isNewPicker: true, disabled: false, disabledReason: '' };
   }
 
   #targetInfoForCacheItem(target: FormulaTarget): Pick<FormulaCacheItem, 'isSetting' | 'settingName' | 'isValue' | 'isValidation'> {
@@ -155,8 +154,12 @@ export class FormulaCacheBuilder extends ServiceBase {
    * @param entityGuid
    * @returns
    */
-  #buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemConstants {
-    this.log.fnIf('buildItemFormulaCacheSharedParts', { item, entityGuid });
+  #getSharedParts(entityGuid: string, item: EavItem = null): FormulaCacheItemConstants {
+    this.log.fnIf('getSharedParts', { item, entityGuid });
+
+    if (this.#sharedPartsCache[entityGuid])
+      return this.#sharedPartsCache[entityGuid];
+
     item = item ?? this.itemService.get(entityGuid);
     const entity = item.Entity;
     const mdFor = entity.For;
@@ -177,7 +180,7 @@ export class FormulaCacheBuilder extends ServiceBase {
     };
     const formConfig = this.formConfig.config;
     const user = formConfig.dialogContext.User ?? {} as Partial<DialogContextUser>;
-    return {
+    const shared = {
       targetEntity,
       user: {
         email: user.Email,
@@ -207,7 +210,10 @@ export class FormulaCacheBuilder extends ServiceBase {
         _autoAppIdsInUrl: true,         // auto-add appid and zoneid to url so formula developer can see what's happening
       } as any) satisfies Sxc,
     } satisfies FormulaCacheItemConstants;
+    this.#sharedPartsCache[entityGuid] = shared;
+    return shared;
   }
+  #sharedPartsCache: Record<string, FormulaCacheItemConstants> = {};
 
 
   /**
@@ -216,18 +222,21 @@ export class FormulaCacheBuilder extends ServiceBase {
    */
   #createPromisedParts() {
     this.log.fnIf('createPromisedParts');
-    const promises$ = new BehaviorSubject<Promise<FieldValue | FieldFormulasResultRaw>>(null);
-    const updateCallback$ = new BehaviorSubject<(result: FieldValue | FieldFormulasResultRaw) => void>(null);
-    const lastPromise = promises$.pipe(
+    const promises$ = new BehaviorSubject<FormulaPromise>(null);
+    const updateCallback$ = new BehaviorSubject<(result: FieldValueOrResultRaw) => void>(null);
+    const promiseSpecs = promises$.pipe(
       filter(x => !!x),
-      switchMap(promise => from(promise)),
+      switchMap(set => from(set.promise).pipe(map(result => ({ set, result })))),
     );
     // This combineLatest triggers the callback for the first time when the last promise is resolved
-    this.subscriptions.add(combineLatest([lastPromise, updateCallback$.pipe(filter(x => !!x))]).subscribe(
-      ([result, callback]) => {
-        callback(result);
-      },
-    ));
+    this.subscriptions.add(combineLatest([promiseSpecs, updateCallback$.pipe(filter(x => !!x))])
+      .subscribe(
+        ([promise, callback]) => {
+          promise.set.completed = true;
+          promise.set.sleep = false;
+          return callback(promise.result);
+        },
+      ));
 
     return { promises$, updateCallback$ };
   }
@@ -274,7 +283,7 @@ export class FormulaCacheBuilder extends ServiceBase {
     const formula = value ?? {} as FormulaCacheItem;
 
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
-    const shared = this.#buildItemFormulaCacheSharedParts(null, id.entityGuid);
+    const shared = this.#getSharedParts(id.entityGuid);
 
     const streams = (formula.promises$ && formula.updateCallback$)
       ? { promises$: value.promises$, updateCallback$: value.updateCallback$ }
@@ -285,19 +294,16 @@ export class FormulaCacheBuilder extends ServiceBase {
       cache: formula.cache ?? {},
       fn: formulaFunction?.bind({}),
       isDraft: run ? formulaFunction == null : true,
-      sourceCode: sourceCode,
+      sourceCode,
       sourceCodeSaved: formula.sourceCodeSaved,
       sourceCodeGuid: formula.sourceCodeGuid,
       sourceCodeId: formula.sourceCodeId,
       version: FormulaSourceCodeHelper.findFormulaVersion(sourceCode),
-      inputType,
       ...this.#inputTypeSpecsForCacheItem(id.target, inputType),
-      targetEntity: formula.targetEntity ?? shared.targetEntity,
-      user: formula.user ?? shared.user,
-      app: formula.app ?? shared.app,
-      sxc: formula.sxc ?? shared.sxc,
+      ...shared,
       stop: false,
       sleep: false,
+      fieldIsSpecialPicker: FormulaSpecialPickerTargets.includes(id.target),
       ...streams,
       ...this.#targetInfoForCacheItem(id.target),
     };

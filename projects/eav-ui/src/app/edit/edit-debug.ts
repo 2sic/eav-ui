@@ -6,7 +6,8 @@ import { environment } from '../../environments/environment';
  * Change as you need, but after debugging, best set it back to [].
  */
 export const DebugFields: string[] = !environment.production
-  ? ['StringPicker']
+  // ? ['StringPicker']
+  ? ['NumberInputAddUntillDevisibleBy5']
   // ? ['Title']
   // ? [] // no fields
   // ? ['*'] // all fields

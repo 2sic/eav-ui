@@ -2,9 +2,10 @@ import { Sxc } from '@2sic.com/2sxc-typings';
 import { FormulaFunction, FormulaVersion } from '../formula-definitions';
 import { FormulaV1CtxTargetEntity, FormulaV1CtxUser, FormulaV1CtxApp } from '../run/formula-run-context.model';
 import { BehaviorSubject } from 'rxjs';
-import { FormulaIdentifier, FieldFormulasResultRaw } from '../results/formula-results.models';
+import { FormulaIdentifier, FieldValueOrResultRaw } from '../results/formula-results.models';
 import { InputTypeSpecs } from '../../shared/input-types/input-type-specs.model';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
+import { FormulaPromise } from '../promise/formula-promise-result.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity.
@@ -54,8 +55,9 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
 
   /** if the formula is stopped at the moment */
   stop: boolean;
-  promises$: BehaviorSubject<Promise<FieldValue | FieldFormulasResultRaw>>;
-  updateCallback$: BehaviorSubject<(result: FieldValue | FieldFormulasResultRaw) => void>;
+  promises$: BehaviorSubject<FormulaPromise>;
+  promiseCompleted?: boolean;
+  updateCallback$: BehaviorSubject<(result: FieldValueOrResultRaw) => void>;
 
   /** WIP v18 */
   sleep: boolean;
@@ -64,6 +66,7 @@ export interface FormulaCacheItem extends FormulaCacheItemConstants, FormulaIden
   settingName: string;
   isValue: boolean;
   isValidation: boolean;
+  fieldIsSpecialPicker: boolean;
 }
 
 export interface FormulaResultCacheItem extends FormulaIdentifier {

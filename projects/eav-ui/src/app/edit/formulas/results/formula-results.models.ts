@@ -66,4 +66,4 @@ export interface NameValuePair<T = FieldValue> {
   value: T;
 }
 
-
+export type FieldValueOrResultRaw = FieldValue | FieldFormulasResultRaw;
