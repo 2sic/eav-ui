@@ -1,4 +1,4 @@
-import { FormulaResultRaw } from './results/formula-results.models';
+import { FieldFormulasResultRaw } from './results/formula-results.models';
 import { FormulaV1Context } from './run/formula-run-context.model';
 import { FormulaV1Data } from './run/formula-run-data.model';
 import { FormulaV1Experimental } from './run/formula-run-experimental.model';
@@ -34,9 +34,9 @@ export const defaultListItemFormula = listItemFormulaV2;
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
-export type FormulaFunctionDefault = () => FieldValue | FormulaResultRaw;
+export type FormulaFunctionDefault = () => FieldValue | FieldFormulasResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue | FormulaResultRaw;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue | FieldFormulasResultRaw;
 
 //#endregion
 

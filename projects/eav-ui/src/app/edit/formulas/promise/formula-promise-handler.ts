@@ -5,7 +5,7 @@ import { FormulaValueCorrections } from "../results/formula-value-corrections.he
 import { SettingsFormulaPrefix } from '../targets/formula-targets';
 import { FormulaCacheItem } from '../cache/formula-cache.model';
 import { Injectable, Signal } from "@angular/core";
-import { NameValuePair, FormulaResultRaw } from "../results/formula-results.models";
+import { NameValuePair, FieldFormulasResultRaw } from "../results/formula-results.models";
 import { FieldSettingPair } from './formula-promise-result.model';
 import { ItemService } from '../../state/item.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
@@ -51,7 +51,7 @@ export class FormulaPromiseHandler {
    * @param formula
    * @param inputTypeName
    */
-  handleFormulaPromise(promiseResult: FormulaResultRaw, formula: FormulaCacheItem): void {
+  handleFormulaPromise(promiseResult: FieldFormulasResultRaw, formula: FormulaCacheItem): void {
     this.log.fn('handleFormulaPromise', { promiseResult, formula });
     if (promiseResult.openInDesigner && promiseResult.stop === null)
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
@@ -72,7 +72,7 @@ export class FormulaPromiseHandler {
       return;
 
     const queue = this.updateValueQueue;
-    formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
+    formula.updateCallback$.next((result: FieldValue | FieldFormulasResultRaw) => {
       const raw = new FormulaValueCorrections(formula.fieldName, formula.isValue, formula.inputType, false).v2(result);
 
       const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);

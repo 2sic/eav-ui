@@ -2,11 +2,11 @@ import { untracked } from '@angular/core';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { FormulaRunOneHelpersFactory } from './formula-run-one-helpers.factory';
 import { FormulaFunctionV1, FormulaVersions } from './formula-definitions';
-import { FormulaFieldValidation, FormulaSpecialPickerAutoSleep } from './targets/formula-targets';
+import { FormulaFieldValidation } from './targets/formula-targets';
 import { FormulaCacheItem } from './cache/formula-cache.model';
 import { FormulaSettingsHelper } from './results/formula-settings.helper';
 import { FormulaPromiseHandler } from './promise/formula-promise-handler';
-import { RunFormulasResult, FormulaResultRaw } from './results/formula-results.models';
+import { FieldFormulasResult, FieldFormulasResultPartialSettings, FieldFormulasResultRaw } from './results/formula-results.models';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { FormulaExecutionSpecsWithRunParams, FormulaExecutionSpecs, FormulaRunParameters } from './run/formula-objects-internal-data';
 import { FieldSettingsUpdateHelper } from '../state/fields-settings-update.helpers';
@@ -18,7 +18,7 @@ import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { logSpecsFormulaFields } from './formula-engine';
 import { DebugFields } from '../edit-debug';
-import { FormulaRunFieldPickerHelper } from './formula-picker-handler';
+import { FormulaFieldPickerHelper } from './formula-field-picker.helper';
 
 const logSpecs = {
   all: false,
@@ -58,11 +58,11 @@ export class FormulaRunField {
     propsBefore: FieldProps,
     reuseExecSpecs: FormulaExecutionSpecs,
     setUpdHelper: FieldSettingsUpdateHelper,
-  ): RunFormulasResult {
+  ): FieldFormulasResult {
     const l = this.log.fnIfInList('runOrInitSettings', 'fields', fieldName, { fieldName });
 
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
-    const pickHelp = new FormulaRunFieldPickerHelper(fieldName, fieldConstants, propsBefore);
+    const pickHelp = new FormulaFieldPickerHelper(fieldName, fieldConstants, propsBefore);
     const picks = pickHelp.infos;
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
@@ -76,18 +76,14 @@ export class FormulaRunField {
 
     // If we're working on the picker, but it's not ready yet, we must skip these formulas
     const formulas = pickHelp.filterFormulasIfPickerNotReady(enabled);
-    //  pickHelp.isSpecialPicker && !picks.ready
-    //   ? enabled.filter(f => !FormulaSpecialPickerTargets.includes(f.target))
-    //   : enabled;
-    // l.a(`🧪📊formulas:${formulas.length}; pickerChanged: ${picks.changed}; opts: ${picks.options.changed}/${picks.options.ver}; sel: ${picks.selected.changed}/${picks.selected.ver}`);
 
     // If we have no formulas, exit early.
     if (formulas.length == 0)
       return finalize({}, valueBefore, {
         value: valueBefore, validation: null, fields: [], settings: {},
-        opts: new FieldPropsPicker(), sel: new FieldPropsPicker(),
+        options: new FieldPropsPicker(), selected: new FieldPropsPicker(),
         //options: null, selected: null, optionsVer: null, selectedVer: null
-      } satisfies RunFormulaPartialSettings);
+      } satisfies FieldFormulasResultPartialSettings);
 
     // Run all formulas IF we have any and work with the objects containing specific changes
     const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
@@ -96,18 +92,19 @@ export class FormulaRunField {
       settingsCurrent: settingsBefore,
       itemHeader,
       pickerInfo: picks,
+      pickerHelper: pickHelp,
     };
     const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs);
 
     return finalize(raw.settings, raw.value, raw);
 
     // Helper to finalize the result, needed to quit early and also when it really runs
-    function finalize(settingsUpdate: Partial<FieldSettings>, value: FieldValue, raw: RunFormulaPartialSettings): RunFormulasResult {
+    function finalize(settingsUpdate: Partial<FieldSettings>, value: FieldValue, raw: FieldFormulasResultPartialSettings): FieldFormulasResult {
       // Correct any settings necessary after
       // possibly making invalid changes in formulas or if settings need to adjust
       // eg. custom bool labels which react to the value, etc.
       const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsBefore, ...settingsUpdate }, value || valueBefore);
-      return l.r({ ...raw, settings, } satisfies RunFormulasResult);
+      return l.r({ ...raw, settings, } satisfies FieldFormulasResult);
     }
   }
 
@@ -120,16 +117,16 @@ export class FormulaRunField {
     runParams: Omit<FormulaRunParameters, 'formula'>,
     formulas: FormulaCacheItem[],
     reuseObjectsForFormulaDataAndContext: FormulaExecutionSpecs,
-  ): RunFormulaPartialSettings {
+  ): FieldFormulasResultPartialSettings {
     const l = this.log.fnIfInList('runAllOfField', 'fields', formulas[0].fieldName, { runParams, formulas });
 
     // Target variables to fill using formula result
-    const wip: RunFormulaPartialSettings = {
+    let wip: FieldFormulasResultPartialSettings = {
       value: undefined,       // The new value
       validation: undefined,  // The new validation
       fields: [],             // Any additional fields
-      opts: new FieldPropsPicker(), // { list: undefined, ver: undefined },             // Picker options
-      sel: new FieldPropsPicker(), // { list: undefined, ver: undefined },              // Picker selected
+      options: new FieldPropsPicker(), // { list: undefined, ver: undefined },             // Picker options
+      selected: new FieldPropsPicker(), // { list: undefined, ver: undefined },              // Picker selected
       settings: {},           // New settings - which can be updated multiple times by formulas
     };
 
@@ -156,23 +153,11 @@ export class FormulaRunField {
 
       //#endregion
 
-      //#region Transfer to FormulaPickerHandler
+      // Picker: Pause depends on explicit result
+      runParams.pickerHelper.updateFormulaSleep(formula, raw, l);
 
-      // Pause depends on explicit result
-      formula.sleep = raw.sleep ?? (FormulaSpecialPickerAutoSleep.includes(formula.target) ? true : formula.sleep);
-      l.a(`🧪⏸️formula.sleep: ${formula.target}; formula.sleep: ${formula.sleep}; raw.sleep: ${raw.sleep}`);
-
-      // picker data results - experimental v18
-      if (raw.options) {
-        wip.opts = { list: raw.options, ver: runParams.pickerInfo.options.ver };
-        l.a(`🧪📃 options returned, will add`, wip.opts as unknown as Record<string, unknown>);
-      }
-      if (raw.selected) {
-        wip.sel = { list: raw.selected, ver: runParams.pickerInfo.selected.ver };
-        l.a(`🧪📃 selected returned, will add`, wip.sel as unknown as Record<string, unknown>);
-      }
-
-      //#endregion
+      // Picker: picker data results - experimental v18
+      wip = runParams.pickerHelper.preserveResultsAfterRun(formula, wip, raw, l);
         
       // If we have field changes, add to the list
       if (raw.fields) wip.fields.push(...raw.fields);
@@ -215,7 +200,7 @@ export class FormulaRunField {
    * @param itemIdWithPrefill
    * @returns Result of a single formula.
    */
-  #runFormula(execSpecs: FormulaExecutionSpecsWithRunParams): FormulaResultRaw {
+  #runFormula(execSpecs: FormulaExecutionSpecsWithRunParams): FieldFormulasResultRaw {
 
     const { formula, fieldName, params, title, devHelper, valHelper } = this.runOneHelper.getPartsFor(execSpecs);
 
@@ -265,4 +250,3 @@ export class FormulaRunField {
 
 }
 
-type RunFormulaPartialSettings = Omit<RunFormulasResult, "settings"> & { settings: Partial<FieldSettings> };

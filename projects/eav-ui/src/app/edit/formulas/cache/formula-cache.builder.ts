@@ -10,7 +10,7 @@ import { FormulaDefaultTargets, FormulaTarget, SettingsFormulaPrefix } from '../
 import { FormulaV1CtxApp, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../run/formula-run-context.model';
 import { FormulaCacheItem } from './formula-cache.model';
 import { FormulaCacheItemConstants } from './formula-cache.model';
-import { FormulaResultRaw, FormulaIdentifier } from '../results/formula-results.models';
+import { FieldFormulasResultRaw, FormulaIdentifier } from '../results/formula-results.models';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
 import { LoggingService, LogSeverities } from '../../shared/services/logging.service';
@@ -216,8 +216,8 @@ export class FormulaCacheBuilder extends ServiceBase {
    */
   #createPromisedParts() {
     this.log.fnIf('createPromisedParts');
-    const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
-    const updateCallback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
+    const promises$ = new BehaviorSubject<Promise<FieldValue | FieldFormulasResultRaw>>(null);
+    const updateCallback$ = new BehaviorSubject<(result: FieldValue | FieldFormulasResultRaw) => void>(null);
     const lastPromise = promises$.pipe(
       filter(x => !!x),
       switchMap(promise => from(promise)),

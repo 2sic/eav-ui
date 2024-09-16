@@ -13,6 +13,7 @@ import { ItemService } from '../../state/item.service';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
 import { FieldPropsPicker } from '../../state/fields-configs.model';
 import { PickerData } from '../../fields/picker/picker-data';
+import { FormulaFieldPickerHelper } from '../formula-field-picker.helper';
 
 export interface FormulaRunPicker extends FieldPropsPicker {
   listRaw: PickerItem[];
@@ -43,6 +44,8 @@ export interface FormulaRunParameters {
   settingsCurrent: FieldSettings;
   itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;
   pickerInfo: FormulaRunPickers;
+
+  pickerHelper: FormulaFieldPickerHelper;
 }
 
 export interface FormulaExecutionSpecs {

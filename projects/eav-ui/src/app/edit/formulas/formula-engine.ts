@@ -112,10 +112,10 @@ export class FormulaEngine {
       const debugDetails = this.log.specs.fields?.includes(attr.Name) || this.log.specs.fields?.includes('*');
       const translationState = fss.getTranslationState(values, fixed.DisableTranslation, engine.languages, debugDetails);
 
-      if (allResults.opts.list)
-        lAttr.a('picker options', { options: allResults.opts.list, version: allResults.opts.ver });
-      if (allResults.sel.list)
-        lAttr.a('picker selected', { selected: allResults.sel.list, version: allResults.opts.ver });
+      if (allResults.options.list)
+        lAttr.a('picker options', { options: allResults.options.list, version: allResults.options.ver });
+      if (allResults.selected.list)
+        lAttr.a('picker selected', { selected: allResults.selected.list, version: allResults.options.ver });
 
       fieldsProps[attr.Name] = {
         ...propsBefore,
@@ -127,8 +127,8 @@ export class FormulaEngine {
         buildWrappers: null, // required, but set elsewhere
         formulaValidation: allResults.validation,
         // Options and Selected. Use spread, as values must be undefined if not updated
-        opts: { ...propsBefore.opts, ...allResults.opts, },
-        sel: { ...propsBefore.sel, ...allResults.sel, },
+        opts: { ...propsBefore.opts, ...allResults.options, },
+        sel: { ...propsBefore.sel, ...allResults.selected, },
       };
     }
     return { fieldsProps, valueUpdates, fieldUpdates };

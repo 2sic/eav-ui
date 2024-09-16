@@ -4,15 +4,10 @@ import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { FieldPropsPicker } from '../../state/fields-configs.model';
 
-export interface RunFormulasResult {
-  settings: FieldSettings;
-  validation: FormulaFieldValidation;
-  value: FieldValue;
-  fields: NameValuePair[];
-  opts: FieldPropsPicker;
-  sel: FieldPropsPicker;
-}
-
+/**
+ * Things to fully identify a formula.
+ * Used for caching and also to know what formula is being edited in the designer. 
+ */
 export interface FormulaIdentifier {
   /** The entity it's for */
   entityGuid: string;
@@ -22,9 +17,34 @@ export interface FormulaIdentifier {
   target: FormulaTarget;
 }
 
-export interface FormulaResultRaw {
+/**
+ * Results object of running all formulas for a field.
+ */
+export interface FieldFormulasResult {
+  /** The field settings */
+  settings: FieldSettings;
+
+  /** The formula validation result */
+  validation: FormulaFieldValidation;
+
+  /** The field value */
+  value: FieldValue;
+
+  /** Additional fields to update */
+  fields: NameValuePair[];
+
+  /** The options to use (for pickers), new v18 */
+  options: FieldPropsPicker;
+
+  /** The selected data (for pickers), new v18 */
+  selected: FieldPropsPicker;
+}
+
+export type FieldFormulasResultPartialSettings = Omit<FieldFormulasResult, "settings"> & { settings: Partial<FieldSettings> };
+
+export interface FieldFormulasResultRaw {
   value?: FieldValue;
-  promise?: Promise<FormulaResultRaw>;
+  promise?: Promise<FieldFormulasResultRaw>;
   fields?: NameValuePair[];
   stop?: boolean | null;
 

@@ -1,18 +1,22 @@
-import { classLog } from '../../shared/logging';
+import { classLog, FnLogger } from '../../shared/logging';
 import { getVersion } from '../../shared/signals/signal.utilities';
+import { DebugFields } from '../edit-debug';
 import { FieldConstantsOfLanguage, FieldProps } from '../state/fields-configs.model';
 import { FormulaCacheItem } from './cache/formula-cache.model';
+import { FieldFormulasResultPartialSettings, FieldFormulasResultRaw } from './results/formula-results.models';
 import { FormulaRunPicker, FormulaRunPickers } from './run/formula-objects-internal-data';
-import { FormulaSpecialPickerTargets } from './targets/formula-targets';
+import { FormulaSpecialPickerAutoSleep, FormulaSpecialPickerTargets } from './targets/formula-targets';
 
 const logSpecs = {
   all: false,
+  getPickerInfos: false,
   filterFormulasIfPickerNotReady: false,
+  fields: [...DebugFields],
 }
 
-export class FormulaRunFieldPickerHelper {
+export class FormulaFieldPickerHelper {
   
-  log = classLog({FormulaRunFieldPickerHelper});
+  log = classLog({FormulaFieldPickerHelper}, logSpecs);
 
   constructor(private fieldName: string, private fieldConstants: FieldConstantsOfLanguage, private propsBefore: FieldProps) {
     this.isSpecialPicker = fieldConstants.inputTypeSpecs.isNewPicker
@@ -23,7 +27,9 @@ export class FormulaRunFieldPickerHelper {
   get infos() { return this.#infos ??= this.#getInfos(this.fieldName, this.fieldConstants, this.propsBefore); }
   #infos: FormulaRunPickers;
 
-  filterFormulasIfPickerNotReady(enabled: FormulaCacheItem[]) {
+  //#endregion Prepare / Get Picker Infos / Select live formulas
+
+  public filterFormulasIfPickerNotReady(enabled: FormulaCacheItem[]) {
     const l = this.log.fnIfInList('filterFormulasIfPickerNotReady', 'fields', this.fieldName);
     const picks = this.infos;
     const formulas = this.isSpecialPicker && !picks.ready
@@ -60,5 +66,38 @@ export class FormulaRunFieldPickerHelper {
     };
     return l.r(result);
   }
+
+  //#endregion
+
+  //#region Update Field Props
+
+  /**
+   * Pause depends on explicit result
+   */
+  public updateFormulaSleep(formula: FormulaCacheItem, raw: FieldFormulasResultRaw, l: FnLogger): void {
+    formula.sleep = raw.sleep ?? (FormulaSpecialPickerAutoSleep.includes(formula.target) ? true : formula.sleep);
+    l.a(`🧪⏸️formula.sleep: ${formula.target}; formula.sleep: ${formula.sleep}; raw.sleep: ${raw.sleep}`);
+  }
+
+  /**
+   * Transfer options with version if result contains anything like that.
+   */
+  public preserveResultsAfterRun(formula: FormulaCacheItem, wip: FieldFormulasResultPartialSettings, raw: FieldFormulasResultRaw, l: FnLogger): FieldFormulasResultPartialSettings {
+
+    // picker data results - experimental v18
+    if (raw.options) {
+      wip.options = { list: raw.options, ver: this.infos.options.ver };
+      l.a(`🧪📃 options returned, will add`, wip.options as unknown as Record<string, unknown>);
+    }
+
+    if (raw.selected) {
+      wip.selected = { list: raw.selected, ver: this.infos.selected.ver };
+      l.a(`🧪📃 selected returned, will add`, wip.selected as unknown as Record<string, unknown>);
+    }
+
+    return wip;
+  }
+
+  //#endregion
 
 }
