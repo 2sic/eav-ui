@@ -31,7 +31,7 @@ export function computedObj<T>(name: string, computation: () => T): Signal<T> {
  * @param initialValue optional initial value
  * @returns 
  */
-export function awaitHttp<T>(name: string, httpRequest: Observable<T>, initialValue: T = null): Signal<T> {
+export function httpToSignal<T>(name: string, httpRequest: Observable<T>, initialValue: T = null): Signal<T> {
   const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;
   // take(1) to only get the first value, and close the subscription right afterwards - which is what happens to all normal http requests
   httpRequest.pipe(take(1)).subscribe(value => sig.set(value));

@@ -20,7 +20,7 @@ import { FieldHintComponent } from '../../../shared/components/field-hint/field-
 import { ClickStopPropagationDirective } from '../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
-import { awaitHttp, computedObj, signalObj } from '../../../shared/signals/signal.utilities';
+import { httpToSignal, computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
 
 @Component({
@@ -103,7 +103,7 @@ export class EditContentTypeComponent implements AfterViewInit {
   // TODO: @2dg this is a suggestion how to handle http requests in a more signal-like way
   // @2dg note that doing this in the constructor would often be better, but I wanted to prove this way work.
   // Scope Options Http will fire once when data arrives
-  #scopeOptionsHttp = awaitHttp('scopeOptionsHttp', this.#contentTypeSvc.getScopes());
+  #scopeOptionsHttp = httpToSignal('scopeOptionsHttp', this.#contentTypeSvc.getScopes());
   #scopeOptionsManual = signalObj<ScopeOption[]>('scopeOptionsManual', []);
   protected scopeOptions = computedObj<ScopeOption[]>('scopeOptions', () => {
     const fromHttp = this.#scopeOptionsHttp();
