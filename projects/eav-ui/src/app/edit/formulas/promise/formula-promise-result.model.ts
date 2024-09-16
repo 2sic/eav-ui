@@ -1,3 +1,4 @@
+import { FieldValue } from 'projects/edit-types';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { NameValuePair } from "../results/formula-results.models";
 
@@ -7,11 +8,25 @@ import { NameValuePair } from "../results/formula-results.models";
  */
 export class FormulaPromiseResult {
   constructor(
+    public entityGuid: string,
     public valueUpdates: ItemValuesOfLanguage,
     public fieldUpdates: NameValuePair[],
-    public settingUpdates: FieldSettingPair[]
   ) {
   }
+
+  public data: Record<string, FormulaPromiseResultField> = {};
+
+  public getOrCreateField(fieldName: string, value?: FieldValue): FormulaPromiseResultField {
+    if (!this.data[fieldName])
+      this.data[fieldName] = new FormulaPromiseResultField(fieldName, value);
+    return this.data[fieldName];
+  }
+}
+
+class FormulaPromiseResultField {
+  constructor(public name: string, public value?: FieldValue) { }
+  fields: NameValuePair[] = null;
+  settings: Record<string, unknown>;
 }
 
 export interface FieldSettingPair {

@@ -17,7 +17,7 @@ const logSpecs = {
  */
 export class FieldSettingsPickerUpdater {
 
-  log = classLog({FieldSettingsPickerUpdater}, logSpecs, true);
+  log = classLog({FieldSettingsPickerUpdater}, logSpecs);
 
   constructor() {} 
   
