@@ -17,6 +17,7 @@ import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 import { ComputedAnalyzer } from '../../shared/signals/computed-analyzer';
 import { classLog } from '../../shared/logging';
 import { PickerData } from '../fields/picker/picker-data';
+import { FieldSettingsPickerUpdater } from './fields-settings-picker-updater';
 
 const logSpecs = {
   effectTransferPickerData: true,
@@ -40,39 +41,25 @@ export class FieldsSettingsService {
 
   log = classLog({FieldsSettingsService}, logSpecs, true);
 
+  #pickerSync = new FieldSettingsPickerUpdater();
+
   constructor() {
+
+    // Signal to combine startSync and computed allProps
+    const allPropsOrNull = computedObj<Record<string, FieldProps> | null>('allPropsOrNull', () => this.#startSync() && this.#allProps());
+
     // Transfer changes to the props state to the public property
     effect(
       () => {
-        if (!this.#startSync())
-          return;
-        const update = this.#allProps();
-
+        const update = allPropsOrNull();
+        if (!update) return;
         this.allProps.set(update);
-
-        // Transfer picker data
-        this.#effectTransferPickerData(update, 'opts');
-        this.#effectTransferPickerData(update, 'sel');
       },
       { allowSignalWrites: true }
     );
 
-    // TODO: CONSIDER CREATING A Computed for the picker data, to debounce/not send updates if they don't change?
-  }
-
-  #effectTransferPickerData(update: Record<string, FieldProps>, part: 'opts' | 'sel'): void {
-    // Transfer picker data
-    // 1. find all fieldProps with picker data and transfer to pickerData
-    const toTransfer = Object.entries(update).filter(([_, v]) => v[part]?.list);
-
-    const l = this.log.fnIf('effectTransferPickerData', { count: toTransfer.length, toTransfer }, part);
-
-    for (const [field, props] of toTransfer) {
-      l.a('Transfer', { field, props });
-      const pd = props.constants.pickerData();
-      const target = part == 'opts' ? pd.optionsOverride : pd.selectedOverride;
-      target.set(props[part].list);
-    }
+    // Start the picker sync
+    this.#pickerSync.startSync(allPropsOrNull);
   }
 
   //#region injected services, constructor, clean-up

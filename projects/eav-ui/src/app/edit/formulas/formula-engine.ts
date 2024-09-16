@@ -18,16 +18,13 @@ import { transient } from '../../core';
 import { FormulaRunField } from './formula-run-field';
 import { DebugFields } from '../edit-debug';
 
-/** The list of fields to debug is used in multiple places */
-export const logSpecsFormulaFields = [...DebugFields, 'StringPicker']; // or '*' for all
-
 const logSpecs = {
   all: false,
   getFormulas: false,
   runAllFields: true,
   runFormula: false,
   runOneFieldOrInitSettings: false,
-  fields: logSpecsFormulaFields,
+  fields: [...DebugFields, 'StringPicker'], // or '*' for all
 };
 
 /**
@@ -38,7 +35,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaEngine {
 
-  log = classLog({FormulaEngine}, logSpecs, true);
+  log = classLog({FormulaEngine}, logSpecs);
 
   #formulaExecSpecsFactory = transient(FormulaExecutionSpecsFactory);
 

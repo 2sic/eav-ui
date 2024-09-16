@@ -16,7 +16,6 @@ import { FieldConstantsOfLanguage, FieldProps, FieldPropsPicker } from '../state
 import { classLog } from '../../shared/logging';
 import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
-import { logSpecsFormulaFields } from './formula-engine';
 import { DebugFields } from '../edit-debug';
 import { FormulaFieldPickerHelper } from './formula-field-picker.helper';
 
@@ -35,7 +34,7 @@ const logSpecs = {
  */
 export class FormulaRunField {
 
-  log = classLog({FormulaRunField}, { ...logSpecs, fields: logSpecsFormulaFields }, true);
+  log = classLog({FormulaRunField}, logSpecs);
 
   constructor(
     private promiseHandler: FormulaPromiseHandler,
