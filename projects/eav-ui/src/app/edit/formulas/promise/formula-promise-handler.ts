@@ -76,30 +76,26 @@ export class FormulaPromiseHandler {
       const raw = new FormulaValueCorrections(formula.fieldName, formula.isValue, formula.inputType, false).v2(result);
 
       // Make sure the cache contains this entry
-      queue[entityGuid] = queue[entityGuid] ?? new FormulaPromiseResult(entityGuid, {}, []);
+      queue[entityGuid] = queue[entityGuid] ?? new FormulaPromiseResult(entityGuid, []);
       const queueItem = queue[entityGuid];
       
-      const fieldQueue = queueItem.getOrCreateField(formula.fieldName, raw.value);
+      const fieldQueue = queueItem.getOrCreateField(formula.fieldName, formula.isValue ? raw.value : undefined);
 
-      let valueUpdates: ItemValuesOfLanguage = {};
-
-      if (formula.isValue) {
-        valueUpdates = queueItem.valueUpdates;
-        valueUpdates[formula.fieldName] = raw.value;
-      } else if (formula.isSetting) {
+      if (formula.isSetting) {
         // New v18 settings are added to the field settings
         l.a("formula promise settings");
         fieldQueue.settings ??= {};
-        fieldQueue.settings[formula.settingName] = result;
+        console.warn('2dm - formula promise settings', raw.value, result);
+        fieldQueue.settings[formula.settingName] = raw.value;
       }
 
       const fieldsUpdates = queueItem.fieldUpdates;
-      if (raw.fields)
+      if (raw.fields) {
         fieldsUpdates.push(...raw.fields);
-      queue[entityGuid] = new FormulaPromiseResult(entityGuid, valueUpdates, fieldsUpdates);
+        fieldQueue.fields.push(...raw.fields);
+      }
 
       // new WIP
-      queue[entityGuid].data[fieldQueue.name] = fieldQueue;
       formula.stop = raw.stop ?? formula.stop;
       this.#fieldsSettingsService.retriggerFormulas('promise');
     });
@@ -124,13 +120,19 @@ export class FormulaPromiseHandler {
     this.updateValueQueue[this.entityGuid] = null;
 
     // If nothing in the queue for this entity, exit early
-    if (toProcess == null)
+    if (toProcess == null || toProcess.data == null || Object.keys(toProcess.data).length === 0)
       return { valueChanges: {}, newFieldProps: null };
 
     // Updates to process/import
-    const values = toProcess.valueUpdates;
+    const dataEntries = Object.entries(toProcess.data);
+    const valuesArray = dataEntries.map(([name, field]) => ({ name, value: field.value }));
+    const values = valuesArray.reduce((acc, { name, value }) => {
+      acc[name] = value;
+      return acc;
+    }, {} as ItemValuesOfLanguage);
+
     const fields = toProcess.fieldUpdates;
-    const settings = Object.entries(toProcess.data)
+    const settings = dataEntries
       .filter(([_, field]) => field.settings && Object.keys(field.settings).length > 0)
       .map(([name, field]) => ({ fieldName: name, settings: field.settings }));
 
