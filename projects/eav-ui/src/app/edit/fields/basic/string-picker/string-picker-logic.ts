@@ -4,20 +4,21 @@ import { FieldLogicBase, FieldLogicUpdate } from '../../logic/field-logic-base';
 import { FieldLogicManager } from '../../logic/field-logic-manager';
 import { EavEntity } from '../../../shared/models/eav';
 import { InputTypeCatalog, InputTypeStrict } from '../../../../shared/fields/input-type-catalog';
-import { FieldSettings, UiPickerSourceCustomList } from '../../../../../../../edit-types/src/FieldSettings';
+import { FieldSettings, PickerDataSourceType, UiPickerSourceCustomCsv, UiPickerSourceCustomList } from '../../../../../../../edit-types/src/FieldSettings';
 import { classLog } from '../../../../shared/logging';
+import { DataSourceParserCsv } from '../../picker/data-sources/data-source-parser-csv';
 
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeCatalog.StringPicker;
 
-  constructor() { super({ StringPickerLogic }); }
+  constructor() { super({StringPickerLogic}); }
 
   update(specs: FieldLogicUpdate<string>): FieldSettings {
     
     var log = classLog({StringPickerLogic});
 
     const { value, tools } = specs;
-    log.a('update', { specs });
+    const l = log.fn('update', { specs });
 
     let dataSources: EavEntity[] = [];
     const entityPickerLogic = FieldLogicManager.singleton().get(InputTypeCatalog.EntityPicker);
@@ -31,26 +32,33 @@ export class StringPickerLogic extends FieldLogicBase {
       dataSources = tools.contentTypeItemService.getMany(fs.DataSources);
 
     /** Dropdown data source aka custom-list picker */
-    if (dataSources[0]?.Type.Name === PickerConfigs.UiPickerSourceCustomList) {
-      log.a('type: UiPickerSourceCustomList', { dataSource0: dataSources[0] })
-      fs.DataSourceType = PickerConfigs.UiPickerSourceCustomList;
-      const uiPickerSourceCustomList = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList;
+    const typeName = dataSources[0]?.Type.Name;
+    if ([PickerConfigs.UiPickerSourceCustomList, PickerConfigs.UiPickerSourceCustomCsv].includes(typeName as any)) {
+      l.a(`type: ${typeName}`, { dataSource0: dataSources[0] })
 
-      fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config
-      fs.DropdownValues = uiPickerSourceCustomList.Values ?? '';
-      fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
-
-      fs.ItemInformation = uiPickerSourceCustomList.ItemInformation ?? '';
-      fs.ItemTooltip = uiPickerSourceCustomList.ItemTooltip ?? '';
-      fs.ItemLink = uiPickerSourceCustomList.ItemLink ?? '';
+      fs.DataSourceType = typeName as PickerDataSourceType;
+      const config = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList | UiPickerSourceCustomCsv;
+      fs.ItemInformation = config.ItemInformation ?? '';
+      fs.ItemTooltip = config.ItemTooltip ?? '';
+      fs.ItemLink = config.ItemLink ?? '';
 
       fs.EnableEdit = false;
       fs.EnableCreate = false;
       fs.EnableDelete = false;
-    } else
-      log.a('type: not UiPickerSourceCustomList', { dataSource0: dataSources[0] });
 
-    return fs;
+      if (typeName === PickerConfigs.UiPickerSourceCustomList) {
+        fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config
+        fs.DropdownValues = (config as UiPickerSourceCustomList).Values ?? '';
+        fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
+      } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
+        console.warn('2dm - new CSV');
+        const csv = (config as UiPickerSourceCustomCsv).Csv;
+        new DataSourceParserCsv().parse(csv);
+      }
+    } else
+      l.a('type: not UiPickerSourceCustom-List/Csv', { dataSource0: dataSources[0] });
+
+    return l.r(fs);
   }
 }
 

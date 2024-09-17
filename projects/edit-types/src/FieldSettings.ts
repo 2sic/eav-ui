@@ -285,6 +285,8 @@ interface PickerSettings {
   PickerTreeConfiguration: UiPickerModeTree;
 }
 
+export type PickerDataSourceType = 'UiPickerSourceCustomList' | 'UiPickerSourceCustomCsv' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+
 export interface EntityPicker extends EntityQuery, PickerSettings {
   EnableReselect: boolean;
   AllowMultiMin: number;
@@ -297,7 +299,7 @@ export interface EntityPicker extends EntityQuery, PickerSettings {
   ItemTooltip: string;
   ItemLink: string;
 
-  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+  DataSourceType: PickerDataSourceType;
 }
 
 export interface StringPicker extends StringDropdown, PickerSettings {
@@ -312,7 +314,7 @@ export interface StringPicker extends StringDropdown, PickerSettings {
   // PickerDisplayConfiguration: string[]; //can only be one entity guid
   // PickerTreeConfiguration: UiPickerModeTree;
 
-  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+  DataSourceType: PickerDataSourceType;
 }
 
 export interface FieldSettings extends
@@ -387,10 +389,16 @@ export interface UiPickerSourceCustomList extends UiPickerSource {
   DropdownValues: string;
 }
 
+export interface UiPickerSourceCustomCsv extends UiPickerSource {
+  Csv: string;
+}
+
 export interface UiPickerSourceEntityAndQuery extends UiPickerSource {
   CreateTypes: string;
   MoreFields: string;
 }
+
+
 
 interface UiPickerSource extends ConfigModel {
   /** Label or field-mask for label */
@@ -406,5 +414,5 @@ interface UiPickerSource extends ConfigModel {
 interface ConfigModel {
   Title: string;
 
-  ConfigModel: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity' | 'UiPickerModeTree';
+  ConfigModel: 'UiPickerModeTree';
 }
