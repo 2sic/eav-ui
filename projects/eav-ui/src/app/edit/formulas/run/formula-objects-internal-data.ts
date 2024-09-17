@@ -45,7 +45,6 @@ export interface FormulaRunParameters {
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
 
-  pickerInfo: FormulaRunPickers;
   pickerHelper: FormulaFieldPickerHelper;
 
   defaultValueHelper: () => FieldDefaults;

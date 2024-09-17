@@ -1,8 +1,6 @@
-import { FieldDefaults } from '../../shared/helpers';
 import { FormulaFieldValidation } from '../targets/formula-targets';
 import { FormulaV1Data } from './formula-run-data.model';
-import { FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
-import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters } from './formula-objects-internal-data';
+import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters, FormulaRunPickers } from './formula-objects-internal-data';
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
@@ -18,11 +16,13 @@ export class FormulaDataObject implements FormulaV1Data {
   #propsData: FormulaExecutionSpecsWithRunParams;
   #params: FormulaRunParameters;
   #valueMapper: StateUiMapperBase;
+  #picker: FormulaRunPickers;
 
   constructor(propsData: FormulaExecutionSpecsWithRunParams) {
     this.#propsData = propsData;
     this.#params = propsData.runParameters;
-    this.#valueMapper = this.#params.pickerInfo.mapper;
+    this.#picker = this.#params.pickerHelper.infos;
+    this.#valueMapper = this.#params.pickerHelper.infos.mapper;
   }
 
   get default(): FieldValue {
@@ -34,7 +34,7 @@ export class FormulaDataObject implements FormulaV1Data {
       return (this.#params.settingsInitial)[formula.settingName as keyof FieldSettings] as FieldValue;
 
     if (formula.isNewPicker)
-      return this.#params.pickerInfo.options.list as unknown as FieldValue;
+      return this.#picker.options.list as unknown as FieldValue;
   }
 
   get initial(): FieldValue {
@@ -77,8 +77,8 @@ export class FormulaDataObject implements FormulaV1Data {
   get selectedRaw(): PickerItem[] { return this.#getSelected('listRaw'); }
 
   #getSelected(part: 'list' | 'listRaw') {
-    const list = this.#params.pickerInfo.selected[part];
-    return this.#params.pickerInfo.picker.selectedCopy(list);
+    const list = this.#picker.selected[part];
+    return this.#picker.picker.selectedCopy(list);
   }
 
   get options(): PickerItem[] {
@@ -91,7 +91,7 @@ export class FormulaDataObject implements FormulaV1Data {
 
   #getOptions(part: 'list' | 'listRaw') {
     // TODO: create copy!
-    const list = this.#params.pickerInfo.options[part];
+    const list = this.#picker.options[part];
     return list;
   }
 

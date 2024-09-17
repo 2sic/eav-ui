@@ -52,7 +52,7 @@ export class FormulaRunField {
     currentValues: ItemValuesOfLanguage,
     fieldName: string,
     fieldConstants: FieldConstantsOfLanguage,
-    settingsBefore: FieldSettings,
+    settingsCurrent: FieldSettings,
     itemHeader: Pick<ItemIdentifierShared, "Prefill">,
     valueBefore: FieldValue,
     propsBefore: FieldProps,
@@ -63,7 +63,6 @@ export class FormulaRunField {
 
     // Get the latest picker data and check if it has changed - as it affects which formulas to run
     const pickHelp = new FormulaFieldPickerHelper(fieldName, fieldConstants, propsBefore);
-    const picks = pickHelp.infos;
 
     // Get the latest formulas. Use untracked() to avoid tracking the reading of the formula-cache
     // TODO: should probably use untracked around all the calls in this class...WIP 2dm
@@ -92,8 +91,7 @@ export class FormulaRunField {
     const runParamsStatic: Omit<FormulaRunParameters, 'formula'> = {
       currentValues,
       settingsInitial: fieldConstants.settingsInitial,
-      settingsCurrent: settingsBefore,
-      pickerInfo: picks,
+      settingsCurrent,
       pickerHelper: pickHelp,
       defaultValueHelper: () => new FieldDefaults(fieldName, fieldConstants.inputTypeSpecs.inputType, fieldConstants.settingsInitial, itemHeader),
     };
@@ -106,7 +104,7 @@ export class FormulaRunField {
       // Correct any settings necessary after
       // possibly making invalid changes in formulas or if settings need to adjust
       // eg. custom bool labels which react to the value, etc.
-      const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsBefore, ...settingsUpdate }, value || valueBefore);
+      const settings = setUpdHelper.correctSettingsAfterChanges({ ...settingsCurrent, ...settingsUpdate }, value || valueBefore);
       return l.r({ ...raw, settings, } satisfies FieldFormulasResult);
     }
   }
@@ -125,12 +123,12 @@ export class FormulaRunField {
 
     // Target variables to fill using formula result
     let wip: FieldFormulasResultPartialSettings = {
-      value: undefined,       // The new value
-      validation: undefined,  // The new validation
-      fields: [],             // Any additional fields
-      options: new FieldPropsPicker(), // { list: undefined, ver: undefined },             // Picker options
-      selected: new FieldPropsPicker(), // { list: undefined, ver: undefined },              // Picker selected
-      settings: {},           // New settings - which can be updated multiple times by formulas
+      value: undefined,                 // The new value
+      validation: undefined,            // The new validation
+      fields: [],                       // Any additional fields
+      options: new FieldPropsPicker(),  // Picker options
+      selected: new FieldPropsPicker(), // Picker selected
+      settings: {},                     // New settings - which can be updated multiple times by formulas
     };
 
     const start = performance.now();

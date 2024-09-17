@@ -38,7 +38,7 @@ export class FormulaRunOneHelpersFactory {
       params,
       title: this.ctTitle,
       devHelper,
-      valHelper: new FormulaValueCorrections(f.fieldName, f.isValue, f.inputType, devHelper.isOpen, execSpecs.runParameters.pickerInfo.mapper),
+      valHelper: new FormulaValueCorrections(f.fieldName, f.isValue, f.inputType, devHelper.isOpen, execSpecs.runParameters.pickerHelper.infos.mapper),
     };
   }
 
