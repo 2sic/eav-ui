@@ -144,9 +144,11 @@ export class FieldsSettingsService {
       analyzer: null as ComputedAnalyzer<Record<string, FieldProps>>,
       disabled: this.#disabled,
       slotIsEmpty,
+      slotWasEmpty: false, // must start false, so it will certainly run once.
       forceRefresh: this.#forceRefresh,
       watchRestart: signal(0),
       prevFieldProps: {} as Record<string, FieldProps>,
+      hasRunOnce: false,
     } satisfies Deps;
     
     // Protect against infinite loops
@@ -176,11 +178,17 @@ export class FieldsSettingsService {
       console.log('analyzer', { fieldProps: this.allProps }, deps.analyzer.snapShotProducers(true));
 
     const l = this.log.fnIf('regenerateProps', { cycle: deps.cycle, props: this.allProps }, deps.idMsg);
-    // If disabled, for any reason, return the previous value
+    // If disabled for any reason, return the previous value (but do make sure there is a previous value)
     // The #disabled is a safeguard as data will be missing when this is being cleaned up.
     // The #slotIsEmpty means that the current entity is not being edited and will not be saved; can change from cycle to cycle.
-    if (this.#disabled() || deps.slotIsEmpty())
+    const slotIsEmpty = deps.slotIsEmpty();
+    const justReuse = this.#disabled() || (slotIsEmpty && slotIsEmpty == deps.slotWasEmpty);
+    if (justReuse && deps.hasRunOnce)
       return l.r(deps.prevFieldProps, 'disabled or slotIsEmpty');
+    else {
+      deps.hasRunOnce = true;
+      deps.slotWasEmpty = slotIsEmpty;
+    }
 
     // Listen to ForceRefresh. This is triggered by a) promise-completed messages and b) v1 formulas
     this.#forceRefresh();
@@ -224,11 +232,6 @@ export class FieldsSettingsService {
    */
   public settings = this.#fieldSignalsCache.buildProxy(f => () => this.allProps()[f].settings);
 
-  // getTranslationState(fieldName: string): Signal<TranslationState> {
-  //   return this.#signalsTransStateCache.getOrCreate(fieldName, () => this.allProps()[fieldName].translationState);
-  // }
-  // #signalsTransStateCache = new ComputedCacheHelper<string, TranslationState>('transl-state');
-    
   /**
    * Used for translation state stream for a specific field.
    * @param fieldName
@@ -278,4 +281,14 @@ interface Deps {
   forceRefresh: Signal<number>,
   watchRestart: WritableSignal<number>,
   prevFieldProps: Record<string, FieldProps>,
+
+  /**
+   * Informs that on a previous run, the slot was empty.
+   * This is important, since we don't want to run the same cycle again if the slot is empty.
+   * But if it started empty, or was set back to empty, the formulas must run once
+   * to correct disabled state of all fields.
+   */
+  slotWasEmpty: boolean,
+
+  hasRunOnce: boolean,
 }
