@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
@@ -27,7 +27,6 @@ import { classLog } from '../../../../shared/logging';
     CdkDrag,
     MatIconModule,
     MatButtonModule,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
     MousedownStopPropagationDirective,
@@ -49,10 +48,6 @@ export class PickerListComponent extends PickerPartBaseComponent {
     };
   });
 
-  trackByFn(_: number, item: PickerItem): string {
-    return item.value;
-  }
-
   drop(event: CdkDragDrop<PickerItem[]>): void {
     const selectedEntities = this.pickerData.selectedAll();
     moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
@@ -63,15 +58,4 @@ export class PickerListComponent extends PickerPartBaseComponent {
     this.pickerData.state.reorder(reorderIndexes);
   }
 
-  edit(entityGuid: string, entityId: number): void {
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
-  }
-
-  removeItem(index: number): void {
-    this.pickerData.state.remove(index);
-  }
-
-  deleteItem(index: number, entityGuid: string): void {
-    this.pickerData.source.deleteItem({ index, entityGuid });
-  }
 }

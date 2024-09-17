@@ -224,12 +224,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     return placeholder;
   }
 
-  toggleFreeText(disabled: boolean): void {
-    this.log.a(`toggleFreeText ${disabled}`);
-    if (disabled) return;
-    this.pickerData.state.toggleFreeTextMode();
-  }
-
   insertNull(): void {
     this.log.a('insertNull');
     this.pickerData.state.add(null);
@@ -242,20 +236,6 @@ export class PickerSearchComponent extends PickerPartBaseComponent implements On
     return isSelected;
   }
 
-  edit(entityGuid: string, entityId: number): void {
-    this.log.a(`edit guid: '${entityGuid}'; id: '${entityId}'`);
-    this.pickerData.source.editItem({ entityGuid, entityId }, null);
-  }
-
-  removeItem(index: number): void {
-    this.log.a(`removeItem index: '${index}'`);
-    this.pickerData.state.remove(index);
-  }
-
-  deleteItem(index: number, entityGuid: string): void {
-    this.log.a(`deleteItem index: '${index}'; entityGuid: '${entityGuid}'`);
-    this.pickerData.source.deleteItem({ index, entityGuid });
-  }
 
   goToLink(helpLink: string): void {
     this.log.a(`goToLink helpLink: '${helpLink}'`);

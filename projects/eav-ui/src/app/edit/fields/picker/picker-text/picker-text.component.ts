@@ -5,7 +5,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { PickerItem } from '../models/picker-item.model';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging';
 
@@ -29,15 +28,14 @@ export class PickerTextComponent extends PickerPartBaseComponent {
 
   constructor() { super(); }
 
-  useMultiLine = computedObj('useMultiLine', () => {
+  /**
+   * Tell the text-input to be multi-line, if the separator is a newline.
+   * Otherwise, it will be single-line.
+   */
+  protected useMultiLine = computedObj('useMultiLine', () => {
     const settings = this.fieldState.settings();
     const separator = settings.Separator;
     const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
     return isSeparatorNewLine;
   });
-
-  toggleFreeText(disabled: boolean): void {
-    if (disabled) return;
-    this.pickerData.state.toggleFreeTextMode();
-  }
 }

@@ -43,7 +43,4 @@ export class PickerDialogComponent extends PickerPartBaseComponent {
     return showAddNew;
   });
 
-  openNewEntityDialog(entityType: string): void {
-    this.pickerData.source.editItem(null, entityType);
-  }
 }

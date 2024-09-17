@@ -7,7 +7,6 @@ import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { PickerItem } from '../models/picker-item.model';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
@@ -26,19 +25,7 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 })
 export class PickerPillsComponent extends PickerPartBaseComponent {
 
+  constructor() { super(); }
+
   itemCount = computedObj('itemCount', () => this.selectedItems().length);
-
-  constructor(private editRoutingService: EditRoutingService) {
-    super();
-  }
-
-  trackByFn(_: number, item: PickerItem) {
-    return item.value;
-  }
-
-  expandDialog() {
-    const config = this.fieldState.config;
-    if (config.initialDisabled) return;
-    this.editRoutingService.expand(true, config.index, config.entityGuid);
-  }
 }

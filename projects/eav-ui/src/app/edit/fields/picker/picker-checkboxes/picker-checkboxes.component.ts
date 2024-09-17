@@ -6,7 +6,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { EditRoutingService } from '../../../routing/edit-routing.service';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { PickerItem } from 'projects/edit-types';
@@ -28,9 +27,9 @@ import { PickerItem } from 'projects/edit-types';
 })
 export class PickerCheckboxesComponent extends PickerPartBaseComponent {
 
-  constructor(private editRoutingService: EditRoutingService) {
-    super();
-  }
+  constructor() { super(); }
+
+  itemCount = computedObj('itemCount', () => this.selectedItems().length);
 
   options = computedObj('optionsWithSelection', () => {
     const options = this.pickerData.optionsFinal();
@@ -51,11 +50,4 @@ export class PickerCheckboxesComponent extends PickerPartBaseComponent {
     this.pickerData.state.set(values);
   }
 
-  itemCount = computedObj('itemCount', () => this.selectedItems().length);
-
-  expandDialog() {
-    const config = this.fieldState.config;
-    if (config.initialDisabled) return;
-    this.editRoutingService.expand(true, config.index, config.entityGuid);
-  }
 }
