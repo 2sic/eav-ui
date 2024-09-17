@@ -12,8 +12,11 @@ export interface ClassLogger<TSpecs extends unknown = any> {
   nameWithSvcId: string;
   inherit(parent: ClassLogger<TSpecs>): void;
   forceEnable(enabled: boolean | null): void;
+
   a(message: string, data?: RecordOrGenerator): void;
+  aIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): void;
   aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void;
+
   rxTap(name: string, options?: { enabled?: boolean; jsonify?: boolean }): RxTapDebug;
   fn(name: string, data?: RecordOrGenerator, message?: string): FnLogger;
   fnCond(condition: boolean, name: string, data?: RecordOrGenerator, message?: string): FnLogger;

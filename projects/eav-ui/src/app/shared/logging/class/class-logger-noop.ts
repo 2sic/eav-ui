@@ -19,8 +19,11 @@ export class ClassLoggerNoop<TSpecs extends unknown = any> implements ClassLogge
 
   inherit(parent: ClassLogger<any>): void { }
   forceEnable(enabled: boolean | null): void { }
+
   a(message: string, data?: RecordOrGenerator): void { }
   aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void { }
+  aIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): void { }
+
   rxTap(name: string, options?: { enabled?: boolean; jsonify?: boolean; }): RxTapDebug {
     return new RxTapDebug(this as ClassLogger, 'noop');
   }

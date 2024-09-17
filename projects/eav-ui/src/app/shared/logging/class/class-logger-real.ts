@@ -101,6 +101,11 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
     this.#a(message, data);
   }
 
+  aIf(key: BooleanKeys<TSpecs> & string, data?: RecordOrGenerator, message?: string): void {
+    if (this.enabled && this.#ifInSpecs(key))
+      this.#a(message, data);
+  }
+
   aIfInList(list: StringArrayKeys<TSpecs>, subKey: string, data?: RecordOrGenerator, message?: string): void {
     if (this.enabled && this.#ifInSpecsList(list, subKey))
       this.#a(message, data);
