@@ -61,17 +61,17 @@
     (optionSelected)="optionSelected($event, settings().allowMultiValue, selectedItem())"
     (closed)="onClosed()" (opened)="onOpened(settings().showAsTree)"
   >
-    <!-- List Display Mode -->
-    @if (!settings().showAsTree)
-    {
+  @if (!settings().showAsTree)
+  {
+      <!-- List Display Mode -->
       @for (item of filteredItems(); track item)
       {
-        <mat-option [value]="item.value" class="eav-picker-option"
+        <mat-option [value]="item.value" class="picker-option-wrapper"
           [disabled]="item.noSelect ? true : settings().enableReselect ? false : isOptionDisabled(item.value)"
           [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
-          <div class="eav-dropdown-option">
-            <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
-            <div class="eav-dropdown-option-info">
+          <div class="picker-option-contents">
+            <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+            <div class="picker-option-info">
               <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
               <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
             </div>
@@ -79,19 +79,18 @@
         </mat-option>
       }
     }
-
-    <!-- Tree Display Mode -->
-    @if (settings().showAsTree)
+    @else
     {
+      <!-- Tree Display Mode -->
       <mat-tree [dataSource]="treeHelper.dataSource" [treeControl]="treeHelper.treeControl">
         <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding class="eav-tree-node">
           <button mat-icon-button disabled></button>
-          <mat-option [value]="item.value" class="eav-picker-option"
+          <mat-option [value]="item.value" class="picker-option-wrapper"
             [disabled]="treeHelper.disableOption(item, selectedItems(), settings().enableReselect)"
             [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
-            <div class="eav-dropdown-option">
-              <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
-              <div class="eav-dropdown-option-info">
+            <div class="picker-option-contents">
+              <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+              <div class="picker-option-info">
                 <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
                 <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
               </div>
@@ -104,12 +103,12 @@
               {{treeHelper.treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
           </button>
-          <mat-option [value]="item.value" class="eav-picker-option"
+          <mat-option [value]="item.value" class="picker-option-wrapper"
             [disabled]="treeHelper.disableOption(item, selectedItems(), settings().enableReselect)"
             [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true">
-            <div class="eav-dropdown-option">
-              <span class="eav-dropdown-option-text">{{ item.label ? item.label : item.value }}</span>
-              <div class="eav-dropdown-option-info">
+            <div class="picker-option-contents">
+              <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+              <div class="picker-option-info">
                 <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
                 <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
               </div>

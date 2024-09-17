@@ -68,14 +68,7 @@
   }
 }
 
-.entity-dropdown-button {
-  cursor: text;
 
-  //TODO @SDV check if this or equivalent class exists
-  &.mat-private-button-disabled {
-    cursor: default;
-  }
-}
 
 .eav-selection-suffix {
   margin-left: 8px;
@@ -118,16 +111,3 @@
     }
   }
 }
-
-// TODO: @SDV Find out why this works here, but not from picker-search.component.scss
-.eav-picker-option.mat-mdc-option .mdc-list-item__primary-text {
-  width: 100% !important;
-}
-
-.eav-tree-node .eav-picker-option {
-  width: 100% !important;
-}
-
-// .mat-mdc-form-field-focus-overlay {
-//   background-color: transparent;
-// }

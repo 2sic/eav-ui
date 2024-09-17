@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerTreeDataHelper } from '../picker-tree/picker-tree-data-helper';
 import { PickerTreeDataService } from '../picker-tree/picker-tree-data-service';
@@ -41,7 +41,6 @@ import { classLog } from '../../../../shared/logging';
     MatIconModule,
     MatOptionModule,
     MatTreeModule,
-    AsyncPipe,
     TranslateModule,
     PickerIconHelpComponent,
     PickerIconInfoComponent,

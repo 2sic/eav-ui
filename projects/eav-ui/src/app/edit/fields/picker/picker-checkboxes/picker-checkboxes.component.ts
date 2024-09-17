@@ -9,6 +9,9 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { PickerItem } from 'projects/edit-types';
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
+import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
+import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 
 @Component({
   selector: 'app-picker-checkboxes',
@@ -23,6 +26,9 @@ import { PickerItem } from 'projects/edit-types';
     FlexModule,
     MatListModule,
     MatCheckbox,
+    TippyDirective,
+    PickerIconHelpComponent,
+    PickerIconInfoComponent,
   ],
 })
 export class PickerCheckboxesComponent extends PickerPartBaseComponent {

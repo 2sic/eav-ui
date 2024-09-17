@@ -15,13 +15,24 @@
     }"> -->
 
 
-    <div>
+    <!-- <div> -->
       <!-- <div fxLayout="row" fxLayoutAlign="start center"> -->
 
         @for (item of options(); track item.value) {
           <p>
-            <mat-checkbox formControlName="pepperoni" (click)="select(item)" [checked]="item.selected" [disabled]="item.noSelect">
-              {{ item.label }} - {{ item.value }} - {{ !!item.selected }}
+            <mat-checkbox
+              class="picker-option-wrapper"
+              (click)="select(item)"
+              [checked]="item.selected" [disabled]="item.noSelect"
+              [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true"
+            >
+              <div class="picker-option-contents">
+                <span class="picker-option-label">{{ item.label ? item.label : item.value }}</span>
+                <div class="picker-option-info">
+                  <app-picker-help [helpLink]="item.helpLink"></app-picker-help>
+                  <app-picker-icon-info [infoBox]="item.infoBox"></app-picker-icon-info>
+                </div>
+              </div>
             </mat-checkbox>
           </p>
         }
@@ -34,5 +45,5 @@
         }
       <!-- </div> -->
     <!-- </div> -->
-  </div>
+  <!-- </div> -->
 </div>

@@ -44,30 +44,26 @@
   }
 }
 
-.eav-dropdown-option {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100% !important;
-}
-
-.eav-dropdown-option-text {
-  flex: 1 1 auto;
-}
-
-.eav-picker-option .eav-dropdown-option-info {
-  display: none;
-  /* Initially hide the info div */
-}
-
-.eav-picker-option:hover .eav-dropdown-option-info {
-  display: block;
-  /* Display the info div when mat-option is hovered */
-}
-
 .eav-suffix-button {
   scale: calc(4/5);
   margin-left: -4px;
   margin-right: -4px;
 }
+
+@import './picker-options.scss';
+
+
+
+
+
+// 2024-09-17 2dm - moved here from _override-mat-form-field-fill-typography.scss
+// But unclear why this exists, purpose can't be determined
+// Leave till ca. Q4 then probably remove
+//
+// .entity-dropdown-button {
+//   cursor: text;
+//   //TODO @SDV check if this or equivalent class exists
+//   &.mat-private-button-disabled {
+//     cursor: default;
+//   }
+// }
