@@ -142,6 +142,7 @@ export class PickerData {
         label,
         tooltip: original.tooltip || `${label} (${original.value})`,
         infoBox: original.infoBox || '',
+        helpLink: original.helpLink || '',
         noEdit: original.noEdit === true,
         noDelete: original.noDelete === true,
         noSelect: false,
