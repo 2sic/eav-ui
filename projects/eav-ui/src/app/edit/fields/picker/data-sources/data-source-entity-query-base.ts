@@ -1,6 +1,6 @@
 import { PickerItem } from './../models/picker-item.model';
 import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap } from "rxjs";
-import { DataSourceBase } from './data-source-base';
+import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { Injectable, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,6 +9,14 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { ClassLogger } from '../../../../shared/logging';
+
+export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & any = {
+    ...logSpecsDataSourceBase,
+    initPrefetch: false,
+    getFromBackend: false,
+    addToRefresh: false,
+    loadMoreIntoSignal: false,
+  }
 
 /**
  * This is the base class for data-sources providing data from
@@ -20,15 +28,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   
   //#region Inject and blank constructor
 
-  static logSpecs = {
-    all: true,
-    initPrefetch: false,
-    getFromBackend: false,
-    addToRefresh: false,
-    loadMoreIntoSignal: false,
-  }
-
-  abstract log: ClassLogger<typeof DataSourceEntityQueryBase.logSpecs>;
+  abstract log: ClassLogger<typeof logSpecsDataSourceEntityQueryBase>;
 
   protected querySvc = transient(QueryService);
 

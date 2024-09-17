@@ -2,7 +2,7 @@ import { Observable, map, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { Injectable, inject } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
-import { DataSourceEntityQueryBase } from './data-source-entity-query-base';
+import { DataSourceEntityQueryBase, logSpecsDataSourceEntityQueryBase } from './data-source-entity-query-base';
 import { FormConfigService } from '../../../form/form-config.service';
 import { PickerItem, PickerItemFactory } from '../models/picker-item.model';
 import { QueryStreams } from '../../../../shared/models/query-stream.model';
@@ -19,7 +19,7 @@ import { classLog } from '../../../../shared/logging/logging';
 @Injectable()
 export class DataSourceQuery extends DataSourceEntityQueryBase {
 
-  log = classLog({DataSourceQuery}, DataSourceEntityQueryBase.logSpecs);
+  log = classLog({DataSourceQuery}, logSpecsDataSourceEntityQueryBase);
 
   #translate = inject(TranslateService);
 
@@ -98,7 +98,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
         return; // TODO: @SDV test if this acts like continue or break
       }
 
-      items = items.concat(data[stream].map(entity => this.getMaskHelper().entity2PickerItem({
+      items = items.concat(data[stream].map(entity => this.createMaskHelper().entity2PickerItem({
         entity,
         streamName: stream,
         mustUseGuid: valueMustBeGuid

@@ -1,14 +1,19 @@
-import { DataSourceBase } from './data-source-base';
+import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { Injectable } from '@angular/core';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
+const logSpecs = {
+  ...logSpecsDataSourceBase,
+  data: true,
+};
+
 @Injectable()
 export class DataSourceString extends DataSourceBase {
 
-  log = classLog({DataSourceString});
+  log = classLog({DataSourceString}, logSpecs);
   
   constructor() { super(); this.constructorEnd() }
 
@@ -22,21 +27,22 @@ export class DataSourceString extends DataSourceBase {
   })();
 
   data = computedObj('data', () => {
-    const sets = this.settings();
-    return sets._options.map(option => {
-      const asEntity: EntityBasicWithFields = {
+    const options = this.settings()._options;
+    const maskHelper = this.#dataMaskHelper;
+    const l = this.log.fnIf('data', { options, maskHelper });
+    const result = options.map(option => {
+      const entity: EntityBasicWithFields = {
         Id: null,
         Guid: null,
         Title: option.label,
-        // These are only added for use in Formulas or masks.
+        // These are also for use in Formulas or masks.
         Value: option.value,
       };
-      // TODO: @2dm fix bug, the value should be provided by entity2PickerItem
-      // but it's not - probably something we must ensure with the mask...?
-      const pickerItem = this.#dataMaskHelper.entity2PickerItem({ entity: asEntity, streamName: null, mustUseGuid: false });
-      this.log.a('final data', { pickerItem });
+      const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
+      l.a('final data', { entity, pickerItem });
       return pickerItem;
     });
+    return l.r(result);
   })
 
 }

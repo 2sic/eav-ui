@@ -5,7 +5,14 @@ import { PickerItem } from '../models/picker-item.model';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { classLog } from '../../../../shared/logging/logging';
 
-// const logThis = false;
+const logSpecs = {
+  all: true,
+  entity2PickerItem: false,
+  getMasks: false,
+  patchMasks: false,
+  parseMasks: false,
+  buildMasks: false,
+}
 
 /**
  * Helper class to process masks for a DataSource.
@@ -13,9 +20,9 @@ import { classLog } from '../../../../shared/logging/logging';
  */
 export class DataSourceMasksHelper {
   
-  log = classLog({DataSourceMasksHelper});
+  log = classLog({DataSourceMasksHelper}, logSpecs);
   
-  constructor(private settings: FieldSettings, parentLog: { enableChildren: boolean }, enableLog?: boolean) {
+  constructor(private settings: DataSourceMaskSettings, parentLog: { enableChildren: boolean }, enableLog?: boolean) {
     this.log.forceEnable(enableLog ?? parentLog.enableChildren ?? false);
     this.log.a('constructor - settings', { settings });
   }
@@ -28,63 +35,61 @@ export class DataSourceMasksHelper {
   entity2PickerItem({ entity, streamName, mustUseGuid }
     : { entity: EntityBasicWithFields; streamName: string | undefined; mustUseGuid: boolean; }
   ): PickerItem {
+    const l = this.log.fnIf('entity2PickerItem', { entity, streamName, mustUseGuid });
     // Check if we have masks, if yes
     const masks = this.getMasks();
 
     // Figure out Value to use if we don't use masks - fallback is to use the Guid
-    const maybeValue = entity[masks.value];
-    let valueFieldValue = maybeValue ? `${maybeValue}` : maybeValue;
-    valueFieldValue = !!valueFieldValue ? valueFieldValue : entity.Guid;
-    if (mustUseGuid)
-      valueFieldValue = entity.Guid; // If we must use the Guid, use the Guid
+    const value = (() => {
+      if (mustUseGuid) return entity.Guid;
+      const maybe = entity[masks.value];
+      return maybe ? `${maybe}` : entity.Guid;
+    })();
 
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk
-    const maybeTitle = entity[masks.label];
-    let titleFieldValue = maybeTitle ? `${maybeTitle}` : maybeTitle;
-    titleFieldValue = !!titleFieldValue
-      ? titleFieldValue
-      : entity.Title !== ''
-        ? entity.Title
-        : valueFieldValue + ' *'; // If there is not even a title, use the value with asterisk
+    const label = (() => {
+      const maybeTitle = entity[masks.label];
+      return maybeTitle ? `${maybeTitle}` : entity.Title ? `${entity.Title}` : `${value} *`; // If there is no title, use value with '*'
+    })();
 
     // If we don't have masks, we are done
     if (!masks.hasPlaceholders) {
       const result: PickerItem = {
         id: entity.Id,
         data: entity,
-        value: valueFieldValue,
-        label: titleFieldValue,
+        value,
+        label,
         tooltip: masks.tooltip,
-        infoBox: masks.info,
-        helpLink: masks.link,
+        info: masks.info,
+        link: masks.link,
         sourceStreamName: streamName ?? null,
       };
-      this.log.a('entity2PickerItem - no masks', { result });
-      return result;
+      return l.r(result, 'no masks');
     }
 
     // Prepare the masks
-    const { title, tooltip, information, helpLink } = this.#parseMasks(masks, entity);
+    const { title, tooltip, info, helpLink } = this.#parseMasks(masks, entity);
 
     // If the original was not a mask, look up the field
-    const finalTitle = masks.label.includes('[') ? title : titleFieldValue;
+    const finalLabel = masks.label.includes('[') ? title : label;
 
-    return {
+    return l.r({
       id: entity.Id,
       data: entity,
-      value: valueFieldValue,
-      label: finalTitle,
-      tooltip: tooltip,
-      infoBox: information,
-      helpLink: helpLink,
+      value,
+      label: finalLabel,
+      tooltip,
+      info: info,
+      link: helpLink,
       sourceStreamName: streamName ?? null,
-    } as PickerItem;
+    } as PickerItem, 'with masks');
   }
 
   /** Process all placeholders in all masks to get tooltip, info, link and title */
   #parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
+    const l = this.log.fnIf('parseMasks', { masks, data });
     let tooltip = masks.tooltip;
-    let information = masks.info;
+    let info = masks.info;
     let helpLink = masks.link;
     let title = masks.label;
 
@@ -96,29 +101,30 @@ export class DataSourceMasksHelper {
       const search = new RegExp(`\\[Item:${key}\\]`, 'gi');
 
       tooltip = tooltip.replace(search, value);
-      information = information.replace(search, value);
+      info = info.replace(search, value);
       helpLink = helpLink.replace(search, value);
       title = title.replace(search, value);
     });
-    return { title, tooltip, information, helpLink };
+    return l.r({ title, tooltip, info, helpLink });
   }
 
   /** Get the mask - if possibly from current objects cache */
   public getMasks() {
     if (!!this.#masks) return this.#masks;
-    this.#masks = this.#buildMasks(this.settings);
-    this.log.a('getMasks', { masks: this.#masks });
+    this.#masks = this.#buildMasks();
+    this.log.aIf('getMasks', { masks: this.#masks });
     return this.#masks;
   }
 
   /** modify/patch the current objects mask */
   public patchMasks(patch: Partial<DataSourceMasks>) {
     this.#masks = { ...this.getMasks(), ...patch };
-    this.log.a('patchMasks', { masks: this.#masks });
+    this.log.aIf('patchMasks', { masks: this.#masks });
   }
 
-  #buildMasks(settings: FieldSettings): DataSourceMasks {
-    this.log.a('buildMasks settings', { settings });
+  #buildMasks(): DataSourceMasks {
+    const settings = this.settings;
+    const l = this.log.fnIf('buildMasks', { settings });
     const tooltipMask = !!settings.ItemTooltip ? this.#helpers.stripHtml(settings.ItemTooltip) : '';
     const infoMask = !!settings.ItemInformation ? this.#helpers.stripHtml(settings.ItemInformation) : '';
     const linkMask = settings.ItemLink ?? '';
@@ -133,7 +139,24 @@ export class DataSourceMasksHelper {
       label: labelMask,
       value: valueMask,
     };
-    this.log.a('buildMasks result', { result });
-    return result;
+    return l.r(result, 'result');
   }
+
+  static maskSettings(settings: FieldSettings): DataSourceMaskSettings {
+    return {
+      ItemTooltip: settings.ItemTooltip,
+      ItemInformation: settings.ItemInformation,
+      ItemLink: settings.ItemLink,
+      Label: settings.Label,
+      Value: settings.Value,
+    };
+  }
+}
+
+interface DataSourceMaskSettings {
+  ItemTooltip: string;
+  ItemInformation: string;
+  ItemLink: string;
+  Label: string;
+  Value: string;
 }

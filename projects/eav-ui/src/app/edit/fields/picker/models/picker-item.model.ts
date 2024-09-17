@@ -46,13 +46,13 @@ export interface PickerItem {
    * The data that is seen on click on information icon on item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
    */
-  infoBox?: string;
+  info?: string;
 
   /**
    * The data that is seen on click on help icon on item in the dropdown.
    * This property does not come from the server, but must be added by code from the settings.
    */
-  helpLink?: string;
+  link?: string;
 
   /**
    * The streamName is used for tree config when we have data from multiple streams and they have same Ids.

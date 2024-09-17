@@ -42,7 +42,7 @@ export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
   @Input() entityGuid: string;
 
-  log = classLog({EntityFormBuilderComponent}, logSpecs, true);
+  log = classLog({EntityFormBuilderComponent}, logSpecs);
 
   /** Inject and start the form state service */
   #formStateSvc = inject(EntityFormStateService);

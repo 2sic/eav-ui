@@ -12,10 +12,18 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 import { classLog, ClassLogger } from '../../../../shared/logging';
 
+export const logSpecsDataSourceBase = {
+  all: false,
+  constructor: false,
+  data: false,
+  triggerGetAll: false,
+  addToRefresh: false,
+}
+
 @Injectable()
 export abstract class DataSourceBase extends ServiceBase {
-  
-  abstract log: ClassLogger;
+
+  abstract log: ClassLogger<typeof logSpecsDataSourceBase>;
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
@@ -24,7 +32,7 @@ export abstract class DataSourceBase extends ServiceBase {
 
   constructorEnd() {
     this.log ??= classLog({DataSourceBase});
-    this.log.a('constructor', { forField: this.fieldState.name });
+    this.log.aIf('constructor', { forField: this.fieldState.name });
   }
 
   /** Signal containing the data */
@@ -64,12 +72,13 @@ export abstract class DataSourceBase extends ServiceBase {
   protected helpers = new DataSourceHelpers();
 
   triggerGetAll(): void {
+    this.log.fnIf('triggerGetAll');
     this.getAll$.next(true);
     this.getAll.set(true);
   }
 
   addToRefresh(additionalGuids: string[]): void {
-    const l = this.log.fn('addToRefresh', { additionalGuids });
+    const l = this.log.fnIf('addToRefresh', { additionalGuids });
     const before = this.guidsToRefresh();
     const merged = [...before, ...additionalGuids].filter(RxHelpers.distinct);
     l.values({ before, additionalGuids, merged });
@@ -77,7 +86,7 @@ export abstract class DataSourceBase extends ServiceBase {
     l.end();
   }
 
-  protected getMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
+  protected createMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
     return new DataSourceMasksHelper(this.settings(), this.log, enableLog);
   }
 

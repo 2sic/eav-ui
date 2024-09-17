@@ -1,11 +1,17 @@
 import { ServiceBase } from '../../../shared/services/service-base';
-import { Injectable, inject, signal, Injector, OnDestroy, effect, computed, Signal } from '@angular/core';
+import { Injectable, inject, signal, Injector, effect, computed, Signal } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { FormConfigService } from '../../form/form-config.service';
 import { classLog } from '../../../shared/logging';
 
+const logSpecs = {
+  all: false,
+  initSignal: false,
+}
+
 const FieldsFind = /\[.*?\]/ig;
 const FieldUnwrap = /[\[\]]/ig;
+
 /**
  * Create a new FieldMask instance and access result with resolve
  * @example
@@ -19,7 +25,7 @@ const FieldUnwrap = /[\[\]]/ig;
 @Injectable()
 export class FieldMask extends ServiceBase /* for field-change subscription */ {
   
-  log = classLog({FieldMask});
+  log = classLog({FieldMask}, logSpecs, true);
 
   #fieldState = inject(FieldState);
   #formConfig = inject(FormConfigService);
@@ -79,7 +85,7 @@ export class FieldMask extends ServiceBase /* for field-change subscription */ {
 
   public initSignal(name: string, mask: Signal<string>): this {
     this.log.extendName(`-${name}`);
-    const l = this.log.fn('init', { name, mask });
+    const l = this.log.fnIf('initSignal', { name, mask });
     this.#maskSignal.set(mask);
     this.#updateMaskFinal();
     return l.r(this, 'first result:' + this.result());
