@@ -53,7 +53,7 @@ export class StringPickerLogic extends FieldLogicBase {
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
         console.warn('2dm - new CSV');
         const csv = (config as UiPickerSourceCustomCsv).Csv;
-        new DataSourceParserCsv().parse(csv);
+        fs._options = new DataSourceParserCsv().parse(csv);
       }
     } else
       l.a('type: not UiPickerSourceCustom-List/Csv', { dataSource0: dataSources[0] });

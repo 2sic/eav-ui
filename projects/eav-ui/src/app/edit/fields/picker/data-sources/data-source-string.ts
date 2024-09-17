@@ -34,9 +34,9 @@ export class DataSourceString extends DataSourceBase {
       const entity: EntityBasicWithFields = {
         Id: null,
         Guid: null,
-        Title: option.label,
+        Title: option.Title,
         // These are also for use in Formulas or masks.
-        Value: option.value,
+        Value: option.Value,
       };
       const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
       l.a('final data', { entity, pickerItem });

@@ -5,8 +5,8 @@
       [required]="basics().required"
       [placeholder]="basics().placeholder">
       @for (option of dropdownOptions(); track option) {
-        <mat-option [value]="option.value">
-          {{ option.label }}
+        <mat-option [value]="option.Value">
+          {{ option.Title }}
         </mat-option>
       }
     </mat-select>

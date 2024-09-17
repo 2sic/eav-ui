@@ -21,7 +21,7 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
  */
 export class PickerDataSetup {
 
-  log = classLog({PickerDataSetup});
+  log = classLog({PickerDataSetup}, null, true);
 
   constructor(injector: Injector) {
     this.#injector = injector;
@@ -76,7 +76,7 @@ export class PickerDataSetup {
   }
 
   #getSourceAdapter(inputType: InputTypeStrict, dataSourceType: string, state: StateAdapter): DataAdapterBase {
-
+    const l = this.log.fn('getSourceAdapter', { inputType, dataSourceType });
     // Get config for allowed sources / adapters for the current inputType
     const parts = partsMap[inputType];
 
@@ -85,7 +85,8 @@ export class PickerDataSetup {
 
     const dataAdapterType = mapNameToDataAdapter[dsType] ?? DataAdapterEmpty;
     this.#throwIfSourceAdapterNotAllowed(inputType, dataAdapterType);
-    return transient(dataAdapterType, this.#injector).linkLog(this.log).connectState(state);
+    const result = transient(dataAdapterType, this.#injector).linkLog(this.log).connectState(state);
+    return l.r(result);
   }
 
   #throwIfSourceAdapterNotAllowed(inputType: InputTypeStrict, dataSourceType: ProviderToken<unknown>): boolean {
@@ -99,6 +100,7 @@ export class PickerDataSetup {
 
 const mapNameToDataAdapter: Record<string, ProviderToken<DataAdapterBase>> = {
   [PickerConfigs.UiPickerSourceCustomList]: DataAdapterString,
+  [PickerConfigs.UiPickerSourceCustomCsv]: DataAdapterString,
   [PickerConfigs.UiPickerSourceQuery]: DataAdapterQuery,
   [PickerConfigs.UiPickerSourceEntity]: DataAdapterEntity,
 };

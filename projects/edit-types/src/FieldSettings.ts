@@ -1,4 +1,4 @@
-import { DropdownOption } from './DropdownOption';
+import { PickerOptionCustom } from './DropdownOption';
 
 /** */
 interface InternalSettings {
@@ -82,7 +82,7 @@ export interface StringDropdown extends String {
   DropdownValues: string;
   DropdownValuesFormat: '' | 'value-label';
   EnableTextEntry: boolean;
-  _options: DropdownOption[];
+  _options: PickerOptionCustom[];
 }
 
 /**

@@ -1,4 +1,4 @@
-import { DropdownOption } from '../../../../../../../edit-types';
+import { PickerOptionCustom } from '../../../../../../../edit-types';
 
 /**
  * For String-Picker field - will prepare settings (usually in the form of multiline-CSV)
@@ -9,8 +9,8 @@ export function calculateDropdownOptions(
   type: 'string' | 'number',
   dropdownValuesFormat: '' | 'value-label', // first one is empty as a compatibility with old 2sxc versions
   dropdownValues: string
-): DropdownOption[] {
-  let options: DropdownOption[] = [];
+): PickerOptionCustom[] {
+  let options: PickerOptionCustom[] = [];
 
   if (dropdownValues) {
     const dropdownValuesArray = dropdownValues.replace(/\r/g, '').split('\n');
@@ -22,9 +22,9 @@ export function calculateDropdownOptions(
           const maybeWantedEmptyVal = s[1];
           const key = s.shift();
           const val = s.join(':');
-          const option: DropdownOption = {
-            label: key,
-            value: (val || maybeWantedEmptyVal === '') ? val : key
+          const option: PickerOptionCustom = {
+            Title: key,
+            Value: (val || maybeWantedEmptyVal === '') ? val : key
           };
           return option;
         });
@@ -48,17 +48,17 @@ export function calculateDropdownOptions(
 
           // dropdownValues split with ":", but ignore if escaped
           const separatorIndex = chars.findIndex(c => c.char === ':' && c.escaped === false);
-          const option: DropdownOption = {
-            label: separatorIndex >= 0
+          const option: PickerOptionCustom = {
+            Title: separatorIndex >= 0
               ? chars.slice(separatorIndex + 1, chars.length).map(c => c.char).join('')
               : chars.map(c => c.char).join(''),
-            value: separatorIndex >= 0
+            Value: separatorIndex >= 0
               ? chars.slice(0, separatorIndex).map(c => c.char).join('')
               : chars.map(c => c.char).join(''),
           };
           if (type === 'number') {
-            option.value = option.value != null && option.value !== ''
-              ? !isNaN(Number(option.value)) ? Number(option.value) : null
+            option.Value = option.Value != null && option.Value !== ''
+              ? !isNaN(Number(option.Value)) ? Number(option.Value) : null
               : null;
           }
           return option;
@@ -67,11 +67,11 @@ export function calculateDropdownOptions(
     }
   }
 
-  const currentValueFound = options.some(o => o.value === currentValue);
+  const currentValueFound = options.some(o => o.Value === currentValue);
   if (!currentValueFound && !currentValue && currentValue !== '') {
     options.push({
-      label: currentValue,
-      value: currentValue,
+      Title: currentValue,
+      Value: currentValue,
     });
   }
   return options;

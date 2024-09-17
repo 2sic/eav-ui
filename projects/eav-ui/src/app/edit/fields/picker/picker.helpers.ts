@@ -1,4 +1,4 @@
-import { DropdownOption } from '../../../../../../edit-types/src/DropdownOption';
+import { PickerOptionCustom } from '../../../../../../edit-types/src/DropdownOption';
 import { PickerItem } from './models/picker-item.model';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { classLog } from '../../../shared/logging';
@@ -7,7 +7,7 @@ import groupBy from 'lodash-es/groupBy';
 export function correctStringEmptyValue(
   fieldValue: string | string[],
   separator: string,
-  dropdownOptions: DropdownOption[] // Options are used only for legacy use case is where the value is an empty string
+  dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
   
   const log = classLog({correctStringEmptyValue});
@@ -17,14 +17,14 @@ export function correctStringEmptyValue(
     : fieldValue ?? [];
 
   const result = valueAsArray.map(value => {
-    const option = dropdownOptions?.find(o => o.value == value);
+    const option = dropdownOptions?.find(o => o.Value == value);
     return ({
       // if it's a free text value or not found, disable edit and delete
       noEdit: true,
       noDelete: true,
       // either the real value or null if text-field or not found
       id: null,
-      label: option?.label ?? value,
+      label: option?.Title ?? value,
       tooltip: `${value}`,
       value: value,
     } satisfies PickerItem);
@@ -41,12 +41,12 @@ export function correctStringEmptyValue(
 }
 
 /** Convert string value in string array if a value is type string */
-export function convertValueToArray(value: string | string[], separator: string, dropdownOptions?: DropdownOption[]): string[] {
+export function convertValueToArray(value: string | string[], separator: string, dropdownOptions?: PickerOptionCustom[]): string[] {
   // Special case: String-picker old with "empty" being selected
   // In most dropdowns, empty would mean not-selected, but in string-dropdowns, it _can_ be a valid value
   // So we must check if there is an empty value in the dropdown options
   // And if this is true, return an array with an empty string being "selected"
-  if (value == '' && dropdownOptions?.some(o => o.value == ''))
+  if (value == '' && dropdownOptions?.some(o => o.Value == ''))
     return [''];
 
   if (value == '' || !value) return [];
