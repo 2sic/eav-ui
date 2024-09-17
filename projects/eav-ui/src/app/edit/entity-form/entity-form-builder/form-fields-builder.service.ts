@@ -14,17 +14,17 @@ import { FieldInitSpecs } from './field-init-specs.model';
 @Injectable()
 export class FormFieldsBuilderService {
 
-  log = classLog({FormFieldsBuilderService});
+  log = classLog({FormFieldsBuilderService}, null);
 
   constructor(
     private fieldsSettingsSvc: FieldsSettingsService,
     private adamCacheSvc: AdamCacheService,
     private formBuilder: UntypedFormBuilder,
     private entityFormConfigSvc: EntityFormStateService,
-  ) {
-  }
+  ) { }
 
   public createFields(entityGuid: string, form: UntypedFormGroup, allFields: FieldInitSpecs[]) {
+
     const l = this.log.fn('createFields');
 
     // 1. create missing controls - usually just on first cycle

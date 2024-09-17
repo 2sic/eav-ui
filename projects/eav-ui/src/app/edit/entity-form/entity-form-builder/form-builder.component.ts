@@ -16,9 +16,10 @@ import { FieldInitSpecs } from './field-init-specs.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 const logSpecs = {
-  all: false,
-  getFieldsToProcess: true,
+  all: true,
+  getFieldsToProcess: false,
   ngOnInit: false,
+  ['fieldsToProcess$']: true,
 }
 
 @Component({
@@ -39,79 +40,83 @@ const logSpecs = {
 })
 export class EntityFormBuilderComponent implements OnInit, OnDestroy {
 
-  log = classLog({EntityFormBuilderComponent}, logSpecs, false);
-
   @Input() entityGuid: string;
+
+  log = classLog({EntityFormBuilderComponent}, logSpecs, true);
 
   /** Inject and start the form state service */
   #formStateSvc = inject(EntityFormStateService);
-  form = this.#formStateSvc.formGroup;
 
   #formulaDesignerService = inject(FormulaDesignerService);
+  #fieldsTranslateSvc = inject(FieldsTranslateService);
+  #fieldsSettingsSvc = inject(FieldsSettingsService);
+  #injector = inject(Injector);
 
+  // Transient services
   #formFieldsBuilderService = transient(FormFieldsBuilderService);
   #fieldsSyncSvc = transient(FormFieldsSyncService);
   #formSyncSvc = transient(EntityFormSyncService);
 
-  constructor(
-    private fieldsSettingsSvc: FieldsSettingsService,
-    private fieldsTranslateSvc: FieldsTranslateService,
-    private injector: Injector,
-  ) {
-  }
+  constructor( ) { }
+
+  public form = this.#formStateSvc.formGroup;
 
   ngOnInit() {
-    const l = this.log.fnIf('ngOnInit');
-    this.fieldsSettingsSvc.init(this.entityGuid);
-    this.#formulaDesignerService.itemSettingsServices[this.entityGuid] = this.fieldsSettingsSvc;
-    this.fieldsTranslateSvc.init(this.entityGuid);
+    const entityGuid = this.entityGuid;
+    const l = this.log.fnIf('ngOnInit', { entityGuid });
+    this.#fieldsSettingsSvc.init(entityGuid);
+    this.#formulaDesignerService.itemSettingsServices[entityGuid] = this.#fieldsSettingsSvc;
+    this.#fieldsTranslateSvc.init(entityGuid);
 
-    const ftp$ = this.getFieldsToProcess$();
+    const ftp$ = this.getFieldsToProcess$(entityGuid);
 
     // Create all the controls in the form right at the beginning
-    ftp$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(this.entityGuid, this.form, allFields));
+    ftp$.pipe(take(1)).subscribe(allFields => this.#formFieldsBuilderService.createFields(entityGuid, this.form, allFields));
 
     this.#fieldsSyncSvc.keepFieldsAndStateInSync(this.form, ftp$);
     
     // Sync state to parent: dirty, isValid, value changes
-    this.#formSyncSvc.setupSync(this.entityGuid);
+    this.#formSyncSvc.setupSync(entityGuid);
 
     l.end();
   }
 
   ngOnDestroy() {
-    this.fieldsSettingsSvc.disableForCleanUp();
+    this.#fieldsSettingsSvc.disableForCleanUp();
     Object.values(this.form.controls).forEach((control: AbstractControlPro) => {
       control._warning$.complete();
     });
   }
 
-  getFieldsToProcess$(): Observable<FieldInitSpecs[]> {
-    const l = this.log.fnIf('getFieldsToProcess');
+  getFieldsToProcess$(entityGuid: string): Observable<FieldInitSpecs[]> {
+    const l = this.log.fnIf('getFieldsToProcess', null, entityGuid);
     const form = this.form;
 
-    const fieldProps = this.fieldsSettingsSvc.allProps;
-    const fieldProps$ = toObservable(fieldProps, { injector: this.injector });
+    const allProps = this.#fieldsSettingsSvc.allProps;
+    const allProps$ = toObservable(allProps, { injector: this.#injector });
 
     // 1. Prepare: Take field props and enrich initial values and input types
-    const fieldsToProcess: Observable<FieldInitSpecs[]> = fieldProps$.pipe(
-      filter(fields => fields != null && Object.keys(fields).length > 0),
-      map(allFields => {
-        const fields: FieldInitSpecs[] = Object.entries(allFields).map(([fieldName, fieldProps]) => {
-          const hasControl = form.controls.hasOwnProperty(fieldName);
-          const control = hasControl ? form.controls[fieldName] : null;
-          return {
-            name: fieldName,
-            props: fieldProps,
-            inputType: fieldProps.constants.inputTypeSpecs.inputType,
-            value: fieldProps.value,
-            hasControl,
-            control,
-          } satisfies FieldInitSpecs;
-        });
-        return fields;
-      }),
-    );
+    const fieldsToProcess: Observable<FieldInitSpecs[]> = allProps$
+      .pipe(
+        filter(fields => fields != null && Object.keys(fields).length > 0),
+        map(allFields => {
+          const fields: FieldInitSpecs[] = Object.entries(allFields)
+            .map(([fieldName, fieldProps]) => {
+              const hasControl = form.controls.hasOwnProperty(fieldName);
+              const control = hasControl ? form.controls[fieldName] : null;
+              return {
+                name: fieldName,
+                props: fieldProps,
+                inputType: fieldProps.constants.inputTypeSpecs.inputType,
+                value: fieldProps.value,
+                hasControl,
+                control,
+              } satisfies FieldInitSpecs;
+            });
+          this.log.aIf('fieldsToProcess$', { entityGuid, fields });
+          return fields;
+        }),
+      );
     return l.rSilent(fieldsToProcess);
   }
 }

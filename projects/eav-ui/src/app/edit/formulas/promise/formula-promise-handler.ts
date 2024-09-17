@@ -158,15 +158,6 @@ export class FormulaPromiseHandler {
 
   /**
    * Used for updating values and cleaning settings from queue.
-   * @param formValues
-   * @param fieldsProps
-   * @param slotIsEmpty
-   * @param attributes
-   * @param constantFieldParts
-   * @param itemAttributes
-   * @param formReadOnly
-   * @param logicTools
-   * @param formItemFormulaService
    * @returns true if values were updated, false otherwise and new field props
    */
   public changesFromQueue(cycle: FieldsPropsEngineCycle): QueuedChanges {

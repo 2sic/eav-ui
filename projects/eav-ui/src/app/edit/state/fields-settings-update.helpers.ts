@@ -24,7 +24,7 @@ export class FieldSettingsUpdateHelperFactory {
     private fieldLogicTools: FieldLogicTools,
     /** Info that the form is read-only */
     private formReadOnly: boolean,
-    private formSlotIsEmpty: Signal<boolean>,
+    private slotIsEmpty: Signal<boolean>,
   ) {}
 
   create(
@@ -37,7 +37,7 @@ export class FieldSettingsUpdateHelperFactory {
       this.language,
       this.fieldLogicTools,
       this.formReadOnly,
-      this.formSlotIsEmpty, // todo: move away
+      this.slotIsEmpty,
       attribute,
       constantFieldPart,
       attributeValues,

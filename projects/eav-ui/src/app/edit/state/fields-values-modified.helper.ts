@@ -12,8 +12,8 @@ export class FieldsValuesModifiedHelper {
 
   constructor(
     private contentType: Signal<EavContentType>,
-    private slotIsEmpty: Signal<boolean>) {
-  }
+    private slotIsEmpty: Signal<boolean>,
+  ) { }
 
 
   // NEW WIP
@@ -49,7 +49,7 @@ export class FieldsValuesModifiedHelper {
 
     // Convert to object
     const changes = prep.reduce((acc, p) => { acc[p.name] = p.value; return acc; }, {} as ItemValuesOfLanguage);
-    return changes;
+    return l.rSilent(changes);
   }
 
   #findBestValue(fieldName: string, fieldsUpdates: NameValuePair[], valueUpdates: ItemValuesOfLanguage): FieldValue {
