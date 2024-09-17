@@ -141,7 +141,7 @@ export class FormulaDesignerService {
     const formula = this.currentFormula();
     const itemHeader = this.#currentItemHeader();
     return formula != null && itemHeader != null
-      ? IntellisenseV2.buildFormulaTypingsV2(formula, this.fieldsOptions(), itemHeader.Prefill)
+      ? IntellisenseV2.getTypings(formula, this.fieldsOptions(), itemHeader.Prefill)
       : ''
   });
 

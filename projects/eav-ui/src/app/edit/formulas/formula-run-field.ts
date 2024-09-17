@@ -18,6 +18,7 @@ import groupBy from 'lodash-es/groupBy';
 import { ItemValuesOfLanguage } from '../state/item-values-of-language.model';
 import { DebugFields } from '../edit-debug';
 import { FormulaFieldPickerHelper } from './formula-field-picker.helper';
+import { FieldDefaults } from '../shared/helpers';
 
 const logSpecs = {
   all: false,
@@ -52,7 +53,7 @@ export class FormulaRunField {
     fieldName: string,
     fieldConstants: FieldConstantsOfLanguage,
     settingsBefore: FieldSettings,
-    itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">,
+    itemHeader: Pick<ItemIdentifierShared, "Prefill">,
     valueBefore: FieldValue,
     propsBefore: FieldProps,
     reuseExecSpecs: FormulaExecutionSpecs,
@@ -85,7 +86,6 @@ export class FormulaRunField {
       return finalize({}, valueBefore, {
         value: valueBefore, validation: null, fields: [], settings: {},
         options: new FieldPropsPicker(), selected: new FieldPropsPicker(),
-        //options: null, selected: null, optionsVer: null, selectedVer: null
       } satisfies FieldFormulasResultPartialSettings);
 
     // Run all formulas IF we have any and work with the objects containing specific changes
@@ -93,9 +93,9 @@ export class FormulaRunField {
       currentValues,
       settingsInitial: fieldConstants.settingsInitial,
       settingsCurrent: settingsBefore,
-      itemHeader,
       pickerInfo: picks,
       pickerHelper: pickHelp,
+      defaultValueHelper: () => new FieldDefaults(fieldName, fieldConstants.inputTypeSpecs.inputType, fieldConstants.settingsInitial, itemHeader),
     };
     const raw = this.#runAllOfField(runParamsStatic, formulas, reuseExecSpecs);
 

@@ -7,6 +7,8 @@ import { LanguageService } from '../localization/language.service';
 import { ItemService } from '../state/item.service';
 import { FeaturesService } from '../../features/features.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
+import { FormulaPropsParameters } from './formula-run-one-helpers.factory';
 
 /**
  * Factory for creating FormulaExecutionSpecs objects.
@@ -25,14 +27,16 @@ export class FormulaExecutionSpecsFactory {
     private editInitializerSvc: EditInitializerService,
   ) { }
 
-  init(entityGuid: string, settingsSvc: FieldsSettingsService) {
+  init(settingsSvc: FieldsSettingsService, entityGuid: string, clientData: Pick<ItemIdentifierShared, "ClientData">) {
     this.#entityGuid = entityGuid;
     this.#settingsSvc = settingsSvc;
+    this.#clientData = clientData;
   }
 
   // properties to set on init
   #entityGuid: string;
   #settingsSvc: FieldsSettingsService;
+  #clientData: Pick<ItemIdentifierShared, "ClientData">;
   
   /**
    * Get all objects which are needed for the data and context and are reused quite a few times.
@@ -44,6 +48,7 @@ export class FormulaExecutionSpecsFactory {
     const languages = this.languageSvc.getAll();
     const debugEnabled = this.globalConfigSvc.isDebug();
     const initialFormValues = this.editInitializerSvc.getInitialValues(this.#entityGuid, language.current);
+
     return {
       initialFormValues,
       language,
@@ -53,6 +58,7 @@ export class FormulaExecutionSpecsFactory {
       formConfig: this.formConfig,
       fieldsSettingsSvc: this.#settingsSvc,
       features: this.#features,
+      parameters: new FormulaPropsParameters(this.#clientData),
     } satisfies FormulaExecutionSpecs;
   }
 }

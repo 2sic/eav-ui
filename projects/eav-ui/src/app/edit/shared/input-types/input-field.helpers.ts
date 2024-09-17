@@ -3,19 +3,28 @@ import { InputTypeStrict, InputTypeCatalog } from '../../../shared/fields/input-
 import { classLog } from '../../../shared/logging';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
-export class FieldHelper {
+/**
+ * Get the field initial / default value, incl. the prefilled value if available.
+ */
+export class FieldDefaults {
+
+  log = classLog({FieldDefaults});
+
+  constructor(
+    private name: string,
+    private inputType: InputTypeStrict,
+    private settings: FieldSettings,
+    private itemHeader?: Pick<ItemIdentifierShared, "Prefill">,
+  ) { }
 
   /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
-  static getDefaultOrPrefillValue(
-    name: string,
-    inputType: InputTypeStrict,
-    settings: FieldSettings,
-    itemHeader?: Pick<ItemIdentifierShared, "Prefill">,
-    onlyPrefill?: boolean,
-  ): FieldValue {
+  getDefaultOrPrefillValue(onlyPrefill?: boolean): FieldValue {
     
-    const log = classLog({FieldHelper});
-    const l = log.fn('parseDefaultValue', { name, inputType, settings, itemHeader, onlyPrefill });
+    const inputType = this.inputType;
+    const name = this.name;
+    const settings = this.settings;
+    const itemHeader = this.itemHeader;
+    const l = this.log.fn('parseDefaultValue', { name, inputType, settings, itemHeader, onlyPrefill });
 
     const prefillRaw = itemHeader?.Prefill?.[name];
     if (onlyPrefill && prefillRaw === undefined)

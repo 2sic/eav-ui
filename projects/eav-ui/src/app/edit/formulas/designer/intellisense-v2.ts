@@ -5,7 +5,7 @@ import { FormulaV1Data } from '../run/formula-run-data.model';
 import { FormulaV1Context } from '../run/formula-run-context.model';
 import { FormulaV1Experimental } from '../run/formula-run-experimental.model';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
-import { FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
+import { FormulaPropsParameters, FormulaRunOneHelpersFactory } from '../formula-run-one-helpers.factory';
 
 // Import the type definitions for intellisense
 import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
@@ -18,12 +18,10 @@ export class IntellisenseV2 {
    * @param itemHeader
    * @returns Formula typings for use in intellisense
    */
-  static buildFormulaTypingsV2(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): string {
+  static getTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefill: Record<string, unknown>): string {
     switch (formula.version) {
       case FormulaVersions.V2: {
-        const formulaPropsParameters = FormulaRunOneHelpersFactory.buildFormulaPropsParameters(prefillAsParameters);
-
-        // debugger;
+        const formulaPropsParameters = new FormulaPropsParameters(prefill).all;
 
         const allFields = fieldOptions.map(f => `${f.fieldName}: ${this.#inputTypeToDataType(f.inputType)};`).join('\n');
         const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');

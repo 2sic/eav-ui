@@ -8,6 +8,12 @@ import { EavEntityAttributes } from '../shared/models/eav';
 import { FieldSettingsUpdateHelperFactory } from './fields-settings-update.helpers';
 import { classLog } from '../../shared/logging';
 
+const logSpecs = {
+  all: false,
+  getCycleSettingsAndValues: false,
+  getLatestSettingsAndValues: false,
+}
+
 const maxChangeCycles = 5;
 
 /**
@@ -24,7 +30,7 @@ const maxChangeCycles = 5;
  * Note that as of now, this engine should be created and discarded on every cycle.
  */
 export class FieldsPropsEngineCycle {
-  private log = classLog({FieldsPropsEngineCycle});
+  private log = classLog({FieldsPropsEngineCycle}, logSpecs);
 
   constructor(
     private engine: FieldsPropsEngine,
@@ -49,7 +55,7 @@ export class FieldsPropsEngineCycle {
   values: ItemValuesOfLanguage;
 
   public getCycleSettingsAndValues(): PropsUpdate {
-    const l = this.log.fn('getLatestSettingsAndValues');
+    const l = this.log.fnIf('getCycleSettingsAndValues');
 
     for (let i = 0; i < maxChangeCycles; i++) {
       const cycle = this.#getLatestSettingsAndValues(i);
@@ -73,7 +79,7 @@ export class FieldsPropsEngineCycle {
   }
 
   #getLatestSettingsAndValues(loopIndex: number): PropsUpdate {
-    const l = this.log.fn('getLatestSettingsAndBroadcastUpdates', { loopIndex });
+    const l = this.log.fnIf('getLatestSettingsAndValues', { loopIndex });
 
     // 1. Detect first round as it has slightly different behavior
     const isFirstRound = Object.keys(this.fieldProps).length === 0;
@@ -134,5 +140,4 @@ export class FieldsPropsEngineCycle {
 interface PropsUpdate {
   valueChanges: ItemValuesOfLanguage;
   props: Record<string, FieldProps>;
-  // pickers: Record<string, PickerItem[]>;
 }

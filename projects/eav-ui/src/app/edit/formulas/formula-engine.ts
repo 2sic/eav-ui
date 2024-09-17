@@ -17,6 +17,7 @@ import { FormulaExecutionSpecsFactory } from './formula-exec-specs.factory';
 import { transient } from '../../core';
 import { FormulaRunField } from './formula-run-field';
 import { DebugFields } from '../edit-debug';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 
 const logSpecs = {
   all: false,
@@ -45,12 +46,12 @@ export class FormulaEngine {
     private translate: TranslateService,
   ) { }
 
-  init(entityGuid: string, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctTitle: string) {
+  init(entityGuid: string, clientData: Pick<ItemIdentifierShared, "ClientData">, settingsSvc: FieldsSettingsService, promiseHandler: FormulaPromiseHandler, contentType: EavContentType, ctTitle: string) {
     this.#entityGuid = entityGuid;
     this.#promiseHandler = promiseHandler;
     this.#attributes = contentType.Attributes;
     this.#contentTypeTitle = ctTitle;
-    this.#formulaExecSpecsFactory.init(entityGuid, settingsSvc);
+    this.#formulaExecSpecsFactory.init(settingsSvc, entityGuid, clientData);
   }
 
   // properties to set on init

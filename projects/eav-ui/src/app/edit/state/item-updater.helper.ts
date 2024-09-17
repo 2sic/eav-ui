@@ -5,7 +5,7 @@ import { EavContentTypeAttribute, EavDimension, EavEntity, EavItem, EavValue } f
 import { FieldSettings, FieldValue } from '../../../../../edit-types';
 import { FieldReader } from '../localization/field-reader';
 import { FormLanguage, Language } from '../form/form-languages.model';
-import { EntityReader, FieldHelper } from '../shared/helpers';
+import { EntityReader, FieldDefaults } from '../shared/helpers';
 import { InputTypeMetadata } from '../../shared/fields/input-type-metadata.model';
 import { ItemValuesOfLanguage } from './item-values-of-language.model';
 import { FieldValueHelpers } from '../shared/helpers/field-value.helpers';
@@ -134,7 +134,7 @@ export class ItemUpdateHelper {
     defaultLanguage: string,
   ): FieldValue {
     const l = this.log.fnIf('setDefaultValue', { item, ctAttribute, inputType, settings, languages, defaultLanguage }, `Name: ${ctAttribute.Name}`);
-    const defaultValue = FieldHelper.getDefaultOrPrefillValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
+    const defaultValue = new FieldDefaults(ctAttribute.Name, inputType?.Type, settings, item.Header).getDefaultOrPrefillValue();
 
     // const defaultLanguageValue = LocalizationHelpers.getBestValue(
     //   item.Entity.Attributes[ctAttribute.Name],
@@ -154,7 +154,7 @@ export class ItemUpdateHelper {
     }
 
     // return what was used, so it can be checked on form-init
-    return defaultValue;
+    return l.r(defaultValue);
   }
 
   //#endregion

@@ -7,7 +7,6 @@ import { FormulaExperimentalObject } from './run/formula-experimental-object';
 import { FormulaV1Data } from './run/formula-run-data.model';
 import { FormulaV1Context } from './run/formula-run-context.model';
 import { FormulaV1Experimental } from './run/formula-run-experimental.model';
-import { PickerItem } from '../fields/picker/models/picker-item.model';
 import { FormulaDesignerService } from './designer/formula-designer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../shared/services/logging.service';
@@ -75,16 +74,22 @@ export class FormulaRunOneHelpersFactory {
         // return;
     }
   }
+}
 
-  /**
-   * Used to build the formula props parameters as a record of key-value pairs.
-   * @param prefillAsParameters
-   * @returns
-   */
-  static buildFormulaPropsParameters(prefillAsParameters: Record<string, unknown>): Record<string, any> {
-    return prefillAsParameters ? JSON.parse(JSON.stringify(prefillAsParameters)) : {};
+/**
+ * Used to build the formula props parameters as a record of key-value pairs.
+ * @param prefillAsParameters
+ * @returns
+ */
+export class FormulaPropsParameters {
+  constructor(private prefill: Record<string, unknown>) { }
+
+  all(): Record<string, any> {
+    if (!this.#cache)
+      this.#cache = this.prefill ? JSON.parse(JSON.stringify(this.prefill)) : {};
+    return this.#cache;
   }
-
+  #cache: Record<string, any>;
 }
 
 

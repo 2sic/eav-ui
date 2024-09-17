@@ -14,6 +14,8 @@ import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-
 import { FieldPropsPicker } from '../../state/fields-configs.model';
 import { PickerData } from '../../fields/picker/picker-data';
 import { FormulaFieldPickerHelper } from '../formula-field-picker.helper';
+import { FieldDefaults } from '../../shared/input-types/input-field.helpers';
+import { FormulaPropsParameters } from '../formula-run-one-helpers.factory';
 
 export interface FormulaRunPicker extends FieldPropsPicker {
   listRaw: PickerItem[];
@@ -42,10 +44,11 @@ export interface FormulaRunParameters {
   currentValues: ItemValuesOfLanguage;
   settingsInitial: FieldSettings;
   settingsCurrent: FieldSettings;
-  itemHeader: Pick<ItemIdentifierShared, "Prefill" | "ClientData">;
-  pickerInfo: FormulaRunPickers;
 
+  pickerInfo: FormulaRunPickers;
   pickerHelper: FormulaFieldPickerHelper;
+
+  defaultValueHelper: () => FieldDefaults;
 }
 
 export interface FormulaExecutionSpecs {
@@ -68,6 +71,8 @@ export interface FormulaExecutionSpecs {
   /** This is needed by the experimental API to retrieve settings for any other field */
   fieldsSettingsSvc: FieldsSettingsService;
   features: Signal<FeatureSummary[]>;
+
+  parameters: FormulaPropsParameters;
 }
 
 export interface FormulaExecutionSpecsWithRunParams extends FormulaExecutionSpecs {
