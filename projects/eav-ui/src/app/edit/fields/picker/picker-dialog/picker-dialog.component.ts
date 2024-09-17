@@ -34,8 +34,6 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 })
 export class PickerDialogComponent extends PickerPartBaseComponent {
 
-  protected isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
-
   protected showAddNewEntityButtonInDialog = computedObj('showAddNewEntityButtonInDialog', () => {
     const settings = this.fieldState.settings();
     const showAddNew = !this.isInFreeTextMode()

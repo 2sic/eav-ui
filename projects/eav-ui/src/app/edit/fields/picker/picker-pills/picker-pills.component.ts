@@ -26,8 +26,6 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 })
 export class PickerPillsComponent extends PickerPartBaseComponent {
 
-  enableTextEntry = computedObj('enableTextEntry', () => this.fieldState.settings().EnableTextEntry);
-
   itemCount = computedObj('itemCount', () => this.selectedItems().length);
 
   constructor(private editRoutingService: EditRoutingService) {

@@ -32,9 +32,6 @@ export class PickerCheckboxesComponent extends PickerPartBaseComponent {
     super();
   }
 
-  // TODO: probably add to base class and replace in all other places
-  enableTextEntry = this.fieldState.setting('EnableTextEntry');
-
   options = computedObj('optionsWithSelection', () => {
     const options = this.pickerData.optionsFinal();
     const selected = this.selectedItems();

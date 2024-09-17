@@ -37,6 +37,8 @@ export class PickerListComponent extends PickerPartBaseComponent {
   
   log = classLog({PickerListComponent});
 
+  constructor() { super(); }
+
   mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();
     return {
@@ -46,8 +48,6 @@ export class PickerListComponent extends PickerPartBaseComponent {
       enableRemove: settings.EnableRemove,
     };
   });
-
-  constructor() { super(); }
 
   trackByFn(_: number, item: PickerItem): string {
     return item.value;

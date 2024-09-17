@@ -45,8 +45,6 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
     private editRoutingService: EditRoutingService,
   ) { super(); }
 
-  isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
-
   pickerDisplayMode = this.fieldState.setting('PickerDisplayMode');
 
   mySettings = computedObj('mySettings', () => {

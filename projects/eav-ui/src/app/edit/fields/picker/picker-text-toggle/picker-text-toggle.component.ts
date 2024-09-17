@@ -33,7 +33,7 @@ export class PickerTextToggleComponent implements OnInit {
   @Input() allowText: boolean;
   @Input() freeTextMode: boolean;
   
-  pickerData = inject(FieldState).pickerData as PickerData;
+  pickerData = inject(FieldState).pickerData;
 
   constructor() { }
 

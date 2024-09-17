@@ -18,8 +18,12 @@ export class PickerPartBaseComponent {
   /** Entire Field State */
   protected fieldState = inject(FieldState);
 
+  protected enableTextEntry = this.fieldState.setting('EnableTextEntry');
+  
   /** Picker Data Bundle with Source and state etc. */
   protected pickerData = this.fieldState.pickerData;
+
+  protected isInFreeTextMode = this.pickerData.state.isInFreeTextMode;
 
   protected ui = this.fieldState.ui;
 

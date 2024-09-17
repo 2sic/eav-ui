@@ -27,7 +27,7 @@ export class PickerTextComponent extends PickerPartBaseComponent {
   
   log = classLog({PickerTextComponent});
 
-  filteredEntities: PickerItem[] = [];
+  constructor() { super(); }
 
   useMultiLine = computedObj('useMultiLine', () => {
     const settings = this.fieldState.settings();
@@ -35,8 +35,6 @@ export class PickerTextComponent extends PickerPartBaseComponent {
     const isSeparatorNewLine = separator == '\\n' /* buggy temp double-slash-n */ || separator == '\n' /* correct */;
     return isSeparatorNewLine;
   });
-
-  constructor() { super(); }
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) return;

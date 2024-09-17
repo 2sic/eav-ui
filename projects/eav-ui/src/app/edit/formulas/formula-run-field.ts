@@ -34,7 +34,7 @@ const logSpecs = {
  */
 export class FormulaRunField {
 
-  log = classLog({FormulaRunField}, logSpecs, true);
+  log = classLog({FormulaRunField}, logSpecs);
 
   constructor(
     private promiseHandler: FormulaPromiseHandler,

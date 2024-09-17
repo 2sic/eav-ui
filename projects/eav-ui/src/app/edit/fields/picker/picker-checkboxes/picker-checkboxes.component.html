@@ -20,7 +20,7 @@
 
         @for (item of options(); track item.value) {
           <p>
-            <mat-checkbox formControlName="pepperoni" (click)="select(item)" [checked]="item.selected">
+            <mat-checkbox formControlName="pepperoni" (click)="select(item)" [checked]="item.selected" [disabled]="item.noSelect">
               {{ item.label }} - {{ item.value }} - {{ !!item.selected }}
             </mat-checkbox>
           </p>
