@@ -39,8 +39,9 @@ export class StringDefaultComponent {
   protected settings = this.fieldState.settings;
   protected basics = this.fieldState.basics;
 
-  protected rowCount = computed(() => this.settings().RowCount, SignalEquals.number);
-  protected inputFontFamily = computed(() => this.settings().InputFontFamily, SignalEquals.string);
+  protected rowCount = this.fieldState.setting('RowCount');
+  protected inputFontFamily = this.fieldState.setting('InputFontFamily');
+  protected textWrap = this.fieldState.setting('TextWrapping');
 
   constructor() {
     StringDefaultLogic.importMe();

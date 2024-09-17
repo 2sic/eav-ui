@@ -15,7 +15,7 @@
       [rows]="rowCount()"
       [placeholder]="basics().placeholder"
       [required]="basics().required"
-      [ngStyle]="{ 'font-family': inputFontFamily() }">
+      [ngStyle]="{ 'font-family': inputFontFamily(), 'white-space': textWrap() }">
     </textarea>
   }
   <mat-label>{{ basics().label }}</mat-label>

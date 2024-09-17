@@ -73,6 +73,7 @@ interface String extends All {
 export interface StringDefault extends String {
   InputFontFamily: '' | 'monospace';
   RowCount: number;
+  TextWrapping: '' | 'pre';
 }
 
 /**
