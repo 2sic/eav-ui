@@ -12,6 +12,8 @@ import { EditRoutingService } from '../../routing/edit-routing.service';
 })
 export class PickerPartBaseComponent {
   
+  //#region Setup: Logging, inject, constructor
+
   log = classLog({PickerPartBaseComponent});
 
   /** Entire Field State */
@@ -22,8 +24,16 @@ export class PickerPartBaseComponent {
 
   constructor() { }
 
+  //#endregion
+
+  //#region Settings - simple values
 
   protected enableTextEntry = this.fieldState.setting('EnableTextEntry');
+
+  protected allowMultiValue = this.fieldState.setting('AllowMultiValue');
+
+  //#endregion
+
   
   /** Picker Data Bundle with Source and state etc. */
   protected pickerData = this.fieldState.pickerData;
