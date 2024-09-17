@@ -1,19 +1,17 @@
 import Papa from 'papaparse';
 import { PickerOptionCustomExtended } from '../../../../../../../edit-types';
 
-
 export class DataSourceParserCsv {
   
   constructor() { }
 
   parse(csv: string): PickerOptionCustomExtended[] {
-    console.warn('2dm - parsing csv', { csv });
 
     const x = Papa.parse<PickerOptionCustomExtended>(csv, {
       header: true,
       skipEmptyLines: true,
-      // transformHeader: (header: string) => header.trim(),
-      // transform: (value: string, header: string) => value.trim(),
+      transformHeader: (header: string) => header.trim(),
+      transform: (value: string, header: string) => header == 'Value' ? value : value.trim(),
     });
 
     const data = x?.data;
@@ -24,8 +22,6 @@ export class DataSourceParserCsv {
 
     if (filtered.length != data.length)
       console.warn('CSV contains rows without a value', { data, filtered });
-
-    console.warn(filtered);
 
     return filtered;
   }
