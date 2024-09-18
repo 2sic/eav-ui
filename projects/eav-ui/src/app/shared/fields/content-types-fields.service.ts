@@ -16,13 +16,13 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
   typeListRetrieve() {
     return this.http.get<string[]>(this.apiUrl(webApiFieldsRoot + 'DataTypes'), {
-      params: { appid: this.context.appId.toString() }
+      params: { appid: this.appId }
     });
   }
 
   getInputTypesList() {
     return this.http
-      .get<InputTypeMetadata[]>(this.apiUrl(webApiFieldsRoot + 'InputTypes'), { params: { appid: this.context.appId.toString() } })
+      .get<InputTypeMetadata[]>(this.apiUrl(webApiFieldsRoot + 'InputTypes'), { params: { appid: this.appId } })
       .pipe(
         map(inputConfigs => {
           const inputTypeOptions = inputConfigs.map(config => {
@@ -52,7 +52,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   getFields(contentTypeStaticName: string) {
     return this.http
       .get<Field[]>(this.apiUrl(webApiFieldsAll), {
-        params: { appid: this.context.appId.toString(), staticName: contentTypeStaticName },
+        params: { appid: this.appId, staticName: contentTypeStaticName },
       })
       .pipe(
         map(fields => {
@@ -74,8 +74,8 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
     return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
-        params: { appid: this.context.appId.toString() },
-      });
+      params: { appid: this.appId },
+    });
   }
 
   /**
@@ -91,14 +91,14 @@ export class ContentTypesFieldsService extends HttpServiceBase {
     // I'll create the backend afterwards
     return this.http
       .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
-        params: { appid: this.context.appId.toString(), attributeId: attributeId.toString() },
+        params: { appid: this.appId, attributeId: attributeId.toString() },
       });
   }
 
   addInheritedField(targetContentTypeId: number, sourceContentTypeStaticName: string, sourceFieldGuid: string, newName: string) {
     return this.http.post<number>(this.apiUrl(webApiFieldsRoot + 'AddInheritedField'), null, {
       params: {
-        AppId: this.context.appId.toString(),
+        AppId: this.appId,
         ContentTypeId: targetContentTypeId.toString(),
         SourceType: sourceContentTypeStaticName,
         SourceField: sourceFieldGuid,
@@ -110,7 +110,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   share(attributeId: number, share: boolean = true) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Share'), null, {
       params: {
-        appid: this.context.appId.toString(),
+        appid: this.appId,
         attributeId: attributeId.toString(),
         share,
       },
@@ -120,7 +120,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   inherit(attributeId: number, sourceFieldGuid: string) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Inherit'), null, {
       params: {
-        appid: this.context.appId.toString(),
+        appid: this.appId,
         attributeId: attributeId.toString(),
         inheritMetadataOf: sourceFieldGuid,
       },
@@ -130,7 +130,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   reOrder(idArray: number[], contentType: ContentType) {
     return this.http.post<boolean>(this.apiUrl(webApiFieldsRoot + 'Sort'), null, {
       params: {
-        appid: this.context.appId.toString(),
+        appid: this.appId,
         contentTypeId: contentType.Id.toString(),
         order: JSON.stringify(idArray),
       },
@@ -140,7 +140,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   setTitle(item: Field, contentType: ContentType) {
     return this.http.post<null>(this.apiUrl(webApiTypeRoot + 'SetTitle'), null, {
       params: {
-        appid: this.context.appId.toString(),
+        appid: this.appId,
         contentTypeId: contentType.Id.toString(),
         attributeId: item.Id.toString(),
       },
@@ -150,7 +150,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   rename(fieldId: number, contentTypeId: number, newName: string) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Rename'), null, {
       params: {
-        appid: this.context.appId.toString(),
+        appid: this.appId,
         contentTypeId: contentTypeId.toString(),
         attributeId: fieldId.toString(),
         newName,
@@ -165,7 +165,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
     return this.http.delete<boolean>(this.apiUrl(webApiFieldsRoot + 'Delete'), {
       params: {
-        appid: this.context.appId.toString(),
+        appid: this.appId,
         contentTypeId: contentType.Id.toString(),
         attributeId: item.Id.toString(),
       },
@@ -175,7 +175,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
   add(newField: Partial<Field>, contentTypeId: number) {
     return this.http.post<number>(this.apiUrl(webApiFieldsRoot + 'Add'), null, {
       params: {
-        AppId: this.context.appId.toString(),
+        AppId: this.appId,
         ContentTypeId: contentTypeId.toString(),
         Id: newField.Id.toString(),
         Type: newField.Type,
@@ -189,7 +189,7 @@ export class ContentTypesFieldsService extends HttpServiceBase {
 
   updateInputType(id: number, staticName: string, inputType: InputTypeStrict) {
     return this.http.post<boolean>(this.apiUrl(webApiFieldsRoot + 'InputType'), null, {
-      params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType }
+      params: { appId: this.appId, attributeId: id.toString(), field: staticName, inputType }
     });
   }
 }
