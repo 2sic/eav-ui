@@ -145,7 +145,7 @@ export class ColumnDefinitions {
     ...textSortFilter,
   };
 
-  static TextWideType: ColDef = {
+  static TextWidePrimary: ColDef = {
     flex: 3,
     minWidth: 250,
     cellClass: 'primary-action highlight'.split(' '),

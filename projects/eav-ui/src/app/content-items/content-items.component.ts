@@ -15,10 +15,7 @@ import { GoToMetadata } from '../metadata';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
@@ -53,7 +50,6 @@ import { classLog } from '../shared/logging';
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
-  styleUrls: ['./content-items.component.scss'],
   standalone: true,
   imports: [
     MatButtonModule,
@@ -71,23 +67,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   log = classLog({ContentItemsComponent});
 
-  contentType$ = new Subject<ContentType>();
-  items$ = new BehaviorSubject<ContentItem[]>(undefined);
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-  };
-
   isDebug = inject(GlobalConfigService).isDebug;
-  private entitiesService = transient(EntityEditService);
-  private contentExportService = transient(ContentExportService);
-  private contentItemsService = transient(ContentItemsService);
-  private contentTypesService = transient(ContentTypesService);
+
+  #entitiesSvc = transient(EntityEditService);
+  #contentExportSvc = transient(ContentExportService);
+  #contentItemsSvc = transient(ContentItemsService);
+  #contentTypesSvc = transient(ContentTypesService);
   #dialogRouter = transient(DialogRoutingService);
-
-  private gridApi$ = new BehaviorSubject<GridApi>(null);
-  #contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
-
-  viewModel$: Observable<ContentItemsViewModel>;
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
@@ -96,6 +82,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
+
+  contentType$ = new Subject<ContentType>();
+  items$ = new BehaviorSubject<ContentItem[]>(undefined);
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+  };
+
+  #gridApi$ = new BehaviorSubject<GridApi>(null);
+  #contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
+
+  viewModel$: Observable<ContentItemsViewModel>;
 
   ngOnInit() {
     this.fetchContentType();
@@ -114,7 +111,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.contentType$.complete();
     this.items$.complete();
-    this.gridApi$.complete();
+    this.#gridApi$.complete();
   }
 
   closeDialog() {
@@ -122,31 +119,31 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApi$.next(params.api);
+    this.#gridApi$.next(params.api);
   }
 
   private fetchContentType() {
-    this.contentTypesService.retrieveContentType(this.#contentTypeStaticName).subscribe(contentType => {
+    this.#contentTypesSvc.retrieveContentType(this.#contentTypeStaticName).subscribe(contentType => {
       this.contentType$.next(contentType);
     });
   }
 
   private fetchItems() {
-    this.contentItemsService.getAll(this.#contentTypeStaticName).subscribe(items => {
+    this.#contentItemsSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
       this.items$.next(items);
     });
   }
 
   private fetchColumns() {
-    this.contentItemsService.getColumns(this.#contentTypeStaticName).subscribe(columns => {
+    this.#contentItemsSvc.getColumns(this.#contentTypeStaticName).subscribe(columns => {
       // filter out ephemeral columns as they don't have data to show
       const columnsWithoutEphemeral = columns.filter(column => !column.IsEphemeral);
       const columnDefs = this.buildColumnDefs(columnsWithoutEphemeral);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
-      if (this.gridApi$.value) {
+      if (this.#gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
       } else {
-        this.gridApi$.pipe(
+        this.#gridApi$.pipe(
           filter(gridApi => gridApi != null), // firefox does web requests faster than drawing grid and getting gridApi
           take(1),
         ).subscribe(gridApi => {
@@ -157,10 +154,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
-    this.gridApi$.value.setColumnDefs(columnDefs);
+    this.#gridApi$.value.setColumnDefs(columnDefs);
     if (filterModel) {
       this.log.a('Will try to apply filter:', filterModel);
-      this.gridApi$.value.setFilterModel(filterModel);
+      this.#gridApi$.value.setFilterModel(filterModel);
     }
   }
 
@@ -186,11 +183,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   exportContent() {
-    const filterModel = this.gridApi$.value.getFilterModel();
+    const filterModel = this.#gridApi$.value.getFilterModel();
     const hasFilters = Object.keys(filterModel).length > 0;
     const ids: number[] = [];
     if (hasFilters) {
-      this.gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
+      this.#gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
         const contentItem: ContentItem = rowNode.data;
         ids.push(contentItem.Id);
       });
@@ -240,7 +237,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.gridApi$.value.getFilterModel());
+    console.warn('Current filter:', this.#gridApi$.value.getFilterModel());
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
@@ -248,10 +245,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const columnDefs: ColDef[] = [
       {
         ...ColumnDefinitions.IdWithDefaultRenderer,
-        cellClass: (params) => {
-          const contentItem: ContentItem = params.data;
-          return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
-        },
+        cellClass: (p: { data: ContentItem }) => `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' '),
         cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<ContentItem>()
       },
       {
@@ -278,17 +272,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         })(),
       },
       {
+        ...ColumnDefinitions.TextWidePrimary,
         headerName: 'Item (Entity)',
         field: '_Title',
         flex: 2,
-        minWidth: 250,
-        cellClass: 'primary-action highlight'.split(' '),
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        onCellClicked: (params) => {
-          const contentItem: ContentItem = params.data;
-          this.editItem(contentItem);
-        },
+        onCellClicked: (p: { data: ContentItem }) => this.editItem(p.data),
       },
       {
         headerName: 'Stats',
@@ -299,10 +287,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellClass: 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
-        valueGetter: (params) => {
-          const item: ContentItem = params.data;
-          return `${item._Used} / ${item._Uses}`;
-        },
+        valueGetter: (p: { data: ContentItem }) => `${p.data._Used} / ${p.data._Uses}`,
       },
       {
         ...ColumnDefinitions.ActionsPinnedRight3,
@@ -367,13 +352,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   private export(item: ContentItem) {
-    this.contentExportService.exportEntity(item.Id, this.#contentTypeStaticName, true);
+    this.#contentExportSvc.exportEntity(item.Id, this.#contentTypeStaticName, true);
   }
 
   private delete(item: ContentItem) {
     if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) return;
     this.snackBar.open('Deleting...');
-    this.entitiesService.delete(this.#contentTypeStaticName, item._RepositoryId, false).subscribe({
+    this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchItems();
@@ -384,7 +369,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           return;
         }
         this.snackBar.open('Deleting...');
-        this.entitiesService.delete(this.#contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
+        this.#entitiesSvc.delete(this.#contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
           this.snackBar.open('Deleted', null, { duration: 2000 });
           this.fetchItems();
         });

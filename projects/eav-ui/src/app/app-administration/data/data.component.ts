@@ -71,8 +71,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #dialogConfigSvc = transient(AppDialogConfigService);
   #dialogRouter = transient(DialogRoutingService);
 
-  contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
-  scope$ = new BehaviorSubject<string>(undefined);
+  constructor() { super(); }
+
+  #contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
+  #scope$ = new BehaviorSubject<string>(undefined);
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
   scopeOptions$ = new BehaviorSubject<ScopeDetailsDto[]>([]);
@@ -81,14 +83,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   enablePermissions!: boolean;
 
   // TODO: @2dg - this should be easy to get rid of #remove-observables
-  viewModel$ = combineLatest([this.contentTypes$, this.scope$, this.scopeOptions$]).pipe(
+  viewModel$ = combineLatest([this.#contentTypes$, this.#scope$, this.scopeOptions$]).pipe(
     map(([contentTypes, scope, scopeOptions]) =>
       ({ contentTypes, scope, scopeOptions })),
   );
-
-  constructor() {
-    super();
-  }
 
   ngOnInit() {
     this.#fetchScopes();
@@ -101,8 +99,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.contentTypes$.complete();
-    this.scope$.complete();
+    this.#contentTypes$.complete();
+    this.#scope$.complete();
     this.scopeOptions$.complete();
     super.ngOnDestroy();
   }
@@ -114,7 +112,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       case 'xml':
         from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
           const contentTypeName = fileString.split('<Entity Type="')[1]?.split('"')[0];
-          const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
+          const contentType = this.#contentTypes$.value.find(ct => ct.Name === contentTypeName);
           if (contentType == null) {
             const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
             this.#snackBar.open(message, null, { duration: 5000 });
@@ -148,12 +146,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #fetchContentTypes() {
-    this.#contentTypeSvc.retrieveContentTypes(this.scope$.value).subscribe(contentTypes => {
+    this.#contentTypeSvc.retrieveContentTypes(this.#scope$.value).subscribe(contentTypes => {
       for (const contentType of contentTypes) {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
-      this.contentTypes$.next(contentTypes);
-      if (this.scope$.value !== eavConstants.scopes.default.value) {
+      this.#contentTypes$.next(contentTypes);
+      if (this.#scope$.value !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.#snackBar.open(message, null, { duration: 2000 });
       }
@@ -286,7 +284,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         filter(scope => !!scope),
         mapUntilChanged(m => m),
       ).subscribe(scope => {
-        this.scope$.next(scope);
+        this.#scope$.next(scope);
 
         // If we can't find the scope in the list of options, add it as it was entered manually
         if (!this.scopeOptions$.value.map(option => option.name).includes(scope)) {
@@ -313,7 +311,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<ContentType>('StaticName'),
         },
         {
-          ...ColumnDefinitions.TextWideType,
+          ...ColumnDefinitions.TextWidePrimary,
           headerName: 'ContentType',
           field: 'Label',
           sort: 'asc',

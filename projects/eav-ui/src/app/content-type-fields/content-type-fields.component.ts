@@ -166,9 +166,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.#dialogRouter.navRelative([`add/${this.contentTypeStaticName}`]);
   }
 
-  private nameCellRenderer(params: ICellRendererParams) {
-    const currentField: Field = params.data;
-    const inputType = currentField.InputType;
+  private nameCellRenderer(params: Omit<ICellRendererParams, 'data'> & { data: Field }) {
+    const inputType = params.data.InputType;
 
     if (InputTypeHelpers.endsPreviousGroup(inputType))
       return params.value;
@@ -183,7 +182,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         isGroupOpen = false;
         continue;
       }
-      if (field.StaticName === currentField.StaticName)
+      if (field.StaticName === params.data.StaticName)
         break;
     }
 
@@ -335,26 +334,17 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
           field: 'Title',
           width: 42,
           cellClass: 'secondary-action no-padding no-outline'.split(' '),
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.IsTitle;
-          },
+          valueGetter: (p: { data: Field }) => p.data.IsTitle,
           cellRenderer: ContentTypeFieldsTitleComponent,
-          cellRendererParams: (() => {
-            const params: ContentTypeFieldsTitleParams = {
-              onSetTitle: (field) => this.setTitle(field),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onSetTitle: (field) => this.setTitle(field),
+          } satisfies ContentTypeFieldsTitleParams))(),
         },
         {
-          ...ColumnDefinitions.TextWide,
+          ...ColumnDefinitions.TextWidePrimary,
           headerName: 'Name',
           field: 'StaticName',
-          onCellClicked: (params) => {
-            const field: Field = params.data;
-            this.editFieldMetadata(field);
-          },
+          onCellClicked: (p: { data: Field }) => this.editFieldMetadata(p.data),
           cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
         },
         {
@@ -364,34 +354,21 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.Type;
-          },
+          valueGetter: (p: { data: Field }) => p.data.Type,
           cellRenderer: ContentTypeFieldsTypeComponent,
         },
         {
           headerName: 'Input',
           field: 'InputType',
           width: 160,
-          cellClass: (params) => {
-            const field: Field = params.data;
-            return `${field.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
-          },
+          cellClass: (p: { data: Field }) => `${p.data.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
-            return inputType;
-          },
+          valueGetter: (p: { data: Field }) => p.data.InputType.substring(p.data.InputType.indexOf('-') + 1),
           cellRenderer: ContentTypeFieldsInputTypeComponent,
-          cellRendererParams: (() => {
-            const params: ContentTypeFieldsInputTypeParams = {
-              onChangeInputType: (field) => this.changeInputType(field),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onChangeInputType: (field) => this.changeInputType(field),
+          } satisfies ContentTypeFieldsInputTypeParams))(),
         },
         {
           field: 'Label',
@@ -400,10 +377,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.Metadata?.All?.Name;
-          },
+          valueGetter: (p: { data: Field }) => p.data.Metadata?.All?.Name,
         },
         {
           field: 'Special',
@@ -419,10 +393,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const field: Field = params.data;
-            return field.Metadata?.All?.Notes;
-          },
+          valueGetter: (p: { data: Field }) => p.data.Metadata?.All?.Notes,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight5,
