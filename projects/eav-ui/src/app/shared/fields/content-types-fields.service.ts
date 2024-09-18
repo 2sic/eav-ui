@@ -1,25 +1,18 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
-import { Context } from '../services/context';
 import { Field, FieldInputTypeOption } from './field.model';
 import { InputTypeMetadata } from './input-type-metadata.model';
 import { InputTypeStrict } from './input-type-catalog';
+import { HttpServiceBase } from '../services/http-service-base';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = 'admin/field/all';
 export const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 
 @Injectable()
-export class ContentTypesFieldsService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
-
-  private apiUrl(name: string) {
-    return this.dnnContext.$2sxc.http.apiUrl(name);
-  }
+export class ContentTypesFieldsService extends HttpServiceBase {
 
   typeListRetrieve() {
     return this.http.get<string[]>(this.apiUrl(webApiFieldsRoot + 'DataTypes'), {
