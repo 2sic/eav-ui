@@ -3,6 +3,7 @@ import { FormulaVersions } from '../formula-definitions';
 import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
 import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { FormulaExperimentalObject } from './formula-experimental-object';
+import { FormulaContextEntityInfo } from './formula-run-experimental.model';
 
 /**
  * The object containing context information.
@@ -11,9 +12,6 @@ import { FormulaExperimentalObject } from './formula-experimental-object';
  */
 export class FormulaContextObject implements FormulaV1Context {
 
-  /** Private variable containing the data used in the getters */
-  #propsData: FormulaExecutionSpecsWithRunParams;
-
   cache: Record<string, any>;
   debug: boolean;
   sxc: Sxc;
@@ -21,46 +19,101 @@ export class FormulaContextObject implements FormulaV1Context {
   app: FormulaV1CtxApp;
   culture: FormulaV1CtxCulture;
 
-  constructor(propsData: FormulaExecutionSpecsWithRunParams, experimental: FormulaExperimentalObject) {
-    this.#propsData = propsData;
-    const formula = propsData.runParameters.formula;
+  /**
+   * new v18.01
+   */
+  entities: FormulaContextEntities;
+
+  features: FormulaV1CtxFeatures;
+  form: FormulaV1CtxForm;
+  target: FormulaV1CtxTarget;
+
+  xp: FormulaExperimentalObject;
+
+  constructor(specs: FormulaExecutionSpecsWithRunParams, experimental: FormulaExperimentalObject) {
+    const formula = specs.runParameters.formula;
     this.cache = formula.cache;
-    this.debug = propsData.debugEnabled;
+    this.debug = specs.debugEnabled;
     this.sxc = formula.sxc;
     this.user = formula.user;
 
-    this.app = Object.assign(new FormulaContextApp(propsData), propsData.runParameters.formula.app);
+    this.app = Object.assign(new FormulaContextApp(specs), specs.runParameters.formula.app);
 
-    this.target = new FormulaContextTarget(propsData);
+    this.target = new FormulaContextTarget(specs);
 
-    const language = propsData.language;
-    const languages = propsData.languages
+    const language = specs.language;
+    const languages = specs.languages
     this.culture = {
       code: language.current,
       name: languages.find(l => l.NameId === language.current)?.Culture,
     };
 
-    this.features = {
-      isEnabled(name: string): boolean {
-        return propsData.features().find(f => f.nameId === name)?.isEnabled ?? false;
-      },
-    };
+    this.features = new FormulaContextFeatures(specs);
 
-    this.form = {
-      runFormulas(): void {
-        if (formula.version === FormulaVersions.V1) {
-          console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-          propsData.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
-        } else if (formula.version === FormulaVersions.V2) {
-          console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise.');
-        }
-      },
-    };
+    this.form = new FormulaContextForm(specs);
+
+    this.entities = new FormulaContextEntities(specs);
+
+    this.xp = experimental;
   }
-  
-  features: FormulaV1CtxFeatures;
-  form: FormulaV1CtxForm;
-  target: FormulaV1CtxTarget;
+
+}
+
+/**
+ * new v18.01
+ */
+class FormulaContextEntities {
+  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+
+  /**
+   * 
+   * @returns All entities in the context
+   * new v18.01
+   */
+  getAll() {
+    const v1Entities = this.specs.itemService.getMany(this.specs.formConfig.config.itemGuids).map(i => ({
+      guid: i.Entity.Guid,
+      id: i.Entity.Id,
+      type: {
+        guid: i.Entity.Type.Id,
+        name: i.Entity.Type.Name,
+      }
+    } satisfies FormulaContextEntityInfo));
+    return v1Entities;
+  }
+
+  /**
+   * 
+   * @param guidOrName 
+   * @returns The first entity in the context which matches the guid or name
+   * new v18.01
+   */
+  getOfType(guidOrName: string) {
+    return this.getAll().find(a => a.type.guid == guidOrName || a.type.name == guidOrName);
+  }
+}
+
+class FormulaContextFeatures implements FormulaV1CtxFeatures {
+  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+
+  isEnabled(name: string): boolean {
+    return this.specs.features().find(f => f.nameId === name)?.isEnabled ?? false;
+  }
+}
+
+class FormulaContextForm implements FormulaV1CtxForm {
+  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
+
+  runFormulas(): void {
+    const formula = this.specs.runParameters.formula;
+    if (formula.version === FormulaVersions.V1) {
+      console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
+      this.specs.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
+      return;
+    }
+    
+    console.error('form.runFormulas() is not supported in V2 formulas. Just return a promise.');
+  }
 }
 
 /**

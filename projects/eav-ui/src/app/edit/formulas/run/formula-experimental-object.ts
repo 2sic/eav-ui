@@ -1,9 +1,11 @@
-import { FormulaV1ExperimentalEntity } from './formula-run-experimental.model';
+import { FormulaContextEntityInfo } from './formula-run-experimental.model';
 import { FormulaV1Experimental } from './formula-run-experimental.model';
 import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
 import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 import { ItemValuesOfLanguage } from '../../state/item-values-of-language.model';
 import { EntityReader } from '../../shared/helpers';
+
+const messageObsolete = 'A formula in this dialog is using an experimental feature: "{0}" - this will be removed soon.';
 
 /**
  * The object containing experimental information which can change at any time.
@@ -12,33 +14,40 @@ import { EntityReader } from '../../shared/helpers';
  */
 export class FormulaExperimentalObject implements FormulaV1Experimental {
 
-  /** Private variable containing the data used in the getters */
-  #specs: FormulaExecutionSpecsWithRunParams;
+  constructor(private specs: FormulaExecutionSpecsWithRunParams) { }
 
-  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
-    this.#specs = propsData;
-  }
-
-  getEntities(): FormulaV1ExperimentalEntity[] {
-    const v1Entities = this.#specs.itemService.getMany(this.#specs.formConfig.config.itemGuids).map(i => ({
+  getEntities(): FormulaContextEntityInfo[] {
+    this.#showWarningObsolete('getEntities');
+    const v1Entities = this.specs.itemService.getMany(this.specs.formConfig.config.itemGuids).map(i => ({
       guid: i.Entity.Guid,
       id: i.Entity.Id,
       type: {
-        id: i.Entity.Type.Id, // TODO: deprecate again, once we know it's not in use #cleanFormulaType
         guid: i.Entity.Type.Id,
         name: i.Entity.Type.Name,
       }
-    } satisfies FormulaV1ExperimentalEntity));
+    } satisfies FormulaContextEntityInfo));
     return v1Entities;
   }
 
   getSettings(fieldName: string): FieldSettings {
-    return this.#specs.fieldsSettingsSvc.settings[fieldName]();
+    this.#showWarningObsolete('getSettings');
+    return this.specs.fieldsSettingsSvc.settings[fieldName]();
   }
 
   getValues(entityGuid: string): ItemValuesOfLanguage {
-    const item = this.#specs.itemService.get(entityGuid);
-    const reader = new EntityReader(this.#specs.language);
+    this.#showWarningObsolete('getValues');
+    const item = this.specs.itemService.get(entityGuid);
+    const reader = new EntityReader(this.specs.language);
     return reader.currentValues(item.Entity.Attributes);
+  }
+
+  #showWarningObsolete(name: string) {
+    const msg = messageObsolete.replace('{0}', name);
+    console.error(msg);
+
+    if (this.specs.warningsObsolete[name])
+      return;
+    this.specs.warningsObsolete[name] = true;
+    alert(msg);
   }
 }

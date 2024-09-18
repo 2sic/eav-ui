@@ -3,7 +3,7 @@ import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 
 export interface FormulaV1Experimental {
-  getEntities(): FormulaV1ExperimentalEntity[];
+  getEntities(): FormulaContextEntityInfo[];
   /**
    * This gets FIELD settings.
    * TODO: @2dm Must find out if it's used anywhere, and probably rename to getFieldSettings
@@ -13,11 +13,10 @@ export interface FormulaV1Experimental {
 }
 
 // TODO: once the id is gone, merge with the type FormulaV1CtxTargetEntityType
-export interface FormulaV1ExperimentalEntity {
+export interface FormulaContextEntityInfo {
   guid: string;
   id: number;
   type: {
-    id: string; // TODO: deprecate again, once we know it's not in use #cleanFormulaType
     name: string;
     guid: string;
   };
