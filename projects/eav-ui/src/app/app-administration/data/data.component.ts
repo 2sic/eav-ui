@@ -279,8 +279,8 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.#dialogRouter.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
-        map(() => this.#dialogRouter.snapshot.paramMap.get('scope')),
-        startWith(this.#dialogRouter.snapshot.paramMap.get('scope')),
+        map(() => this.#dialogRouter.getParam('scope')),
+        startWith(this.#dialogRouter.getParam('scope')),
         filter(scope => !!scope),
         mapUntilChanged(m => m),
       ).subscribe(scope => {

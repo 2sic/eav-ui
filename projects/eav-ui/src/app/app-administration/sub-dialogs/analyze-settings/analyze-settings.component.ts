@@ -57,7 +57,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<AnalyzeSettingsComponent>,
   ) {
-    this.part = this.#dialogRouter.snapshot.paramMap.get('part') as AnalyzePart;
+    this.part = this.#dialogRouter.getParam('part') as AnalyzePart;
   }
 
   ngOnInit(): void {

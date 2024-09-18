@@ -43,7 +43,7 @@ export class VisualQueryStateService extends ServiceBase implements OnDestroy {
   dataSourceConfigs$ = new BehaviorSubject<DataSourceConfigs>({});
   pipelineResult?: PipelineResult;
 
-  #pipelineId = parseInt(this.#dialogRoute.snapshot.paramMap.get('pipelineId'), 10);
+  #pipelineId = parseInt(this.#dialogRoute.getParam('pipelineId'), 10);
   #refreshPipeline = false;
   #refreshDataSourceConfigs = false;
 

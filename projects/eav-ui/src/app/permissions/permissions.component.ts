@@ -3,9 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -19,9 +17,8 @@ import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
-import { transient } from '../core';
+import { convert, transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
-import { MetadataInfo } from '../content-items/create-metadata-dialog/create-metadata-dialog.models';
 
 @Component({
   selector: 'app-permissions',
@@ -44,10 +41,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   #permissionsService = transient(PermissionsService);
   #dialogRoutes = transient(DialogRoutingService);
 
-  private targetType = parseInt(this.#dialogRoutes.snapshot.paramMap.get('targetType'), 10);
-  private keyType = this.#dialogRoutes.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  private key = this.#dialogRoutes.snapshot.paramMap.get('key');
-  private prefills: Record<string, Record<string, string>> = {
+  #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key']), p => ({
+    targetType: parseInt(p.targetType, 10),
+    keyType: p.keyType as MetadataKeyType,
+    key: p.key,
+  }));
+
+  #prefills: Record<string, Record<string, string>> = {
     [eavConstants.metadata.language.targetType]: {
       PermissionType: 'language',
     },
@@ -62,8 +62,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.fetchPermissions();
-    this.#dialogRoutes.doOnDialogClosed(() => this.fetchPermissions());
+    this.#fetchPermissions();
+    this.#dialogRoutes.doOnDialogClosed(() => this.#fetchPermissions());
     // TODO: @2dg - this should be easy to get rid of #remove-observables
     this.viewModel$ = this.permissions$.pipe(map((permissions) => ({ permissions })));
   }
@@ -76,10 +76,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  private fetchPermissions() {
-    this.#permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
-      this.permissions$.next(permissions);
-    });
+  #fetchPermissions() {
+    this.#permissionsService.getAll(this.#params.targetType, this.#params.keyType, this.#params.key)
+      .subscribe(permissions => this.permissions$.next(permissions));
   }
 
 
@@ -90,9 +89,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         items: [{
           ...EditPrep.newMetadataFromInfo(
             eavConstants.contentTypes.permissions,
-            EditPrep.constructMetadataInfo(this.targetType, this.keyType, this.key)
+            EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key)
           ),
-          ...(this.prefills[this.targetType] && { Prefill: this.prefills[this.targetType] }),
+          ...(this.#prefills[this.#params.targetType] && { Prefill: this.#prefills[this.#params.targetType] }),
         }],
       };
     } else {
@@ -109,7 +108,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.snackBar.open('Deleting...');
     this.#permissionsService.delete(permission.Id).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
-      this.fetchPermissions();
+      this.#fetchPermissions();
     });
   }
 

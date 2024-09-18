@@ -61,7 +61,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private gridApi: GridApi;
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
-  private contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
+  private contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
   viewModel$: Observable<ContentTypeFieldsViewModel>;
 

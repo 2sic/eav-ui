@@ -30,14 +30,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html.pipe';
-import { transient } from '../core';
+import { convert, transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { classLog } from '../shared/logging';
-
-const logSpecs = {
-  enabled: false,
-  name: 'MetadataComponent',
-};
 
 @Component({
   selector: 'app-metadata',
@@ -63,22 +58,10 @@ export class MetadataComponent implements OnInit, OnDestroy {
   
   log = classLog({MetadataComponent});
 
-  gridOptions = this.buildGridOptions();
-
   #entitiesSvc = transient(EntityEditService);
   #metadataSvc = transient(MetadataService);
   #contentItemSvc = transient(ContentItemsService);
   #dialogRoutes = transient(DialogRoutingService);
-
-  #metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
-  #itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
-  #fabOpen$ = new BehaviorSubject(false);
-  #targetType = parseInt(this.#dialogRoutes.snapshot.paramMap.get('targetType'), 10);
-  #keyType = this.#dialogRoutes.snapshot.paramMap.get('keyType') as MetadataKeyType;
-  #key = this.#dialogRoutes.snapshot.paramMap.get('key');
-  title = decodeURIComponent(this.#dialogRoutes.snapshot.paramMap.get('title') ?? '');
-  #contentTypeStaticName = this.#dialogRoutes.snapshot.paramMap.get('contentTypeStaticName');
-  viewModel$: Observable<MetadataViewModel>;
 
   constructor(
     private dialogRef: MatDialogRef<MetadataComponent>,
@@ -88,10 +71,24 @@ export class MetadataComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
+  gridOptions = this.#buildGridOptions();
+
+  #metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
+  #itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
+  #fabOpen$ = new BehaviorSubject(false);
+  #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key', 'title', 'contentTypeStaticName']), p => ({
+    targetType: parseInt(p.targetType, 10),
+    keyType: p.keyType as MetadataKeyType,
+    key: p.key,
+    contentTypeStaticName: p.contentTypeStaticName,
+  }));
+  protected title = decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
+  viewModel$: Observable<MetadataViewModel>;
+
   ngOnInit() {
-    this.fetchFor();
-    this.fetchMetadata();
-    this.#dialogRoutes.doOnDialogClosed(() => this.fetchMetadata());
+    this.#fetchFor();
+    this.#fetchMetadata();
+    this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
 
     const logFilteredRecs = this.log.rxTap('filteredRecs$');
 
@@ -150,11 +147,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
         this.#entitiesSvc.create(recommendation.Id, { For: this.calculateItemFor('dummy').For }).subscribe({
           error: () => {
             this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
-            this.fetchMetadata();
+            this.#fetchMetadata();
           },
           next: () => {
             this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
-            this.fetchMetadata();
+            this.#fetchMetadata();
           },
         });
       } else {
@@ -184,24 +181,23 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private calculateItemFor(contentType: string): ItemAddIdentifier {
-    const x = EditPrep.constructMetadataInfo(this.#targetType, this.#keyType, this.#key);
+    const x = EditPrep.constructMetadataInfo(this.#params.targetType, this.#params.keyType, this.#params.key);
     return EditPrep.newMetadataFromInfo(contentType, x);
   }
 
-  private fetchFor() {
-    if (!this.#contentTypeStaticName) return;
+  #fetchFor() {
+    if (!this.#params.contentTypeStaticName) return;
 
-    this.#contentItemSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
-      const item = items.find(i => i.Guid === this.#key);
-      if (item?.For) {
+    this.#contentItemSvc.getAll(this.#params.contentTypeStaticName).subscribe(items => {
+      const item = items.find(i => i.Guid === this.#params.key);
+      if (item?.For)
         this.#itemFor$.next(item.For);
-      }
     });
   }
 
-  private fetchMetadata() {
+  #fetchMetadata() {
     const logGetMetadata = this.log.rxTap('getMetadata');
-    this.#metadataSvc.getMetadata(this.#targetType, this.#keyType, this.#key)
+    this.#metadataSvc.getMetadata(this.#params.targetType, this.#params.keyType, this.#params.key)
       .pipe(
         logGetMetadata.pipe(),
         take(1),
@@ -225,7 +221,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       .subscribe(data => this.#metadataSet$.next(data));
   }
 
-  private editMetadata(metadata: MetadataItem) {
+  #editMetadata(metadata: MetadataItem) {
     const form: EditForm = {
       items: [EditPrep.editId(metadata.Id)],
     };
@@ -233,7 +229,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.#dialogRoutes.navRelative([`edit/${formUrl}`]);
   }
 
-  private deleteMetadata(metadata: MetadataItem, confirmed = false) {
+  #deleteMetadata(metadata: MetadataItem, confirmed = false) {
     if (!confirmed) {
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
@@ -248,7 +244,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       });
       confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
         if (isConfirmed)
-          this.deleteMetadata(metadata, true);
+          this.#deleteMetadata(metadata, true);
       });
       return;
     }
@@ -257,7 +253,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.#entitiesSvc.delete(metadata._Type.Id, metadata.Id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.fetchMetadata();
+        this.#fetchMetadata();
       },
       error: () => {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });
@@ -265,7 +261,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     });
   }
 
-  private buildGridOptions(): GridOptions {
+  #buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -276,30 +272,21 @@ export class MetadataComponent implements OnInit, OnDestroy {
         {
           ...ColumnDefinitions.TextWide,
           field: 'Title',
-          onCellClicked: (params) => {
-            const metadata: MetadataItem = params.data;
-            this.editMetadata(metadata);
-          },
+          onCellClicked: (p: { data: MetadataItem}) => this.#editMetadata(p.data),
         },
         {
           ...ColumnDefinitions.TextWide,
           headerName: 'Content Type',
           field: 'ContentType',
-          valueGetter: (params) => {
-            const metadata: MetadataItem = params.data;
-            return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
-          },
+          valueGetter: (p: { data: MetadataItem}) => `${p.data._Type.Name}${p.data._Type.Title !== p.data._Type.Name ? ` (${p.data._Type.Title})` : ''}`,
           cellRenderer: MetadataContentTypeComponent,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: MetadataActionsComponent,
-          cellRendererParams: (() => {
-            const params: MetadataActionsParams = {
-              onDelete: (metadata) => this.deleteMetadata(metadata),
-            };
-            return params;
-          })(),
+          cellRendererParams: (() => ({
+            onDelete: (metadata) => this.#deleteMetadata(metadata),
+          } satisfies MetadataActionsParams))(),
         },
       ],
     };

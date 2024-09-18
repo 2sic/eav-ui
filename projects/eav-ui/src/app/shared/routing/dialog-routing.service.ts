@@ -25,7 +25,6 @@ export class DialogRoutingService extends ServiceBase {
     super();
   }
 
-  // TODO: find where this is used just to get params, replace with direct call
   get snapshot() { return this.route.snapshot; }
 
   get url() { return this.router.url; }
@@ -63,7 +62,7 @@ export class DialogRoutingService extends ServiceBase {
   public doOnDialogClosed(callback: () => void) {
     const l = this.log.fnIf('doOnDialogClosed');
     this.subscriptions.add(
-      this.childDialogClosed$().subscribe(() => { callback(); })
+      this.childDialogClosed$().subscribe(() => callback())
     );
     l.end();
   }
@@ -96,6 +95,5 @@ export class DialogRoutingService extends ServiceBase {
       filter(([hadChildBefore, hasChildNow]) => hadChildBefore && !hasChildNow),
     )
   }
-
 
 }

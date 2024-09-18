@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
-import { transient } from '../core';
+import { convert, transient } from '../core';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { signalObj } from '../shared/signals/signal.utilities';
@@ -54,12 +54,12 @@ export class ManageContentListComponent implements OnInit {
   protected items = signalObj<GroupHeader[]>('items', null);
   protected header = signalObj<GroupHeader>('header', null);
 
-  #contentGroup: ContentGroup = {
+  #contentGroup = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
     id: null,
-    guid: this.#dialogRoutes.snapshot.paramMap.get('guid'),
-    part: this.#dialogRoutes.snapshot.paramMap.get('part'),
-    index: parseInt(this.#dialogRoutes.snapshot.paramMap.get('index'), 10),
-  };
+    guid: p.guid,
+    part: p.part,
+    index: parseInt(p.index, 10),
+  }));
   protected reordered = signalObj('reordered', false);
 
   ngOnInit() {

@@ -14,7 +14,7 @@ import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } 
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { transient } from '../core';
+import { convert, transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 
@@ -49,7 +49,12 @@ export class ReplaceContentComponent implements OnInit {
     private snackBar: MatSnackBar,
   ) { }
 
-  #params = this.#dialogRoutes.getParams(['guid', 'part', 'index']);
+  #params = convert(this.#dialogRoutes.getParams(['guid', 'part', 'index']), p => ({
+    guid: p.guid,
+    part: p.part,
+    index: parseInt(p.index, 10),
+  }));
+
   #contentTypeName: string;
   
   /** Mode is adding the to-be-selected item, not replace */
@@ -135,7 +140,6 @@ export class ReplaceContentComponent implements OnInit {
     const contentGroup: ContentGroupAdd = {
       id,
       ...this.#params,
-      index: parseInt(this.#params.index, 10),
       add: this.isAddMode(),
     };
     return contentGroup;

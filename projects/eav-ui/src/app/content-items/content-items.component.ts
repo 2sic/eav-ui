@@ -90,7 +90,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   };
 
   #gridApi$ = new BehaviorSubject<GridApi>(null);
-  #contentTypeStaticName = this.#dialogRouter.snapshot.paramMap.get('contentTypeStaticName');
+  #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
   viewModel$: Observable<ContentItemsViewModel>;
 
