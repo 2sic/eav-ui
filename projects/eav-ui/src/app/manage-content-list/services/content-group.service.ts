@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaceConfig } from '../../replace-content/models/replace-config.model';
+import { ReplaceConfig } from '../../replace-content/replace-config.model';
 import { Context } from '../../shared/services/context';
 import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { GroupHeader } from '../models/group-header.model';

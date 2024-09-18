@@ -1,16 +1,12 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, model, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep } from '../shared/models/edit-form.model';
-import { ReplaceOption } from './models/replace-option.model';
-import { ReplaceContentViewModel } from './replace-content.models';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -20,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { transient } from '../core';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
+import { computedObj, signalObj } from '../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-replace-content',
@@ -39,21 +36,10 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
     MatButtonModule,
     MatIconModule,
     MatDialogActions,
-    AsyncPipe,
   ],
 })
-export class ReplaceContentComponent implements OnInit, OnDestroy {
+export class ReplaceContentComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
-
-  viewModel$: Observable<ReplaceContentViewModel>;
-
-  #guid: string;
-  #part: string;
-  #index: number;
-  #add: boolean;
-  #filterText$: BehaviorSubject<string>;
-  #options$: BehaviorSubject<ReplaceOption[]>;
-  #contentTypeName: string;
 
   #contentGroupSvc = transient(ContentGroupService);
   #dialogRoutes = transient(DialogRoutingService);
@@ -61,66 +47,51 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
     private snackBar: MatSnackBar,
-  ) {
-  }
+  ) { }
+
+  #params = this.#dialogRoutes.getParams(['guid', 'part', 'index']);
+  #contentTypeName: string;
+  
+  /** Mode is adding the to-be-selected item, not replace */
+  protected isAddMode = signalObj('isAddMode', !!this.#dialogRoutes.getQueryParam('add'));
+
+  /** The text being searched for */
+  filterText = model<string>('');
+
+  /** The options which could be used */
+  #optionsRaw = signalObj<ReplaceOption[]>('options', []);
+
+  /** The options after filtering */
+  options = computedObj<ReplaceOption[]>('filteredOptions', () => {
+    const filter = this.filterText().toLocaleLowerCase();
+    return this.#optionsRaw()
+      .filter(o => o.label.toLocaleLowerCase().includes(filter));
+  });
+
+  /** The system has a selected item, when the text exactly matches the label of an option */
+  hasSelection = computedObj<boolean>('isMatch', () => this.options().map(o => o.label).includes(this.filterText()));
 
   ngOnInit() {
-    const snapshot = this.#dialogRoutes.snapshot;
-    this.#guid = snapshot.paramMap.get('guid');
-    this.#part = snapshot.paramMap.get('part');
-    this.#index = parseInt(snapshot.paramMap.get('index'), 10);
-    this.#add = !!snapshot.queryParamMap.get('add');
-
-    this.#filterText$ = new BehaviorSubject('');
-    this.#options$ = new BehaviorSubject([]);
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    const filteredOptions$ = combineLatest([this.#filterText$, this.#options$]).pipe(
-      map(([filterText, options]) =>
-        options.filter(option => option.label.toLocaleLowerCase().includes(filterText.toLocaleLowerCase())).map(option => option.label)
-      ),
-    );
-    this.viewModel$ = combineLatest([this.#filterText$, filteredOptions$]).pipe(
-      map(([filterText, filteredOptions]) => {
-        const viewModel: ReplaceContentViewModel = {
-          filterText,
-          filteredOptions,
-          isAddMode: this.#add,
-          isMatch: filteredOptions.includes(filterText),
-        };
-        return viewModel;
-      }),
-    );
-
-    this.fetchConfig(false, null);
+    this.#fetchConfig(false, null);
 
     this.#dialogRoutes.doOnDialogClosed(() => {
       const navigation = this.#dialogRoutes.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
-      this.fetchConfig(true, cloneId);
+      this.#fetchConfig(true, cloneId);
     });
-  }
-
-  ngOnDestroy() {
-    this.#filterText$.complete();
-    this.#options$.complete();
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  setFilter(filterText: string) {
-    this.#filterText$.next(filterText);
-  }
-
   select(event: MatAutocompleteSelectedEvent) {
-    this.#filterText$.next(event.option.value);
+    this.filterText.set(event.option.value);
   }
 
   copySelected() {
-    const contentGroup = this.buildContentGroup();
+    const contentGroup = this.#buildContentGroup();
     const form: EditForm = {
       items: [EditPrep.copy(this.#contentTypeName, contentGroup.id)],
     };
@@ -130,45 +101,49 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
 
   save() {
     this.snackBar.open('Saving...');
-    const contentGroup = this.buildContentGroup();
+    const contentGroup = this.#buildContentGroup();
     this.#contentGroupSvc.saveItem(contentGroup).subscribe(() => {
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
   }
 
-  private fetchConfig(isRefresh: boolean, cloneId: number) {
-    const contentGroup = this.buildContentGroup();
+  #fetchConfig(isRefresh: boolean, cloneId: number) {
+    const contentGroup = this.#buildContentGroup();
     this.#contentGroupSvc.getItems(contentGroup).subscribe(replaceConfig => {
-      const options = Object.entries(replaceConfig.Items).map(([itemId, itemName]) => {
-        const option: ReplaceOption = {
+      const options = Object.entries(replaceConfig.Items)
+        .map(([itemId, itemName]) => ({
           id: parseInt(itemId, 10),
           label: `${itemName} (${itemId})`,
-        };
-        return option;
-      });
-      this.#options$.next(options);
+        } satisfies ReplaceOption));
+      this.#optionsRaw.set(options);
 
       // don't set selected option if dialog should be in add-mode and don't change selected option on refresh unless it's cloneId
       if ((!contentGroup.add && !isRefresh) || cloneId != null) {
         const newId = !isRefresh ? replaceConfig.SelectedId : cloneId;
-        const newFilter = this.#options$.value.find(option => option.id === newId)?.label || '';
-        this.#filterText$.next(newFilter);
+        const newFilter = this.#optionsRaw().find(o => o.id === newId)?.label || '';
+        this.filterText.set(newFilter);
       }
       this.#contentTypeName = replaceConfig.ContentTypeName;
     });
   }
 
-  private buildContentGroup() {
-    const id = this.#options$.value.find(option => option.label === this.#filterText$.value)?.id ?? null;
+  #buildContentGroup() {
+    const filter = this.filterText();
+    const id = this.#optionsRaw().find(o => o.label === filter)?.id ?? null;
 
     const contentGroup: ContentGroupAdd = {
       id,
-      guid: this.#guid,
-      part: this.#part,
-      index: this.#index,
-      add: this.#add,
+      ...this.#params,
+      index: parseInt(this.#params.index, 10),
+      add: this.isAddMode(),
     };
     return contentGroup;
   }
+}
+
+
+interface ReplaceOption {
+  id: number;
+  label: string;
 }

@@ -25,9 +25,35 @@ export class DialogRoutingService extends ServiceBase {
     super();
   }
 
+  // TODO: find where this is used just to get params, replace with direct call
   get snapshot() { return this.route.snapshot; }
 
   get url() { return this.router.url; }
+
+  getParam(key: string): string {
+    return this.route.snapshot.paramMap.get(key);
+  }
+
+  getParams<K extends string>(keys: K[]): Record<K, string> {
+    const paramMap = this.route.snapshot.paramMap;
+    return keys.reduce((acc, key) => {
+      acc[key] = paramMap.get(key);
+      return acc;
+    }, {} as Record<string, string>);
+  }
+
+  getQueryParam(key: string): string {
+    return this.route.snapshot.queryParamMap.get(key);
+  }
+
+  getQueryParams<K extends string>(keys: K[]): Record<K, string> {
+    const queryParamMap = this.route.snapshot.queryParamMap;
+    return keys.reduce((acc, key) => {
+      acc[key] = queryParamMap.get(key);
+      return acc;
+    }, {} as Record<string, string>);
+  }
+
 
   state<T = any>() { return this.router.getCurrentNavigation().extras?.state as T; }
 
