@@ -13,37 +13,32 @@ import { EntityReader } from '../../shared/helpers';
 export class FormulaExperimentalObject implements FormulaV1Experimental {
 
   /** Private variable containing the data used in the getters */
-  #formulaExecSpecs: FormulaExecutionSpecsWithRunParams;
+  #specs: FormulaExecutionSpecsWithRunParams;
 
   constructor(propsData: FormulaExecutionSpecsWithRunParams) {
-    this.#formulaExecSpecs = propsData;
+    this.#specs = propsData;
   }
 
   getEntities(): FormulaV1ExperimentalEntity[] {
-    const { itemService, formConfig } = this.#formulaExecSpecs;
-    const v1Entities = itemService.getMany(formConfig.config.itemGuids).map(item => {
-      const v1Entity: FormulaV1ExperimentalEntity = {
-        guid: item.Entity.Guid,
-        id: item.Entity.Id,
-        type: {
-          id: item.Entity.Type.Id,  // TODO: deprecate again, once we know it's not in use #cleanFormulaType
-          guid: item.Entity.Type.Id,
-          name: item.Entity.Type.Name,
-        }
-      };
-      return v1Entity;
-    });
+    const v1Entities = this.#specs.itemService.getMany(this.#specs.formConfig.config.itemGuids).map(i => ({
+      guid: i.Entity.Guid,
+      id: i.Entity.Id,
+      type: {
+        id: i.Entity.Type.Id, // TODO: deprecate again, once we know it's not in use #cleanFormulaType
+        guid: i.Entity.Type.Id,
+        name: i.Entity.Type.Name,
+      }
+    } satisfies FormulaV1ExperimentalEntity));
     return v1Entities;
   }
 
   getSettings(fieldName: string): FieldSettings {
-    return this.#formulaExecSpecs.fieldsSettingsSvc.settings[fieldName]();
+    return this.#specs.fieldsSettingsSvc.settings[fieldName]();
   }
 
   getValues(entityGuid: string): ItemValuesOfLanguage {
-    const { language, itemService } = this.#formulaExecSpecs;
-    const item = itemService.get(entityGuid);
-    const reader = new EntityReader(language);
+    const item = this.#specs.itemService.get(entityGuid);
+    const reader = new EntityReader(this.#specs.language);
     return reader.currentValues(item.Entity.Attributes);
   }
 }

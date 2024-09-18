@@ -2,6 +2,7 @@ import { Sxc } from '@2sic.com/2sxc-typings';
 import { FormulaVersions } from '../formula-definitions';
 import { FormulaV1Context, FormulaV1CtxApp, FormulaV1CtxCulture, FormulaV1CtxFeatures, FormulaV1CtxForm, FormulaV1CtxTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula-run-context.model';
 import { FormulaExecutionSpecsWithRunParams } from './formula-objects-internal-data';
+import { FormulaExperimentalObject } from './formula-experimental-object';
 
 /**
  * The object containing context information.
@@ -20,13 +21,13 @@ export class FormulaContextObject implements FormulaV1Context {
   app: FormulaV1CtxApp;
   culture: FormulaV1CtxCulture;
 
-  constructor(propsData: FormulaExecutionSpecsWithRunParams) {
+  constructor(propsData: FormulaExecutionSpecsWithRunParams, experimental: FormulaExperimentalObject) {
     this.#propsData = propsData;
-    const definition = propsData.runParameters.formula;
-    this.cache = definition.cache;
+    const formula = propsData.runParameters.formula;
+    this.cache = formula.cache;
     this.debug = propsData.debugEnabled;
-    this.sxc = definition.sxc;
-    this.user = definition.user;
+    this.sxc = formula.sxc;
+    this.user = formula.user;
 
     this.app = Object.assign(new FormulaContextApp(propsData), propsData.runParameters.formula.app);
 
@@ -47,10 +48,10 @@ export class FormulaContextObject implements FormulaV1Context {
 
     this.form = {
       runFormulas(): void {
-        if (definition.version === FormulaVersions.V1) {
+        if (formula.version === FormulaVersions.V1) {
           console.error('form.runFormulas() is being deprecated and will stop working end of 2024. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
           propsData.fieldsSettingsSvc.retriggerFormulas('form.runFormulas()');
-        } else if (definition.version === FormulaVersions.V2) {
+        } else if (formula.version === FormulaVersions.V2) {
           console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise.');
         }
       },

@@ -5,16 +5,19 @@ import { FormulaV1Experimental } from './run/formula-run-experimental.model';
 
 //#region Formula strings / parts to process and show templates
 
-export const requiredFormulaPrefix = 'function ';
+/**
+ * This must be in front of every formula so that JavaScript will run it.
+ * Normally it's not there, so it's added before running the code.
+ */
+export const runFormulaPrefix = 'function ';
 
-// old, just for reference
-const defaultFormulaV1 = `${requiredFormulaPrefix}v1 (data, context) {
-  return data.value;
-}`;
+// V1 sample, just for reference
+// const defaultFormulaV1 = `${requiredFormulaPrefix}v1 (data, context) {
+//   return data.value;
+// }`;
 
 // new
-const defaultFormulaV2 = `// new formula syntax - see https://go.2sxc.org/formulas
-v2((data, context) => {
+const defaultFormulaV2 = `v2((data, context) => {
   return data.value;
 });`;
 

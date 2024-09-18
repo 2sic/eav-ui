@@ -56,9 +56,9 @@ export class FormulaRunOneHelpersFactory {
         // Create the data object and add all value properties of the form to it
         const data = Object.assign(new FormulaDataObject(runParams), formValues);
 
-        const context = new FormulaContextObject(runParams);
-
         const experimental = new FormulaExperimentalObject(runParams);
+
+        const context = new FormulaContextObject(runParams, experimental);
 
         return {
           data,

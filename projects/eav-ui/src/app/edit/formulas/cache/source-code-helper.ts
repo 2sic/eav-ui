@@ -1,4 +1,4 @@
-import { FormulaVersions, requiredFormulaPrefix, FormulaVersion, FormulaFunction } from '../formula-definitions';
+import { FormulaVersions, runFormulaPrefix, FormulaVersion, FormulaFunction } from '../formula-definitions';
 
 /**
  * Contains methods for building formulas.
@@ -32,15 +32,15 @@ export class FormulaSourceCodeHelper {
       TODO: do this properly with regex if it's not too slow
     */
     if (cleanFormula.startsWith(FormulaVersions.V1))
-      return `${requiredFormulaPrefix}${cleanFormula}`;
+      return `${runFormulaPrefix}${cleanFormula}`;
 
-    if (cleanFormula.startsWith(`${requiredFormulaPrefix}${FormulaVersions.V1}`))
+    if (cleanFormula.startsWith(`${runFormulaPrefix}${FormulaVersions.V1}`))
       return cleanFormula;
 
     if (cleanFormula.startsWith('v2(')) {
       cleanFormula = cleanFormula.substring(3, cleanFormula.lastIndexOf('}') + 1);
       cleanFormula = cleanFormula.replace('=>', '');
-      return `${requiredFormulaPrefix}v2 ${cleanFormula}`;
+      return `${runFormulaPrefix}v2 ${cleanFormula}`;
     }
 
     return cleanFormula;
@@ -53,7 +53,7 @@ export class FormulaSourceCodeHelper {
    */
   static findFormulaVersion(formula: string): FormulaVersion {
     const cleanFormula = this.#cleanFormula(formula);
-    const versionPart = cleanFormula.substring(requiredFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
+    const versionPart = cleanFormula.substring(runFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
     const validVersions = Object.values(FormulaVersions);
 
     return (validVersions).includes(versionPart as FormulaVersion)

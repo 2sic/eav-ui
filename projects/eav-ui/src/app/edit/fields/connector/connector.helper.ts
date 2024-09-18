@@ -28,6 +28,7 @@ import { UiControl } from '../../shared/controls/ui-control';
 
 const logSpecs = {
   all: false,
+  constructor: false,
   init: true,
   getUrlOfId: false,
   updateControl: false,
@@ -53,6 +54,11 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   
   #adamService = transient(AdamService);
 
+  constructor() {
+    super();
+    this.log.aIf('constructor')
+  }
+
   #customEl: EavCustomInputField;
   #value$ = this.#fieldState.ui().control.valueChanges.pipe(startWith(this.#fieldState.uiValue()), distinctUntilChanged(isEqual));
 
@@ -61,11 +67,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
   #viewContainerRef: ViewContainerRef;
   #changeDetectorRef: ChangeDetectorRef;
-
-  constructor() {
-    super();
-    this.log.a('constructor')
-  }
 
   public init(
     customElName: string,
@@ -84,7 +85,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
 
   ngOnDestroy() {
     this.log.a('ngOnDestroy');
-    // this.#value$.complete();
     this.#customEl?.parentNode.removeChild(this.#customEl);
     this.#customEl = null;
     super.ngOnDestroy();
@@ -97,7 +97,6 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
       const settings = this.#fieldState.settings();
       return toFieldConfig(this.#config, settings);
     }, { equal: isEqual});
-    // const value$ = this.#value$.asObservable();
     const connector = new ConnectorInstance(connectorHost, this.#value$, fieldConfigSignal, experimental, this.#formConfig.config);
 
     effect(() => {
