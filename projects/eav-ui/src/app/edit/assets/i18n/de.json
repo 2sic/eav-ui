@@ -205,7 +205,8 @@
     "Description": "Hier kannst du das Titel-Element verwalten (sofern definiert):",
     "NoHeader": "(diese Liste hat kein Titel-Element)",
     "SortItems": "Sortier die Einträge indem du sie mit der Maus rumziehst. ",
-    "SortLotsOfItems": "Sortier die vielen Einträge indem du sie mit der Maus ziehst und dann mit dem Mausrad scrollst. "
+    "SortLotsOfItems": "Sortier die vielen Einträge indem du sie mit der Maus ziehst und dann mit dem Mausrad scrollst. ",
+    "ListHasBeenReordered": "⚠️ The list wurde neu sortiert. Deshalb sind gewisse Aktionen nicht möglich, bis du speicherst."
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "ADAM Datei verlinken (empfohlen)",

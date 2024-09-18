@@ -233,6 +233,7 @@
     "NoHeader": "(this list has no header)",
     "SortItems": "Sort the items by dragging as needed.",
     "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed.",
+    "ListHasBeenReordered": "⚠️ The list has been reordered. Because of this, certain buttons are disabled until you save your changes.",
     "ConfirmRemove": "This will remove this content-item from this list, but not delete it (so you can add it again later). \nSee 2sxc.org/help for more. \n\nOk to remove?"
   },
   "SharingOrInheriting": {
