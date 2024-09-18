@@ -72,6 +72,8 @@ export interface FormulaExecutionSpecs {
   features: Signal<FeatureSummary[]>;
 
   parameters: FormulaPropsParameters;
+
+  warningsObsolete: Record<string, boolean>;
 }
 
 export interface FormulaExecutionSpecsWithRunParams extends FormulaExecutionSpecs {

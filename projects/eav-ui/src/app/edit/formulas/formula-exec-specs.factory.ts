@@ -38,6 +38,8 @@ export class FormulaExecutionSpecsFactory {
   #settingsSvc: FieldsSettingsService;
   #clientData: Pick<ItemIdentifierShared, "ClientData">;
   
+  #warningsObsolete: Record<string, boolean> = {};
+
   /**
    * Get all objects which are needed for the data and context and are reused quite a few times.
    * Can be reused for a short time, as the data doesn't change in a normal cycle,
@@ -59,6 +61,7 @@ export class FormulaExecutionSpecsFactory {
       fieldsSettingsSvc: this.#settingsSvc,
       features: this.#features,
       parameters: new FormulaPropsParameters(this.#clientData),
+      warningsObsolete: this.#warningsObsolete,
     } satisfies FormulaExecutionSpecs;
   }
 }
