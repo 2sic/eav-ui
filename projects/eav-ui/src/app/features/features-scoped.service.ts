@@ -81,9 +81,19 @@ export class FeaturesScopedService {
   }
 
   /**
-   * Property which behaves like a Record<string, Signal<boolean>>.
+   * Property providing enabled, which behaves like a Record<string, Signal<boolean>>.
    */
   public enabled = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
     return this.dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false;
+  });
+
+  /**
+   * Property providing allowUse, which behaves like a Record<string, Signal<boolean>>.
+   * This is primarily meant for the field-wrapper, which
+   * - should show warnings etc. if not allowed
+   * - but in edge cases it is allowed, eg. when editing data on a system content-type
+   */
+  public allowUse = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
+    return this.dialogContext()?.Features.find(f => f.nameId === nameId)?.allowUse ?? false;
   });
 }
