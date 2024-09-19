@@ -11,7 +11,7 @@ import { AppInstallSettingsService } from '../../../shared/services/getting-star
 import { InstallerService } from '../../../shared/services/installer.service';
 import { BaseComponent } from '../../../shared/components/base.component';
 import { Context } from '../../../shared/services/context';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DragAndDropDirective } from '../../../shared/directives/drag-and-drop.directive';
@@ -29,7 +29,6 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogModule,
     MatProgressSpinnerModule,
     SafeHtmlPipe,
-    AsyncPipe,
     DragAndDropDirective,
     MatButtonModule,
     MatIconModule,
