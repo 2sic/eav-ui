@@ -10,8 +10,9 @@
           'toggle-null': checkedState() === null,
           'changeable-label-tristate-mat-slide-toggle': changedLabel() !== basics().label
             }" />
-    <span [ngClass]="!checkedState() ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">{{ changedLabel() ??
-      basics().label }}</span>
+    <span [ngClass]="!checkedState() ? 'eav-toggle-label' : ''" class="eav-slide-toggle-label">
+      {{ changedLabel() ?? basics().label }}
+    </span>
   </div>
   <app-field-helper-text [disableError]="true"></app-field-helper-text>
 </div>

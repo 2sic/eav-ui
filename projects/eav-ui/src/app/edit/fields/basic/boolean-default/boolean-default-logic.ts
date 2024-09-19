@@ -16,12 +16,10 @@ export class BooleanDefaultLogic extends FieldLogicBase {
   }
 
   private calculateLabel(value: boolean, settings: FieldSettings): string {
-    if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
+    if (value === true && settings.TitleTrue)
       return settings.TitleTrue;
-    }
-    if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
+    if (value === false && settings.TitleFalse)
       return settings.TitleFalse;
-    }
     return settings.Name;
   }
 }
