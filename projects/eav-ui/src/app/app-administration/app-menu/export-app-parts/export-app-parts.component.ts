@@ -1,5 +1,5 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
+import { Component, HostBinding, OnDestroy, OnInit, signal } from '@angular/core';
+import {  MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
@@ -52,11 +52,13 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   lockScope = true;
   dropdownInsertValue = dropdownInsertValue;
 
+  loading = signal(false);
+  isExporting = signal(false);
+
   // TODO: @2dg - this should be easy to get rid of #remove-observables
   private loading$ = new BehaviorSubject(false);
-  private isExporting$ = new BehaviorSubject(false);
-  viewModel$ = combineLatest([this.loading$, this.isExporting$]).pipe(
-    map(([loading, isExporting]) => ({ loading, isExporting })),
+  viewModel$ = combineLatest([this.loading$]).pipe(
+    map(([loading]) => ({ loading })),
   );
 
   constructor() { }
@@ -68,13 +70,10 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.loading$.complete();
-    this.isExporting$.complete();
   }
 
-
-
   exportAppParts() {
-    this.isExporting$.next(true);
+    this.isExporting.set(true);
     // spm TODO: maybe optimize these functions to not loop content types and entities multiple times for no reason
     // spm TODO: figure out how to capture window loading to disable export button
     const contentTypeIds = this.#selectedContentTypes().map(contentType => contentType.Id);
@@ -83,7 +82,8 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
     entityIds = entityIds.concat(templateIds);
 
     this.#exportAppPartsSvc.exportParts(contentTypeIds, entityIds, templateIds);
-    this.isExporting$.next(false);
+    this.isExporting.set(false);
+
   }
 
   changeScope(newScope: string) {
@@ -111,17 +111,22 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
 
   #fetchScopes() {
     this.loading$.next(true);
+    this.loading.set(true);
     this.#contentTypesSvc.getScopes().subscribe(scopes => {
       this.scopeOptions = scopes;
       this.loading$.next(false);
+      this.loading.set(false);
+
     });
   }
 
   #fetchContentInfo() {
     this.loading$.next(true);
+    this.loading.set(true);
     this.#exportAppPartsSvc.getContentInfo(this.exportScope).subscribe(contentInfo => {
       this.contentInfo = contentInfo;
       this.loading$.next(false);
+      this.loading.set(false);
     });
   }
 

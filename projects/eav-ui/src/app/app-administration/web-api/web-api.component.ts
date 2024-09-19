@@ -11,7 +11,6 @@ import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
 import { TrueFalseComponent } from '../../dev-rest/api/true-false/true-false.component';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +31,6 @@ import { DialogConfigAppService } from '../services/dialog-config-app.service';
     MatMenuModule,
     MatIconModule,
     RouterOutlet,
-    AsyncPipe,
   ]
 })
 export class WebApiComponent implements OnInit {

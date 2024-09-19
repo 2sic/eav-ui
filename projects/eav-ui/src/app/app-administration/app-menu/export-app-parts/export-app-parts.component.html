@@ -1,4 +1,12 @@
+<!-- TODO:: Remove viewModel broken, vm not in use, loading needs ? -->
+
 @if (viewModel$ | async; as vm) {
+
+  <pre>
+    <div>Old: {{vm.loading}}</div>
+    <div>New: {{loading()}} </div>
+  </pre>
+
 <div class="outer-container-app">
   <h3>Export Content and Templates from this App</h3>
   <div class="form-height">
@@ -93,7 +101,7 @@
 
   <mat-dialog-actions class="eav-dialog-actions" style="height: 73px;">
     <button mat-button class="eav-button__with-icon" tippy="Export selected Parts"
-      [disabled]="vm.loading || vm.isExporting" (click)="exportAppParts()">
+      [disabled]="loading() || isExporting()" (click)="exportAppParts()">
       <mat-icon class="eav-icon">cloud_download</mat-icon>
       <span>Export Parts</span>
     </button>

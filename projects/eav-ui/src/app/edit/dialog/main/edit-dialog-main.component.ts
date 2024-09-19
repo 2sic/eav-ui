@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builde
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 import { EditEntryComponent } from '../entry/edit-entry.component';
-import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
+import { SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -87,17 +87,16 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
-  viewModel$: Observable<EditDialogMainViewModel>;
+  viewModel$: Observable<any>;
 
-  #viewInitiated$ = new BehaviorSubject(false);
+  viewInitiated = signal(false);
+
   #saveResult: SaveResult;
 
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
 
-  // TODO:: @2g Question Items bug, reopen not working
-  // TODO: @2dg - what did you mean by this?
-  // protected items = this.itemService.getItemsSignal(this.formConfig.config.itemGuids);
+  protected items = this.itemService.getManySignal(this.#formConfig.config.itemGuids);
 
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
@@ -172,26 +171,25 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.#loadIconsService.load();
     this.formsStateService.init();
     this.formulaDesignerService.cache.init();
-    const items$ = this.itemService.getMany$(this.#formConfig.config.itemGuids);
 
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    // TODO:: @2g Question viewInitiated
-    this.viewModel$ = combineLatest([items$, this.#viewInitiated$]).pipe(
-      map(([items, viewInitiated]) => ({
+    // Remove after fix
+    // #remove-observables
+    const items$ = this.itemService.getMany$(this.#formConfig.config.itemGuids);
+    this.viewModel$ = combineLatest([items$,]).pipe(
+      map(([items]) => ({
         items,
-        viewInitiated,
-      } satisfies EditDialogMainViewModel)),
+      })),
     );
     this.#startSubscriptions();
     this.#watchKeyboardShortcuts();
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.#viewInitiated$.next(true));
+    setTimeout(() => this.viewInitiated.set(true));
+
   }
 
   ngOnDestroy() {
-    this.#viewInitiated$.complete();
     this.languageStore.remove(this.#formConfig.config.formId);
     this.publishStatusService.remove(this.#formConfig.config.formId);
 

@@ -4,7 +4,6 @@ import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -27,7 +26,6 @@ import { transient } from '../../core';
     MatOptionModule,
     MatDialogActions,
     MatButtonModule,
-    AsyncPipe,
     FieldHintComponent
   ],
 })

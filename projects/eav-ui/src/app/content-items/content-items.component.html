@@ -1,8 +1,7 @@
-@if (viewModel$ | async; as vm) {
 <div appToggleDebug class="eav-dialog nav-component-wrapper">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
-      {{ vm.contentType.Label || vm.contentType.Name }} Data
+      {{ contentType()?.Label || contentType()?.Name }} Data
     </div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
@@ -10,11 +9,11 @@
   </div>
   <div class="eav-dialog-content nav-component-wrapper">
     <router-outlet></router-outlet>
-    @if (vm.contentType?.Properties?.ListInstructions; as listInstructions) {
+    @if (contentType()?.Properties?.ListInstructions; as listInstructions) {
     <div [innerHTML]="listInstructions | safeHtml"></div>
     }
     <div class="grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="vm.items" [gridOptions]="gridOptions"
+      <ag-grid-angular class="ag-theme-material" [rowData]="items()" [gridOptions]="gridOptions"
         (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
         (filesDropped)="filesDropped($event)">
       </ag-grid-angular>
@@ -51,4 +50,3 @@
     </button>
   </mat-dialog-actions>
 </div>
-}
