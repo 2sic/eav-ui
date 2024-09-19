@@ -103,82 +103,83 @@
       <mat-form-field color="accent" style="width: 100%; margin-bottom: 8px;">
         <mat-label>Key</mat-label>
         @if (vm.guidedMode) {
-        @switch (vm.formValues.targetType) {
-        @case (eavConstants.metadata.entity.targetType) {
-        @if (vm.guidedKey) {
-        <mat-select formControlName="key" required [placeholder]="!vm.contentItems.length ? 'No items found' : ''">
-          @for (item of vm.contentItems; track item) {
-          <mat-option [value]="item.Guid">
-            {{ item.Title }} ({{ item.Id }})
-          </mat-option>
+          @switch (vm.formValues.targetType) {
+            @case (eavConstants.metadata.entity.targetType) {
+              @if (vm.guidedKey) {
+              <mat-select formControlName="key" required [placeholder]="!vm.contentItems.length ? 'No items found' : ''">
+                @for (item of vm.contentItems; track item) {
+                  <mat-option [value]="item.Guid">
+                    {{ item.Title }} ({{ item.Id }})
+                  </mat-option>
+                }
+              </mat-select>
+              }
+              @else {
+                <input matInput type="text" formControlName="key" required>
+              }
+            }
+            @case (eavConstants.metadata.contentType.targetType) {
+              @if (vm.guidedKey) {
+              <mat-select formControlName="key" required [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
+                @for (contentType of vm.contentTypes; track contentType) {
+                  <mat-option [value]="contentType.StaticName">
+                    {{ contentType.Label }}
+                  </mat-option>
+                }
+              </mat-select>
+              }
+              @else {
+                <input matInput type="text" formControlName="key" required>
+              }
+            }
+            @default {
+              <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
+            }
           }
-        </mat-select>
         }
-        @if (!vm.guidedKey) {
-        <input matInput type="text" formControlName="key" required>
-        }
-        }
-        @case (eavConstants.metadata.contentType.targetType) {
-        @if (vm.guidedKey) {
-        <mat-select formControlName="key" required [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
-          @for (contentType of vm.contentTypes; track contentType) {
-          <mat-option [value]="contentType.StaticName">
-            {{ contentType.Label }}
-          </mat-option>
+        @else {
+          @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
+            <input matInput type="text" formControlName="key" required>
           }
-        </mat-select>
-        }
-        @if (!vm.guidedKey) {
-        <input matInput type="text" formControlName="key" required>
-        }
-        }
-        @default {
-        <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
-        }
-        }
-        } @else {
-        @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
-        <input matInput type="text" formControlName="key" required>
-        }
-        @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
-        <input matInput type="number" formControlName="key" required>
-        }
+          @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
+            <input matInput type="number" formControlName="key" required>
+          }
         }
         <ng-template #defaultKeyInput>
           @if (vm.formValues.keyType !== eavConstants.keyTypes.number) {
-          <input matInput type="text" formControlName="key" required>
+            <input matInput type="text" formControlName="key" required>
           }
           @if (vm.formValues.keyType === eavConstants.keyTypes.number) {
-          <input matInput type="number" formControlName="key" required>
+            <input matInput type="number" formControlName="key" required>
           }
         </ng-template>
         @if (vm.guidedMode && vm.guidedKeyExists) {
-        <div matTextSuffix class="eav-selection-suffix">
-          <button mat-icon-button class="eav-selection-suffix-button" type="button"
-            [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value" (click)="toggleGuidedKey(true)">
-            <mat-icon class="eav-icon">search</mat-icon>
-          </button>
-          <button mat-icon-button class="eav-selection-suffix-button" type="button"
-            [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry" (click)="toggleGuidedKey(false)">
-            <mat-icon class="eav-icon">text_fields</mat-icon>
-          </button>
-        </div>
+          <div matTextSuffix class="eav-selection-suffix">
+            <button mat-icon-button class="eav-selection-suffix-button" type="button"
+              [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value" (click)="toggleGuidedKey(true)">
+              <mat-icon class="eav-icon">search</mat-icon>
+            </button>
+            <button mat-icon-button class="eav-selection-suffix-button" type="button"
+              [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry" (click)="toggleGuidedKey(false)">
+              <mat-icon class="eav-icon">text_fields</mat-icon>
+            </button>
+          </div>
         }
       </mat-form-field>
       @if (form.controls['key'].touched && form.controls['key'].errors?.required) {
-      <app-field-hint [isError]="true">
-        This field is required
-      </app-field-hint>
+        <app-field-hint [isError]="true">
+          This field is required
+        </app-field-hint>
       }
       @if (form.controls['key'].touched && form.controls['key'].errors?.patternWholeNumber) {
-      <app-field-hint [isError]="true">
-        Must be a whole number
-      </app-field-hint>
+        <app-field-hint [isError]="true">
+          Must be a whole number
+        </app-field-hint>
       }
       @if (form.controls['key'].touched && form.controls['key'].errors?.patternGuid) {
-      <app-field-hint [isError]="true">
-        Must be a valid GUID
-      </app-field-hint>
+        <app-field-hint [isError]="true">
+          Must be a valid GUID
+        </app-field-hint>
       }
     </form>
   </div>
