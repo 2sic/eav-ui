@@ -1,15 +1,14 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef, inject, signal } from '@angular/core';
 import { BaseComponent } from '../../shared/components/base.component';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { Field } from '../../shared/fields/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
-import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
+import { SharingOrInheriting } from './share-or-inherit-dialog-models';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FeatureNames } from '../../features/feature-names';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,7 +27,6 @@ import { transient } from '../../core/transient';
     MatCardModule,
     MatTableModule,
     NgClass,
-    AsyncPipe,
     TranslateModule,
     FeatureIconIndicatorComponent
   ],
@@ -43,12 +41,11 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   guid: string = null;
   isSaveDisabled: boolean = true;
 
-  shareableFields$ = new BehaviorSubject<Field[]>(undefined);
-  viewModel$: Observable<ShareOrInheritDialogViewModel>;
+  shareableFields = signal<Field[]>(undefined);
 
   public features = inject(FeaturesScopedService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
-  
+
   private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
   constructor(
@@ -70,15 +67,12 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
         : SharingOrInheriting.Inheriting;
     if (this.initialState === SharingOrInheriting.None) {
       this.title = 'SharingOrInheriting.TitleNone';
-      const shareableFields$ = this.contentTypesFieldsService.getShareableFieldsFor(this.dialogData.AttributeId);
+      const shareableFieldsTemp$ = this.contentTypesFieldsService.getShareableFieldsFor(this.dialogData.AttributeId);
 
-      // TODO: @2dg - this should be easy to get rid of #remove-observables
-      this.viewModel$ = shareableFields$.pipe(
-        map((shareableFields) => {
-          this.shareableFields$.next(shareableFields);
-          return { shareableFields };
-        })
-      );
+      shareableFieldsTemp$.subscribe((shareableFields) => {
+        this.shareableFields.set(shareableFields);
+      });
+
     } else if (this.initialState === SharingOrInheriting.Sharing) {
       this.title = 'SharingOrInheriting.TitleSharing';
       this.message = 'SharingOrInheriting.MessageSharing';
@@ -110,7 +104,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
       openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       return;
     }
-    
+
     if (this.state == SharingOrInheriting.Sharing) {
       this.subscriptions.add(this.contentTypesFieldsService.share(this.dialogData.Id)
         .subscribe(() => this.dialogRef.close()));
