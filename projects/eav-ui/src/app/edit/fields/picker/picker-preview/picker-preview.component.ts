@@ -45,6 +45,22 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
 
   pickerDisplayMode = this.fieldState.setting('PickerDisplayMode');
 
+  mode = computedObj('mode', () => {
+    if (this.isInFreeTextMode()) return 'text';
+    const pdm = this.pickerDisplayMode();
+    switch (pdm) {
+      case 'radio': return 'radio';
+      case 'checkbox': return 'checkbox';
+      case 'auto-inline':
+        if (this.allowMultiValue()) return 'checkbox';
+        return 'radio';
+      case 'list':
+      default:
+        if (this.selectedItems().length > 1) return 'pills';
+        return 'search';
+    }
+  });
+
   mySettings = computedObj('mySettings', () => {
     const settings = this.fieldState.settings();
     const showAddNewEntityButton = settings.CreateTypes && settings.EnableCreate;

@@ -305,7 +305,7 @@ export interface Boolean extends All {
 }
 
 interface PickerSettings {
-  PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio';
+  PickerDisplayMode: 'list' | 'tree' | 'checkbox' | 'radio' | 'auto-inline';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
 }

@@ -1,5 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { PickerData } from '../picker-data';
+import { Component, inject, Input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -10,8 +9,6 @@ import { ClickStopPropagationDirective } from '../../../../shared/directives/cli
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { FieldState } from '../../field-state';
 
-// 2024-04-30 2dm Note: not going standalone yet, as the styling is then off
-// must find out how to import the styles correctly to continue
 @Component({
   selector: 'app-picker-toggle-text',
   templateUrl: './picker-text-toggle.component.html',
@@ -28,7 +25,7 @@ import { FieldState } from '../../field-state';
     TippyDirective,
   ],
 })
-export class PickerTextToggleComponent implements OnInit {
+export class PickerTextToggleComponent {
   @Input() csDisabled: boolean;
   @Input() allowText: boolean;
   @Input() freeTextMode: boolean;
@@ -36,8 +33,6 @@ export class PickerTextToggleComponent implements OnInit {
   pickerData = inject(FieldState).pickerData;
 
   constructor() { }
-
-  ngOnInit(): void { }
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) return;
