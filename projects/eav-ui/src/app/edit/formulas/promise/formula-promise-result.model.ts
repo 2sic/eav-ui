@@ -1,5 +1,5 @@
-import { FieldValue } from 'projects/edit-types';
 import { FieldValueOrResultRaw, NameValuePair } from "../results/formula-results.models";
+import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 
 /**
  * The result of a formula promise.

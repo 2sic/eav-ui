@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-import { PickerItem } from 'projects/edit-types';
-import { FeaturesScopedService } from 'projects/eav-ui/src/app/features/features-scoped.service';
+import { PickerItem } from '../models/picker-item.model';
+import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 
 export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent {
 

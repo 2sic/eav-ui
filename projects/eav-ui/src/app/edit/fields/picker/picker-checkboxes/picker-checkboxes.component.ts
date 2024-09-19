@@ -4,11 +4,11 @@ import { MatRippleModule } from '@angular/material/core';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
-import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { PickerInlineBaseComponent } from './picker-inline-base.component';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { FeatureNames } from '../../../../features/feature-names';
 
 @Component({
   selector: 'app-picker-checkboxes',

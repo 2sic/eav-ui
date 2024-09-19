@@ -2,8 +2,8 @@ import { effect, Signal } from '@angular/core';
 import { FieldProps } from './fields-configs.model';
 import { computedObj } from '../../shared/signals/signal.utilities';
 import { classLog } from '../../shared/logging';
-import { PickerItem } from 'projects/edit-types';
 import { PickerData } from '../fields/picker/picker-data';
+import { PickerItem } from '../fields/picker/models/picker-item.model';
 
 const logSpecs = {
   all: false,

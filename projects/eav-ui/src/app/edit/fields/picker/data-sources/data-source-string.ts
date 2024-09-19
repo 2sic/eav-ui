@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { DataSourceMasksHelper } from './data-source-masks-helper';
 import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
 import { computedObj, signalObj } from '../../../../shared/signals/signal.utilities';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { classLog } from '../../../../shared/logging/logging';
 
 const logSpecs = {
   ...logSpecsDataSourceBase,

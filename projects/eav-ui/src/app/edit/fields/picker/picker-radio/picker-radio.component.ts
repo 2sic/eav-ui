@@ -3,12 +3,12 @@ import { FlexModule } from '@angular/flex-layout/flex';
 import { MatRippleModule } from '@angular/material/core';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { PickerInlineBaseComponent } from '../picker-checkboxes/picker-inline-base.component';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { FeatureNames } from '../../../../features/feature-names';
 
 @Component({
   selector: 'app-picker-radio',

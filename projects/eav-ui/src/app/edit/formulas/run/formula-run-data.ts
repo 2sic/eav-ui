@@ -4,7 +4,7 @@ import { FormulaExecutionSpecsWithRunParams, FormulaRunParameters, FormulaRunPic
 import { FieldValue } from '../../../../../../edit-types/src/FieldValue';
 import { PickerItem } from '../../fields/picker/models/picker-item.model';
 import { StateUiMapperBase } from '../../fields/picker/adapters/state-ui-mapper-base';
-import { FieldSettings } from 'projects/edit-types';
+import { FieldSettings } from '../../../../../../edit-types/src/FieldSettings';
 
 /**
  * The object containing data information.

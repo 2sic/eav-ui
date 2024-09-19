@@ -1,5 +1,6 @@
 import { Signal } from '@angular/core';
-import { FieldSettings, FieldValue } from 'projects/edit-types';
+import { FieldValue } from '../../../../../../../edit-types/src/FieldValue';
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 
 /**
  * Small helper class to do mapping between the state and the UI.
