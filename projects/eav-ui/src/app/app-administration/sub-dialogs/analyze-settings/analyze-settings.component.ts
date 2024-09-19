@@ -1,8 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { View } from '../../models';
 import { ViewsService } from '../../services';
@@ -11,8 +10,7 @@ import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-sett
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
-import { AnalyzePart, AnalyzeSettingsViewModel, SettingsStackItem } from './analyze-settings.models';
-import { AsyncPipe } from '@angular/common';
+import { AnalyzePart, SettingsStackItem } from './analyze-settings.models';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -37,22 +35,20 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
     MatSelectModule,
     FormsModule,
     MatOptionModule,
-    AsyncPipe,
     SxcGridModule,
   ],
 })
-export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
+export class AnalyzeSettingsComponent implements OnInit {
   part: AnalyzePart;
-  viewModel$: Observable<AnalyzeSettingsViewModel>;
   gridOptions = this.buildGridOptions();
 
   #viewsSvc = transient(ViewsService);
   #analyzeSettingsSvc = transient(AnalyzeSettingsService);
   #dialogRouter = transient(DialogRoutingService);
 
-  #views$: BehaviorSubject<View[]>;
-  #selectedView$: BehaviorSubject<string>;
-  #stack$: BehaviorSubject<SettingsStackItem[]>;
+  views = signal<View[]>([]);
+  selectedView = signal<string>(undefined);
+  stack = signal<SettingsStackItem[]>([]);
 
   constructor(
     private dialogRef: MatDialogRef<AnalyzeSettingsComponent>,
@@ -61,30 +57,8 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.#views$ = new BehaviorSubject<View[]>([]);
-    this.#selectedView$ = new BehaviorSubject<string>(undefined);
-    this.#stack$ = new BehaviorSubject<SettingsStackItem[]>([]);
-
     this.getViews();
     this.getStack();
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([this.#views$, this.#selectedView$, this.#stack$]).pipe(
-      map(([views, selectedView, stack]) => {
-        const viewModel: AnalyzeSettingsViewModel = {
-          views,
-          selectedView,
-          stack,
-        };
-        return viewModel;
-      }),
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.#views$.complete();
-    this.#selectedView$.complete();
-    this.#stack$.complete();
   }
 
   closeDialog(): void {
@@ -92,19 +66,19 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   }
 
   changeView(viewGuid: string): void {
-    this.#selectedView$.next(viewGuid);
+    this.selectedView.set(viewGuid);
     this.getStack();
   }
 
   private getViews(): void {
     this.#viewsSvc.getAll().subscribe(views => {
-      this.#views$.next(views);
+      this.views.set(views);
     });
   }
 
   private getStack(): void {
-    this.#analyzeSettingsSvc.getStack(this.part, undefined, this.#selectedView$.value, true).subscribe(stack => {
-      this.#stack$.next(stack);
+    this.#analyzeSettingsSvc.getStack(this.part, undefined, this.selectedView(), true).subscribe(stack => {
+      this.stack.set(stack);
     });
   }
 
@@ -140,7 +114,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
           cellRendererParams: (() => {
             const params: AnalyzeSettingsTotalResultsParams = {
               openDetails: (stackItem) => {
-                this.#dialogRouter.navRelative([`details/${this.#selectedView$.value}/${stackItem.Path}`]);
+                this.#dialogRouter.navRelative([`details/${this.selectedView()}/${stackItem.Path}`]);
               },
             };
             return params;

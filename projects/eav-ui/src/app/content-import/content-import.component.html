@@ -1,7 +1,6 @@
-@if (viewModel$ | async; as vm) {
 <div class="eav-dialog" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)">
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">{{ vm.contentType?.Name }} Import Data</div>
+    <div class="eav-dialog-header__title">{{ contentType()?.Name }} Import Data</div>
   </div>
   <div class="eav-dialog-description">
     <p>
@@ -11,7 +10,7 @@
     </p>
   </div>
   @if (formValues != null) {
-  @switch (vm.viewStateSelected) {
+  @switch (viewStateSelected()) {
   <!-- FORM -->
   @case (1) {
   <form #ngForm="ngForm">
@@ -66,36 +65,36 @@
   <!-- END WAITING -->
   <!-- EVALUATION RESULT -->
   @case (2) {
-  @if (vm.evaluationResult) {
+  @if (evaluationResult()) {
   <!-- DETAILS / STATISTICS -->
-  @if (vm.evaluationResult.Success) {
+  @if (evaluationResult().Success) {
   <div class="eav-dialog-content">
     <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
     <p class="eav-evaluation__title">File contains:</p>
     <ul class="eav-evaluation__content">
-      <li>{{ vm.evaluationResult.Detail.DocumentElementsCount }} content-items (records/entities)</li>
-      <li>{{ vm.evaluationResult.Detail.LanguagesInDocumentCount }} languages</li>
-      <li>{{ vm.evaluationResult.Detail.AttributeNamesInDocument.length }} columns:
-        {{ vm.evaluationResult.Detail.AttributeNamesInDocument.join(', ') }}</li>
+      <li>{{ evaluationResult().Detail.DocumentElementsCount }} content-items (records/entities)</li>
+      <li>{{ evaluationResult().Detail.LanguagesInDocumentCount }} languages</li>
+      <li>{{ evaluationResult().Detail.AttributeNamesInDocument.length }} columns:
+        {{ evaluationResult().Detail.AttributeNamesInDocument.join(', ') }}</li>
     </ul>
     <p class="eav-evaluation__title">If you press Import, it will:</p>
     <ul class="eav-evaluation__content">
-      <li>Create {{ vm.evaluationResult.Detail.AmountOfEntitiesCreated }} content-items</li>
-      <li>Update {{ vm.evaluationResult.Detail.AmountOfEntitiesUpdated }} content-items</li>
-      <li>Delete {{ vm.evaluationResult.Detail.AmountOfEntitiesDeleted }} content-items</li>
-      <li>Ignore {{ vm.evaluationResult.Detail.AttributeNamesNotImported.length }} columns:
-        {{ vm.evaluationResult.Detail.AttributeNamesNotImported.join(', ') }}</li>
+      <li>Create {{ evaluationResult().Detail.AmountOfEntitiesCreated }} content-items</li>
+      <li>Update {{ evaluationResult().Detail.AmountOfEntitiesUpdated }} content-items</li>
+      <li>Delete {{ evaluationResult().Detail.AmountOfEntitiesDeleted }} content-items</li>
+      <li>Ignore {{ evaluationResult().Detail.AttributeNamesNotImported.length }} columns:
+        {{ evaluationResult().Detail.AttributeNamesNotImported.join(', ') }}</li>
     </ul>
     <p class="eav-hint">Note: The import validates much data and may take several minutes.</p>
   </div>
   }
   <!-- END DETAILS / STATISTICS -->
   <!-- ERRORS -->
-  @if (!vm.evaluationResult.Success) {
+  @if (!evaluationResult().Success) {
   <div class="eav-dialog-content">
     <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
     <ul class="eav-evaluation__content">
-      @for (error of vm.evaluationResult.Errors; track error) {
+      @for (error of evaluationResult().Errors; track error) {
       <li>
         <div>{{ errors[error.ErrorCode] }}</div>
         @if (error.ErrorDetail) {
@@ -115,7 +114,7 @@
   <!-- END ERRORS -->
   <mat-dialog-actions align="end">
     <button mat-raised-button (click)="back()">Back</button>
-    <button mat-raised-button color="accent" [disabled]="!vm.evaluationResult.Success" (click)="importContent()">
+    <button mat-raised-button color="accent" [disabled]="!evaluationResult().Success" (click)="importContent()">
       Import
     </button>
   </mat-dialog-actions>
@@ -124,12 +123,12 @@
   <!-- END EVALUATION RESULT -->
   <!-- IMPORT RESULT -->
   @case (3) {
-  @if (vm.importResult) {
+  @if (importResult()) {
   <div class="eav-dialog-content">
-    @if (vm.importResult.Success) {
+    @if (importResult().Success) {
     <p>Import done.</p>
     }
-    @if (!vm.importResult.Success) {
+    @if (!importResult().Success) {
     <p>Import failed.</p>
     }
   </div>
@@ -142,4 +141,3 @@
   }
   }
 </div>
-}

@@ -1,8 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NavigationEnd, RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, from, map, startWith, take } from 'rxjs';
+import { filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -24,7 +24,6 @@ import { DataFieldsParams } from './data-fields/data-fields.models';
 import { DataItemsComponent } from './data-items/data-items.component';
 import { DataItemsParams } from './data-items/data-items.models';
 import { ScopeDetailsDto } from '../models/scopedetails.dto';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -56,7 +55,6 @@ import { BaseComponent } from '../../shared/components/base.component';
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AsyncPipe,
     SxcGridModule,
     DragAndDropDirective,
   ],
@@ -72,21 +70,15 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   #dialogRouter = transient(DialogRoutingService);
 
   constructor() { super(); }
+  contentTypes = signal<ContentType[]>(undefined);
+  scope = signal<string>(undefined);
+  scopeOptions = signal<ScopeDetailsDto[]>([]);
 
-  #contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
-  #scope$ = new BehaviorSubject<string>(undefined);
 
   /** Possible scopes - the ones from the backend + manually entered scopes by the current user */
-  scopeOptions$ = new BehaviorSubject<ScopeDetailsDto[]>([]);
   gridOptions = this.#buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
   enablePermissions!: boolean;
-
-  // TODO: @2dg - this should be easy to get rid of #remove-observables
-  viewModel$ = combineLatest([this.#contentTypes$, this.#scope$, this.scopeOptions$]).pipe(
-    map(([contentTypes, scope, scopeOptions]) =>
-      ({ contentTypes, scope, scopeOptions })),
-  );
 
   ngOnInit() {
     this.#fetchScopes();
@@ -99,9 +91,6 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.#contentTypes$.complete();
-    this.#scope$.complete();
-    this.scopeOptions$.complete();
     super.ngOnDestroy();
   }
 
@@ -112,7 +101,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
       case 'xml':
         from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
           const contentTypeName = fileString.split('<Entity Type="')[1]?.split('"')[0];
-          const contentType = this.#contentTypes$.value.find(ct => ct.Name === contentTypeName);
+          const contentType = this.contentTypes().find(ct => ct.Name === contentTypeName);
           if (contentType == null) {
             const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
             this.#snackBar.open(message, null, { duration: 5000 });
@@ -146,12 +135,12 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   #fetchContentTypes() {
-    this.#contentTypeSvc.retrieveContentTypes(this.#scope$.value).subscribe(contentTypes => {
+    this.#contentTypeSvc.retrieveContentTypes(this.scope()).subscribe(contentTypes => {
       for (const contentType of contentTypes) {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
-      this.#contentTypes$.next(contentTypes);
-      if (this.#scope$.value !== eavConstants.scopes.default.value) {
+      this.contentTypes.set(contentTypes);
+      if (this.scope() !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.#snackBar.open(message, null, { duration: 2000 });
       }
@@ -162,7 +151,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
     this.#contentTypeSvc.getScopesV2().subscribe(scopeList => {
       // Merge the new scopes with the existing ones - in case there were manual scopes added
       // If old scope list had a manual scope which the server didn't send, re-add it here
-      const manual = this.scopeOptions$.value
+      const manual = this.scopeOptions()
         .filter(sOld => scopeList.find(sNew => sNew.name === sOld.name) == null);
 
       // Add a nice label to each scope containing count-information of types
@@ -175,7 +164,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         return ({ ...s, label: s.name + ` - ${countInfo}` });
       });
 
-      this.scopeOptions$.next([...withNiceLabel, ...manual]);
+      this.scopeOptions.set([...withNiceLabel, ...manual]);
     });
   }
 
@@ -284,10 +273,10 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         filter(scope => !!scope),
         mapUntilChanged(m => m),
       ).subscribe(scope => {
-        this.#scope$.next(scope);
+        this.scope.set(scope);
 
         // If we can't find the scope in the list of options, add it as it was entered manually
-        if (!this.scopeOptions$.value.map(option => option.name).includes(scope)) {
+        if (!this.scopeOptions().map(option => option.name).includes(scope)) {
           const newScopeOption: ScopeDetailsDto = {
             name: scope,
             label: scope,
@@ -295,7 +284,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
             typesInherited: 0,
             typesOfApp: 0,
           };
-          this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
+          this.scopeOptions.set([...this.scopeOptions(), newScopeOption]);
         }
         this.#fetchContentTypes();
       })
