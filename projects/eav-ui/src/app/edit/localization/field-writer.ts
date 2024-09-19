@@ -55,7 +55,8 @@ export class FieldWriter {
     Object.keys(allFields).forEach(attributeKey => {
       const newItemValue = updateValues[attributeKey];
       // if new value exist update attribute for languageKey   
-      if (newItemValue != null) {
+      // it's important to check for undefined, because empty string and sometimes null (bool-tristate) are valid values
+      if (newItemValue !== undefined) {
         const fr = new FieldReader(allFields[attributeKey], language);
         const valueWithLanguageExist = fr.isEditableOrReadonlyTranslationExist();
 
@@ -85,8 +86,7 @@ export class FieldWriter {
           } satisfies EavField<any>;
         }
       } else { // else copy item attributes
-        const attributeCopy: EavField<any> = { ...allFields[attributeKey] };
-        eavAttributes[attributeKey] = attributeCopy;
+        eavAttributes[attributeKey] = { ...allFields[attributeKey] };
       }
     });
     return eavAttributes;
