@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, ElementRef, HostBinding, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FileUploadDialogComponent, FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
@@ -44,14 +44,15 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
 
   uploadType = UploadTypes.AppPart;
 
-  uploading$ = new BehaviorSubject<boolean>(false);
-  files$ = new BehaviorSubject<File[]>([]);
-  result$ = new BehaviorSubject<FileUploadResult>(undefined);
+  uploading = signal(false);
+  // showAppCatalogTemp = signal(false);
+  result = signal<FileUploadResult>(undefined);
+  files = signal<File[]>([]);
+
   FileUploadMessageTypes = FileUploadMessageTypes;
+
   UploadTypes = UploadTypes;
   showAppCatalog$ = new BehaviorSubject<boolean>(false);
-
-  viewModel$: Observable<FileUploadDialogViewModel>;
 
   showProgress: boolean = false;
   currentPackage: InstallPackage;
@@ -81,6 +82,23 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
+
+    // TODO:: @2dg Check with Daniel
+     // TODO:: Old Code
+    //  this.subscriptions.add(
+    //   this.files$.subscribe(() => {
+    //     console.log('files changed');
+    //     if (this.result() !== undefined)
+    //       this.result.set(undefined);
+    //   }),
+    // );
+    effect(() => {
+      this.files();
+      if (this.result() != undefined) {
+        console.log('result changed');
+        this.result.set(undefined);
+      }
+    });
 
     // copied from 2sxc-ui app/installer
     this.subscriptions.add(
@@ -113,23 +131,10 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
   );
 
   ngOnInit(): void {
-    this.subscriptions.add(
-      this.files$.subscribe(() => {
-        if (this.result$.value !== undefined) {
-          this.result$.next(undefined);
-        }
-      }),
-    );
 
     if (this.importData.files != null) {
       this.filesDropped(this.importData.files);
     }
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([
-      this.uploading$, this.files$, this.result$, this.showAppCatalog$,
-    ]).pipe(map(([uploading, files, result, showAppCatalog]) => ({ uploading, files, result, showAppCatalog })));
-
     // copied from 2sxc-ui
     this.installSettingsService.loadGettingStarted(false);//this.isContentApp -> from @Input on 2sxc-ui
 
@@ -205,9 +210,6 @@ Please try again later or check how to manually install content-templates: https
   }
 
   ngOnDestroy(): void {
-    this.uploading$.complete();
-    this.files$.complete();
-    this.result$.complete();
     super.ngOnDestroy();
   }
 
@@ -224,38 +226,29 @@ Please try again later or check how to manually install content-templates: https
   }
 
   upload(): void {
-    this.uploading$.next(true);
+    this.uploading.set(true);
     this.subscriptions.add(
-      this.importData.upload$(this.files$.value).pipe(take(1)).subscribe({
+      this.importData.upload$(this.files()).pipe(take(1)).subscribe({
         next: (result) => {
-          this.uploading$.next(false);
-          this.result$.next(result);
+          this.uploading.set(false);
+          this.result.set(result);
         },
         error: () => {
-          this.uploading$.next(false);
-          this.result$.next(undefined);
+
+          this.uploading.set(false);
+          this.result.set(undefined);
           this.snackBar.open('Upload failed. Please check console for more information', undefined, { duration: 3000 });
         },
       }),
     );
   }
 
-  showAppCatalog(): void {
-    this.showAppCatalog$.next(!this.showAppCatalog$.value);
-  }
-
   private setFiles(files: File[]): void {
     if (!this.importData.multiple) {
       files = files.slice(0, 1);
     }
-    this.files$.next(files);
+    this.files.set(files);
   }
 }
 
-interface FileUploadDialogViewModel {
-  uploading: boolean;
-  files: File[];
-  result: FileUploadResult;
-  showAppCatalog: boolean;
-}
 
