@@ -7,6 +7,7 @@ import { DialogConfigAppService } from '../app-administration/services/dialog-co
 import { transient } from '../core';
 import { classLog } from '../shared/logging';
 import { computedObj } from '../shared/signals/signal.utilities';
+import { ComputedCacheHelper } from '../shared/signals/computed-cache';
 
 const logSpecs = {
   all: true,
@@ -63,6 +64,7 @@ export class FeaturesScopedService {
     );
   }
 
+  // FYI: Not in use yet, if ever needed, should be changed to use a ComputedCacheHelper
   getSignal(featureNameId: string): Signal<FeatureSummary> {
     this.log.fnIf('getSignal', { featureNameId });
     return computedObj('feature-' + featureNameId, () => this.dialogContext()?.Features.find(f => f.nameId === featureNameId));
@@ -72,7 +74,15 @@ export class FeaturesScopedService {
     return this.get$(nameId).pipe(map(f => f?.isEnabled ?? false));
   }
 
+  // TODO: @2dg pls change use of this to use the `enabled` property below, eg. `enabled['nameId']` returns a signal
   isEnabled(nameId: string): Signal<boolean> {
     return computedObj('isEnabled-' + nameId,() => this.dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false);
   }
+
+  /**
+   * Property which behaves like a Record<string, Signal<boolean>>.
+   */
+  public enabled = new ComputedCacheHelper<string, boolean>('isEnabledCache').buildProxy(nameId => () => {
+    return this.dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false;
+  });
 }
