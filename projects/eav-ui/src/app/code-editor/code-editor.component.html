@@ -1,4 +1,10 @@
 @if (viewModel$ | async; as vm) {
+
+  <!-- <pre>
+    <div>Old: {{vm.view}}</div>
+    <div>New: {{model().view}} </div>
+  </pre> -->
+
 <div class="editor-root" appToggleDebug [ngClass]="{ 'sxc-dark': monacoOptions.theme === '2sxc-dark' }">
   <div class="editor-side-toolbar">
     <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
@@ -10,7 +16,7 @@
       <mat-icon>code</mat-icon>
     </div>
   </div>
-  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="vm.view" [templates]="vm.templates"
+  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="vm.view" [templates]="templates()"
     (openView)="openView($event)" (createTemplate)="createTemplate($event)">
   </app-code-templates>
   <app-code-snippets [hidden]="activeExplorer !== Explorers.Snippets" [snippets]="vm.explorerSnipps"
@@ -53,7 +59,7 @@
     </app-monaco-editor>
     }
   </div>
-  @if (vm.activeView) {
+  @if (activeView()) {
   <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" (click)="save()">
     <mat-icon>done</mat-icon>
   </button>

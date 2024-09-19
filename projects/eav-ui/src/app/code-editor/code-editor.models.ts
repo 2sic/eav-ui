@@ -12,11 +12,9 @@ export interface Tab {
 }
 
 export interface CodeEditorViewModel {
-  activeView: ViewKey;
   tabs: Tab[];
   viewKey: ViewKey;
   view?: SourceView;
-  templates: FileAsset[];
   explorerSnipps: SnippetsSets;
   editorSnipps: Snippet[];
   tooltips?: Tooltip[];

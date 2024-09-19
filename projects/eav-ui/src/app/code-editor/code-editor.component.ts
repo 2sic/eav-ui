@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, computed, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -73,8 +73,42 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   #activeView$: BehaviorSubject<ViewKey>;
   #openViews$: BehaviorSubject<ViewKey[]>;
   #viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
-  #urlItems: ViewOrFileIdentifier[];
 
+  templates = signal<FileAsset[]>([]);
+  activeView = signal<ViewKey>(undefined);
+  openViews = signal<ViewKey[]>([]);
+  viewInfos = signal<ViewInfo[]>([]);
+
+  model = computed(() => {
+    const active = this.activeView();
+    const views = this.openViews();
+    const infos = this.viewInfos();
+
+    const tabs = views.map(viewKey => {
+      const viewInfo = infos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
+      return {
+        viewKey,
+        label: viewInfo?.view?.FileName ?? viewKey.key,
+        isActive: RxHelpers.objectsEqual(viewKey, active),
+        isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
+        isLoading: !viewInfo?.view,
+      };
+    });
+
+    const activeViewInfo = infos.find(v => RxHelpers.objectsEqual(v.viewKey, active));
+
+    return {
+      tabs,
+      viewKey: activeViewInfo?.viewKey,
+      view: activeViewInfo?.view,
+      explorerSnipps: activeViewInfo?.explorerSnipps,
+      editorSnipps: activeViewInfo?.editorSnipps,
+      tooltips: activeViewInfo?.tooltips,
+    };
+  });
+
+
+  #urlItems: ViewOrFileIdentifier[];
 
   constructor(
     private context: Context,
@@ -105,19 +139,25 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     });
     this.#openViews$ = new BehaviorSubject<ViewKey[]>(initialViews);
     this.#activeView$ = new BehaviorSubject<ViewKey>(initialViews[0]);
+    this.activeView.set(initialViews[0]);
+    this.openViews.set(initialViews);
 
     this.#attachListeners();
 
     // Load templates
-    this.#sourceSvc.getAll().subscribe(templates => this.#templates$.next(templates));
+    this.#sourceSvc.getAll().subscribe(templates => {
+      this.#templates$.next(templates)
+      this.templates.set(templates);
+    });
 
     // TODO: @2dg - this should be easy to get rid of #remove-observables
     // Update ViewInfo$ ongoing
     this.subscriptions.add(
+
       combineLatest([this.#templates$, this.#openViews$]).subscribe(([templates, openViews]) => {
         if (templates.length === 0) return;
 
-        let viewInfos = this.#viewInfos$.value;
+        let viewInfos = this.viewInfos();
         const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
         if (notLoaded.length === 0) return;
 
@@ -135,7 +175,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
             return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
           })
         ).subscribe(results => {
-          let viewInfos1 = this.#viewInfos$.value;
+          let viewInfos1 = this.viewInfos();
 
           results.forEach(([viewKey, view, snippets, tooltips]) => {
             const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
@@ -154,9 +194,10 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           });
 
           this.#viewInfos$.next(viewInfos1);
+          this.viewInfos.set(viewInfos1);
         });
-
         this.#viewInfos$.next(viewInfos);
+        this.viewInfos.set(viewInfos);
       })
     );
 
@@ -172,8 +213,8 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       })
     );
 
-    this.viewModel$ = combineLatest([this.#templates$, this.#activeView$, this.#openViews$, this.#viewInfos$]).pipe(
-      map(([templates, activeView, openViews, viewInfos]) => {
+    this.viewModel$ = combineLatest([this.#activeView$, this.#openViews$, this.#viewInfos$]).pipe(
+      map(([activeView, openViews, viewInfos]) => {
         const tabs = openViews.map(viewKey => {
           const viewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
           const label: Tab = {
@@ -188,11 +229,9 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
         const activeViewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
 
         return {
-          activeView,
           tabs,
           viewKey: activeViewInfo?.viewKey,
           view: activeViewInfo?.view,
-          templates,
           explorerSnipps: activeViewInfo?.explorerSnipps,
           editorSnipps: activeViewInfo?.editorSnipps,
           tooltips: activeViewInfo?.tooltips,
@@ -251,6 +290,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       this.#sourceSvc.create(result.name, params.isShared, result.templateKey).subscribe(() => {
         this.#sourceSvc.getAll().subscribe(files => {
           this.#templates$.next(files);
+          this.templates.set(files);
         });
       });
     });
@@ -261,7 +301,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   }
 
   codeChanged(code: string, viewKey: ViewKey): void {
-    let viewInfos = this.#viewInfos$.value;
+    let viewInfos = this.viewInfos();
     const selectedIndex = viewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     const selectedViewInfo = viewInfos[selectedIndex];
     const newViewInfo: ViewInfo = {
@@ -273,41 +313,46 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
     };
     viewInfos = [...viewInfos.slice(0, selectedIndex), newViewInfo, ...viewInfos.slice(selectedIndex + 1)];
     this.#viewInfos$.next(viewInfos);
+    this.viewInfos.set(viewInfos);
   }
 
   openView(viewKey: ViewKey): void {
     // fix viewKey because it can be a templateId or a path, and file might already be open
-    viewKey = this.#viewInfos$.value.find(
+    viewKey = this.viewInfos().find(
       v => !RxHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
     )?.viewKey ?? viewKey;
 
-    const oldActiveView = this.#activeView$.value;
+    const oldActiveView = this.activeView();
     if (!RxHelpers.objectsEqual(oldActiveView, viewKey)) {
       this.#activeView$.next(viewKey);
+      this.activeView.set(viewKey);
     }
-    const oldOpenViews = this.#openViews$.value;
+    const oldOpenViews = this.openViews();
     if (!oldOpenViews.some(v => RxHelpers.objectsEqual(v, viewKey))) {
       const newOpenViews = [...oldOpenViews, viewKey];
       this.#openViews$.next(newOpenViews);
+      this.openViews.set(newOpenViews);
     }
   }
 
   closeEditor(viewKey: ViewKey): void {
-    const oldOpenViews = this.#openViews$.value;
+    const oldOpenViews = this.openViews();
     const newOpenViews = oldOpenViews.filter(key => !RxHelpers.objectsEqual(key, viewKey));
 
-    const oldActiveView = this.#activeView$.value;
+    const oldActiveView = this.activeView();
     if (RxHelpers.objectsEqual(oldActiveView, viewKey)) {
       const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => RxHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
       this.#activeView$.next(newActiveView);
+      this.activeView.set(newActiveView);
     }
 
     this.#openViews$.next(newOpenViews);
+    this.openViews.set(newOpenViews);
   }
 
   save(viewKey?: ViewKey): void {
-    viewKey ??= this.#activeView$.value;
-    const viewInfo = this.#viewInfos$.value.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
+    viewKey ??= this.activeView();
+    const viewInfo = this.viewInfos().find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     if (viewInfo?.view == null) return;
 
     this.snackBar.open('Saving...');
@@ -319,7 +364,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           return;
         }
 
-        let newViewInfos = [...this.#viewInfos$.value];
+        let newViewInfos = [...this.viewInfos()];
         const selectedIndex = newViewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
         if (selectedIndex < 0) return;
 
@@ -330,6 +375,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
         };
         newViewInfos = [...newViewInfos.slice(0, selectedIndex), newViewInfo, ...newViewInfos.slice(selectedIndex + 1)];
         this.#viewInfos$.next(newViewInfos);
+        this.viewInfos.set(newViewInfos);
         this.snackBar.open('Saved', null, { duration: 2000 });
       },
       error: () => this.snackBar.open('Failed', null, { duration: 2000 }),
@@ -376,7 +422,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       this.subscriptions.add(
         fromEvent<BeforeUnloadEvent>(window, 'beforeunload')
           .subscribe(event => {
-            const allSaved = !this.#viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
+            const allSaved = !this.viewInfos().some(v => v.view != null && v.view.Code !== v.savedCode);
             if (allSaved) return;
             event.preventDefault();
             event.returnValue = ''; // fix for Chrome
