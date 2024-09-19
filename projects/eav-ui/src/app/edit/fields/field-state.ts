@@ -7,6 +7,7 @@ import { UiControl } from '../shared/controls/ui-control';
 import { PickerData } from './picker/picker-data';
 import { TranslationState } from '../localization/translate-state.model';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
+import { FeatureNames, Of } from '../../features/feature-names';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -67,19 +68,19 @@ export class FieldState<T extends FieldValue = FieldValue> {
 
   //#region Required Features
 
-  #reqFeaturesMy = signalObj<string[]>('requiredFeatures', []);
+  #reqFeaturesMy = signalObj<Of<typeof FeatureNames>[]>('requiredFeatures', []);
   #reqFeaturesFromSettings = this.setting('requiredFeatures');
 
   requiredFeatures = computedObj('requiredFeatures', () => {
     const merged = [
       ...this.#reqFeaturesMy(),
-      ...this.#reqFeaturesFromSettings()
+      ...this.#reqFeaturesFromSettings() ?? [],
     ];
     // make distinct
     return Array.from(new Set(merged));
   });
 
-  requireFeature(feature: string) {
+  requireFeature(feature: Of<typeof FeatureNames>) {
     const current = this.#reqFeaturesMy();
     if (!current.includes(feature))
       this.#reqFeaturesMy.set([...current, feature]);
