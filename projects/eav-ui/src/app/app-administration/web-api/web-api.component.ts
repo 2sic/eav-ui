@@ -1,9 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -36,17 +35,15 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
     AsyncPipe,
   ]
 })
-export class WebApiComponent implements OnInit, OnDestroy {
+export class WebApiComponent implements OnInit {
 
   private dialogService = transient(DialogService);
   private sourceService = transient(SourceService);
 
   enableCode!: boolean;
+  webApis = signal<WebApi[]>(undefined);
 
-  webApis$ = new BehaviorSubject<WebApi[]>(undefined);
   gridOptions = this.buildGridOptions();
-
-  viewModel$: Observable<WebApiViewModel>;
 
   private dialogConfigSvc = transient(AppDialogConfigService);
 
@@ -58,19 +55,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchWebApis();
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = this.webApis$.pipe(
-      map(webApis => ({ webApis }))
-    );
 
     this.dialogConfigSvc.getCurrent$().subscribe(settings => {
       this.enableCode = settings.Context.Enable.CodeEditor;
     });
 
-  }
-
-  ngOnDestroy() {
-    this.webApis$.complete();
   }
 
   createController(global?: boolean): void {
@@ -126,7 +115,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   private fetchWebApis() {
     this.sourceService.getWebApis().subscribe(webApis => {
-      this.webApis$.next(webApis);
+      this.webApis.set(webApis);
     });
   }
 
@@ -189,8 +178,4 @@ export class WebApiComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
-}
-
-interface WebApiViewModel {
-  webApis: WebApi[];
 }
