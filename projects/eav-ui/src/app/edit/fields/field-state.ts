@@ -7,7 +7,8 @@ import { UiControl } from '../shared/controls/ui-control';
 import { PickerData } from './picker/picker-data';
 import { TranslationState } from '../localization/translate-state.model';
 import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
-import { FeatureNames, Of } from '../../features/feature-names';
+import { FeatureNames } from '../../features/feature-names';
+import { Of } from '../../core';
 
 /**
  * This is provided / injected at the fields-builder for every single field.

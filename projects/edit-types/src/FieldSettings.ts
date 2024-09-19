@@ -1,5 +1,6 @@
 import { PickerOptionCustom } from './DropdownOption';
-import { FeatureNames, Of } from '../../eav-ui/src/app/features/feature-names';
+import { FeatureNames } from '../../eav-ui/src/app/features/feature-names';
+import { Of } from '../../eav-ui/src/app/core';
 
 /** */
 interface InternalSettings {

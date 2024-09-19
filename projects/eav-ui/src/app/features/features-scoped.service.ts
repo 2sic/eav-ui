@@ -4,11 +4,11 @@ import { DialogContext } from '../shared/models/dialog-settings.model';
 import { FeatureSummary } from './models/feature-summary.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
-import { transient } from '../core';
+import { Of, transient } from '../core';
 import { classLog } from '../shared/logging';
 import { computedObj } from '../shared/signals/signal.utilities';
 import { ComputedCacheHelper } from '../shared/signals/computed-cache';
-import { Of, FeatureNames } from './feature-names';
+import { FeatureNames } from './feature-names';
 
 const logSpecs = {
   all: true,
