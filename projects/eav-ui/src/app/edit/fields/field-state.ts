@@ -6,7 +6,7 @@ import { BasicControlSettings } from '../../../../../edit-types/src/BasicControl
 import { UiControl } from '../shared/controls/ui-control';
 import { PickerData } from './picker/picker-data';
 import { TranslationState } from '../localization/translate-state.model';
-import { computedObj } from '../../shared/signals/signal.utilities';
+import { computedObj, signalObj } from '../../shared/signals/signal.utilities';
 
 /**
  * This is provided / injected at the fields-builder for every single field.
@@ -64,4 +64,26 @@ export class FieldState<T extends FieldValue = FieldValue> {
   setting<K extends keyof FieldSettings>(name: K): Signal<FieldSettings[K]> {
     return computedObj(name, () => this.settings()[name]);
   }
+
+  //#region Required Features
+
+  #reqFeaturesMy = signalObj<string[]>('requiredFeatures', []);
+  #reqFeaturesFromSettings = this.setting('requiredFeatures');
+
+  requiredFeatures = computedObj('requiredFeatures', () => {
+    const merged = [
+      ...this.#reqFeaturesMy(),
+      ...this.#reqFeaturesFromSettings()
+    ];
+    // make distinct
+    return Array.from(new Set(merged));
+  });
+
+  requireFeature(feature: string) {
+    const current = this.#reqFeaturesMy();
+    if (!current.includes(feature))
+      this.#reqFeaturesMy.set([...current, feature]);
+  }
+
+  //#endregion
 }

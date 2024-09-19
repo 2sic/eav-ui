@@ -33,6 +33,7 @@ import { StringPickerComponent } from './basic/string-picker/string-picker.compo
 import { StringTemplatePickerComponent } from './basic/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './basic/string-url-path/string-url-path.component';
 import { WrappersCatalog } from './wrappers/wrappers.constants';
+import { FeatureWarningWrapperComponent } from './wrappers/feature-warning/feature-warning-wrapper.component';
 
 export const InputComponents: Record<string, Type<any>> = {
   // Wrappers
@@ -42,6 +43,7 @@ export const InputComponents: Record<string, Type<any>> = {
   [WrappersCatalog.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
   [WrappersCatalog.ExpandableWrapper]: ExpandableWrapperComponent,
   [WrappersCatalog.HiddenWrapper]: HiddenWrapperComponent,
+  [WrappersCatalog.FeatureWarningWrapper]: FeatureWarningWrapperComponent,
   [WrappersCatalog.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
   [WrappersCatalog.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
   [WrappersCatalog.LocalizationWrapper]: LocalizationWrapperComponent,

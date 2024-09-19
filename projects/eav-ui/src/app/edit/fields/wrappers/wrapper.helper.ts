@@ -14,12 +14,14 @@ export class WrapperHelper {
     if (InputTypeHelpers.isMessage(inputType))
       return [];
 
-    // empty input type wrappers
+    // Empty input type wrappers - in this case, exit early
     if (InputTypeHelpers.isGroupStart(inputType))
       return [WrappersCatalog.CollapsibleWrapper];
 
-    // default wrappers
-    const wrappers: Wrapper[] = [WrappersCatalog.HiddenWrapper];
+    // Start with default wrappers for all controls
+    const wrappers: Wrapper[] = [
+      WrappersCatalog.HiddenWrapper
+    ];
 
     // entity-default/string-dropdown wrappers
     const inputsEntityOrStringDropdown: string[] = [
@@ -35,6 +37,9 @@ export class WrapperHelper {
     const isEntityOrStringDropdownType = inputsEntityOrStringDropdown.includes(inputType);
 
     if (isEntityOrStringDropdownType) {
+      // New ...
+      wrappers.push(WrappersCatalog.FeatureWarningWrapper);
+      // i18n
       wrappers.push(WrappersCatalog.LocalizationWrapper);
       const allowMultiValue = settings.AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeCatalog.EntityContentBlocks)

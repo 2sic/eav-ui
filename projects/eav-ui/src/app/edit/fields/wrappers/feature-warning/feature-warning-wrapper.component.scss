@@ -1,0 +1,14 @@
+
+.feature-warning {
+  display: none;
+}
+
+.mark {
+  border: 1px solid #f0ad4e;
+}
+
+.mark .feature-warning {
+  display: block;
+  background-color: #f0ad4e;
+  padding: 4px;
+}

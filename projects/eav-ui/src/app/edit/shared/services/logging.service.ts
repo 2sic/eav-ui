@@ -70,6 +70,6 @@ export const LogSeverities = {
   Error: 'error',
   Log: 'log',
   Warn: 'warn',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type LogSeverity = typeof LogSeverities[keyof typeof LogSeverities];

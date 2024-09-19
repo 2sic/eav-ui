@@ -46,7 +46,7 @@ export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context,
 export const FormulaVersions = {
   V1: 'v1',
   V2: 'v2',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type FormulaVersion = (typeof FormulaVersions)[keyof typeof FormulaVersions];
 

@@ -2,7 +2,8 @@ const MetadataKeyTypes = {
   Guid: 'guid',
   String: 'string',
   Number: 'number',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
+
 export type MetadataKeyType = typeof MetadataKeyTypes[keyof typeof MetadataKeyTypes];
 
 export interface ScopeOption {
@@ -13,7 +14,8 @@ export interface ScopeOption {
 export const SystemSettingsScopes = {
   App: 'app',
   Site: 'site',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
+
 export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
 export const EditApiKeyPaths = {

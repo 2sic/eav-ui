@@ -4,7 +4,7 @@ import { FormConfiguration } from '../../form/form-configuration.model';
 
 export interface FieldLogicTools {
   eavConfig: FormConfiguration;
-  entityReader: EntityReader;
+  reader: EntityReader;
   debug: boolean;
-  contentTypeItemService: ContentTypeItemService;
+  contentTypeItemSvc: ContentTypeItemService;
 }

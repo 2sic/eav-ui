@@ -14,6 +14,5 @@ export class HiddenWrapperComponent {
   protected fieldState = inject(FieldState);
   protected basics = this.fieldState.basics;
 
-  constructor() {
-  }
+  constructor() { }
 }

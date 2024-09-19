@@ -1,4 +1,5 @@
 import { PickerOptionCustom } from './DropdownOption';
+import { FeatureNames, Of } from '../../eav-ui/src/app/features/feature-names';
 
 /** */
 interface InternalSettings {
@@ -35,28 +36,50 @@ interface All {
    * Used as a label
    */
   Name: string;
+  /** The input type such as 'string-default' or 'string-picker' */
   InputType: string;
+
+  /** The default value to use if there is nothing in the field yet / new */
   DefaultValue: string;
+
+  /** Placeholder message in the input box */
   Placeholder: string;
+
+  /** Notes / help - usually underneath the field input */
   Notes: string;
+
+  /** If the field is visible */
   Visible: boolean;
 
-  /** new v16.01 2dm - WIP */
+  /**
+   * Information if this field was forcibly disabled.
+   * TODO: explain why this would be the case.
+   * new v16.01
+   */
   VisibleDisabled: boolean;
 
-  /** Required info from configuration */
+  /** Required according to configuration */
   Required: boolean;
 
-  /** Disabled info from configuration */
+  /** Disabled according to configuration */
   Disabled: boolean;
 
+  /** Translation is not allowed - eg. on fields which should never have a different value in another language. */
   DisableTranslation: boolean;
+
+  /** Disable Auto-Translation - eg. because it would not make sense. */
   DisableAutoTranslation: boolean;
   ValidationRegExJavaScript: string;
+
+  /** IDs of formulas */
   Formulas: string[];
+
   CustomJavaScript: string;
+
   /** Determines if this field really exists or not */
   IsEphemeral: boolean;
+
+  requiredFeatures: Of<typeof FeatureNames>[];
 }
 
 /**
@@ -310,10 +333,6 @@ export interface StringPicker extends StringDropdown, PickerSettings {
 
   DataSources: string[];
   UiPickerSourceQuery: UiPickerSourceQuery;
-
-  // PickerDisplayMode: 'list' | 'tree';
-  // PickerDisplayConfiguration: string[]; //can only be one entity guid
-  // PickerTreeConfiguration: UiPickerModeTree;
 
   DataSourceType: PickerDataSourceType;
 }

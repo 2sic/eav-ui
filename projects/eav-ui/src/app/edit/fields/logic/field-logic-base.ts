@@ -66,7 +66,7 @@ export abstract class FieldLogicBase {
     const wysiwygConfig = tools.eavConfig.settings.Entities.find(e => e.Guid === possibleGuid);
     if (!wysiwygConfig) return defaults;
 
-    const advanced = tools.entityReader.flatten(wysiwygConfig) as T;
+    const advanced = tools.reader.flatten(wysiwygConfig) as T;
     return { ...defaults, ...advanced };
   }
 }

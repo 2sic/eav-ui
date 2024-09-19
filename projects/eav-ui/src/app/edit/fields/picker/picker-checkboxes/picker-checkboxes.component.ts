@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { MatListModule } from '@angular/material/list';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { MatRippleModule } from '@angular/material/core';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
@@ -12,6 +10,7 @@ import { PickerItem } from 'projects/edit-types';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
+import { FeaturesScopedService } from 'projects/eav-ui/src/app/features/features-scoped.service';
 
 @Component({
   selector: 'app-picker-checkboxes',
@@ -21,10 +20,8 @@ import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.co
   imports: [
     MatFormFieldModule,
     NgClass,
-    ExtendedModule,
     MatRippleModule,
     FlexModule,
-    MatListModule,
     MatCheckbox,
     TippyDirective,
     PickerIconHelpComponent,
@@ -33,7 +30,10 @@ import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.co
 })
 export class PickerCheckboxesComponent extends PickerPartBaseComponent {
 
-  constructor() { super(); }
+  constructor(protected featuresSvc: FeaturesScopedService) {
+    super();
+    this.fieldState.requireFeature('PickerUiCheckbox');
+  }
 
   itemCount = computedObj('itemCount', () => this.selectedItems().length);
 

@@ -16,6 +16,11 @@ import { EntityFormStateService } from '../../entity-form/entity-form-state.serv
 import { AdamConnector } from '../wrappers/adam/adam-browser/adam-connector';
 import { classLog } from '../../../shared/logging';
 
+const logSpecs = {
+  all: false,
+  createWrapper: true,
+};
+
 /**
  * This directive is responsible for creating the dynamic fields based on the field settings.
  * It will create the fields based on the settings and attach them to the view.
@@ -26,7 +31,7 @@ import { classLog } from '../../../shared/logging';
 })
 export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
-  log = classLog({EditControlsBuilderDirective});
+  log = classLog({EditControlsBuilderDirective}, logSpecs, true);
 
   /** Service to create custom injectors for each field */
   #fieldInjectorFac = transient(FieldStateInjectorFactory);
@@ -153,6 +158,7 @@ export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
   }
 
   #createWrapper(wrapperInfo: DynamicControlInfo, wrapperName: string): DynamicControlInfo {
+    const l = this.log.fnIf('createWrapper', { wrapperName });
     const componentType = this.#readComponentType(wrapperName);
     const ref = wrapperInfo.contentsRef.createComponent(componentType, wrapperInfo.injectors);
     return new DynamicControlInfo(ref, ref.instance.fieldComponent, null /* no injectors for following wrappers */);
