@@ -1,13 +1,17 @@
 @if (viewModel$ | async; as vm) {
+  <!-- <pre>
+    <div>Old: {{vm.apps?.length}}</div>
+    <div>New: {{apps()}} </div>
+  </pre> -->
   <div class="grid-wrapper mat-tab-grid-wrapper">
     <ag-grid-angular class="ag-theme-material" [rowData]="vm.apps" [gridOptions]="gridOptions" appDragAndDrop
       [allowedFileTypes]="'zip'" (filesDropped)="importApp($event)">
     </ag-grid-angular>
     <mat-dialog-actions align="end">
-      <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': vm.fabOpen }" (openChange)="openChange($event)">
+      <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': fabOpen() }" (openChange)="openChange($event)">
         <eco-fab-speed-dial-trigger [spin]="true">
           <button mat-fab>
-            <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
+            <mat-icon class="spin180">{{ fabOpen() ? 'close' : 'add' }}</mat-icon>
           </button>
         </eco-fab-speed-dial-trigger>
         <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">

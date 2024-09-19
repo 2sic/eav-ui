@@ -1,8 +1,8 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef, computed, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
@@ -33,6 +33,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { classLog } from '../../shared/logging';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-apps-list',
@@ -58,10 +59,21 @@ import { classLog } from '../../shared/logging';
 export class AppsListComponent implements OnInit, OnDestroy {
 
   log = classLog({AppsListComponent});
+  fabOpen = signal(false);
+
+  // TODO: 2dg appsListSvc get all
+  refreshApps = signal(false);
+  apps = computed(() => {
+    const refresh = this.refreshApps();
+
+    console.log("App refreshed:", refresh);  // Log, wenn `refreshApps()` getriggert wird
+    const data = this.#appsListSvc.getAll().pipe(catchError(() => of(undefined)));
+    return data;
+  });
 
   apps$: Observable<App[]>;
-  fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
+
 
   #refreshApps$ = new Subject<void>();
 
@@ -84,32 +96,31 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const appsLog = this.log.rxTap('apps$');
+
     this.apps$ = this.#refreshApps$.pipe(
-      appsLog.pipe(),
       startWith(undefined),
       switchMap(() => this.#appsListSvc.getAll().pipe(catchError(() => of(undefined)))),
       shareReplay(1),
-      appsLog.shareReplay(),
     );
 
     this.#dialogRouter.doOnDialogClosed(() => this.#refreshApps$.next());
+    this.#dialogRouter.doOnDialogClosed(() => this.refreshApps.set(true));
+
 
     // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$]).pipe(
-      map(([apps, fabOpen]) => {
-        return { apps, fabOpen };
+    this.viewModel$ = combineLatest([this.apps$]).pipe(
+      map(([apps]) => {
+        return { apps};
       }),
     );
   }
 
   ngOnDestroy(): void {
-    this.fabOpen$.complete();
     this.#refreshApps$.complete();
   }
 
   openChange(open: boolean): void {
-    this.fabOpen$.next(open);
+    this.fabOpen.set(open);
   }
 
   browseCatalog(): void {
@@ -142,10 +153,12 @@ export class AppsListComponent implements OnInit, OnDestroy {
         error: () => {
           this.snackBar.open('Delete failed. Please check console for more information', undefined, { duration: 3000 });
           this.#refreshApps$.next();
+          this.refreshApps.set(true)
         },
         next: () => {
           this.snackBar.open('Deleted', undefined, { duration: 2000 });
           this.#refreshApps$.next();
+          this.refreshApps.set(true)
         },
       });
     } else {
@@ -257,5 +270,4 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
 interface AppsListViewModel {
   apps: App[];
-  fabOpen: any;
 }

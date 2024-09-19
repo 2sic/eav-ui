@@ -1,14 +1,11 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
-import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -26,7 +23,6 @@ import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { FeatureNames } from '../../features/feature-names';
 import { MatDialog } from '@angular/material/dialog';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions } from '@angular/material/dialog';
@@ -46,32 +42,30 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
     MatButtonModule,
     MatIconModule,
     RouterOutlet,
-    AsyncPipe,
     SxcGridModule,
     DragAndDropDirective,
   ],
 })
-export class ViewsComponent implements OnInit, OnDestroy {
+export class ViewsComponent implements OnInit {
   #dialogSvc = transient(DialogService);
   enableCode: boolean;
   enablePermissions: boolean;
   appIsGlobal: boolean;
   appIsInherited: boolean;
 
-  views$ = new BehaviorSubject<View[]>(undefined);
-  polymorphStatus$ = new BehaviorSubject(undefined);
+  views = signal<View[]>(undefined);
+  polymorphStatus = signal(undefined);
+
   polymorphLogo = polymorphLogo;
   gridOptions = this.buildGridOptions();
 
   #polymorphism: Polymorphism;
 
-  viewModel$: Observable<ViewsViewModel>;
-
   #viewsSvc = transient(ViewsService);
 
   #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
-  
+
   constructor(
     private snackBar: MatSnackBar,
     // For Lightspeed buttons - new 17.10 - may need to merge better w/code changes 2dg
@@ -88,10 +82,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
       this.fetchTemplates();
       this.fetchPolymorphism();
     });
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([this.views$, this.polymorphStatus$]).pipe(
-      map(([views, polymorphStatus]) => ({ views, polymorphStatus }))
-    );
 
     this.#dialogConfigSvc.getCurrent$().subscribe(data => {
       var ctx = data.Context;
@@ -102,11 +92,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.views$.complete();
-    this.polymorphStatus$.complete();
-  }
-
   importView(files?: File[]) {
     const dialogData: FileUploadDialogData = { files };
     this.#dialogRouter.navParentFirstChild(['import'], { state: dialogData });
@@ -114,7 +99,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   private fetchTemplates() {
     this.#viewsSvc.getAll().subscribe(views => {
-      this.views$.next(views);
+      this.views.set(views);
     });
   }
 
@@ -124,7 +109,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
       const polymorphStatus = (polymorphism.Id === null)
         ? 'not configured'
         : (polymorphism.Resolver === null ? 'disabled' : 'using ' + polymorphism.Resolver);
-      this.polymorphStatus$.next(polymorphStatus);
+      this.polymorphStatus.set(polymorphStatus);
     });
   }
 
@@ -365,9 +350,4 @@ export class ViewsComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
-}
-
-interface ViewsViewModel {
-  views: View[];
-  polymorphStatus: any;
 }

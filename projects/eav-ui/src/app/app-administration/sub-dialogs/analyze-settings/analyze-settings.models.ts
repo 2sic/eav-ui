@@ -1,16 +1,9 @@
-import { View } from '../../models';
 
 export const AnalyzeParts = {
   Settings: 'Settings',
   Resources: 'Resources',
 } as const;
 export type AnalyzePart = typeof AnalyzeParts[keyof typeof AnalyzeParts];
-
-export interface AnalyzeSettingsViewModel {
-  views: View[];
-  selectedView: string;
-  stack: SettingsStackItem[];
-}
 
 export interface SettingsStackItem {
   Path: string;
