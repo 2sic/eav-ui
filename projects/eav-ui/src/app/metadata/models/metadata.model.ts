@@ -1,4 +1,4 @@
-import { EavFor, EavForInAdminUi, EavType } from '../../edit/shared/models/eav';
+import { EavFor, EavType } from '../../edit/shared/models/eav';
 
 /**
  * MetadataDto - information as provided by the server
@@ -34,13 +34,6 @@ export interface MetadataRecommendation {
   Title: string;
   Enabled: boolean;
   MissingFeature?: string;
-}
-
-export interface MetadataViewModel {
-  metadata: MetadataItem[];
-  recommendations: MetadataRecommendation[];
-  itemFor?: EavForInAdminUi;
-  fabOpen: boolean;
 }
 
 export interface MetadataItemShort {

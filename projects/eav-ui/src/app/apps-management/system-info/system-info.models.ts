@@ -1,10 +1,3 @@
-export interface SystemInfoViewModel {
-  systemInfos: InfoTemplate[];
-  siteInfos: InfoTemplate[];
-  loading: boolean;
-  warningIcon: string;
-  warningInfos: InfoTemplate[];
-}
 
 export interface InfoTemplate {
   label: string;

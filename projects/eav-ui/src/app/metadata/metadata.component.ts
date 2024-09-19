@@ -1,17 +1,15 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, take } from 'rxjs';
+import { map, Observable, take } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
-import { EavFor } from '../edit/shared/models/eav';
+import { EavForInAdminUi } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
+import { MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm, EditPrep, ItemAddIdentifier } from '../shared/models/edit-form.model';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
@@ -20,10 +18,10 @@ import { MetadataActionsComponent } from './metadata-actions/metadata-actions.co
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { MetadataDto, MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
+import { MetadataDto, MetadataItem, MetadataRecommendation } from './models/metadata.model';
 import { openFeatureDialog } from '../features/shared/base-feature.component';
 import { MatBadgeModule } from '@angular/material/badge';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { EcoFabSpeedDialComponent, EcoFabSpeedDialTriggerComponent, EcoFabSpeedDialActionsComponent } from '@ecodev/fab-speed-dial';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -50,13 +48,12 @@ import { classLog } from '../shared/logging';
     EcoFabSpeedDialTriggerComponent,
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
-    AsyncPipe,
     SafeHtmlPipe,
   ],
 })
-export class MetadataComponent implements OnInit, OnDestroy {
-  
-  log = classLog({MetadataComponent});
+export class MetadataComponent implements OnInit {
+
+  log = classLog({ MetadataComponent });
 
   #entitiesSvc = transient(EntityEditService);
   #metadataSvc = transient(MetadataService);
@@ -73,9 +70,18 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   gridOptions = this.#buildGridOptions();
 
-  #metadataSet$ = new BehaviorSubject<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
-  #itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
-  #fabOpen$ = new BehaviorSubject(false);
+  fabOpen = signal(false);
+  itemFor = signal<EavForInAdminUi | undefined>(undefined);
+
+  metadataSet = signal<MetadataDto>({ Items: [], Recommendations: [] } as MetadataDto);
+
+  recommendations = computed(() => {
+    const metadata = this.metadataSet();
+    return metadata.Recommendations.filter(r =>
+      metadata.Items.filter(i => i._Type.Id === r.Id).length < r.Count
+    );
+  });
+
   #params = convert(this.#dialogRoutes.getParams(['targetType', 'keyType', 'key', 'title', 'contentTypeStaticName']), p => ({
     targetType: parseInt(p.targetType, 10),
     keyType: p.keyType as MetadataKeyType,
@@ -83,47 +89,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
     contentTypeStaticName: p.contentTypeStaticName,
   }));
   protected title = decodeURIComponent(this.#dialogRoutes.getParam('title') ?? '');
-  viewModel$: Observable<MetadataViewModel>;
 
   ngOnInit() {
     this.#fetchFor();
     this.#fetchMetadata();
     this.#dialogRoutes.doOnDialogClosed(() => this.#fetchMetadata());
-
-    const logFilteredRecs = this.log.rxTap('filteredRecs$');
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.#metadataSet$.subscribe((set) => {
-      this.log.a('test 2dm', { set });
-    });
-
-    const filteredRecs$ = this.#metadataSet$.pipe(
-      logFilteredRecs.pipe(),
-      map((set) => set.Recommendations.filter(r => set.Items.filter(i => i._Type.Id === r.Id).length < r.Count)),
-      logFilteredRecs.map(),
-    );
-
-    const logViewModel = this.log.rxTap('viewModel$');
-    this.viewModel$ = combineLatest([this.#metadataSet$, filteredRecs$, this.#itemFor$, this.#fabOpen$]).pipe(
-      logViewModel.pipe(),
-      map(([metadata, recommendations, itemFor, fabOpen]) => {
-        const viewModel: MetadataViewModel = {
-          metadata: metadata.Items,
-          recommendations,
-          itemFor,
-          fabOpen,
-        };
-        return viewModel;
-      }),
-      logViewModel.map(),
-    );
-  }
-
-  ngOnDestroy() {
-    this.log.a('destroying');
-    this.#metadataSet$.complete();
-    this.#itemFor$.complete();
-    this.#fabOpen$.complete();
   }
 
   closeDialog() {
@@ -131,7 +101,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   openChange(open: boolean) {
-    this.#fabOpen$.next(open);
+    this.fabOpen.set(open);
   }
 
   createMetadata(recommendation?: MetadataRecommendation) {
@@ -191,7 +161,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.#contentItemSvc.getAll(this.#params.contentTypeStaticName).subscribe(items => {
       const item = items.find(i => i.Guid === this.#params.key);
       if (item?.For)
-        this.#itemFor$.next(item.For);
+        this.itemFor.set(item.For);
     });
   }
 
@@ -218,7 +188,10 @@ export class MetadataComponent implements OnInit, OnDestroy {
       // for reasons unknown to me. I've replaced it with the longhand
       // The problem occurs when the metadataSet$ is updated after the initial load.
       // .subscribe(this.metadataSet$);
-      .subscribe(data => this.#metadataSet$.next(data));
+      .subscribe(data => {
+        this.metadataSet.set(data);
+      }
+      );
   }
 
   #editMetadata(metadata: MetadataItem) {
@@ -234,7 +207,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       const data: ConfirmDeleteDialogData = {
         entityId: metadata.Id,
         entityTitle: metadata.Title,
-        message: this.#metadataSet$.value.Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
+        message: this.metadataSet().Recommendations.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
       };
       const confirmationDialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
         autoFocus: false,
@@ -272,13 +245,13 @@ export class MetadataComponent implements OnInit, OnDestroy {
         {
           ...ColumnDefinitions.TextWide,
           field: 'Title',
-          onCellClicked: (p: { data: MetadataItem}) => this.#editMetadata(p.data),
+          onCellClicked: (p: { data: MetadataItem }) => this.#editMetadata(p.data),
         },
         {
           ...ColumnDefinitions.TextWide,
           headerName: 'Content Type',
           field: 'ContentType',
-          valueGetter: (p: { data: MetadataItem}) => `${p.data._Type.Name}${p.data._Type.Title !== p.data._Type.Name ? ` (${p.data._Type.Title})` : ''}`,
+          valueGetter: (p: { data: MetadataItem }) => `${p.data._Type.Name}${p.data._Type.Title !== p.data._Type.Name ? ` (${p.data._Type.Title})` : ''}`,
           cellRenderer: MetadataContentTypeComponent,
         },
         {
