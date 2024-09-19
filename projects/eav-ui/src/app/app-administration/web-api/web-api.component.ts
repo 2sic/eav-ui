@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { transient } from '../../core';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 
 @Component({
   selector: 'app-web-api',
@@ -43,7 +43,7 @@ export class WebApiComponent implements OnInit {
 
   gridOptions = this.buildGridOptions();
 
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  private dialogConfigSvc = transient(DialogConfigAppService);
 
   constructor(
     private snackBar: MatSnackBar,

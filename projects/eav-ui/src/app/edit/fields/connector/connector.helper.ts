@@ -15,7 +15,7 @@ import { PagePicker } from '../page-picker/page-picker.helper';
 import { transient } from '../../../core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
-import { FeaturesService } from '../../../features/features.service';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { ServiceBase } from '../../../shared/services/service-base';
 import { FormConfigService } from '../../form/form-config.service';
 import { EditRoutingService } from '../../routing/edit-routing.service';
@@ -46,7 +46,7 @@ export class ConnectorHelper extends ServiceBase implements OnDestroy {
   #translateService = inject(TranslateService);
   #contentTypeService = inject(ContentTypeService);
   #inputTypeService = inject(InputTypeService);
-  #featuresService = inject(FeaturesService);
+  #featuresService = inject(FeaturesScopedService);
   #editRoutingService = inject(EditRoutingService);
   #dialog = inject(MatDialog);
   #snackBar = inject(MatSnackBar);

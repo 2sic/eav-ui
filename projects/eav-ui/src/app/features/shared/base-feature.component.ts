@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Directive, Input, ViewContainerRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FeaturesService } from '../features.service';
+import { FeaturesScopedService } from '../features-scoped.service';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
 import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
 import { FeatureSummary } from '../models';
@@ -25,14 +25,13 @@ export class FeatureComponentBase {
   private dialog = inject(MatDialog);
   private viewContainerRef = inject(ViewContainerRef);
   private changeDetectorRef = inject(ChangeDetectorRef);
-  protected featuresService = inject(FeaturesService);
+  protected featuresService = inject(FeaturesScopedService);
 
   constructor() {
     this.feature$ = this.featureNameId$.pipe(
-      switchMap(featName => this.featuresService.get$(featName)
-      ));
+      switchMap(featName => this.featuresService.get$(featName))
+    );
     this.show$ = combineLatest([this.feature$, this.showIf$]).pipe(
-      // tap(data => console.log('2dm - show$', data)),
       map(([feat, showIf]) => showIf == (feat?.isEnabled ?? false))
     );
   }

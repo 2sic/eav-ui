@@ -14,9 +14,9 @@ const webApiSettings = 'admin/dialog/settings';
  * Note that it should normally be shared, to save resources / network calls.
  */
 @Injectable({ providedIn: 'root' })
-export class GlobalDialogConfigService {
+export class DialogConfigGlobalService {
 
-  log = classLog({GlobalDialogConfigService});
+  log = classLog({DialogConfigGlobalService});
 
   constructor(
     private http: HttpClient,

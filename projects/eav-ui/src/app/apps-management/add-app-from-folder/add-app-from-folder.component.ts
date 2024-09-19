@@ -6,7 +6,7 @@ import { catchError, map, Observable, of, share, startWith, Subject, switchMap }
 import { FeatureNames } from '../../features/feature-names';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
@@ -42,7 +42,7 @@ export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
 
   viewModel$: Observable<AddAppFromFolderViewModel>;
 
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
   private appsListService = transient(AppsListService);
 

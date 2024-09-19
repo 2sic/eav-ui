@@ -19,7 +19,7 @@ import { FieldState } from '../../field-state';
 import { ExtendedFabSpeedDialImports } from '../../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { ClickStopPropagationDirective } from '../../../../shared/directives/click-stop-propagation.directive';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
-import { FeaturesService } from '../../../../features/features.service';
+import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { FeatureNames } from '../../../../features/feature-names';
 import { HyperlinkDefaultBaseComponent } from '../../basic/hyperlink-default/hyperlink-default-base.component';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
@@ -84,7 +84,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     editRoutingService: EditRoutingService,
     private zone: NgZone,
     public formsStateService: FormsStateService,
-    private featuresService: FeaturesService,
+    private featuresService: FeaturesScopedService,
   ) {
     super(
       eavService,

@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { ContentTypesFieldsService } from '../../shared/fields/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FeatureNames } from '../../features/feature-names';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass, AsyncPipe } from '@angular/common';
@@ -46,7 +46,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   shareableFields$ = new BehaviorSubject<Field[]>(undefined);
   viewModel$: Observable<ShareOrInheritDialogViewModel>;
 
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
   
   private contentTypesFieldsService = transient(ContentTypesFieldsService);

@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { transient } from '../core';
 import { Language } from '../shared/models/language.model';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 
 @Component({
   selector: 'app-content-export',
@@ -38,7 +38,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
 
   private contentExportService = transient(ContentExportService);
   private contentTypesService = transient(ContentTypesService);
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  private dialogConfigSvc = transient(DialogConfigAppService);
 
   formValues: ContentExport;
   languages: Language[];

@@ -33,7 +33,7 @@ import { MatDialogActions } from '@angular/material/dialog';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
@@ -69,7 +69,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   #viewsSvc = transient(ViewsService);
 
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
   
   constructor(

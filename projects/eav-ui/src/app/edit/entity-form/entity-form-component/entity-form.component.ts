@@ -19,7 +19,7 @@ import { FeatureNames } from '../../../features/feature-names';
 import { MousedownStopPropagationDirective } from '../../../shared/directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { FeaturesService } from '../../../features/features.service';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { FieldsSettingsService } from '../../state/fields-settings.service';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormsStateService } from '../../form/forms-state.service';
@@ -82,7 +82,7 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   collapse = false;
   noteTouched: boolean = false;
 
-  #features = inject(FeaturesService);
+  #features = inject(FeaturesScopedService);
   #editUiShowNotes = this.#features.isEnabled(FeatureNames.EditUiShowNotes);
   #editUiShowMetadataFor = this.#features.isEnabled(FeatureNames.EditUiShowMetadataFor);
 

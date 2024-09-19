@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { transient } from '../../../core';
 import { MatDialogActions } from '@angular/material/dialog';
-import { AppDialogConfigService } from '../../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../../services/dialog-config-app.service';
 
 @Component({
   selector: 'app-app-state',
@@ -39,7 +39,7 @@ export class AppStateComponent implements OnInit, OnDestroy {
 
   public appStateAdvanced = false;
 
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
 
   constructor(
     private snackBar: MatSnackBar,

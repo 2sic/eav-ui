@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { buildTranslateConfiguration } from './shared/translation';
 import { translateLoaderFactory } from './shared/translation/translate-loader-factory';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { FeaturesScopedService } from './features/features-scoped.service';
 
 export const appConfig: ApplicationConfig = {
 
@@ -28,6 +29,11 @@ export const appConfig: ApplicationConfig = {
     ),
     SxcHttpInterceptorProvider,
     Context,
+
+    // The feature service must be provided in root at first, so it's always there
+    // But certain dialogs will want to use their own.
+    FeaturesScopedService,
+
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },

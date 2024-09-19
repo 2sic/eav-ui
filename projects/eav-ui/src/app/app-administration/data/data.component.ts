@@ -38,7 +38,7 @@ import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.dire
 import { transient } from '../../core';
 import { mapUntilChanged } from '../../shared/rxJs/mapUntilChanged';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { BaseComponent } from '../../shared/components/base.component';
 
@@ -68,7 +68,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
 
   #contentTypeSvc = transient(ContentTypesService);
   #contentExportSvc = transient(ContentExportService);
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
   constructor() { super(); }

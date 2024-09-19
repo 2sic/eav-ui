@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
-import { GlobalDialogConfigService } from './global-dialog-config.service';
+import { DialogConfigGlobalService } from './dialog-config-global.service';
 import { classLog } from '../../shared/logging';
 
 /**
@@ -11,12 +11,11 @@ import { classLog } from '../../shared/logging';
  * It uses the shared service so the settings are cached when re-requested by anything else.
  */
 @Injectable()
-export class AppDialogConfigService {
+export class DialogConfigAppService {
 
-  log = classLog({AppDialogConfigService});
+  log = classLog({DialogConfigAppService});
 
-  constructor(private contextSvcShared: GlobalDialogConfigService, private context: Context) {
-  }
+  constructor(private contextSvcShared: DialogConfigGlobalService, private context: Context) { }
 
   getCurrent$(): Observable<DialogSettings> {
     const appId = this.context.appId;

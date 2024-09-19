@@ -7,7 +7,7 @@ import { FeatureNames } from '../../features/feature-names';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
@@ -23,7 +23,7 @@ import { FeatureTextInfoComponent } from '../../features/feature-text-info/featu
 import { FieldHintComponent } from '../../shared/components/field-hint/field-hint.component';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
-import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
+import { DialogConfigAppService } from '../../app-administration/services/dialog-config-app.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 declare const window: EavWindow;
@@ -51,9 +51,9 @@ declare const window: EavWindow;
 })
 export class SystemInfoComponent implements OnInit, OnDestroy {
 
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
 
-  #dialogSettings = transient(AppDialogConfigService);
+  #dialogSettings = transient(DialogConfigAppService);
   #sxcInsightsService = transient(SxcInsightsService);
   #zoneSvc = transient(ZoneService);
   #dialogSvc = transient(DialogService);

@@ -6,6 +6,7 @@ import { EditInitializerService } from '../../form/edit-initializer.service';
 import { FormConfigService } from '../../form/form-config.service';
 import { ScriptsLoaderService } from '../../shared/services/scripts-loader.service';
 import { LoggingService } from '../../shared/services/logging.service';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 
 /**
  * This component is the entry point for every edit dialog.
@@ -27,6 +28,7 @@ import { LoggingService } from '../../shared/services/logging.service';
     LoggingService,
 
     // Shared Services across the edit form
+    FeaturesScopedService,    // for checking if features are enabled - this can change from dialog to dialog
     EditInitializerService,   // for loading the data and having it ready downstream
     Context,                  // Form context, such as what app etc. - the same for the entire form
     FormConfigService,        // form configuration valid for this entire form; will be initialized by the EditInitializerService
@@ -35,7 +37,7 @@ import { LoggingService } from '../../shared/services/logging.service';
 })
 export class EditEntryComponent implements OnInit {
 
-  constructor(protected editInitializerService: EditInitializerService) { }
+  constructor(protected editInitializerService: EditInitializerService, temp: FeaturesScopedService) { }
 
   ngOnInit(): void {
     // Load the data - when it's loaded, the HTML will show the rest

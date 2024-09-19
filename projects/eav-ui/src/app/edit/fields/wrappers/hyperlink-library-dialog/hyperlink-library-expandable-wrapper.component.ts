@@ -17,7 +17,7 @@ import { FieldState } from '../../field-state';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { SignalEquals } from '../../../../shared/signals/signal-equals';
 import { FeatureNames } from '../../../../features/feature-names';
-import { FeaturesService } from '../../../../features/features.service';
+import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { DropzoneDraggingHelper } from '../dropzone-dragging.helper';
 import { FormsStateService } from '../../../form/forms-state.service';
 import { EditRoutingService } from '../../../routing/edit-routing.service';
@@ -75,7 +75,7 @@ export class HyperlinkLibraryExpandableWrapperComponent {
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     public formsStateService: FormsStateService,
-    private featuresService: FeaturesService,
+    private featuresService: FeaturesScopedService,
   ) { }
 
   ngAfterViewInit() {

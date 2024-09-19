@@ -9,7 +9,7 @@ import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxj
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { NgForm, FormsModule } from '@angular/forms';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FeatureNames } from '../../features/feature-names';
 import { openFeatureDialog } from '../../features/shared/base-feature.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -58,7 +58,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   protected saving$ = new BehaviorSubject(false);
 
-  #features: FeaturesService = inject(FeaturesService);
+  #features = inject(FeaturesScopedService);
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 

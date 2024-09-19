@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { transient } from '../../../core';
 import { MatIconModule } from '@angular/material/icon';
-import { FeaturesService } from '../../../features/features.service';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureIconIndicatorComponent } from '../../../features/feature-icon-indicator/feature-icon-indicator.component';
 import { FeatureIconComponent } from '../../../features/feature-icon/feature-icon.component';
@@ -34,7 +34,7 @@ export class ExportAppComponent implements OnInit {
 
   appInfo = signal<AppInfo>(null);
 
-  public features = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   public expAssetsAdvEnabled = this.features.isEnabled(FeatureNames.AppExportAssetsAdvanced);
 
   ngOnInit() {

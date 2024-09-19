@@ -10,7 +10,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditForm, EditPrep } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
 import { ContentTypesService } from '../services';
@@ -30,7 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { transient } from '../../core';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 
 @Component({
@@ -71,7 +71,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   viewModel$: Observable<AppConfigurationViewModel>;
 
   public appStateAdvanced = false;
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
 
   protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
   protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
@@ -81,7 +81,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   #contentItemsService = transient(ContentItemsService);
 
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(

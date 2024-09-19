@@ -9,7 +9,7 @@ import { Permission, PermissionsService } from '../permissions';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
 import { transient } from '../core';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 
 @Component({
@@ -19,7 +19,7 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 // tslint:disable-next-line:component-class-suffix
 export class DevRestBase<ViewModelType> implements OnDestroy {
 
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
   /** Template variables for the HTML template */
