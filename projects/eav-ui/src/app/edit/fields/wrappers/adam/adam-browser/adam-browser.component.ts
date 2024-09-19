@@ -15,7 +15,7 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { ClickStopPropagationDirective } from '../../../../../shared/directives/click-stop-propagation.directive';
 import { TippyDirective } from '../../../../../shared/directives/tippy.directive';
-import { FeaturesService } from '../../../../../features/features.service';
+import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { FeatureNames } from '../../../../../features/feature-names';
 import { openFeatureDialog } from '../../../../../features/shared/base-feature.component';
 import { FieldState } from '../../../field-state';
@@ -92,7 +92,7 @@ export class AdamBrowserComponent implements OnInit {
     return cnf.allowEdit && !((cnf.subfolder === '' || cnf.usePortalRoot && cnf.subfolder === cnf.rootSubfolder) && !cnf.allowAssetsInRoot)
   });
 
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   public isPasteImageFromClipboardEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
 
   protected expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid)

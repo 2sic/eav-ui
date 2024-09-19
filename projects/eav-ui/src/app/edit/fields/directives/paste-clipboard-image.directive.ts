@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
-import { FeaturesService } from '../../../features/features.service';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { BaseDirective } from '../../../shared/directives/base.directive';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
@@ -26,7 +26,7 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
 
   constructor(
     private elementRef: ElementRef,
-    private features: FeaturesService,
+    private features: FeaturesScopedService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private dialog: MatDialog,

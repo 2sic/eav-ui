@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { DragAndDropDirective } from '../shared/directives/drag-and-drop.directive';
 import { transient } from '../core';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 
 @Component({
   selector: 'app-content-import',
@@ -34,7 +34,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
 
   private contentImportService = transient(ContentImportService);
   private contentTypesService = transient(ContentTypesService);
-  private dialogConfigSvc = transient(AppDialogConfigService);
+  private dialogConfigSvc = transient(DialogConfigAppService);
 
   formValues: ContentImport;
   private contentType$ = new BehaviorSubject<ContentType>(null);

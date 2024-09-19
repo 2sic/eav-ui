@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavItemListComponent } from '../../shared/components/nav-item-list/nav-item-list.component';
 import { ToggleDebugDirective } from '../../shared/directives/toggle-debug.directive';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { transient } from '../../core';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { classLog } from '../../shared/logging';
@@ -41,7 +41,7 @@ export class AppAdminMainComponent implements OnInit, OnDestroy {
 
   log = classLog({AppAdminMainComponent});
 
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
   #dialogRouter = transient(DialogRoutingService);
 
   constructor(

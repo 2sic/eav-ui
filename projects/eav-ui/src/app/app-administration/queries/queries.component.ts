@@ -24,7 +24,7 @@ import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.mod
 import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 import { DragAndDropDirective } from '../../shared/directives/drag-and-drop.directive';
 import { transient } from '../../core';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { DialogConfigAppService } from '../services/dialog-config-app.service';
 import { DialogRoutingService } from '../../shared/routing/dialog-routing.service';
 import { signalObj } from '../../shared/signals/signal.utilities';
 
@@ -49,7 +49,7 @@ export class QueriesComponent implements OnInit {
   #contentExportSvc = transient(ContentExportService);
   #dialogSvc = transient(DialogService);
   #dialogRouter = transient(DialogRoutingService);
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
   
   enablePermissions!: boolean;
   public gridOptions = this.buildGridOptions();

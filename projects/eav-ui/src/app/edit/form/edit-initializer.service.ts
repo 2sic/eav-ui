@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../shared/helpers/url-prep.helper';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { calculateIsParentDialog, sortLanguages } from '../dialog/main/edit-dialog-main.helpers';
 import { EavEditLoadDto } from '../dialog/main/edit-dialog-main.models';
 import { EditUrlParams } from '../routing/edit-url-params.model';
@@ -70,7 +70,7 @@ export class EditInitializerService {
     private snackBar: MatSnackBar,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
-    private featuresService: FeaturesService,
+    private featuresService: FeaturesScopedService,
   ) { }
 
   fetchFormData(): void {

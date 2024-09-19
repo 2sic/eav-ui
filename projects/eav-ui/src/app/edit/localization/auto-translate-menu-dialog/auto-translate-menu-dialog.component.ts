@@ -15,7 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { FeatureTextInfoComponent } from '../../../features/feature-text-info/feature-text-info.component';
 import { MatCardModule } from '@angular/material/card';
 import { FeatureNames } from '../../../features/feature-names';
-import { FeaturesService } from '../../../features/features.service';
+import { FeaturesScopedService } from '../../../features/features-scoped.service';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { FieldsTranslateService } from '../../state/fields-translate.service';
 import { TranslateHelperComponent } from '../../../shared/components/translate-helper.component';
@@ -40,7 +40,7 @@ import { isCtrlS } from '../../dialog/main/keyboard-shortcuts';
 })
 export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent implements OnInit {
 
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
 
   protected languagesSig = computed(() => {

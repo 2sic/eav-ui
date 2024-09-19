@@ -15,7 +15,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { TippyDirective } from '../shared/directives/tippy.directive';
 import { MousedownStopPropagationDirective } from '../shared/directives/mousedown-stop-propagation.directive';
 import { convert, transient } from '../core';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { DialogConfigAppService } from '../app-administration/services/dialog-config-app.service';
 import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
 import { signalObj } from '../shared/signals/signal.utilities';
 
@@ -43,7 +43,7 @@ export class ManageContentListComponent implements OnInit {
 
   #dialogRoutes = transient(DialogRoutingService);
   #contentGroupSvc = transient(ContentGroupService);
-  #dialogConfigSvc = transient(AppDialogConfigService);
+  #dialogConfigSvc = transient(DialogConfigAppService);
 
   constructor(
     private dialogRef: MatDialogRef<ManageContentListComponent>,

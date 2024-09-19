@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { Context } from '../../shared/services/context';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { GlobalDialogConfigService } from '../../app-administration/services';
+import { DialogConfigGlobalService } from '../../app-administration/services';
 import { AppsManagementNavItems } from './managment-nav-items';
 import { MatButtonModule } from '@angular/material/button';
 import { BreadcrumbModule } from 'xng-breadcrumb';
@@ -34,7 +34,7 @@ import { DialogRoutingService } from '../../shared/routing/dialog-routing.servic
 export class AppsManagementNavComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  #globalDialogConfigSvc = inject(GlobalDialogConfigService);
+  #globalDialogConfigSvc = inject(DialogConfigGlobalService);
 
   zoneId = this.context.zoneId;
 

@@ -1,5 +1,5 @@
 import { FeatureNames } from './../../../../../features/feature-names';
-import { FeaturesService } from '../../../../../features/features.service';
+import { FeaturesScopedService } from '../../../../../features/features-scoped.service';
 import { Component, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -22,7 +22,7 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
   ],
 })
 export class AdamHintComponent {
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   protected hideAdamSponsor = this.features.isEnabled(FeatureNames.NoSponsoredByToSic);
 
 }

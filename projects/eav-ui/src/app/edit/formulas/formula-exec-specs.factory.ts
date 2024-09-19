@@ -5,7 +5,7 @@ import { EditInitializerService } from '../form/edit-initializer.service';
 import { FormConfigService } from '../form/form-config.service';
 import { LanguageService } from '../localization/language.service';
 import { ItemService } from '../state/item.service';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { FieldsSettingsService } from '../state/fields-settings.service';
 import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 import { FormulaPropsParameters } from './formula-run-one-helpers.factory';
@@ -17,7 +17,7 @@ import { FormulaPropsParameters } from './formula-run-one-helpers.factory';
 @Injectable()
 export class FormulaExecutionSpecsFactory {
 
-  #features = inject(FeaturesService).getAll();
+  #features = inject(FeaturesScopedService).getAll();
   
   constructor(
     private formConfig: FormConfigService,

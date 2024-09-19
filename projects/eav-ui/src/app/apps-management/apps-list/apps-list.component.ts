@@ -9,7 +9,7 @@ import { FileUploadDialogData } from '../../shared/components/file-upload-dialog
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { Context } from '../../shared/services/context';
-import { FeaturesService } from '../../features/features.service';
+import { FeaturesScopedService } from '../../features/features-scoped.service';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
@@ -66,7 +66,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   #refreshApps$ = new Subject<void>();
 
   viewModel$: Observable<AppsListViewModel>;
-  public features: FeaturesService = inject(FeaturesService);
+  public features = inject(FeaturesScopedService);
   public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
   #appsListSvc = transient(AppsListService);
