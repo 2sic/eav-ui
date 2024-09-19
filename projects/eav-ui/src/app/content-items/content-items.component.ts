@@ -1,10 +1,10 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, Subject, take } from 'rxjs';
+import { BehaviorSubject, filter, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -34,7 +34,6 @@ import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.compon
 import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 import { EntityEditService } from '../shared/services/entity-edit.service';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
@@ -56,7 +55,6 @@ import { classLog } from '../shared/logging';
     MatIconModule,
     RouterOutlet,
     MatDialogActions,
-    AsyncPipe,
     SafeHtmlPipe,
     DragAndDropDirective,
     ToggleDebugDirective,
@@ -83,8 +81,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-  contentType$ = new Subject<ContentType>();
-  items$ = new BehaviorSubject<ContentItem[]>(undefined);
+  contentType = signal<ContentType>(undefined);
+  items = signal<ContentItem[]>(undefined);
+
   gridOptions: GridOptions = {
     ...defaultGridOptions,
   };
@@ -92,25 +91,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   #gridApi$ = new BehaviorSubject<GridApi>(null);
   #contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
 
-  viewModel$: Observable<ContentItemsViewModel>;
-
   ngOnInit() {
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchItems());
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([
-      this.contentType$, this.items$
-    ]).pipe(
-      map(([contentType, items]) => ({ contentType, items }))
-    );
   }
 
   ngOnDestroy() {
-    this.contentType$.complete();
-    this.items$.complete();
     this.#gridApi$.complete();
   }
 
@@ -124,13 +112,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private fetchContentType() {
     this.#contentTypesSvc.retrieveContentType(this.#contentTypeStaticName).subscribe(contentType => {
-      this.contentType$.next(contentType);
+      this.contentType.set(contentType);
     });
   }
 
   private fetchItems() {
     this.#contentItemsSvc.getAll(this.#contentTypeStaticName).subscribe(items => {
-      this.items$.next(items);
+      this.items.set(items);
     });
   }
 
@@ -398,7 +386,3 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 }
 
-interface ContentItemsViewModel {
-  contentType: ContentType;
-  items: ContentItem[];
-}

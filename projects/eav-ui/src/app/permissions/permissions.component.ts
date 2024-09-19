@@ -1,9 +1,8 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, map } from 'rxjs';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -13,7 +12,6 @@ import { PermissionsActionsComponent } from './permissions-actions/permissions-a
 import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -30,14 +28,12 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
     MatIconModule,
     RouterOutlet,
     MatDialogActions,
-    AsyncPipe,
     SxcGridModule,
   ],
 })
-export class PermissionsComponent implements OnInit, OnDestroy {
-  permissions$ = new BehaviorSubject<Permission[]>(undefined);
+export class PermissionsComponent implements OnInit {
   gridOptions = this.buildGridOptions();
-
+  permissions = signal<Permission[]>([]);
   #permissionsService = transient(PermissionsService);
   #dialogRoutes = transient(DialogRoutingService);
 
@@ -53,8 +49,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     },
   };
 
-  viewModel$: Observable<PermissionsViewModel>;
-
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
     private snackBar: MatSnackBar,
@@ -64,12 +58,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.#fetchPermissions();
     this.#dialogRoutes.doOnDialogClosed(() => this.#fetchPermissions());
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = this.permissions$.pipe(map((permissions) => ({ permissions })));
-  }
-
-  ngOnDestroy() {
-    this.permissions$.complete();
   }
 
   closeDialog() {
@@ -78,9 +66,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   #fetchPermissions() {
     this.#permissionsService.getAll(this.#params.targetType, this.#params.keyType, this.#params.key)
-      .subscribe(permissions => this.permissions$.next(permissions));
+      .subscribe(permissions => {
+        this.permissions.set(permissions);
+      });
   }
-
 
   editPermission(permission?: Permission) {
     let form: EditForm;

@@ -1,9 +1,9 @@
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatDialog, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
@@ -23,7 +23,7 @@ import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/conte
 import { Field } from '../shared/fields/field.model';
 import { ContentTypesFieldsService } from '../shared/fields/content-types-fields.service';
 import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ColumnDefinitions } from '../shared/ag-grid/column-definitions';
@@ -43,17 +43,17 @@ import { DialogRoutingService } from '../shared/routing/dialog-routing.service';
     RouterOutlet,
     NgClass,
     MatDialogActions,
-    AsyncPipe,
     ToggleDebugDirective,
     SxcGridModule,
   ],
 })
-export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent implements OnInit {
 
   #dialogRouter = transient(DialogRoutingService);
-  
-  contentType$ = new BehaviorSubject<ContentType>(undefined);
-  fields$ = new BehaviorSubject<Field[]>(undefined);
+
+  contentType = signal<ContentType>(undefined);
+  fields = signal<Field[]>(undefined);
+
   gridOptions = this.buildGridOptions();
   sortApplied = false;
   filterApplied = false;
@@ -62,8 +62,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
   private contentTypeStaticName = this.#dialogRouter.getParam('contentTypeStaticName');
-
-  viewModel$: Observable<ContentTypeFieldsViewModel>;
 
   private contentTypesService = transient(ContentTypesService);
   private contentTypesFieldsService = transient(ContentTypesFieldsService);
@@ -78,17 +76,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchFields();
     this.#dialogRouter.doOnDialogClosed(() => this.fetchFields());
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([
-      this.contentType$, this.fields$
-    ]).pipe(
-      map(([contentType, fields]) => ({ contentType, fields }))
-    );
-  }
-
-  ngOnDestroy() {
-    this.contentType$.complete();
-    this.fields$.complete();
   }
 
   closeDialog() {
@@ -106,8 +93,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   onRowDragEnd(event: RowDragEvent) {
     this.gridApi.setSuppressRowDrag(true);
-    const idArray = this.fields$.value.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.contentType$.value).subscribe(() => {
+    const idArray = this.fields().map(field => field.Id);
+    this.contentTypesFieldsService.reOrder(idArray, this.contentType()).subscribe(() => {
       this.fetchFields(() => {
         this.gridApi.setEnableCellTextSelection(true);
         this.gridApi.setSuppressRowDrag(false);
@@ -123,11 +110,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     if (rowNeedsToMove) {
       const movingData: Field = movingNode.data;
       const overData: Field = overNode.data;
-      const newFields = [...this.fields$.value];
+      const newFields = [...this.fields()];
       const fromIndex = newFields.indexOf(movingData);
       const toIndex = newFields.indexOf(overData);
       this.moveInArray(newFields, fromIndex, toIndex);
-      this.fields$.next(newFields);
+      this.fields.set(newFields);
       this.gridApi.clearFocusedCell();
     }
   }
@@ -173,7 +160,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       return params.value;
 
     let isGroupOpen = false;
-    for (const field of this.fields$.value) {
+    for (const field of this.fields()) {
       if (InputTypeHelpers.isGroupStart(inputType)) {
         isGroupOpen = true;
         continue;
@@ -190,13 +177,13 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private fetchFields(callback?: () => void) {
-    const contentType$ = this.contentType$.value == null
+    const contentTypeTemp = this.contentType() == null
       ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
-      : of(this.contentType$.value);
-    const fields$ = this.contentTypesFieldsService.getFields(this.contentTypeStaticName);
-    forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
-      this.contentType$.next(contentType);
-      this.fields$.next(fields);
+      : of(this.contentType());
+    const fieldsTemp = this.contentTypesFieldsService.getFields(this.contentTypeStaticName);
+    forkJoin([contentTypeTemp, fieldsTemp]).subscribe(([contentType, fields]) => {
+      this.contentType.set(contentType);
+      this.fields.set(fields);
       if (callback != null)
         callback();
     });
@@ -255,7 +242,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private setTitle(field: Field) {
     this.snackBar.open('Setting title...');
-    this.contentTypesFieldsService.setTitle(field, this.contentType$.value).subscribe(() => {
+    this.contentTypesFieldsService.setTitle(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Title set', null, { duration: 2000 });
       this.fetchFields();
     });
@@ -272,7 +259,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private delete(field: Field) {
     if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) return;
     this.snackBar.open('Deleting...');
-    this.contentTypesFieldsService.delete(field, this.contentType$.value).subscribe(() => {
+    this.contentTypesFieldsService.delete(field, this.contentType()).subscribe(() => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchFields();
     });
@@ -417,9 +404,4 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   //#endregion
-}
-
-interface ContentTypeFieldsViewModel {
-  contentType: ContentType;
-  fields: Field[];
 }
