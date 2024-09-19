@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContentItemsService } from '../../../content-items/services/content-items.service';
 import { GoToMetadata } from '../../../metadata';
@@ -8,17 +8,17 @@ import { DialogSettings } from '../../../shared/models/dialog-settings.model';
 import { EditForm, EditPrep } from '../../../shared/models/edit-form.model';
 import { Context } from '../../../shared/services/context';
 import { AppInternalsService } from '../../services/app-internals.service';
-import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../../models/app-internals.model';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
-import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { TippyDirective } from '../../../shared/directives/tippy.directive';
 import { transient } from '../../../core';
 import { DialogRoutingService } from '../../../shared/routing/dialog-routing.service';
+import { ContentItem } from '../../../content-items/models/content-item.model';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -31,50 +31,31 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
     NgTemplateOutlet,
     MatButtonModule,
     MatBadgeModule,
-    AsyncPipe,
     TippyDirective,
   ],
 })
 export class AppConfigurationCardComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
-  // More proper ViewModel
-  appSettingsInternal$ = new Subject<AppInternals>();
-  viewModel$: Observable<ViewModel>;
+  contentItem = signal<ContentItem>(undefined);
+  appSettingsInternal = signal<AppInternals>(undefined);
 
   #appInternalsSvc = transient(AppInternalsService);
-
   #contentItemsSvc = transient(ContentItemsService);
   #dialogRouter = transient(DialogRoutingService);
-  
+
   constructor(
     private context: Context,
     private snackBar: MatSnackBar,
-  ) {
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    // New with proper ViewModel
-    this.viewModel$ = combineLatest([
-      this.appSettingsInternal$,
-      this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration),
-    ]).pipe(map(([settings, contentItems]) => {
-      const contentItem = contentItems[0];
-      const result: ViewModel = {
-        appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
-        appMetadataCount: settings.MetadataList.Items.length,
-        displayName: contentItem?.DisplayName ?? '-',
-        folder: contentItem?.Folder ?? '-',
-        version: contentItem?.Version ?? '-',
-        toSxc: contentItem?.RequiredVersion ?? '-',
-        dnn: contentItem?.RequiredDnnVersion ?? '-',
-        oqt: contentItem?.RequiredOqtaneVersion ?? '-',
-      }
-      return result;
-    }));
-  }
+  ) {}
 
   ngOnInit() {
     this.fetchSettings();
     this.#dialogRouter.doOnDialogClosed(() => { this.fetchSettings(); });
+
+    this.#contentItemsSvc.getAll(eavConstants.contentTypes.appConfiguration).subscribe(contentItems => {
+      this.contentItem.set(contentItems[0]);
+    });
   }
 
   ngOnDestroy() {
@@ -114,18 +95,13 @@ export class AppConfigurationCardComponent implements OnInit, OnDestroy {
     const getObservable = this.#appInternalsSvc.getAppInternals();
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
-      this.appSettingsInternal$.next(x);
+      this.appSettingsInternal.set(x);
     });
   }
+
+  formatValue(value?: string): string {
+    return value === "" ? "-" : value ?? "-";
+  }
+
 }
 
-class ViewModel {
-  appConfigurationsCount: number;
-  appMetadataCount: number;
-  displayName: string;
-  folder: string;
-  version: string;
-  toSxc: string;
-  dnn: string;
-  oqt: string;
-}

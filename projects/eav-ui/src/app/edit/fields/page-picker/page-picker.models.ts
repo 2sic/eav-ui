@@ -29,12 +29,6 @@ export interface PageEntity extends EntityBasic {
   Clickable: boolean;
 }
 
-export interface PagePickerViewModel {
-  filterText: string;
-  filteredSearch: PageSearchItem[];
-  tree: PageTreeItem[];
-}
-
 export interface PageSearchItem {
   id: number;
   name: string;

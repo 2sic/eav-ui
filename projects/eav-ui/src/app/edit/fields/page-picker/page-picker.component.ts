@@ -1,13 +1,12 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, Inject, OnInit, signal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions } from '@angular/material/dialog';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FieldValue, PagePickerResult } from '../../../../../../edit-types';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
-import { PageEntity, PagePickerDialogData, PagePickerViewModel, PageSearchItem, PageTreeItem } from './page-picker.models';
+import { PageEntity, PagePickerDialogData, PageSearchItem, PageTreeItem } from './page-picker.models';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgTemplateOutlet, NgClass, AsyncPipe } from '@angular/common';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,19 +29,23 @@ import { QueryService } from '../../../shared/services/query.service';
     ExtendedModule,
     MatIconModule,
     MatDialogActions,
-    AsyncPipe,
     TranslateModule,
     TippyDirective,
   ],
 })
-export class PagePickerComponent implements OnInit, OnDestroy {
+export class PagePickerComponent implements OnInit {
   selected: number;
   toggled: number[];
-  viewModel$: Observable<PagePickerViewModel>;
 
-  private filterText$: BehaviorSubject<string>;
-  private searchItems$: BehaviorSubject<PageSearchItem[]>;
-  private tree$: BehaviorSubject<PageTreeItem[]>;
+  filterText = signal<string>('');
+  searchItems = signal<PageSearchItem[]>([]);
+  tree = signal<PageTreeItem[]>([]);
+
+  filteredSearch = computed(() => {
+    const filterText = this.filterText();
+    const searchItems = this.searchItems();
+    return searchItems.filter(item => item.name.toLocaleLowerCase().includes(filterText.toLocaleLowerCase()));
+  });
 
   private queryService = transient(QueryService);
 
@@ -55,38 +58,12 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selected = this.parseSelectedPageId();
     this.toggled = [];
-    this.filterText$ = new BehaviorSubject('');
-    this.searchItems$ = new BehaviorSubject([]);
-    this.tree$ = new BehaviorSubject([]);
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    const filteredSearch$ = combineLatest([this.filterText$, this.searchItems$]).pipe(
-      map(([filterText, searchItems]) =>
-        searchItems.filter(item => item.name.toLocaleLowerCase().includes(filterText.toLocaleLowerCase()))
-      ),
-    );
-    this.viewModel$ = combineLatest([this.filterText$, filteredSearch$, this.tree$]).pipe(
-      map(([filterText, filteredSearch, tree]) => {
-        const viewModel: PagePickerViewModel = {
-          filterText,
-          filteredSearch,
-          tree,
-        };
-        return viewModel;
-      }),
-    );
 
     this.fetchPages();
   }
 
-  ngOnDestroy(): void {
-    this.filterText$.complete();
-    this.searchItems$.complete();
-    this.tree$.complete();
-  }
-
   setFilter(filterText: string): void {
-    this.filterText$.next(filterText);
+    this.filterText.set(filterText);
   }
 
   select(page: PageTreeItem | PageSearchItem): void {
@@ -109,7 +86,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const page = this.searchItems$.value.find(i => i.id === pageId);
+    const page = this.searchItems().find(i => i.id === pageId);
     const result: PagePickerResult = {
       id: page.id.toString(),
       name: page.name,
@@ -132,9 +109,9 @@ export class PagePickerComponent implements OnInit, OnDestroy {
         }
         const pages = data[stream] as PageEntity[];
         const searchItems = buildPageSearch(pages);
-        this.searchItems$.next(searchItems);
+        this.searchItems.set(searchItems);
         const tree = buildPageTree(pages);
-        this.tree$.next(tree);
+        this.tree.set(tree);
       },
       error: (error) => {
         console.error(error);
