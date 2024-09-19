@@ -14,7 +14,7 @@ export abstract class SignalStoreBase<TKey extends string | number, TValue> {
   protected log: ClassLogger;
 
   constructor(log: ClassLogger) {
-    this.log = log ?? classLog({ SignalStoreBase });
+    this.log = log ?? classLog({SignalStoreBase});
     this.log.a('SignalStoreBase created');
     this.name = this.log.name;
   }

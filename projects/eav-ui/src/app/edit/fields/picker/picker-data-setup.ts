@@ -21,7 +21,7 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
  */
 export class PickerDataSetup {
 
-  log = classLog({PickerDataSetup}, null, true);
+  log = classLog({PickerDataSetup}, null);
 
   constructor(injector: Injector) {
     this.#injector = injector;

@@ -7,7 +7,7 @@ const storeKey = 'user-settings';
 @Injectable({ providedIn: 'root' })
 export class UserSettings {
 
-  log = classLog({ UserSettings });
+  log = classLog({UserSettings});
 
   constructor() {
     this.log.fn('constructor');

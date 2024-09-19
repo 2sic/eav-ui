@@ -31,7 +31,7 @@ const logSpecs = {
 })
 export class EditControlsBuilderDirective  implements OnInit, OnDestroy {
 
-  log = classLog({EditControlsBuilderDirective}, logSpecs, true);
+  log = classLog({EditControlsBuilderDirective}, logSpecs);
 
   /** Service to create custom injectors for each field */
   #fieldInjectorFac = transient(FieldStateInjectorFactory);

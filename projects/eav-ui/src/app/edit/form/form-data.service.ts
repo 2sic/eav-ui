@@ -20,7 +20,7 @@ export const webApiEditRoot = 'cms/edit/';
 @Injectable()
 export class FormDataService {
 
-  log = classLog({ FormDataService }, logSpecs);
+  log = classLog({FormDataService}, logSpecs);
 
   constructor(
     private http: HttpClient,

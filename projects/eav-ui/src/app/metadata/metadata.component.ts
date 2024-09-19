@@ -53,7 +53,7 @@ import { classLog } from '../shared/logging';
 })
 export class MetadataComponent implements OnInit {
 
-  log = classLog({ MetadataComponent });
+  log = classLog({MetadataComponent});
 
   #entitiesSvc = transient(EntityEditService);
   #metadataSvc = transient(MetadataService);
