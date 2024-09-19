@@ -44,6 +44,7 @@ export class PickerPartBaseComponent {
 
   /** All Selected Items */
   protected selectedItems = this.pickerData.selectedAll;
+  protected selectedItem = this.pickerData.selectedOne;
 
   /** Field Configuration - from field state */
   protected config = this.fieldState.config;

@@ -22,7 +22,9 @@
             <mat-radio-button
               class="picker-option-wrapper"
               (click)="select(item)"
-              [checked]="item.selected" [disabled]="item.noSelect"
+              [name]="name"
+              [checked]="item.selected"
+              [disabled]="item.noSelect"
               [tippy]="item.tooltip" tippyShowDelay="500" [tippyDisabled]="!item.tooltip" [tippyAllowHtml]="true" [tippyArrow]="true"
             >
               <div class="picker-option-contents">
