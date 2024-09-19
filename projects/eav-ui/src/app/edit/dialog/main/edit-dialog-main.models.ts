@@ -62,11 +62,6 @@ export interface SaveEavFormData extends EavPublishStatus {
   Items: EavEntityBundleDto[];
 }
 
-export interface EditDialogMainViewModel {
-  items: EavItem[];
-  viewInitiated: boolean;
-}
-
 export interface Prefetch {
   Adam: PrefetchAdams;
 

@@ -1,4 +1,5 @@
 <!-- TODO_(mdc-migration) -->
+ <!-- TODO:: Error if viewModel removed, data not in use -->
 @if (viewModel$ | async; as vm) {
 <div style="position: relative" mat-dialog__container appToggleDebug>
   <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': hideHeader() }">
@@ -20,7 +21,7 @@
           @if (!delayForm())
           {
             <div class="eav-layout-grid__cell--span-12" appFormSlide>
-              @for (item of vm.items; track item.Entity.Guid)
+              @for (item of  items(); track item.Entity.Guid)
               {
                 <!-- TODO:: Items as Signal bug -->
                 <!-- @for (item of items(); track trackByFn($index, item)) { -->
@@ -33,7 +34,7 @@
         </div>
       </div>
     </div>
-    @if (vm.viewInitiated)
+    @if (viewInitiated())
     {
       <extended-fab-speed-dial [disabled]="saveButtonDisabled()">
         <ng-template extendedFabSpeedDialTriggerContent>

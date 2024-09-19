@@ -1,15 +1,14 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, HostBinding, OnInit, signal } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { getHistoryItems } from './item-history.helpers';
 import { CompareWith } from './models/compare-with.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,11 +30,10 @@ import { transient } from '../core';
     MatOptionModule,
     MatExpansionModule,
     MatPaginatorModule,
-    AsyncPipe,
     DatePipe,
   ],
 })
-export class ItemHistoryComponent implements OnInit, OnDestroy {
+export class ItemHistoryComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   pageSizeOptions = [10, 20, 50];
@@ -43,23 +41,12 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   expandedAttributes: Record<string, boolean> = {};
 
   #itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
-  #versions$ = new BehaviorSubject<Version[]>(null);
-  #page$ = new BehaviorSubject(1);
-  #pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
-  #compareWith$ = new BehaviorSubject<CompareWith>('live');
-  // TODO: @2dg - this should be easy to get rid of #remove-observables
-  #historyItems$ = combineLatest([this.#versions$, this.#page$, this.#pageSize$, this.#compareWith$]).pipe(
-    map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
-  );
-  // TODO: @2dg - this should be easy to get rid of #remove-observables
-  viewModel$ = combineLatest([this.#versions$, this.#historyItems$, this.#pageSize$, this.#compareWith$]).pipe(
-    map(([versions, historyItems, pageSize, compareWith]) => ({
-      length: versions?.length,
-      historyItems,
-      pageSize,
-      compareWith,
-    })),
-  );
+
+  version = signal<Version[]>(undefined);
+  page = signal<number>(1);
+  pageSize = signal<number>(this.pageSizeOptions[0]);
+  compareWith = signal<CompareWith>('live');
+  historyItems = computed(() => getHistoryItems(this.version(), this.page(), this.pageSize(), this.compareWith()));
 
   private versionsService = transient(VersionsService);
 
@@ -71,15 +58,8 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.versionsService.fetchVersions(this.#itemId).subscribe(versions => {
-      this.#versions$.next(versions);
+      this.version.set(versions);
     });
-  }
-
-  ngOnDestroy() {
-    this.#versions$.complete();
-    this.#page$.complete();
-    this.#pageSize$.complete();
-    this.#compareWith$.complete();
   }
 
   closeDialog() {
@@ -87,7 +67,7 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   }
 
   compareChange(newCompareWith: CompareWith) {
-    this.#compareWith$.next(newCompareWith);
+    this.compareWith.set(newCompareWith);
   }
 
   panelExpandedChange(expand: boolean, versionNumber: number) {
@@ -100,14 +80,14 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   pageChange(event: PageEvent) {
     const newPage = event.pageIndex + 1;
-    if (newPage !== this.#page$.value) {
+    if (newPage !== this.page()) {
       this.expandedPanels = {};
       this.expandedAttributes = {};
-      this.#page$.next(newPage);
+      this.page.set(newPage);
     }
     const newPageSize = event.pageSize;
-    if (newPageSize !== this.#pageSize$.value) {
-      this.#pageSize$.next(newPageSize);
+    if (newPageSize !== this.pageSize()) {
+      this.pageSize.set(newPageSize);
     }
   }
 
