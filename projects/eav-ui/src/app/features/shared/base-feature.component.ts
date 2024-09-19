@@ -7,37 +7,39 @@ import { FeatureSummary } from '../models';
 
 @Directive()
 export class FeatureComponentBase {
+  // TODO: @2dg - convert this to signal using 'input(...)'
   /** Feature NameId to check */
   @Input()
   public set featureNameId(value: string) { this.featureNameId$.next(value); }
   protected featureNameId$ = new BehaviorSubject<string>(null);
 
+  // TODO: @2dg - convert this to signal using 'input(...)'
   /** By default, it will show if it's false - here we can change it to show if true */
   @Input()
   public set showIf(value: boolean) { this.showIf$.next(value == true); }
   protected showIf$ = new BehaviorSubject<boolean>(false);
 
-  // TODO: @SDV - MAKE REACTIVE - SEE text-info-component example
-  // featureOn: boolean = true;
-  feature$: Observable<FeatureSummary>;
-  show$: Observable<boolean>;
-
-  private dialog = inject(MatDialog);
-  private viewContainerRef = inject(ViewContainerRef);
-  private changeDetectorRef = inject(ChangeDetectorRef);
-  protected featuresService = inject(FeaturesScopedService);
+  #dialog = inject(MatDialog);
+  #viewContainerRef = inject(ViewContainerRef);
+  #changeDetectorRef = inject(ChangeDetectorRef);
+  #featuresService = inject(FeaturesScopedService);
 
   constructor() {
     this.feature$ = this.featureNameId$.pipe(
-      switchMap(featName => this.featuresService.get$(featName))
+      switchMap(featName => this.#featuresService.get$(featName))
     );
     this.show$ = combineLatest([this.feature$, this.showIf$]).pipe(
       map(([feat, showIf]) => showIf == (feat?.isEnabled ?? false))
     );
   }
 
+  // TODO: @2dg - convert this to signal
+  // Note that this is a base class, so the change will affect a few components
+  feature$: Observable<FeatureSummary>;
+  show$: Observable<boolean>;
+
   openDialog() {
-    openFeatureDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef, this.changeDetectorRef);
+    openFeatureDialog(this.#dialog, this.featureNameId$.value, this.#viewContainerRef, this.#changeDetectorRef);
   }
 }
 

@@ -3,7 +3,11 @@
   <ng-container #fieldComponent></ng-container>
   @if (requiredFeatures().length > 0) {
     <div class="feature-warning">
-      This uses features which are not licensed: {{ requiredFeatures().join(', ') }}
+      This uses features which are not licensed:
+      @for (feature of requiredFeatures(); track feature) {
+        {{ feature }}
+        <app-feature-icon [featureNameId]="feature"></app-feature-icon>
+      }
     </div>
   }
 </div>

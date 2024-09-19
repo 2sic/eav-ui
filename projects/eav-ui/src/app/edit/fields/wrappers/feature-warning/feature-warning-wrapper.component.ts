@@ -3,6 +3,8 @@ import { FieldState } from '../../field-state';
 import { WrappersCatalog } from '../wrappers.constants';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { NgClass } from '@angular/common';
+import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { FeatureIconComponent } from '../../../../features/feature-icon/feature-icon.component';
 
 @Component({
   selector: WrappersCatalog.FeatureWarningWrapper,
@@ -11,23 +13,24 @@ import { NgClass } from '@angular/common';
   standalone: true,
   imports: [
     NgClass,
+    FeatureIconComponent,
   ],
 })
 export class FeatureWarningWrapperComponent {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  protected fieldState = inject(FieldState);
+  #fieldState = inject(FieldState);
+
+  #features = inject(FeaturesScopedService);
+
+  constructor() { }
 
   requiredFeatures = computedObj('requiredFeatures', () => {
-    const req = this.fieldState.requiredFeatures();
+    const req = this.#fieldState.requiredFeatures();
     if (req.length === 0) return req;
-    // TODO: CHECK IF FEATURE IS ENABLED
-    return req;
+    // Check if feature is enabled
+    return req.filter(f => !this.#features.isEnabled(f)());
   });
 
-  constructor() {
-    console.warn('FeatureWarningWrapperComponent was added.');
-  }
-
-  protected basics = this.fieldState.basics;
+  protected basics = this.#fieldState.basics;
 }
