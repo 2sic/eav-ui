@@ -5,35 +5,35 @@ import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { PickerItem } from 'projects/edit-types';
 import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 import { PickerIconHelpComponent } from '../picker-icon-help/picker-icon-help.component';
 import { PickerIconInfoComponent } from '../picker-icon-info/picker-icon-info.component';
 import { FeaturesScopedService } from 'projects/eav-ui/src/app/features/features-scoped.service';
+import { MatRadioButton } from '@angular/material/radio';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 @Component({
-  selector: 'app-picker-checkboxes',
-  templateUrl: './picker-checkboxes.component.html',
-  styleUrls: ['./picker-checkboxes.component.scss'],
+  selector: 'app-picker-radio',
+  templateUrl: './picker-radio.component.html',
+  styleUrls: ['./picker-radio.component.scss'],
   standalone: true,
   imports: [
     MatFormFieldModule,
     NgClass,
     MatRippleModule,
     FlexModule,
-    MatCheckbox,
+    MatRadioButton,
     TippyDirective,
     PickerIconHelpComponent,
     PickerIconInfoComponent,
   ],
 })
-export class PickerCheckboxesComponent extends PickerPartBaseComponent {
+export class PickerRadioComponent extends PickerPartBaseComponent {
 
   constructor(protected featuresSvc: FeaturesScopedService) {
     super();
-    this.fieldState.requireFeature(FeatureNames.PickerUiCheckbox);
+    this.fieldState.requireFeature(FeatureNames.PickerUiRadio);
   }
 
   itemCount = computedObj('itemCount', () => this.selectedItems().length);

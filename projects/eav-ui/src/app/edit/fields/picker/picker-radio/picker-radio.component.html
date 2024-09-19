@@ -17,10 +17,9 @@
 
     <!-- <div> -->
       <!-- <div fxLayout="row" fxLayoutAlign="start center"> -->
-
         @for (item of options(); track item.value) {
           <div>
-            <mat-checkbox
+            <mat-radio-button
               class="picker-option-wrapper"
               (click)="select(item)"
               [checked]="item.selected" [disabled]="item.noSelect"
@@ -33,10 +32,9 @@
                   <app-picker-icon-info [infoBox]="item.info"></app-picker-icon-info>
                 </div>
               </div>
-            </mat-checkbox>
+            </mat-radio-button>
           </div>
         }
-
         
         @if (enableTextEntry()) {
           <span matSuffix class="eav-selection-suffix-inline">

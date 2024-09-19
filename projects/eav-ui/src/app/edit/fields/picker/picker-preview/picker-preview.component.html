@@ -15,7 +15,10 @@
       @if (pickerDisplayMode() === 'checkbox') {
         <app-picker-checkboxes>
         </app-picker-checkboxes>
-
+      }
+      @else if (pickerDisplayMode() === 'radio') {
+        <app-picker-radio>
+        </app-picker-radio>
       }
       @else
       {

@@ -14,6 +14,7 @@ import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging';
 import { PickerCheckboxesComponent } from '../picker-checkboxes/picker-checkboxes.component';
+import { PickerRadioComponent } from '../picker-radio/picker-radio.component';
 
 @Component({
   selector: 'app-picker-preview',
@@ -27,6 +28,7 @@ import { PickerCheckboxesComponent } from '../picker-checkboxes/picker-checkboxe
     PickerSearchComponent,
     PickerTextComponent,
     PickerCheckboxesComponent,
+    PickerRadioComponent,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,

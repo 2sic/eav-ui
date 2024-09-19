@@ -27,3 +27,17 @@ mat-checkbox.picker-option-wrapper .mat-internal-form-field {
 mat-checkbox.picker-option-wrapper .mat-internal-form-field label {
   width: 100% !important;
 }
+
+// Deep styling for Material Radio in the Pickers
+
+mat-radio-button.picker-option-wrapper {
+  width: 100%;
+}
+
+mat-radio-button.picker-option-wrapper .mat-internal-form-field {
+  width: 100% !important;
+}
+
+mat-radio-button.picker-option-wrapper .mat-internal-form-field label {
+  width: 100% !important;
+}
