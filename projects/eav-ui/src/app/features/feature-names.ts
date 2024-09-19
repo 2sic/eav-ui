@@ -12,7 +12,10 @@ export const FeatureNames = {
   ContentSecurityPolicy: 'ContentSecurityPolicy',
   PermissionsByLanguage: 'PermissionsByLanguage',
   FieldShareConfigManagement: 'FieldShareConfigManagement',
-
   AppExportAssetsAdvanced: 'AppExportAssetsAdvanced',
-  
-};
+
+  // Picker features
+  PickerUiCheckbox: 'PickerUiCheckbox',
+  PickerUiRadio: 'PickerUiRadio',
+  PickerSourceCsv: 'PickerSourceCsv',
+} as const /* the as const ensures that the keys/values can be strictly checked */;

@@ -12,4 +12,15 @@ export class ArrayHelpers {
       array.splice(index, 1);
     }
   }
+
+  // probably better: Array.from(new Set(merged));
+  // static distinct<T extends unknown>(array: T[]): T[] {
+  //   return array.filter(onlyUnique);
+  // }
+
 }
+
+
+// function onlyUnique<T extends unknown>(value: T, index: number, array: T[]): boolean {
+//   return array.indexOf(value) === index;
+// }

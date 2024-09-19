@@ -1,0 +1,10 @@
+<!-- <pre>Wrapper.FeatureWarning Start - rEQ1: '{{ requiredFeatures()[0] }}'</pre> -->
+<div [ngClass]="{ mark: requiredFeatures().length }">
+  <ng-container #fieldComponent></ng-container>
+  @if (requiredFeatures().length > 0) {
+    <div class="feature-warning">
+      This uses features which are not licensed: {{ requiredFeatures().join(', ') }}
+    </div>
+  }
+</div>
+<!-- <pre>Wrapper.FeatureWarning End</pre> -->

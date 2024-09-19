@@ -33,7 +33,8 @@ export const AppScopes = {
   App: 'App',
   Site: 'Site',
   Global: 'Global',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
+
 export type AppScope = typeof AppScopes[keyof typeof AppScopes];
 
 export interface DialogContextEnable {

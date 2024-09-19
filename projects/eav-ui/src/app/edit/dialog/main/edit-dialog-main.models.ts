@@ -19,7 +19,7 @@ export const PublishModes = {
   Show: 'show',
   Hide: 'hide',
   Branch: 'branch',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type PublishMode = typeof PublishModes[keyof typeof PublishModes];
 

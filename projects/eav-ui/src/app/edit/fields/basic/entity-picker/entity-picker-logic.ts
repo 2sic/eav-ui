@@ -32,14 +32,14 @@ export class EntityPickerLogic extends FieldLogicBase {
     fs = EntityPickerLogic.maybeOverrideEditRestrictions(fs, tools);
 
     if(fs.DataSources?.length > 0) 
-      dataSources = tools.contentTypeItemService.getMany(fs.DataSources);
+      dataSources = tools.contentTypeItemSvc.getMany(fs.DataSources);
 
     // Transfer configuration
     const dataSource = dataSources[0];
     const sourceIsQuery = dataSource?.Type.Name === PickerConfigs.UiPickerSourceQuery;
     const sourceIsEntity = dataSource?.Type.Name === PickerConfigs.UiPickerSourceEntity;
     // DataSource may not be configured yet, in which case the object is just {}
-    const specs = tools.entityReader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
+    const specs = tools.reader.flatten<UiPickerSourceEntityAndQuery>(dataSource);
     
     // Properties to transfer from both query and entity
     if (sourceIsEntity || sourceIsQuery) {
@@ -88,10 +88,10 @@ export class EntityPickerLogic extends FieldLogicBase {
     fs.PickerDisplayConfiguration ??= [];
 
     if (fs.PickerDisplayConfiguration?.length > 0)
-      pickerDisplayConfigurations = tools.contentTypeItemService.getMany(fs.PickerDisplayConfiguration);
+      pickerDisplayConfigurations = tools.contentTypeItemSvc.getMany(fs.PickerDisplayConfiguration);
 
     if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigs.UiPickerModeTree) {
-      const specsTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
+      const specsTree = tools.reader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
       const pickerTreeConfiguration: UiPickerModeTree = {
         Title: specsTree.Title ?? '',
         ConfigModel: PickerConfigs.UiPickerModeTree,

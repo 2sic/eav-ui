@@ -23,7 +23,7 @@ export const FileUploadMessageTypes = {
   Warning: 0,
   Success: 1,
   Error: 2,
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type FileUploadMessageType = typeof FileUploadMessageTypes[keyof typeof FileUploadMessageTypes];
 
@@ -34,6 +34,6 @@ export const UploadTypes = {
   ContentItem: 3,
   Query: 4,
   View: 5,
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type UploadTypes = typeof UploadTypes[keyof typeof UploadTypes];

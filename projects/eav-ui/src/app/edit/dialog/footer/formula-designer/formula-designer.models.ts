@@ -31,6 +31,6 @@ export const SelectTargets = {
   Entity: 'entityGuid',
   Field: 'fieldValue',
   Target: 'formulaTarget',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type SelectTarget = typeof SelectTargets[keyof typeof SelectTargets];

@@ -51,6 +51,6 @@ export const InputTypeCatalog = {
 
   /** for all situations where we need a fallback; new v16.04 */
   Unknown: 'unknown',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type InputTypeStrict = typeof InputTypeCatalog[keyof typeof InputTypeCatalog];

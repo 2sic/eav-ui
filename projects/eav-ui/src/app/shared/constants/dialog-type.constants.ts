@@ -11,6 +11,6 @@ export const DialogTypeConstants = {
   PipelineDesigner: 'pipeline-designer',
   Replace: 'replace',
   InstanceList: 'instance-list',
-} as const;
+} as const /* the as const ensures that the keys/values can be strictly checked */;
 
 export type DialogTypeConstant = typeof DialogTypeConstants[keyof typeof DialogTypeConstants];

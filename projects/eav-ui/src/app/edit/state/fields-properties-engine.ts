@@ -166,9 +166,9 @@ export class FieldsPropsEngine {
         // Logic Tools are needed when checking for settings defaults etc.
         const logicTools: FieldLogicTools = {
           eavConfig: this.#formConfig.config,
-          entityReader: reader,
+          reader: reader,
           debug: isDebug,
-          contentTypeItemService: this.#contentTypeItemService,
+          contentTypeItemSvc: this.#contentTypeItemService,
         };
         // This factory will generate helpers to validate settings updates
         const updHelperFactory = new FieldSettingsUpdateHelperFactory(
