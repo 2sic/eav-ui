@@ -2,40 +2,41 @@ import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { classLog } from '../../../../../projects/eav-ui/src/app/shared/logging';
 
-
 export class DefaultPaste {
   
-  log = classLog({DefaultPaste});
 
   /** Paste formatted text, e.g. text copied from MS Word */
-  static formattedText: RawEditorOptions = {
-    paste_as_text: false,
-    // paste_enable_default_filters: true,
-    paste_create_paragraphs: true,
-    paste_create_linebreaks: false,
-    paste_force_cleanup_wordpaste: true,
-    paste_use_dialog: true,
-    paste_auto_cleanup_on_paste: true,
-    paste_convert_middot_lists: true,
-    paste_convert_headers_to_strong: false,
-    paste_remove_spans: true,
-    paste_remove_styles: true,
-    paste_preprocess(plugin: any, args: any) {
-      this.log.a('TinyMCE paste_preprocess', {plugin, args});
-    },
-    paste_postprocess(plugin: any, args: any) {
-      this.log.a('TinyMCE paste_postprocess', {plugin, args});
-      try {
-        const anchors = (args.node as HTMLElement).getElementsByTagName('a');
-        for (const anchor of Array.from(anchors)) {
-          if (!anchor.target)
-            anchor.target = '_blank';
+  static formattedText: RawEditorOptions = (() => {
+    const log = classLog({DefaultPaste});
+    return {
+      paste_as_text: false,
+      // paste_enable_default_filters: true,
+      paste_create_paragraphs: true,
+      paste_create_linebreaks: false,
+      paste_force_cleanup_wordpaste: true,
+      paste_use_dialog: true,
+      paste_auto_cleanup_on_paste: true,
+      paste_convert_middot_lists: true,
+      paste_convert_headers_to_strong: false,
+      paste_remove_spans: true,
+      paste_remove_styles: true,
+      paste_preprocess(plugin: any, args: any) {
+        log.a('TinyMCE paste_preprocess', {plugin, args});
+      },
+      paste_postprocess(plugin: any, args: any) {
+        log.a('TinyMCE paste_postprocess', {plugin, args});
+        try {
+          const anchors = (args.node as HTMLElement).getElementsByTagName('a');
+          for (const anchor of Array.from(anchors)) {
+            if (!anchor.target)
+              anchor.target = '_blank';
+          }
+        } catch (error) {
+          console.error('Error in paste postprocess:', error);
         }
-      } catch (error) {
-        console.error('Error in paste postprocess:', error);
       }
     }
-  };
+  })();
 
   /** Paste image */
   static images(dropzone: Dropzone, adam: Adam): RawEditorOptions {

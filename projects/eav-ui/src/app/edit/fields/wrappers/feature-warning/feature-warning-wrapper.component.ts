@@ -28,8 +28,8 @@ export class FeatureWarningWrapperComponent {
   requiredFeatures = computedObj('requiredFeatures', () => {
     const req = this.#fieldState.requiredFeatures();
     if (req.length === 0) return req;
-    // Check if feature is enabled
-    return req.filter(f => !this.#features.isEnabled(f)());
+    // Check if feature is allowed to be used - NOT if it's enabled
+    return req.filter(f => !this.#features.allowUse[f]());
   });
 
   protected basics = this.#fieldState.basics;
