@@ -1,43 +1,28 @@
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../fields/field-config-set.model';
 import { AbstractControlPro } from './validation.helpers';
 import { UiControl } from '../controls/ui-control';
 
+// prefix for translation keys
+const pfx = 'ValidationMessage.';
+
 export class ValidationMessagesHelpers {
 
   private static validationMessages: Record<string, (config: FieldConfigSet) => string> = {
-    required: (config: FieldConfigSet) => {
-      return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in snackbar
-    },
-    min: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
-    },
-    max: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
-    },
-    minNoItems: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.MinNoItems` : `ValidationMessage.NotValid`;
-    },
-    maxNoItems: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.MaxNoItems` : `ValidationMessage.NotValid`;
-    },
-    pattern: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
-    },
-    decimals: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
-    },
-    jsonError: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.JsonError` : `ValidationMessage.NotValid`;
-    },
-    formulaError: (config: FieldConfigSet) => {
-      return config ? `ValidationMessage.NotValid` : `ValidationMessage.NotValid`;
-    },
+    required: (config: FieldConfigSet) => config ? `${pfx}Required` : `${pfx}RequiredShort` /* short version in snackbar*/,
+    min: (config: FieldConfigSet) => config ? `${pfx}Min` : `${pfx}NotValid`,
+    max: (config: FieldConfigSet) => config ? `${pfx}Max` : `${pfx}NotValid`,
+    minNoItems: (config: FieldConfigSet) => config ? `${pfx}MinNoItems` : `${pfx}NotValid`,
+    maxNoItems: (config: FieldConfigSet) => config ? `${pfx}MaxNoItems` : `${pfx}NotValid`,
+    pattern: (config: FieldConfigSet) => config ? `${pfx}Pattern` : `${pfx}NotValid`,
+    decimals: (config: FieldConfigSet) => config ? `${pfx}Decimals` : `${pfx}NotValid`,
+    jsonError: (config: FieldConfigSet) => config ? `${pfx}JsonError` : `${pfx}NotValid`,
+    formulaError: (config: FieldConfigSet) => config ? `${pfx}NotValid` : `${pfx}NotValid`,
   };
 
   private static warningMessages: Record<string, string> = {
-    jsonWarning: 'ValidationMessage.JsonWarning',
-    formulaWarning: 'ValidationMessage.NotValid',
+    jsonWarning: `${pfx}JsonWarning`,
+    formulaWarning: `${pfx}NotValid`,
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
@@ -74,16 +59,14 @@ export class ValidationMessagesHelpers {
 
   static getWarningMessage(uiControl: UiControl): string {
     const control = uiControl.control as AbstractControlPro;
+    if (control._warning$.value == null) { return ''; }
+    if (!control.dirty && !control.touched) { return ''; }
+    
     let warning = '';
-    if (control._warning$.value == null) { return warning; }
-    if (!control.dirty && !control.touched) { return warning; }
-
     for (const warningKey of Object.keys(control._warning$.value)) {
-      if (warningKey === 'formulaWarning') {
-        warning = control._warning$.value['formulaMessage'] ?? this.warningMessages[warningKey];
-      } else {
-        warning = this.warningMessages[warningKey];
-      }
+      warning = (warningKey === 'formulaWarning')
+        ? control._warning$.value['formulaMessage'] ?? this.warningMessages[warningKey]
+        : this.warningMessages[warningKey];
       if (warning) break;
     }
     return warning;
