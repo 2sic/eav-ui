@@ -25,7 +25,7 @@ const FieldUnwrap = /[\[\]]/ig;
 @Injectable()
 export class FieldMask extends ServiceBase /* for field-change subscription */ {
   
-  log = classLog({FieldMask}, logSpecs, true);
+  log = classLog({FieldMask}, logSpecs);
 
   #fieldState = inject(FieldState);
   #formConfig = inject(FormConfigService);

@@ -6,12 +6,13 @@ import { PickerFeatures } from './picker-features.model';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
-import { convert, getWith } from '../../../core';
+import { getWith } from '../../../core';
 
 const logSpecs = {
   all: true,
   addInfosFromSourceForUi: true,
-  fields: ['InputFontFamily']
+  optionsWithMissing: true,
+  fields: ['PickerDisplayMode']
 }
 /**
  * Manages the data for the picker component.
@@ -23,7 +24,7 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs);
+  log = classLog({PickerData}, logSpecs, true);
 
   #translate = inject(TranslateService);
 
@@ -78,33 +79,49 @@ export class PickerData {
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
   public optionsRaw = computedObj('optionsSource', () => (this.ready() ? this.source.optionsOrHints() : null) ?? []);
   
+  /** Overrides / replacements from formulas */
   public optionsOverride = signalObj<PickerItem[]>('overrideOptions', null);
 
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
-  public optionsFinal = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
+  public optionsAll = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
 
   //#endregion
 
   //#region Selected Data
 
+  /** Currently selected items. Must watch for ready. */
+  public selectedRaw = computedObj('selectedState', () => {
+    return !this.ready() ? [] : this.#toSelectedWithUiInfo(this.state.selectedItems(), this.optionsAll());
+  });
+
+  /** Overrides / replacements from formulas */
   public selectedOverride = signalObj<PickerItem[]>('selectedOverride', null);
 
-  /** Signal containing the currently selected items. Must watch for ready. */
-  public selectedRaw = computedObj('selectedState', () => {
-    return !this.ready() ? [] : this.#addInfosFromSourceForUi(this.state.selectedItems(), this.optionsFinal());
-  });
+  /** Currently selected items from override or raw */
+  public selectedAll = computedObj('selectedAll', () => getWith(this.selectedOverride(), o => o ? o : this.selectedRaw()));
+
+  /** First selected item */
+  public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
 
   /** Create a copy of the selected items, so that any changes (in formulas) won't affect the real selected data */
   public selectedCopy(original: PickerItem[]): PickerItem[] {
     return original.map(item => ({ ...item }));
   }
 
+  //#endregion
 
-  /** Signal containing the currently selected items */
-  public selectedAll = computedObj('selectedAll', () => getWith(this.selectedOverride(), o => o ? o : this.selectedRaw()));
+  //#region Options containing missing selected
 
-  /** Signal containing the first selected item */
-  public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
+  public optionsWithMissing = computedObj('optionsWithMissing', () => {
+    const l = this.log.fnIf('optionsWithMissing');
+    const selected = this.selectedAll();
+    const options = this.optionsAll();
+    const missing = selected.filter(s => !options.find(o => o.value === s.value));
+    if (missing.length === 0) return options;
+
+    const result = options.concat(missing);
+    return l.r(result);
+  });
 
   //#endregion
 
@@ -122,7 +139,7 @@ export class PickerData {
     l.end();
   }
 
-  #addInfosFromSourceForUi(selected: PickerItem[], opts: PickerItem[]): PickerItem[] {
+  #toSelectedWithUiInfo(selected: PickerItem[], opts: PickerItem[]): PickerItem[] {
     const l = this.log.fnIfInList('addInfosFromSourceForUi', 'fields', this.name, { selected, opts });
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item

@@ -13,16 +13,11 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
 
   log = classLog({PickerInlineBaseComponent}, logSpecs);
 
-  constructor() {
-    super();
-  }
+  constructor() { super(); }
 
-  options = computedObj('optionsWithSelection', () => {
-    const options = this.pickerData.optionsFinal();
+  options = computedObj('options', () => {
+    const options = this.pickerData.optionsWithMissing();
     const selected = this.selectedItems();
-
-    // First find options which are missing (e.g. a text value which was added manually)
-
 
     // Off all the possible options, mark the ones that are selected
     const final = options.map(o => {

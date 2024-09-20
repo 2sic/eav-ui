@@ -63,7 +63,7 @@ export class FormulaFieldPickerHelper {
       const ver = getVersion(cache);
       return { list: final(), listRaw, ver, verBefore, changed: ver !== verBefore, } satisfies FormulaRunPicker;
     }
-    const options = getSpecs(picker.optionsRaw, picker.optionsFinal, propsBefore.opts?.ver);
+    const options = getSpecs(picker.optionsRaw, picker.optionsAll, propsBefore.opts?.ver);
     const selected = getSpecs(picker.selectedRaw, picker.selectedAll, propsBefore.sel?.ver);
 
     const result: FormulaRunPickers = {
