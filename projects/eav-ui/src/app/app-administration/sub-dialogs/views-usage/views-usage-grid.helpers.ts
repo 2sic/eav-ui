@@ -41,8 +41,8 @@ export function statusCellRenderer(params: ICellRendererParams) {
   if (status == null) return;
   return `
     <div style="height: 100%;display: flex;align-items: center;">
-      ${status.IsVisible ? '<span class="material-icons-outlined">visibility</span>' : '<span class="material-icons-outlined">visibility_off</span>'}
-      ${status.IsDeleted ? '<span style="margin-left: 8px;" class="material-icons-outlined">delete</span>' : ''}
+      ${status.IsVisible ? '<span class="material-symbols-outlined">visibility</span>' : '<span class="material-symbols-outlined">visibility_off</span>'}
+      ${status.IsDeleted ? '<span style="margin-left: 8px;" class="material-symbols-outlined">delete</span>' : ''}
     </div>
   `;
 }

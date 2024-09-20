@@ -220,7 +220,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-                : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
+                : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
               }
               <div class="text">${params.value}</div>
             </div>
