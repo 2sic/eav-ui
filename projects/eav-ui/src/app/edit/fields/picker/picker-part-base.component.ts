@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FieldState } from '../../fields/field-state';
 import { classLog } from '../../../shared/logging';
 import { EditRoutingService } from '../../routing/edit-routing.service';
+import { computedObj } from '../../../shared/signals/signal.utilities';
 
 /**
  * Base class for Picker Part Components.
@@ -45,6 +46,7 @@ export class PickerPartBaseComponent {
   /** All Selected Items */
   protected selectedItems = this.pickerData.selectedAll;
   protected selectedItem = this.pickerData.selectedOne;
+  itemCount = computedObj('itemCount', () => this.selectedItems().length);
 
   /** Field Configuration - from field state */
   protected config = this.fieldState.config;

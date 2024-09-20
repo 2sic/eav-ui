@@ -6,8 +6,6 @@ import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
-import { PickerItem } from '../models/picker-item.model';
-import { computedObj } from '../../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-picker-pills',
@@ -27,5 +25,4 @@ export class PickerPillsComponent extends PickerPartBaseComponent {
 
   constructor() { super(); }
 
-  itemCount = computedObj('itemCount', () => this.selectedItems().length);
 }

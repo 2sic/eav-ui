@@ -1,8 +1,6 @@
-import { inject } from '@angular/core';
 import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { PickerItem } from '../models/picker-item.model';
-import { FeaturesScopedService } from '../../../../features/features-scoped.service';
 import { classLog } from '../../../../shared/logging';
 
 const logSpecs = {
@@ -15,20 +13,16 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
 
   log = classLog({PickerInlineBaseComponent}, logSpecs);
 
-  protected featuresSvc = inject(FeaturesScopedService);
-
   constructor() {
     super();
   }
-
-  itemCount = computedObj('itemCount', () => this.selectedItems().length);
 
   options = computedObj('optionsWithSelection', () => {
     const options = this.pickerData.optionsFinal();
     const selected = this.selectedItems();
 
     // First find options which are missing (e.g. a text value which was added manually)
-    
+
 
     // Off all the possible options, mark the ones that are selected
     const final = options.map(o => {

@@ -15,6 +15,7 @@ import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { classLog } from '../../../../shared/logging';
 import { PickerCheckboxesComponent } from '../picker-checkboxes/picker-checkboxes.component';
 import { PickerRadioComponent } from '../picker-radio/picker-radio.component';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-picker-preview',
@@ -22,6 +23,8 @@ import { PickerRadioComponent } from '../picker-radio/picker-radio.component';
   styleUrls: ['./picker-preview.component.scss'],
   standalone: true,
   imports: [
+    NgTemplateOutlet,
+    NgClass,
     FlexModule,
     MatButtonModule,
     MatMenuModule,
@@ -52,6 +55,11 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
       case 'radio': return 'radio';
       case 'checkbox': return 'checkbox';
       case 'auto-inline':
+        // TODO: Check if the selected exist in the options, if not, default to text
+        const pd = this.fieldState.pickerData;
+
+
+        // Multi-value should automatically use checkboxes
         if (this.allowMultiValue()) return 'checkbox';
         return 'radio';
       case 'list':

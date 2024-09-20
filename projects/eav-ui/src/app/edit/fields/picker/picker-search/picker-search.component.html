@@ -46,7 +46,7 @@
     }
     @if (settings().enableTextEntry)
     {
-      <span matSuffix class="eav-selection-suffix-inline">
+      <span matSuffix>
         <ng-content select="[freeTextButtons]"></ng-content>
       </span>
     }
@@ -61,8 +61,8 @@
     (optionSelected)="optionSelected($event, settings().allowMultiValue, selectedItem())"
     (closed)="onClosed()" (opened)="onOpened(settings().showAsTree)"
   >
-  @if (!settings().showAsTree)
-  {
+    @if (!settings().showAsTree)
+    {
       <!-- List Display Mode -->
       @for (item of filteredItems(); track item)
       {

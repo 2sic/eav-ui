@@ -15,7 +15,7 @@
 <!-- add new entity -->
 @if (showAddNewEntityButtonInDialog())
 {
-  @if (pickerData.state.createEntityTypes().length > 1)
+  @if (pickerData.state.typesForNew().length > 1)
   {
     <div fxLayout="row" fxLayoutAlign="end center">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Picker.New' | translate"
@@ -23,7 +23,7 @@
         <mat-icon>add</mat-icon>
       </button>
       <mat-menu #entityTypesMenu="matMenu">
-        @for (entityType of pickerData.state.createEntityTypes(); track entityType) {
+        @for (entityType of pickerData.state.typesForNew(); track entityType) {
           <button mat-menu-item (click)="openNewEntityDialog(entityType.guid)">
             <span>{{ entityType.label }}</span>
           </button>

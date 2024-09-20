@@ -89,25 +89,3 @@
     }
   }
 }
-
-.eav-selection-suffix-inline {
-  min-width: 80px;
-
-  .mat-icon-button {
-    top: 3px;
-
-    .mat-icon {
-      font-size: 18px;
-    }
-  }
-
-  .active {
-    background-color: $accent-color;
-    color: white;
-
-    &.mat-mdc-icon-button:disabled {
-      background-color: $editUI-label-disabled-color;
-      color: white;
-    }
-  }
-}

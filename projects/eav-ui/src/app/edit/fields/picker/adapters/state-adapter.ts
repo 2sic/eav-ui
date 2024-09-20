@@ -51,7 +51,7 @@ export abstract class StateAdapter {
   public features = signalObj('features', {} as Partial<PickerFeatures>);
 
   /**  List of entity types to create for the (+) button; ATM exclusively used in the new pickers for selecting the source. */
-  public createEntityTypes = computedObj('createEntityTypes', () => {
+  public typesForNew = computedObj('createEntityTypes', () => {
     const types = this.settings().CreateTypes;
     // Get / split the types from the configuration
     const raw = types

@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input, Input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ExtendedModule } from '@angular/flex-layout/extended';
@@ -28,7 +28,9 @@ import { FieldState } from '../../field-state';
 export class PickerTextToggleComponent {
   @Input() csDisabled: boolean;
   @Input() allowText: boolean;
-  @Input() freeTextMode: boolean;
+  isTextMode = input(false);
+
+  showBoth = input(true);
   
   pickerData = inject(FieldState).pickerData;
 

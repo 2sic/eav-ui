@@ -1,14 +1,18 @@
 @if (allowText) {
-  <span matSuffix class="eav-selection-suffix-inline">
-    <button mat-icon-button class="eav-suffix-button" [ngClass]="freeTextMode ? '' : 'active'"
-      [tippy]="'Fields.String.Dropdown' | translate" [disabled]="csDisabled" appClickStopPropagation
-      (click)="freeTextMode ? toggleFreeText(csDisabled) : null">
-      <mat-icon>search</mat-icon>
-    </button>
-    <button mat-icon-button class="eav-suffix-button" [ngClass]="freeTextMode ? 'active' : ''"
-      [tippy]="'Fields.String.Freetext' | translate" [disabled]="csDisabled" appClickStopPropagation
-      (click)="freeTextMode ? null : toggleFreeText(csDisabled)">
-      <mat-icon>text_fields</mat-icon>
-    </button>
+  <span matSuffix class="toggle-buttons">
+    @if (showBoth() || isTextMode()) {
+      <button mat-icon-button class="eav-suffix-button" [ngClass]="isTextMode() ? '' : 'active'"
+        [tippy]="'Fields.String.Dropdown' | translate" [disabled]="csDisabled" appClickStopPropagation
+        (click)="isTextMode() ? toggleFreeText(csDisabled) : null">
+        <mat-icon>search</mat-icon>
+      </button>
+    }
+    @if (showBoth() || !isTextMode()) {
+      <button mat-icon-button class="eav-suffix-button" [ngClass]="isTextMode() ? 'active' : ''"
+        [tippy]="'Fields.String.Freetext' | translate" [disabled]="csDisabled" appClickStopPropagation
+        (click)="isTextMode() ? null : toggleFreeText(csDisabled)">
+        <mat-icon>text_fields</mat-icon>
+      </button>
+    }
   </span>
 }

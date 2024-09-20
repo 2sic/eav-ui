@@ -6,7 +6,7 @@
     } @else {
       <input matInput [required]="basics().required" [formControlName]="fieldState.name" [placeholder]="basics().placeholder">
     }
-    <div matSuffix class="eav-selection-suffix-inline">
+    <div matSuffix>
       <ng-content select="[freeTextButtons]"></ng-content>
     </div>
     <mat-label>{{ basics().label }}</mat-label>
