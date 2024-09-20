@@ -11,13 +11,12 @@ export class DataAdapterEntity extends DataAdapterEntityBase {
 
   protected dataSourceRaw = transient(DataSourceEntity);
 
-  onAfterViewInit(): void {
-    super.onAfterViewInit();
+  override syncParams(): void {
     this.dataSourceRaw.setParams(this.contentType());
   }
 
   fetchItems(): void {
-    this.dataSourceRaw.setParams(this.contentType());
+    this.syncParams();
     this.dataSource().triggerGetAll();
   }
 }

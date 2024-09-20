@@ -6,11 +6,19 @@ import { computedObj, signalObj } from '../../../../shared/signals/signal.utilit
 import { StateAdapter } from './state-adapter';
 import { PickerItem } from '../models/picker-item.model';
 import { ClassLogger } from '../../../../shared/logging';
+import { DebugFields } from '../../../edit-debug';
 
 export abstract class DataAdapterBase {
   
   /** Log Specs to be used as a basis for all inheriting classes */
-  static logSpecs = { all: false, setupEmpty: true, connectState: false, fetchItems: false };
+  static logSpecs = {
+    all: false,
+    setupEmpty: true,
+    connectState: false,
+    initPrefetch: true,
+    fetchItems: false,
+    fields: [...DebugFields],
+  };
 
   log: ClassLogger<typeof DataAdapterBase.logSpecs>;
 
@@ -44,18 +52,14 @@ export abstract class DataAdapterBase {
     return l.rSilent(this);
   }
 
-  init(callerName: string) { }
-
-  public linkLog(log: ClassLogger): this {
-    if (!this.log.enabled)
-      this.log.inherit(log);
-    return this;
-  };
-
   //#endregion
 
+  /** Sync params - should be implemented eg. in Entity / Query */
+  abstract syncParams(): void;
 
-  onAfterViewInit(): void { }
+  onAfterViewInit(): void {
+    this.syncParams();
+  }
 
   abstract initPrefetch(prefetchGuids: string[]): void;
 

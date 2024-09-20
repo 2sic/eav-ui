@@ -31,6 +31,8 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
   protected group = inject(EntityFormStateService).formGroup;
   #entityService = transient(EntityService);
 
+  protected name = this.fieldState.name;
+
   //#endregion
 
   /** Content Type Mask */
@@ -72,13 +74,14 @@ export abstract class DataAdapterEntityBase extends DataAdapterBase {
     const ds = this.dataSource();
     const deleted = this.#deletedItemsGuids();
     const items = ds.data().filter(item => !deleted.some(guid => guid === item.value));
-    // this.log.a('computing optionsOrHints');
     return ds.loading()
       ? [PickerItemFactory.message(this.translate, 'Fields.Picker.Loading'), ...items]
       : items;
   });
 
   initPrefetch(prefetchGuids: string[]): void {
+    this.syncParams();
+    this.log.fnIfInList('initPrefetch', 'fields', this.name, { prefetchGuids });
     (this.dataSource() as DataSourceEntityQueryBase).initPrefetch?.(prefetchGuids);
   }
 

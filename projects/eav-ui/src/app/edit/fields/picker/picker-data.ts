@@ -26,7 +26,7 @@ export class PickerData {
 
   //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData}, logSpecs, true);
+  log = classLog({PickerData}, logSpecs);
 
   #translate = inject(TranslateService);
 

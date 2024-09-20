@@ -34,6 +34,8 @@ export class DataAdapterEmpty extends DataAdapterBase {
   /** should never be needed as we can't add new data */
   override forceReloadData(missingData: string[]): void { }
 
+  override syncParams(): void { };
+
   fetchItems(): void {
     this.log.a('fetchItems');
     this.dataSource().triggerGetAll();

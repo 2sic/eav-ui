@@ -25,14 +25,13 @@ export class DataAdapterQuery extends DataAdapterEntityBase {
     return fieldMask;
   });
 
-  onAfterViewInit(): void {
-    super.onAfterViewInit();
+  override syncParams(): void {
     this.dataSourceRaw.setParams(this.#paramsMaskLazy()?.result());
   }
 
   fetchItems(): void {
-    this.log.a('fetchItems');
-    this.dataSourceRaw.setParams(this.#paramsMaskLazy()?.result());
+    const l = this.log.fnIfInList('fetchItems', 'fields', this.name);
+    this.syncParams();
     // note: it's kind of hard to produce this error, because the config won't save without a query
     if (!this.fieldState.settings().Query) {
       const errors = [PickerItemFactory.placeholder(this.translate, 'Fields.Picker.QueryNotDefined')];
