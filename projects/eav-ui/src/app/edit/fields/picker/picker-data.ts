@@ -6,6 +6,7 @@ import { PickerFeatures } from './picker-features.model';
 import { DataAdapterBase } from './adapters/data-adapter-base';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
+import { convert, getWith } from '../../../core';
 
 const logSpecs = {
   all: true,
@@ -75,18 +76,12 @@ export class PickerData {
   ready = signalObj('sourceIsReady', false);
 
   /** Options to show in the picker. Can also show hints if something is wrong. Must be initialized at setup */
-  public optionsRaw = computedObj('optionsSource', () => {
-    const ready = this.ready();
-    return (ready ? this.source.optionsOrHints() : null) ?? [];
-  });
+  public optionsRaw = computedObj('optionsSource', () => (this.ready() ? this.source.optionsOrHints() : null) ?? []);
   
   public optionsOverride = signalObj<PickerItem[]>('overrideOptions', null);
 
   /** Final Options to show in the picker and to use to calculate labels of selected etc. */
-  public optionsFinal = computedObj('optionsFinal', () => {
-    const override = this.optionsOverride();
-    return override ? override : this.optionsRaw();
-  });
+  public optionsFinal = computedObj('optionsFinal', () => getWith(this.optionsOverride(), o => o ? o : this.optionsRaw()));
 
   //#endregion
 
@@ -94,23 +89,19 @@ export class PickerData {
 
   public selectedOverride = signalObj<PickerItem[]>('selectedOverride', null);
 
-  /** Signal containing the currently selected items */
+  /** Signal containing the currently selected items. Must watch for ready. */
   public selectedRaw = computedObj('selectedState', () => {
-    // watch ready to rerun once initialized
-    const ready = this.ready();
-    return !ready ? [] : this.#addInfosFromSourceForUi(this.state.selectedItems(), this.optionsFinal());
+    return !this.ready() ? [] : this.#addInfosFromSourceForUi(this.state.selectedItems(), this.optionsFinal());
   });
 
+  /** Create a copy of the selected items, so that any changes (in formulas) won't affect the real selected data */
   public selectedCopy(original: PickerItem[]): PickerItem[] {
     return original.map(item => ({ ...item }));
   }
 
 
   /** Signal containing the currently selected items */
-  public selectedAll = computedObj('selectedAll', () => {
-    const override = this.selectedOverride();
-    return override ? override : this.selectedRaw();
-  });
+  public selectedAll = computedObj('selectedAll', () => getWith(this.selectedOverride(), o => o ? o : this.selectedRaw()));
 
   /** Signal containing the first selected item */
   public selectedOne = computedObj('selectedOne', () => this.selectedAll()[0] ?? null);
@@ -118,11 +109,7 @@ export class PickerData {
   //#endregion
 
   /** Signal containing the features of the picker, basically to accumulate features such as "canEdit" */
-  public features = computedObj('features', () => {
-    const fromSource = this.source.features();
-    const fromState = this.state.features();
-    return PickerFeatures.merge(fromSource, fromState);
-  });
+  public features = computedObj('features', () => PickerFeatures.merge(this.source.features(), this.state.features()));
 
 
   public addNewlyCreatedItem(result: Record<string, number>) {

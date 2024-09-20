@@ -26,6 +26,11 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
   options = computedObj('optionsWithSelection', () => {
     const options = this.pickerData.optionsFinal();
     const selected = this.selectedItems();
+
+    // First find options which are missing (e.g. a text value which was added manually)
+    
+
+    // Off all the possible options, mark the ones that are selected
     const final = options.map(o => {
       const isSelected = selected.find((s) => s.value === o.value);
       return { ...o, selected: !!isSelected };
