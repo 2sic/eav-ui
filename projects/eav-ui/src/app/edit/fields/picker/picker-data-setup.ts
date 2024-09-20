@@ -44,17 +44,11 @@ export class PickerDataSetup {
    * Reason is that objects created later on through DI will need the FieldState and other context objects to be injected.
    */
   setupPickerData(pickerData: PickerData, fieldState: FieldState<any>): PickerData {
-    // this.#setupPickerAdapters(pickerData, fieldState);
-  //   pickerData.source.onAfterViewInit()
-  //   return pickerData;
-  // }
-
-  // #setupPickerAdapters(pickerData: PickerData, fieldState: FieldState<any>): PickerData {
     const inputType = fieldState.config.inputTypeSpecs.inputType;
     const l = this.log.fn('createPickerAdapters', { pickerData, fieldState, inputType });
 
     // First get the state, since the sources will depend on it.
-    const state = this.#getStateAdapter(inputType).linkLog(this.log);
+    const state = this.#getStateAdapter(inputType);
 
     const dataSourceType = fieldState.settings().DataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);

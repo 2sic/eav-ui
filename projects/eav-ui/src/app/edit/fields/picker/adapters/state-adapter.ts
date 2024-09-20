@@ -35,12 +35,6 @@ export abstract class StateAdapter {
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
 
   constructor() { }
-  
-  public linkLog(log: ClassLogger): this {
-    if (!this.log.enabled)
-      this.log.inherit(log);
-    return this;
-  };
 
   //#endregion
 
