@@ -27,7 +27,7 @@ import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.di
 import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
 import { transient } from '../../../core';
 import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
-import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
+import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
 import { FormConfigService } from '../../form/form-config.service';
 import { FormsStateService } from '../../form/forms-state.service';
 import { EditRoutingService } from '../../routing/edit-routing.service';
@@ -279,7 +279,7 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       this.formBuilderRefs.forEach(formBuilderRef => {
         if (!formBuilderRef.form.invalid)
           return;
-        formErrors.push(ValidationMessagesHelpers.validateForm(formBuilderRef.form));
+        formErrors.push(ValidationMsgHelper.validateForm(formBuilderRef.form));
       });
 
       const fieldErrors: FieldErrorMessage[] = [];

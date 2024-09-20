@@ -23,18 +23,18 @@ import { PickerRadioComponent } from '../picker-radio/picker-radio.component';
   standalone: true,
   imports: [
     FlexModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    TranslateModule,
+    TippyDirective,
     PickerPillsComponent,
     PickerTextToggleComponent,
     PickerSearchComponent,
     PickerTextComponent,
     PickerCheckboxesComponent,
     PickerRadioComponent,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
     FieldHelperTextComponent,
-    TranslateModule,
-    TippyDirective,
   ],
 })
 export class PickerPreviewComponent extends PickerPartBaseComponent {
@@ -43,11 +43,11 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
 
   constructor() { super(); }
 
-  pickerDisplayMode = this.fieldState.setting('PickerDisplayMode');
+  #pickerMode = this.fieldState.setting('PickerDisplayMode');
 
   mode = computedObj('mode', () => {
     if (this.isInFreeTextMode()) return 'text';
-    const pdm = this.pickerDisplayMode();
+    const pdm = this.#pickerMode();
     switch (pdm) {
       case 'radio': return 'radio';
       case 'checkbox': return 'checkbox';
@@ -59,6 +59,11 @@ export class PickerPreviewComponent extends PickerPartBaseComponent {
         if (this.selectedItems().length > 1) return 'pills';
         return 'search';
     }
+  });
+
+  skipHelpText = computedObj('helpTextOnTop', () => {
+    const mode = this.mode();
+    return mode === 'radio' || mode === 'checkbox';
   });
 
   mySettings = computedObj('mySettings', () => {

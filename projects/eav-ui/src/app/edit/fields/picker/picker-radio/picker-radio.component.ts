@@ -9,6 +9,7 @@ import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { PickerInlineBaseComponent } from '../picker-checkboxes/picker-inline-base.component';
 import { TippyDirective } from '../../../../shared/directives/tippy.directive';
 import { FeatureNames } from '../../../../features/feature-names';
+import { FieldHelperTextComponent } from '../../help-text/field-help-text.component';
 
 @Component({
   selector: 'app-picker-radio',
@@ -17,12 +18,12 @@ import { FeatureNames } from '../../../../features/feature-names';
   standalone: true,
   imports: [
     MatFormFieldModule,
-    NgClass,
     MatRippleModule,
     FlexModule,
-    MatRadioGroup,
     MatRadioButton,
+    NgClass,
     TippyDirective,
+    FieldHelperTextComponent,
     PickerIconHelpComponent,
     PickerIconInfoComponent,
   ],

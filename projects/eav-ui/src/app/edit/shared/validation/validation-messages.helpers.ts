@@ -6,7 +6,7 @@ import { UiControl } from '../controls/ui-control';
 // prefix for translation keys
 const pfx = 'ValidationMessage.';
 
-export class ValidationMessagesHelpers {
+export class ValidationMsgHelper {
 
   private static validationMessages: Record<string, (config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => config ? `${pfx}Required` : `${pfx}RequiredShort` /* short version in snackbar*/,
@@ -42,7 +42,7 @@ export class ValidationMessagesHelpers {
   }
 
   /** Calculates error message */
-  static getErrorMessage(uiControl: UiControl, config: FieldConfigSet): string {
+  static getErrors(uiControl: UiControl, config: FieldConfigSet): string {
     const control = uiControl.control;
     if (!control.invalid) return '';
     if (!control.dirty && !control.touched) return '';
@@ -57,7 +57,7 @@ export class ValidationMessagesHelpers {
     return '';
   }
 
-  static getWarningMessage(uiControl: UiControl): string {
+  static getWarnings(uiControl: UiControl): string {
     const control = uiControl.control as AbstractControlPro;
     if (control._warning$.value == null) { return ''; }
     if (!control.dirty && !control.touched) { return ''; }

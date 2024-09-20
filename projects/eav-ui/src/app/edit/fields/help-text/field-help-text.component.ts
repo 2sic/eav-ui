@@ -1,4 +1,4 @@
-import { Component, Input, computed, inject } from '@angular/core';
+import { Component, Input, inject, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChangeAnchorTargetDirective } from '../directives/change-anchor-target.directive';
 import { FlexModule } from '@angular/flex-layout/flex';
@@ -6,9 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { FieldState } from '../field-state';
-import { ValidationMessagesHelpers } from '../../shared/validation/validation-messages.helpers';
+import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
-import { SignalEquals } from '../../../shared/signals/signal-equals';
+import { computedObj } from '../../../shared/signals/signal.utilities';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -30,16 +30,37 @@ export class FieldHelperTextComponent {
   @Input() disableError = false;
   @Input() hyperlinkDefaultWrapperFix = false;
 
+  /** Make the control "flat" to not take space if there is nothing to show. */
+  flatIfEmpty = input(false);
+
   protected fieldState = inject(FieldState);
 
-  invalidControl = computed(() => this.fieldState.ui().invalid);
-  disabledControl = computed(() => this.fieldState.ui().disabled);
+  constructor() { }
 
   protected settings = this.fieldState.settings;
 
-  protected notes = computed(() => this.settings().Notes, SignalEquals.string);
+  #invalid = computedObj('invalid', () => this.fieldState.ui().invalid);
+  disabled = computedObj('disabled', () => this.fieldState.ui().disabled);
 
-  isFullText = false;
+  showErrors = computedObj('showErrors', () => this.#invalid() && !this.disableError);
+
+  notes = computedObj('notes', () => this.settings().Notes);
+
+  isEmpty = computedObj('isEmpty', () => !this.notes() && !this.showErrors());
+
+  errorMessage = computedObj('errorMessage', () => ValidationMsgHelper.getErrors(this.fieldState.ui(), this.fieldState.config));
+
+  warningMessage = computedObj('warningMessage', () => ValidationMsgHelper.getWarnings(this.fieldState.ui()));
+
+  /**
+   * Show the control if:
+   * - it's not empty (which already checks if it has errors) 
+   * - and if it doesn't have warnings
+   * - and flat wasn't preferred
+   */
+  show = computedObj('show', () => !this.isEmpty() || this.warningMessage() || !this.flatIfEmpty());
+
+  showExpand = true;
 
   /** Don't toggle if clicked on an anchor tag or it's children */
   toggleHint(event: MouseEvent) {
@@ -52,14 +73,6 @@ export class FieldHelperTextComponent {
       if (target.nodeName.toLocaleLowerCase() === 'a') return;
     }
 
-    this.isFullText = !this.isFullText;
-  }
-
-  getErrorMessage() {
-    return ValidationMessagesHelpers.getErrorMessage(this.fieldState.ui(), this.fieldState.config);
-  }
-
-  getWarningMessage() {
-    return ValidationMessagesHelpers.getWarningMessage(this.fieldState.ui());
+    this.showExpand = !this.showExpand;
   }
 }

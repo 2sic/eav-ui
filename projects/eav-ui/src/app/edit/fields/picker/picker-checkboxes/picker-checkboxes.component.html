@@ -8,6 +8,7 @@
     }">
     {{ basics().labelWithRequired }}
   </mat-label>
+  <app-field-helper-text [flatIfEmpty]="true"></app-field-helper-text>
   <!-- <div (click)="expandDialog()"
     [ngClass]="{
     'c-ew__preview--invalid' : ui().touchedAndInvalid,

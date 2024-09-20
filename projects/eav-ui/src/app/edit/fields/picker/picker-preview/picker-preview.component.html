@@ -73,4 +73,10 @@
     }
   </div>
 </div>
-<app-field-helper-text></app-field-helper-text>
+@if (!skipHelpText()) {
+  <app-field-helper-text></app-field-helper-text>
+}
+@else {
+  <!-- Cheap spacer if no help text, should probably be done better some day -->
+  <br>
+}
