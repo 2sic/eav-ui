@@ -1,13 +1,13 @@
 import { UntypedFormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../field-config-set.model';
-import { EntityBasic } from '../../../shared/models/entity-basic';
+import { EntityLightIdentifier } from '../../../shared/models/entity-basic';
 
 export interface PagePickerDialogData {
   config: FieldConfigSet;
   group: UntypedFormGroup;
 }
 
-export interface PageEntity extends EntityBasic {
+export interface PageEntity extends EntityLightIdentifier {
   // Not used ATM
   // Created: string;
   // Modified: string;

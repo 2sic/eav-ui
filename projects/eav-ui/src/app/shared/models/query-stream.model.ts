@@ -1,14 +1,14 @@
-import { EntityBasic } from "./entity-basic";
+import { EntityLightIdentifier } from "./entity-basic";
 
 
 export interface QueryStreams {
   /**
    * The default stream
    */
-  Default: EntityBasic[];
+  Default: EntityLightIdentifier[];
 
   /**
    * Optional other streams
    */
-  [stream: string]: EntityBasic[];
+  [stream: string]: EntityLightIdentifier[];
 }

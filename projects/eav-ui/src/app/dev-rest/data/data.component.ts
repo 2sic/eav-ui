@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TippyDirective } from '../../shared/directives/tippy.directive';
 import { ContentType } from '../../app-administration/models';
-import { EntityBasic } from '../../shared/models/entity-basic';
+import { EntityLightIdentifier } from '../../shared/models/entity-basic';
 import { transient } from '../../core';
 import { EntityService } from '../../shared/services/entity.service';
 
@@ -93,7 +93,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     );
 
     // Get an item of this type for building urls
-    const noDataFound: EntityBasic = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
+    const noDataFound: EntityLightIdentifier = { Id: 0, Guid: '00000000-0000-0000-0000-000000000000', Title: 'no data found' };
     const itemOfThisType$ = this.entityService.getEntities$(
       contentType$.pipe(
         filter(ct => !!ct),

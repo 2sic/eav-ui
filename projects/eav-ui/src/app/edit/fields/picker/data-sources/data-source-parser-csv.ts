@@ -16,7 +16,7 @@ export class DataSourceParserCsv {
       skipEmptyLines: true,
       transformHeader: (header: string) => header.trim(),
       transform: (value: string, header: string) => header == 'Value' ? value : value.trim(),
-      dynamicTyping: true,
+      dynamicTyping: true,  // auto-detect booleans, numbers, etc
     });
 
     // If no data, return empty array

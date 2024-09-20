@@ -29,11 +29,12 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
   });
   
   select(item: PickerItem) {
+    const l = this.log.fn('select', { item });
+    if (item.noSelect) return l.end('noSelect, exit early');
     const allowMulti = this.allowMultiValue();
-    console.log(`select, allowMulti: ${allowMulti}`, item);
+    l.values({ allowMulti });
     if (!allowMulti) {
       this.pickerData.state.set([item.value]);
-      this.log.aIf('select', { item, allowMulti });
       return;
     }
 
@@ -41,8 +42,8 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
     const toggled = before.map(o => o.value === item.value ? { ...o, selected: !o.selected } : o);
     const selected = toggled.filter(o => o.selected);
     const values = selected.map(o => o.value);
-    this.log.aIf('select', { item, allowMulti, before, toggled, selected, values });
     this.pickerData.state.set(values);
+    l.end('ok', { item, allowMulti, before, toggled, selected, values });
   }
 
 }

@@ -75,11 +75,11 @@ export class PickerTreeDataHelper {
 
     // figure out if this node can be expanded
     // todo: first variant isParentChild probably doesn't work yet
-    const currentId = item?.data?.[pId];
+    const currentId = item?.entity?.[pId];
     const expandable = isParentChild
-      ? itemInCorrectStream && (item.data[pcRef]?.length > 0 ?? false)
+      ? itemInCorrectStream && (item.entity[pcRef]?.length > 0 ?? false)
       : itemInCorrectStream && !!allItems.find(x => {
-        return (x.data[cpRef]?.[0]?.[pId] == currentId)
+        return (x.entity[cpRef]?.[0]?.[pId] == currentId)
       }
       );
 
@@ -87,8 +87,8 @@ export class PickerTreeDataHelper {
       ...item,
       level: -1,
       expandable: expandable,
-      parent: item.data[cpRef],
-      children: item.data[pcRef],
+      parent: item.entity[cpRef],
+      children: item.entity[pcRef],
     };
     this.log.a('result', { result });
     return result;
@@ -133,15 +133,15 @@ export class PickerTreeDataHelper {
     const cId = treeConfig.TreeChildIdField;
     const pId = treeConfig.TreeParentIdField;
     if (isParentChild)
-      return item.data[pcRef].map((x: any) => {
+      return item.entity[pcRef].map((x: any) => {
         const child = allItems.find(y => (y as any)[cId] == (x as any)[cId]);
         return child;
       });
     else if (treeConfig.TreeRelationship == RelationshipChildParent) {
-      const itemParentValue = item.data?.[pId];
+      const itemParentValue = item.entity?.[pId];
       // console.log(`RelationshipChildParent - 2dm for parentIdField: '${pId}' on item: '${itemParentValue}' with parent having id field '${cId}' `);
       return allItems.filter(x => {
-        const childParentId = x.data[cpRef]?.[0]?.[pId];
+        const childParentId = x.entity[cpRef]?.[0]?.[pId];
         return childParentId == itemParentValue;
       });
     }

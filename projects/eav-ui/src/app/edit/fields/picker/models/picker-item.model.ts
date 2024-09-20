@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+import { EntityLight } from '../../../../shared/models/entity-basic';
 
 export interface PickerItem {
   /** The title to show in the dropdown */
@@ -70,7 +70,7 @@ export interface PickerItem {
    * The data of the underlying original entity.
    * Used in formulas and field masks for all properties.
    */
-  data?: EntityBasicWithFields;
+  entity?: EntityLight;
 }
 
 export class PickerItemFactory {

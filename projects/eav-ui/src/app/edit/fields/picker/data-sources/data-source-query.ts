@@ -111,7 +111,7 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
   #setDisableEdit<T extends PickerItem>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => {
-        const appId = e.data?.AppId;
+        const appId = e.entity?.AppId;
         e.noEdit = appId != null && appId !== this.#appId;
         e.noDelete = e.noEdit;
       });

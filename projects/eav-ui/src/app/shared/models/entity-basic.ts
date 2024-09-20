@@ -1,4 +1,9 @@
-export interface EntityBasic {
+/**
+ * Lightweight Entity containing all the properties in the Upper-case format.
+ * 
+ * Used to represent a raw/original entity in the system.
+ */
+export interface EntityLightIdentifier {
 
   /**
    * AppId where the entity came from - not provided in most scenarios.
@@ -23,6 +28,9 @@ export interface EntityBasic {
   Title: string;
 }
 
-export interface EntityBasicWithFields extends EntityBasic {
+/**
+ * Lightweight Entity containing all the properties in the original - usually Upper-case - format.
+ */
+export interface EntityLight extends EntityLightIdentifier {
   [key: string]: any;
 }

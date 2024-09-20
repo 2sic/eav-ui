@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { classLog } from '../logging';
-import { EntityBasic } from '../../shared/models/entity-basic';
+import { EntityLightIdentifier } from '../../shared/models/entity-basic';
 import { QueryService } from './query.service';
 import { transient } from '../../core';
 
@@ -32,7 +32,7 @@ export const webApiEntityList = 'admin/entity/list';
    * @param params
    * @returns
    */
-  getEntities$(params: Observable<{ contentTypeName: string }>): Observable<EntityBasic[]> {
+  getEntities$(params: Observable<{ contentTypeName: string }>): Observable<EntityLightIdentifier[]> {
     this.log.fnIf('getEntities');
     return params.pipe(
       filter(p => p != null),
@@ -40,7 +40,7 @@ export const webApiEntityList = 'admin/entity/list';
     );
   }
 
-  private getAvailableEntities(contentTypeName: string, entitiesFilter?: string[]): Observable<EntityBasic[]> {
+  private getAvailableEntities(contentTypeName: string, entitiesFilter?: string[]): Observable<EntityLightIdentifier[]> {
     var log = this.log.fnIf('getAvailableEntities');
     return this.queryService.getEntities({
       contentTypes: [contentTypeName],

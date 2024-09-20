@@ -2,7 +2,7 @@ import { DataSourceHelpers } from './data-source-helpers';
 import { DataSourceMasks } from './data-source-masks.model';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { PickerItem } from '../models/picker-item.model';
-import { EntityBasicWithFields } from '../../../../shared/models/entity-basic';
+import { EntityLight } from '../../../../shared/models/entity-basic';
 import { classLog } from '../../../../shared/logging/logging';
 
 const logSpecs = {
@@ -33,7 +33,7 @@ export class DataSourceMasksHelper {
 
   /** Convert an Entity data to Picker-Item, processing any masks */
   entity2PickerItem({ entity, streamName, mustUseGuid }
-    : { entity: EntityBasicWithFields; streamName: string | undefined; mustUseGuid: boolean; }
+    : { entity: EntityLight; streamName: string | undefined; mustUseGuid: boolean; }
   ): PickerItem {
     const l = this.log.fnIf('entity2PickerItem', { entity, streamName, mustUseGuid });
     // Check if we have masks, if yes
@@ -57,7 +57,7 @@ export class DataSourceMasksHelper {
     if (!masks.hasPlaceholders) {
       const result: PickerItem = {
         id: entity.Id,
-        data: entity,
+        entity: entity,
         value,
         label,
         tooltip: masks.tooltip,
@@ -76,7 +76,7 @@ export class DataSourceMasksHelper {
 
     return l.r({
       id: entity.Id,
-      data: entity,
+      entity: entity,
       value,
       label: finalLabel,
       tooltip,
