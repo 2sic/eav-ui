@@ -37,7 +37,9 @@ export class FormulaContextObject implements FormulaV1Context {
     this.sxc = formula.sxc;
     this.user = formula.user;
 
-    this.app = Object.assign(new FormulaContextApp(specs), specs.runParameters.formula.app);
+    // Build the App, but don't include the getSetting method which would be an empty method
+    const { getSetting, ...partialApp } = specs.runParameters.formula.app;
+    this.app = Object.assign(new FormulaContextApp(specs), partialApp);
 
     this.target = new FormulaContextTarget(specs);
 
@@ -119,6 +121,9 @@ class FormulaContextForm implements FormulaV1CtxForm {
 /**
  * The object containing app context information.
  * Usually on the context.app property.
+ * 
+ * Note that most properties are assigned to this object from outside, which is why we don't initialize them.
+ * This is because they are created once, and don't need to be re-created for each formula run.
  */
 class FormulaContextApp implements FormulaV1CtxApp {
   /** Private variable containing the data used in the getters */
@@ -134,13 +139,12 @@ class FormulaContextApp implements FormulaV1CtxApp {
   isSite: boolean;
   isContent: boolean;
   getSetting(settingPath: string) {
-    const definition = this.#propsData.runParameters.formula;
-    const formConfig = this.#propsData.formConfig;
-    if (definition.version === FormulaVersions.V1) {
+    if (this.#propsData.runParameters.formula.version === FormulaVersions.V1) {
       console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
       return '⚠️ error - see console';
     }
-    const result = formConfig.config.settings.Values[settingPath];
+
+    const result = this.#propsData.formConfig.config.settings.Values[settingPath];
     if (result != null)
       return result;
     console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
