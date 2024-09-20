@@ -7,7 +7,7 @@ import { classLog } from '../logging';
 })
 export class ClickStopPropagationDirective {
 
-  log = classLog({ClickStopPropagationDirective}, null, true);
+  log = classLog({ClickStopPropagationDirective});
 
   // Log constructor to detect that it was really attached/created
   constructor() {
