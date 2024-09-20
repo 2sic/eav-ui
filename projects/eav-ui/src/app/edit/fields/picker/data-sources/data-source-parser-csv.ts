@@ -7,6 +7,7 @@ export class DataSourceParserCsv {
 
   parse(csv: string): PickerOptionCustomExtended[] {
 
+
     const x = Papa.parse<PickerOptionCustomExtended>(csv, {
       header: true,
       skipEmptyLines: true,
@@ -14,6 +15,7 @@ export class DataSourceParserCsv {
       transform: (value: string, header: string) => header == 'Value' ? value : value.trim(),
     });
 
+    // If no data, return empty array
     const data = x?.data;
     if (!data || !Array.isArray(data) || data.length == 0) return [];
 
@@ -23,6 +25,14 @@ export class DataSourceParserCsv {
     if (filtered.length != data.length)
       console.warn('CSV contains rows without a value', { data, filtered });
 
-    return filtered;
+    // Use header to create empty object with all fields
+    const header = x?.meta.fields ?? [];
+    const preEmpty = header.reduce((acc, h) => ({ ...acc, [h]: null }), {}) as { [key: string]: any };
+    const { Value, ...empty } = preEmpty;
+    
+    // Make sure all the rows have all the fields
+    const complete = filtered.map(f => ({ ...empty, ...f }));
+
+    return complete;
   }
 }
