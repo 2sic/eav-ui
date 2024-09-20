@@ -18,6 +18,7 @@ export const logSpecsDataSourceBase = {
   data: false,
   triggerGetAll: false,
   addToRefresh: false,
+  fields: ['InputFontFamily'],
 }
 
 @Injectable()
@@ -27,6 +28,8 @@ export abstract class DataSourceBase extends ServiceBase {
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
+
+  protected fieldName = this.fieldState.name;
 
   constructor() { super(); }
 

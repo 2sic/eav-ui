@@ -29,7 +29,7 @@ export class DataSourceString extends DataSourceBase {
   data = computedObj('data', () => {
     const options = this.settings()._options;
     const maskHelper = this.#dataMaskHelper;
-    const l = this.log.fnIf('data', { options, maskHelper });
+    const l = this.log.fnIfInList('data', 'fields', this.fieldName, { options, maskHelper });
     const result = options.map(option => {
       const entity: EntityBasicWithFields = {
         Id: null,
@@ -37,7 +37,7 @@ export class DataSourceString extends DataSourceBase {
         ...option,  // Must contain at least Title / Value
       };
       const pickerItem = maskHelper.entity2PickerItem({ entity, streamName: null, mustUseGuid: false });
-      l.a('final data', { entity, pickerItem });
+      l.a('one item', { entity, pickerItem });
       return pickerItem;
     });
     return l.r(result);

@@ -43,7 +43,8 @@ export class DataSourceMasksHelper {
     const value = (() => {
       if (mustUseGuid) return entity.Guid;
       const maybe = entity[masks.value];
-      return maybe ? `${maybe}` : entity.Guid;
+      // the value could be an empty string (pickers); not sure if it can be null though
+      return maybe !== undefined ? `${maybe}` : entity.Guid;
     })();
 
     // Figure out Title Value if we don't use masks - fallback is to use the title, or the value with asterisk

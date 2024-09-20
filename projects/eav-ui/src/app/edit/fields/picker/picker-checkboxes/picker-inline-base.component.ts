@@ -3,8 +3,17 @@ import { PickerPartBaseComponent } from '../picker-part-base.component';
 import { computedObj } from '../../../../shared/signals/signal.utilities';
 import { PickerItem } from '../models/picker-item.model';
 import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { classLog } from '../../../../shared/logging';
+
+const logSpecs = {
+  all: true,
+  options: true,
+  select: true,
+};
 
 export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent {
+
+  log = classLog({PickerInlineBaseComponent}, logSpecs);
 
   protected featuresSvc = inject(FeaturesScopedService);
 
@@ -21,6 +30,7 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
       const isSelected = selected.find((s) => s.value === o.value);
       return { ...o, selected: !!isSelected };
     });
+    this.log.aIf('options', { options, selected, final });
     return final as (PickerItem & { selected?: boolean})[];
   });
   
@@ -29,6 +39,7 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
     console.log(`select, allowMulti: ${allowMulti}`, item);
     if (!allowMulti) {
       this.pickerData.state.set([item.value]);
+      this.log.aIf('select', { item, allowMulti });
       return;
     }
 
@@ -36,6 +47,7 @@ export abstract class PickerInlineBaseComponent extends PickerPartBaseComponent 
     const toggled = before.map(o => o.value === item.value ? { ...o, selected: !o.selected } : o);
     const selected = toggled.filter(o => o.selected);
     const values = selected.map(o => o.value);
+    this.log.aIf('select', { item, allowMulti, before, toggled, selected, values });
     this.pickerData.state.set(values);
   }
 

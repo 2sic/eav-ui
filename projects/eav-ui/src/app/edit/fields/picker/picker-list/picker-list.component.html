@@ -18,9 +18,9 @@
       <div
         cdkDrag
         [ngClass]="{
-        'normal-item': !mySettings().allowMultiValue,
-        'dnd-item': mySettings().allowMultiValue,
-        'disabled': ui().disabled
+          'normal-item': !mySettings().allowMultiValue,
+          'dnd-item': mySettings().allowMultiValue,
+          'disabled': ui().disabled
         }">
         <div class="item-title" [ngClass]="{ 'disabled': ui().disabled }">
           @if (mySettings().allowMultiValue) {

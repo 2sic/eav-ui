@@ -7,6 +7,11 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
 
+const logSpecs = {
+  all: true,
+  addInfosFromSourceForUi: true,
+  fields: ['InputFontFamily']
+}
 /**
  * Manages the data for the picker component.
  * This is quite complex, because there are many combinations of where the configuration and data can come from,
@@ -15,13 +20,31 @@ import { classLog } from '../../../shared/logging';
 @Injectable()
 export class PickerData {
 
-  //#region Constructor, Log, Services
+  //#region Constructor, Log, Services, Setup
   
-  log = classLog({PickerData});
+  log = classLog({PickerData}, logSpecs);
 
   #translate = inject(TranslateService);
 
+  name: string;
+
   constructor() { }
+
+  /** Setup to load initial values and initialize the state */
+  public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
+    this.name = name;
+    source.init(name);
+    this.state = state;
+    this.source = source;
+    this.ready.set(true);
+    // 1. Init Prefetch - for Entity Picker
+    // This will place the prefetch items into the available-items list
+    // Otherwise related entities would only show as GUIDs.
+    const initiallySelected = state.selectedItems();
+    this.log.a('setup', { initiallySelected })
+    source.initPrefetch(initiallySelected.map(item => item.value));
+    return this;
+  }
 
   //#endregion
 
@@ -102,21 +125,6 @@ export class PickerData {
   });
 
 
-  /** Setup to load initial values and initialize the state */
-  public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
-    source.init(name);
-    this.state = state;
-    this.source = source;
-    this.ready.set(true);
-    // 1. Init Prefetch - for Entity Picker
-    // This will place the prefetch items into the available-items list
-    // Otherwise related entities would only show as GUIDs.
-    const initiallySelected = state.selectedItems();
-    this.log.a('setup', { initiallySelected })
-    source.initPrefetch(initiallySelected.map(item => item.value));
-    return this;
-  }
-
   public addNewlyCreatedItem(result: Record<string, number>) {
     const newItemGuid = Object.keys(result)[0];
     const l = this.log.fn('addNewlyCreatedItem', { result, newItemGuid });
@@ -128,6 +136,7 @@ export class PickerData {
   }
 
   #addInfosFromSourceForUi(selected: PickerItem[], opts: PickerItem[]): PickerItem[] {
+    const l = this.log.fnIfInList('addInfosFromSourceForUi', 'fields', this.name, { selected, opts });
     const result = selected.map(item => {
       // If the selected item is not in the data, show the raw / original item
       const original = opts.find(e => e.value === item.value);
@@ -148,6 +157,6 @@ export class PickerData {
         noSelect: false,
       } satisfies PickerItem;
     });
-    return result;
+    return l.r(result);
   }
 }

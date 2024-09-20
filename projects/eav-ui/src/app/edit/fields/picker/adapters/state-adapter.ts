@@ -77,8 +77,8 @@ export abstract class StateAdapter {
   public selectedItems = (() => {
     // Computed just to debounce changes on separator and options from field-settings (old picker)
     const sepAndOpts = computedObj('sepAndOpts', () => {
-      const settings = this.settings();
-      return { separator: settings.Separator, options: settings._options };
+      const { Separator, _options } = this.settings();
+      return { separator: Separator, options: _options };
     });
 
     // Find selected items and correct empty value (if there is an empty-string options)

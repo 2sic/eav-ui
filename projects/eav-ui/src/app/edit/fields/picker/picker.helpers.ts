@@ -10,12 +10,12 @@ export function correctStringEmptyValue(
   dropdownOptions: PickerOptionCustom[] // Options are used only for legacy use case is where the value is an empty string
 ): PickerItem[] {
   
-  const log = classLog({correctStringEmptyValue});
+  const log = classLog({correctStringEmptyValue}, null);
 
   const valueAsArray = typeof fieldValue === 'string'
     ? convertValueToArray(fieldValue, separator, dropdownOptions)
     : fieldValue ?? [];
-
+  
   const result = valueAsArray.map(value => {
     const option = dropdownOptions?.find(o => o.Value == value);
     return ({
