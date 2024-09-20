@@ -50,11 +50,11 @@ export class StringPickerLogic extends FieldLogicBase {
       if (typeName === PickerConfigs.UiPickerSourceCustomList) {
         fs.DropdownValuesFormat = 'value-label'; //this is the only format supported by the new picker config
         fs.DropdownValues = (config as UiPickerSourceCustomList).Values ?? '';
-        fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
+        fs._options ??= calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
       } else if (typeName === PickerConfigs.UiPickerSourceCustomCsv) {
         // TODO: THIS should of course also be possible in Entity Pickers
         const csv = (config as UiPickerSourceCustomCsv).Csv;
-        fs._options = new DataSourceParserCsv().parse(csv);
+        fs._options ??= new DataSourceParserCsv().parse(csv);
         fs.requiredFeatures = [FeatureNames.PickerSourceCsv];
       }
     } else

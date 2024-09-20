@@ -1,8 +1,11 @@
 import Papa from 'papaparse';
 import { PickerOptionCustomExtended } from '../../../../../../../edit-types';
+import { classLog } from 'projects/eav-ui/src/app/shared/logging';
 
 export class DataSourceParserCsv {
   
+  log = classLog({DataSourceParserCsv}, { all: false, parse: true }, true);
+
   constructor() { }
 
   parse(csv: string): PickerOptionCustomExtended[] {
@@ -13,6 +16,7 @@ export class DataSourceParserCsv {
       skipEmptyLines: true,
       transformHeader: (header: string) => header.trim(),
       transform: (value: string, header: string) => header == 'Value' ? value : value.trim(),
+      dynamicTyping: true,
     });
 
     // If no data, return empty array
@@ -30,6 +34,8 @@ export class DataSourceParserCsv {
     const preEmpty = header.reduce((acc, h) => ({ ...acc, [h]: null }), {}) as { [key: string]: any };
     const { Value, ...empty } = preEmpty;
     
+    this.log.a('Parsed CSV', { header, empty, data, filtered });
+
     // Make sure all the rows have all the fields
     const complete = filtered.map(f => ({ ...empty, ...f }));
 
