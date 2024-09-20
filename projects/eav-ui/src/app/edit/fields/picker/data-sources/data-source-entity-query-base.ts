@@ -3,7 +3,7 @@ import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, 
 import { DataSourceBase, logSpecsDataSourceBase } from './data-source-base';
 import { Injectable, WritableSignal } from '@angular/core';
 import { DataWithLoading } from '../models/data-with-loading';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { QueryService } from '../../../../shared/services/query.service';
 import { transient } from '../../../../core';
@@ -11,12 +11,14 @@ import { computedObj, signalObj } from '../../../../shared/signals/signal.utilit
 import { ClassLogger } from '../../../../shared/logging';
 
 export const logSpecsDataSourceEntityQueryBase: typeof logSpecsDataSourceBase & any = {
-    ...logSpecsDataSourceBase,
-    initPrefetch: false,
-    getFromBackend: false,
-    addToRefresh: false,
-    loadMoreIntoSignal: false,
-  }
+  ...logSpecsDataSourceBase,
+  all: true,
+  initPrefetch: false,
+  getFromBackend: false,
+  addToRefresh: false,
+  loadMoreIntoSignal: true,
+  ['loadMoreIntoSignal-data']: true,
+}
 
 /**
  * This is the base class for data-sources providing data from
@@ -35,7 +37,6 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   constructor() { super(); }
 
   ngOnDestroy(): void {
-    this.#typeOrParams$.complete();
     this.getAll$.complete();
     super.ngOnDestroy();
   }
@@ -49,7 +50,7 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
    * If there is ever an httpSignal service or something, then this should be migrated.
    */
   #typeOrParams = signalObj<string>('typeOrParams', null);
-  #typeOrParams$ = new Subject<string>();
+  #typeOrParams$ = toObservable(this.#typeOrParams);
   #paramsDebounced$ = this.#typeOrParams$.pipe(distinctUntilChanged());
 
   /** Get the data from a query - all or only the ones listed in the guids */
@@ -136,14 +137,15 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   public override loading = computedObj('loading', () => this.#all().loading || this.#modified().loading) as any;
 
   initPrefetch(entityGuids: string[]): void {
+    const l = this.log.fnIfInList('initPrefetch', 'fields', this.fieldName, { entityGuids });
     const guids = entityGuids.filter(RxHelpers.distinct);
     this.#loadMoreIntoSignal(this.#prefetchNew, guids, 'initPrefetch');
   }
 
   /** Set parameters for retrieval - either contentTypeName or query url parameters */
   setParams(params: string): void {
+    this.log.fnIfInList('setParams', 'fields', this.fieldName, { params });
     this.#typeOrParams.set(params);
-    this.#typeOrParams$.next(params);
   }
 
 
@@ -154,15 +156,17 @@ export abstract class DataSourceEntityQueryBase extends DataSourceBase {
   }
 
   #loadMoreIntoSignal(cache: WritableSignal<DataWithLoading<PickerItem[]>>, additionalGuids: string[], message: string): void {
-    const l = this.log.fnIf('loadMoreIntoSignal', { additionalGuids });
+    const params = this.#typeOrParams();
+    const l = this.log.fnIfInList('loadMoreIntoSignal', 'fields', this.fieldName, { additionalGuids, params });
     if (additionalGuids == null || additionalGuids.length === 0)
       return l.end('no additional guids to load/refresh');
 
     // get existing value and set loading to true
     cache.update(before => ({ data: before.data, loading: true }));
 
-    this.getFromBackend(this.#typeOrParams(), additionalGuids, message)
+    this.getFromBackend(params, additionalGuids, message)
       .subscribe(additions => {
+        const l = this.log.fn('loadMoreIntoSignal-data', { additionalGuids, additions });
         const before = cache();
         cache.update(before => ({
           data: [...new Map([...before.data, ...additions.data].map(item => [item.value, item])).values()],

@@ -11,6 +11,7 @@ import { RxHelpers } from '../../../../shared/rxJs/rx.helpers';
 import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 import { classLog, ClassLogger } from '../../../../shared/logging';
+import { DebugFields } from '../../../edit-debug';
 
 export const logSpecsDataSourceBase = {
   all: false,
@@ -18,7 +19,7 @@ export const logSpecsDataSourceBase = {
   data: false,
   triggerGetAll: false,
   addToRefresh: false,
-  fields: ['InputFontFamily'],
+  fields: [...DebugFields],
 }
 
 @Injectable()

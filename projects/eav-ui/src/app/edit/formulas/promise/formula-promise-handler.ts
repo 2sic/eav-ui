@@ -34,7 +34,7 @@ const logSpecs = {
 @Injectable()
 export class FormulaPromiseHandler {
 
-  log = classLog({FormulaPromiseHandler}, logSpecs, true);
+  log = classLog({FormulaPromiseHandler}, logSpecs);
 
   constructor(private itemService: ItemService) { }
 

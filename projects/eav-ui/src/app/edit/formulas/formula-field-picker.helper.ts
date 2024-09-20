@@ -16,7 +16,7 @@ const logSpecs = {
 
 export class FormulaFieldPickerHelper {
   
-  log = classLog({FormulaFieldPickerHelper}, logSpecs ,true);
+  log = classLog({FormulaFieldPickerHelper}, logSpecs);
 
   constructor(private fieldName: string, private fieldConstants: FieldConstantsOfLanguage, private propsBefore: FieldProps) {
     this.isSpecialPicker = fieldConstants.inputTypeSpecs.isNewPicker

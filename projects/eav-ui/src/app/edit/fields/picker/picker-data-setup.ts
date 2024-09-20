@@ -53,7 +53,7 @@ export class PickerDataSetup {
     const dataSourceType = fieldState.settings().DataSourceType;
     const source = this.#getSourceAdapter(inputType, dataSourceType, state);
 
-    pickerData.setup(this.log.name, state, source);
+    pickerData.setup(fieldState.name, state, source);
     
     // l.end('ok', { state, source });
 
@@ -79,7 +79,7 @@ export class PickerDataSetup {
 
     const dataAdapterType = mapNameToDataAdapter[dsType] ?? DataAdapterEmpty;
     this.#throwIfSourceAdapterNotAllowed(inputType, dataAdapterType);
-    const result = transient(dataAdapterType, this.#injector).linkLog(this.log).connectState(state);
+    const result = transient(dataAdapterType, this.#injector).connectState(state);
     return l.r(result);
   }
 

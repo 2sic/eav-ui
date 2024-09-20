@@ -38,41 +38,42 @@ export class DataSourceQuery extends DataSourceEntityQueryBase {
   /** Get the data from a query - all or only the ones listed in the guids */
   public override getFromBackend(params: string, guids: string[], purposeForLog: string)
     : Observable<DataWithLoading<PickerItem[]>> {
-    var l = this.log.fn('getFromBackend', { params, guids }, purposeForLog);
+    var l = this.log.fnIfInList('getFromBackend', 'fields', this.fieldName, { params, guids }, purposeForLog);
     // If the configuration isn't complete, the query can be empty
-    const sett = this.settings();
+    const sets = this.settings();
     const streamName = this.#streamName();
-    const queryName = sett.Query;
+    const queryName = sets.Query;
     const queryUrl = !!queryName
-      ? queryName.includes('/') ? sett.Query : `${sett.Query}/${streamName}`
+      ? queryName.includes('/') ? sets.Query : `${sets.Query}/${streamName}`
       : null;
 
     l.a('queryUrl', { queryName, streamName, queryUrl })
 
     // If no query, return a dummy item with a message
-    let source: Observable<DataWithLoading<QueryStreams>>;
-    if (!queryUrl)
-      source = of<DataWithLoading<QueryStreams>>({
-        data: {
-          'Default': [
-            {
-              Id: -1,
-              Guid: null,
-              Title: this.#translate.instant('Fields.Picker.QueryNotConfigured'),
-            },
-          ],
-        },
-        loading: false,
+    const source: Observable<DataWithLoading<QueryStreams>> = (() => {
+      if (!queryUrl) {
+        l.a('noQueryUrl - will create dummy item');
+        return of<DataWithLoading<QueryStreams>>({
+          data: {
+            'Default': [
+              {
+                Id: -1,
+                Guid: null,
+                Title: this.#translate.instant('Fields.Picker.QueryNotConfigured'),
+              },
+            ],
+          },
+          loading: false,
+        });
       }
-      );
-    else {
+      l.a('queryUrl for request', { queryUrl });
       // Default case, get the data
-      source = this.querySvc
+      return this.querySvc
         .getAvailableEntities(queryUrl, params, this.fieldsToRetrieve(this.settings()), guids)
         .pipe(
           map(data => ({ data, loading: false } as DataWithLoading<QueryStreams>)),
         );
-    }
+    })();
 
     const result = source.pipe(
       map(set => ({

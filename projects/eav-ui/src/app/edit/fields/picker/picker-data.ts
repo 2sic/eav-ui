@@ -7,12 +7,14 @@ import { DataAdapterBase } from './adapters/data-adapter-base';
 import { computedObj, signalObj } from '../../../shared/signals/signal.utilities';
 import { classLog } from '../../../shared/logging';
 import { getWith } from '../../../core';
+import { DebugFields } from '../../edit-debug';
 
 const logSpecs = {
   all: true,
+  setup: true,
   addInfosFromSourceForUi: true,
   optionsWithMissing: true,
-  fields: ['PickerDisplayMode']
+  fields: [...DebugFields],
 }
 /**
  * Manages the data for the picker component.
@@ -34,8 +36,8 @@ export class PickerData {
 
   /** Setup to load initial values and initialize the state */
   public setup(name: string, state: StateAdapter, source: DataAdapterBase): this {
+    const l = this.log.fnIfInList('setup', 'fields', name, { name, state, source });
     this.name = name;
-    source.init(name);
     this.state = state;
     this.source = source;
     this.ready.set(true);
@@ -43,9 +45,9 @@ export class PickerData {
     // This will place the prefetch items into the available-items list
     // Otherwise related entities would only show as GUIDs.
     const initiallySelected = state.selectedItems();
-    this.log.a('setup', { initiallySelected })
+    l.a('setup', { initiallySelected })
     source.initPrefetch(initiallySelected.map(item => item.value));
-    return this;
+    return l.rSilent(this);
   }
 
   //#endregion
