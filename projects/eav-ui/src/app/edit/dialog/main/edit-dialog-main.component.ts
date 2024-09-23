@@ -1,54 +1,54 @@
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
-import { MatDialogRef, MatDialogActions } from '@angular/material/dialog';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDialogActions, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith } from 'rxjs';
+import { delay, fromEvent, of, startWith } from 'rxjs';
+import { transient } from '../../../core';
 import { BaseComponent } from '../../../shared/components/base.component';
+import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
+import { classLog } from '../../../shared/logging';
+import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
+import { GlobalConfigService } from '../../../shared/services/global-config.service';
+import { computedWithPrev } from '../../../shared/signals/signal.utilities';
+import { UserSettings } from '../../../shared/user/user-settings.service';
+import { LoadIconsService } from '../../assets/icons/load-icons.service';
 import { EntityFormBuilderComponent } from '../../entity-form/entity-form-builder/form-builder.component';
+import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
+import { FormConfigService } from '../../form/form-config.service';
+import { FormDataService } from '../../form/form-data.service';
+import { FormLanguageService } from '../../form/form-language.service';
+import { FormPublishingService } from '../../form/form-publishing.service';
+import { FormsStateService } from '../../form/forms-state.service';
 import { FormulaDesignerService } from '../../formulas/designer/formula-designer.service';
+import { LanguageService } from '../../localization/language.service';
+import { EditRoutingService } from '../../routing/edit-routing.service';
+import { AdamCacheService } from '../../shared/adam/adam-cache.service';
+import { LinkCacheService } from '../../shared/adam/link-cache.service';
+import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
+import { ContentTypeService } from '../../shared/content-types/content-type.service';
+import { InputTypeService } from '../../shared/input-types/input-type.service';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
+import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
+import { ItemService } from '../../state/item.service';
+import { MetadataDecorators } from '../../state/metadata-decorators.constants';
+import { SaveResult } from '../../state/save-result.model';
 import { EditEntryComponent } from '../entry/edit-entry.component';
+import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
+import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
 import { SaveEavFormData } from './edit-dialog-main.models';
+import { FormSlideDirective } from './form-slide.directive';
+import { isCtrlS, isEscape } from './keyboard-shortcuts';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage, SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { EditDialogFooterComponent } from '../footer/edit-dialog-footer.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
-import { FormSlideDirective } from './form-slide.directive';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { EditDialogHeaderComponent } from '../header/edit-dialog-header.component';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { FormDataService } from '../../form/form-data.service';
-import { ToggleDebugDirective } from '../../../shared/directives/toggle-debug.directive';
-import { ExtendedFabSpeedDialImports } from '../../../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.imports';
-import { transient } from '../../../core';
-import { PickerTreeDataHelper } from '../../fields/picker/picker-tree/picker-tree-data-helper';
-import { ValidationMsgHelper } from '../../shared/validation/validation-messages.helpers';
-import { FormConfigService } from '../../form/form-config.service';
-import { FormsStateService } from '../../form/forms-state.service';
-import { EditRoutingService } from '../../routing/edit-routing.service';
-import { LoadIconsService } from '../../assets/icons/load-icons.service';
-import { MetadataDecorators } from '../../state/metadata-decorators.constants';
-import { SaveResult } from '../../state/save-result.model';
-import { GlobalConfigService } from '../../../shared/services/global-config.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ContentTypeItemService } from '../../shared/content-types/content-type-item.service';
-import { ContentTypeService } from '../../shared/content-types/content-type.service';
-import { InputTypeService } from '../../shared/input-types/input-type.service';
-import { ItemService } from '../../state/item.service';
-import { LanguageService } from '../../localization/language.service';
-import { FormLanguageService } from '../../form/form-language.service';
-import { FormPublishingService } from '../../form/form-publishing.service';
-import { AdamCacheService } from '../../shared/adam/adam-cache.service';
-import { LinkCacheService } from '../../shared/adam/link-cache.service';
-import { isCtrlS, isEscape } from './keyboard-shortcuts';
-import { computedWithPrev } from '../../../shared/signals/signal.utilities';
-import { UserSettings } from '../../../shared/user/user-settings.service';
-import { classLog } from '../../../shared/logging';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -87,23 +87,49 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
 
   @ViewChildren(EntityFormBuilderComponent) formBuilderRefs: QueryList<EntityFormBuilderComponent>;
 
-  viewModel$: Observable<any>;
-
-  viewInitiated = signal(false);
-
-  #saveResult: SaveResult;
-
   #globalConfigService = inject(GlobalConfigService);
   #formConfig = inject(FormConfigService);
+
+  #loadIconsService = transient(LoadIconsService);
+  #formDataService = transient(FormDataService);
+
+  protected viewInitiated = signal(false);
+
+  constructor(
+    private dialogRef: MatDialogRef<EditEntryComponent>,
+    private contentTypeItemService: ContentTypeItemService,
+    private contentTypeService: ContentTypeService,
+    private inputTypeService: InputTypeService,
+    private itemService: ItemService,
+    private languageService: LanguageService,
+    private languageStore: FormLanguageService,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService,
+    private editRoutingService: EditRoutingService,
+    private publishStatusService: FormPublishingService,
+    private formsStateService: FormsStateService,
+    private adamCacheService: AdamCacheService,
+    private linkCacheService: LinkCacheService,
+    private formulaDesignerService: FormulaDesignerService,
+  ) {
+    super();
+    this.dialogRef.disableClose = true;
+
+    // Watch to save based on messages from sub-dialogs.
+    effect(() => {
+      const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
+      if (!tryToSave) return;
+      this.saveAll(close);
+    });
+  }
+
+  #saveResult: SaveResult;
 
   protected items = this.itemService.getManySignal(this.#formConfig.config.itemGuids);
 
   protected formsValid = this.formsStateService.formsValidTemp;
   protected saveButtonDisabled = this.formsStateService.saveButtonDisabled;
   protected hideHeader = this.languageStore.getHideHeaderSignal(this.#formConfig.config.formId);
-
-  #loadIconsService = transient(LoadIconsService);
-  #formDataService = transient(FormDataService);
 
   //#region Footer - Show once or more, hide again, and expand footer (extra large footer)
 
@@ -138,33 +164,6 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
       startWith(true)
     ));
 
-  constructor(
-    private dialogRef: MatDialogRef<EditEntryComponent>,
-    private contentTypeItemService: ContentTypeItemService,
-    private contentTypeService: ContentTypeService,
-    private inputTypeService: InputTypeService,
-    private itemService: ItemService,
-    private languageService: LanguageService,
-    private languageStore: FormLanguageService,
-    private snackBar: MatSnackBar,
-    private translate: TranslateService,
-    private editRoutingService: EditRoutingService,
-    private publishStatusService: FormPublishingService,
-    private formsStateService: FormsStateService,
-    private adamCacheService: AdamCacheService,
-    private linkCacheService: LinkCacheService,
-    private formulaDesignerService: FormulaDesignerService,
-  ) {
-    super();
-    this.dialogRef.disableClose = true;
-
-    // Watch to save based on messages from sub-dialogs.
-    effect(() => {
-      const { tryToSave, close } = this.formsStateService.triggerTrySaveAndMaybeClose();
-      if (!tryToSave) return;
-      this.saveAll(close);
-    });
-  }
 
   ngOnInit() {
     this.editRoutingService.init();
@@ -172,21 +171,12 @@ export class EditDialogMainComponent extends BaseComponent implements OnInit, Af
     this.formsStateService.init();
     this.formulaDesignerService.cache.init();
 
-    // Remove after fix
-    // #remove-observables
-    const items$ = this.itemService.getMany$(this.#formConfig.config.itemGuids);
-    this.viewModel$ = combineLatest([items$,]).pipe(
-      map(([items]) => ({
-        items,
-      })),
-    );
     this.#startSubscriptions();
     this.#watchKeyboardShortcuts();
   }
 
   ngAfterViewInit() {
     setTimeout(() => this.viewInitiated.set(true));
-
   }
 
   ngOnDestroy() {
