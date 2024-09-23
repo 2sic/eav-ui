@@ -1,4 +1,4 @@
-import { Component, computed, HostBinding, inject, model, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, model, OnInit, signal } from '@angular/core';
 import { MatDialogActions } from '@angular/material/dialog';
 import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
@@ -34,8 +34,8 @@ export class ExportAppComponent implements OnInit {
 
   appInfo = signal<AppInfo>(null);
 
-  public features = inject(FeaturesScopedService);
-  public expAssetsAdvEnabled = this.features.isEnabled(FeatureNames.AppExportAssetsAdvanced);
+  protected features = inject(FeaturesScopedService);
+  protected expAssetsAdvEnabled = this.features.enabled[FeatureNames.AppExportAssetsAdvanced];
 
   ngOnInit() {
     this.exportAppService.getAppInfo().subscribe(appInfo => this.appInfo.set(appInfo));
@@ -49,8 +49,8 @@ export class ExportAppComponent implements OnInit {
   assetsSite = model(true);
 
   downloadUrl = computed(() => this.exportAppService.exportAppUrl()
-   + `&includeContentGroups=${this.includeContentGroups()}&resetAppGuid=${this.resetAppGuid()}`
-   + `&assetsAdam=${this.assetsAdam()}&assetsSite=${this.assetsSite()}`
+    + `&includeContentGroups=${this.includeContentGroups()}&resetAppGuid=${this.resetAppGuid()}`
+    + `&assetsAdam=${this.assetsAdam()}&assetsSite=${this.assetsSite()}`
   );
 
 }

@@ -73,9 +73,9 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   public appStateAdvanced = false;
   public features = inject(FeaturesScopedService);
 
-  protected lightSpeedEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
-  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
-  protected langPermsEnabled = this.features.isEnabled(FeatureNames.PermissionsByLanguage);
+  protected lightSpeedEnabled = this.features.enabled[FeatureNames.LightSpeed];
+  protected cspEnabled = this.features.enabled[FeatureNames.ContentSecurityPolicy];
+  protected langPermsEnabled = this.features.enabled[FeatureNames.PermissionsByLanguage];
 
   #appInternalsService = transient(AppInternalsService);
 
