@@ -13,19 +13,19 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class HttpServiceBase {
 
-  protected dnnContext = inject(DnnContext);
   protected http = inject(HttpClient);
   protected context = inject(Context);
+  #dnnContext = inject(DnnContext);
 
   constructor() { }
 
   /**
    * Convert a short 2sxc-url into the correct full URL on the system.
    * @param name 2sxc-style short url
-   * @returns 
+   * @returns
    */
   protected apiUrl(name: string) {
-    return this.dnnContext.$2sxc.http.apiUrl(name);
+    return this.#dnnContext.$2sxc.http.apiUrl(name);
   }
 
   /**

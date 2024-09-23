@@ -4,11 +4,10 @@ import { DialogTypeConstants } from '../constants/dialog-type.constants';
 import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
 import { EditForm, EditPrep, ViewOrFileIdentifier } from '../models/edit-form.model';
-import { Context } from './context';
+import { HttpServiceBase } from './http-service-base';
 
 @Injectable()
-export class DialogService {
-  constructor(private context: Context) { }
+export class DialogService extends HttpServiceBase {
 
   openCodeFile(path: string, isShared: boolean, templateId?: number) {
     const dialog = DialogTypeConstants.Develop;
@@ -74,8 +73,8 @@ export class DialogService {
   /** A lot of the link is identical when opening the admin-dialogs in a new window */
   private buildSharedHashParams() {
     const hashParams: DialogHashParams = {
-      ...this.buildHashParam(keyZoneId, this.context.zoneId.toString()),
-      ...this.buildHashParam(keyAppId, this.context.appId.toString()),
+      ...this.buildHashParam(keyZoneId, this.zoneId),
+      ...this.buildHashParam(keyAppId, this.appId),
       ...this.buildHashParam(keyModuleId, this.context.moduleId?.toString()),
       ...this.buildHashParam(keyContentBlockId, this.context.contentBlockId?.toString()),
       ...this.buildHashParam(keyPartOfPage),

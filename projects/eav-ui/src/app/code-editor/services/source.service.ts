@@ -1,14 +1,12 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
 import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
-import { Context } from '../../shared/services/context';
 import { FileAsset } from '../models/file-asset.model';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
 import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
@@ -19,15 +17,13 @@ const appFilesPredefinedTemplates = 'admin/AppFiles/GetTemplates';
 const appFilesPreview = 'admin/AppFiles/preview';
 
 @Injectable()
-export class SourceService {
-
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class SourceService extends HttpServiceBase {
 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
-    return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(appFilesAsset), {
+    return this.http.get<SourceView>(this.apiUrl(appFilesAsset), {
       params: {
-        appId: this.context.appId,
+        appId: this.appId,
         global,
         ...this.templateIdOrPath(viewKey, global, urlItems),
       },
@@ -53,9 +49,9 @@ export class SourceService {
 
   /** ViewKey is templateId or path */
   save(viewKey: string, global: boolean, view: SourceView, urlItems: ViewOrFileIdentifier[]): Observable<boolean> {
-    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(appFilesAsset), view, {
+    return this.http.post<boolean>(this.apiUrl(appFilesAsset), view, {
       params: {
-        appId: this.context.appId,
+        appId: this.appId,
         global,
         ...this.templateIdOrPath(viewKey, global, urlItems),
       },
@@ -63,9 +59,9 @@ export class SourceService {
   }
 
   getAll(mask?: string): Observable<FileAsset[]> {
-    return this.http.get<{ Files: FileAsset[] }>(this.dnnContext.$2sxc.http.apiUrl(appFilesAll), {
+    return this.http.get<{ Files: FileAsset[] }>(this.apiUrl(appFilesAll), {
       params: {
-        appId: this.context.appId,
+        appId: this.appId,
         ...(mask && { mask }),
       },
     }).pipe(
@@ -79,9 +75,9 @@ export class SourceService {
   }
 
   getWebApis(): Observable<WebApi[]> {
-    return this.http.get<{ files: WebApi[] }>(this.dnnContext.$2sxc.http.apiUrl(apiExplorerAppApiFiles), {
+    return this.http.get<{ files: WebApi[] }>(this.apiUrl(apiExplorerAppApiFiles), {
       params: {
-        appId: this.context.appId,
+        appId: this.appId,
       },
     }).pipe(
       map(({ files }) => {
@@ -107,13 +103,13 @@ export class SourceService {
   }
 
   getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
-    return this.http.get<WebApiDetails>(this.dnnContext.$2sxc.http.apiUrl(apiExplorerInspect), {
-      params: { appId: this.context.appId, zoneId: this.context.zoneId, path: apiPath },
+    return this.http.get<WebApiDetails>(this.apiUrl(apiExplorerInspect), {
+      params: { appId: this.appId, zoneId: this.zoneId, path: apiPath },
     });
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.http.get<PredefinedTemplatesResponse>(this.dnnContext.$2sxc.http.apiUrl(appFilesPredefinedTemplates), {
+    return this.http.get<PredefinedTemplatesResponse>(this.apiUrl(appFilesPredefinedTemplates), {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -122,9 +118,9 @@ export class SourceService {
   }
 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
-    return this.http.get<Preview>(this.dnnContext.$2sxc.http.apiUrl(appFilesPreview), {
+    return this.http.get<Preview>(this.apiUrl(appFilesPreview), {
       params: {
-        appId: this.context.appId,
+        appId: this.appId,
         path,
         templateKey,
         global,
@@ -133,9 +129,9 @@ export class SourceService {
   }
 
   create(path: string, global: boolean, templateKey: string): Observable<boolean> {
-    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(appFilesCreate), {}, {
+    return this.http.post<boolean>(this.apiUrl(appFilesCreate), {}, {
       params: {
-        appId: this.context.appId,
+        appId: this.appId,
         global,
         purpose: 'auto',
         path,

@@ -1,16 +1,12 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppInternals } from '../../app-administration/models/app-internals.model';
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { Context } from '../../shared/services/context';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiRoot = 'admin/appinternals/get';
 
 @Injectable()
-export class AppInternalsService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class AppInternalsService extends HttpServiceBase {
 
   /**
    * Fetches AppInternals for given key
@@ -20,9 +16,9 @@ export class AppInternalsService {
    * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
   getAppInternals(): Observable<AppInternals> {
-    return this.http.get<AppInternals>(this.dnnContext.$2sxc.http.apiUrl(webApiRoot), {
+    return this.http.get<AppInternals>(this.apiUrl(webApiRoot), {
       params: {
-        appId: this.context.appId.toString(),
+        appId: this.appId,
       },
     });
   }

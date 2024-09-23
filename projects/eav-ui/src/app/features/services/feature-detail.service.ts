@@ -1,20 +1,15 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Feature } from '../models';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 export const webApiRoot = "admin/feature/";
 
 @Injectable()
-export class FeatureDetailService {
-  constructor(
-    private http: HttpClient,
-    private dnnContext: DnnContext
-  ) { }
+export class FeatureDetailService extends HttpServiceBase {
 
   getFeatureDetails(featureNameId: string): Observable<Feature> {
-    return this.http.get<Feature>(this.dnnContext.$2sxc.http.apiUrl(webApiRoot + 'details'), {
+    return this.http.get<Feature>(this.apiUrl(webApiRoot + 'details'), {
       params: { nameId: featureNameId }
     });
   }

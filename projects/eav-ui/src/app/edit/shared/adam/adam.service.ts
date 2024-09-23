@@ -1,23 +1,21 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdamConfig, AdamItem } from '../../../../../../edit-types';
 import { SanitizeHelper } from '../helpers';
 import { FormConfigService } from '../../form/form-config.service';
 import { LinkInfo } from '../../dialog/main/edit-dialog-main.models';
+import { HttpServiceBase } from '../../../shared/services/http-service-base';
 
 /**
  * Form wide ADAM helper to get files, add folders etc.
  * Must be created once per edit-form, as it needs the exact app etc.
  */
 @Injectable()
-export class AdamService {
-  constructor(
-    private http: HttpClient,
-    private dnnContext: DnnContext,
-    private formConfig: FormConfigService
-  ) { }
+export class AdamService extends HttpServiceBase {
+
+  constructor(private formConfig: FormConfigService) {
+    super();
+  }
 
   getAll(url: string, config: AdamConfig) {
     return this.http.get<AdamItem[]>(
@@ -85,7 +83,7 @@ export class AdamService {
     field: string
   ): Observable<LinkInfo> {
     return this.http.get<LinkInfo>(
-      this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'),
+      this.apiUrl('cms/edit/linkInfo'),
       {
         params: {
           link,

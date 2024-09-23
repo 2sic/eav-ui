@@ -1,28 +1,25 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { Context } from '../../shared/services/context';
 import { ContentImport, EvaluateContentResult, ImportContentRequest, ImportContentResult } from '../models/content-import.model';
 import { webApiEntityRoot } from '../../shared/services/entity.service';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 @Injectable()
-export class ContentImportService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class ContentImportService extends HttpServiceBase {
 
   evaluateContent(formValues: ContentImport) {
     return from(toBase64(formValues.file)).pipe(
       switchMap(fileBase64 => {
         const requestData: ImportContentRequest = {
-          AppId: this.context.appId.toString(),
+          AppId: this.appId,
           DefaultLanguage: formValues.defaultLanguage,
           ContentType: formValues.contentType,
           ContentBase64: fileBase64,
           ResourcesReferences: formValues.resourcesReferences,
           ClearEntities: formValues.clearEntities,
         };
-        return this.http.post<EvaluateContentResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlPreview'), requestData).pipe(
+        return this.http.post<EvaluateContentResult>(this.apiUrl(webApiEntityRoot + 'XmlPreview'), requestData).pipe(
           map(result => {
             if (!result.Success) {
               result.Errors = result.Detail as any;
@@ -39,14 +36,14 @@ export class ContentImportService {
     return from(toBase64(formValues.file)).pipe(
       switchMap(fileBase64 => {
         const requestData: ImportContentRequest = {
-          AppId: this.context.appId.toString(),
+          AppId: this.appId,
           DefaultLanguage: formValues.defaultLanguage,
           ContentType: formValues.contentType,
           ContentBase64: fileBase64,
           ResourcesReferences: formValues.resourcesReferences,
           ClearEntities: formValues.clearEntities,
         };
-        return this.http.post<ImportContentResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlUpload'), requestData);
+        return this.http.post<ImportContentResult>(this.apiUrl(webApiEntityRoot + 'XmlUpload'), requestData);
       })
     );
   }

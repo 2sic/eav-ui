@@ -11,7 +11,7 @@ export class ContentGroupService extends HttpServiceBase {
 
   getItems(item: ContentGroup) {
     return this.http.get<ReplaceConfig>(this.apiUrl(webApiContentGroup + 'replace'), {
-      params: { appId: this.context.appId.toString(), guid: item.guid, part: item.part, index: item.index.toString() }
+      params: { appId: this.appId, guid: item.guid, part: item.part, index: item.index.toString() }
     });
   }
 

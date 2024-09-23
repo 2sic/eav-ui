@@ -1,18 +1,16 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Injectable } from '@angular/core';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
-import { Context } from '../../shared/services/context';
 import { ContentExport } from '../models/content-export.model';
 import { webApiEntityRoot } from '../../shared/services/entity.service';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 @Injectable()
-export class ContentExportService {
-  constructor(private context: Context, private dnnContext: DnnContext) { }
+export class ContentExportService extends HttpServiceBase {
 
   exportContent(values: ContentExport, selectedIds: number[]) {
     const selectedIdsString = selectedIds ? '&selectedids=' + selectedIds.join() : '';
-    const url = this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'Download')
-      + '?appId=' + this.context.appId
+    const url = this.apiUrl(webApiEntityRoot + 'Download')
+      + '?appId=' + this.appId
       + '&language=' + values.language
       + '&defaultLanguage=' + values.defaultLanguage
       + '&contentType=' + values.contentTypeStaticName
@@ -25,16 +23,16 @@ export class ContentExportService {
   }
 
   exportJson(typeName: string) {
-    const url = this.dnnContext.$2sxc.http.apiUrl(webApiTypeRoot + 'Json')
-      + '?appId=' + this.context.appId
+    const url = this.apiUrl(webApiTypeRoot + 'Json')
+      + '?appId=' + this.appId
       + '&name=' + typeName;
 
     window.open(url, '_blank', '');
   }
 
   exportEntity(id: number, prefix: string, metadata: boolean) {
-    const url = this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'Json')
-      + '?appId=' + this.context.appId
+    const url = this.apiUrl(webApiEntityRoot + 'Json')
+      + '?appId=' + this.appId
       + '&id=' + id
       + '&prefix=' + prefix
       + '&withMetadata=' + metadata;

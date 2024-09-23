@@ -1,12 +1,10 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, map, switchMap } from 'rxjs';
 import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { Context } from '../../shared/services/context';
 import { Query } from '../models/query.model';
 import { webApiEntityList } from '../../shared/services/entity.service';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiQueryImport = 'admin/query/import';
 const webApiQueryClone = 'admin/query/Clone';
@@ -18,20 +16,19 @@ export const webApiQueryGet = 'admin/query/Get';
 export const webApiQueryDataSources = 'admin/query/DataSources';
 
 @Injectable()
-export class PipelinesService {
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+export class PipelinesService extends HttpServiceBase {
 
   getAll(contentType: string) {
-    return this.http.get<Query[]>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityList), {
-      params: { appId: this.context.appId.toString(), contentType }
+    return this.http.get<Query[]>(this.apiUrl(webApiEntityList), {
+      params: { appId: this.appId, contentType }
     });
   }
 
   importQuery(file: File) {
     return from(toBase64(file)).pipe(
       switchMap(fileBase64 => {
-        return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryImport), {
-          AppId: this.context.appId.toString(),
+        return this.http.post<boolean>(this.apiUrl(webApiQueryImport), {
+          AppId: this.appId,
           ContentBase64: fileBase64,
         });
       }),
@@ -46,14 +43,14 @@ export class PipelinesService {
   }
 
   clonePipeline(id: number) {
-    return this.http.get<null>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryClone), {
-      params: { Id: id.toString(), appId: this.context.appId.toString() }
+    return this.http.get<null>(this.apiUrl(webApiQueryClone), {
+      params: { Id: id.toString(), appId: this.appId }
     });
   }
 
   delete(id: number) {
-    return this.http.delete<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDelete), {
-      params: { appId: this.context.appId.toString(), Id: id.toString() },
+    return this.http.delete<boolean>(this.apiUrl(webApiQueryDelete), {
+      params: { appId: this.appId, Id: id.toString() },
     });
   }
 }

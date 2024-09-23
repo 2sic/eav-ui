@@ -1,11 +1,10 @@
-import { Context as DnnContext } from '@2sic.com/sxc-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { classLog } from '../logging';
 import { EntityLightIdentifier } from '../../shared/models/entity-basic';
 import { QueryService } from './query.service';
 import { transient } from '../../core';
+import { HttpServiceBase } from './http-service-base';
 
 const logSpecs = {
   all: false,
@@ -17,14 +16,12 @@ const logSpecs = {
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';
 
- @Injectable()
- export class EntityService {
-  
-  log = classLog({EntityService}, logSpecs);
+@Injectable()
+export class EntityService extends HttpServiceBase {
+
+  log = classLog({ EntityService }, logSpecs);
 
   private queryService = transient(QueryService);
-
-  constructor(private http: HttpClient, private dnnContext: DnnContext) { }
 
   /**
    * Get entities based on the content type name.
@@ -54,7 +51,7 @@ export const webApiEntityList = 'admin/entity/list';
 
   delete(appId: number, contentType: string, entityId: number, force: boolean, parentId?: number, parentField?: string): Observable<null> {
     this.log.fnIf('delete', { appId, contentType, entityId, force, parentId, parent });
-    return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
+    return this.http.delete<null>(this.apiUrl(webApiEntityRoot + 'delete'), {
       params: {
         contentType,
         id: entityId.toString(),

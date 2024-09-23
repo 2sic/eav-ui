@@ -1,28 +1,26 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { Context } from '../../shared/services/context';
 import { GlobalConfigService } from '../../shared/services/global-config.service';
 import { classLog } from '../../shared/logging';
+import { HttpServiceBase } from '../../shared/services/http-service-base';
 
 const webApiSettings = 'admin/dialog/settings';
 
 /**
  * Service for getting dialog settings for the current app.
- * 
+ *
  * Note that it should normally be shared, to save resources / network calls.
  */
 @Injectable({ providedIn: 'root' })
-export class DialogConfigGlobalService {
+export class DialogConfigGlobalService extends HttpServiceBase {
 
   log = classLog({DialogConfigGlobalService});
 
   constructor(
-    private http: HttpClient,
-    private context: Context,
     private globalConfigService: GlobalConfigService,
   ) {
+    super();
     this.log.a(`using context #${this.context.log.svcId}`);
   }
 
@@ -38,7 +36,7 @@ export class DialogConfigGlobalService {
   private getDialogSettings(appId?: number, reqBy?: string): Observable<DialogSettings> {
     this.log.a('getDialogSettings', {appId, reqBy});
     return this.http.get<DialogSettings>(webApiSettings, {
-      params: { appId: appId ?? this.context.appId.toString() },
+      params: { appId: appId ?? this.appId },
     }).pipe(
       map(dlgSettings => {
         dlgSettings.Context.Language.List = dlgSettings.Context.Language.List.filter(language => language.IsEnabled);
