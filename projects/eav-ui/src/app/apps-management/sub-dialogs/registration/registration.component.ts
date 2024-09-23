@@ -1,7 +1,6 @@
-import { Component, HostBinding, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, HostBinding, OnInit, signal, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { SystemInfoSet } from '../../models/system-info.model';
@@ -27,7 +26,6 @@ import { transient } from '../../../core';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    AsyncPipe,
     TippyDirective,
     SafeHtmlPipe,
   ],
@@ -35,9 +33,7 @@ import { transient } from '../../../core';
 export class RegistrationComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  #refreshSystemInfoSet$ = new Subject<void>();
-
-  viewModel$: Observable<RegistrationViewModel>;
+  systemInfoSet = signal<SystemInfoSet>(undefined);
 
   // patrons logo
   logo = patronsLogo;
@@ -52,18 +48,8 @@ export class RegistrationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = this.#refreshSystemInfoSet$.pipe(
-      startWith(undefined),
-      switchMap(() => this.#zoneSvc.getSystemInfo().pipe(catchError(() => of(undefined)))),
-      share(),
-      map((systemInfoSet) => ({ systemInfoSet })),
-    );
+    this.#loadSystemInfo();
   }
-
-  // closeDialog() {
-  //   this.dialogRef.close();
-  // }
 
   copyToClipboard(text: string): void {
     copyToClipboard(text);
@@ -84,7 +70,7 @@ export class RegistrationComponent implements OnInit {
         const duration = info.Success ? 3000 : 100000;
         const panelClass = info.Success ? undefined : 'snackbar-error';
         this.snackBar.open(message, undefined, { duration, panelClass });
-        this.#refreshSystemInfoSet$.next();
+        this.#loadSystemInfo();
       },
     });
   }
@@ -108,12 +94,16 @@ export class RegistrationComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((refresh?: boolean) => {
       if (refresh) {
-        this.#refreshSystemInfoSet$.next();
+        this.#loadSystemInfo();
       }
     });
   }
-}
 
-interface RegistrationViewModel {
-  systemInfoSet: SystemInfoSet;
+  #loadSystemInfo(): void {
+    this.#zoneSvc.getSystemInfo().subscribe(info => {
+      this.systemInfoSet.set(info);
+      console.log(info);
+    });
+  }
+
 }

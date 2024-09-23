@@ -1,12 +1,10 @@
-import { Component, HostBinding, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, HostBinding, OnInit, signal } from '@angular/core';
 import {  MatDialogActions, MatDialogModule } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
-import { AsyncPipe } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,43 +31,32 @@ import { transient } from '../../../core';
     MatIconModule,
     MatCheckboxModule,
     MatDialogActions,
-    AsyncPipe,
     FieldHintComponent,
     ClickStopPropagationDirective,
     TippyDirective,
     MatDialogModule,
   ],
 })
-export class ExportAppPartsComponent implements OnInit, OnDestroy {
+export class ExportAppPartsComponent implements OnInit{
   @HostBinding('className') hostClass = 'dialog-component';
 
   #exportAppPartsSvc = transient(ExportAppPartsService);
   #contentTypesSvc = transient(ContentTypesService);
 
-  contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
-  scopeOptions: ScopeOption[];
   lockScope = true;
   dropdownInsertValue = dropdownInsertValue;
 
   loading = signal(false);
   isExporting = signal(false);
-
-  // TODO: @2dg - this should be easy to get rid of #remove-observables
-  private loading$ = new BehaviorSubject(false);
-  viewModel$ = combineLatest([this.loading$]).pipe(
-    map(([loading]) => ({ loading })),
-  );
+  scopeOptions = signal<ScopeOption[]>([]);
+  contentInfo = signal<ContentInfo>(undefined);
 
   constructor() { }
 
   ngOnInit() {
     this.#fetchScopes();
     this.#fetchContentInfo();
-  }
-
-  ngOnDestroy() {
-    this.loading$.complete();
   }
 
   exportAppParts() {
@@ -89,12 +76,14 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   changeScope(newScope: string) {
     if (newScope === dropdownInsertValue) {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
-      if (!this.scopeOptions.find(option => option.value === newScope)) {
+      if (!this.scopeOptions().find(option => option.value === newScope)) {
         const newScopeOption: ScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions.unshift(newScopeOption);
+        const scopeOptionsTemp = this.scopeOptions();
+        scopeOptionsTemp.unshift(newScopeOption);
+        this.scopeOptions.set(scopeOptionsTemp);
       }
     }
     this.exportScope = newScope;
@@ -110,33 +99,29 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   }
 
   #fetchScopes() {
-    this.loading$.next(true);
     this.loading.set(true);
     this.#contentTypesSvc.getScopes().subscribe(scopes => {
-      this.scopeOptions = scopes;
-      this.loading$.next(false);
+      this.scopeOptions.set(scopes);
       this.loading.set(false);
 
     });
   }
 
   #fetchContentInfo() {
-    this.loading$.next(true);
     this.loading.set(true);
     this.#exportAppPartsSvc.getContentInfo(this.exportScope).subscribe(contentInfo => {
-      this.contentInfo = contentInfo;
-      this.loading$.next(false);
+      this.contentInfo.set(contentInfo);
       this.loading.set(false);
     });
   }
 
   #selectedContentTypes() {
-    return this.contentInfo.ContentTypes.filter(contentType => contentType._export);
+    return this.contentInfo().ContentTypes.filter(contentType => contentType._export);
   }
 
   #selectedEntities() {
     let entities: ContentInfoEntity[] = [];
-    for (const contentType of this.contentInfo.ContentTypes) {
+    for (const contentType of this.contentInfo().ContentTypes) {
       entities = entities.concat(contentType.Entities.filter(entity => entity._export));
     }
     return entities;
@@ -145,10 +130,10 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   #selectedTemplates() {
     let templates: ContentInfoTemplate[] = [];
     // The ones with...
-    for (const contentType of this.contentInfo.ContentTypes)
+    for (const contentType of this.contentInfo().ContentTypes)
       templates = templates.concat(contentType.Templates.filter(template => template._export));
     // ...and without content types
-    templates = templates.concat(this.contentInfo.TemplatesWithoutContentTypes.filter(template => template._export));
+    templates = templates.concat(this.contentInfo().TemplatesWithoutContentTypes.filter(template => template._export));
     return templates;
   }
 }

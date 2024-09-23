@@ -1,12 +1,3 @@
-<!-- TODO:: Remove viewModel broken, vm not in use, loading needs ? -->
-
-@if (viewModel$ | async; as vm) {
-
-  <pre>
-    <div>Old: {{vm.loading}}</div>
-    <div>New: {{loading()}} </div>
-  </pre>
-
 <div class="outer-container-app">
   <h3>Export Content and Templates from this App</h3>
   <div class="form-height">
@@ -23,7 +14,7 @@
       <mat-form-field color="accent" class="eav-mat-form-field">
         <mat-label>Scope</mat-label>
         <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
-          @for (scopeOption of scopeOptions; track scopeOption) {
+          @for (scopeOption of scopeOptions(); track scopeOption) {
           <mat-option [value]="scopeOption.value">
             {{ scopeOption.name }}
           </mat-option>
@@ -41,11 +32,11 @@
         <a appClickStopPropagation href="https://2sxc.org/help?tag=scope" target="_blank">see help</a>
       </app-field-hint>
     </div>
-    @if (contentInfo) {
+    @if (contentInfo()) {
     <div>
       <ul class="eav-content-info__list eav-content-info__base">
         <p class="eav-content-info__title">Content Types</p>
-        @for (contentType of contentInfo.ContentTypes; track contentType) {
+        @for (contentType of contentInfo().ContentTypes; track contentType) {
         <li class="eav-content-info__item">
           <div class="eav-option-box">
             <mat-checkbox [(ngModel)]="contentType._export">
@@ -85,7 +76,7 @@
       </ul>
       <ul class="eav-content-info__list eav-content-info__base">
         <p class="eav-content-info__title">Templates Without Content Types</p>
-        @for (template of contentInfo.TemplatesWithoutContentTypes; track template) {
+        @for (template of contentInfo().TemplatesWithoutContentTypes; track template) {
         <li class="eav-content-info__item">
           <div class="eav-option-box">
             <mat-checkbox [(ngModel)]="template._export">
@@ -107,4 +98,3 @@
     </button>
   </mat-dialog-actions>
 </div>
-}

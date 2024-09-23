@@ -51,33 +51,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
     EcoFabSpeedDialActionsComponent,
     MatBadgeModule,
     RouterOutlet,
-    AsyncPipe,
     DragAndDropDirective,
     // WIP 2dm - needed for the lightspeed buttons to work
   ],
 })
-export class AppsListComponent implements OnInit, OnDestroy {
+export class AppsListComponent implements OnInit {
 
   log = classLog({AppsListComponent});
   fabOpen = signal(false);
+  apps = signal<App[]>([]);
 
-  // TODO: 2dg appsListSvc get all
-  refreshApps = signal(false);
-  apps = computed(() => {
-    const refresh = this.refreshApps();
-
-    console.log("App refreshed:", refresh);  // Log, wenn `refreshApps()` getriggert wird
-    const data = this.#appsListSvc.getAll().pipe(catchError(() => of(undefined)));
-    return data;
-  });
-
-  apps$: Observable<App[]>;
   gridOptions = this.buildGridOptions();
 
-
-  #refreshApps$ = new Subject<void>();
-
-  viewModel$: Observable<AppsListViewModel>;
   public features = inject(FeaturesScopedService);
   public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
 
@@ -96,27 +81,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
-    this.apps$ = this.#refreshApps$.pipe(
-      startWith(undefined),
-      switchMap(() => this.#appsListSvc.getAll().pipe(catchError(() => of(undefined)))),
-      shareReplay(1),
-    );
-
-    this.#dialogRouter.doOnDialogClosed(() => this.#refreshApps$.next());
-    this.#dialogRouter.doOnDialogClosed(() => this.refreshApps.set(true));
-
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ = combineLatest([this.apps$]).pipe(
-      map(([apps]) => {
-        return { apps};
-      }),
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.#refreshApps$.complete();
+    this.#loadApps();
+    this.#dialogRouter.doOnDialogClosed(() =>this.#loadApps());
   }
 
   openChange(open: boolean): void {
@@ -152,13 +118,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
       this.#appsListSvc.delete(app.Id).subscribe({
         error: () => {
           this.snackBar.open('Delete failed. Please check console for more information', undefined, { duration: 3000 });
-          this.#refreshApps$.next();
-          this.refreshApps.set(true)
+          this.#loadApps();
         },
         next: () => {
           this.snackBar.open('Deleted', undefined, { duration: 2000 });
-          this.#refreshApps$.next();
-          this.refreshApps.set(true)
+          this.#loadApps();
         },
       });
     } else {
@@ -266,8 +230,13 @@ export class AppsListComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
+
+  #loadApps(): void {
+    this.#appsListSvc.getAll().subscribe(apps => {
+      console.log('apps', apps);
+      this.apps.set(apps);
+    })
+  }
+
 }
 
-interface AppsListViewModel {
-  apps: App[];
-}

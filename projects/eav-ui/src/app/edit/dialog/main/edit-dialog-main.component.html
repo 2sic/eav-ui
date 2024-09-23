@@ -1,5 +1,6 @@
 <!-- TODO_(mdc-migration) -->
- <!-- TODO:: Error if viewModel removed, data not in use -->
+<!-- TODO:: Error if viewModel removed, data not in use -->
+
 @if (viewModel$ | async; as vm) {
 <div style="position: relative" mat-dialog__container appToggleDebug>
   <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': hideHeader() }">
@@ -20,44 +21,42 @@
         <div class="eav-layout-grid__inner">
           @if (!delayForm())
           {
-            <div class="eav-layout-grid__cell--span-12" appFormSlide>
-              @for (item of  items(); track item.Entity.Guid)
-              {
-                <!-- TODO:: Items as Signal bug -->
-                <!-- @for (item of items(); track trackByFn($index, item)) { -->
-                <div>
-                  <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
-                </div>
-              }
+          <div class="eav-layout-grid__cell--span-12" appFormSlide>
+            @for (item of items(); track item.Entity.Guid)
+            {
+            <div>
+              <app-edit-entity-form-builder [entityGuid]="item.Entity.Guid"></app-edit-entity-form-builder>
             </div>
+            }
+          </div>
           }
         </div>
       </div>
     </div>
     @if (viewInitiated())
     {
-      <extended-fab-speed-dial [disabled]="saveButtonDisabled()">
-        <ng-template extendedFabSpeedDialTriggerContent>
-          <button extended-fab-speed-dial-trigger matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(true)">
-            <mat-icon (click)="saveButtonDisabled() && saveAll(false)">done</mat-icon>
-            <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
-          </button>
-        </ng-template>
-        <ng-template extendedFabSpeedDialActionsContent>
-          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(false)">
-            <span>{{ 'Form.Buttons.Save' | translate }}</span>
-            <mat-icon>save</mat-icon>
-          </button>
-        </ng-template>
-      </extended-fab-speed-dial>
+    <extended-fab-speed-dial [disabled]="saveButtonDisabled()">
+      <ng-template extendedFabSpeedDialTriggerContent>
+        <button extended-fab-speed-dial-trigger matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(true)">
+          <mat-icon (click)="saveButtonDisabled() && saveAll(false)">done</mat-icon>
+          <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+        </button>
+      </ng-template>
+      <ng-template extendedFabSpeedDialActionsContent>
+        <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled()" (click)="saveAll(false)">
+          <span>{{ 'Form.Buttons.Save' | translate }}</span>
+          <mat-icon>save</mat-icon>
+        </button>
+      </ng-template>
+    </extended-fab-speed-dial>
     }
   </div>
   @if (footerShowOnceOrMore())
   {
-    @defer {
-      <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions>
-      </app-edit-dialog-footer>
-    }
+  @defer {
+  <app-edit-dialog-footer [style.display]="footerShow() ? 'block' : 'none'" mat-dialog-actions>
+  </app-edit-dialog-footer>
+  }
   }
 </div>
 }

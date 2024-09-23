@@ -1,8 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, OnDestroy, OnInit, inject } from "@angular/core";
+import { Component, HostBinding, OnInit, inject, signal } from "@angular/core";
 import { MatDialogRef, MatDialogActions } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, map, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
@@ -12,7 +11,6 @@ import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
 import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
 import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
-import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -26,21 +24,17 @@ import { transient } from '../../core';
   imports: [
     MatDialogActions,
     MatButtonModule,
-    AsyncPipe,
     FeatureTextInfoComponent,
     SxcGridModule,
   ],
 })
-export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
+export class AddAppFromFolderComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   gridOptions = this.buildGridOptions();
-  pendingApps: PendingApp[] = [];
   installing: boolean = false;
 
-  private refreshApps$ = new Subject<void>();
-
-  viewModel$: Observable<AddAppFromFolderViewModel>;
+  pendingApps = signal<PendingApp[]>([]);
 
   public features = inject(FeaturesScopedService);
   private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
@@ -49,21 +43,13 @@ export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
     private snackBar: MatSnackBar,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    this.viewModel$ =  this.refreshApps$.pipe(
-      startWith(undefined),
-      switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
-      share(),
-      map((pendingApps) => ({ pendingApps })),
-    );
-  }
 
-  ngOnDestroy(): void {
-    this.refreshApps$.complete();
+    this.appsListService.getPendingApps().subscribe(apps => {
+      this.pendingApps.set(apps);
+    })
   }
 
   closeDialog(): void {
@@ -71,16 +57,20 @@ export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
   }
 
   onChange(app: PendingApp, enabled: boolean) {
+    const pendingAppsTemp = this.pendingApps();
+
     if (enabled)
-      this.pendingApps.push(app);
+      pendingAppsTemp.push(app);
     else
-      this.pendingApps.splice(this.pendingApps.indexOf(app), 1);
+      pendingAppsTemp.splice(pendingAppsTemp.indexOf(app), 1);
+
+    this.pendingApps.set(pendingAppsTemp);
   }
 
   install(): void {
     this.installing = true;
     this.snackBar.open('Installing', undefined, { duration: 2000 });
-    this.appsListService.installPendingApps(this.pendingApps).subscribe({
+    this.appsListService.installPendingApps(this.pendingApps()).subscribe({
       error: () => {
         this.installing = false;
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });
@@ -132,6 +122,3 @@ export class AddAppFromFolderComponent  implements OnInit, OnDestroy {
   }
 }
 
-interface AddAppFromFolderViewModel {
-  pendingApps: PendingApp[];
-}
