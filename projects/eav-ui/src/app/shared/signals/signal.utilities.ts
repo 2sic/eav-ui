@@ -8,7 +8,7 @@ import { Observable, take } from 'rxjs';
  * Named signal with object equality check
  * @param name name for debugging
  * @param initialValue initial value to start the signal
- * @returns 
+ * @returns
  */
 export function signalObj<T>(name: string, initialValue: T): WritableSignal<T> {
   const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;
@@ -29,7 +29,7 @@ export function computedObj<T>(name: string, computation: () => T): Signal<T> {
  * @param name name of the signal for debugging
  * @param httpRequest the http request
  * @param initialValue optional initial value
- * @returns 
+ * @returns
  */
 export function httpToSignal<T>(name: string, httpRequest: Observable<T>, initialValue: T = null): Signal<T> {
   const sig = signal(initialValue, { equal: isEqual }) as WritableSignal<T>;

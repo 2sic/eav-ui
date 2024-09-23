@@ -29,8 +29,8 @@ import { DialogRoutingService } from '../../../shared/routing/dialog-routing.ser
     SxcGridModule,
   ],
 })
-export class LanguagePermissionsComponent implements OnInit{
-  gridOptions: GridOptions;
+export class LanguagePermissionsComponent implements OnInit {
+  gridOptions: GridOptions = this.#buildGridOptions();
 
   languages = signal<SiteLanguagePermissions[]>([]);
 
@@ -39,10 +39,7 @@ export class LanguagePermissionsComponent implements OnInit{
 
   constructor(
     private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
-  ) {
-    // @2dg proabably move this up to the definition of the variable...
-    this.gridOptions = this.#buildGridOptions();
-  }
+  ) { }
 
   ngOnInit(): void {
     this.getLanguages();
