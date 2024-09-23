@@ -242,8 +242,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         headerClass: 'dense',
         cellClass: 'secondary-action no-padding'.split(' '),
         filter: PubMetaFilterComponent,
-        valueGetter: (params) => {
-          const item: ContentItem = params.data;
+        valueGetter: (p) => {
+          const item: ContentItem = p.data;
           const published: PubMeta = {
             published: item.IsPublished,
             metadata: !!item.For,
