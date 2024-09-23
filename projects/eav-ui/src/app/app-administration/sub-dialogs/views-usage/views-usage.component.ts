@@ -95,11 +95,9 @@ export class ViewsUsageComponent implements OnInit {
           onCellClicked: onNameClicked,
         },
         {
+          ...ColumnDefinitions.ItemsText,
           field: 'Language',
           width: 90,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
         },
         {
           field: 'Status',

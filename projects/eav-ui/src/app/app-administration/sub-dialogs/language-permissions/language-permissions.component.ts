@@ -84,17 +84,14 @@ export class LanguagePermissionsComponent implements OnInit {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           sort: 'asc',
-          valueGetter: (params) => {
-            const language: SiteLanguagePermissions = params.data;
-            return language.Culture;
-          },
+          valueGetter: (p: { data: SiteLanguagePermissions }) => p.data.Culture,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight1,
           cellRenderer: LanguagesPermissionsActionsComponent,
           cellRendererParams: (() => {
             const params: LanguagesPermissionsActionsParams = {
-              onOpenPermissions: (language) => this.openPermissions(language),
+              onOpenPermissions: (lang) => this.openPermissions(lang),
             };
             return params;
           })(),

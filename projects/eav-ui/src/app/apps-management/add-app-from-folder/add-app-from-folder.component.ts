@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FeatureTextInfoComponent } from '../../features/feature-text-info/feature-text-info.component';
 import { SxcGridModule } from '../../shared/modules/sxc-grid-module/sxc-grid.module';
 import { transient } from '../../core';
+import { ColumnDefinitions } from '../../shared/ag-grid/column-definitions';
 
 @Component({
   selector: 'app-add-app-from-folder',
@@ -102,12 +103,10 @@ export class AddAppFromFolderComponent implements OnInit {
           }),
         },
         {
+          ...ColumnDefinitions.ItemsText,
           field: 'Name',
           flex: 1,
-          cellClass: 'no-outline',
-          sortable: true,
           sort: 'asc',
-          filter: 'agTextColumnFilter',
           cellRenderer: AppNameShowComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<PendingApp> = {

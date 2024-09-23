@@ -75,6 +75,14 @@ export class ColumnDefinitions {
     filter: 'agNumberColumnFilter',
   };
 
+  static ItemsText: ColDef = {
+    width: 102,
+    headerClass: 'dense',
+    cellClass: cellClassSecAction,
+    sortable: true,
+    filter: 'agTextColumnFilter',
+  };
+
   static Fields: ColDef = {
     width: 94,
     headerClass: 'dense',

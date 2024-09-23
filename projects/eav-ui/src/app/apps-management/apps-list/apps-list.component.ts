@@ -174,19 +174,19 @@ export class AppsListComponent implements OnInit {
           field: 'Name',
           cellClass: 'apps-list-primary-action highlight'.split(' '),
           sort: 'asc',
-          onCellClicked: (params) => {
-            const app: App = params.data;
+          onCellClicked: (p) => {
+            const app: App = p.data;
             this.openApp(app);
           },
-          cellRenderer: (params: ICellRendererParams) => {
-            const app: App = params.data;
+          cellRenderer: (p: ICellRendererParams) => {
+            const app: App = p.data;
             return `
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
                 : `<div class="image logo"><span class="material-symbols-outlined">star</span></div>`
               }
-              <div class="text">${params.value}</div>
+              <div class="text">${p.value}</div>
             </div>
             `;
           },

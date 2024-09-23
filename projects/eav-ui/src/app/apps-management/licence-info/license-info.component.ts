@@ -77,7 +77,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.#dialogRouter.doOnDialogClosed(() => this.#refreshLicenses$.next());
-    this.viewModel$ = 
+    this.viewModel$ =
       this.#refreshLicenses$.pipe(
         startWith(undefined),
         switchMap(() => this.#featuresConfigSvc.getLicenses().pipe(catchError(() => of(undefined)))),
@@ -164,13 +164,11 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       ...defaultGridOptions,
       columnDefs: [
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'ID',
           field: 'nameId',
-          filter: 'agTextColumnFilter',
           width: 200,
-          headerClass: 'dense',
-          sortable: true,
-          cellClass: 'id-action no-padding no-outline'.split(' '),
+          cellClass: 'no-outline',
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
@@ -206,11 +204,12 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellRenderer: FeaturesListEnabledReasonComponent,
         },
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'Expiration',
           field: 'ExpMessage',
-          filter: 'agTextColumnFilter',
+          sortable: false,
           width: 120,
-          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.expiration,
+          tooltipValueGetter: (p) => (p.data as Feature & ExpirationExtension)?.expiration,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight7,

@@ -235,15 +235,15 @@ export class ViewsComponent implements OnInit {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          cellClass: (params) => {
-            const view: View = params.data;
+          cellClass: (p) => {
+            const view: View = p.data;
             return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
           },
           cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<View>()
         },
         {
           ...ColumnDefinitions.IconShow,
-          valueGetter: (params) => !(params.data as View).IsHidden,
+          valueGetter: (p) => !(p.data as View).IsHidden,
           cellRenderer: ViewsShowComponent,
         },
         {
@@ -257,19 +257,16 @@ export class ViewsComponent implements OnInit {
           },
         },
         {
+          ...ColumnDefinitions.ItemsText,
           field: 'Type',
           width: 82,
-          headerClass: 'dense',
-          cellClass: 'no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => calculateViewType(params.data as View).value,
+          valueGetter: (p) => calculateViewType(p.data as View).value,
           cellRenderer: ViewsTypeComponent,
         },
         {
           ...ColumnDefinitions.Number,
           field: 'Used',
-          onCellClicked: (params) => this.openUsage(params.data as View),
+          onCellClicked: (p) => this.openUsage(p.data as View),
         },
         {
           ...ColumnDefinitions.TextNarrow,
@@ -284,47 +281,47 @@ export class ViewsComponent implements OnInit {
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Content',
-          valueGetter: (params) => (params.data as View).ContentType.Name,
+          valueGetter: (p) => (p.data as View).ContentType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'ContentDemo',
-          valueGetter: (params) => showItemDetails((params.data as View).ContentType),
+          valueGetter: (p) => showItemDetails((p.data as View).ContentType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           field: 'Presentation',
-          valueGetter: (params) => (params.data as View).PresentationType.Name,
+          valueGetter: (p) => (p.data as View).PresentationType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'PresentationDemo',
-          valueGetter: (params) => showItemDetails((params.data as View).PresentationType),
+          valueGetter: (p) => showItemDetails((p.data as View).PresentationType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           field: 'Header',
-          valueGetter: (params) => (params.data as View).ListContentType.Name,
+          valueGetter: (p) => (p.data as View).ListContentType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderDemo',
-          valueGetter: (params) => showItemDetails((params.data as View).ListContentType),
+          valueGetter: (p) => showItemDetails((p.data as View).ListContentType),
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Header Pres.',
           field: 'HeaderPresentation',
-          valueGetter: (params) => (params.data as View).ListPresentationType.Name,
+          valueGetter: (p) => (p.data as View).ListPresentationType.Name,
         },
         {
           ...ColumnDefinitions.TextNarrow,
           headerName: 'Default',
           field: 'HeaderPresentationDemo',
-          valueGetter: (params) => showItemDetails((params.data as View).ListPresentationType),
+          valueGetter: (p) => showItemDetails((p.data as View).ListPresentationType),
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight5,

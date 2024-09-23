@@ -95,10 +95,7 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => {
-            const language: SiteLanguage = params.data;
-            return language.IsEnabled;
-          },
+          valueGetter: (p: { data: SiteLanguage }) => p.data.IsEnabled,
           cellRenderer: SiteLanguagesStatusComponent,
           cellRendererParams: (() => {
             const params: SiteLanguagesStatusParams = {

@@ -33,10 +33,7 @@ export class DevRestApiActionParamsComponent {
           headerClass: 'dense',
           width: 80,
           cellClass: 'no-padding no-outline'.split(' '),
-          valueGetter: (params) => {
-            const action: WebApiActionParameters = params.data;
-            return action.isOptional;
-          },
+          valueGetter: (p: { data: WebApiActionParameters }) => p.data.isOptional,
           cellRenderer: TrueFalseComponent,
           cellRendererParams: (() => {
             const params: TrueFalseParams = {
@@ -50,20 +47,14 @@ export class DevRestApiActionParamsComponent {
           flex: 2,
           minWidth: 200,
           cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const action: WebApiActionParameters = params.data;
-            return action.name;
-          },
+          valueGetter: (p: { data: WebApiActionParameters }) => p.data.name,
         },
         {
           field: 'Type',
           flex: 2,
           headerClass: 'dense',
           cellClass: 'no-outline',
-          valueGetter: (params) => {
-            const action: WebApiActionParameters = params.data;
-            return action.type;
-          },
+          valueGetter: (p: { data: WebApiActionParameters }) => p.data.type,
         },
         {
           ...ColumnDefinitions.TextWide,

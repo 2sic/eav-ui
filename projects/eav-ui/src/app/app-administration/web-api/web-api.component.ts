@@ -130,13 +130,11 @@ export class WebApiComponent implements OnInit {
       ...defaultGridOptions,
       columnDefs: [
         {
+          ...ColumnDefinitions.ItemsText,
           headerName: 'Endpoint',
           field: 'endpointPath',
           flex: 2,
           minWidth: 250,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
         },
         {
           ...ColumnDefinitions.TextWideMin100,
@@ -156,9 +154,9 @@ export class WebApiComponent implements OnInit {
           field: 'name',
         },
         {
+          ...ColumnDefinitions.Boolean2,
           headerName: 'Compiled',
           field: 'isCompiled',
-          ...ColumnDefinitions.Boolean2,
           cellRenderer: TrueFalseComponent,
         },
         {

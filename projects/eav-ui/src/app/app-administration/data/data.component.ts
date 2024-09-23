@@ -340,26 +340,18 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
         {
           ...ColumnDefinitions.TextWideMin100,
           field: 'Name',
-          cellClass: (params) => {
-            const contentType: ContentType = params.data;
-            return `${contentType.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+          cellClass: (p) => {
+            return `${p.data.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Name;
-          },
-          onCellClicked: (params) => {
-            const contentType: ContentType = params.data;
-            this.editContentType(contentType);
+          valueGetter: (p: { data: ContentType }) => p.data?.Name,
+          onCellClicked: (p) => {
+            this.editContentType(p.data);
           },
         },
         {
           ...ColumnDefinitions.TextWideFlex3,
           field: 'Description',
-          valueGetter: (params) => {
-            const contentType: ContentType = params.data;
-            return contentType.Properties?.Description;
-          },
+          valueGetter: (p: { data: ContentType }) => p.data?.Properties?.Description,
         },
         {
           ...ColumnDefinitions.ActionsPinnedRight4,

@@ -50,7 +50,7 @@ export class QueriesComponent implements OnInit {
   #dialogSvc = transient(DialogService);
   #dialogRouter = transient(DialogRoutingService);
   #dialogConfigSvc = transient(DialogConfigAppService);
-  
+
   enablePermissions!: boolean;
   public gridOptions = this.buildGridOptions();
 
@@ -159,9 +159,8 @@ export class QueriesComponent implements OnInit {
       columnDefs: [
         {
           ...ColumnDefinitions.IdWithDefaultRenderer,
-          cellClass: (params) => {
-            const query: Query = params.data;
-            return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          cellClass: (p) => {
+            return `id-action no-padding no-outline ${p.data._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
           },
           cellRendererParams: ColumnDefinitions.idFieldParamsTooltipGetter<Query>(),
         },
@@ -169,12 +168,12 @@ export class QueriesComponent implements OnInit {
           ...ColumnDefinitions.TextWide,
           field: 'Name',
           sort: 'asc',
-          cellClass: (params) => {
-            const query: Query = params.data;
+          cellClass: (p) => {
+            const query: Query = p.data;
             return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
-          onCellClicked: (params) => {
-            const query: Query = params.data;
+          onCellClicked: (p) => {
+            const query: Query = p.data;
             this.openVisualQueryDesigner(query);
           },
         },

@@ -103,13 +103,11 @@ export class AnalyzeSettingsComponent implements OnInit {
           ...ColumnDefinitions.TextNarrow,
         },
         {
+          ...ColumnDefinitions.Items,
           headerName: 'Total',
           field: 'TotalResults',
           width: 72,
-          headerClass: 'dense',
-          cellClass: 'secondary-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agNumberColumnFilter',
+          cellClass: 'no-outline',
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
           cellRendererParams: (() => {
             const params: AnalyzeSettingsTotalResultsParams = {
