@@ -4,14 +4,17 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { PickerItem } from '../models/picker-item.model';
 import { EntityLight } from '../../../../shared/models/entity-basic';
 import { classLog } from '../../../../shared/logging/logging';
+import { FeaturesScopedService } from 'projects/eav-ui/src/app/features/features-scoped.service';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { FormConfigService } from '../../../form/form-config.service';
 
 const logSpecs = {
-  all: true,
+  all: false,
   entity2PickerItem: false,
   getMasks: false,
   patchMasks: false,
   parseMasks: false,
-  buildMasks: false,
+  buildMasks: true,
 }
 
 /**
@@ -20,12 +23,24 @@ const logSpecs = {
  */
 export class DataSourceMasksHelper {
   
-  log = classLog({DataSourceMasksHelper}, logSpecs);
+  log = classLog({DataSourceMasksHelper}, logSpecs, true);
   
-  constructor(private settings: DataSourceMaskSettings, parentLog: { enableChildren: boolean }, enableLog?: boolean) {
+  constructor(
+    private name: string,
+    private settings: DataSourceMaskSettings,
+    features: FeaturesScopedService,
+    formConfig: FormConfigService,
+    parentLog: { enableChildren: boolean }, enableLog?: boolean
+  ) {
     this.log.forceEnable(enableLog ?? parentLog.enableChildren ?? false);
-    this.log.a('constructor - settings', { settings });
+    this.#featInfoEnabled = features.allowUse[FeatureNames.PickerUiMoreInfo]();
+    this.#isDeveloper = formConfig.config.dialogContext.User?.IsSystemAdmin;
+    this.log.a('constructor - settings', { settings, infoEnabled: this.#featInfoEnabled });
   }
+
+  #featInfoEnabled = false;
+  #featInfoWarned = false;
+  #isDeveloper = false;
 
   #helpers = new DataSourceHelpers();
 
@@ -89,10 +104,18 @@ export class DataSourceMasksHelper {
   /** Process all placeholders in all masks to get tooltip, info, link and title */
   #parseMasks(masks: DataSourceMasks, data: Record<string, any>) {
     const l = this.log.fnIf('parseMasks', { masks, data });
-    let tooltip = masks.tooltip;
-    let info = masks.info;
-    let helpLink = masks.link;
     let title = masks.label;
+    if (!this.#featInfoWarned && !this.#featInfoEnabled && `${masks.tooltip}${masks.info}${masks.link}`.length > 0) {
+      const msgAddOn = this.#isDeveloper
+        ? `It is enabled for developers, but will be disabled for normal users until it's licensed.`
+        : '';
+      console.warn(`The field '${this.name}' has placeholders for info/tooltip/link, but the feature '${FeatureNames.PickerUiMoreInfo}' is not enabled. ${msgAddOn}`, { masks });
+      this.#featInfoWarned = true;
+    }
+    const useInfos = this.#featInfoEnabled || this.#isDeveloper;
+    let tooltip = useInfos ? masks.tooltip : '';
+    let info = useInfos ? masks.info : '';
+    let helpLink = useInfos ? masks.link : '';
 
     Object.keys(data).forEach(key => {
       // must check for null and use '' instead

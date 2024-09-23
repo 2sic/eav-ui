@@ -12,6 +12,8 @@ import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings
 import { signalObj } from '../../../../shared/signals/signal.utilities';
 import { classLog, ClassLogger } from '../../../../shared/logging';
 import { DebugFields } from '../../../edit-debug';
+import { FeaturesScopedService } from 'projects/eav-ui/src/app/features/features-scoped.service';
+import { FormConfigService } from '../../../form/form-config.service';
 
 export const logSpecsDataSourceBase = {
   all: false,
@@ -29,6 +31,12 @@ export abstract class DataSourceBase extends ServiceBase {
 
   /** Field State with settings etc. */
   protected fieldState = inject(FieldState);
+
+  /** For feature checks in the info/tooltip etc. of picker data */
+  protected features = inject(FeaturesScopedService);
+
+  /** To get info if the current user is a developer */
+  protected formConfig = inject(FormConfigService);
 
   protected fieldName = this.fieldState.name;
 
@@ -91,7 +99,7 @@ export abstract class DataSourceBase extends ServiceBase {
   }
 
   protected createMaskHelper(enableLog?: boolean): DataSourceMasksHelper {
-    return new DataSourceMasksHelper(this.settings(), this.log, enableLog);
+    return new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log, enableLog);
   }
 
   protected fieldsToRetrieve(settings: FieldSettings): string {

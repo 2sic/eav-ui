@@ -21,7 +21,7 @@ export class DataSourceString extends DataSourceBase {
 
   #dataMaskHelper = (() => {
     // Make sure the converter/builder uses the "Value" field for the final 'value'
-    const maskHelper = new DataSourceMasksHelper(this.settings(), this.log);
+    const maskHelper = new DataSourceMasksHelper(this.fieldName, this.settings(), this.features, this.formConfig, this.log);
     maskHelper.patchMasks({ value: 'Value' })
     return maskHelper;
   })();
