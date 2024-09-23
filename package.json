@@ -25,7 +25,9 @@
     "build-languages": "node ./build-helpers/build-languages",
     "docs-prepare": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s",
     "ci": "npm ci --legacy-peer-deps",
-    "source-map-explorer-example": "node_modules/.bin/source-map-explorer C:/Projects/2sxc/2sxc-sources/_latest C:/Projects/2sxc/2sxc-sources/_latest/dist/ng-edit/default-projects_eav-ui_src_app_edit_edit_module_ts.27ddea5d6f2512d1*"
+    "source-map-explorer-example": "node_modules/.bin/source-map-explorer C:/Projects/2sxc/2sxc-sources/_latest C:/Projects/2sxc/2sxc-sources/_latest/dist/ng-edit/default-projects_eav-ui_src_app_edit_edit_module_ts.27ddea5d6f2512d1*",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^14.7.1",
@@ -49,6 +51,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "dayjs": "^1.11.5",
+    "eslint": "^9.11.0",
     "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "ngx-build-plus": "^14.0.0",
@@ -88,6 +91,7 @@
     "karma-jasmine-html-reporter": "^1.7.0",
     "monaco-editor": "^0.46.0",
     "papaparse": "^5.4.1",
+    "prettier": "3.3.3",
     "raw-loader": "^4.0.2",
     "rxjs-tslint": "^0.1.8",
     "source-map-explorer": "^2.5.3",

@@ -1,6 +1,21 @@
 {
-    "editor.rulers": [
-        140
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "html",
     ],
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "cSpell.words": [
@@ -20,4 +35,9 @@
       "sitewide",
       "tinymce"
     ],
+    "[html][typescript]": {
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+      }
+    },
 }
