@@ -1,6 +1,8 @@
+import { environment } from './../../../environments/environment.prod';
 import { ClassLogger } from './class/class-logger';
 import { ClassLoggerNoop } from './class/class-logger-noop';
 import { ClassLoggerReal } from './class/class-logger-real';
+import { LogManager } from './log-manager';
 
 //
 // This is a special section for logging.
@@ -23,7 +25,6 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
   specs?: TSpecs,
   enabled: boolean = false
 ): ClassLogger<TSpecs> {
-  if (!enabled) return new ClassLoggerNoop(specs);
   // Pick the first key as the name of the class
   const name = (() => {
     if (!owner) return 'unknown';
@@ -31,10 +32,18 @@ export function classLog<TSpecs extends Record<string, unknown> = any>(
     return (owner ? Object.keys(owner)[0] : null) ?? 'unknown';
   })();
   
+  // Build temporary logSpecs object
   const logSpecs = {
-    enabled,
+    // enabled should be false in production - unless overloaded below by the LogManager
+    enabled: enabled && !environment.production,
     name,
     specs: specs ?? {} as TSpecs,
   }
-  return new ClassLoggerReal<TSpecs>(logSpecs);
+
+  // Get final / real logSpecs, and register these logs in the LogManager for run-time configuration
+  const mainSpecs = LogManager.getSpecs(logSpecs);
+
+  return (mainSpecs.enabled)
+    ? new ClassLoggerReal<TSpecs>(mainSpecs)
+    : new ClassLoggerNoop(specs);
 }

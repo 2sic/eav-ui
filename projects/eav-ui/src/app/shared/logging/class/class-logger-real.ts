@@ -1,11 +1,10 @@
-import { consoleLogObject } from '../output-console';
+import { environment } from '../../../../environments/environment';
+import { FnLoggerNoOp } from '../fn/fn-logger-noop';
 import { FnLoggerReal } from '../fn/fn-logger-real';
 import { FnLogger } from '../fn/fn-logger.interface';
-import { FnLoggerNoOp } from '../fn/fn-logger-noop';
-import { LogManager } from '../log-manager';
 import { LogSpecs } from '../log-specs';
+import { consoleLogObject } from '../output-console';
 import { RxTapDebug } from '../rx-debug-dbg';
-import { environment } from '../../../../environments/environment';
 import { BooleanKeys, ClassLogger, RecordOrGenerator, StringArrayKeys } from './class-logger';
 
 /**
@@ -34,24 +33,12 @@ export class ClassLoggerReal<TSpecs extends unknown = any> implements ClassLogge
   /** Additional specs for logging just parts of the data */
   specs: TSpecs;
 
-  constructor(logSpecs: LogSpecs<TSpecs>);
-  constructor(name: string, enabled?: boolean, enableChildren?: boolean);
-  constructor(name: LogSpecs<TSpecs> | string, enabled?: boolean, enableChildren?: boolean) {
-    const initialSpecs: LogSpecs<TSpecs> = typeof name === 'object'
-      ? name
-      : {
-          name: name,
-          enabled: enabled ?? false,
-          enableChildren: enableChildren,
-          specs: {} as TSpecs,
-        } satisfies LogSpecs<TSpecs>;
-
-    const mainSpecs = LogManager.getSpecs(initialSpecs);
-
-    this.#rename(mainSpecs.name);
-    this.#setEnabled(mainSpecs.enabled);
-    this.enableChildren = mainSpecs.enableChildren ?? false;
-    this.specs = mainSpecs.specs;
+  constructor(logSpecs: LogSpecs<TSpecs>) {
+    this.#rename(logSpecs.name);
+    // Bypass the default setEnabled, as we want to be able to override in production
+    this.#enabled = logSpecs.enabled;
+    this.enableChildren = logSpecs.enableChildren ?? false;
+    this.specs = logSpecs.specs;
   }
 
   #rename(name: string) {
