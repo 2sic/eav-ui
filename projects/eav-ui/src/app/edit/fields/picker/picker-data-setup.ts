@@ -1,18 +1,18 @@
 import { Injector, ProviderToken } from '@angular/core';
 import { transient } from '../../../core';
-import { PickerData } from './picker-data';
-import { FieldState } from '../field-state';
-import { DataAdapterString } from './adapters/data-adapter-string';
-import { DataAdapterQuery } from './adapters/data-adapter-query';
-import { DataAdapterEntity } from './adapters/data-adapter-entity';
-import { OfPickerConfig, PickerConfigs } from './constants/picker-config-model.constants';
-import { StateAdapterString } from './adapters/state-adapter-string';
 import { InputTypeCatalog, InputTypeStrict } from '../../../shared/fields/input-type-catalog';
+import { classLog } from '../../../shared/logging';
+import { FieldState } from '../field-state';
+import { DataAdapterBase } from './adapters/data-adapter-base';
+import { DataAdapterEmpty } from './adapters/data-adapter-empty';
+import { DataAdapterEntity } from './adapters/data-adapter-entity';
+import { DataAdapterQuery } from './adapters/data-adapter-query';
+import { DataAdapterString } from './adapters/data-adapter-string';
 import { StateAdapter } from './adapters/state-adapter';
 import { StateAdapterEntity } from './adapters/state-adapter-entity';
-import { classLog } from '../../../shared/logging';
-import { DataAdapterEmpty } from './adapters/data-adapter-empty';
-import { DataAdapterBase } from './adapters/data-adapter-base';
+import { StateAdapterString } from './adapters/state-adapter-string';
+import { OfPickerConfig, PickerConfigs } from './constants/picker-config-model.constants';
+import { PickerData } from './picker-data';
 
 /**
  * Factory for creating PickerData instances.
@@ -128,6 +128,11 @@ const partsMap: Record<string, PartMap> = {
     sources: [DataAdapterQuery],
     states: [StateAdapterEntity],
     forcePickerConfig: PickerConfigs.UiPickerSourceQuery,
+  },
+  [InputTypeCatalog.EntityContentBlocks]: {
+    sources: [DataAdapterEntity],
+    states: [StateAdapterEntity],
+    forcePickerConfig: PickerConfigs.UiPickerSourceEntity,
   },
   [InputTypeCatalog.EntityPicker]: {
     sources: [DataAdapterEntity, DataAdapterQuery],
