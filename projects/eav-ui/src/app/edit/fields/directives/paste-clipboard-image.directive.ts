@@ -3,11 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
-import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
-import { FieldConfigSet } from '../field-config-set.model';
-import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
+import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { classLog } from '../../../shared/logging';
+import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
+import { FieldConfigSet } from '../field-config-set.model';
 
 const logSpecs = {
   all: true,
@@ -22,7 +22,7 @@ const logSpecs = {
 })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
 
-  log = classLog({PasteClipboardImageDirective}, logSpecs, true);
+  log = classLog({PasteClipboardImageDirective}, logSpecs, false);
 
   @Input() config: FieldConfigSet;
   @Input() elementType: string;

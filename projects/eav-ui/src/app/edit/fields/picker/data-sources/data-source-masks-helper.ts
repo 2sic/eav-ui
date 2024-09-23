@@ -1,12 +1,12 @@
+import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
+import { FeatureNames } from '../../../../features/feature-names';
+import { FeaturesScopedService } from '../../../../features/features-scoped.service';
+import { classLog } from '../../../../shared/logging/logging';
+import { EntityLight } from '../../../../shared/models/entity-basic';
+import { FormConfigService } from '../../../form/form-config.service';
+import { PickerItem } from '../models/picker-item.model';
 import { DataSourceHelpers } from './data-source-helpers';
 import { DataSourceMasks } from './data-source-masks.model';
-import { FieldSettings } from '../../../../../../../edit-types/src/FieldSettings';
-import { PickerItem } from '../models/picker-item.model';
-import { EntityLight } from '../../../../shared/models/entity-basic';
-import { classLog } from '../../../../shared/logging/logging';
-import { FeaturesScopedService } from 'projects/eav-ui/src/app/features/features-scoped.service';
-import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { FormConfigService } from '../../../form/form-config.service';
 
 const logSpecs = {
   all: false,
@@ -23,7 +23,7 @@ const logSpecs = {
  */
 export class DataSourceMasksHelper {
   
-  log = classLog({DataSourceMasksHelper}, logSpecs, true);
+  log = classLog({DataSourceMasksHelper}, logSpecs, false);
   
   constructor(
     private name: string,

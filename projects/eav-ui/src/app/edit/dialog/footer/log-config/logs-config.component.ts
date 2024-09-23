@@ -1,22 +1,19 @@
+import { AsyncPipe, CommonModule, DatePipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { NgClass, AsyncPipe, DatePipe, CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  LoggingService,
-  LogSeverities,
-} from '../../../shared/services/logging.service';
-import { TippyDirective } from '../../../../shared/directives/tippy.directive';
-import { LogManager } from 'projects/eav-ui/src/app/shared/logging/log-manager';
-import { SpecsEditorDialogComponent } from './specs-editor-dialog/specs-editor-dialog.component';
-import { ConfigEditorDialogComponent } from './config-editor-dialog/config-editor-dialog.component';
-import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TippyDirective } from '../../../../shared/directives/tippy.directive';
+import { LogManager } from '../../../../shared/logging/log-manager';
+import { LoggingService, LogSeverities } from '../../../shared/services/logging.service';
+import { ConfigEditorDialogComponent } from './config-editor-dialog/config-editor-dialog.component';
+import { SpecsEditorDialogComponent } from './specs-editor-dialog/specs-editor-dialog.component';
 
 @Component({
   selector: 'app-logs-config',
