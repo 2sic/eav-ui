@@ -94,7 +94,6 @@ export class ImportAppPartsComponent extends BaseComponent implements OnInit, On
     effect(() => {
       this.files();
       if (this.result() != undefined) {
-        console.log('result changed');
         this.result.set(undefined);
       }
     });

@@ -1,4 +1,3 @@
-import { FileAsset } from './models/file-asset.model';
 import { Snippet, SnippetsSets } from './models/snippet.model';
 import { SourceView } from './models/source-view.model';
 import { Tooltip } from './models/tooltip.model';
@@ -9,15 +8,6 @@ export interface Tab {
   isActive: boolean;
   isModified: boolean;
   isLoading: boolean;
-}
-
-export interface CodeEditorViewModel {
-  tabs: Tab[];
-  viewKey: ViewKey;
-  view?: SourceView;
-  explorerSnipps: SnippetsSets;
-  editorSnipps: Snippet[];
-  tooltips?: Tooltip[];
 }
 
 export const Explorers = {

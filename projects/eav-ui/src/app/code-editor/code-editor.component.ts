@@ -1,10 +1,10 @@
-import { Component, computed, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, computed, effect, NgZone, OnDestroy, OnInit, signal, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import type * as Monaco from 'monaco-editor';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, switchMap } from 'rxjs';
+import { forkJoin, fromEvent, of, share, switchMap } from 'rxjs';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { BaseComponent } from '../shared/components/base.component';
@@ -13,7 +13,7 @@ import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
-import { CodeEditorViewModel, ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
+import { ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
 import { CreateTemplateParams } from './code-templates/code-templates.models';
 import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
@@ -25,7 +25,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagation.directive';
 import { RxHelpers } from '../shared/rxJs/rx.helpers';
 import { TippyDirective } from '../shared/directives/tippy.directive';
@@ -46,7 +46,6 @@ import { isCtrlS } from '../edit/dialog/main/keyboard-shortcuts';
     MatProgressSpinnerModule,
     MonacoEditorComponent_1,
     MatButtonModule,
-    AsyncPipe,
     ClickStopPropagationDirective,
     TippyDirective,
     ToggleDebugDirective,
@@ -67,46 +66,36 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   #snippetSvc = transient(SnippetsService);
   #titleSvc = transient(Title);
 
-  viewModel$: Observable<CodeEditorViewModel>;
-
-  #templates$ = new BehaviorSubject<FileAsset[]>([]);
-  #activeView$: BehaviorSubject<ViewKey>;
-  #openViews$: BehaviorSubject<ViewKey[]>;
-  #viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
-
   templates = signal<FileAsset[]>([]);
   activeView = signal<ViewKey>(undefined);
-  openViews = signal<ViewKey[]>([]);
-  viewInfos = signal<ViewInfo[]>([]);
+  #openViews = signal<ViewKey[]>([]);
+  #viewInfos = signal<ViewInfo[]>([]);
 
-  model = computed(() => {
-    const active = this.activeView();
-    const views = this.openViews();
-    const infos = this.viewInfos();
+  // Computed signal that finds the active view information from the list of viewInfos.
+  // It checks if the activeView signal matches any viewKey in the viewInfos list using objectsEqual.
+  active = computed(() => {
+    const activeView = this.activeView();
+    return this.#viewInfos().find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
+  })
 
-    const tabs = views.map(viewKey => {
-      const viewInfo = infos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
+  // Each tab object includes the viewKey, label (file name or key), active state,
+  // modified state (if the view's code differs from the saved code), and loading state.
+  // It checks for matching view information in viewInfos using objectsEqual.
+  tabs = computed(() => {
+    const openViews = this.#openViews();
+    const activeView = this.activeView();
+    const viewInfos = this.#viewInfos();
+    return openViews.map(viewKey => {
+      const viewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
       return {
         viewKey,
         label: viewInfo?.view?.FileName ?? viewKey.key,
-        isActive: RxHelpers.objectsEqual(viewKey, active),
+        isActive: RxHelpers.objectsEqual(viewKey, activeView),
         isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
-        isLoading: !viewInfo?.view,
-      };
-    });
-
-    const activeViewInfo = infos.find(v => RxHelpers.objectsEqual(v.viewKey, active));
-
-    return {
-      tabs,
-      viewKey: activeViewInfo?.viewKey,
-      view: activeViewInfo?.view,
-      explorerSnipps: activeViewInfo?.explorerSnipps,
-      editorSnipps: activeViewInfo?.editorSnipps,
-      tooltips: activeViewInfo?.tooltips,
-    };
+        isLoading: viewInfo?.view == null,
+      } satisfies Tab;
+    })
   });
-
 
   #urlItems: ViewOrFileIdentifier[];
 
@@ -130,6 +119,90 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       codeItem.IsShared ??= isShared;
     });
     this.#urlItems = codeItems;
+
+    // Update ViewInfo$ ongoing
+    effect(() => {
+      const templates = this.templates();
+      const openViews = this.#openViews();
+
+      // If there are no templates, exit early
+      if (templates.length === 0) return;
+
+      let viewInfos = this.#viewInfos();   // Retrieve the current viewInfos signal
+
+      // Find the `openViews` that are not yet loaded in `viewInfos`
+      const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
+      // If all openViews are loaded, exit early
+      if (notLoaded.length === 0) return;
+
+      // Start data requests for the not yet loaded `openViews`
+      forkJoin(
+        notLoaded.map(viewKey => {
+          // Mark the `viewKey` in `viewInfos` to indicate that it is being loaded
+          const newViewInfo: ViewInfo = {
+            viewKey,
+          };
+          viewInfos = [...viewInfos, newViewInfo];
+
+          // Create observables for the view, snippets, and tooltips based on the viewKey
+          const view$ = this.#sourceSvc.get(viewKey.key, viewKey.shared, this.#urlItems).pipe(share());
+          const snippets$ = view$.pipe(switchMap(view => this.#snippetSvc.getSnippets(view)));
+          const tooltips$ = view$.pipe(switchMap(view => this.#snippetSvc.getTooltips(view.Extension.substring(1))));
+          return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
+        })
+      ).subscribe(results => {
+        let viewInfos1 = this.#viewInfos();   // Retrieve the current viewInfos signal again
+
+        results.forEach(([viewKey, view, snippets, tooltips]) => {
+          // Find the index of the corresponding viewKey in the current viewInfos
+          const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
+          // If the viewKey is not found, exit early
+          if (selectedIndex < 0) return;
+
+          // Update `viewInfos` with new data for the corresponding `viewKey`
+          const newViewInfo: ViewInfo = {
+            viewKey,
+            view,
+            explorerSnipps: snippets.sets,
+            editorSnipps: snippets.list,
+            tooltips,
+            savedCode: view.Code,
+          };
+          viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
+
+          // Show warnings or other logic based on the loaded views
+          this.#showCodeAndEditionWarnings(viewKey, view, templates);
+        });
+
+        this.#viewInfos.set(viewInfos1);  // Set the new `viewInfos` in the signal
+      });
+
+      this.#viewInfos.set(viewInfos);   // Set the initial `viewInfos` before loading the data
+    },
+      { allowSignalWrites: true }
+    );
+
+    // Update title ongoing
+    effect(() => {
+      const activeView = this.activeView();
+      const viewInfos = this.#viewInfos();
+
+      // Check if viewInfos exist; exit early if not
+      if (!viewInfos) return;
+
+      // Find the active view information from viewInfos based on activeView
+      const active = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
+      const defaultTitle = 'Code Editor'; // Default title to use if no active view is found
+      // Construct the new title based on the active view or use the default title
+      const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
+      const oldTitle = this.#titleSvc.getTitle(); // Get the current title from the title service
+
+      // If the new title is different from the old title, update it
+      if (newTitle !== oldTitle) {
+        console.log('newTitle', newTitle); // Log the new title
+        this.#titleSvc.setTitle(newTitle);  // Set the new title in the title service
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -137,114 +210,19 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       const viewKey: ViewKey = { key: item.EntityId?.toString() ?? item.Path, shared: item.IsShared };
       return viewKey;
     });
-    this.#openViews$ = new BehaviorSubject<ViewKey[]>(initialViews);
-    this.#activeView$ = new BehaviorSubject<ViewKey>(initialViews[0]);
+
     this.activeView.set(initialViews[0]);
-    this.openViews.set(initialViews);
+    this.#openViews.set(initialViews);
 
     this.#attachListeners();
 
     // Load templates
     this.#sourceSvc.getAll().subscribe(templates => {
-      this.#templates$.next(templates)
       this.templates.set(templates);
     });
-
-    // TODO: @2dg - this should be easy to get rid of #remove-observables
-    // Update ViewInfo$ ongoing
-    this.subscriptions.add(
-
-      combineLatest([this.#templates$, this.#openViews$]).subscribe(([templates, openViews]) => {
-        if (templates.length === 0) return;
-
-        let viewInfos = this.viewInfos();
-        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => RxHelpers.objectsEqual(v.viewKey, viewKey)));
-        if (notLoaded.length === 0) return;
-
-        forkJoin(
-          notLoaded.map(viewKey => {
-            // set viewKey in viewInfos to mark that view is being fetched
-            const newViewInfo: ViewInfo = {
-              viewKey,
-            };
-            viewInfos = [...viewInfos, newViewInfo];
-
-            const view$ = this.#sourceSvc.get(viewKey.key, viewKey.shared, this.#urlItems).pipe(share());
-            const snippets$ = view$.pipe(switchMap(view => this.#snippetSvc.getSnippets(view)));
-            const tooltips$ = view$.pipe(switchMap(view => this.#snippetSvc.getTooltips(view.Extension.substring(1))));
-            return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
-          })
-        ).subscribe(results => {
-          let viewInfos1 = this.viewInfos();
-
-          results.forEach(([viewKey, view, snippets, tooltips]) => {
-            const selectedIndex = viewInfos1.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
-            if (selectedIndex < 0) return;
-
-            const newViewInfo: ViewInfo = {
-              viewKey,
-              view,
-              explorerSnipps: snippets.sets,
-              editorSnipps: snippets.list,
-              tooltips,
-              savedCode: view.Code,
-            };
-            viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
-            this.#showCodeAndEditionWarnings(viewKey, view, templates);
-          });
-
-          this.#viewInfos$.next(viewInfos1);
-          this.viewInfos.set(viewInfos1);
-        });
-        this.#viewInfos$.next(viewInfos);
-        this.viewInfos.set(viewInfos);
-      })
-    );
-
-    // Update title ongoing
-    this.subscriptions.add(
-      combineLatest([this.#activeView$, this.#viewInfos$]).subscribe(([activeView, viewInfos]) => {
-        const active = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
-        const defaultTitle = 'Code Editor';
-        const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
-        const oldTitle = this.#titleSvc.getTitle();
-        if (newTitle !== oldTitle)
-          this.#titleSvc.setTitle(newTitle);
-      })
-    );
-
-    this.viewModel$ = combineLatest([this.#activeView$, this.#openViews$, this.#viewInfos$]).pipe(
-      map(([activeView, openViews, viewInfos]) => {
-        const tabs = openViews.map(viewKey => {
-          const viewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
-          const label: Tab = {
-            viewKey,
-            label: viewInfo?.view?.FileName ?? viewKey.key,
-            isActive: RxHelpers.objectsEqual(viewKey, activeView),
-            isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
-            isLoading: viewInfo?.view == null,
-          };
-          return label;
-        });
-        const activeViewInfo = viewInfos.find(v => RxHelpers.objectsEqual(v.viewKey, activeView));
-
-        return {
-          tabs,
-          viewKey: activeViewInfo?.viewKey,
-          view: activeViewInfo?.view,
-          explorerSnipps: activeViewInfo?.explorerSnipps,
-          editorSnipps: activeViewInfo?.editorSnipps,
-          tooltips: activeViewInfo?.tooltips,
-        } satisfies CodeEditorViewModel;
-      }),
-    );
   }
 
   ngOnDestroy(): void {
-    this.#templates$.complete();
-    this.#activeView$.complete();
-    this.#openViews$.complete();
-    this.#viewInfos$.complete();
     super.ngOnDestroy();
   }
 
@@ -289,7 +267,6 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
 
       this.#sourceSvc.create(result.name, params.isShared, result.templateKey).subscribe(() => {
         this.#sourceSvc.getAll().subscribe(files => {
-          this.#templates$.next(files);
           this.templates.set(files);
         });
       });
@@ -301,7 +278,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
   }
 
   codeChanged(code: string, viewKey: ViewKey): void {
-    let viewInfos = this.viewInfos();
+    let viewInfos = this.#viewInfos();
     const selectedIndex = viewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     const selectedViewInfo = viewInfos[selectedIndex];
     const newViewInfo: ViewInfo = {
@@ -312,47 +289,41 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       },
     };
     viewInfos = [...viewInfos.slice(0, selectedIndex), newViewInfo, ...viewInfos.slice(selectedIndex + 1)];
-    this.#viewInfos$.next(viewInfos);
-    this.viewInfos.set(viewInfos);
+    this.#viewInfos.set(viewInfos);
   }
 
   openView(viewKey: ViewKey): void {
     // fix viewKey because it can be a templateId or a path, and file might already be open
-    viewKey = this.viewInfos().find(
+    viewKey = this.#viewInfos().find(
       v => !RxHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
     )?.viewKey ?? viewKey;
 
     const oldActiveView = this.activeView();
     if (!RxHelpers.objectsEqual(oldActiveView, viewKey)) {
-      this.#activeView$.next(viewKey);
       this.activeView.set(viewKey);
     }
-    const oldOpenViews = this.openViews();
+    const oldOpenViews = this.#openViews();
     if (!oldOpenViews.some(v => RxHelpers.objectsEqual(v, viewKey))) {
       const newOpenViews = [...oldOpenViews, viewKey];
-      this.#openViews$.next(newOpenViews);
-      this.openViews.set(newOpenViews);
+      this.#openViews.set(newOpenViews);
     }
   }
 
   closeEditor(viewKey: ViewKey): void {
-    const oldOpenViews = this.openViews();
+    const oldOpenViews = this.#openViews();
     const newOpenViews = oldOpenViews.filter(key => !RxHelpers.objectsEqual(key, viewKey));
 
     const oldActiveView = this.activeView();
     if (RxHelpers.objectsEqual(oldActiveView, viewKey)) {
       const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => RxHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
-      this.#activeView$.next(newActiveView);
       this.activeView.set(newActiveView);
     }
-
-    this.#openViews$.next(newOpenViews);
-    this.openViews.set(newOpenViews);
+    this.#openViews.set(newOpenViews);
   }
 
   save(viewKey?: ViewKey): void {
     viewKey ??= this.activeView();
-    const viewInfo = this.viewInfos().find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
+    const viewInfo = this.#viewInfos().find(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
     if (viewInfo?.view == null) return;
 
     this.snackBar.open('Saving...');
@@ -364,7 +335,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           return;
         }
 
-        let newViewInfos = [...this.viewInfos()];
+        let newViewInfos = [...this.#viewInfos()];
         const selectedIndex = newViewInfos.findIndex(v => RxHelpers.objectsEqual(v.viewKey, viewKey));
         if (selectedIndex < 0) return;
 
@@ -374,8 +345,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
           savedCode: codeToSave,
         };
         newViewInfos = [...newViewInfos.slice(0, selectedIndex), newViewInfo, ...newViewInfos.slice(selectedIndex + 1)];
-        this.#viewInfos$.next(newViewInfos);
-        this.viewInfos.set(newViewInfos);
+        this.#viewInfos.set(newViewInfos);
         this.snackBar.open('Saved', null, { duration: 2000 });
       },
       error: () => this.snackBar.open('Failed', null, { duration: 2000 }),
@@ -422,7 +392,7 @@ export class CodeEditorComponent extends BaseComponent implements OnInit, OnDest
       this.subscriptions.add(
         fromEvent<BeforeUnloadEvent>(window, 'beforeunload')
           .subscribe(event => {
-            const allSaved = !this.viewInfos().some(v => v.view != null && v.view.Code !== v.savedCode);
+            const allSaved = !this.#viewInfos().some(v => v.view != null && v.view.Code !== v.savedCode);
             if (allSaved) return;
             event.preventDefault();
             event.returnValue = ''; // fix for Chrome

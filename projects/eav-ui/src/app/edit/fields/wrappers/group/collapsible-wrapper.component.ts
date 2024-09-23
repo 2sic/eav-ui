@@ -4,7 +4,7 @@ import { ChangeAnchorTargetDirective } from '../../directives/change-anchor-targ
 import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout/flex';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { FieldState } from '../../field-state';
 import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
@@ -25,12 +25,11 @@ import { classLog } from '../../../../shared/logging';
     FlexModule,
     MatIconModule,
     ChangeAnchorTargetDirective,
-    AsyncPipe,
     SafeHtmlPipe,
   ],
 })
 export class CollapsibleWrapperComponent {
-  
+
   log = classLog({CollapsibleWrapperComponent});
 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
