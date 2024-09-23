@@ -24,7 +24,6 @@ export class FormsStateService {
   #formsDirty: Record<string, boolean> = {};
 
   readOnly: Signal<FormReadOnly> = (() => {
-    console.warn('2dm', this.formConfig.config.itemGuids);
     const itemHeaders = signal(this.formConfig.config.itemGuids
       .map(guid => this.itemService.getItemHeaderSignal(guid))
     );

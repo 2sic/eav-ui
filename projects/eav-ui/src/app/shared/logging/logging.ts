@@ -1,6 +1,6 @@
-import { ClassLoggerReal } from './class/class-logger-real';
 import { ClassLogger } from './class/class-logger';
 import { ClassLoggerNoop } from './class/class-logger-noop';
+import { ClassLoggerReal } from './class/class-logger-real';
 
 //
 // This is a special section for logging.
