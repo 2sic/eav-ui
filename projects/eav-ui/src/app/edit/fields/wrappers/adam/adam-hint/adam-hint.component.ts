@@ -23,6 +23,5 @@ import { TippyDirective } from '../../../../../shared/directives/tippy.directive
 })
 export class AdamHintComponent {
   public features = inject(FeaturesScopedService);
-  protected hideAdamSponsor = this.features.isEnabled(FeatureNames.NoSponsoredByToSic);
-
+  protected hideAdamSponsor = this.features.isEnabled[FeatureNames.NoSponsoredByToSic];
 }

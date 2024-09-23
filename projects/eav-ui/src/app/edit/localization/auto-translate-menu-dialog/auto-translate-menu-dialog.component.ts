@@ -41,7 +41,7 @@ import { isCtrlS } from '../../dialog/main/keyboard-shortcuts';
 export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent implements OnInit {
 
   public features = inject(FeaturesScopedService);
-  public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
+  public isTranslateWithGoogleFeatureEnabled = this.features.isEnabled[FeatureNames.EditUiTranslateWithGoogle];
 
   protected languagesSig = computed(() => {
     const languages = this.languages();
@@ -70,7 +70,7 @@ export class AutoTranslateMenuDialogComponent extends TranslateHelperComponent i
   ngOnInit(): void {
 
     // If not enabled, ensure that after closed ...??? @STV
-    if (this.isTranslateWithGoogleFeatureEnabled)
+    if (this.isTranslateWithGoogleFeatureEnabled())
       this.dialogRef.afterClosed().subscribe(() => this.snackBar.dismiss());
 
     // If the demo API key is being used, show snackbar warning

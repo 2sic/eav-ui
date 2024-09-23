@@ -21,14 +21,14 @@ const logSpecs = {
   standalone: true
 })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
-  
+
   log = classLog({PasteClipboardImageDirective}, logSpecs, true);
-  
+
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   #eventListeners: ElementEventListener[] = [];
 
-  #pasteImageEnabled = this.features.enabled[FeatureNames.PasteImageFromClipboard]();
+  #pasteImageEnabled = this.features.isEnabled[FeatureNames.PasteImageFromClipboard]();
 
   constructor(
     private elementRef: ElementRef,

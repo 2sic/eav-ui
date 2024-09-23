@@ -83,8 +83,8 @@ export class EntityFormComponent implements OnInit, AfterViewChecked, OnDestroy 
   noteTouched: boolean = false;
 
   #features = inject(FeaturesScopedService);
-  #editUiShowNotes = this.#features.isEnabled(FeatureNames.EditUiShowNotes);
-  #editUiShowMetadataFor = this.#features.isEnabled(FeatureNames.EditUiShowMetadataFor);
+  #editUiShowNotes = this.#features.isEnabled[FeatureNames.EditUiShowNotes];
+  #editUiShowMetadataFor = this.#features.isEnabled[FeatureNames.EditUiShowMetadataFor];
 
   /** Languages */
   languages = this.formConfig.language;

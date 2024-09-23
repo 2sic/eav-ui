@@ -64,7 +64,7 @@ export class AppsListComponent implements OnInit {
   gridOptions = this.buildGridOptions();
 
   public features = inject(FeaturesScopedService);
-  public isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+  protected isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
 
   #appsListSvc = transient(AppsListService);
   #dialogRouter = transient(DialogRoutingService);

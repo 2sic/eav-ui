@@ -37,7 +37,7 @@ export class AddAppFromFolderComponent implements OnInit {
   pendingApps = signal<PendingApp[]>([]);
 
   public features = inject(FeaturesScopedService);
-  private isAddFromFolderEnabled = this.features.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+  #isAddFromFolderEnabled = this.features.isEnabled[FeatureNames.AppSyncWithSiteFiles];
   private appsListService = transient(AppsListService);
 
   constructor(
@@ -95,7 +95,7 @@ export class AddAppFromFolderComponent implements OnInit {
           cellRenderer: CheckboxCellComponent,
           cellRendererParams: (() => {
             const params: CheckboxCellParams = {
-              isDisabled: !this.isAddFromFolderEnabled,
+              isDisabled: !this.#isAddFromFolderEnabled(),
               onChange: (app, enabled) => this.onChange(app, enabled),
             };
             return params;

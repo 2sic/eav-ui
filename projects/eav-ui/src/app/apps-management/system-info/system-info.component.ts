@@ -169,8 +169,8 @@ export class SystemInfoComponent implements OnInit {
     return info;
   });
 
-  protected lsEnabled = this.features.isEnabled(FeatureNames.LightSpeed);
-  protected cspEnabled = this.features.isEnabled(FeatureNames.ContentSecurityPolicy);
+  protected lsEnabled = this.features.isEnabled[FeatureNames.LightSpeed];
+  protected cspEnabled = this.features.isEnabled[FeatureNames.ContentSecurityPolicy];
 
   constructor(
     private snackBar: MatSnackBar,

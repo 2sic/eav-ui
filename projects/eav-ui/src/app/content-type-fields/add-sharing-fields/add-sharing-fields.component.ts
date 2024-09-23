@@ -62,8 +62,7 @@ export class AddSharingFieldsComponent extends BaseComponent implements OnInit, 
 
   #contentTypesFieldsSvc = transient(ContentTypesFieldsService);
 
-
-  #fieldShareConfigManagement = this.#features.isEnabled(FeatureNames.FieldShareConfigManagement);
+  #fieldShareConfigManagement = this.#features.isEnabled[FeatureNames.FieldShareConfigManagement];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },

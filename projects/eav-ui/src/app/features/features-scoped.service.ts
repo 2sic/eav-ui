@@ -27,12 +27,12 @@ const logSpecs = {
  * but needs context data.
  * So the GlobalDialogConfigService seems to call the loadFromService.
  * TODO: 2dm: I don't like this, should rethink the architecture, feels a bit flaky.
- * 2024-08-28 2dm modified this, but still not perfect. 
+ * 2024-08-28 2dm modified this, but still not perfect.
  * ATM it would still load the dialog-settings by itself, even if the form service would provide it. on .load(...)
  */
 @Injectable()
 export class FeaturesScopedService {
-  
+
   log = classLog({FeaturesScopedService}, logSpecs);
 
   #dialogConfigSvc = transient(DialogConfigAppService);
@@ -75,15 +75,10 @@ export class FeaturesScopedService {
     return this.get$(nameId).pipe(map(f => f?.isEnabled ?? false));
   }
 
-  // TODO: @2dg pls change use of this to use the `enabled` property below, eg. `enabled['nameId']` returns a signal
-  isEnabled(nameId: Of<typeof FeatureNames>): Signal<boolean> {
-    return computedObj('isEnabled-' + nameId,() => this.dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false);
-  }
-
   /**
    * Property providing enabled, which behaves like a Record<string, Signal<boolean>>.
    */
-  public enabled = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
+  public isEnabled = new ComputedCacheHelper<Of<typeof FeatureNames>, boolean>('isEnabledCache').buildProxy(nameId => () => {
     return this.dialogContext()?.Features.find(f => f.nameId === nameId)?.isEnabled ?? false;
   });
 

@@ -44,7 +44,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   shareableFields = signal<Field[]>(undefined);
 
   public features = inject(FeaturesScopedService);
-  private fieldShareConfigManagement = this.features.isEnabled(FeatureNames.FieldShareConfigManagement);
+  #fieldShareConfigManagement = this.features.isEnabled[FeatureNames.FieldShareConfigManagement];
 
   private contentTypesFieldsService = transient(ContentTypesFieldsService);
 
@@ -100,7 +100,7 @@ export class ShareOrInheritDialogComponent extends BaseComponent implements OnIn
   }
 
   save() {
-    if (!this.fieldShareConfigManagement()) {
+    if (!this.#fieldShareConfigManagement()) {
       openFeatureDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       return;
     }

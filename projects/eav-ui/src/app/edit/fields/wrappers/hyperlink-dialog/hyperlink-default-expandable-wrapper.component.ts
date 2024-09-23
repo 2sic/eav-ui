@@ -97,8 +97,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
   }
 
-  protected hideAdamSponsor = this.featuresService.isEnabled(FeatureNames.NoSponsoredByToSic);
-  adamSponsorI18nKey = computed(() => this.hideAdamSponsor()
+  #hideAdamSponsor = this.featuresService.isEnabled[FeatureNames.NoSponsoredByToSic];
+  adamSponsorI18nKey = computed(() => this.#hideAdamSponsor()
     ? 'Fields.Hyperlink.AdamFileManager.Name'
     : 'Fields.Hyperlink.Default.Sponsor'
   );

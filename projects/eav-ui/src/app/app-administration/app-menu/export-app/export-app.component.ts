@@ -35,7 +35,7 @@ export class ExportAppComponent implements OnInit {
   appInfo = signal<AppInfo>(null);
 
   protected features = inject(FeaturesScopedService);
-  protected expAssetsAdvEnabled = this.features.enabled[FeatureNames.AppExportAssetsAdvanced];
+  protected expAssetsAdvEnabled = this.features.isEnabled[FeatureNames.AppExportAssetsAdvanced];
 
   ngOnInit() {
     this.exportAppService.getAppInfo().subscribe(appInfo => this.appInfo.set(appInfo));

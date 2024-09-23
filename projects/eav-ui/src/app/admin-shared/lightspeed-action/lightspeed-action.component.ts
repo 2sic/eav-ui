@@ -34,10 +34,10 @@ export class LightSpeedActionsComponent {
   @Input({ required: true }) lightSpeed: LightSpeedInfo | null;
 
   public features = inject(FeaturesScopedService);
-  
+
   constructor() { }
 
-  protected lightSpeedEnabled = this.features.enabled[FeatureNames.LightSpeed]
+  protected lightSpeedEnabled = this.features.isEnabled[FeatureNames.LightSpeed]
 
   public get appHasLightSpeed(): boolean {
     return this.lightSpeed?.Id != null;

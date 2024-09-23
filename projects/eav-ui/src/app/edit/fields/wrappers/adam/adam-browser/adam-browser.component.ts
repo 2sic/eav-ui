@@ -66,7 +66,7 @@ import { classLog } from '../../../../../shared/logging';
   ],
 })
 export class AdamBrowserComponent implements OnInit {
-  
+
   log = classLog({AdamBrowserComponent});
 
   @Output() openUpload = new EventEmitter<null>();
@@ -80,7 +80,7 @@ export class AdamBrowserComponent implements OnInit {
   disabled = computed(() => this.#ui().disabled);
 
   value = computed(() => this.fieldState.uiValue());
-  
+
   public adamConfig = signalObj<AdamConfig>('adamConfig', null); // here the change detection is critical
   items = signal<AdamItem[]>([]);
 
@@ -93,7 +93,7 @@ export class AdamBrowserComponent implements OnInit {
   });
 
   public features = inject(FeaturesScopedService);
-  public isPasteImageFromClipboardEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
+  protected isPasteImageFromClipboardEnabled = this.features.isEnabled[FeatureNames.PasteImageFromClipboard];
 
   protected expanded = this.editRoutingService.isExpandedSignal(this.config.index, this.config.entityGuid)
 
@@ -231,7 +231,7 @@ export class AdamBrowserComponent implements OnInit {
 
   /**
    * Note: since all fetch-items happen in a timeout or subscribe, it doesn't need to be in the NgZone
-   * @returns 
+   * @returns
    */
   fetchItems() {
     const adamConfig = this.adamConfig();
@@ -253,7 +253,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   openFeatureInfoDialog() {
-    if (!this.isPasteImageFromClipboardEnabled)
+    if (!this.isPasteImageFromClipboardEnabled())
       openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 
