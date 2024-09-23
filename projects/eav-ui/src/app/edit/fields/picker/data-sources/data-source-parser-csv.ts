@@ -1,15 +1,21 @@
 import Papa from 'papaparse';
 import { PickerOptionCustomExtended } from '../../../../../../../edit-types';
-import { classLog } from 'projects/eav-ui/src/app/shared/logging';
+import { classLog } from '../../../../shared/logging/logging';
+
+const logSpecs = {
+  all: false,
+  parse: true,
+};
 
 export class DataSourceParserCsv {
   
-  log = classLog({DataSourceParserCsv}, { all: false, parse: true }, true);
+  log = classLog({DataSourceParserCsv}, logSpecs, true);
 
   constructor() { }
 
   parse(csv: string): PickerOptionCustomExtended[] {
 
+    const l = this.log.fnIf('parse', { csv });
 
     const x = Papa.parse<PickerOptionCustomExtended>(csv, {
       header: true,
@@ -31,14 +37,22 @@ export class DataSourceParserCsv {
 
     // Use header to create empty object with all fields
     const header = x?.meta.fields ?? [];
-    const preEmpty = header.reduce((acc, h) => ({ ...acc, [h]: null }), {}) as { [key: string]: any };
+    const preEmpty = header.reduce((acc, h) => ({
+      ...acc,
+      [h]: null }),
+      {}
+    ) as { [key: string]: any };
     const { Value, ...empty } = preEmpty;
     
-    this.log.a('Parsed CSV', { header, empty, data, filtered });
+    l.a('Parsed CSV', { header, empty, data, filtered });
 
     // Make sure all the rows have all the fields
-    const complete = filtered.map(f => ({ ...empty, ...f }));
+    const complete = filtered.map(f => ({
+      ...empty,
+      ...f,
+      Value: f.Value ?? '' // this is necessary, because the 'dynamicTyping' option will make it a null if it's empty
+    }));
 
-    return complete;
+    return l.r(complete);
   }
 }
