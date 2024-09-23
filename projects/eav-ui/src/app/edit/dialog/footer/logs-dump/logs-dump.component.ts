@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { NgClass, AsyncPipe, DatePipe } from '@angular/common';
 import { LogEntry, LoggingService, LogSeverities } from '../../../shared/services/logging.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { LogsConfigComponent } from "../log-config/logs-config.component";
+import { TippyDirective } from 'projects/eav-ui/src/app/shared/directives/tippy.directive';
 
 @Component({
   selector: 'app-logs-dump',
@@ -13,10 +17,15 @@ import { LogEntry, LoggingService, LogSeverities } from '../../../shared/service
     ExtendedModule,
     AsyncPipe,
     DatePipe,
-  ],
+    MatIconModule,
+    MatButtonModule,
+    LogsConfigComponent,
+    TippyDirective,
+],
 })
 export class LogsDumpComponent {
   LogSeverities = LogSeverities;
+  showSettings = false;
 
   protected logs = this.loggingService.getLogsSignal();
 
@@ -35,4 +44,9 @@ export class LogsDumpComponent {
         break;
     }
   }
+
+  toggleDialog(): void {
+    this.showSettings = !this.showSettings;
+  }
 }
+

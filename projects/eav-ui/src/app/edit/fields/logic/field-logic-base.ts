@@ -11,7 +11,6 @@ export abstract class FieldLogicBase {
   get log() { return this.#log ??= classLog({FieldLogicBase}).extendName(`[${this.name}]`) };
   #log: ClassLogger;
 
-  // TODO: @2pp make sure it's in all the constructors of theinheriting Logic classes
   constructor(inheritingClass: Record<string, unknown> | string, logThis?: boolean) {
     if(!this.name)
       return

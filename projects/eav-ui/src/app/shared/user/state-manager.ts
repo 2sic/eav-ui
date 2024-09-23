@@ -4,7 +4,7 @@ const logThis = false;
 const separator = ":";
 export class StateManager<T> {
 
-  protected constructor(private storage: Storage, private prefix: string, private configName?: string) {
+  protected constructor(private storage: Storage, public prefix: string, private configName?: string) {
     this.#storeKey = this.prefix + (this.configName ? `${separator}${this.configName}` : '');
   }
   #storeKey: string;
@@ -69,4 +69,3 @@ export class StateManagerLocal extends StateManager<LogSpecs<unknown>> {
     super(window.localStorage, prefix, configName);
   }
 }
-
