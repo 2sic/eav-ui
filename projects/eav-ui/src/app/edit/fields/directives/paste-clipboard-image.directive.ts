@@ -5,24 +5,30 @@ import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from '../../../features/feature-names';
 import { openFeatureDialog } from '../../../features/shared/base-feature.component';
 import { FeaturesScopedService } from '../../../features/features-scoped.service';
-import { BaseDirective } from '../../../shared/directives/base.directive';
 import { FieldConfigSet } from '../field-config-set.model';
 import { ElementEventListener } from '../../shared/controls/element-event-listener.model';
 import { classLog } from '../../../shared/logging';
+
+const logSpecs = {
+  all: true,
+  constructor: false,
+  handleImage: false,
+};
+
 
 @Directive({
   selector: '[appPasteClipboardImage]',
   standalone: true
 })
-export class PasteClipboardImageDirective extends BaseDirective implements OnInit, OnDestroy {
+export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   
-  log = classLog({PasteClipboardImageDirective});
+  log = classLog({PasteClipboardImageDirective}, logSpecs, true);
   
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
-  private eventListeners: ElementEventListener[] = [];
+  #eventListeners: ElementEventListener[] = [];
 
-  private pasteImageEnabled = this.features.isEnabled(FeatureNames.PasteImageFromClipboard);
+  #pasteImageEnabled = this.features.enabled[FeatureNames.PasteImageFromClipboard]();
 
   constructor(
     private elementRef: ElementRef,
@@ -32,7 +38,9 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { super(); }
+  ) {
+    this.log.fn('constructor', { elementType: this.elementType, pasteImageEnabled: this.#pasteImageEnabled });
+  }
 
   ngOnInit() {
     switch (this.elementType) {
@@ -45,37 +53,37 @@ export class PasteClipboardImageDirective extends BaseDirective implements OnIni
     }
 
 
-    const handleImage = (event: CustomEvent) => { this.handleImage(event); };
+    const handleImage = (event: CustomEvent) => { this.#handleImage(event); };
     this.elementRef.nativeElement.addEventListener('handleImage', handleImage);
 
-    this.eventListeners.push(
+    this.#eventListeners.push(
       { element: this.elementRef.nativeElement, type: 'handleImage', listener: handleImage },
     );
   }
 
   ngOnDestroy() {
     // spm 2019-10-24 paste.js which handles clipboard paste doesn't destroy listeners
-    this.eventListeners.forEach(({ element, type, listener }) => {
+    this.#eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
-    super.ngOnDestroy();
   }
 
-  private handleImage(event: CustomEvent) {
-    if (this.pasteImageEnabled) {
-      const l = this.log.fn('handleImage', { event }, 'handling paste image - enabled');
-      // todo: convert png to jpg to reduce file size
-      const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
+  #handleImage(event: CustomEvent) {
+    const enabled = this.#pasteImageEnabled;
+    const l = this.log.fnIf('handleImage', { event }, 'handling paste image - ' + (enabled ? 'enabled' : 'disabled') );
+    if (enabled) {
+      const image = this.#getFile(event.detail as PasteClipboardImageEventDetail);
       this.config.dropzone.uploadFile(image);
+      l.end('started upload');
     } else {
-      const l = this.log.fn('handleImage', { event }, 'handling paste image - disabled');
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
         openFeatureDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
       });
+      l.end('not enabled, showing snackbar');
     }
   }
 
-  private getFile(data: PasteClipboardImageEventDetail) {
+  #getFile(data: PasteClipboardImageEventDetail) {
     let newFile = data.file; // for fallback
 
     try {
