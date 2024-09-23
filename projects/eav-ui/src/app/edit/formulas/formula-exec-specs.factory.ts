@@ -60,7 +60,7 @@ export class FormulaExecutionSpecsFactory {
       formConfig: this.formConfig,
       fieldsSettingsSvc: this.#settingsSvc,
       features: this.#features,
-      parameters: new FormulaPropsParameters(this.#clientData.ClientData.parameters),
+      parameters: new FormulaPropsParameters(this.#clientData.ClientData?.parameters ?? {}),
       warningsObsolete: this.#warningsObsolete,
     } satisfies FormulaExecutionSpecs;
   }
