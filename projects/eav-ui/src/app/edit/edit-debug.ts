@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment';
 export const DebugFields: string[] = !environment.production
   // ? ['StringPicker']
   // ? ['NumberInputAddUntillDevisibleBy5']
-  ? ['WysiwygConfiguration']
+  // ? ['WysiwygConfiguration']
+  ? ['Items']
   // ? ['Title']
   // ? [] // no fields
   // ? ['*'] // all fields

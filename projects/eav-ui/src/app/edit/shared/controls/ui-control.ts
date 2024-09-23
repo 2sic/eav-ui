@@ -10,7 +10,7 @@ const logSpecs = {
   markTouched: true,
   set: true,
   disable: true,
-  fields: [...DebugFields, 'StringPicker'] as string[], // examples: ['SomeField'] or ['*'] for all
+  fields: [...DebugFields],
 };
 
 /**
@@ -55,22 +55,28 @@ export class UiControl {
   }
 
   setIfChanged(newValue: FieldValue): void {
-    this.log.aIfInList('fields', this.name, { newValue }, 'setIfChanged');
+    const before = this.control.value;
+    this.log.aIfInList('fields', this.name, { before, newValue }, 'setIfChanged');
     if (newValue === this.control.value) return;
     this.set(newValue);
   }
 
   /** Use to update form controls value */
   set(newValue: FieldValue): void {
-    this.log.aIfInList('fields', this.name, { newValue }, 'set');
     const control = this.control;
+    const before = control.value;
+    this.log.aIfInList('fields', this.name, { before, newValue }, 'set');
+
+    control.patchValue(newValue);
+    
     if (!control.touched)
       control.markAsTouched();
 
-    if (!control.dirty && !FieldValueHelpers.fieldValuesAreEqual(control.value, newValue))
+    if (!control.dirty && !FieldValueHelpers.fieldValuesAreEqual(before, newValue))
       control.markAsDirty();
 
-    control.patchValue(newValue);
+    // control.patchValue(newValue);
+    // control.updateValueAndValidity();
   }
 
   disable(disable: boolean): void {

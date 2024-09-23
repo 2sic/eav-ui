@@ -14,6 +14,9 @@ const logSpecs = {
   setup: true,
   addInfosFromSourceForUi: true,
   optionsWithMissing: true,
+  selectedRaw: false,
+  selectedOverride: false,
+  selectedState: false,
   fields: [...DebugFields],
 }
 /**
@@ -93,7 +96,10 @@ export class PickerData {
 
   /** Currently selected items. Must watch for ready. */
   public selectedRaw = computedObj('selectedState', () => {
-    return !this.ready() ? [] : this.#toSelectedWithUiInfo(this.state.selectedItems(), this.optionsAll());
+    const l = this.log.fnIfInList('selectedRaw', 'fields', this.name);
+    return !this.ready()
+      ? l.r([], 'not ready')
+      : l.r(this.#toSelectedWithUiInfo(this.state.selectedItems(), this.optionsAll()), 'ready');
   });
 
   /** Overrides / replacements from formulas */

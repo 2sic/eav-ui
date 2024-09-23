@@ -7,10 +7,10 @@ import { PickerFeatures } from '../picker-features.model';
 import { FieldState } from '../../field-state';
 import { FormConfigService } from '../../../form/form-config.service';
 import { signalObj, computedObj } from '../../../../shared/signals/signal.utilities';
-import { classLog, ClassLogger } from '../../../../shared/logging';
+import { classLog } from '../../../../shared/logging';
 import { StateUiMapperBase } from './state-ui-mapper-base';
 
-const logSpecs = {
+export const logSpecsStateAdapter = {
   all: false,
   updateValue: true,
   add: false,
@@ -29,7 +29,7 @@ export abstract class StateAdapter {
   
   //#region Setup / Inject / Logs
 
-  log = classLog({StateAdapter}, logSpecs);
+  log = classLog({StateAdapter}, logSpecsStateAdapter, false);
   
   public formConfigSvc = inject(FormConfigService);
   #fieldState = inject(FieldState) as FieldState<string | string[]>;
@@ -76,9 +76,13 @@ export abstract class StateAdapter {
     });
 
     // Find selected items and correct empty value (if there is an empty-string options)
+    const l = this.log.fnIf('selectedItems');
     return computedObj('selectedItems', () => {
       const sAndO = sepAndOpts();
-      return correctStringEmptyValue(this.#fieldState.uiValue(), sAndO.separator, sAndO.options);
+      const uiValue = this.#fieldState.uiValue();
+      l.a('selectedItems', { uiValue, sAndO });
+
+      return correctStringEmptyValue(uiValue, sAndO.separator, sAndO.options);
     });
   })();
 
@@ -111,11 +115,13 @@ export abstract class StateAdapter {
 
   #updateValue(operation: (original: string[]) => string[]): void {
     const l = this.log.fnIf('updateValue');
-    const valueArray = this.values();
+    // Get original data, and make sure we have a copy, so that ongoing changes won't affect the original
+    // If we don't do this, then later change detection can fail!
+    const valueArray = [...this.values()];
     const modified = operation(valueArray);
     const newValue = this.mapper.toState(modified);
     this.#fieldState.ui().set(newValue);
-    l.end();
+    l.end('', { newValue });
   }
   
   public add(value: string): void {
@@ -132,7 +138,7 @@ export abstract class StateAdapter {
     this.log.fnIf('reorder', { reorderIndexes });
     this.#updateValue(list => {
       moveItemInArray(list, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
-      return list;
+      return [...list];
     });
   }
 
@@ -140,7 +146,7 @@ export abstract class StateAdapter {
     this.log.fnIf('remove', { index });
     this.#updateValue(list => {
       list.splice(index, 1);
-      return list;
+      return [...list];
     });
 
     if (!this.values().length) {
